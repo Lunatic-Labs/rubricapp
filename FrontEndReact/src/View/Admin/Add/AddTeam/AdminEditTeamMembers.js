@@ -9,7 +9,7 @@ import { IconButton, Typography } from "@mui/material";
 
 
 
-class AdminEditTeam extends Component {
+class AdminEditTeamMembers extends Component {
     constructor(props) {
         super(props);
 
@@ -75,13 +75,16 @@ class AdminEditTeam extends Component {
 
         var team = state.team;
 
+        var courseID = state.chosenCourse.course_id;
+
         genericResourceGET(
-            `/user?team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
-            "users", this,
-        );
+          `/user?course_id=${courseID}&team_id=${team["team_id"]}` + (this.props.addTeamAction === "Add" ? "" : `&assign=${true}`),
+          "users", this,
+      );
     }
 
     render() {
+        
         const columns = [
             {
                 name: "first_name",
@@ -110,6 +113,22 @@ class AdminEditTeam extends Component {
                 },
             },
             {
+              name: "team_name",
+              label: "Current Team",
+              options: {
+                  filter: true,
+                  setCellHeaderProps: () => {
+                      return { width: "300px" };
+                  },
+                  setCellProps: () => {
+                      return { width: "300px" };
+                  },
+                  customBodyRender: (teamName) => {
+                    return teamName ? teamName : "No team assigned";
+                  }
+              },
+            },
+            {
                 name: "email",
                 label: "Email",
                 options: {
@@ -124,7 +143,7 @@ class AdminEditTeam extends Component {
             },
             {
                 name: "user_id",
-                label: "Add/Remove",
+                label: this.props.addTeamAction,
                 options: {
                     filter: true,
                     sort: false,
@@ -184,7 +203,11 @@ class AdminEditTeam extends Component {
         return (
             <div className="container">
                 <div className="d-flex justify-content-between align-items-center">
-                    <Typography sx={{ fontWeight: "700" }} variant="h5">
+                    <Typography
+                        sx={{ fontWeight: "700" }}
+                        variant="h5"
+                        aria-label={this.props.addTeamAction + "TeamMembersTitle"}
+                    >
                         {this.props.addTeamAction} Members
                     </Typography>
 
@@ -200,6 +223,8 @@ class AdminEditTeam extends Component {
                         onClick={() => {
                             this.sendUsers();
                         }}
+
+                        aria-label="adminEditTeamMembersSaveTeamButton"
                     >
                         Save Team
                     </Button>
@@ -215,4 +240,4 @@ class AdminEditTeam extends Component {
     }
 }
 
-export default AdminEditTeam;
+export default AdminEditTeamMembers;

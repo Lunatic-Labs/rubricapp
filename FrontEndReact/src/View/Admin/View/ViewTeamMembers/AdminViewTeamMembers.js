@@ -22,9 +22,10 @@ class AdminViewTeamMembers extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var team = state.team;
+        var courseID = state.chosenCourse.course_id; 
 
         genericResourceGET(
-            `/user?team_id=${team["team_id"]}&assign=${true}`,
+            `/user?course_id=${courseID}&team_id=${team["team_id"]}&assign=${true}`,
             'users', this
         );
     }
@@ -81,10 +82,11 @@ class AdminViewTeamMembers extends Component {
                                         [team],
                                         team["team_id"],
                                         parseUserNames(users),
-                                        "AdminEditTeam",
+                                        "AdminEditTeamMembers",
                                         "Add"
                                     );
                                 }}
+                                aria-label='addMemberButton'
                             >
                                 Add Member
                             </Button>
@@ -100,10 +102,11 @@ class AdminViewTeamMembers extends Component {
                                         [team],
                                         team["team_id"],
                                         parseUserNames(users),
-                                        "AdminEditTeam",
+                                        "AdminEditTeamMembers",
                                         "Remove"
                                     );
                                 }}
+                                aria-label='removeMemberButton'
                             >
                                 Remove Member
                             </Button>

@@ -37,9 +37,10 @@ class ShowTeamMembers extends Component {
     componentDidUpdate() {
         var navbar = this.props.navbar;
         var teamId = navbar.buildTeam.selectedTeam;
+        var courseID = navbar.state.chosenCourse.course_id; 
 
         if (teamId !== null && teamId !== this.state.selectedTeam) {
-            genericResourceGET(`/user?team_id=${teamId}`, 'users', this);
+            genericResourceGET(`/user?course_id=${courseID}&team_id=${teamId}`, 'users', this);
         }
     }
 

@@ -6,7 +6,8 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickFirstElementWithAriaLabel,
+    expectElementWithAriaLabelToHaveErrorMessage
 } from "../../../../../testUtilities.js";
 
 import {
@@ -20,26 +21,25 @@ var ei = "emailInput";
 var pi = "passwordInput";
 var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
-var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
 var tt = "teamsTab";
 var rt = "rosterTitle";
 var td = "teamDashboard";
-var abub = "adminBulkUploadButton";
-var abu = "adminBulkUpload";
 var aatb = "adminAddTeamButton";
 var aatt = "adminAddTeamTitle";
-var vtib = "viewTeamsIconButton";
-var avtmt = "adminViewTeamMembersTitle";
+var catb = "cancelAddTeamButton";
+var aosatb = "addOrSaveAddTeamButton";
+var atf = "addTeamForm";
+var utni = "userTeamNameInput";
 
 
 
-test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
 
-test("TeamDashboard.test.js Test 1: Should render the TeamDashboard", async () => {
+test("AdminAddTeam.test.js Test 1: Should render the TeamDashboard", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -70,40 +70,7 @@ test("TeamDashboard.test.js Test 1: Should render the TeamDashboard", async () =
 });
 
 
-test("TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if the adminBulkUpload button is clicked", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
-    });
-
-    clickElementWithAriaLabel(tt);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(abub);
-        }, 3000);
-    });
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abu);
-        }, 3000);
-    });
-});
-
-
-test("TeamDashboard.test.js Test 3: Should render the Add Team page if the adminAddTeam button is clicked", async () => {
+test("AdminAddTeam.test.js Test 2: Should render the Add Team page if the adminAddTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -136,8 +103,8 @@ test("TeamDashboard.test.js Test 3: Should render the Add Team page if the admin
 });
 
 
-test("TeamDashboard.test.js Test 4: Should render the View Team page if the adminViewTeam button is clicked", async () => {
-    render(<Login />);
+test("AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back button on the Add Team page is clicked ", async () => {
+    render(<Login/>);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -157,20 +124,28 @@ test("TeamDashboard.test.js Test 4: Should render the View Team page if the admi
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
 
-            clickElementWithAriaLabel(vtib);
+            clickElementWithAriaLabel(aatb);
         }, 3000);
     });
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
+            expectElementWithAriaLabelToBeInDocument(aatt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(mhbb);
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
         }, 3000);
     });
 });
 
 
-test("MainHeader.test.js Test 5: Clicking the back button on the page should go to the page that came before the current (ViewCourseAdmin)", async () => {
-    render(<Login />);
+test("AdminAddTeam.test.js Test 4: Should render the teams dashboard if the cancel button on the Add Team page is clicked ", async () => {
+    render(<Login/>);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -180,17 +155,109 @@ test("MainHeader.test.js Test 5: Clicking the back button on the page should go 
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcmh);
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(aatb);
         }, 3000);
     });
 
     await waitFor(() => {
-        clickElementWithAriaLabel(mhbb);
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(aatt);
+
+            clickElementWithAriaLabel(catb);
+        }, 3000);
     });
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
+            expectElementWithAriaLabelToBeInDocument(td);
+        }, 3000);
+    });
+});
+
+
+test("AdminAddTeam.test.js Test 5: HelperText errors should show for each text field when no information is filled", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(aatb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(aatt);
+
+            clickElementWithAriaLabel(aosatb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(atf);
+
+            expectElementWithAriaLabelToHaveErrorMessage(utni,"Team name cannot be empty");
+        }, 3000);
+    });
+});
+
+
+test("AdminAddTeam.test.js Test 6: HelperText error should show for the teamName text field when it is left blank while all other information is filled", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(aatb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(atf);
+
+            expectElementWithAriaLabelToHaveErrorMessage(utni,"Team name cannot be empty");
         }, 3000);
     });
 });

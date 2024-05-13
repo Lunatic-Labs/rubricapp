@@ -1,34 +1,34 @@
-import { render, waitFor } from '@testing-library/react';
-import '@testing-library/jest-dom';
-import Login from '../../../../Login/Login.js';
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login.js";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from '../../../../../testUtilities.js';
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword,
     demoTaInstructorPassword,
     demoStudentPassword
-} from '../../../../../App.js';
+} from "../../../../../App.js";
 
 
 
 var lf = "loginForm";
-var lb = 'loginButton';
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ad = 'accountDropdown';
-var lob = 'logoutButton';
-var ct = 'coursesTitle';
-var ac = 'addCourse';
-var act = 'addCourseTitle';
-var ecib = 'editCourseIconButton';
-var vcib = 'viewCourseIconButton';
-var rt = 'rosterTitle';
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
+var ad = "accountDropdown";
+var lob = "logoutButton";
+var ct = "coursesTitle";
+var ac = "addCourse";
+var act = "addCourseTitle";
+var ecib = "editCourseIconButton";
+var vcib = "viewCourseIconButton";
+var rt = "rosterTitle";
 
 
 
@@ -37,14 +37,14 @@ test("NOTE: Tests 2-7 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test('AdminViewCourses.test.js Test 1: should render Login Form component', () => {
+test("AdminViewCourses.test.js Test 1: should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
 
 
-test('AdminViewCourses.test.js Test 2: Should show courses page for admin view using demo admin credentials', async () => {
+test("AdminViewCourses.test.js Test 2: Should show courses page for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -67,7 +67,7 @@ test('AdminViewCourses.test.js Test 2: Should show courses page for admin view u
 });
 
 
-test('AdminViewCourses.test.js Test 3: Should show courses page for ta/instructor view using demo ta/instructor credentials', async () => {
+test("AdminViewCourses.test.js Test 3: Should show courses page for ta/instructor view using demo ta/instructor credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
@@ -90,7 +90,7 @@ test('AdminViewCourses.test.js Test 3: Should show courses page for ta/instructo
 });
 
 
-test('AdminViewCourses.test.js Test 4: Should show courses page for student view using demo student credentials', async () => {
+test("AdminViewCourses.test.js Test 4: Should show courses page for student view using demo student credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");

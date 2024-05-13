@@ -3,7 +3,7 @@ import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
 import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, ResponsiveContainer, LabelList } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
 import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements.js';
@@ -137,9 +137,8 @@ export default function ViewAssessmentStatus(props) {
 
   return (
     <Container>
-      <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' >
+      <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
         <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw" }}>
-          {/* Left quadrant: histogram of assessment task ratings */}
           <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
             <div className={innerDivClassName} style={innerGridStyle} >
               <CharacteristicsAndImprovements
@@ -150,12 +149,8 @@ export default function ViewAssessmentStatus(props) {
             </div>
           </Grid>
 
-          {/* Right quadrant: dropdowns, histogram, evaluation status */}
           <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={6}>
-            {/* Top half of quadrant: 2 dropdowns */}
             <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
-
-              {/* Dropdown #1 */}
               <Grid sx={outerQuadrantSX} item xs={6}>
                 <div className={innerDivClassName} style={innerGridStyle}> 
                   <AssessmentTaskDropdown
@@ -166,7 +161,6 @@ export default function ViewAssessmentStatus(props) {
                 </div>
               </Grid>
 
-              {/* Dropdown #2 */}
               <Grid sx={outerQuadrantSX} item xs={6}>
                 <div className={innerDivClassName} style={innerGridStyle}> 
                   <CategoryDropdown
@@ -179,9 +173,7 @@ export default function ViewAssessmentStatus(props) {
               </Grid>
             </Grid>
 
-          {/* Bottom half of quadrant: histogram and evaluation status */}
             <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
-              {/* Histogram: distribution of ratings */}
               { props.showRatings && 
                 <Grid sx={outerQuadrantSX} item xs={6}>
                   <div className={innerDivClassName} style={innerGridStyle}>
@@ -189,9 +181,7 @@ export default function ViewAssessmentStatus(props) {
 
                     <h6>Avg: {avg}; StdDev: {stdev}</h6>
 
-                    <ResponsiveContainer width="100%" height="100%">
-                      <BarChart  data={ratingsData["ratings"]} barCategoryGap={0.5}>
-
+                      <BarChart width={300} height={150} data={ratingsData["ratings"]} barCategoryGap={0.5}>
                         <XAxis dataKey="rating"/>
 
                         <YAxis width={25} domain={[0, 'auto']}/>
@@ -202,20 +192,17 @@ export default function ViewAssessmentStatus(props) {
                           <LabelList dataKey="number" fill="#ffffff" position="inside"/>
                         </Bar>
                       </BarChart>
-                    </ResponsiveContainer>
                   </div>
                 </Grid>
               }
-              
-              {/* Evaluation status of TAs or students, depending on who is completing the assessment task */}
+
               <Grid sx={outerQuadrantSX} item xs={props.showRatings ? 6 : 12}>
                 <div className={innerDivClassName} style={innerGridStyle}>
                   { props.completedByTAs && 
                     <>
                       <h1>43% of TA evaluations (43/100) are complete</h1>
 
-                      <Button style={{ width:"30%", height:"100%",  backgroundColor: "#2E8BEF", color:"white", position: "center"}}>
-                        {/* TA evaluation popup window will to be added later */}
+                      <Button style={{ marginTop: "1rem", backgroundColor: "#2E8BEF", color:"white", position: "center" }}>
                         View Details
                       </Button>
                     </>
@@ -224,7 +211,7 @@ export default function ViewAssessmentStatus(props) {
                     <>
                       <h1>43% of student evaluations (43/100) are complete</h1>
                     </>
-                  }                  
+                  }
                 </div>
               </Grid>
             </Grid>

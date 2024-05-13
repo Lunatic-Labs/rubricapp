@@ -6,9 +6,7 @@ import { Box, Alert } from '@mui/material';
 
 class ErrorMessage extends Component {
     render() {
-        var displayedMessage;
-
-        displayedMessage = this.props.errorMessage;
+        var displayedMessage = this.props.errorMessage;
 
         return(
             <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>

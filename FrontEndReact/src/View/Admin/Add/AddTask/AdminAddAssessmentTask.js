@@ -101,10 +101,10 @@ class AdminAddAssessmentTask extends Component {
     };
 
     handleTeams = (event) => {
-        const test = event.target.value === 'true' ? true : false;
+        const unitOfAssessment = event.target.value === 'true' ? true : false;
 
         this.setState({
-            usingTeams: test,
+            usingTeams: unitOfAssessment,
         });
     };
 
@@ -174,7 +174,6 @@ class AdminAddAssessmentTask extends Component {
         }
     };
 
-
     hasErrors = () => {
         const { errors } = this.state;
 
@@ -194,7 +193,7 @@ class AdminAddAssessmentTask extends Component {
 
         Object.keys(roleNames).map((role) => {
             if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
-                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} />];
+                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} aria-label="addAssessmentRoleOption" />];
             }
 
             return role;
@@ -205,7 +204,7 @@ class AdminAddAssessmentTask extends Component {
         var rubricOptions = [];
 
         Object.keys(rubricNames).map((rubric) => {
-            rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric}>{rubricNames[rubric]}</MenuItem>];
+            rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric} aria-label="addAssessmentRubricOption">{rubricNames[rubric]}</MenuItem>];
 
             return rubric;
         });
@@ -258,9 +257,11 @@ class AdminAddAssessmentTask extends Component {
                                         label="Task Name"
                                         value={taskName}
                                         error={!!errors.taskName}
+                                        helperText={errors.taskName}
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 2 }}
+                                        aria-label="addAssessmentTaskName"
                                     />
 
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
@@ -275,6 +276,7 @@ class AdminAddAssessmentTask extends Component {
                                                 error={!!errors.rubricId}
                                                 onChange={(event) => this.handleSelect("rubricId", event)}
                                                 required
+                                                aria-label="addAssessmentRubricDropdown"
                                             >
                                                 {rubricOptions}
                                             </Select>
@@ -293,9 +295,9 @@ class AdminAddAssessmentTask extends Component {
                                             sx={{ mb: 2 }}
                                             onChange={this.handleTeams}
                                         >
-                                            <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" />
+                                            <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
 
-                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment" />
+                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
                                         </RadioGroup>
                                     </FormControl>
 
@@ -394,16 +396,17 @@ class AdminAddAssessmentTask extends Component {
                                                     required
                                                     sx={{ mb: 2 }}
                                                     style={{width: "200px"}}
+                                                    aria-label="addAssessmentTimezoneDropdown"
                                                 >
                                                     {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
 
-                                                    <MenuItem value={"EST"}>EST</MenuItem>
+                                                    <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
 
-                                                    <MenuItem value={"CST"}>CST</MenuItem>
+                                                    <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
 
-                                                    <MenuItem value={"MST"}>MST</MenuItem>
+                                                    <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
 
-                                                    <MenuItem value={"PST"}>PST</MenuItem>
+                                                    <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
                                                 </Select>
                                             </FormControl>
                                         </div>
@@ -418,8 +421,10 @@ class AdminAddAssessmentTask extends Component {
                                         label="Password to switch teams"
                                         value={password}
                                         error={!!errors.password}
+                                        helperText={errors.password}
                                         onChange={this.handleChange}
                                         sx={{ mb: 2 }}
+                                        aria-label="addAssessmentTeamPassword"
                                     />
 
                                     }
@@ -437,10 +442,11 @@ class AdminAddAssessmentTask extends Component {
                                         minRows={2}
                                         maxRows={8}
                                         sx={{ mb: 2 }}
+                                        aria-label="addAssessmentNotes"
                                     />
 
                                     <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
-                                        <Button onClick={() => { confirmCreateResource("AssessmentTask"); }}>
+                                        <Button onClick={() => { confirmCreateResource("AssessmentTask"); }} aria-label="adminAddAssessmentCancelButton">
                                             Cancel
                                         </Button>
 
@@ -448,8 +454,8 @@ class AdminAddAssessmentTask extends Component {
                                             id="createAssessmentTask"
                                             className="primary-color"
                                             variant="contained"
-
                                             onClick={this.handleSubmit}
+                                            aria-label="addAssessmentCreateOrUpdateButton"
                                         >
                                             {editAssessmentTask ? "Update Task" : "Create Task"}
                                         </Button>
