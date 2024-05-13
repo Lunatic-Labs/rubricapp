@@ -16,10 +16,10 @@ import {
 
 
 
-var lb = 'loginButton';
-var ei = 'emailInput';
-var pi = 'passwordInput';
-var ct = 'coursesTitle';
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
 var iab = "importAssessmentButton";
 var aiatt = "adminImportAssessmentTasksTitle";
 var vcib = "viewCourseIconButton";
