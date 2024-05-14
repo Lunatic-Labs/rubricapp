@@ -28,7 +28,7 @@ class AdminViewAssessmentTask extends Component {
 
         genericResourceGET(`/role?`,'roles', this);
 
-        genericResourceGET(`/rubric?`, 'rubrics', this);
+        genericResourceGET(`/rubric?all=${true}`, 'rubrics', this);
     }
 
     render() {

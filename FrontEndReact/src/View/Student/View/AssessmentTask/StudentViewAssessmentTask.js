@@ -31,7 +31,7 @@ class StudentViewAssessmentTask extends Component {
 
         genericResourceGET(`/checkin?course_id=${chosenCourseID}`, "checkin", this);
 
-        genericResourceGET(`/rubric`, "rubrics", this);
+        genericResourceGET(`/rubric?all=${true}`, "rubrics", this);
 
         genericResourceGET(`/completed_assessment?course_id=${chosenCourseID}`, "completedAssessments", this);
     }

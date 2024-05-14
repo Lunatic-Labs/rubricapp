@@ -28,6 +28,7 @@ import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam
 import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
+import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
 
 
 class AppState extends Component {
@@ -338,6 +339,14 @@ class AppState extends Component {
                             activeTab: "StudentDashboard",
                             chosenAssessmentTask: null
                         });
+                    } else if (resource==="CreateCustomRubric") {
+                        this.setState({
+                            activeTab: "AddCustomRubric"
+                        });
+                    } else if (resource==="MyCustomRubrics") {
+                        this.setState({
+                            activeTab: "MyCustomRubrics"
+                        });
                     }
                 }
             }, 1000);
@@ -438,7 +447,7 @@ class AppState extends Component {
                   <Box className="page-spacing">
                       <BackButtonResource
                           navbar={this}
-                          tabSelected={"AssessmentTask"}
+                          tabSelected={"MyCustomRubrics"}
                       />
 
                       <AdminAddCustomRubric
@@ -726,6 +735,19 @@ class AppState extends Component {
                         <ReportingDashboard
                             navbar={this}
                             aria-label="reportingDashboard"
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab==="MyCustomRubrics" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"AssessmentTask"}
+                        />
+
+                        <AdminViewCustomRubrics
+                            navbar={this}
                         />
                     </Box>
                 }

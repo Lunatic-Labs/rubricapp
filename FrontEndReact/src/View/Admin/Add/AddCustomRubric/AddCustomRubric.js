@@ -97,7 +97,7 @@ class AddCustomRubric extends React.Component {
                 }),
             );
 
-            this.props.navbar.confirmCreateResource("AssessmentTask");
+            this.props.navbar.confirmCreateResource("MyCustomRubrics");
         };
     }
 
@@ -260,7 +260,8 @@ class AddCustomRubric extends React.Component {
                                     rubrics={rubrics}
                                     onCategorySelect={this.handleCategorySelect}
                                     aria-label="customizeYourRubricRubricCategoryTable"
-                                />
+                                    readOnly={false}
+                            />
 
                                 <FormHelperText>{errors.rubricCategories ? "At least one category must be selected" : ""}</FormHelperText>
                             </FormControl>

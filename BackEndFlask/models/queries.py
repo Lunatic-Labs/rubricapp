@@ -502,6 +502,81 @@ def get_rubrics_and_total_categories(user_id):
 
 
 @error_log
+def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
+    """
+    Description:
+    Gets all of the custom rubrics with
+    corresponding total categories for the given user
+    logged in. Optionally, if get_all is true, then
+    the default rubrics are also returned.
+
+    Parameters:
+    user_id: int (The id of a user)
+    get_all: bool (Whether to get default rubrics with custom rubrics)
+    """
+    all_rubrics_and_total_categories = db.session.query(
+        Rubric.rubric_id,
+        Rubric.rubric_name,
+        Rubric.rubric_description,
+        sqlalchemy.func.count(Category.category_id).label('category_total')
+    ).join(
+        RubricCategory, Rubric.rubric_id == RubricCategory.rubric_id
+    ).join(
+        Category, RubricCategory.category_id == Category.category_id
+    )
+
+    if get_all:
+        all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
+            or_(
+                Rubric.owner == 1,
+                Rubric.owner == user_id
+            )
+        )
+
+    else:
+        all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
+            Rubric.owner == user_id
+        )
+
+    all_rubrics_and_total_categories = all_rubrics_and_total_categories.group_by(
+        Rubric.rubric_id
+    ).all()
+
+    return all_rubrics_and_total_categories
+
+
+@error_log
+def get_categories_for_user_id(user_id):
+    """
+    Description:
+    Gets all of the categories for the
+    custom rubrics owned by the given
+    user logged in.
+
+    Parameters:
+    user_id = int (The id of a user)
+    """
+    all_categories_for_user_id = db.session.query(
+        Rubric.rubric_id,
+        Rubric.rubric_name,
+        Category.category_id,
+        Category.category_name,
+        Category.description,
+        Category.rating_json,
+    ).join(
+        RubricCategory,
+        Rubric.rubric_id == RubricCategory.rubric_id
+    ).join(
+        Category,
+        Category.category_id == RubricCategory.category_id
+    ).filter(
+        Rubric.owner == user_id
+    ).all()
+
+    return all_categories_for_user_id
+
+
+@error_log
 def send_teams_and_students_email_to_view_completed_assessment_feedback(assessment_task_id):
     """
     Description:
