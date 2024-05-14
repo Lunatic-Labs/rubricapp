@@ -542,13 +542,18 @@ def get_categories_for_user_id(user_id):
     user_id = int (The id of a user)
     """
     all_categories_for_user_id = db.session.query(
-        Category
+        Rubric.rubric_id,
+        Rubric.rubric_name,
+        Category.category_id,
+        Category.category_name,
+        Category.description,
+        Category.rating_json,
     ).join(
         RubricCategory,
-        Category.category_id == RubricCategory.category_id
-    ).join(
-        Rubric,
         Rubric.rubric_id == RubricCategory.rubric_id
+    ).join(
+        Category,
+        Category.category_id == RubricCategory.category_id
     ).filter(
         Rubric.owner == user_id
     ).all()
