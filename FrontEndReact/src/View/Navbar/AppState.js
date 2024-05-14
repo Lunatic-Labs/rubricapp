@@ -28,7 +28,6 @@ import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam
 import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
-import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
 
 
 class AppState extends Component {
