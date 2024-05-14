@@ -28,6 +28,7 @@ import StudentManageCurrentTeam from '../Student/View/BuildTeam/StudentBuildTeam
 import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
+import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
 
 
 class AppState extends Component {
@@ -337,6 +338,10 @@ class AppState extends Component {
                         this.setState({
                             activeTab: "StudentDashboard",
                             chosenAssessmentTask: null
+                        });
+                    } else if(resource==="CreateCustomRubric") {
+                        this.setState({
+                            activeTab: "AddCustomRubric"
                         });
                     }
                 }
@@ -728,6 +733,20 @@ class AppState extends Component {
                             aria-label="reportingDashboard"
                         />
                     </Box>
+                }
+
+                {this.state.activeTab==="MyCustomRubrics" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"CreateCustomRubric"}
+                        />
+
+                        <AdminViewCustomRubrics 
+                            navbar={this}
+                        />
+                    </Box>
+                
                 }
             </Box>
         )
