@@ -409,7 +409,7 @@ class AdminAddAssessmentTask extends Component {
 
                                                     <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
                                                 </Select>
-                                                <FormHelperText>{errors.timeZone ? errors.timeZone : ""}</FormHelperText>
+                                                <FormHelperText>{errors.timeZone}</FormHelperText>
                                             </FormControl>
                                         </div>
                                     </div>

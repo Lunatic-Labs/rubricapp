@@ -319,7 +319,7 @@ class AdminAddUser extends Component {
 
                                                 {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
-                                            <FormHelperText>{errors.role ? errors.role : ""}</FormHelperText>
+                                            <FormHelperText>{errors.role}</FormHelperText>
                                         </FormControl>
                                     }
 
