@@ -25,9 +25,10 @@ var aiatt = "adminImportAssessmentTasksTitle";
 var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
+var mhbb = "mainHeaderBackButton";
 var aiatcb = "adminImportAssessmentTaskCancelButton";
 var aiatsb = "adminImportAssessmentTasksSubmitButton";
-var aiacs = "adminImportAssessmentTasksCourseSelect";
+var aiacs = "adminImportAssessmentCourseSelect";
 var aiacc = "adminImportAssessmentCourseChoice";
 var aiacd = "adminImportAssessmentCourseDropdown";
 

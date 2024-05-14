@@ -138,13 +138,17 @@ test("AdminAddCustomRubric.test.js Test 3: HelperText error should show for the 
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(cyrrd,"Must follow the rules");
+
             expectElementWithAriaLabelToBeInDocument(rncb,"Open-Minded");
-            clickElementWithAriaLabel(cyrcrb);
         }, 3000);
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(cyrrn,"Missing New Rubric Name.");
+        setTimeout(() => {
+            clickElementWithAriaLabel(cyrcrb);
+
+            expectElementWithAriaLabelToHaveErrorMessage(cyrrn,"Missing New Rubric Name.");
+        }, 3000);
     });
 });
 
