@@ -13,6 +13,8 @@ import {
     demoStudentPassword
 } from "../../../App.js";
 
+
+
 var lb = "loginButton";
 var ei = "emailInput";
 var pi = "passwordInput";
@@ -22,10 +24,13 @@ var matt = "myAssessmentTasksTitle";
 var catt = "completedAssessmentTasksTitle";
 var mtt = "myTeamsTitle";
 var catb = "completedAssessmentTasksButton";
+var vatit = "viewAssessmentTaskInstructionsTitle";
+var catvib = "completedAssessmentTasksViewIconButton";
+var mhbb = "mainHeaderBackButton";
 
 
 
-test("NOTE: Tests 1-?? will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -35,7 +40,7 @@ test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed
 
     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoStudentPassword);
+    changeElementWithAriaLabelWithInput(pi, demoStudentPassword + "4");
 
     clickElementWithAriaLabel(lb);
 
@@ -74,10 +79,153 @@ test("StudentDashboard.test.js Test 2: Should render the completed assessment ta
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(mtt);
         }, 3000);
-    });
-    
-    await waitFor(() => {
-        clickElementWithAriaLabel(catb);
+
+        clickFirstElementWithAriaLabel(catb);
     });
 
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vatit);
+        }, 3000);
+    });
+});
+
+
+test("StudentDashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked ", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(mtt);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(catvib);
+
+            expectElementWithAriaLabelToBeInDocument(vatit);
+        }, 3000);
+    });
+});
+
+test("StudentDashboard.test.js Test 4: Should render the course dashboard if the back button on assessment tasks, completed assessments and team tables page is clicked ", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(mtt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(mhbb);
+
+    await waitFor(() => {
+        setTimeout(() => {
+           expectElementWithAriaLabelToBeInDocument(ct);
+        }, 3000);
+    });
+
+});
+
+
+test("StudentDashboard.test.js Test 5: Should render the  assessment tasks, completed assessments and team tables dashboard if the back button on viewAssessmentTaskInstructions is clicked ", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(mtt);
+        }, 3000);
+
+        clickFirstElementWithAriaLabel(catb);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vatit);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(mhbb);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(matt);
+
+            expectElementWithAriaLabelToBeInDocument(catt);
+
+            expectElementWithAriaLabelToBeInDocument(mtt);
+        }, 3000);
+    });
+});
+
+
+test("StudentDashboard.test.js Test 6: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on CompletedAssessmentTaskInstructions is clicked ", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(mtt);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(catvib);
+
+            expectElementWithAriaLabelToBeInDocument(vatit);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(mhbb);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(matt);
+
+            expectElementWithAriaLabelToBeInDocument(catt);
+
+            expectElementWithAriaLabelToBeInDocument(mtt);
+        }, 3000);
+    });
 });
