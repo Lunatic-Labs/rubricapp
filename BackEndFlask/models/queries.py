@@ -609,7 +609,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     return complete_assessments
 
 @error_log
-def get_csv_data_by_at_name(at_name:str):
+def get_csv_data_by_at_name(at_name:str)->list[dict[str]]:
     """
     Description:
     Returns the needed info for the csv file creator function.
@@ -619,7 +619,7 @@ def get_csv_data_by_at_name(at_name:str):
     at_name: str (The name of an assessment task)
 
     Return:
-    [dict][dict][str]
+    list[dict][str]
     """
     """
     Note that the current plan sqlite3 seems to execute is:
@@ -673,7 +673,7 @@ def get_csv_data_by_at_name(at_name:str):
 
     return pertinent_assessments
 
-def get_csv_categories(rubric_id:int):
+def get_csv_categories(rubric_id:int)->tuple[dict[str],dict[str]]:
     """
     Description:
     Returns the oc and the sfi data to fill out the csv file.

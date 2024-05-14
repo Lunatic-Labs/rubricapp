@@ -16,7 +16,7 @@ from enum import Enum
 from datetime import datetime
 import random
 
-def rounded_hours_difference(completed:datetime, seen:datetime):
+def rounded_hours_difference(completed:datetime, seen:datetime)->int:
     """
     Description:
     Returns the hour difference between seen and completed rounded to the nearest
@@ -30,10 +30,9 @@ def rounded_hours_difference(completed:datetime, seen:datetime):
     Result: datatime.timestamp
     """
     
-    lag = seen - completed
-
-    print(lag.)
-    return lag
+    time_delta = seen - completed
+    hours_remainder = divmod(divmod(time_delta.total_seconds(), 60)[0], 60)
+    return int(hours_remainder[0]) if hours_remainder[1] < 30.0 else int(hours_remainder) + 1
 
 class Csv_data(Enum):
     """
@@ -73,7 +72,7 @@ class Catagories_csv(Enum):
     GOAL_ID = "Identifying the Goal"
     SYNTH = "Synthesizing"
 
-def create_csv(at_name:str, file_name:str):
+def create_csv(at_name:str, file_name:str)->None:
     """
     Description:
     Creates the csv file and dumps info in to it.
@@ -117,6 +116,7 @@ def create_csv(at_name:str, file_name:str):
                             ["feedback time lag"])
             for entry in completed_assessment_data:
                 sfi_oc_data = get_csv_categories(entry[Csv_data.RUBRIC_ID.value])
+                lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
                 for i in Catagories_csv:
                     oc = entry[Csv_data.JSON.value][i.value]["observable_characteristics"]
                     for j in range (0, len(oc)):
@@ -128,7 +128,7 @@ def create_csv(at_name:str, file_name:str):
                                         [i.value] +
                                         [entry[Csv_data.JSON.value][i.value]["rating"]] +
                                         [sfi_oc_data[1][j][1]] +
-                                        [rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])] +
+                                        [lag] +
                                         ["OC"]
                                     )
                 for i in Catagories_csv:
@@ -142,7 +142,7 @@ def create_csv(at_name:str, file_name:str):
                                         [i.value] +
                                         [entry[Csv_data.JSON.value][i.value]["rating"]] +
                                         [sfi_oc_data[0][j][1]] +
-                                        [entry[Csv_data.LAG_TIME.value]] +
+                                        [lag] +
                                         ["SFI"]
                                     )
     return
