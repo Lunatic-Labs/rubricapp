@@ -62,7 +62,7 @@ test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed
 });
 
 
-test("StudentDashboard.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked ", async () => {
+test("StudentDashboard.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -91,7 +91,7 @@ test("StudentDashboard.test.js Test 2: Should render the completed assessment ta
 });
 
 
-test("StudentDashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked ", async () => {
+test("StudentDashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -119,7 +119,7 @@ test("StudentDashboard.test.js Test 3: Should render the view completed assessme
     });
 });
 
-test("StudentDashboard.test.js Test 4: Should render the course dashboard if the back button on assessment tasks, completed assessments and team tables page is clicked ", async () => {
+test("StudentDashboard.test.js Test 4: Should render the course dashboard if the back button on assessment tasks, completed assessments and team tables page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -149,7 +149,7 @@ test("StudentDashboard.test.js Test 4: Should render the course dashboard if the
 });
 
 
-test("StudentDashboard.test.js Test 5: Should render the  assessment tasks, completed assessments and team tables dashboard if the back button on viewAssessmentTaskInstructions is clicked ", async () => {
+test("StudentDashboard.test.js Test 5: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on viewAssessmentTaskInstructions is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -190,7 +190,7 @@ test("StudentDashboard.test.js Test 5: Should render the  assessment tasks, comp
 });
 
 
-test("StudentDashboard.test.js Test 6: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on CompletedAssessmentTaskInstructions is clicked ", async () => {
+test("StudentDashboard.test.js Test 6: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on CompletedAssessmentTaskInstructions is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
