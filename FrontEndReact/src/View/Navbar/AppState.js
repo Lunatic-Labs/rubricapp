@@ -338,10 +338,6 @@ class AppState extends Component {
                             activeTab: "StudentDashboard",
                             chosenAssessmentTask: null
                         });
-                    } else if(resource==="CreateCustomRubric") {
-                        this.setState({
-                            activeTab: "AddCustomRubric"
-                        });
                     }
                 }
             }, 1000);
