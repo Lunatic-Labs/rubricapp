@@ -729,20 +729,6 @@ class AppState extends Component {
                         />
                     </Box>
                 }
-
-                {this.state.activeTab==="MyCustomRubrics" &&
-                    <Box className="page-spacing">
-                        <BackButtonResource
-                            navbar={this}
-                            tabSelected={"CreateCustomRubric"}
-                        />
-
-                        <AdminViewCustomRubrics 
-                            navbar={this}
-                        />
-                    </Box>
-                
-                }
             </Box>
         )
     }
