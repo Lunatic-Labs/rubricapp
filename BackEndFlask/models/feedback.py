@@ -87,5 +87,4 @@ def replace_feedback(feedback_time_data, feedback_id):
 @error_log
 def delete_feedback_by_user_id_completed_assessment_id(user_id, completed_assessment_id):
     Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).delete()
-
     db.session.commit()

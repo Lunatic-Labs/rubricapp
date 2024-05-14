@@ -10,7 +10,6 @@ def create_new_feedback():
         # given completed_assessment_id and user_id, create feedback entry
         user_id = request.json["user_id"]
         completed_assessment_id = request.json["completed_assessment_id"]
-
         feedback_data = request.json
         feedback_data["lag_time"] = None
         feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
