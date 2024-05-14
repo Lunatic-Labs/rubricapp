@@ -97,7 +97,7 @@ class AddCustomRubric extends React.Component {
                 }),
             );
 
-            this.props.navbar.confirmCreateResource("AssessmentTask");
+            this.props.navbar.confirmCreateResource("MyCustomRubrics");
         };
     }
 
