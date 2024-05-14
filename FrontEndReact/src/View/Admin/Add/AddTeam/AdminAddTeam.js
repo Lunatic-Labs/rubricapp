@@ -226,7 +226,7 @@ class AdminAddTeam extends Component {
                                                 <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
                                             )}
                                         </Select>
-                                        <FormHelperText>{errors.observerId ? "Observer cannot be empty" : ""}</FormHelperText>
+                                        <FormHelperText>{errors.observerId ? errors.observerId : ""}</FormHelperText>
                                     </FormControl>
 
 
