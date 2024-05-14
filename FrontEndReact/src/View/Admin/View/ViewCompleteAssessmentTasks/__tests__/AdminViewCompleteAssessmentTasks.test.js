@@ -6,7 +6,6 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    expectElementWithAriaLabelToHaveErrorMessage,
     clickFirstElementWithAriaLabel
 } from "../../../../../testUtilities.js";
 
@@ -32,7 +31,7 @@ var vcaamt = "viewCompletedAssessmentAddMessageTitle";
 
 
 
-test("NOTE: Tests 1-?? will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-4 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
