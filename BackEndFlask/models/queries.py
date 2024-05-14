@@ -502,15 +502,17 @@ def get_rubrics_and_total_categories(user_id):
 
 
 @error_log
-def get_rubrics_and_total_categories_for_user_id(user_id):
+def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
     """
     Description:
     Gets all of the custom rubrics with
     corresponding total categories for the given user
-    logged in.
+    logged in. Optionally, if get_all is true, then
+    the default rubrics are also returned.
 
     Parameters:
     user_id: int (The id of a user)
+    get_all: bool (Whether to get default rubrics with custom rubrics)
     """
     all_rubrics_and_total_categories = db.session.query(
         Rubric.rubric_id,
@@ -521,9 +523,22 @@ def get_rubrics_and_total_categories_for_user_id(user_id):
         RubricCategory, Rubric.rubric_id == RubricCategory.rubric_id
     ).join(
         Category, RubricCategory.category_id == Category.category_id
-    ).filter(
-        Rubric.owner == user_id,
-    ).group_by(
+    )
+
+    if get_all:
+        all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
+            or_(
+                Rubric.owner == 1,
+                Rubric.owner == user_id
+            )
+        )
+
+    else:
+        all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
+            Rubric.owner == user_id
+        )
+
+    all_rubrics_and_total_categories = all_rubrics_and_total_categories.group_by(
         Rubric.rubric_id
     ).all()
 

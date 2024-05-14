@@ -89,6 +89,9 @@ def get_all_rubrics():
 
         if request.args.get("custom"):
             rubrics = get_rubrics_and_total_categories_for_user_id(user_id) # Get rubrics created by logged in user!
+        
+        if request.args.get("all"):
+            rubrics = get_rubrics_and_total_categories_for_user_id(user_id, True)   # Get default rubrics and rubrics created by the loggin user!
 
         return create_good_response(rubrics_schema.dump(rubrics), 200, "rubrics")
 
