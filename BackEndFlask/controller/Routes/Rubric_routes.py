@@ -8,7 +8,7 @@ from models.category import get_categories_per_rubric, get_categories, get_ratin
 from models.suggestions import get_suggestions_per_category
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.observable_characteristics import get_observable_characteristic_per_category
-from models.queries import get_rubrics_and_total_categories
+from models.queries import get_rubrics_and_total_categories, get_rubrics_and_total_categories_for_user_id, get_categories_for_user_id
 
 @bp.route('/rubric', methods = ['GET'])
 @jwt_required()
@@ -83,7 +83,13 @@ def get_all_rubrics():
         user_id = None
 
         if request.args and request.args.get("default"):
-            user_id = 1
+            if request.args.get("default") == 'true':
+                user_id = 1
+            else:
+                user_id = int(request.args.get("user_id"))
+
+                return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories_for_user_id(user_id)), 200, "rubrics")
+
         else:
             user_id = int(request.args.get("user_id"))
 
@@ -135,8 +141,18 @@ def get_all_categories():
     try:
         if request.args and request.args.get("rubric_id"):
             all_categories_by_rubric_id=get_categories_per_rubric(int(request.args.get("rubric_id")))
+
             return create_good_response(categories_schema.dump(all_categories_by_rubric_id), 200, "categories")
-        return create_good_response(categories_schema.dump(get_categories(int(request.args.get("user_id")))), 200, "categories")
+
+        user_id = int(request.args.get("user_id"))
+
+        all_categories = get_categories(user_id)
+
+        if request.args and request.args.get("default"):
+            if request.args.get("default") == 'false':
+                all_categories = get_categories_for_user_id(user_id)
+
+        return create_good_response(categories_schema.dump(all_categories), 200, "categories")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all categories: {e}", "categories", 400)
