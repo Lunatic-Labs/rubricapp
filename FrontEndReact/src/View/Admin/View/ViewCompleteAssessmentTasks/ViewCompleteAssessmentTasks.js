@@ -213,6 +213,7 @@ class ViewCompleteAssessmentTasks extends Component {
                 <button
                   className='btn btn-primary'
                   align='center'
+                  aria-label='assessmentViewButton'
 
                   onClick={() => {
                     navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
@@ -281,6 +282,7 @@ class ViewCompleteAssessmentTasks extends Component {
                 onClick={this.handleDialog}
                 isOutlined={false}
                 disabled={notificationSent}
+                aria-label="viewCompletedAssessmentSendNotificationButton"
               />
             </Box>
         </Grid>
