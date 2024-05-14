@@ -1,6 +1,4 @@
 #----------------------------------------------------------------------------------------------------
-# Developer: Aldo Vera-Espinoza
-# Date: 6 May, 2024
 # File Purpose: 
 #   This file contains functions that retrieves data from the database
 # and returns to a csv file to a customer.
@@ -15,7 +13,27 @@ import csv
 from core import app
 from models.queries import *
 from enum import Enum
+from datetime import datetime
 import random
+
+def rounded_hours_difference(completed:datetime, seen:datetime):
+    """
+    Description:
+    Returns the hour difference between seen and completed rounded to the nearest
+    full hour
+
+    Parameters:
+    Completed: datetime
+    seen: datetime
+
+    Return:
+    Result: datatime.timestamp
+    """
+    
+    lag = seen - completed
+
+    print(lag.)
+    return lag
 
 class Csv_data(Enum):
     """
@@ -110,7 +128,7 @@ def create_csv(at_name:str, file_name:str):
                                         [i.value] +
                                         [entry[Csv_data.JSON.value][i.value]["rating"]] +
                                         [sfi_oc_data[1][j][1]] +
-                                        [entry[Csv_data.LAG_TIME.value]] +
+                                        [rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])] +
                                         ["OC"]
                                     )
                 for i in Catagories_csv:
@@ -124,6 +142,7 @@ def create_csv(at_name:str, file_name:str):
                                         [i.value] +
                                         [entry[Csv_data.JSON.value][i.value]["rating"]] +
                                         [sfi_oc_data[0][j][1]] +
+                                        [entry[Csv_data.LAG_TIME.value]] +
                                         ["SFI"]
                                     )
     return
