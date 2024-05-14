@@ -7,6 +7,7 @@ import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Chec
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import FormHelperText from '@mui/material/FormHelperText';
 
 
 
@@ -378,9 +379,9 @@ class AdminAddAssessmentTask extends Component {
                                             </LocalizationProvider>
                                         </div>
 
-                                        <div style={{ position: "relative", marginTop: '16px' }}>
-                                            <FormControl>
-                                                <InputLabel required id="timeone">Time Zone</InputLabel>
+                                        <div style={{ position: "relative", marginTop: '16px'}}>
+                                            <FormControl error={!!errors.timeZone} required fullWidth> 
+                                                <InputLabel className={errors.timeZone ? "errorSelect" : ""} required id="timeone">Time Zone</InputLabel>
 
                                                 <Select
                                                     labelId="timeone"
@@ -408,6 +409,7 @@ class AdminAddAssessmentTask extends Component {
 
                                                     <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
                                                 </Select>
+                                                <FormHelperText>{errors.timeZone}</FormHelperText>
                                             </FormControl>
                                         </div>
                                     </div>
