@@ -343,6 +343,10 @@ class AppState extends Component {
                         this.setState({
                             activeTab: "AddCustomRubric"
                         });
+                    } else if (resource==="MyCustomRubrics") {
+                        this.setState({
+                            activeTab: "MyCustomRubrics"
+                        });
                     }
                 }
             }, 1000);
@@ -443,7 +447,7 @@ class AppState extends Component {
                   <Box className="page-spacing">
                       <BackButtonResource
                           navbar={this}
-                          tabSelected={"AssessmentTask"}
+                          tabSelected={"MyCustomRubrics"}
                       />
 
                       <AdminAddCustomRubric
@@ -739,7 +743,7 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <BackButtonResource
                             navbar={this}
-                            tabSelected={"CreateCustomRubric"}
+                            tabSelected={"AssessmentTask"}
                         />
 
                         <AdminViewCustomRubrics

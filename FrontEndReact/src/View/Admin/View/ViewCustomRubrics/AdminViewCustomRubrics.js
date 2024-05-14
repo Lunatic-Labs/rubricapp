@@ -1,5 +1,9 @@
 import { Component } from "react";
 import { genericResourceGET } from "../../../../utility";
+import CollapsableRubricCategoryTable from "../../Add/AddCustomRubric/CollapsableRubricCategoryTable";
+import ErrorMessage from "../../../Error/ErrorMessage";
+import { Grid } from "@mui/material";
+import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton.js";
 
 class AdminViewCustomRubrics extends Component {
     constructor(props) {
@@ -20,16 +24,61 @@ class AdminViewCustomRubrics extends Component {
     }
 
     render() {
-        const { rubrics, categories } = this.state;
+        const {
+            isLoaded,
+            errorMessage,
+            rubrics,
+            categories
+        } = this.state;
 
-        console.log(rubrics);
-
-        console.log(categories);
+        if (!isLoaded || !rubrics || !categories) {
+            return(
+                <>
+                    <h1>Loading...</h1>
+                </>
+            );
+        }
 
         return(
-            <>
-                <h1>My Custom Rubrics</h1>
-            </>
+            <Grid container spacing={6.5}>
+                <Grid item xs={6}>
+                    { errorMessage &&
+                        <ErrorMessage
+                            errorMessage={errorMessage}
+                        />
+                    }
+
+                    <h2
+                        style={{
+                            borderBottom: "1px solid #D9D9D9",
+                            paddingTop: "16px",
+                            paddingBottom: "16px",
+                            textAlign: "left",
+                            bold: true,
+                        }}
+                        aria-label="addCustomRubricTitle"
+                    >
+                        My Custom Rubrics
+                    </h2>
+
+                    <CollapsableRubricCategoryTable
+                        categories={categories}
+                        rubrics={rubrics}
+                        onCategorySelect={null}
+                        readOnly={true}
+                    />
+                </Grid>
+
+                <Grid item xs={6} container justifyContent="flex-end">
+                    <CustomButton
+                        label="Add Custom Rubric"
+                        isOutlined={false}
+                        onClick={() => {
+                            this.props.navbar.setNewTab("AddCustomRubric");
+                        }}
+                    />
+                </Grid>
+            </Grid>
         );
     }
 }

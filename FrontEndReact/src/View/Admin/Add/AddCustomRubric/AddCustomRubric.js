@@ -188,14 +188,6 @@ class AddCustomRubric extends React.Component {
 
                         <Grid item xs={6} container justifyContent="flex-end">
                             <CustomButton
-                                label="My Custom Rubrics"
-                                isOutlined={false}
-                                onClick={() => {
-                                    this.props.navbar.setNewTab("MyCustomRubrics");
-                                }}
-                            />
-
-                            <CustomButton
                                 label="Create Rubric"
                                 isOutlined={false}
                                 onClick={() => {
@@ -251,6 +243,7 @@ class AddCustomRubric extends React.Component {
                                 categories={categories}
                                 rubrics={rubrics}
                                 onCategorySelect={this.handleCategorySelect}
+                                readOnly={false}
                             />
                         </Grid>
 

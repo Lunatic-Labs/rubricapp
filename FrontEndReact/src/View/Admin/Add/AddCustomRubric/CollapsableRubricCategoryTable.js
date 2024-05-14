@@ -39,7 +39,7 @@ const customTheme = createTheme({
   },
 });
 
-const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect }) => {
+const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly }) => {
 
   // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
@@ -112,15 +112,17 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
                             .map((category) => (
                               <TableRow key={category["category_id"]}>
                                 <TableCell component="th" scope="row">
-                                  <Checkbox
-                                    checked={checkedCategories.includes(
-                                      category["category_id"],
-                                    )}
+                                  { !readOnly &&
+                                    <Checkbox
+                                      checked={checkedCategories.includes(
+                                        category["category_id"],
+                                      )}
 
-                                    onChange={() =>
-                                      handleCheckboxChange(category["category_id"])
-                                    }
-                                  />
+                                      onChange={() =>
+                                        handleCheckboxChange(category["category_id"])
+                                      }
+                                    />
+                                  }
                                   {category["category_name"]}
                                 </TableCell>
                               </TableRow>
