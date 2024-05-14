@@ -644,7 +644,7 @@ def get_csv_data_by_at_name(at_name:str):
         User.first_name,
         User.last_name,
         CompletedAssessment.initial_time,
-        Feedback.feedback_id,
+        Feedback.feedback_time,
         AssessmentTask.notification_sent,
         CompletedAssessment.rating_observable_characteristics_suggestions_data
         ).join(

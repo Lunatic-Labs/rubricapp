@@ -13,10 +13,9 @@ Checks to see if the correct job exists. If it does not, it adds it.
 """
 pull_cron_jobs = subprocess.run(["crontab", "-l"], stdout=subprocess.PIPE, text=True)
 find_job = re.search(".*rm -f.*tempCsv/[*].*", str(pull_cron_jobs.stdout)) #str to adddress potential NoneType
-if(pull_cron_jobs.returncode or not find_job):
+if(not find_job):
     f = open(os.path.abspath(".") + "/cronJobs", "a")
-    if(not find_job):
-        f.write(pull_cron_jobs.stdout)
+    f.write(pull_cron_jobs.stdout)
     f.write("0 3 * * * rm -f " + os.path.abspath(".") + "/tempCsv/*\n")
     f.close()
     os.system("crontab " + os.path.abspath(".") + "/cronJobs")

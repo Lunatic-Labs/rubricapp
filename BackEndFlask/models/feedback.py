@@ -64,7 +64,7 @@ def check_feedback_exists(user_id, completed_assessment_id) -> bool:
 def load_demo_feedback():
     create_feedback({
         "completed_assessment_id": 1,
-        "user_id": 4,
+        "user_id": 3,
         "feedback_time": "2023-01-07T09:23:00",
     })
 

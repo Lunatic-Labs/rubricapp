@@ -42,6 +42,9 @@ def get_completed_assessment_by_course_id(course_id):
 
 @error_log
 def get_individual_completed_and_student(assessment_task_id):
+    """
+    FAULTY BUT UNUSED
+    """
     return db.session.query(
         User.first_name,
         User.last_name,

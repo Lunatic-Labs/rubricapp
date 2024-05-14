@@ -76,7 +76,6 @@ class StudentFeedbackSchema(ma.Schema):
             'user_id',
             'completed_assessment_id',
             'feedback_time',
-            'lag_time'
         )
 
 student_feedback_schema = StudentFeedbackSchema()

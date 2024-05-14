@@ -110,6 +110,7 @@ def create_csv(at_name:str, file_name:str):
                                         [i.value] +
                                         [entry[Csv_data.JSON.value][i.value]["rating"]] +
                                         [sfi_oc_data[1][j][1]] +
+                                        [entry[Csv_data.LAG_TIME.value]] +
                                         ["OC"]
                                     )
                 for i in Catagories_csv:
