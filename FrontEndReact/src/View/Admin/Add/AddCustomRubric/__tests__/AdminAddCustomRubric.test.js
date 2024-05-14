@@ -34,10 +34,11 @@ var rci = "rubricCategoryIcon";
 var rcn = "rubricCategoryNames";
 var rncb = "rubricNamesCheckBox";
 var ysc = "yourSelectedCategories";
+var cyrrct = "customizeYourRubricRubricCategoryTable";
 
 
 
-test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -181,11 +182,9 @@ test("AdminAddCustomRubric.test.js Test 4: Should render an error message on the
     await waitFor(() => {
         setTimeout(() => {
             clickElementWithAriaLabel(cyrcrb);
-        }, 3000);
-    });
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(cyrrd);
+            expectElementWithAriaLabelToHaveErrorMessage(cyrrd,"Missing New Rubric Description.");
+        }, 3000);
     });
 });
 
@@ -235,5 +234,40 @@ test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selecte
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ysc);
+    });
+});
+
+
+test("AdminAddCustomRubric.test.js Test 6: Should render an error message on the page when no category from the Rubric Table is selected ", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    clickElementWithAriaLabel(crb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(acrt);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickElementWithAriaLabel(cyrcrb);
+
+            expectElementWithAriaLabelToHaveErrorMessage(cyrrct,"At least one category must be selected");
+        }, 3000);
     });
 });

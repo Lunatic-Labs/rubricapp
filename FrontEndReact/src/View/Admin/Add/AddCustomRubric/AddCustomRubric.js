@@ -259,6 +259,7 @@ class AddCustomRubric extends React.Component {
                                     categories={categories}
                                     rubrics={rubrics}
                                     onCategorySelect={this.handleCategorySelect}
+                                    aria-label="customizeYourRubricRubricCategoryTable"
                                 />
 
                                 <FormHelperText>{errors.rubricCategories ? "At least one category must be selected" : ""}</FormHelperText>
