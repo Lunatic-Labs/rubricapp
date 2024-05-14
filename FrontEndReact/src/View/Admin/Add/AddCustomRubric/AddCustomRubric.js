@@ -1,6 +1,6 @@
 import React from "react";
 import Cookies from "universal-cookie";
-import { Grid, IconButton, TextField, Tooltip } from "@mui/material";
+import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CustomButton from "./Components/CustomButton.js";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
@@ -9,6 +9,7 @@ import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
+import FormHelperText from '@mui/material/FormHelperText';
 
 class AddCustomRubric extends React.Component {
     constructor(props) {
@@ -19,6 +20,12 @@ class AddCustomRubric extends React.Component {
             errorMessage: null,
             isLoaded: null,
             isHelpOpen: false,
+
+            errors: {
+                rubricName: '',
+                rubricDescription: '',
+                rubricCategories: '',
+            }
         };
 
         this.toggleHelp = () => {
@@ -43,8 +50,9 @@ class AddCustomRubric extends React.Component {
 
             if (document.getElementById("rubricNameInput").value === "") {
                 this.setState({
-                    isLoaded: true,
-                    errorMessage: "Missing New Rubric Name.",
+                    errors: {
+                        rubricName: "Missing New Rubric Name."
+                    }
                 });
 
                 return;
@@ -52,8 +60,9 @@ class AddCustomRubric extends React.Component {
 
             if (document.getElementById("rubricDescriptionInput").value === "") {
                 this.setState({
-                    isLoaded: true,
-                    errorMessage: "Missing New Rubric Description.",
+                    errors: {
+                        rubricDescription: "Missing New Rubric Description."
+                    }
                 });
 
                 return;
@@ -62,8 +71,9 @@ class AddCustomRubric extends React.Component {
             if (categoryIds.length === 0) {
                 this.setState({
                     isLoaded: true,
-                    errorMessage:
-                        "Missing categories, at least one category must be selected.",
+                    errors: {
+                        rubricCategories: "Missing categories, at least one category must be selected.",
+                    }
                 });
 
                 return;
@@ -86,31 +96,29 @@ class AddCustomRubric extends React.Component {
                     categories: categoryIds,
                 }),
             );
-        };
-    }
 
-    componentDidUpdate() {
-        if (this.state.isLoaded === true && this.state.errorMessage === null) {
             this.props.navbar.confirmCreateResource("AssessmentTask");
-        }
+        };
     }
 
     handleCategorySelect = (categoryId, isSelected) => {
         const selectedCategories = { ...this.state.selectedCategories };
 
-        if (isSelected) {
+        if (isSelected)
             selectedCategories[categoryId] = true;
-        } else {
-            delete selectedCategories[categoryId];
-        }
 
-        this.setState({ selectedCategories: selectedCategories });
+        else
+            delete selectedCategories[categoryId];
+
+        this.setState({
+            selectedCategories: selectedCategories
+        });
     };
 
     render() {
         const { rubrics, categories } = this.props;
-        const { selectedCategories } = this.state;
-        const { isHelpOpen } = this.state;
+
+        const { selectedCategories, isHelpOpen, errors } = this.state;
 
         const categoryTableColumns = [
             {
@@ -190,6 +198,7 @@ class AddCustomRubric extends React.Component {
                             <CustomButton
                                 label="Create Rubric"
                                 isOutlined={false}
+                                aria-label="customizeYourRubricCreateRubricButton"
                                 onClick={() => {
                                     this.handleCreateRubric(pickedCategories);
                                 }}
@@ -214,6 +223,9 @@ class AddCustomRubric extends React.Component {
                                 id="rubricNameInput"
                                 label="Rubric Name"
                                 style={{ width: "100%" }}
+                                error={!!errors.rubricName}
+                                helperText={errors.rubricName}
+                                aria-label="customizeYourRubricRubricName"
                             />
                         </Grid>
 
@@ -224,6 +236,9 @@ class AddCustomRubric extends React.Component {
                                 label="Rubric Description"
                                 multiline
                                 style={{ width: "100%" }}
+                                aria-label="customizeYourRubricRubricDescription"
+                                error={!!errors.rubricDescription}
+                                helperText={errors.rubricDescription}
                             />
                         </Grid>
                     </Grid>
@@ -239,15 +254,20 @@ class AddCustomRubric extends React.Component {
                                 </Tooltip>
                             </div>
 
-                            <CollapsableRubricCategoryTable
-                                categories={categories}
-                                rubrics={rubrics}
-                                onCategorySelect={this.handleCategorySelect}
-                            />
+                            <FormControl error={!!errors.rubricCategories} required fullWidth>
+                                <CollapsableRubricCategoryTable
+                                    categories={categories}
+                                    rubrics={rubrics}
+                                    onCategorySelect={this.handleCategorySelect}
+                                    aria-label="customizeYourRubricRubricCategoryTable"
+                                />
+
+                                <FormHelperText>{errors.rubricCategories ? "At least one category must be selected" : ""}</FormHelperText>
+                            </FormControl>
                         </Grid>
 
                         <Grid item xs={6}>
-                            <h3 className="d-flex mb-3">Your Selected Categories</h3>
+                            <h3 className="d-flex mb-3" aria-label="yourSelectedCategories">Your Selected Categories</h3>
 
                             <CustomDataTable
                                 data={pickedCategories}
