@@ -4,11 +4,11 @@ from flask import request
 from flask import send_file
 load_dotenv()
 import os
-from models.logger import logger 
+from models.logger import logger
 import inspect
-from core import app
 
 ma = Marshmallow()
+
 
 
 def __init_response() -> dict:
@@ -88,15 +88,14 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str,
 
     return response
 
-def send_downloadable_file(file_location_name:str, deletion:bool=False, cache_timeout:int=0) -> dict:
+def send_downloadable_file(file_location_name: str, cache_timeout: int = 0) -> dict:
     """
     Description:
     Returns a file for the user to save.
 
     Parameters:
-    file_location_name: str: should be an absolute path.
-    deletion: bool: decision to remove the file once sent.
-    cache_timeout: int: how long in seconds to keep a file cached so that less work is preformed.
+    file_location_name: str (The absolute path.)
+    cache_timeout: int (How long in seconds to keep a file cached so that less work is preformed.)
 
     Returns:
     Returns Bad response on any issue or returns the csv data on success.
@@ -105,7 +104,8 @@ def send_downloadable_file(file_location_name:str, deletion:bool=False, cache_ti
     if os.path.exists(file_location_name):
         try:
             return send_file(file_location_name, as_attachment=False, max_age=cache_timeout)
+
         except Exception as e:
-            return create_bad_response(f"Unplanned for error: {e}", "Unaccounted for error", 400)
-    return create_bad_response(f"Failed to find {file_location_name} to send", "File sending error.", 404)
-        
+            return create_bad_response(f"Send Downloadable File: Unplanned for error: {e}", "Send Downloadable File: Unaccounted for error", 400)
+
+    return create_bad_response(f"Send Downloadable File: Failed to find {file_location_name} to send", "Send Downloadable File: File finding error.", 404)

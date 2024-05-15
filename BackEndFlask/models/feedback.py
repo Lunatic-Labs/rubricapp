@@ -65,7 +65,7 @@ def load_demo_feedback():
     create_feedback({
         "completed_assessment_id": 1,
         "user_id": 3,
-        "feedback_time": "2024-02-02T9:31:34",
+        "feedback_time": "2024-02-02T09:31:34.000Z",
     })
 
 @error_log
@@ -87,4 +87,5 @@ def replace_feedback(feedback_time_data, feedback_id):
 @error_log
 def delete_feedback_by_user_id_completed_assessment_id(user_id, completed_assessment_id):
     Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).delete()
+
     db.session.commit()
