@@ -11,7 +11,7 @@
 *.swp
 *.log
 *.rdb
-
+*.csv
 Functions/t2.py
 Functions/test.py
 Models/hidden.py
