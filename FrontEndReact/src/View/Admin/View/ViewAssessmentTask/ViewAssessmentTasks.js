@@ -247,6 +247,33 @@ class ViewAssessmentTasks extends Component {
                         
                     }
                 }
+            },
+            {
+                name: "assessment_task_id",
+                label: "EXPORT",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+                    customBodyRender: (atId) => {
+                        return (
+                                <Button
+                                    className='primary-color'
+                                    variant='contained'
+
+                                    onClick={() => {
+                                        // Add the logic here to download the csv file to the user's machine!
+                                        console.log(atId);
+                                    }}
+
+                                    aria-label='exportAssessmentTaskButton'
+                                >
+                                    Export
+                                </Button>
+                        )
+                    }
+                }
             }
         ]
 
