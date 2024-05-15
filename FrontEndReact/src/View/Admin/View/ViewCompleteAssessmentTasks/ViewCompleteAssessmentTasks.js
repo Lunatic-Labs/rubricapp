@@ -2,10 +2,14 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
-import { Grid, Box } from "@mui/material";
+import IconButton from '@mui/material/IconButton';
+import VisibilityIcon from '@mui/icons-material/Visibility';
+import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import { genericResourcePUT } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
+import CourseInfo from "../../../Components/CourseInfo";
+
 
 
 
@@ -77,6 +81,7 @@ class ViewCompleteAssessmentTasks extends Component {
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
     var notificationSent = state.notificationSent;
+    var chosenCourse = state.chosenCourse
 
     const columns = [
       {
@@ -206,25 +211,24 @@ class ViewCompleteAssessmentTasks extends Component {
         options: {
           filter: false,
           sort: false,
-
+          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId) => {
             if (completedAssessmentId) {
               return (
-                <button
-                  className='btn btn-primary'
-                  align='center'
-                  aria-label='assessmentViewButton'
-
-                  onClick={() => {
-                    navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                      completedAssessmentTasks,
-                      completedAssessmentId,
-                      chosenAssessmentTask
-                    );
-                  }}
+                <IconButton
+                align="center"
+                onClick={() => {
+                  navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                    completedAssessmentTasks,
+                    completedAssessmentId,
+                    chosenAssessmentTask
+                  );
+                }}
+                aria-label="See more details"
                 >
-                  View
-                </button>
+                  <VisibilityIcon sx={{color:"black"}}/>
+                </IconButton>
               )
 
             } else {
@@ -249,50 +253,47 @@ class ViewCompleteAssessmentTasks extends Component {
     };
 
     return (
-      <>
-        <Grid
-          container
-          spacing={3}
-          justifyContent="space-between"
-          alignItems="center"
-        >
-          <h1
-            style={{
-              marginTop: "1.32rem",
-              marginBottom: "1rem",
-              marginLeft: "1.25rem",
-              fontStyle: "bold",
-            }}
-            aria-label="viewCompletedAssessmentTasksTitle"
-          >
-            View Completed Assessment Tasks
-          </h1>
-            <Box>
-              <ResponsiveNotification
-                show={this.state.showDialog}
-                handleDialog={this.handleDialog}
-                sendNotification={this.handleSendNotification}
-                handleChange={this.handleChange}
-                notes={this.state.notes}
-                error={this.state.errors}
-              />
+      <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
+        <Box className="content-spacing">
+          <CourseInfo
+            courseTitle={chosenCourse["course_name"]} 
+            courseNumber={chosenCourse["course_number"]}
+            aria-label={chosenCourse["course_name"]}
+          />
+        </Box>
 
-              <CustomButton
-                label="Send Notification"
-                onClick={this.handleDialog}
-                isOutlined={false}
-                disabled={notificationSent}
-                aria-label="viewCompletedAssessmentSendNotificationButton"
-              />
-            </Box>
-        </Grid>
+        <Box className="subcontent-spacing">
+          <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="ViewCompletedAssessmentsTitle"> Completed Assesssment Tasks</Typography>
 
-        <CustomDataTable
-          data={completedAssessmentTasks ? completedAssessmentTasks : []}
-          columns={columns}
-          options={options}
-        />
-      </>
+          <Box>
+            <ResponsiveNotification
+              show={this.state.showDialog}
+              handleDialog={this.handleDialog}
+              sendNotification={this.handleSendNotification}
+              handleChange={this.handleChange}
+              notes={this.state.notes}
+              error={this.state.errors}
+            />
+
+            <CustomButton
+              label="Send Notification"
+              onClick={this.handleDialog}
+              isOutlined={false}
+              disabled={notificationSent}
+              aria-label="viewCompletedAssessmentSendNotificationButton"
+            />
+          </Box>
+        </Box>
+
+        <Box className="table-spacing">
+          <CustomDataTable
+            data={completedAssessmentTasks ? completedAssessmentTasks : []}
+            columns={columns}
+            options={options}
+          />
+        </Box>
+        
+      </Box>
     );
   }
 }
