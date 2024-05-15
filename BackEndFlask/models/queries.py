@@ -309,9 +309,13 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
         Team.team_id == TeamUser.team_id
     ).all()
 
-    return sorted(
+    sorted_list = sorted(
         all_students_not_in_a_team + all_students_in_other_teams
     )
+
+    print(sorted_list)
+
+    return sorted_list
 
 
 @error_log
