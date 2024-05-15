@@ -129,6 +129,7 @@ NOTE:
 - Follow the link for instructions on downloading Node.js:
 
   https://nodejs.org/en/download
+
 - In order to install the required packages you WILL need
   to be in the directory `/rubricapp/FrontEndReact/`.
 
