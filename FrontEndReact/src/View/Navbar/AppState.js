@@ -744,6 +744,7 @@ class AppState extends Component {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"AssessmentTask"}
+                            aria-label="myCustomRubricsBackButton"
                         />
 
                         <AdminViewCustomRubrics
