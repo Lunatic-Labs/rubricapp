@@ -35,7 +35,7 @@ var ysc = "yourSelectedCategories";
 var vmcrb = "viewMyCustomRubricsButton";
 var mcrt = "addCustomRubricTitle";
 var acrb = "addCustomRubricButton";
-var acyrt = "addCustomizeYourRubricTitle"
+var acyrt = "addCustomizeYourRubricTitle";
 
 
 
