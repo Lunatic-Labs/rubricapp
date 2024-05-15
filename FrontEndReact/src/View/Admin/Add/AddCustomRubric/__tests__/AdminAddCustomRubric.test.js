@@ -24,8 +24,6 @@ var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
 var adt = "assessmentDashboardTitle";
-var crb = "customRubricButton";
-var acrt = "addCustomRubricTitle";
 var mhbb = "mainHeaderBackButton";
 var cyrcrb = "customizeYourRubricCreateRubricButton";
 var cyrrn = "customizeYourRubricRubricName";
@@ -34,7 +32,10 @@ var rci = "rubricCategoryIcon";
 var rcn = "rubricCategoryNames";
 var rncb = "rubricNamesCheckBox";
 var ysc = "yourSelectedCategories";
-var cyrrct = "customizeYourRubricRubricCategoryTable";
+var vmcrb = "viewMyCustomRubricsButton";
+var mcrt = "addCustomRubricTitle";
+var acrb = "addCustomRubricButton";
+var acyrt = "addCustomizeYourRubricTitle";
 
 
 
@@ -43,7 +44,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test("AdminAddCustomRubric.test.js Test 1: Should render the AdminAddCustomRubric component given the Custom Rubric button is clicked ", async () => {
+test("AdminAddCustomRubric.test.js Test 1: Should render the AdminAddCustomRubric component given the Add Custom Rubric button is clicked.", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -68,15 +69,25 @@ test("AdminAddCustomRubric.test.js Test 1: Should render the AdminAddCustomRubri
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(crb);
+    clickElementWithAriaLabel(vmcrb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acrt);
+        expectElementWithAriaLabelToBeInDocument(mcrt);
+
+        setTimeout(() => {
+            clickElementWithAriaLabel(acrb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(acyrt);
+        }, 3000);
     });
 });
 
 
-test("AdminAddCustomRubric.test.js Test 2: Should render the assessment task dashboard if the back button on the Customize Your Rubric page is clicked ", async () => {
+test("AdminAddCustomRubric.test.js Test 2: Should render the My Custrom Rubric page if the back button on the Customize Your Rubric page is clicked.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -95,23 +106,33 @@ test("AdminAddCustomRubric.test.js Test 2: Should render the assessment task das
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(crb);
+    clickElementWithAriaLabel(vmcrb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acrt);
+        expectElementWithAriaLabelToBeInDocument(mcrt);
+
+        setTimeout(() => {
+            clickElementWithAriaLabel(acrb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(acyrt);
+        }, 3000);
     });
 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(adt);
+            expectElementWithAriaLabelToBeInDocument(mcrt);
         }, 3000);
     });
 });
 
 
-test("AdminAddCustomRubric.test.js Test 3: HelperText error should show for the Rubric Name field when it is left empty and the rest is filled", async () => {
+test("AdminAddCustomRubric.test.js Test 3: HelperText error should show for the Rubric Name field when it is left empty and the rest is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -129,11 +150,21 @@ test("AdminAddCustomRubric.test.js Test 3: HelperText error should show for the 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
     });
-
-    clickElementWithAriaLabel(crb);
+    
+    clickElementWithAriaLabel(vmcrb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acrt);
+        expectElementWithAriaLabelToBeInDocument(mcrt);
+
+        setTimeout(() => {
+            clickElementWithAriaLabel(acrb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(acyrt);
+        }, 3000);
     });
 
     await waitFor(() => {
@@ -154,7 +185,7 @@ test("AdminAddCustomRubric.test.js Test 3: HelperText error should show for the 
 });
 
 
-test("AdminAddCustomRubric.test.js Test 4: Should render an error message on the page when no input for Rubric Description is given  ", async () => {
+test("AdminAddCustomRubric.test.js Test 4: Should render an error message on the page when no input for Rubric Description is given.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -173,12 +204,30 @@ test("AdminAddCustomRubric.test.js Test 4: Should render an error message on the
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(crb);
+    clickElementWithAriaLabel(vmcrb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acrt);
+        expectElementWithAriaLabelToBeInDocument(mcrt);
+
+        setTimeout(() => {
+            clickElementWithAriaLabel(acrb);
+        }, 3000);
     });
 
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(acyrt);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(cyrrn,"Canvas Creation");
+
+            expectElementWithAriaLabelToBeInDocument(rncb,"Open-Minded");
+        }, 3000);
+    });
+    
     await waitFor(() => {
         setTimeout(() => {
             clickElementWithAriaLabel(cyrcrb);
@@ -189,7 +238,7 @@ test("AdminAddCustomRubric.test.js Test 4: Should render an error message on the
 });
 
 
-test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selected categories from the Rubrics in the Your Selected Categories lists ", async () => {
+test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selected categories from the Rubrics in the Your Selected Categories lists.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -208,12 +257,22 @@ test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selecte
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(crb);
+    clickElementWithAriaLabel(vmcrb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acrt);
+        expectElementWithAriaLabelToBeInDocument(mcrt);
+
+        setTimeout(() => {
+            clickElementWithAriaLabel(acrb);
+        }, 3000);
     });
 
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(acyrt);
+        }, 3000);
+    });
+    
     await waitFor(() => {
         setTimeout(() => {
             clickFirstElementWithAriaLabel(rci);
@@ -229,16 +288,14 @@ test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selecte
     await waitFor(() => {
         setTimeout(() => {
             clickFirstElementWithAriaLabel(rncb);
-        }, 3000);
-    });
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ysc);
+            expectElementWithAriaLabelToBeInDocument(ysc);
+        }, 3000);
     });
 });
 
 
-test("AdminAddCustomRubric.test.js Test 6: Should render an error message on the page when no category from the Rubric Table is selected ", async () => {
+test("AdminAddCustomRubric.test.js Test 6: Should render an error message on the page when no category from the Rubric Table is selected.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -257,17 +314,35 @@ test("AdminAddCustomRubric.test.js Test 6: Should render an error message on the
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(crb);
+    clickElementWithAriaLabel(vmcrb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acrt);
+        expectElementWithAriaLabelToBeInDocument(mcrt);
+
+        setTimeout(() => {
+            clickElementWithAriaLabel(acrb);
+        }, 3000);
     });
 
     await waitFor(() => {
         setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(acyrt);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(cyrrn,"Canvas Creation");
+
+            expectElementWithAriaLabelToBeInDocument(cyrrd,"Must follow the rules");
+        }, 3000);
+    });
+    
+    await waitFor(() => {
+        setTimeout(() => {
             clickElementWithAriaLabel(cyrcrb);
 
-            expectElementWithAriaLabelToHaveErrorMessage(cyrrct,"At least one category must be selected");
+            expectElementWithAriaLabelToHaveErrorMessage(rncb,"At least one category must be selected");
         }, 3000);
     });
 });
