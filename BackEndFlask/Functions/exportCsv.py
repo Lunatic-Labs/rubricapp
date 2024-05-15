@@ -14,24 +14,29 @@ from core import app
 from models.queries import *
 from enum import Enum
 from datetime import datetime
-import random
 
-def rounded_hours_difference(completed:datetime, seen:datetime)->int:
+
+
+def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     """
     Description:
-    Returns the hour difference between seen and completed rounded to the nearest
-    full hour
+    Returns the hour difference between seen
+    and completed rounded to the nearest
+    full hour.
 
     Parameters:
-    Completed: datetime
-    seen: datetime
+    Completed: datetime (The day the completed assessment was saved)
+    seen: datetime (The day the student saw the completed assessment)
 
     Return:
-    Result: datatime.timestamp
+    Result: int (The lag_time between completed and seen)
     """
     time_delta = seen - completed
-    hours_remainder = divmod(divmod(time_delta.total_seconds(), 60)[0], 60)
+
+    hours_remainder = divmod( divmod( time_delta.total_seconds(), 60 )[0], 60)
+
     return int(hours_remainder[0]) if hours_remainder[1] < 30.0 else int(hours_remainder[0]) + 1
+
 
 class Csv_data(Enum):
     """
@@ -40,108 +45,149 @@ class Csv_data(Enum):
     This enum should be modified if the json names change in the future.
 
     Parameters:
-    NONE THIS IS A ENUM
+    NONE (THIS IS AN ENUM!)
     """
     AT_NAME = 0
+
     AT_TYPE = 1
+
     RUBRIC_ID = 2
+
     RUBRIC_NAME = 3
+
     AT_COMPLETER = 4
+
     TEAM_NAME = 5
+
     FIRST_NAME = 6
+
     LAST_NAME = 7
+
     COMP_DATE = 8
+
     LAG_TIME = 9
+
     NOTIFICATION = 10
+
     JSON = 11
 
-class Catagories_csv(Enum):
+
+class Categories_csv(Enum):
     """
     Description:
     Pertinent categories for a csv dump.
 
     Parameters:
-    NONE THIS IS A CLASS ENUM
+    NONE (THIS IS A CLASS ENUM!)
     """
     __order__ = " ANALYZE EVAL STRUCTURE VALIDITY GOAL_ID SYNTH "
+
     ANALYZE = "Analyzing"
+
     EVAL = "Evaluating"
+
     STRUCTURE = "Forming Arguments (Structure)"
+
     VALIDITY = "Forming Arguments (Validity)"
+
     GOAL_ID = "Identifying the Goal"
+
     SYNTH = "Synthesizing"
 
-def create_csv(at_name:str, file_name:str)->None:
+
+def create_csv(at_id: int, file_name: str) -> None:
     """
     Description:
     Creates the csv file and dumps info in to it.
     File name follows the convention: [0-9]*.csv
 
     Parameters:
-    at_name: str(assessment task name)
-    file_name: str(csv file to write to)
+    at_id: int (The id of an assessment task)
+    file_name: str (csv file to write to)
 
-    Return: 
+    Return:
     None
     """
-    #Assessment_task_name, Completion_date, Rubric_name, AT_type (Team/individual), AT_completer_role (Admin, TA/Instructor, Student), Notification_date
+    # Assessment_task_name, Completion_date, Rubric_name, AT_type (Team/individual), AT_completer_role (Admin, TA/Instructor, Student), Notification_date
     with app.app_context():
         with open("./tempCsv/" + file_name, 'w', newline='') as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
-            #Next line is the header line and its values
-            writer.writerow(["Assessment_task_name"] +
-                            ["Completion_date"]+
-                            ["Rubric_name"]+
-                            ["AT_type (Team/individual)"]   + 
-                            ["AT_completer_role (Admin[TA/Instructor] / Student)"] +
-                            ["Notification_data"])
-            completed_assessment_data = get_csv_data_by_at_name(at_name)
+
+            # Next line is the header line and its values.
+            writer.writerow(
+                ["Assessment_task_name"] +
+                ["Completion_date"]+
+                ["Rubric_name"]+
+                ["AT_type (Team/individual)"] +
+                ["AT_completer_role (Admin[TA/Instructor] / Student)"] +
+                ["Notification_data"]
+            )
+
+            completed_assessment_data = get_csv_data_by_at_id(at_id)
+
             if len(completed_assessment_data) == 0:
                 return
-            writer.writerow([completed_assessment_data[0][Csv_data.AT_NAME.value]]      +
-                            [completed_assessment_data[0][Csv_data.COMP_DATE.value]]    +
-                            [completed_assessment_data[0][Csv_data.RUBRIC_NAME.value]]  +
-                            ["Team" if completed_assessment_data[0][Csv_data.AT_TYPE.value] else "Individual"] +
-                            [completed_assessment_data[0][Csv_data.AT_COMPLETER.value]] +
-                            [completed_assessment_data[0][Csv_data.NOTIFICATION.value]])
-            #the block generates data lines
-            writer.writerow(["Team_name"]  +
-                            ["First name"] +
-                            ["last name"]  +
-                            ["Category"]   +
-                            ["Rating"]     +
-                            ["Observable Characteristics"]  +
-                            ["Suggestions for Improvement"] +
-                            ["feedback time lag"])
+
+            writer.writerow(
+                [completed_assessment_data[0][Csv_data.AT_NAME.value]]      +
+                [completed_assessment_data[0][Csv_data.COMP_DATE.value]]    +
+                [completed_assessment_data[0][Csv_data.RUBRIC_NAME.value]]  +
+                ["Team" if completed_assessment_data[0][Csv_data.AT_TYPE.value] else "Individual"] +
+                [completed_assessment_data[0][Csv_data.AT_COMPLETER.value]] +
+                [completed_assessment_data[0][Csv_data.NOTIFICATION.value]]
+            )
+
+            # The block generates data lines.
+            writer.writerow(
+                ["Team_name"]  +
+                ["First name"] +
+                ["last name"]  +
+                ["Category"]   +
+                ["Rating"]     +
+                ["Observable Characteristics"]  +
+                ["Suggestions for Improvement"] +
+                ["feedback time lag"]
+            )
+
             for entry in completed_assessment_data:
                 sfi_oc_data = get_csv_categories(entry[Csv_data.RUBRIC_ID.value])
+
                 lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
-                for i in Catagories_csv:
+
+                for i in Categories_csv:
                     oc = entry[Csv_data.JSON.value][i.value]["observable_characteristics"]
+
                     for j in range (0, len(oc)):
                         if(oc[j] == '0'):
                             continue
-                        writer.writerow([entry[Csv_data.TEAM_NAME.value]]  +
-                                        [entry[Csv_data.FIRST_NAME.value]] +
-                                        [entry[Csv_data.LAST_NAME.value]]  +
-                                        [i.value] +
-                                        [entry[Csv_data.JSON.value][i.value]["rating"]] +
-                                        [sfi_oc_data[1][j][1]] +
-                                        [lag] +
-                                        ["OC"]
-                                    )
-                for i in Catagories_csv:
+
+                        writer.writerow(
+                            [entry[Csv_data.TEAM_NAME.value]]  +
+                            [entry[Csv_data.FIRST_NAME.value]] +
+                            [entry[Csv_data.LAST_NAME.value]]  +
+                            [i.value] +
+                            [entry[Csv_data.JSON.value][i.value]["rating"]] +
+                            [sfi_oc_data[1][j][1]] +
+                            [lag] +
+                            ["OC"]
+                        )
+
+                for i in Categories_csv:
                     sfi = entry[Csv_data.JSON.value][i.value]["suggestions"]
+
                     for j in range (0, len(sfi)):
                         if(sfi[j] == '0'):
                             continue
-                        writer.writerow([entry[Csv_data.TEAM_NAME.value]]  +
-                                        [entry[Csv_data.FIRST_NAME.value]] +
-                                        [entry[Csv_data.LAST_NAME.value]]  +
-                                        [i.value] +
-                                        [entry[Csv_data.JSON.value][i.value]["rating"]] +
-                                        [sfi_oc_data[0][j][1]] +
-                                        [lag] +
-                                        ["SFI"]
-                                    )
+
+                        writer.writerow(
+                            [entry[Csv_data.TEAM_NAME.value]]  +
+                            [entry[Csv_data.FIRST_NAME.value]] +
+                            [entry[Csv_data.LAST_NAME.value]]  +
+                            [i.value] +
+                            [entry[Csv_data.JSON.value][i.value]["rating"]] +
+                            [sfi_oc_data[0][j][1]] +
+                            [lag] +
+                            ["SFI"]
+                        )
+
     return

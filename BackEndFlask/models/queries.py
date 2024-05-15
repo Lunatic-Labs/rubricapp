@@ -683,19 +683,21 @@ def get_completed_assessment_by_user_id(course_id, user_id):
 
     return complete_assessments
 
+
 @error_log
-def get_csv_data_by_at_name(at_name:str)->list[dict[str]]:
+def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     """
     Description:
     Returns the needed info for the csv file creator function.
     See queries.py createCsv() for further info.
 
     Parameters:
-    at_name: str (The name of an assessment task)
+    at_id: int (The id of an assessment task)
 
     Return:
     list[dict][str]
     """
+
     """
     Note that the current plan sqlite3 seems to execute is:
         QUERY PLAN
@@ -722,47 +724,49 @@ def get_csv_data_by_at_name(at_name:str)->list[dict[str]]:
         Feedback.feedback_time,
         AssessmentTask.notification_sent,
         CompletedAssessment.rating_observable_characteristics_suggestions_data
-        ).join(
-            Role,
-            AssessmentTask.role_id == Role.role_id,
-        ).join(
-            CompletedAssessment,
-            AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
-        ).join(
-            Team,
-            CompletedAssessment.team_id == Team.team_id
-        ).join(
-            User,
-            CompletedAssessment.user_id == User.user_id
-        ).join(
-            Rubric,
-            AssessmentTask.rubric_id == Rubric.rubric_id
-        ).join(
-            Feedback,
-            and_(
-            CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
-            CompletedAssessment.user_id == Feedback.user_id)
-        ).filter(
-            AssessmentTask.assessment_task_name == at_name
-        ).all()
+    ).join(
+        Role,
+        AssessmentTask.role_id == Role.role_id,
+    ).join(
+        CompletedAssessment,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).join(
+        Team,
+        CompletedAssessment.team_id == Team.team_id
+    ).join(
+        User,
+        CompletedAssessment.user_id == User.user_id
+    ).join(
+        Rubric,
+        AssessmentTask.rubric_id == Rubric.rubric_id
+    ).join(
+        Feedback,
+        and_(
+        CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
+        CompletedAssessment.user_id == Feedback.user_id)
+    ).filter(
+        AssessmentTask.assessment_task_id == at_id
+    ).all()
+
     return pertinent_assessments
 
-def get_csv_categories(rubric_id:int)->tuple[dict[str],dict[str]]:
+
+def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
     """
     Description:
-    Returns the oc and the sfi data to fill out the csv file.
+    Returns the sfi and the oc data to fill out the csv file.
     
     Parameters:
-    rubric_id : int
+    rubric_id : int (The id of a rubric)
 
-    Return: tuple two  Dict [Dict] [str]
+    Return: tuple two  Dict [Dict] [str] (All of the sfi and oc data)
     """
+
     """
     Note that a better choice would be to create a trigger, command, or virtual table
     for performance reasons later down the road. The decision depends on how the
     database evolves from now.
     """
-
     sfi_data = db.session.query(
         RubricCategory.rubric_id,
         SuggestionsForImprovement.suggestion_text
@@ -794,4 +798,3 @@ def get_csv_categories(rubric_id:int)->tuple[dict[str],dict[str]]:
     ).all()
 
     return sfi_data,oc_data
-
