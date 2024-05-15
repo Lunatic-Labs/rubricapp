@@ -14,9 +14,9 @@ from Functions.exportCsv import create_csv
 import os
 
 @bp.route('/csv_assessment_export', methods = ['POST'])
-#@jwt_required()
-#@bad_token_check()
-#@AuthCheck()
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def get_completed_assessment_csv()->dict:
     """
     Description:
