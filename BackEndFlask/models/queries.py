@@ -274,8 +274,13 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
             UserCourse.user_id.notin_(
                 db.session.query(
                     TeamUser.user_id
+                ).join(
+                    Team,
+                    Team.team_id == TeamUser.team_id
+                ).filter(
+                    Team.course_id == course_id
                 )
-            ),
+            )
         )
     ).all()
 
@@ -285,23 +290,24 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
         User.last_name,
         User.email,
         Team.team_id,
-        Team.team_name
-    ).join(
-        TeamUser,
-        TeamUser.user_id == User.user_id
-    ).join(
-        Team,
-        Team.team_id == TeamUser.team_id
+        Team.team_name,
     ).join(
         UserCourse,
-        UserCourse.user_id == User.user_id
+        User.user_id == UserCourse.user_id
     ).filter(
         and_(
             UserCourse.course_id == course_id,
             UserCourse.role_id == 5,
-            TeamUser.team_id != team_id
         )
-    ).distinct().all()
+    ).join(
+        TeamUser,
+        TeamUser.user_id == UserCourse.user_id
+    ).filter(
+        TeamUser.team_id != team_id
+    ).join(
+        Team,
+        Team.team_id == TeamUser.team_id
+    ).all()
 
     return sorted(
         all_students_not_in_a_team + all_students_in_other_teams
@@ -356,21 +362,30 @@ def get_team_members(user_id: int, course_id: int):
 
 
 @error_log
-def add_user_to_team(user_id: int, team_id: int):
+def add_user_to_team(course_id: int, user_id: int, team_id: int):
     """
     Description:
     Adds the given user to the given team.
+    Ensures that only teams are pulled from
+    the same course as the target team.
     Or updates the current team the user
     is assigned to the new given team.
 
     Parameters:
+    course_id: int (The id of a course)
     user_id: int (The id of a user)
     team_id: int (The id of a team)
     """
     team_user = db.session.query(
         TeamUser
+    ).join(
+        Team,
+        Team.team_id == TeamUser.team_id
     ).filter(
-        TeamUser.user_id == user_id
+        and_(
+            Team.course_id == course_id,
+            TeamUser.user_id == user_id,
+        )
     ).first()
 
     team_user_json = {
