@@ -53,6 +53,8 @@ class ViewCompleteAssessmentTasks extends Component {
     var navbar = this.props.navbar;
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
+    console.log(chosenAssessmentTask)
+    console.log(this.props.completedAssessment)
 
     if (notes === '') {
       this.setState({
