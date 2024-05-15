@@ -76,6 +76,7 @@ class AdminViewCustomRubrics extends Component {
                         onClick={() => {
                             this.props.navbar.setNewTab("AddCustomRubric");
                         }}
+                        aria-label="addCustomRubricButton"
                     />
                 </Grid>
             </Grid>
