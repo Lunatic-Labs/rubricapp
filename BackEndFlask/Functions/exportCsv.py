@@ -29,10 +29,9 @@ def rounded_hours_difference(completed:datetime, seen:datetime)->int:
     Return:
     Result: datatime.timestamp
     """
-    
     time_delta = seen - completed
     hours_remainder = divmod(divmod(time_delta.total_seconds(), 60)[0], 60)
-    return int(hours_remainder[0]) if hours_remainder[1] < 30.0 else int(hours_remainder) + 1
+    return int(hours_remainder[0]) if hours_remainder[1] < 30.0 else int(hours_remainder[0]) + 1
 
 class Csv_data(Enum):
     """

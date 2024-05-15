@@ -643,7 +643,7 @@ def get_csv_data_by_at_name(at_name:str)->list[dict[str]]:
         Team.team_name,
         User.first_name,
         User.last_name,
-        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
         Feedback.feedback_time,
         AssessmentTask.notification_sent,
         CompletedAssessment.rating_observable_characteristics_suggestions_data
@@ -670,7 +670,6 @@ def get_csv_data_by_at_name(at_name:str)->list[dict[str]]:
         ).filter(
             AssessmentTask.assessment_task_name == at_name
         ).all()
-
     return pertinent_assessments
 
 def get_csv_categories(rubric_id:int)->tuple[dict[str],dict[str]]:
