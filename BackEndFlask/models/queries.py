@@ -682,3 +682,119 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).all()
 
     return complete_assessments
+
+
+@error_log
+def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
+    """
+    Description:
+    Returns the needed info for the csv file creator function.
+    See queries.py createCsv() for further info.
+
+    Parameters:
+    at_id: int (The id of an assessment task)
+
+    Return:
+    list[dict][str]
+    """
+
+    """
+    Note that the current plan sqlite3 seems to execute is:
+        QUERY PLAN
+    |--SCAN CompletedAssessment
+    |--SEARCH AssessmentTask USING INTEGER PRIMARY KEY (rowid=?)
+    |--SEARCH Role USING INTEGER PRIMARY KEY (rowid=?)
+    |--SEARCH Team USING INTEGER PRIMARY KEY (rowid=?)
+    `--SEARCH User USING INTEGER PRIMARY KEY (rowid=?)
+    Untested but assume other tables are also runing a search instead of a scan
+    everywhere where there is no index to scan by.
+    The problem lies in the search the others are doing. Future speed optimications
+    can be reached by implementing composite indices.
+    """
+    pertinent_assessments = db.session.query(
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.unit_of_assessment,
+        AssessmentTask.rubric_id,
+        Rubric.rubric_name,
+        Role.role_name,
+        Team.team_name,
+        User.first_name,
+        User.last_name,
+        CompletedAssessment.last_update,
+        Feedback.feedback_time,
+        AssessmentTask.notification_sent,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data
+    ).join(
+        Role,
+        AssessmentTask.role_id == Role.role_id,
+    ).join(
+        CompletedAssessment,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).join(
+        Team,
+        CompletedAssessment.team_id == Team.team_id
+    ).join(
+        User,
+        CompletedAssessment.user_id == User.user_id
+    ).join(
+        Rubric,
+        AssessmentTask.rubric_id == Rubric.rubric_id
+    ).join(
+        Feedback,
+        and_(
+        CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
+        CompletedAssessment.user_id == Feedback.user_id)
+    ).filter(
+        AssessmentTask.assessment_task_id == at_id
+    ).all()
+
+    return pertinent_assessments
+
+
+def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
+    """
+    Description:
+    Returns the sfi and the oc data to fill out the csv file.
+    
+    Parameters:
+    rubric_id : int (The id of a rubric)
+
+    Return: tuple two  Dict [Dict] [str] (All of the sfi and oc data)
+    """
+
+    """
+    Note that a better choice would be to create a trigger, command, or virtual table
+    for performance reasons later down the road. The decision depends on how the
+    database evolves from now.
+    """
+    sfi_data = db.session.query(
+        RubricCategory.rubric_id,
+        SuggestionsForImprovement.suggestion_text
+    ).join(
+        Category,
+        Category.category_id == RubricCategory.rubric_category_id
+    ).outerjoin(
+        SuggestionsForImprovement,
+        Category.category_id == SuggestionsForImprovement.category_id
+    ).filter(
+        RubricCategory.rubric_id == rubric_id
+    ).order_by(
+        RubricCategory.rubric_id
+    ).all()
+
+    oc_data = db.session.query(
+        RubricCategory.rubric_id,
+        ObservableCharacteristic.observable_characteristic_text
+    ).join(
+        Category,
+        Category.category_id == RubricCategory.rubric_category_id
+    ).outerjoin(
+        ObservableCharacteristic,
+        Category.category_id == ObservableCharacteristic.category_id
+    ).filter(
+        RubricCategory.rubric_id == rubric_id
+    ).order_by(
+        RubricCategory.rubric_id
+    ).all()
+
+    return sfi_data,oc_data
