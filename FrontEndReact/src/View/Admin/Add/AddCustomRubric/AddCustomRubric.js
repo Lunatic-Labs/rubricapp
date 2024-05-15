@@ -188,7 +188,7 @@ class AddCustomRubric extends React.Component {
                                     textAlign: "left",
                                     bold: true,
                                 }}
-                                aria-label="addCustomRubricTitle"
+                                aria-label="addCustomizeYourRubricTitle"
                             >
                                 Customize Your Rubric
                             </h2>

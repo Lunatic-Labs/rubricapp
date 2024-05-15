@@ -41,3 +41,4 @@ package-lock.json
 BackEndFlask/logs/all.log
 BackEndFlask/models/hidden.py
 BackEndFlask/logs/all.log
+.vscode

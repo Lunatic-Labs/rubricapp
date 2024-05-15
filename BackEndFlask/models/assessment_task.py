@@ -70,7 +70,7 @@ def create_assessment_task(assessment_task):
         create_team_password=assessment_task["create_team_password"],
         comment=assessment_task["comment"],
         number_of_teams=assessment_task["number_of_teams"],
-        notification_sent=False
+        notification_sent=None
     )
 
     db.session.add(new_assessment_task)
@@ -378,7 +378,7 @@ def replace_assessment_task(assessment_task, assessment_task_id):
 def toggle_notification_sent_to_true(assessment_task_id):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
 
-    one_assessment_task.notification_sent = True
+    one_assessment_task.notification_sent = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
 
     db.session.commit()
 

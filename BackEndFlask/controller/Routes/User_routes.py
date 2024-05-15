@@ -168,7 +168,7 @@ def add_user():
             for user_id in user_ids:
                 get_user(user_id)  # Trigger an error if not exists.
 
-                add_user_to_team(user_id, team_id)
+                add_user_to_team(course_id, user_id, team_id)
 
             return create_good_response([], 201, "users")
 

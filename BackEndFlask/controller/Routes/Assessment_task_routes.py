@@ -185,7 +185,7 @@ def update_assessment_task():
 
             one_assessment_task = get_assessment_task(assessment_task_id)
 
-            if one_assessment_task.notification_sent == False:
+            if one_assessment_task.notification_sent == None:
                 list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
 
                 for completed in list_of_completed_assessments:
