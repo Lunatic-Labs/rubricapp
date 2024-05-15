@@ -53,6 +53,8 @@ class ViewCompleteAssessmentTasks extends Component {
     var navbar = this.props.navbar;
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
+    console.log(chosenAssessmentTask)
+    console.log(this.props.completedAssessment)
 
     if (notes === '') {
       this.setState({
@@ -263,7 +265,7 @@ class ViewCompleteAssessmentTasks extends Component {
         </Box>
 
         <Box className="subcontent-spacing">
-          <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="ViewCompletedAssessmentsTitle"> Completed Assesssment Tasks</Typography>
+          <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="ViewCompletedAssessmentsTitle">Completed Assesssment Tasks</Typography>
 
           <Box>
             <ResponsiveNotification
