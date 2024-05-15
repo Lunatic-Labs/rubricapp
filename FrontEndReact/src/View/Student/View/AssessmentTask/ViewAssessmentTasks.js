@@ -87,7 +87,7 @@ class ViewAssessmentTasks extends Component {
                             <Box>
                                 {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] && role["role_id"] === 5 &&
                                     <Button
-                                        style={{ marginRight: '10px', marginBottom: '10px' }}
+                                        style={{ marginRight: '10px', marginBottom: this.props.checkin.indexOf(atId) === -1 ? '0px' : '10px' }}
                                         className='primary-color'
                                         variant='contained'
 

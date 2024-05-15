@@ -18,8 +18,10 @@ class CourseDropdown extends Component {
       selectedCourse: '',
       courses: []
     };
+
     this.handleCourseChange = (newSelectedCourse) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
+
       this.setState({
         selectedCourse: newSelectedCourse.target.value
       });
