@@ -16,9 +16,9 @@ from models.assessment_task import get_assessment_task
 from models.user import get_user
 
 @bp.route('/csv_assessment_export', methods = ['POST'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
+#@jwt_required()
+#@bad_token_check()
+#@AuthCheck()
 def get_completed_assessment_csv()->dict:
     """
     Description:
