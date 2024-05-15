@@ -5,11 +5,35 @@ import { IconButton } from '@mui/material';
 import { Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatDueDate, getHumanReadableDueDate } from '../../../../utility.js';
+import { formatDueDate, getCSVFile, getHumanReadableDueDate } from '../../../../utility.js';
 
 
 
 class ViewAssessmentTasks extends Component {
+    constructor(props) {
+        super(props);
+
+        this.state = {
+            isLoaded: null,
+            errorMessage: null,
+            csvAssessmentExport: null
+        }
+
+        this.handleDownloadCsv = (atId) => {
+            console.log("handleDownloadCsv()!!!");
+
+            getCSVFile(
+                `/csv_assessment_export?assessment_task_id=${atId}`,
+                "csvAssessmentExport",
+                this
+            );
+        }
+    }
+
+    componentDidUpdate() {
+        console.log("componentDidUpdate(): ", this.state.csvAssessmentExport);
+    }
+
     render() {
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
@@ -263,8 +287,7 @@ class ViewAssessmentTasks extends Component {
                                     variant='contained'
 
                                     onClick={() => {
-                                        // Add the logic here to download the csv file to the user's machine!
-                                        console.log(atId);
+                                        this.handleDownloadCsv(atId);
                                     }}
 
                                     aria-label='exportAssessmentTaskButton'

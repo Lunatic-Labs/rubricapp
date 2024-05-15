@@ -2,6 +2,43 @@ import { apiUrl } from './App.js';
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
+export async function getCSVFile(fetchURL, resource, component) {
+    console.log("getCSVFile()!!!");
+
+    const cookies = new Cookies();
+
+    if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+        let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+
+        var headers = {
+            "Authorization": "Bearer " + cookies.get('access_token'),
+            "Content-Type": "application/json"
+        };
+
+        const response = await fetch(
+            url,
+            JSON.stringify({
+                method: "POST",
+                headers: headers
+            })
+
+        ).catch(
+            (error) => {
+                component.setState({
+                    isLoaded: true,
+                    errorMessage: error,
+                });
+            }
+        );
+
+        console.log(response);
+
+        component.setState({
+            resource: response
+        });
+    }
+}
+
 export function genericResourceGET(fetchURL, resource, component) {
     genericResourceFetch(fetchURL, resource, component, "GET", null);
 }
@@ -16,6 +53,7 @@ export function genericResourcePUT(fetchURL, component, body) {
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
+
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
         let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
 
