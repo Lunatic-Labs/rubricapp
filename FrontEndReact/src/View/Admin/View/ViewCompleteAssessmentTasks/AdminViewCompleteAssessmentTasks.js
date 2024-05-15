@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks.js";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility.js';
+import { Box } from '@mui/material';
 
 
 
@@ -80,11 +81,11 @@ class AdminViewCompleteAssessmentTasks extends Component {
         } else {
             return(
                 <>
-                    <div className='container'>
+                    <Box>
                         <ViewCompleteAssessmentTasks
                             navbar={navbar}
                         />
-                    </div>
+                    </Box>
                 </>
             )
         }
