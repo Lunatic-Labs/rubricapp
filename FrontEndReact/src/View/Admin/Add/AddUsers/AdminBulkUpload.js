@@ -174,7 +174,7 @@ class AdminBulkUpload extends Component {
                                             <Tooltip
                                                 title={
                                                     <>
-                                                        <p>Example of format in Excel: <br></br>One TA, One Team, Three Students</p>
+                                                        <p>Example of format in Excel: <br></br>Two TAs, Zero Teams, Two Students</p>
 
                                                         <img
                                                             alt="Format Example"
