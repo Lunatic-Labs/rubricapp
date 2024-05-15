@@ -15,6 +15,8 @@ import os
 from models.assessment_task import get_assessment_task
 from models.user import get_user
 
+
+
 @bp.route('/csv_assessment_export', methods = ['POST'])
 #@jwt_required()
 #@bad_token_check()
@@ -40,16 +42,20 @@ def get_completed_assessment_csv()->dict:
 
         user = get_user(user_id)   # Trigger an error if not exists
 
-        file_name = f"{user.first_name}_{user.last_name}_{assessment.assessment_task_name}"
+        file_name = f"{user.first_name}_{user.last_name}_{assessment.assessment_task_name.replace(" ", "_")}"
 
         create_csv(
             assessment_task_id,
             file_name
         )
 
-        return send_downloadable_file(os.path.abspath("./tempCsv/"+file_name), True)
+        return create_good_response({}, 200, "csv_creation")
+
+        # return send_downloadable_file(os.path.abspath("./tempCsv/"+file_name), True)
 
     except Exception as e:
-        return create_bad_response(f"An error occurred attempting to generate the desired file: {e}", "csv creation", 400)
-#remember to delete the file after it has been given back to ensure we do not overfill
-#the server.
+        return create_bad_response(f"An error occurred attempting to generate the desired file: {e}", "csv_creation", 400)
+
+# Remember to delete the file after it has
+# been given back to ensure we do not overfill
+# the server.
