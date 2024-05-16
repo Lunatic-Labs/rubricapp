@@ -162,7 +162,6 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
             # If the len of `header` == 4, then the LMS ID is present.
             if len(person_attribs) == 4:
                 lms_id = person_attribs[3].strip()
-
             if not helper_verify_email_syntax(email):
                 raise SuspectedMisformatting
 
