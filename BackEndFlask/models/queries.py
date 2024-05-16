@@ -758,11 +758,12 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     ).join(
         Rubric,
         AssessmentTask.rubric_id == Rubric.rubric_id
-    ).join(
+    ).outerjoin(
         Feedback,
         and_(
-        CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
-        CompletedAssessment.user_id == Feedback.user_id)
+            CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
+            CompletedAssessment.user_id == Feedback.user_id
+        )
     ).filter(
         AssessmentTask.assessment_task_id == at_id
     ).all()
