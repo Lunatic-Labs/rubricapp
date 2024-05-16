@@ -118,8 +118,7 @@ def get_all_assessment_tasks():
         all_assessment_tasks = get_assessment_tasks()
 
         return create_good_response(
-            assessment_task_schema.dump(
-                all_assessment_tasks), 200, "assessment_tasks"
+            assessment_task_schema.dump(all_assessment_tasks), 200, "assessment_tasks"
         )
 
     except Exception as e:

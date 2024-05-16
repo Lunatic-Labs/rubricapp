@@ -53,8 +53,7 @@ class ViewCompleteAssessmentTasks extends Component {
     var navbar = this.props.navbar;
     var state = navbar.state;
     var chosenAssessmentTask = state.chosenAssessmentTask;
-    console.log(chosenAssessmentTask)
-    console.log(this.props.completedAssessment)
+    var date = new Date();
 
     if (notes === '') {
       this.setState({
@@ -65,13 +64,13 @@ class ViewCompleteAssessmentTasks extends Component {
 
     } else {
       genericResourcePUT(
-        `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification_sent=${true}&notification_message=${notes}`,
+        `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification_sent=${date}&notification_message=${notes}`,
         this, {}
       );
   
       this.setState({
         showDialog: false,
-        notificationSent: true,
+        notificationSent: date,
       });
     }
   };
