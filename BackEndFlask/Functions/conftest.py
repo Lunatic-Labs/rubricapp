@@ -4,6 +4,7 @@ from Functions.test_files.PopulationFunctions import *
 from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
 
+#Testing starts here
 @pytest.fixture
 def flask_app_mock():
     mock_app = app
@@ -19,4 +20,5 @@ def flask_app_mock():
         db.session.close()
         engine_container = db.engine
         engine_container.dispose()
+    assert 1, "Got to the end of the testing"
     close_all_sessions()
