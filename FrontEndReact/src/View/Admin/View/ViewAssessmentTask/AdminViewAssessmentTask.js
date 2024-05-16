@@ -4,7 +4,8 @@ import ViewAssessmentTasks from './ViewAssessmentTasks.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility.js';
 import AdminAddAssessmentTask from '../../Add/AddTask/AdminAddAssessmentTask.js';
-import { Box, CircularProgress } from '@mui/material';
+import { Box } from '@mui/material';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -62,9 +63,7 @@ class AdminViewAssessmentTask extends Component {
 
         } else if (!isLoaded || !assessmentTasks || !roles || !rubrics) {
             return(
-                <div className='container'>
-                    <CircularProgress />
-                </div>
+                <Loading />
             )
 
         } else if (this.props.show === "AdminAddAssessmentTask") {

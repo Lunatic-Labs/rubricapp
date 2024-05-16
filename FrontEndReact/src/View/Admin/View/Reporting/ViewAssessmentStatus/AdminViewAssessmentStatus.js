@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewAssessmentStatus from './ViewAssessmentStatus';
 import { genericResourceGET } from '../../../../../utility';
-import { CircularProgress } from '@mui/material';
+import Loading from '../../../../Loading/Loading';
 
 
 
@@ -102,9 +102,7 @@ class AdminViewAssessmentStatus extends Component {
             )
         } else if (!isLoaded || !completedAssessments || !categories || !rubrics){
             return(
-                <div className='container'>
-                    <CircularProgress />
-                </div>
+                <Loading />
             )
 
         } else {

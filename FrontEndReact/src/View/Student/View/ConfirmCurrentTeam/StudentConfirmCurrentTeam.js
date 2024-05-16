@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ConfirmCurrentTeamTable from './ConfirmCurrentTeam.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
-import { CircularProgress } from '@mui/material';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -12,6 +12,7 @@ class StudentConfirmCurrentTeam extends Component {
         super(props);
 
         this.state = {
+            isLoaded: null,
             errorMessage: null,
             currentTeam: null,
             team_members: null
@@ -29,6 +30,7 @@ class StudentConfirmCurrentTeam extends Component {
 
     render() {
         const {
+            isLoaded,
             errorMessage,
             currentTeam,
             team_members
@@ -44,11 +46,9 @@ class StudentConfirmCurrentTeam extends Component {
                 </div>
             )
 
-        } else if (!team_members) {
+        } else if (!isLoaded || !team_members) {
             return (
-                <div className='container'>
-                    <CircularProgress />
-                </div>
+                <Loading />
             )
 
         } else {
