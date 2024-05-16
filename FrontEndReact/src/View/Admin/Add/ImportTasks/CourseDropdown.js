@@ -5,7 +5,7 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
 import { genericResourceGET } from '../../../../utility.js';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 
 
@@ -70,7 +70,7 @@ class CourseDropdown extends Component {
       return(
         <>
           <div>
-            <h1>Loading...</h1>
+            <CircularProgress />
           </div>
         </>
       )

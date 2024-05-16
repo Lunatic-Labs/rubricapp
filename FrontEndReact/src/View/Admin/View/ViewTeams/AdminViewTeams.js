@@ -3,7 +3,7 @@ import React, { Component } from 'react';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import ViewTeams from './ViewTeams.js';
 import { genericResourceGET, parseUserNames } from '../../../../utility.js';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 
 
 
@@ -63,7 +63,7 @@ class AdminViewTeams extends Component {
         } else if (!isLoaded || !teams || !users) {
             return(
                 <div className='container'>
-                    <h1>Loading...</h1>
+                    <CircularProgress />
                 </div>
             )
 

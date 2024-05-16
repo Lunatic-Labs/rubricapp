@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './ViewTeamMembers.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames } from '../../../../utility.js';
-import { Button, Typography } from '@mui/material';
+import { Button, CircularProgress, Typography } from '@mui/material';
 
 
 
@@ -55,7 +55,7 @@ class AdminViewTeamMembers extends Component {
         } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
-                    <h1>Loading...</h1>
+                    <CircularProgress />
                 </div>
             )
 

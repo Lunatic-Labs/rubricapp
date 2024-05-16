@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ConfirmCurrentTeamTable from './ConfirmCurrentTeam.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -46,7 +47,7 @@ class StudentConfirmCurrentTeam extends Component {
         } else if (!team_members) {
             return (
                 <div className='container'>
-                    <h1> Loading... </h1>
+                    <CircularProgress />
                 </div>
             )
 

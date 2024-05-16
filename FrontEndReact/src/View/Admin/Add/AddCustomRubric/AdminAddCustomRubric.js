@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories, } from "../../../../utility.js";
 import AddCustomRubric from "./AddCustomRubric";
+import { CircularProgress } from "@mui/material";
 
 class AdminAddCustomRubric extends Component {
     constructor(props) {
@@ -37,7 +38,7 @@ class AdminAddCustomRubric extends Component {
         } else if (!isLoaded || !rubrics || !categories) {
             return (
                 <div className="container">
-                    <h1> Loading... </h1>
+                    <CircularProgress />
                 </div>
             );
         } else {

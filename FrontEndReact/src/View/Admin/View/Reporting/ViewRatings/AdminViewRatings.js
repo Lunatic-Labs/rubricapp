@@ -4,7 +4,7 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../../utility';
 import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 
 
@@ -82,7 +82,7 @@ class AdminViewRatings extends Component {
     } else if (!isLoaded || !ratings || !categories) {
       return(
         <div className='container'>
-            <h1>Loading...</h1>
+            <CircularProgress />
         </div>
       )
 

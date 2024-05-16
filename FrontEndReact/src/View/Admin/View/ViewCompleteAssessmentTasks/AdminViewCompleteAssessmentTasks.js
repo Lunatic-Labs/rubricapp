@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks.js";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility.js';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 
 
@@ -74,7 +74,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         } else if (!isLoaded || !completedAssessments || !roles || !users) {
             return(
                 <div className='container mt-5'>
-                    <h1 className='text-center'>Loading...</h1>
+                    <CircularProgress />
                 </div>
             )
 

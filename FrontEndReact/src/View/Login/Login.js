@@ -6,7 +6,7 @@ import AppState from '../Navbar/AppState.js';
 import SetNewPassword from './SetNewPassword.js';
 import ValidateReset from './ValidateReset.js';
 import { apiUrl } from '../../App.js';
-import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton, CircularProgress } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 
@@ -303,7 +303,7 @@ class Login extends Component {
 
             return(
                 <div className='container'>
-                    <h1>Loading...</h1>
+                    <CircularProgress />
                 </div>
             )
         }

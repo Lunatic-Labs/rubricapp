@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
 import { genericResourceGET } from '../../../../utility.js';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
 
@@ -146,7 +146,7 @@ class CompleteAssessmentTask extends Component {
 
         } else if (!isLoaded || !rubrics || !teams || !users || !completedAssessments) {
             return (
-                <h1>Loading...</h1>
+                <CircularProgress />
             );
 
         } else {
