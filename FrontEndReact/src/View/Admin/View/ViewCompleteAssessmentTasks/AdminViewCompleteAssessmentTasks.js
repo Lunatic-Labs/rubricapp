@@ -84,6 +84,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                     <Box>
                         <ViewCompleteAssessmentTasks
                             navbar={navbar}
+                            completedAssessment={completedAssessments}
                         />
                     </Box>
                 </>

@@ -16,6 +16,7 @@ export function genericResourcePUT(fetchURL, component, body) {
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
+
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
         let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
 
@@ -49,13 +50,17 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             let state = {};
 
             state['isLoaded'] = true;
+
             state['errorMessage'] = null;
 
             if(resource != null) {
                 var getResource = resource;
 
                 getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
+
                 getResource = (getResource === "completedAssessments") ? "completed_assessments": getResource;
+
+                getResource = (getResource === "csvCreation") ? "csv_creation": getResource;
 
                 state[resource] = result['content'][getResource][0];
             }

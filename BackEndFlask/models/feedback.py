@@ -49,6 +49,7 @@ def create_feedback(feedback_data):
     )
 
     db.session.add(new_feedback)
+
     db.session.commit()
 
     return new_feedback

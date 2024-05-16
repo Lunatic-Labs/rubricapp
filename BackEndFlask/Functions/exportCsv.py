@@ -72,29 +72,6 @@ class Csv_data(Enum):
     JSON = 11
 
 
-class Categories_csv(Enum):
-    """
-    Description:
-    Pertinent categories for a csv dump.
-
-    Parameters:
-    NONE (THIS IS A CLASS ENUM!)
-    """
-    __order__ = " ANALYZE EVAL STRUCTURE VALIDITY GOAL_ID SYNTH "
-
-    ANALYZE = "Analyzing"
-
-    EVAL = "Evaluating"
-
-    STRUCTURE = "Forming Arguments (Structure)"
-
-    VALIDITY = "Forming Arguments (Validity)"
-
-    GOAL_ID = "Identifying the Goal"
-
-    SYNTH = "Synthesizing"
-
-
 def create_csv(at_id: int, file_name: str) -> None:
     """
     Description:
@@ -152,10 +129,19 @@ def create_csv(at_id: int, file_name: str) -> None:
             for entry in completed_assessment_data:
                 sfi_oc_data = get_csv_categories(entry[Csv_data.RUBRIC_ID.value])
 
-                lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
+                lag = ""
 
-                for i in Categories_csv:
-                    oc = entry[Csv_data.JSON.value][i.value]["observable_characteristics"]
+                try:
+                    lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
+
+                except:
+                    pass
+
+                for i in entry[Csv_data.JSON.value]:
+                    if i == "comments" or i == "done":
+                        continue
+
+                    oc = entry[Csv_data.JSON.value][i]["observable_characteristics"]
 
                     for j in range (0, len(oc)):
                         if(oc[j] == '0'):
@@ -165,15 +151,18 @@ def create_csv(at_id: int, file_name: str) -> None:
                             [entry[Csv_data.TEAM_NAME.value]]  +
                             [entry[Csv_data.FIRST_NAME.value]] +
                             [entry[Csv_data.LAST_NAME.value]]  +
-                            [i.value] +
-                            [entry[Csv_data.JSON.value][i.value]["rating"]] +
+                            [i] +
+                            [entry[Csv_data.JSON.value][i]["rating"]] +
                             [sfi_oc_data[1][j][1]] +
                             [lag] +
                             ["OC"]
                         )
 
-                for i in Categories_csv:
-                    sfi = entry[Csv_data.JSON.value][i.value]["suggestions"]
+                for i in entry[Csv_data.JSON.value]:
+                    if i == "comments" or i == "done":
+                        continue
+
+                    sfi = entry[Csv_data.JSON.value][i]["suggestions"]
 
                     for j in range (0, len(sfi)):
                         if(sfi[j] == '0'):
@@ -183,8 +172,8 @@ def create_csv(at_id: int, file_name: str) -> None:
                             [entry[Csv_data.TEAM_NAME.value]]  +
                             [entry[Csv_data.FIRST_NAME.value]] +
                             [entry[Csv_data.LAST_NAME.value]]  +
-                            [i.value] +
-                            [entry[Csv_data.JSON.value][i.value]["rating"]] +
+                            [i] +
+                            [entry[Csv_data.JSON.value][i]["rating"]] +
                             [sfi_oc_data[0][j][1]] +
                             [lag] +
                             ["SFI"]
