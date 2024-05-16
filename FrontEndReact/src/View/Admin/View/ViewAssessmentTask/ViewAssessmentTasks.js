@@ -5,7 +5,7 @@ import { IconButton } from '@mui/material';
 import { Button } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatDueDate, getCSVFile, getHumanReadableDueDate } from '../../../../utility.js';
+import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
 
 
 
@@ -16,22 +16,20 @@ class ViewAssessmentTasks extends Component {
         this.state = {
             isLoaded: null,
             errorMessage: null,
-            csvAssessmentExport: null
+            csvCreation: null
         }
 
         this.handleDownloadCsv = (atId) => {
-            console.log("handleDownloadCsv()!!!");
-
-            getCSVFile(
+            genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}`,
-                "csvAssessmentExport",
+                "csvCreation",
                 this
             );
         }
     }
 
     componentDidUpdate() {
-        console.log("componentDidUpdate(): ", this.state.csvAssessmentExport);
+        console.log("componentDidUpdate(): ", this.state.csvCreation["csv_data"]);
     }
 
     render() {
