@@ -50,39 +50,53 @@ class ViewCompleteAssessmentTasks extends Component {
 
   handleSendNotification = () => {
     var notes =  this.state.notes;
+
     var navbar = this.props.navbar;
+
     var state = navbar.state;
+
     var chosenAssessmentTask = state.chosenAssessmentTask;
+
     var date = new Date();
 
-    if (notes === '') {
+    if (notes.trim() === '') {
       this.setState({
           errors: {
-              notes: notes.trim() === '' ? 'Notification Message cannot be empty' : '',
+              notes: 'Notification Message cannot be empty',
           },
       });
 
-    } else {
-      genericResourcePUT(
-        `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification_sent=${date}&notification_message=${notes}`,
-        this, {}
-      );
-  
-      this.setState({
-        showDialog: false,
-        notificationSent: date,
-      });
+      return;
     }
+
+    genericResourcePUT(
+      `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification=${true}`,
+      this, JSON.stringify({
+        "notification_date": date,
+        "notification_message": notes
+      })
+    );
+
+    this.setState({
+      showDialog: false,
+      notificationSent: date,
+    });
   };
 
   render() {
     var navbar = this.props.navbar;
+
     var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+
     var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
+
     var state = navbar.state;
+
     var chosenAssessmentTask = state.chosenAssessmentTask;
+
     var notificationSent = state.notificationSent;
-    var chosenCourse = state.chosenCourse
+
+    var chosenCourse = state.chosenCourse;
 
     const columns = [
       {

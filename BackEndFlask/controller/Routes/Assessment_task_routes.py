@@ -177,28 +177,35 @@ def add_assessment_task():
 @AuthCheck()
 def update_assessment_task():
     try:
-        if request.args and request.args.get("notification_sent") and request.args.get("notification_message"):
+        if request.args and request.args.get("notification"):
             assessment_task_id = request.args.get("assessment_task_id")
 
-            notification_message = request.args.get("notification_message")
+            notification_date = request.json["notification_date"]
 
-            one_assessment_task = get_assessment_task(assessment_task_id)
+            notification_message = request.json["notification_message"]
+
+            one_assessment_task = get_assessment_task(assessment_task_id)   # Trigger an error if not exists
 
             if one_assessment_task.notification_sent == None:
                 list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
 
                 for completed in list_of_completed_assessments:
-                    if completed.team_id is not None:
+                    if completed.team_id:
+                        get_team(completed.team_id)     # Trigger an error if not exists
+
                         email_students_feedback_is_ready_to_view(
                             get_students_by_team_id(
                                 one_assessment_task.course_id,
-                                get_team(completed.team_id)
+                                completed.team_id
                             ),
 
                             notification_message
                         )
 
-                toggle_notification_sent_to_true(assessment_task_id)
+                toggle_notification_sent_to_true(
+                    assessment_task_id,
+                    notification_date
+                )
 
             return create_good_response(
                 assessment_task_schema.dump(one_assessment_task),
@@ -229,6 +236,9 @@ def update_assessment_task():
 # copies over assessment_tasks from an existing course to another course
 # given a source and destination course_id
 @bp.route("/assessment_task_copy", methods=["POST"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def copy_course_assessments():
     try:
         source_course_id = request.args.get('source_course_id')
