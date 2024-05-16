@@ -25,7 +25,6 @@ var rt = "rosterTitle";
 var at = "assessmentTab";
 var adt = "assessmentDashboardTitle";
 var mhbb = "mainHeaderBackButton";
-var crb = "customRubricButton";
 var acrt = "addCustomRubricTitle";
 var iab = "importAssessmentButton";
 var aiatt = "adminImportAssessmentTasksTitle";
