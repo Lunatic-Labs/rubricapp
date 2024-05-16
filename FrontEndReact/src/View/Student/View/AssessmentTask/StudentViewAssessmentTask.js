@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -60,9 +61,7 @@ class StudentViewAssessmentTask extends Component {
 
         } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics) {
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else {

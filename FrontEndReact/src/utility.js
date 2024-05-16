@@ -2,20 +2,31 @@ import { apiUrl } from './App.js';
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
+
+
+var timeToWait = 500;
+
 export function genericResourceGET(fetchURL, resource, component) {
-    genericResourceFetch(fetchURL, resource, component, "GET", null);
+    setTimeout(() => {
+        genericResourceFetch(fetchURL, resource, component, "GET", null);
+    }, timeToWait);
 }
 
 export function genericResourcePOST(fetchURL, component, body) {
-    genericResourceFetch(fetchURL, null, component, "POST", body);
+    setTimeout(() => {
+        genericResourceFetch(fetchURL, null, component, "POST", body);
+    }, timeToWait);
 }
 
 export function genericResourcePUT(fetchURL, component, body) {
-    genericResourceFetch(fetchURL, null, component, "PUT", body);
+    setTimeout(() => {
+        genericResourceFetch(fetchURL, null, component, "PUT", body);
+    }, timeToWait);
 }
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
+
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
         let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
 
@@ -49,13 +60,17 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             let state = {};
 
             state['isLoaded'] = true;
+
             state['errorMessage'] = null;
 
             if(resource != null) {
                 var getResource = resource;
 
                 getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
+
                 getResource = (getResource === "completedAssessments") ? "completed_assessments": getResource;
+
+                getResource = (getResource === "csvCreation") ? "csv_creation": getResource;
 
                 state[resource] = result['content'][getResource][0];
             }

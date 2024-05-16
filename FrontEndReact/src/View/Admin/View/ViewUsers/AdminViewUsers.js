@@ -5,6 +5,7 @@ import AdminAddUser from '../../Add/AddUsers/AdminAddUser.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
 import { Box } from '@mui/material';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -62,9 +63,7 @@ class AdminViewUsers extends Component {
 
         } else if (!isLoaded || !users || !roles) {
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else if (user===null && addUser===null) {

@@ -375,10 +375,10 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     return one_assessment_task
 
 @error_log
-def toggle_notification_sent_to_true(assessment_task_id):
+def toggle_notification_sent_to_true(assessment_task_id, date):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
 
-    one_assessment_task.notification_sent = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%fZ')
+    one_assessment_task.notification_sent = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
 
     db.session.commit()
 
