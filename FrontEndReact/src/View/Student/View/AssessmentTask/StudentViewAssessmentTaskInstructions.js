@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions.js";
 import { genericResourceGET } from "../../../../utility.js";
-import { CircularProgress } from "@mui/material";
+import Loading from "../../../Loading/Loading.js";
 
 
 
@@ -46,9 +46,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
 
     } else if (!isLoaded || !rubrics) {
       return(
-        <div className="container">
-          <CircularProgress />
-        </div>
+        <Loading />
       ) 
 
     } else {

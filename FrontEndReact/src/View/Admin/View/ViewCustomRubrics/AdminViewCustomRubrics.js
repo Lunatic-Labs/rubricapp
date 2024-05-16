@@ -2,8 +2,11 @@ import { Component } from "react";
 import { genericResourceGET } from "../../../../utility";
 import CollapsableRubricCategoryTable from "../../Add/AddCustomRubric/CollapsableRubricCategoryTable";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import { CircularProgress, Grid } from "@mui/material";
+import {  Grid } from "@mui/material";
 import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton.js";
+import Loading from "../../../Loading/Loading.js";
+
+
 
 class AdminViewCustomRubrics extends Component {
     constructor(props) {
@@ -33,9 +36,7 @@ class AdminViewCustomRubrics extends Component {
 
         if (!isLoaded || !rubrics || !categories) {
             return(
-                <>
-                    <CircularProgress />
-                </>
+                <Loading />
             );
         }
 
