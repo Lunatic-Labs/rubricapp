@@ -89,10 +89,10 @@ class ViewAssessmentTasks extends Component {
             };
         }
 
-        var assessment_task_id_to_assessment_task_name = {};
+        var assessmentTaskIdToAssessmentTaskName = {};
 
         for(let index = 0; index < assessmentTasks.length; index++) {
-            assessment_task_id_to_assessment_task_name[assessmentTasks[index]["assessment_task_id"]] = assessmentTasks[index]["assessment_task_name"];
+            assessmentTaskIdToAssessmentTaskName[assessmentTasks[index]["assessment_task_id"]] = assessmentTasks[index]["assessment_task_name"];
         }
 
         var state = navbar.state;
@@ -124,15 +124,15 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (assessment_task_id) => {
+                    customBodyRender: (assessmentTaskId) => {
                         let dueDateString = getHumanReadableDueDate(
-                            assessmentTasksToDueDates[assessment_task_id]["due_date"],
-                            assessmentTasksToDueDates[assessment_task_id]["time_zone"]
+                            assessmentTasksToDueDates[assessmentTaskId]["due_date"],
+                            assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
 
                         return(
                             <>
-                                {assessmentTasksToDueDates[assessment_task_id]["due_date"] && dueDateString ? dueDateString : "N/A"}
+                                {assessmentTasksToDueDates[assessmentTaskId]["due_date"] && dueDateString ? dueDateString : "N/A"}
                             </>
                         )
                     }
@@ -332,7 +332,7 @@ class ViewAssessmentTasks extends Component {
                                     variant='contained'
 
                                     onClick={() => {
-                                        this.handleDownloadCsv(atId, "assessment_export_" + atId, assessment_task_id_to_assessment_task_name);
+                                        this.handleDownloadCsv(atId, "assessment_export_" + atId, assessmentTaskIdToAssessmentTaskName);
                                     }}
 
                                     aria-label='exportAssessmentTaskButton'
