@@ -57,7 +57,7 @@ class StudentCompletedAssessmentTasks extends Component {
                 </div>
             )
 
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !assessmentTasks || !completedAssessments) {
             return(
                 <Loading />
             )
