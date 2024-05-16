@@ -290,3 +290,30 @@ test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessme
         expectElementWithAriaLabelToBeInDocument(vatit);
     });
 });
+
+
+test("AssessmentDashboard.test.js Test 12: Should show", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+       expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
+        clickFirstElementWithAriaLabel(catb);
+    });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vatit);
+    });
+});
