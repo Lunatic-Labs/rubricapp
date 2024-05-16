@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewConsent from './ViewConsent.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -42,7 +43,7 @@ class AdminViewConsent extends Component {
         } else if (!isLoaded || !users) {
             return(
                 <div className='container'>
-                    <h1>Loading...</h1>
+                    <CircularProgress />
                 </div>
             )
 

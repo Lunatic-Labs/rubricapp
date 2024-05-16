@@ -4,7 +4,7 @@ import ViewUsers from './ViewUsers.js';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
-import { Box } from '@mui/material';
+import { Box, CircularProgress } from '@mui/material';
 
 
 
@@ -63,7 +63,7 @@ class AdminViewUsers extends Component {
         } else if (!isLoaded || !users || !roles) {
             return(
                 <div className='container'>
-                    <h1>Loading...</h1>
+                    <CircularProgress />
                 </div>
             )
 

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams.js';
 import ErrorMessage from '../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames } from '../../../utility.js';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -55,7 +56,7 @@ class StudentViewTeams extends Component {
         } else if (!isLoaded || !teams || !users) {
             return(
                 <div className='container'>
-                    <h1>Loading...</h1>
+                    <CircularProgress />
                 </div>
             )
 

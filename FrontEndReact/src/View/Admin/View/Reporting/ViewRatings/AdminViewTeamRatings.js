@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -54,7 +55,7 @@ class AdminViewTeamRatings extends Component {
     } else if (!isLoaded || !assessmentTasks) {
         return(
             <div className='container'>
-                <h1>Loading...</h1>
+                <CircularProgress />
             </div>
         )
 

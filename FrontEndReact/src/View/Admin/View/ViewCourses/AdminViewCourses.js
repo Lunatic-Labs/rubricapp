@@ -4,7 +4,7 @@ import ViewCourses from './ViewCourses.js';
 import AdminAddCourse from '../../Add/AddCourse/AdminAddCourse.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseCourseRoles } from '../../../../utility.js';
-import { Box, Button, Typography } from '@mui/material';
+import { Box, Button, CircularProgress, Typography } from '@mui/material';
 
 
 
@@ -43,7 +43,7 @@ class AdminViewCourses extends Component {
     } else if (!isLoaded || !courses) {
         return(
             <div className='container'>
-                <h1>Loading...</h1>
+                <CircularProgress />
             </div>
         )
     }

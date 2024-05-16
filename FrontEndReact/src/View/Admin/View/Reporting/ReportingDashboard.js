@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import AdminReportTabs from './AdminReportTabs';
+import { CircularProgress } from '@mui/material';
 
 
 
@@ -44,7 +45,7 @@ class ReportingDashboard extends Component {
       } else if (!isLoaded || !assessmentTasks) {
           return(
               <div className='container'>
-                  <h1>Loading...</h1>
+                  <CircularProgress />
               </div>
           )
       } else {
