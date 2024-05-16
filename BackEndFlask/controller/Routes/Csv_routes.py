@@ -11,15 +11,16 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from Functions.exportCsv import create_csv
-import os
 from models.assessment_task import get_assessment_task
 from models.user import get_user
 
-@bp.route('/csv_assessment_export', methods = ['POST'])
+
+
+@bp.route('/csv_assessment_export', methods = ['GET'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_completed_assessment_csv()->dict:
+def get_completed_assessment_csv() -> dict:
     """
     Description:
     Creates a csv that has the following info
@@ -40,16 +41,19 @@ def get_completed_assessment_csv()->dict:
 
         user = get_user(user_id)   # Trigger an error if not exists
 
-        file_name = f"{user.first_name}_{user.last_name}_{assessment.assessment_task_name}"
+        file_name = f"{user.first_name}_{user.last_name}_{assessment.assessment_task_name.replace(" ", "_")}.csv"
 
         create_csv(
             assessment_task_id,
             file_name
         )
 
-        return send_downloadable_file(os.path.abspath("./tempCsv/"+file_name), True)
+        csv_data = None
+
+        with open("./tempCsv/" + file_name) as fp:
+            csv_data = fp.read()
+        
+        return create_good_response({ "csv_data": csv_data.strip() }, 200, "csv_creation")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred attempting to generate the desired file: {e}", "csv creation", 400)
-#remember to delete the file after it has been given back to ensure we do not overfill
-#the server.
+        return create_bad_response(f"An error occurred attempting to generate the desired file: {e}", "csv_creation", 400)
