@@ -16,20 +16,60 @@ class ViewAssessmentTasks extends Component {
         this.state = {
             isLoaded: null,
             errorMessage: null,
-            csvCreation: null
+            csvCreation: null,
+            downloadedAssessment: null,
+            exportButtonId: {}
         }
 
-        this.handleDownloadCsv = (atId) => {
+        this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
             genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}`,
                 "csvCreation",
                 this
             );
+
+            var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
+
+            var newExportButtonJSON = this.state.exportButtonId;
+
+            newExportButtonJSON[assessmentName] = exportButtonId;
+
+            this.setState({
+                downloadedAssessment: assessmentName,
+                exportButtonId: newExportButtonJSON
+            });
+
+            document.getElementById(exportButtonId).setAttribute("disabled", true);
         }
     }
 
     componentDidUpdate() {
-        console.log("componentDidUpdate(): ", this.state.csvCreation["csv_data"]);
+        if(this.state.isLoaded && this.state.csvCreation) {
+            const fileData = this.state.csvCreation["csv_data"];
+
+            const blob = new Blob([fileData], { type: 'csv' });
+
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+
+            link.download = this.state.downloadedAssessment + ".csv";
+            
+            link.href = url;
+
+            link.click();
+
+            var assessmentName = this.state.downloadedAssessment;
+
+            setTimeout(() => {
+                document.getElementById(this.state.exportButtonId[assessmentName]).removeAttribute("disabled");
+            }, 10000);
+
+            this.setState({
+                isLoaded: null,
+                csvCreation: null
+            });
+        }
     }
 
     render() {
@@ -47,6 +87,12 @@ class ViewAssessmentTasks extends Component {
                 "due_date": formatDueDate(assessmentTasks[index]["due_date"], assessmentTasks[index]["time_zone"]),
                 "time_zone": assessmentTasks[index]["time_zone"]
             };
+        }
+
+        var assessment_task_id_to_assessment_task_name = {};
+
+        for(let index = 0; index < assessmentTasks.length; index++) {
+            assessment_task_id_to_assessment_task_name[assessmentTasks[index]["assessment_task_id"]] = assessmentTasks[index]["assessment_task_name"];
         }
 
         var state = navbar.state;
@@ -281,11 +327,12 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (atId) => {
                         return (
                                 <Button
+                                    id={"assessment_export_" + atId}
                                     className='primary-color'
                                     variant='contained'
 
                                     onClick={() => {
-                                        this.handleDownloadCsv(atId);
+                                        this.handleDownloadCsv(atId, "assessment_export_" + atId, assessment_task_id_to_assessment_task_name);
                                     }}
 
                                     aria-label='exportAssessmentTaskButton'
