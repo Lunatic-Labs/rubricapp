@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewAssessmentStatus from './ViewAssessmentStatus';
 import { genericResourceGET } from '../../../../../utility';
+import Loading from '../../../../Loading/Loading';
 
 
 
@@ -101,9 +102,7 @@ class AdminViewAssessmentStatus extends Component {
             )
         } else if (!isLoaded || !completedAssessments || !categories || !rubrics){
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else {
