@@ -72,6 +72,8 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
                 getResource = (getResource === "csvCreation") ? "csv_creation": getResource;
 
+                getResource = (getResource === "teamMembers") ? "team_members": getResource;
+
                 state[resource] = result['content'][getResource][0];
             }
 
