@@ -45,10 +45,11 @@ def create_feedback(feedback_data):
     new_feedback = Feedback(
         user_id=feedback_data["user_id"],
         completed_assessment_id=feedback_data["completed_assessment_id"],
-        feedback_time=datetime.strptime(feedback_data["feedback_time"], '%Y-%m-%dT%H:%M:%S'),
+        feedback_time=datetime.strptime(feedback_data["feedback_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
     )
 
     db.session.add(new_feedback)
+
     db.session.commit()
 
     return new_feedback
