@@ -5,13 +5,13 @@ from typing import TYPE_CHECKING
 import os
 import pytest
 
+#pytest.fail("HAND BRAKES ENGAGED!!!!!")
 
 def retrieve_file_path(file_name: str) -> str:
     return os.getcwd () +  os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, file_name)
 
 
 def test_should_fail_with_file_not_found(flask_app_mock: type) -> None:
-    #pytest.fail("HAND BRAKES ENGAGED!!!!!")
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_course(False)
