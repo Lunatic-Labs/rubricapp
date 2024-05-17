@@ -156,6 +156,18 @@ h4, h5 {
   color: red;
 }
 
+@media (max-heigth: 1500px) {
+  .check-in-button {
+      margin-bottom: 10px !important;
+  }
+}
+
+@media (max-width: 1000px) {
+  .check-in-button {
+      margin-bottom: 10px !important;
+  }
+}
+
 /* OLD CSS */
 
 /*-------------------------------------------------
@@ -219,6 +231,8 @@ input {
     margin-top: 0;
   }
 }
+
+
 
 /*-------------------------------------------------
  Was from App.css
