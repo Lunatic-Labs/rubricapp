@@ -8,6 +8,7 @@ import ValidateReset from './ValidateReset.js';
 import { apiUrl } from '../../App.js';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import Loading from '../Loading/Loading.js';
 
 
 
@@ -302,9 +303,7 @@ class Login extends Component {
             this.handleNewAccessToken();
 
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
         }
 

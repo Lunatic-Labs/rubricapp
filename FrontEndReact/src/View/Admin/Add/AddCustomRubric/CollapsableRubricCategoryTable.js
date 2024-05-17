@@ -113,18 +113,47 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             .map((category) => (
                               <TableRow key={category["category_id"]}>
                                 <TableCell component="th" scope="row" aria-label="rubricCategoryNames">
-                                  { !readOnly &&
-                                    <Checkbox
-                                      checked={checkedCategories.includes(
-                                        category["category_id"],
-                                      )}
-                                    aria-label="rubricNamesCheckBox"
-                                      onChange={() =>
-                                        handleCheckboxChange(category["category_id"])
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                      justifyContent: readOnly ? "space-around": "",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                      }}
+                                    >
+                                      { !readOnly &&
+                                        <Checkbox
+                                          checked={checkedCategories.includes(
+                                            category["category_id"],
+                                          )}
+                                        aria-label="rubricNamesCheckBox"
+                                          onChange={() =>
+                                            handleCheckboxChange(category["category_id"])
+                                          }
+                                        />
                                       }
-                                    />
-                                  }
-                                  {category["category_name"]}
+                                      <p
+                                        style={{
+                                          marginTop: "1rem",
+                                          minWidth: "10rem"
+                                        }}
+                                      >{category["category_name"]}</p>
+                                    </div>
+
+                                    { readOnly &&
+                                      <p
+                                        style={{
+                                          marginTop: "1rem",
+                                          minWidth: "10rem"
+                                        }}
+                                      >{category["default_rubric"] ? category["default_rubric"] : "N/A"}</p>
+                                    }
+                                  </div>
                                 </TableCell>
                               </TableRow>
                             ))}

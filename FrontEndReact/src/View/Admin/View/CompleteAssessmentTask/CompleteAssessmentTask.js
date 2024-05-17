@@ -5,6 +5,7 @@ import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -146,7 +147,7 @@ class CompleteAssessmentTask extends Component {
 
         } else if (!isLoaded || !rubrics || !teams || !users || !completedAssessments) {
             return (
-                <h1>Loading...</h1>
+                <Loading />
             );
 
         } else {

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewCompletedAssessmentTasks from './ViewCompletedAssessmentTasks.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
+import Loading from '../../../Loading/Loading.js';
 
 
 class StudentCompletedAssessmentTasks extends Component {
@@ -56,11 +57,9 @@ class StudentCompletedAssessmentTasks extends Component {
                 </div>
             )
 
-        } else if (!isLoaded) {
+        } else if (!isLoaded || !assessmentTasks || !completedAssessments) {
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else {
