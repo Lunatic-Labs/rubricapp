@@ -156,18 +156,6 @@ h4, h5 {
   color: red;
 }
 
-@media (max-heigth: 1500px) {
-  .check-in-button {
-      margin-bottom: 10px !important;
-  }
-}
-
-@media (max-width: 1000px) {
-  .check-in-button {
-      margin-bottom: 10px !important;
-  }
-}
-
 #slider {
     height: 0.75rem;
     width: 100% !important;
