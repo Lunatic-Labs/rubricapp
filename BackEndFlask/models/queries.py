@@ -689,7 +689,9 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
         UserCourse.course_id,
-        AssessmentTask.assessment_task_name
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.rubric_id,
+        Team.team_name
     ).join(
         UserCourse, UserCourse.user_id == CompletedAssessment.user_id
     ).join(
@@ -698,6 +700,9 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.user_id == user_id,
         UserCourse.course_id == course_id,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).join(
+        Team,
+        Team.team_id == CompletedAssessment.team_id
     ).all()
 
     return complete_assessments
