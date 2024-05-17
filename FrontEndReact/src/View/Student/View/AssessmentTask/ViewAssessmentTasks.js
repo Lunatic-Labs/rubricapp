@@ -9,9 +9,9 @@ import { getHumanReadableDueDate } from '../../../../utility';
 class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
-        
+
         this.isObjectFound = (atId) => {
-            var completedAssessments = this.props.completedAssessments
+            var completedAssessments = this.props.completedAssessments;
 
             if(completedAssessments) {
                 for (let i = 0; i < completedAssessments.length; i++) {
@@ -85,7 +85,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (atId) => {
                         return (
                             <Box>
-                                {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] && role["role_id"] === 5 &&
+                                {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] &&
                                     <Button
                                         style={{ marginRight: '10px', marginBottom: this.props.checkin.indexOf(atId) === -1 ? '0px' : '10px' }}
                                         className='primary-color'
