@@ -575,24 +575,46 @@ def get_categories_for_user_id(user_id):
     Parameters:
     user_id = int (The id of a user)
     """
-    all_categories_for_user_id = db.session.query(
-        Rubric.rubric_id,
-        Rubric.rubric_name,
+    all_custom_category_ids = db.session.query(
         Category.category_id,
         Category.category_name,
         Category.description,
         Category.rating_json,
+        Rubric.rubric_id,
+        Rubric.rubric_name,
+        Rubric.owner,
     ).join(
         RubricCategory,
-        Rubric.rubric_id == RubricCategory.rubric_id
+        RubricCategory.category_id == Category.category_id
     ).join(
-        Category,
-        Category.category_id == RubricCategory.category_id
+        Rubric,
+        Rubric.rubric_id == RubricCategory.rubric_id
     ).filter(
         Rubric.owner == user_id
+    ).subquery()
+
+    all_default_categories = db.session.query(
+        Category.category_id,
+        Rubric.rubric_name
+    ).join(
+        RubricCategory,
+        RubricCategory.category_id == Category.category_id
+    ).join(
+        Rubric,
+        Rubric.rubric_id == RubricCategory.rubric_id
+    ).filter(
+        Rubric.owner == 1,
+    ).subquery()
+
+    combined = db.session.query(
+        all_custom_category_ids,
+        all_default_categories.c.rubric_name.label("default_rubric"),
+    ).outerjoin(
+        all_default_categories,
+        all_default_categories.c.category_id == all_custom_category_ids.c.category_id
     ).all()
 
-    return all_categories_for_user_id
+    return combined
 
 
 @error_log
