@@ -30,7 +30,8 @@ from models.utility import (
 )
 
 from models.queries import (
-    get_students_by_team_id
+    get_students_by_team_id,
+    get_assessment_task_by_course_id_and_role_id
 )
 
 
@@ -53,6 +54,22 @@ def get_all_assessment_tasks():
             one_assessment_task = get_assessment_task(assessment_task_id)
 
             return create_good_response(assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
+
+        if request.args and request.args.get("course_id") and request.args.get("role_id"):
+            course_id = int(request.args.get("course_id"))
+
+            get_course(course_id)  # Trigger an error if not exists.
+
+            role_id = int(request.args.get("role_id"))
+
+            get_role(role_id)  # Trigger an error if not exists.
+
+            all_assessment_tasks = get_assessment_task_by_course_id_and_role_id(course_id, role_id)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
+                200, "assessment_tasks",
+            )
 
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
