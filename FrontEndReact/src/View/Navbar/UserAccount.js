@@ -7,6 +7,7 @@ import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App.js';
 import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Email, AccountCircle } from '@mui/icons-material';
 
 class UserAccount extends Component {
     constructor(props) {
@@ -181,7 +182,6 @@ class UserAccount extends Component {
                 (result) => {
                     if (result['success']) {
                         this.setState({
-                            isPasswordSet: true,
                             resetPasswordDialogOpen: false
 
                         });
@@ -204,6 +204,7 @@ class UserAccount extends Component {
     componentDidMount() {
         const cookies = new Cookies();
         const user = cookies.get('user');
+        console.log(user)
 
         if (user) {
             this.setState({
@@ -239,20 +240,29 @@ class UserAccount extends Component {
                 <>
                    
 
-                    <Box>
-                    <Typography variant="h4">My Account</Typography>
-                    {user && (
-                        <>
-                            <Typography variant="h6">Name: {user.name}</Typography>
-                            <Typography variant="h6">Email: {user.email}</Typography>
-                            <Button variant="contained" color="primary" onClick={this.handleResetPasswordClick}>
-                                Reset Password
-                            </Button>
-                        </>
-                    )}
+                    <Box className="content-spacing">
+                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="MyAccount">My Account</Typography>
                     </Box>
+                    {user && (
+                        <Box>
+                            <Box display="flex" alignItems="center" mb={2}>
+                                <AccountCircle fontSize="large" />
+                                <Typography variant="h6" ml={1}>Name: {user.user_name}</Typography>
+                            </Box>
+                            <Box display="flex" alignItems="center" mb={2}>
+                                <Email fontSize="large" />
+                                <Typography variant="h6" ml={1}>Email: {user.email}</Typography>
+                            </Box>
+                            <Box>
+                                <Button variant="contained" color="primary" onClick={this.handleResetPasswordClick}>
+                                    Reset Password
+                                </Button>
+                            </Box>
+                            
+                        </Box>
+                    )}
                     <Box>
-                        <Dialog  open={resetPasswordDialogOpen} onClose={this.handleDialogClose}>
+                        <Dialog maxWidth="sm" fullWidth  open={resetPasswordDialogOpen} onClose={this.handleDialogClose}>
                         {errorMessage &&
                       
                             <ErrorMessage errorMessage={errorMessage} />
@@ -260,7 +270,7 @@ class UserAccount extends Component {
                         }
                             <DialogTitle>Reset Password</DialogTitle>
                             <DialogContent>
-                            <FormControl>
+                            <FormControl sx={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
                                     <form aria-label="setNewPasswordFormLabel">
                                         <Box>
                                             <TextField
