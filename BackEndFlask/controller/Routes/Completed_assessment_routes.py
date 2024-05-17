@@ -121,7 +121,8 @@ class CompletedAssessmentSchema(ma.Schema):
             'done',
             'last_update',
             'rating_observable_characteristics_suggestions_data',
-            'course_id'
+            'course_id',
+            'rubric_id'
         )
 
 
