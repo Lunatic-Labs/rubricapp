@@ -76,18 +76,17 @@ def RandomAssignTeams(observer_id, course_id, team_size=4):
     use_tas = get_course_use_tas(course_id)
     user_courses = get_user_courses_by_course_id(course_id)
     tas = filter_users_by_role(user_courses, 4)
-    
-    if use_tas and tas.__len__() == 0:
-        raise NoTAsListed
+    #if use_tas and tas.__len__() == 0:
+    #    raise NoTAsListed
     
     students = filter_users_by_role(user_courses, 5)
     if students.__len__() == 0:
         raise NoStudentsInCourse
-    
+
     number_of_teams = group_num(students.__len__(), team_size)
     teams = []
     for team in range(number_of_teams):
-        teams.append(make_teams(team, (lambda: observer_id, lambda: tas[team%tas.__len__()].user_id)[use_tas](), course_id))
+        teams.append(make_teams(team, observer_id, course_id))
     team_users = assign_users_to_teams(students, teams)
 
     result = {
