@@ -9,11 +9,11 @@ import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
 import ExpandMoreFilled from './NavbarImages/ExpandMoreFilled.png';
-// import Avatar from '@mui/material/Avatar';
+import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
-// import MenuItem from '@mui/material/MenuItem';
+import MenuItem from '@mui/material/MenuItem';
 // import ListItemIcon from '@mui/material/ListItemIcon';
-// import Divider from '@mui/material/Divider';
+import Divider from '@mui/material/Divider';
 // import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout.js';
 
@@ -105,11 +105,13 @@ export default function ButtonAppBar(props) {
               anchorOrigin={{ horizontal: 'right', vertical: 'bottom' }}
             >
             {/* Will be commented out until new features are added! */}
-              {/* <MenuItem onClick={handleClose}>
+              <MenuItem  onClick={() => {
+                props.setNewTab("UserAccount");
+              }}>
                 <Avatar /> My account
-              </MenuItem> */}
+              </MenuItem>
 
-              {/* <Divider /> */}
+              <Divider />
 
               {/* <MenuItem onClick={handleClose}>
                 <ListItemIcon>
