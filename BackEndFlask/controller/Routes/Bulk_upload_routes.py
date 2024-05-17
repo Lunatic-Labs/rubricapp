@@ -14,19 +14,26 @@ from controller.Route_response import create_bad_response, create_good_response
 def upload_CSV():
     try:
         file = request.files['csv_file']
+
         if not file:
             return create_bad_response("Unsuccessfully uploaded a .csv file! No file selected.", "users", 400)
+
         extension = os.path.splitext(file.filename)
+
         if(extension[1]!= ".csv" and extension[1] != ".xlsx"):
             return create_bad_response(f"Unsuccessfully uploaded a {extension[1]} file! Wrong Format", "users", 400)
 
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
+
             user_id = int(request.args.get("user_id"))
 
             directory = os.path.join(os.getcwd(), "Test")
+
             os.makedirs(directory, exist_ok=True)
+
             file_path = os.path.join(directory, file.filename)
+
             file.save(file_path)
 
             genericImport.generic_csv_to_db(file_path, user_id, course_id)
@@ -37,6 +44,7 @@ def upload_CSV():
 
         else:
             response = create_bad_response(f"Unsuccessfully uploaded a file! Course_id was not passed.", "users", 400)
+
             return response, response.get("status")
 
     except Exception as e:

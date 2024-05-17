@@ -165,7 +165,7 @@ class AdminBulkUpload extends Component {
                                         {this.props.tab === "AdminTeamBulkUpload" &&
                                             <Box sx={{ display:"flex", flexDirection:"row", alignItems:"center" }}>
                                                 <Typography variant='h8'>
-                                                    TA Email, Team Name, "Last1, First1", Student Email 1, Optional LMS ID, "Last2, First2", Student Email 2, Optional LMS ID
+                                                    TA Email<br></br>Team Name<br></br>"Last1, First1", Student Email 1, Optional LMS ID<br></br>"Last2, First2", Student Email 2, Optional LMS ID
                                                 </Typography>
                                             </Box>
                                         }

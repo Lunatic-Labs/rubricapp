@@ -30,7 +30,7 @@ var mcracrb = "myCustomRubricsAddCustomRubricButton"
 
 
 
-test("NOTE: Tests 1-_ will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 

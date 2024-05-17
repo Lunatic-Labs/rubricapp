@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -45,7 +46,9 @@ class StudentViewAssessmentTask extends Component {
             checkin,
             rubrics,
         } = this.state;
-        
+
+        var navbar = this.props.navbar;
+
         var role = this.props.role;
 
         if (errorMessage) {
@@ -60,22 +63,16 @@ class StudentViewAssessmentTask extends Component {
 
         } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics) {
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else {
-            var navbar = this.props.navbar;
-            
-            var studentAssessments = assessmentTasks.filter((at) => (at["role_id"] === role["role_id"])); // keeps only assessment relevant to this role
-
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
                         role={role}
-                        assessmentTasks={studentAssessments}
+                        assessmentTasks={assessmentTasks}
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
