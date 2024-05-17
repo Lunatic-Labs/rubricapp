@@ -200,7 +200,6 @@ def create_user(user_data):
     db.session.add(user_data)
 
     db.session.commit()
-
     return user_data
 
 

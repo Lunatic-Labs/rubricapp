@@ -6,6 +6,7 @@ from models.team_user import *
 import pandas as pd
 import os
 import re
+import random
 
 # TODO: Need to write a test for both student_import and team_import to make sure
 #   that is_valid_email works as should!
@@ -113,7 +114,7 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
-    teacher["email"] = f"testteacher@gmail.com"
+    teacher["email"] = f"testTeacher{random.randint(0,100000)}@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
 
@@ -146,7 +147,7 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     student = template_user
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
-    student["email"] = f"teststudent@gmail.com"
+    student["email"] = f"teststudent{random.randint(0, 10000)}@gmail.com"
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
@@ -157,7 +158,6 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
             # role_id of 5 is a "Student"
             "role_id": 5
         })
-        
     result = {
         "course_id": new_course.course_id,
         "admin_id": new_teacher.user_id,

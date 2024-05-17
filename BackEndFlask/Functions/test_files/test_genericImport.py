@@ -1,9 +1,7 @@
 from Functions.customExceptions import *
 from Functions.genericImport import *
 from Functions.test_files.PopulationFunctions import *
-from typing import TYPE_CHECKING
 import os
-import pytest
 
 #pytest.fail("HAND BRAKES ENGAGED!!!!!")
 
