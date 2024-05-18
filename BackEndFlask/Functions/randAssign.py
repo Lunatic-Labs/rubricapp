@@ -72,12 +72,13 @@ def assign_users_to_teams(students, teams):
 #   - returns a json object containing the TAs, students, teams, and team_users
 #       - unless an error occurs
 #           - returns the error message
-def RandomAssignTeams(observer_id, course_id, team_size=4):
+def RandomAssignTeams(observer_id, course_id, team_size=4, tas_exception=False):
     use_tas = get_course_use_tas(course_id)
     user_courses = get_user_courses_by_course_id(course_id)
     tas = filter_users_by_role(user_courses, 4)
-    #if use_tas and tas.__len__() == 0:
-    #    raise NoTAsListed
+    if use_tas and tas.__len__() == 0:
+        if(not tas_exception): 
+            raise NoTAsListed
     
     students = filter_users_by_role(user_courses, 5)
     if students.__len__() == 0:

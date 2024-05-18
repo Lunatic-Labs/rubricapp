@@ -72,7 +72,7 @@ def test_no_ta_ten_students(flask_app_mock: type) -> None:
 
             random = RandomAssignTeams(
                 result["observer_id"],
-                result["course_id"]
+                result["course_id"], tas_exception=True
             )
 
             random_assign_teams_created = get_team_by_course_id(result["course_id"])
@@ -177,7 +177,6 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock: type) -> None:
                     result["course_id"]
                 )
                 assert False, "Should not reach this line"
-
             except Exception as e: 
                 assert isinstance(e, NoTAsListed), f"Expected NoTAsListed, got {e}"
 
@@ -200,27 +199,27 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock: type) -> None:
 ##   - ensures that RandomAssignTeams():
 ##       - returns the error that no students were found
 ##           because no students where enrolled in the test course
-#def test_no_students_in_course_error(flask_app_mock):
-#    with flask_app_mock.app_context():
-#        try:
-#            result = create_one_admin_ta_student_course(True, False, True)
-#
-#            try:
-#                random = RandomAssignTeams(
-#                    result["observer_id"],
-#                    result["course_id"]
-#                )
-#                assert False, "Should not reach this line"
-#
-#            except Exception as e: 
-#                assert isinstance(e, NoStudentsInCourse), f"Expected NoStudentsInCourse but got {e}"
-#
-#            delete_all_teams_team_members(result["course_id"])
-#            delete_all_users_user_courses(result["course_id"])
-#            delete_one_admin_ta_student_course(result)
-#
-#        except:
-#            delete_all_teams_team_members(result["course_id"])
-#            delete_all_users_user_courses(result["course_id"])
-#            delete_one_admin_ta_student_course(result)
-#            raise
+def test_no_students_in_course_error(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            result = create_one_admin_ta_student_course(True, False, True)
+
+            try:
+                random = RandomAssignTeams(
+                    result["observer_id"],
+                    result["course_id"]
+                )
+                assert False, "Should not reach this line"
+
+            except Exception as e: 
+                assert isinstance(e, NoStudentsInCourse), f"Expected NoStudentsInCourse but got {e}"
+
+            delete_all_teams_team_members(result["course_id"])
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
+
+        except:
+            delete_all_teams_team_members(result["course_id"])
+            delete_all_users_user_courses(result["course_id"])
+            delete_one_admin_ta_student_course(result)
+            raise
