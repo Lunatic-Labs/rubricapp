@@ -25,6 +25,7 @@ var vcib = "viewCourseIconButton";
 var catb = "completedAssessmentTasksButton";
 var catvib = "completedAssessmentTasksViewIconButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
+var mhbb = "mainHeaderBackButton";
 
 
 
@@ -101,6 +102,56 @@ test("TADashboard.test.js Test 3: Should render the view completed assessment ta
             clickFirstElementWithAriaLabel(catvib);
 
             expectElementWithAriaLabelToBeInDocument(vatit);
+        }, 3000);
+    });
+});
+
+
+test("TADashboard.test.js Test 4: Should render to the course dashboard when the back button is clicked on my Assessment Tasks and Completed Assessments page.", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+    });
+
+    clickElementWithAriaLabel(mhbb);
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(ct);
+        }, 3000);
+    });
+});
+
+
+test("TADashboard.test.js Test 5: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on  page.", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+    });
+
+    clickElementWithAriaLabel(mhbb);
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(ct);
         }, 3000);
     });
 });
