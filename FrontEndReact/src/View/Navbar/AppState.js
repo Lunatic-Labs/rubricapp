@@ -670,7 +670,6 @@ class AppState extends Component {
 
                         <StudentViewAssessmentTaskInstructions
                             navbar={this}
-                            userRole={this.props.isAdmin}
                         />
                     </Box>
                 }
@@ -727,7 +726,6 @@ class AppState extends Component {
 
                         <CompleteAssessmentTask
                             navbar={this}
-                            userRole={this.props.isAdmin}
                         />
                     </Box>
                 }
