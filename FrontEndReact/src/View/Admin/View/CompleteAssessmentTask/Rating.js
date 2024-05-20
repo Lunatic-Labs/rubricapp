@@ -101,7 +101,7 @@ class Rating extends Component {
           }}
 
           onChange={(event) => {
-            if(this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)) return;
+            if(this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin) return;
 
             setSliderValue(
               this.props.teamValue,
