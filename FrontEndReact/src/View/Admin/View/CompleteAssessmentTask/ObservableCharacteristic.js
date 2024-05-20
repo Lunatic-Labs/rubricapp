@@ -28,6 +28,7 @@ class ObservableCharacteristic extends Component {
       }));
 
       var newData = "";
+
       for (var i = 0; i < this.props.observableCharacteristics.length; i++) {
         newData += i === this.props.id ? (this.props.observableCharacteristics[i] === "0" ? "1" : "0") : this.props.observableCharacteristics[i];
       }

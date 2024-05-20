@@ -9,6 +9,7 @@ import TeamsTab from './TeamsTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
+import Alert from '@mui/material/Alert';
 
 
 
@@ -23,7 +24,8 @@ class Form extends Component {
             currentTeamTab: this.props.form.teams[0]["team_id"],
             teamData: this.props.form.teamInfo,
             categoryList: null,
-            section: null
+            section: null,
+            displaySavedNotification: false
         }
 
         this.handleTeamChange = (event, newValue) => {
@@ -89,6 +91,8 @@ class Form extends Component {
         }
 
         this.setSliderValue = (teamValue, categoryName, rating) => {
+            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
+
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
@@ -102,7 +106,7 @@ class Form extends Component {
         };
 
         this.setObservableCharacteristics = (teamValue, categoryName, observableCharacteristics) => {
-            if(this.isTeamCompleteAssessmentComplete(teamValue)) return;
+            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
@@ -117,7 +121,7 @@ class Form extends Component {
         }
 
         this.setSuggestions = (teamValue, categoryName, suggestions) => {
-            if(this.isTeamCompleteAssessmentComplete(teamValue)) return;
+            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
@@ -132,6 +136,8 @@ class Form extends Component {
         }
 
         this.setComments = (teamValue, categoryName, comments) => {
+            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
+
             this.setState(prevState => {
                 const updatedTeamData = this.deepClone(prevState.teamData);
 
@@ -151,7 +157,7 @@ class Form extends Component {
 
             var observableCharacteristic = category["observable_characteristics"].includes("1");
 
-            var suggestions = category["suggestions"].includes("1");
+            var suggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"] ? category["suggestions"].includes("1"): true;
 
             var status = null;
 
@@ -276,10 +282,16 @@ class Form extends Component {
         } else {
             var cookies = new Cookies();
 
-            if(navbar.props.isAdmin) {
-                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments);
+            var completedAssessment = null;
 
-                var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
+            var completedAssessmentId = "";
+
+            if(navbar.props.isAdmin) {
+                completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments);
+
+                if(completedAssessment) {
+                    completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
+                }
             }
 
             var route = navbar.props.isAdmin ? `/completed_assessment${completedAssessmentId}` :
@@ -303,9 +315,19 @@ class Form extends Component {
             }
         }
 
+        this.setState({
+            displaySavedNotification: true
+        });
+
         setTimeout(() => {
             this.props.handleDone();
         }, 1000);
+
+        setTimeout(() => {
+            this.setState({
+                displaySavedNotification: false
+            });
+        }, 3000);
     };
 
     componentDidMount() {
@@ -337,8 +359,13 @@ class Form extends Component {
                 <Box sx={{
                     display:"flex",
                     justifyContent:"end",
-                    gap:"20px"
+                    gap:"20px",
+                    height: "2.5rem"
                 }}>
+                    { this.state.displaySavedNotification &&
+                        <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
+                    }
+
                      <Button
                         variant="text"
                         color="primary"
@@ -359,6 +386,8 @@ class Form extends Component {
                         onClick={() => {
                             this.handleSubmit(true);
                         }}
+
+                        disabled={this.state.displaySavedNotification}
                     >
                         Save
                     </Button>
