@@ -63,7 +63,7 @@ class Rating extends Component {
           justifyContent:'center'
         }}
 
-        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
       >
         <Slider 
           id="slider"
@@ -114,7 +114,7 @@ class Rating extends Component {
             });
           }}
 
-          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
         />
       </Box>
     )

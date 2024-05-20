@@ -301,18 +301,20 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
                         return (
-                                <Button
-                                    className='primary-color'
-                                    variant='contained'
-                                    onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
-                                    }}
-                                    aria-label='completeAssessmentTaskButton'
-                                >
-                                    Complete
-                                </Button>
+                            <Button
+                                className='primary-color'
+
+                                variant='contained'
+
+                                onClick={() => {
+                                    navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                }}
+
+                                aria-label='completeAssessmentTaskButton'
+                            >
+                                Complete
+                            </Button>
                         )
-                        
                     }
                 }
             },
