@@ -37,7 +37,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
     if (errorMessage) {
       return(
         <div className="container">
-          <ErrorMessage 
+          <ErrorMessage
             fetchedResource={"Instructions"}
             errorMessage={errorMessage}
           />
@@ -52,8 +52,8 @@ class StudentViewAssessmentTaskInstructions extends Component {
     } else {
       return(
         <ViewAssessmentTaskInstructions
-          rubrics={rubrics}
           navbar={this.props.navbar}
+          rubrics={rubrics}
         />
       )
     }

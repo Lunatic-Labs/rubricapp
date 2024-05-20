@@ -216,6 +216,7 @@ class Form extends Component {
                     section.push(
                         <Section
                             navbar={this.props.navbar}
+                            isDone={this.isTeamCompleteAssessmentComplete(this.state.teamValue)}
                             category={category}
                             rubric={this.props.form.rubric}
                             teamValue={this.state.teamValue}
@@ -275,15 +276,15 @@ class Form extends Component {
         } else {
             var cookies = new Cookies();
 
-            if(this.props.userRole) {
+            if(navbar.props.isAdmin) {
                 var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments);
 
                 var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
             }
-            
-            var route = this.props.userRole ? `/completed_assessment${completedAssessmentId}` :
+
+            var route = navbar.props.isAdmin ? `/completed_assessment${completedAssessmentId}` :
             `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
-            
+
             var assessmentData = {
                 "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
                 "rating_observable_characteristics_suggestions_data": selected,
@@ -293,8 +294,8 @@ class Form extends Component {
                 "last_update": date,
                 done: done,
             };
-            
-            if (this.props.userRole) {
+
+            if (navbar.props.isAdmin) {
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {
