@@ -96,7 +96,9 @@ class ViewAssessmentTasks extends Component {
 
                                         style={{
                                             width: "fit-content",
-                                            margin: "5px"
+                                            margin: "5px",
+                                            // display:  (assessmentTasks.find((at) => at["assessment_task_id"] === atId))["role_id"] === 5 ? "none" : "block"
+                                            display:  role["role_id"] === 5 ? "none" : "block"
                                         }}
 
                                         variant='contained'
