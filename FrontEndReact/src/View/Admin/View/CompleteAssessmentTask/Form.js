@@ -342,6 +342,7 @@ class Form extends Component {
                         variant="text"
                         color="primary"
                         startIcon={<RefreshIcon />}
+                        arialabel="refreshButton"
 
                         onClick={() => {
                             this.props.refreshTeams();

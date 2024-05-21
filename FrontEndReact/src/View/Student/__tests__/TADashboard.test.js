@@ -27,6 +27,11 @@ var catvib = "completedAssessmentTasksViewIconButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var mhbb = "mainHeaderBackButton";
 var vaticb = "viewAssessmentTaskInstructionsContinueButton";
+var rs = "ratingsSection";
+var ocs = "observableCharacteristicsSection";
+var sfis = "suggestionsForImprovementSection";
+var cbs = "commentBoxSection";
+var rb = "refreshButton";
 
 
 
@@ -133,7 +138,7 @@ test("TADashboard.test.js Test 4: Should render to the course dashboard when the
 });
 
 
-test("TADashboard.test.js Test 5: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on page.", async () => {
+test("TADashboard.test.js Test 5: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on the viewAssessmentTaskInstructions page.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -189,10 +194,63 @@ test("TADashboard.test.js Test 6: Should render to the Feedback page of the Asse
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(vatit);
 
-            clickElementWithAriaLabel(mhbb);
+            clickElementWithAriaLabel(vaticb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+});
+
+
+test("TADashboard.test.js Test 7: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on the sections page.", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+
+        clickElementWithAriaLabel(catb);
+    });
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vatit);
+
+            clickElementWithAriaLabel(vaticb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
         }, 3000);
     });
     
+    clickElementWithAriaLabel(mhbb);
+
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(matt);
@@ -200,4 +258,87 @@ test("TADashboard.test.js Test 6: Should render to the Feedback page of the Asse
             expectElementWithAriaLabelToBeInDocument(catt);
         }, 3000);
     });
+});
+
+test("TADashboard.test.js Test 8: Should render to the sections page when the refresh button is clicked, which ensures that everything you tried to select gets reverted back to its original state.", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+
+        clickElementWithAriaLabel(catb);
+    });
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vatit);
+
+            clickElementWithAriaLabel(vaticb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+    
+    clickElementWithAriaLabel(rb);
+
+});
+
+
+test("TADashboard.test.js Test 9: Should render to the sections page when the refresh button is clicked.", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(matt);
+
+        expectElementWithAriaLabelToBeInDocument(catt);
+
+        clickElementWithAriaLabel(catb);
+    });
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vatit);
+
+            clickElementWithAriaLabel(vaticb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+    
+    clickElementWithAriaLabel(rb);
+
 });

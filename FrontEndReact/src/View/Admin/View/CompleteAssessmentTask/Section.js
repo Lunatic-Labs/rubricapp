@@ -98,12 +98,12 @@ class Section extends Component {
 
         return (
             <Box id="rating">
-                <Box className="assessment-task-spacing">
+                <Box className="assessment-task-spacing" aria-label="ratingsSection">
                     <FormControl>
                         <Box className="assessment-card">
                             <h5>Ratings</h5>
 
-                            <Typography sx={{fontSize: "18px"}}>{ rating["description"] }</Typography>
+                            <Typography sx={{fontSize: "18px"}} >{ rating["description"] }</Typography>
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
@@ -116,7 +116,7 @@ class Section extends Component {
                             </Box>
                         </Box>
 
-                        <Box className="assessment-card" >
+                        <Box className="assessment-card" aria-label="observableCharacteristicsSection">
                             <h5>Observable Characteristics</h5>
 
                             <Box className="checkbox-spacing">
@@ -125,7 +125,7 @@ class Section extends Component {
                         </Box>
 
                         {rating["show_suggestions"] &&
-                            <Box className="assessment-card">
+                            <Box className="assessment-card" aria-label="suggestionsForImprovementSection">
 
                                 <h5>Suggestions For Improvement</h5>
 
@@ -135,7 +135,7 @@ class Section extends Component {
                             </Box>
                         }
 
-                        <Box className="assessment-card">
+                        <Box className="assessment-card" aria-label="commentBoxSection">
                             <Box><h5>Comment Box</h5></Box>
                             <TextArea
                                 navbar={this.props.navbar}
