@@ -97,8 +97,7 @@ class ViewAssessmentTasks extends Component {
                                         style={{
                                             width: "fit-content",
                                             margin: "5px",
-                                            // display:  (assessmentTasks.find((at) => at["assessment_task_id"] === atId))["role_id"] === 5 ? "none" : "block"
-                                            display:  role["role_id"] === 5 ? "none" : "block"
+                                            display:  role["role_id"] === 5 ? "block" : "none"
                                         }}
 
                                         variant='contained'
@@ -120,7 +119,6 @@ class ViewAssessmentTasks extends Component {
                                     }}
 
                                     variant='contained'
-                                    //The first thing it checks is to see if the assessment_task id exists in array. The second thing checks to see if assessment_taks matches the id. The following thing is to check to see if the role_id equal student or if we complete an assessment.
                                     disabled={(this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5) || this.isObjectFound(atId) === true} 
 
                                     onClick={() => {
