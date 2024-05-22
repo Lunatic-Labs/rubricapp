@@ -24,11 +24,14 @@ class AdminViewRatings extends Component {
     this.fetchData = () => {
       var chosenCourse = this.props.navbar.state.chosenCourse;
 
-      // Fetch student ratings for the chosen assessment task
-      genericResourceGET(
-        `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
-        "ratings", this
-      );
+      if(this.props.chosenAssessmentId !== "") {
+        // Fetch student ratings for the chosen assessment task
+
+        genericResourceGET(
+          `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
+          "ratings", this
+        );  
+      }
 
       // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
       var rubricId = 1;
@@ -80,7 +83,7 @@ class AdminViewRatings extends Component {
         </Box>
       )
 
-    } else if (!isLoaded || !ratings || !categories) {
+    } else if (!isLoaded || (!ratings && this.props.chosenAssessmentId !== "") || !categories) {
       return(
         <Loading />
       )
@@ -98,10 +101,7 @@ class AdminViewRatings extends Component {
 
           <Box>
             <ViewRatingsTable
-              assessmentTasks={this.props.assessmentTasks}
-              chosenAssessmentId={this.props.chosenAssessmentId}
-              setChosenAssessmentId={this.props.setChosenAssessmentId}
-              ratings={ratings}
+              ratings={ratings ? ratings : []}
               categories={categories}
             />
           </Box>
