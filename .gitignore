@@ -42,3 +42,9 @@ BackEndFlask/logs/all.log
 BackEndFlask/models/hidden.py
 BackEndFlask/logs/all.log
 .vscode
+
+# Nginx configuration files
+/etc/nginx/sites-available/*
+
+# SSL/TLS certificate files
+/etc/letsencrypt/live/*
