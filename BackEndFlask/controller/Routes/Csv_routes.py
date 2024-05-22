@@ -16,11 +16,13 @@ from models.user import get_user
 
 
 
-@bp.route('/csv_assessment_export', methods = ['POST'])
-#@jwt_required()
-#@bad_token_check()
-#@AuthCheck()
-def get_completed_assessment_csv()->dict:
+
+
+@bp.route('/csv_assessment_export', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_completed_assessment_csv() -> dict:
     """
     Description:
     Creates a csv that has the following info
