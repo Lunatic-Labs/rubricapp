@@ -33,7 +33,7 @@ test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test("AdminAddCourse.test.js Test 1: Should render both assessment tables if valid TA information is input to login", async () => {
+test("TADashboard.test.js Test 1: Should render both assessment tables if valid TA information is input to login", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
@@ -56,7 +56,7 @@ test("AdminAddCourse.test.js Test 1: Should render both assessment tables if val
 });
 
 
-test("AdminAddCourse.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked", async () => {
+test("TADashboard.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -81,7 +81,7 @@ test("AdminAddCourse.test.js Test 2: Should render the completed assessment task
 });
 
 
-test("AdminAddCourse.test.js Test 3: Should render the view completed assessment task page if the view button is clicked", async () => {
+test("TADashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {

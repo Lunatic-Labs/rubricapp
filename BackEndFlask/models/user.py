@@ -163,7 +163,7 @@ def user_already_exists(user_data):
     if user is None:
         return None
 
-    elif check_password_hash(user.password, user_data["password"]) is False:
+    elif "password" in user_data and check_password_hash(user.password, user_data["password"]) is False:
         raise EmailAlreadyExists(user_data["email"])
 
     return user

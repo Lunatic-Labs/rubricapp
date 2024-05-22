@@ -68,7 +68,7 @@ class ViewAssessmentTaskInstructions extends Component {
           </h3>
 
           <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
-            {rubricDescription}
+            Rubric Description: {rubricDescription}
           </h6>
 
           <div
@@ -98,7 +98,7 @@ class ViewAssessmentTaskInstructions extends Component {
                       textAlign: "center"
                     }}
                   >
-                    {categoryList}
+                  Assessment Categories: {categoryList}
                   </h4>
                 </div>
                 <h2

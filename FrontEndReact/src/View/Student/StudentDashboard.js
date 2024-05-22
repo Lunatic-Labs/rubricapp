@@ -93,7 +93,7 @@ class StudentDashboard extends Component {
                                     alignSelf: "stretch"
                                 }}>
                                     <Box sx={{ width: "100%" }} className="content-spacing">
-                                        <Typography sx={{ fontWeight: '700' }} variant="h5">
+                                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
                                             My Teams
                                         </Typography>
                                     </Box>

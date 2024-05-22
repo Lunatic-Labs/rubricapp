@@ -6,9 +6,8 @@ import os
 from models.logger import logger
 import inspect
 
-
-
 ma = Marshmallow()
+
 
 
 def __init_response() -> dict:
@@ -35,6 +34,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     Returns:
     A dictionary for the response.
     """
+
     response = __init_response()
 
     JSON = {content_type: []}

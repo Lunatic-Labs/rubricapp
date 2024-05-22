@@ -5,6 +5,7 @@ import { genericResourceGET } from '../../../../../utility';
 import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
 import { Box } from '@mui/material';
+import Loading from '../../../../Loading/Loading';
 
 
 
@@ -81,9 +82,7 @@ class AdminViewRatings extends Component {
 
     } else if (!isLoaded || !ratings || !categories) {
       return(
-        <div className='container'>
-            <h1>Loading...</h1>
-        </div>
+        <Loading />
       )
 
     } else {

@@ -6,6 +6,7 @@ import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
 import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -18,8 +19,10 @@ class CourseDropdown extends Component {
       selectedCourse: '',
       courses: []
     };
+
     this.handleCourseChange = (newSelectedCourse) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
+
       this.setState({
         selectedCourse: newSelectedCourse.target.value
       });
@@ -66,11 +69,7 @@ class CourseDropdown extends Component {
 
     } else {
       return(
-        <>
-          <div>
-            <h1>Loading...</h1>
-          </div>
-        </>
+        <Loading />
       )
     }
   }

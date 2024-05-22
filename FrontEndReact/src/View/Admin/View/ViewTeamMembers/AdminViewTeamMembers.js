@@ -4,6 +4,7 @@ import ViewTeamMembers from './ViewTeamMembers.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames } from '../../../../utility.js';
 import { Button, Typography } from '@mui/material';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -54,9 +55,7 @@ class AdminViewTeamMembers extends Component {
 
         } else if (!isLoaded || !users) {
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else {

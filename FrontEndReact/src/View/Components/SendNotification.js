@@ -37,6 +37,7 @@ export default function ResponsiveNotification ( props ) {
                                 minRows={2}
                                 maxRows={8}
                                 sx={{ mb: 2, mt: 2 }}
+                                aria-label="viewCompletedAssessmentAddMessageTitle"
                             />
                     </DialogContent>
 
