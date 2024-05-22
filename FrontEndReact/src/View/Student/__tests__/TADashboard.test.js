@@ -32,6 +32,7 @@ var ocs = "observableCharacteristicsSection";
 var sfis = "suggestionsForImprovementSection";
 var cbs = "commentBoxSection";
 var rb = "refreshButton";
+var sb = "saveButton";
 
 
 
@@ -298,11 +299,10 @@ test("TADashboard.test.js Test 8: Should render to the sections page when the re
     });
     
     clickElementWithAriaLabel(rb);
-
 });
 
 
-test("TADashboard.test.js Test 9: Should render to the sections page when the refresh button is clicked.", async () => {
+test("TADashboard.test.js Test 9: Should successfully save all the changes when the save button is clicked on the sections page.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -340,5 +340,4 @@ test("TADashboard.test.js Test 9: Should render to the sections page when the re
     });
     
     clickElementWithAriaLabel(rb);
-
 });
