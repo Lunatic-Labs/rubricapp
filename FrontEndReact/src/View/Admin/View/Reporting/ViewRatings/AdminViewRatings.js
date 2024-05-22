@@ -26,7 +26,6 @@ class AdminViewRatings extends Component {
 
       if(this.props.chosenAssessmentId !== "") {
         // Fetch student ratings for the chosen assessment task
-
         genericResourceGET(
           `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
           "ratings", this
