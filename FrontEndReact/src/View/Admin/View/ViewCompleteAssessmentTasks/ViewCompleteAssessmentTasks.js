@@ -131,7 +131,7 @@ class ViewCompleteAssessmentTasks extends Component {
       },
       {
         name: "user_id",
-        label: "User",
+        label: "Assessor",
         options: {
           filter: true,
 

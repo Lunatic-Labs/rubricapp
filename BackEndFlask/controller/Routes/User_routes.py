@@ -146,6 +146,8 @@ def get_all_team_members():
 
             result["team_id"] = team_id
 
+            result["team_name"] = get_team(team_id).team_name
+
             return create_good_response(result, 200, "team_members")
 
     except Exception as e:

@@ -46,7 +46,9 @@ class StudentViewAssessmentTask extends Component {
             checkin,
             rubrics,
         } = this.state;
-        
+
+        var navbar = this.props.navbar;
+
         var role = this.props.role;
 
         if (errorMessage) {
@@ -65,16 +67,12 @@ class StudentViewAssessmentTask extends Component {
             )
 
         } else {
-            var navbar = this.props.navbar;
-            
-            var studentAssessments = assessmentTasks.filter((at) => (at["role_id"] === role["role_id"])); // keeps only assessment relevant to this role
-
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
                         role={role}
-                        assessmentTasks={studentAssessments}
+                        assessmentTasks={assessmentTasks}
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}

@@ -217,6 +217,7 @@ class AdminAddTeam extends Component {
                                             onChange={(event)=> this.handleSelect(event)}
                                             required
                                             error={!!errors.observerId}
+                                            aria-label="userObserverDropDown"
                                         >
                                             {navbar.props.isAdmin &&
                                                 <MenuItem value={userId} key={userId}>{userName}</MenuItem>

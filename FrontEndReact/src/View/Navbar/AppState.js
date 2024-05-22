@@ -29,6 +29,7 @@ import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
+import UserAccount from './UserAccount.js'
 
 
 class AppState extends Component {
@@ -383,6 +384,7 @@ class AppState extends Component {
                 <ButtonAppBar
                     userName={this.props.userName}
                     logout={this.props.logout}
+                    setNewTab={this.setNewTab}
                 />
 
                 {/*
@@ -668,7 +670,6 @@ class AppState extends Component {
 
                         <StudentViewAssessmentTaskInstructions
                             navbar={this}
-                            userRole={this.props.isAdmin}
                         />
                     </Box>
                 }
@@ -725,7 +726,6 @@ class AppState extends Component {
 
                         <CompleteAssessmentTask
                             navbar={this}
-                            userRole={this.props.isAdmin}
                         />
                     </Box>
                 }
@@ -748,6 +748,20 @@ class AppState extends Component {
                         />
 
                         <AdminViewCustomRubrics
+                            navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab==="UserAccount" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                            aria-label="UserAccountBackButton"
+                        />
+
+                        <UserAccount
                             navbar={this}
                         />
                     </Box>
