@@ -339,5 +339,5 @@ test("TADashboard.test.js Test 9: Should successfully save all the changes when 
         }, 3000);
     });
     
-    clickElementWithAriaLabel(rb);
+    clickElementWithAriaLabel(sb);
 });

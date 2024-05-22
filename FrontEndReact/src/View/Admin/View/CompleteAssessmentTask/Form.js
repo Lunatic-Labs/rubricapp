@@ -355,6 +355,7 @@ class Form extends Component {
                         id="formSubmitButton"
                         variant="contained"
                         color="primary"
+                        aria-label="saveButton"
 
                         onClick={() => {
                             this.handleSubmit(true);
