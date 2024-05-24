@@ -30,6 +30,7 @@ export default function ResponsiveNotification ( props ) {
                                 label="Add Message"
                                 value={props.notes}
                                 error={!!props.error.notes}
+                                helperText={props.error.notes}
                                 onChange={props.handleChange}
                                 required
                                 multiline
