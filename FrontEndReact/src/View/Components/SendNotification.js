@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Button from '@mui/material/Button';
 import Dialog from '@mui/material/Dialog';
 import { TextField } from "@mui/material";
@@ -30,6 +30,7 @@ export default function ResponsiveNotification ( props ) {
                                 label="Add Message"
                                 value={props.notes}
                                 error={!!props.error.notes}
+                                helperText={props.error.notes}
                                 onChange={props.handleChange}
                                 required
                                 multiline
