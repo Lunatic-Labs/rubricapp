@@ -266,7 +266,7 @@ class AdminAddAssessmentTask extends Component {
                                     />
 
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
-                                        <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }}>
+                                        <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }} error={!!errors.rubricId} required>
                                             <InputLabel required id="rubricId">Rubric</InputLabel>
 
                                             <Select
@@ -281,6 +281,7 @@ class AdminAddAssessmentTask extends Component {
                                             >
                                                 {rubricOptions}
                                             </Select>
+                                            <FormHelperText>{errors.rubricId}</FormHelperText>
                                         </FormControl>
                                     </div>
 
@@ -375,12 +376,14 @@ class AdminAddAssessmentTask extends Component {
                                                     onChange={(date) => {
                                                         this.setState({ dueDate: date });
                                                     }}
+
+                                                    sx={{ mb: errors.timeZone ? 2 : 0 }}
                                                 />
                                             </LocalizationProvider>
                                         </div>
 
                                         <div style={{ position: "relative", marginTop: '16px'}}>
-                                            <FormControl error={!!errors.timeZone} required fullWidth> 
+                                            <FormControl error={!!errors.timeZone} required fullWidth sx={{ mb: 2 }}> 
                                                 <InputLabel className={errors.timeZone ? "errorSelect" : ""} required id="timeone">Time Zone</InputLabel>
 
                                                 <Select
@@ -395,7 +398,6 @@ class AdminAddAssessmentTask extends Component {
                                                     }}
 
                                                     required
-                                                    sx={{ mb: 2 }}
                                                     style={{width: "200px"}}
                                                     aria-label="addAssessmentTimezoneDropdown"
                                                 >
@@ -438,6 +440,7 @@ class AdminAddAssessmentTask extends Component {
                                         label="Instructions to Students/TA's"
                                         value={notes}
                                         error={!!errors.notes}
+                                        helperText={errors.notes}
                                         onChange={this.handleChange}
                                         required
                                         multiline
