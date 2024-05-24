@@ -43,11 +43,11 @@ export default function ResponsiveNotification ( props ) {
                     </DialogContent>
 
                     <DialogActions>
-                        <Button autoFocus onClick={props.handleDialog}>
+                        <Button autoFocus onClick={props.handleDialog} aria-label="addMessagePromptCancelButton">
                             Cancel
                         </Button>
 
-                        <Button variant="contained" autoFocus onClick={props.sendNotification}>
+                        <Button variant="contained" autoFocus onClick={props.sendNotification} aria-label="addMessagePromptSendNotificationButton">
                             Send Notification
                         </Button>
                     </DialogActions>

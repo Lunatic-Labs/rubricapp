@@ -28,10 +28,18 @@ var avb = "assessmentViewButton";
 var mhbb = "mainHeaderBackButton";
 var vcasnb = "viewCompletedAssessmentSendNotificationButton";
 var vcaamt = "viewCompletedAssessmentAddMessageTitle";
+var ampcb = "addMessagePromptCancelButton";
+var ampsnb = "addMessagePromptSendNotificationButton";
+var rs = "ratingsSection";
+var ocs = "observableCharacteristicsSection";
+var sfis = "suggestionsForImprovementSection";
+var cbs = "commentBoxSection";
+var rb = "refreshButton";
+var sb = "saveButton";
 
 
 
-test("NOTE: Tests 1-4 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -185,6 +193,301 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Critica
             expectElementWithAriaLabelToBeInDocument(vcatt);
 
             clickElementWithAriaLabel(avb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Completed Assessment Tasks page when the cancel button on the Add Message prompt is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(vcib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcatt);
+
+            clickElementWithAriaLabel(vcasnb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcaamt);
+
+            clickElementWithAriaLabel(ampcb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcaamt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Completed Assessment Tasks page when the send notification button on the Add Message prompt is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(vcib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcatt);
+
+            clickElementWithAriaLabel(vcasnb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcaamt);
+
+            clickElementWithAriaLabel(ampsnb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcaamt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Completed Assessment Tasks page if the back button on the Critical Thinking page is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(vcib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcatt);
+
+            clickElementWithAriaLabel(avb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickElementWithAriaLabel(mhbb);
+
+            expectElementWithAriaLabelToBeInDocument(vcatt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewCompleteAssessmentTasks.test.js Test 8: Should undo the selections made in the sections boxes in the Critical Thinking page when the Refresh Button is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(vcib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcatt);
+
+            clickElementWithAriaLabel(avb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickElementWithAriaLabel(rb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewCompleteAssessmentTasks.test.js Test 9: Should save the selections made in the sections boxes in the Critical Thinking page when the Save Button is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(vcib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcatt);
+
+            clickElementWithAriaLabel(avb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickElementWithAriaLabel(sb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rs);
+
+            expectElementWithAriaLabelToBeInDocument(ocs);
+
+            expectElementWithAriaLabelToBeInDocument(sfis);
+
+            expectElementWithAriaLabelToBeInDocument(cbs);
         }, 3000);
     });
 });
