@@ -31,10 +31,11 @@ var catb = "cancelAddTeamButton";
 var aosatb = "addOrSaveAddTeamButton";
 var atf = "addTeamForm";
 var utni = "userTeamNameInput";
+var uodd = "userObserverDropDown";
 
 
 
-test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -185,7 +186,7 @@ test("AdminAddTeam.test.js Test 4: Should render the teams dashboard if the canc
 });
 
 
-test("AdminAddTeam.test.js Test 5: HelperText errors should show for each text field when no information is filled", async () => {
+test("AdminAddTeam.test.js Test 5: HelperText errors should show for Team Name text field when no information is filled", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -249,6 +250,8 @@ test("AdminAddTeam.test.js Test 6: HelperText error should show for the teamName
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
 
+            changeElementWithAriaLabelWithInput(uodd,"Ken Mayer")
+
             clickElementWithAriaLabel(aatb);
         }, 3000);
     });
@@ -258,6 +261,86 @@ test("AdminAddTeam.test.js Test 6: HelperText error should show for the teamName
             expectElementWithAriaLabelToBeInDocument(atf);
 
             expectElementWithAriaLabelToHaveErrorMessage(utni,"Team name cannot be empty");
+        }, 3000);
+    });
+});
+
+
+test("AdminAddTeam.test.js Test 7: HelperText errors should show for the Observer dropdown field when no information is filled", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(aatb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(aatt);
+
+            clickElementWithAriaLabel(aosatb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(atf);
+
+            expectElementWithAriaLabelToHaveErrorMessage(uodd,"Observer cannot be empty");
+        }, 3000);
+    });
+});
+
+
+test("AdminAddTeam.test.js Test 8: HelperText error should show for the Observer dropdown field when it is left blank while all other information is filled.", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            changeElementWithAriaLabelWithInput(utni,"Team Rare");
+
+            clickElementWithAriaLabel(aatb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(atf);
+
+            expectElementWithAriaLabelToHaveErrorMessage(uodd,"Observer cannot be empty");
         }, 3000);
     });
 });

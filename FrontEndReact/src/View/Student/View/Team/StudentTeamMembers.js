@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './TeamMembers.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -11,8 +12,8 @@ class StudentTeamMembers extends Component {
         super(props);
 
         this.state = {
-            errorMessage: null,
             isLoaded: null,
+            errorMessage: null,
             users: null
         }
     }
@@ -31,8 +32,8 @@ class StudentTeamMembers extends Component {
 
     render() {
         const {
-            errorMessage,
             isLoaded,
+            errorMessage,
             users
         } = this.state;
 
@@ -52,9 +53,7 @@ class StudentTeamMembers extends Component {
 
         } else if (!isLoaded || !users) {
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else {

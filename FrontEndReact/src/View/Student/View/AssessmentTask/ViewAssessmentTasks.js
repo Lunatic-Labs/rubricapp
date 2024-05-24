@@ -9,9 +9,9 @@ import { getHumanReadableDueDate } from '../../../../utility';
 class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
-        
+
         this.isObjectFound = (atId) => {
-            var completedAssessments = this.props.completedAssessments
+            var completedAssessments = this.props.completedAssessments;
 
             if(completedAssessments) {
                 for (let i = 0; i < completedAssessments.length; i++) {
@@ -84,11 +84,22 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
                         return (
-                            <Box>
-                                {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] && role["role_id"] === 5 &&
+                            <Box
+                                style={{
+                                    display: "flex",
+                                    flexFlow: "row wrap",
+                                }}
+                            >
+                                {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] &&
                                     <Button
-                                        style={{ marginRight: '10px', marginBottom: '10px' }}
                                         className='primary-color'
+
+                                        style={{
+                                            width: "fit-content",
+                                            margin: "5px",
+                                            display:  role["role_id"] === 5 ? "block" : "none"
+                                        }}
+
                                         variant='contained'
 
                                         onClick={() => {
@@ -101,8 +112,13 @@ class ViewAssessmentTasks extends Component {
 
                                 <Button
                                     className='primary-color'
-                                    variant='contained'
 
+                                    style={{
+                                        width: "fit-content",
+                                        margin: "5px"
+                                    }}
+
+                                    variant='contained'
                                     disabled={(this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5) || this.isObjectFound(atId) === true} 
 
                                     onClick={() => {
@@ -113,7 +129,6 @@ class ViewAssessmentTasks extends Component {
                                 >
                                     Complete
                                 </Button>
-                    
                             </Box>
                         )
                         

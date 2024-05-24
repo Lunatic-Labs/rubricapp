@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ConfirmCurrentTeamTable from './ConfirmCurrentTeam.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -11,9 +12,9 @@ class StudentConfirmCurrentTeam extends Component {
         super(props);
 
         this.state = {
+            isLoaded: null,
             errorMessage: null,
-            currentTeam: null,
-            team_members: null
+            teamMembers: null,
         };
     }
 
@@ -22,15 +23,15 @@ class StudentConfirmCurrentTeam extends Component {
 
         genericResourceGET(
             `/team_members?course_id=${courseId}`,
-            "team_members", this
+            "teamMembers", this
         );
     }
 
     render() {
         const {
+            isLoaded,
             errorMessage,
-            currentTeam,
-            team_members
+            teamMembers
         } = this.state;
 
         if (errorMessage) {
@@ -43,19 +44,17 @@ class StudentConfirmCurrentTeam extends Component {
                 </div>
             )
 
-        } else if (!team_members) {
+        } else if (!isLoaded || !teamMembers) {
             return (
-                <div className='container'>
-                    <h1> Loading... </h1>
-                </div>
+                <Loading />
             )
 
         } else {
             return (
                 <ConfirmCurrentTeamTable
-                    currentTeam={currentTeam}
-                    students={team_members["users"]}
-                    teamId={team_members["team_id"]}
+                    students={teamMembers["users"]}
+                    teamId={teamMembers["team_id"]}
+                    teamName={teamMembers["team_name"]}
                     navbar={this.props.navbar}
                 />
             )

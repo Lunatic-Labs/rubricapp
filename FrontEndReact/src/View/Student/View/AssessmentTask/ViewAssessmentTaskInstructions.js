@@ -20,9 +20,13 @@ class ViewAssessmentTaskInstructions extends Component {
 
   render() {
     var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+
     var rubricName = this.props.rubrics["rubric_name"];
+
     var rubricDescription = this.props.rubrics["rubric_description"];
+
     var categoryList = Object.keys(this.state.categories).map((category, index) => {
+
       if(index !== Object.keys(this.state.categories).length-1) {
         category += ", ";
       }
@@ -68,7 +72,7 @@ class ViewAssessmentTaskInstructions extends Component {
           </h3>
 
           <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
-            {rubricDescription}
+            Rubric Description: {rubricDescription}
           </h6>
 
           <div
@@ -98,7 +102,7 @@ class ViewAssessmentTaskInstructions extends Component {
                       textAlign: "center"
                     }}
                   >
-                    {categoryList}
+                  Assessment Categories: {categoryList}
                   </h4>
                 </div>
                 <h2

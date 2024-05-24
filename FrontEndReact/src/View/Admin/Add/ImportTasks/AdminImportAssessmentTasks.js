@@ -2,10 +2,10 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import CourseDropdown from './CourseDropdown.js';
-import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourcePOST } from '../../../../utility.js';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Button, FormControl } from '@mui/material';
+import FormHelperText from '@mui/material/FormHelperText';
 
 
 
@@ -17,7 +17,11 @@ class AdminImportAssessmentTask extends Component {
             errorMessage: null,
             validMessage: "",
             courses: [],
-            selectedCourse: ''
+            selectedCourse: '',
+
+            errors: {
+                courseToImportTasksFrom: ""
+            }
         }
 
         this.setSelectedCourse = (newSelectedCourse) => {
@@ -25,65 +29,46 @@ class AdminImportAssessmentTask extends Component {
                 selectedCourse: newSelectedCourse
             });
         };
-    }
 
-    componentDidMount() {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
+        this.handleImportTasks = () => {
+            var navbar = this.props.navbar;
 
-        document.getElementById("importAssessmentTasks").addEventListener("click", () => {
-            var success = true;
-            var message = "Invalid Form: ";
-            var selectedCourse = this.state.selectedCourse;
+            var chosenCourse = navbar.state.chosenCourse;
 
-            if(success && typeof(selectedCourse)==="string" && !validator.isNumeric(selectedCourse) && validator.equals(selectedCourse, '')) {
-                success = false;
-                message += "Missing Course!";
+            var { selectedCourse } = this.state;
+
+            if(selectedCourse === '') {
+                this.setState({
+                    errors: {
+                        courseToImportTasksFrom: "Missing Course to Import Tasks From"
+                    }
+                });
+
+                return;
             }
 
-            if(success) {
-                genericResourcePOST(
-                    `/assessment_task_copy?source_course_id=${selectedCourse}&destination_course_id=${chosenCourse["course_id"]}`,
-                    this, {}
-                );
+            genericResourcePOST(
+                `/assessment_task_copy?source_course_id=${selectedCourse}&destination_course_id=${chosenCourse["course_id"]}`,
+                this, {}
+            );
 
-            } else {
-                document.getElementById("importAssessmentTasks").classList.add("pe-none");
-                document.getElementById("importAssessmentTasksCancel").classList.add("pe-none");
-
-                this.setState({validMessage: message});
-
-                setTimeout(() => {
-                    document.getElementById("importAssessmentTasks").classList.remove("pe-none");
-                    document.getElementById("importAssessmentTasksCancel").classList.remove("pe-none");
-                    this.setState({validMessage: ""});
-                }, 2000);
-            }
-
-            setTimeout(() => {
-                if(document.getElementsByClassName("alert-danger")[0]!==undefined) {
-                    setTimeout(() => {
-                        this.setState({errorMessage: null, validMessage: ""});
-                    }, 1000);
-                }
-            }, 1000);
-        });
+            navbar.confirmCreateResource("AssessmentTask");
+        }
     }
 
     render() {
         const {
             errorMessage,
-            validMessage
+            validMessage,
+            errors
         } = this.state;
 
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addAssessmentTask = state.addAssessmentTask;
-        var confirmCreateResource = navbar.confirmCreateResource;
         
         return (
-            <React.Fragment>
+            <>
                 { errorMessage &&
                     <ErrorMessage
                         add={addAssessmentTask}
@@ -101,51 +86,63 @@ class AdminImportAssessmentTask extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <Box className='form-spacing'>
-                            <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5" aria-label='adminImportAssessmentTasksTitle'> Import Assessment Tasks </Typography>
+                                <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5" aria-label='adminImportAssessmentTasksTitle'> Import Assessment Tasks </Typography>
+
                                 <Box className="form-input">
                                     <Box sx={{mb: 3}}>
-                                <Box>
-                                    Please select the course you would like to import assesments tasks from.
-                                </Box>
-                    </Box>
-                    <Box sx={{ mb: 3}}>
-                            <Box>
-                                <CourseDropdown
-                                    id="courseSelected"
-                                    setSelectedCourse={this.setSelectedCourse}
-                                    aria-label="adminImportAssessmentCourseSelect"
-                                />
-                            </Box>
-                       
-                    </Box>
-                            <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
-                                <Button 
-                                onClick={() => {
-                                    confirmCreateResource("AssessmentTask")
-                                }}
-                                id="" className=""
-                                aria-label="adminImportAssessmentTaskCancelButton"
-                                >   
-                                    Cancel
-                                </Button>
+                                        <Box>
+                                            Please select the course you would like to import assesments tasks from.
+                                        </Box>
+                                    </Box>
 
-                                <Button 
-                                onClick={() => {
-                                    confirmCreateResource('AssessmentTask');
-                                }}
-                                id="importAssessmentTasks" className="primary-color"
-                                variant="contained"
-                                aria-label="adminImportAssessmentTasksSubmitButton"
-                                >   
-                                    Import Tasks
-                                </Button>
+                                    <Box sx={{ mb: 3}}>
+                                        <Box>
+                                            <FormControl error={!!errors.courseToImportTasksFrom} required fullWidth sx={{mb: 3}} >
+                                                <CourseDropdown
+                                                    id="courseSelected"
+                                                    setSelectedCourse={this.setSelectedCourse}
+                                                    aria-label="adminImportAssessmentCourseSelect"
+                                                />
+
+                                                <FormHelperText>{errors.courseToImportTasksFrom}</FormHelperText>
+                                            </FormControl>
+                                        </Box>
+                                    </Box>
+
+                                    <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
+                                        <Button 
+                                            id=""
+                                            className=""
+
+                                            onClick={() => {
+                                                navbar.confirmCreateResource("AssessmentTask");
+                                            }}
+
+                                            aria-label="adminImportAssessmentTaskCancelButton"
+                                        >
+                                            Cancel
+                                        </Button>
+
+                                        <Button
+                                            id="importAssessmentTasks"
+                                            className="primary-color"
+                                            variant="contained"
+
+                                            onClick={() => {
+                                                this.handleImportTasks();
+                                            }}
+
+                                            aria-label="adminImportAssessmentTasksSubmitButton"
+                                        >
+                                            Import Tasks
+                                        </Button>
+                                    </Box>
                                 </Box>
-                            </Box>
                             </Box>
                         </Box>
                     </Box>
                 </Box>
-            </React.Fragment>
+            </>
         )
     }
 }

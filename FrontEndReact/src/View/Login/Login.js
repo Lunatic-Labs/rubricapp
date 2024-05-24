@@ -6,7 +6,9 @@ import AppState from '../Navbar/AppState.js';
 import SetNewPassword from './SetNewPassword.js';
 import ValidateReset from './ValidateReset.js';
 import { apiUrl } from '../../App.js';
-import { Grid, Button, Link, TextField, FormControl, Box, Typography } from '@mui/material';
+import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import Loading from '../Loading/Loading.js';
 
 
 
@@ -22,6 +24,7 @@ class Login extends Component {
             resettingPassword: null,
             email: '',
             password: '',
+            showPassword:'',
 
             errors: {
                 email: '',
@@ -38,6 +41,16 @@ class Login extends Component {
                 ...this.state.errors,
                 [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
               },
+            });
+        };
+
+        this.handleTogglePasswordVisibility = () => {
+            this.setState({
+                showPassword: !this.state.showPassword,
+                errors: {
+                    ...this.state.errors,
+                    password: '',
+                },
             });
         };
 
@@ -163,6 +176,7 @@ class Login extends Component {
             resettingPassword,
             email,
             password,
+            showPassword,
             errors
         } = this.state;
 
@@ -229,13 +243,26 @@ class Login extends Component {
                                                 autoComplete='current-password'
                                                 name="password"
                                                 label="Password"
-                                                type="password"
+                                                type={showPassword ? 'text' : 'password'}
                                                 id="password"
                                                 value={password}
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
                                                 aria-label="passwordInput"
+                                                InputProps={{
+                                                    endAdornment: (
+                                                      <InputAdornment position="end">
+                                                        <IconButton
+                                                          aria-label="toggle password visibility"
+                                                          onClick={this.handleTogglePasswordVisibility}
+                                                          edge="end"
+                                                        >
+                                                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                      </InputAdornment>
+                                                    ),
+                                                }}
                                             />
 
                                             <Grid sx={{textAlign:'right', mb:1}}>
@@ -276,16 +303,16 @@ class Login extends Component {
             this.handleNewAccessToken();
 
             return(
-                <div className='container'>
-                    <h1>Loading...</h1>
-                </div>
+                <Loading />
             )
         }
 
         else {
             if (hasSetPassword === false) {
                 return(
-                    <SetNewPassword/>
+                    <SetNewPassword
+                        email={email}
+                    />
                 )
             }
 

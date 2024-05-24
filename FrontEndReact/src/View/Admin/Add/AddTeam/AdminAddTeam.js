@@ -4,8 +4,9 @@ import "../../../../SBStyles.css";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 import { Box, Button, Typography, TextField } from "@mui/material";
 import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility.js";
-import { FormControl, MenuItem, InputLabel, Select} from "@mui/material";
+import { FormControl, MenuItem, InputLabel, Select } from "@mui/material";
 import Cookies from 'universal-cookie';
+import FormHelperText from '@mui/material/FormHelperText';
 
 
 
@@ -18,15 +19,16 @@ class AdminAddTeam extends Component {
             errorMessage: null,
             validMessage: "",
             editTeam: false,
-            observerId: "",
+            observerId: '',
             teamName: "",
             users: null,
 
             errors: {
                 teamName: "",
-                observerId: "",
+                observerId: '',
             }
         }
+        
 
         this.handleSelect = (event) => {
             this.setState({
@@ -65,6 +67,7 @@ class AdminAddTeam extends Component {
 
     handleSubmit = () => {
         const { teamName, observerId } = this.state;
+        const errors = {};
 
         var date = new Date().getDate();
 
@@ -85,42 +88,32 @@ class AdminAddTeam extends Component {
         var addTeam = state.addTeam;
     
         if (teamName.trim() === "") {
-          this.setState({
-            errors: {
-              teamName: "Team name cannot be empty",
-            },
-          });
-
-        } else if (observerId === "") {
-            this.setState({
-                errors: {
-                  observerId: "Observer cannot be empty"
-                },
-              });
-
+            errors.teamName = "Team name cannot be empty";
         } else if (teamName.length > 15) {
-            this.setState({
-                errors: {
-                  teamName: "Team name cannot be more than 15 characters",
-                },
-              });
-
+            errors.teamName = "Team name cannot be more than 15 characters";
+        }
+    
+        if (observerId === "") {
+            errors.observerId = "Observer cannot be empty";
+        }
+    
+        if (Object.keys(errors).length > 0) {
+            this.setState({ errors });
         } else {
-            var body = JSON.stringify({
-                "team_name": teamName,
-                "observer_id": observerId,
-                "course_id": chosenCourse["course_id"],
-                "date_created": month + "/" + date + "/" + year,
-                "active_until": null,
+            const body = JSON.stringify({
+                team_name: teamName,
+                observer_id: observerId,
+                course_id: chosenCourse.course_id,
+                date_created: `${month}/${date}/${year}`,
+                active_until: null,
             });
     
             if (team === null && addTeam === null) {
-                genericResourcePOST(`/team?course_id=${chosenCourse["course_id"]}`, this, body);
-
+                genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body);
             } else if (team !== null && addTeam === false) {
-                genericResourcePUT(`/team?team_id=${team["team_id"]}`, this, body);
+                genericResourcePUT(`/team?team_id=${team.team_id}`, this, body);
             }
-
+    
             confirmCreateResource("Team");
         }
     };
@@ -213,17 +206,18 @@ class AdminAddTeam extends Component {
                                         aria-label="userTeamNameInput"
                                     />
 
-                                    <FormControl fullWidth>
-                                        <InputLabel id="Observer">Observer</InputLabel>
+                                    <FormControl error={!!errors.observerId} required fullWidth sx={{mb: 3}}>
+                                        <InputLabel className={errors.observerId ? "errorSelect" : ""} id="Observer">Observer</InputLabel>
 
                                         <Select
                                             id="Observer"
+                                            labelId="Observer"
                                             value={observerId}
                                             label="Observer"
                                             onChange={(event)=> this.handleSelect(event)}
                                             required
                                             error={!!errors.observerId}
-                                            sx={{mb: 3}}
+                                            aria-label="userObserverDropDown"
                                         >
                                             {navbar.props.isAdmin &&
                                                 <MenuItem value={userId} key={userId}>{userName}</MenuItem>
@@ -233,7 +227,9 @@ class AdminAddTeam extends Component {
                                                 <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
                                             )}
                                         </Select>
+                                        <FormHelperText>{errors.observerId}</FormHelperText>
                                     </FormControl>
+
 
                                     <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
                                         <Button

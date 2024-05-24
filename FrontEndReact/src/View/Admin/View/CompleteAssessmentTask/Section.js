@@ -107,8 +107,8 @@ class Section extends Component {
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
-                                    setSliderValue={this.props.setSliderValue}
                                     navbar={this.props.navbar}
+                                    setSliderValue={this.props.setSliderValue}
                                     teamValue={this.props.teamValue}
                                     rating={rating}
                                     isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}

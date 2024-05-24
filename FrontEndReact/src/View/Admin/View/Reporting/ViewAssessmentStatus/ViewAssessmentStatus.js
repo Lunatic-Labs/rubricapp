@@ -68,7 +68,7 @@ export default function ViewAssessmentStatus(props) {
 
   var stdev = 0;
 
-  if (props.completedAssessments.length > 0) {
+  if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
     for (var i = 0; i < props.completedAssessments.length; i++) {
       // Only collect data from completed assessment tasks
@@ -108,13 +108,13 @@ export default function ViewAssessmentStatus(props) {
 
     // add percentage to each JSON object in improvement/characteristics
     for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
-      let percent = characteristicsData['characteristics'][i]['number'] / props.completedAssessments.length * 100;
+      let percent = characteristicsData['characteristics'][i]['number'] / (props.completedAssessments !== null ? props.completedAssessments.length : 1) * 100;
 
       characteristicsData['characteristics'][i]['percentage'] = percent + "%";
     }
 
     for (let i = 0; i < improvementsData['improvements'].length; i++) {
-      let percent = improvementsData['improvements'][i]['number'] / props.completedAssessments.length * 100;
+      let percent = improvementsData['improvements'][i]['number'] / (props.completedAssessments !== null ? props.completedAssessments.length : 1) * 100;
 
       improvementsData['improvements'][i]['percentage'] = percent  + "%";
     }
@@ -167,7 +167,7 @@ export default function ViewAssessmentStatus(props) {
                     categories={categoryList}
                     chosenCategoryId={chosenCategoryId}
                     setChosenCategoryId={handleChosenCategoryIdChange}
-                    disabled={props.completedAssessments.length === 0}
+                    disabled={props.completedAssessments !== null && props.completedAssessments.length === 0}
                   />
                 </div>
               </Grid>

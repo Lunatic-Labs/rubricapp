@@ -96,7 +96,7 @@ class ConfirmCurrentTeamTable extends Component {
 									<div className='container' style={{ marginTop: '15px' }}>
 										<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
 
-										<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>Lunatic Labs</h4>
+										<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>{this.props.teamName}</h4>
 									</div>
 
 									<CustomDataTable

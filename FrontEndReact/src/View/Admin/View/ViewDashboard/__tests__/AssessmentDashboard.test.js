@@ -25,7 +25,6 @@ var rt = "rosterTitle";
 var at = "assessmentTab";
 var adt = "assessmentDashboardTitle";
 var mhbb = "mainHeaderBackButton";
-var crb = "customRubricButton";
 var acrt = "addCustomRubricTitle";
 var iab = "importAssessmentButton";
 var aiatt = "adminImportAssessmentTasksTitle";
@@ -33,10 +32,11 @@ var atb = "addTaskButton";
 var aaatt = "adminAddAssessmentTaskTitle";
 var eaib = "editAssessmentIconButton";
 var vcaib = "viewCompletedAssessmentIconButton";
-var vcatt = "viewCompletedAssessmentTasksTitle";
+var vcatt = "viewCompletedAssessmentsTitle";
 var catb = "completeAssessmentTaskButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
-
+var vmcrb = "viewMyCustomRubricsButton";
+var eatb = "exportAssessmentTaskButton";
 
 
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
@@ -131,7 +131,7 @@ test("AssessmentDashboard.test.js Test 5: Should show View Courses page when cli
 });
 
 
-test("AssessmentDashboard.test.js Test 6: Should show Custom Rubric page when clicking the custom rubric button", async () => {
+test("AssessmentDashboard.test.js Test 6: Should show My Custom Rubrics page when clicking the My Custom Rubrics button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -150,7 +150,7 @@ test("AssessmentDashboard.test.js Test 6: Should show Custom Rubric page when cl
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(crb);
+    clickElementWithAriaLabel(vmcrb);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(acrt);
@@ -289,5 +289,32 @@ test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessme
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vatit);
+    });
+});
+
+
+test("AssessmentDashboard.test.js Test 12: Should download a csv file when the export button is clicked.", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+       expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
+        clickFirstElementWithAriaLabel(eatb);
+    });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(eatb);
     });
 });

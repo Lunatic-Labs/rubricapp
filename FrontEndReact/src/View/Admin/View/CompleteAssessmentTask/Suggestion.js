@@ -48,7 +48,7 @@ class Suggestion extends Component {
 
         onClick={handleChange}
 
-        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
       >
         <Checkbox
           sx={{
@@ -62,7 +62,7 @@ class Suggestion extends Component {
 
           checked={this.state.checked}
 
-          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
         />
 
         <label>{this.props.suggestion}</label>
