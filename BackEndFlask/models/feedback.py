@@ -45,10 +45,11 @@ def create_feedback(feedback_data):
     new_feedback = Feedback(
         user_id=feedback_data["user_id"],
         completed_assessment_id=feedback_data["completed_assessment_id"],
-        feedback_time=datetime.strptime(feedback_data["feedback_time"], '%Y-%m-%dT%H:%M:%S'),
+        feedback_time=datetime.strptime(feedback_data["feedback_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
     )
 
     db.session.add(new_feedback)
+
     db.session.commit()
 
     return new_feedback
@@ -64,8 +65,8 @@ def check_feedback_exists(user_id, completed_assessment_id) -> bool:
 def load_demo_feedback():
     create_feedback({
         "completed_assessment_id": 1,
-        "user_id": 4,
-        "feedback_time": "2023-01-07T09:23:00",
+        "user_id": 3,
+        "feedback_time": "2024-02-02T09:31:34.000Z",
     })
 
 @error_log

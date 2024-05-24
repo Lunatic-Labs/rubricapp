@@ -23,11 +23,14 @@ class AssessmentDashboard extends Component {
                     <Box sx={{display:"flex", gap:"20px"}}>
                         <Button className="primary-color" variant='contained'
                             onClick={ () => {
-                                this.props.navbar.setNewTab('AddCustomRubric');
+                                this.props.navbar.setNewTab('MyCustomRubrics');
                             }}
-                            aria-label='customRubricButton'
+
+                            // TODO: Update Jest Tests to click on this new aria-label
+                            // aria-label='customRubricButton'
+                            aria-label='viewMyCustomRubricsButton'
                         >
-                            Custom Rubric
+                            My Custom Rubrics
                         </Button>
 
                         <Button className='primary-color mr-1'

@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import AdminReportTabs from './AdminReportTabs';
+import Loading from '../../../Loading/Loading';
 
 
 
@@ -43,9 +44,7 @@ class ReportingDashboard extends Component {
           )
       } else if (!isLoaded || !assessmentTasks) {
           return(
-              <div className='container'>
-                  <h1>Loading...</h1>
-              </div>
+            <Loading />
           )
       } else {
           return(

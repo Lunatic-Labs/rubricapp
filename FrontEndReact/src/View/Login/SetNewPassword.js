@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
 import Login from './Login.js';
-import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
+import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App.js';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
 
 
 
@@ -18,6 +19,7 @@ class SetNewPassword extends Component {
             isPasswordSet: false,
             password: '',
             confirmationPassword: '',
+            showPassword:'',
 
             errors : {
                 password: '',
@@ -75,6 +77,16 @@ class SetNewPassword extends Component {
                 default:
                     return [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
             }
+        };
+
+        this.handleTogglePasswordVisibility = () => {
+            this.setState({
+                showPassword: !this.state.showPassword,
+                errors: {
+                    ...this.state.errors,
+                    password: '',
+                },
+            });
         };
 
         this.testPasswordStrength = (password) => {
@@ -181,7 +193,8 @@ class SetNewPassword extends Component {
             isPasswordSet,
             password,
             confirmationPassword,
-            errors
+            errors,
+            showPassword
         } = this.state;
        
         const passwordStrength = this.testPasswordStrength(password)
@@ -226,14 +239,27 @@ class SetNewPassword extends Component {
                                                 autoComplete="new-password"
                                                 name="password"
                                                 label="Password"
-                                                type="password"
+                                                type={showPassword ? 'text' : 'password'}
                                                 id="password"
                                                 value={password}
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
                                                 aria-label="setNewPasswordInput"
-                                            />
+                                                InputProps={{
+                                                        endAdornment: (
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                            aria-label="toggle password visibility"
+                                                            onClick={this.handleTogglePasswordVisibility}
+                                                            edge="end"
+                                                            >
+                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
+                                                        ),
+                                                    }}
+                                                />
                                             
                                             <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
                                                 {colors.map((color,index) => (

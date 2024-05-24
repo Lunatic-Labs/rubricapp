@@ -14,7 +14,7 @@ class TextArea extends Component {
   }
   
   handleTextareaChange = (event) => {
-    if(this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)) return;
+    if(this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin) return;
 
     const { teamValue, categoryName, setComments } = this.props;
 
@@ -51,7 +51,7 @@ class TextArea extends Component {
 
             onChange={this.handleTextareaChange}
 
-            disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+            disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
         />
       </Box>
     );

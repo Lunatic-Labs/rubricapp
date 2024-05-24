@@ -5,6 +5,7 @@ import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -171,7 +172,7 @@ class CompleteAssessmentTask extends Component {
 
         } else if (!isLoaded || !rubrics || !teams || !users || !completedAssessments) {
             return (
-                <h1>Loading...</h1>
+                <Loading />
             );
 
         } else if (chosenAssessmentTask["unit_of_assessment"] && teams.length === 0) {
@@ -204,7 +205,7 @@ class CompleteAssessmentTask extends Component {
                     var complete = this.getComplete(teamId - "0");
 
                     if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                        complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
+                        complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
 
                         initialTeamData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
 
@@ -263,8 +264,6 @@ class CompleteAssessmentTask extends Component {
                         handleDone={this.handleDone}
 
                         refreshTeams={this.refreshTeams}
-
-                        userRole={this.props.userRole}
 
                         completedAssessments={completedAssessments}
                     />

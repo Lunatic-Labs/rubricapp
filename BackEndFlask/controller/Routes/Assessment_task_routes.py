@@ -30,7 +30,8 @@ from models.utility import (
 )
 
 from models.queries import (
-    get_students_by_team_id
+    get_students_by_team_id,
+    get_assessment_task_by_course_id_and_role_id
 )
 
 
@@ -53,6 +54,22 @@ def get_all_assessment_tasks():
             one_assessment_task = get_assessment_task(assessment_task_id)
 
             return create_good_response(assessment_task_schema.dump(one_assessment_task), 200, "assessment_tasks")
+
+        if request.args and request.args.get("course_id") and request.args.get("role_id"):
+            course_id = int(request.args.get("course_id"))
+
+            get_course(course_id)  # Trigger an error if not exists.
+
+            role_id = int(request.args.get("role_id"))
+
+            get_role(role_id)  # Trigger an error if not exists.
+
+            all_assessment_tasks = get_assessment_task_by_course_id_and_role_id(course_id, role_id)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
+                200, "assessment_tasks",
+            )
 
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
@@ -118,8 +135,7 @@ def get_all_assessment_tasks():
         all_assessment_tasks = get_assessment_tasks()
 
         return create_good_response(
-            assessment_task_schema.dump(
-                all_assessment_tasks), 200, "assessment_tasks"
+            assessment_task_schema.dump(all_assessment_tasks), 200, "assessment_tasks"
         )
 
     except Exception as e:
@@ -178,28 +194,35 @@ def add_assessment_task():
 @AuthCheck()
 def update_assessment_task():
     try:
-        if request.args and request.args.get("notification_sent") and request.args.get("notification_message"):
+        if request.args and request.args.get("notification"):
             assessment_task_id = request.args.get("assessment_task_id")
 
-            notification_message = request.args.get("notification_message")
+            notification_date = request.json["notification_date"]
 
-            one_assessment_task = get_assessment_task(assessment_task_id)
+            notification_message = request.json["notification_message"]
 
-            if one_assessment_task.notification_sent == False:
+            one_assessment_task = get_assessment_task(assessment_task_id)   # Trigger an error if not exists
+
+            if one_assessment_task.notification_sent == None:
                 list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
 
                 for completed in list_of_completed_assessments:
-                    if completed.team_id is not None:
+                    if completed.team_id:
+                        get_team(completed.team_id)     # Trigger an error if not exists
+
                         email_students_feedback_is_ready_to_view(
                             get_students_by_team_id(
                                 one_assessment_task.course_id,
-                                get_team(completed.team_id)
+                                completed.team_id
                             ),
 
                             notification_message
                         )
 
-                toggle_notification_sent_to_true(assessment_task_id)
+                toggle_notification_sent_to_true(
+                    assessment_task_id,
+                    notification_date
+                )
 
             return create_good_response(
                 assessment_task_schema.dump(one_assessment_task),
@@ -230,6 +253,9 @@ def update_assessment_task():
 # copies over assessment_tasks from an existing course to another course
 # given a source and destination course_id
 @bp.route("/assessment_task_copy", methods=["POST"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def copy_course_assessments():
     try:
         source_course_id = request.args.get('source_course_id')

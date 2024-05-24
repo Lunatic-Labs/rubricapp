@@ -8,7 +8,8 @@ from models.category import get_categories_per_rubric, get_categories, get_ratin
 from models.suggestions import get_suggestions_per_category
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.observable_characteristics import get_observable_characteristic_per_category
-from models.queries import get_rubrics_and_total_categories
+from models.queries import get_rubrics_and_total_categories, get_rubrics_and_total_categories_for_user_id, get_categories_for_user_id
+from models.user import get_user
 
 @bp.route('/rubric', methods = ['GET'])
 @jwt_required()
@@ -80,14 +81,19 @@ def get_all_rubrics():
 
             return create_good_response(rubric, 200, "rubrics")
 
-        user_id = None
+        user_id = int(request.args.get("user_id"))
 
-        if request.args and request.args.get("default"):
-            user_id = 1
-        else:
-            user_id = int(request.args.get("user_id"))
+        get_user(user_id)   # Triggers an error if not exists
 
-        return create_good_response(rubrics_schema.dump(get_rubrics_and_total_categories(user_id)), 200, "rubrics")
+        rubrics = get_rubrics_and_total_categories(1)   # Get default rubrics only!
+
+        if request.args.get("custom"):
+            rubrics = get_rubrics_and_total_categories_for_user_id(user_id) # Get rubrics created by logged in user!
+        
+        if request.args.get("all"):
+            rubrics = get_rubrics_and_total_categories_for_user_id(user_id, True)   # Get default rubrics and rubrics created by the loggin user!
+
+        return create_good_response(rubrics_schema.dump(rubrics), 200, "rubrics")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all rubrics: {e}", "rubrics", 400)
@@ -135,8 +141,17 @@ def get_all_categories():
     try:
         if request.args and request.args.get("rubric_id"):
             all_categories_by_rubric_id=get_categories_per_rubric(int(request.args.get("rubric_id")))
+
             return create_good_response(categories_schema.dump(all_categories_by_rubric_id), 200, "categories")
-        return create_good_response(categories_schema.dump(get_categories(int(request.args.get("user_id")))), 200, "categories")
+
+        user_id = int(request.args.get("user_id"))
+
+        all_categories = get_categories()    # Get all categories by default!
+
+        if request.args.get("custom"):
+            all_categories = get_categories_for_user_id(user_id)    # Get categories for custom rubrics!
+        
+        return create_good_response(categories_schema.dump(all_categories), 200, "categories")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all categories: {e}", "categories", 400)
@@ -178,7 +193,8 @@ class CategorySchema(ma.Schema):
             'description',
             'rating_json', 
             'rubric_id',
-            'rubric_name'
+            'rubric_name',
+            'default_rubric'
         )
         ordered = True
     ratings = ma.Nested(RatingsSchema(many=True))

@@ -39,7 +39,7 @@ const customTheme = createTheme({
   },
 });
 
-const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect }) => {
+const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly }) => {
 
   // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
@@ -101,6 +101,7 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
                       in={openRubric === rubric["rubric_id"]}
                       timeout="auto"
                       unmountOnExit
+                      aria-label="rubricCategoryIcon"
                     >
                       <Table>
                         <TableBody>
@@ -111,17 +112,48 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect 
                             )
                             .map((category) => (
                               <TableRow key={category["category_id"]}>
-                                <TableCell component="th" scope="row">
-                                  <Checkbox
-                                    checked={checkedCategories.includes(
-                                      category["category_id"],
-                                    )}
+                                <TableCell component="th" scope="row" aria-label="rubricCategoryNames">
+                                  <div
+                                    style={{
+                                      display: "flex",
+                                      flexDirection: "row",
+                                      justifyContent: readOnly ? "space-around": "",
+                                    }}
+                                  >
+                                    <div
+                                      style={{
+                                        display: "flex",
+                                        flexDirection: "row",
+                                      }}
+                                    >
+                                      { !readOnly &&
+                                        <Checkbox
+                                          checked={checkedCategories.includes(
+                                            category["category_id"],
+                                          )}
+                                        aria-label="rubricNamesCheckBox"
+                                          onChange={() =>
+                                            handleCheckboxChange(category["category_id"])
+                                          }
+                                        />
+                                      }
+                                      <p
+                                        style={{
+                                          marginTop: "1rem",
+                                          minWidth: "10rem"
+                                        }}
+                                      >{category["category_name"]}</p>
+                                    </div>
 
-                                    onChange={() =>
-                                      handleCheckboxChange(category["category_id"])
+                                    { readOnly &&
+                                      <p
+                                        style={{
+                                          marginTop: "1rem",
+                                          minWidth: "10rem"
+                                        }}
+                                      >{category["default_rubric"] ? category["default_rubric"] : "N/A"}</p>
                                     }
-                                  />
-                                  {category["category_name"]}
+                                  </div>
                                 </TableCell>
                               </TableRow>
                             ))}
