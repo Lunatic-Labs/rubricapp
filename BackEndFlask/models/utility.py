@@ -31,6 +31,7 @@ def send_reset_code_email(address: str, code: str):
 def email_students_feedback_is_ready_to_view(students: list, notification_message : str):
     for student in students:
         subject = "Skillbuilder - Your Feedback is ready to view!"
+
         message = f'''Greetings {student.first_name} {student.last_name},
 
                     Your Feedback is ready to view! Login to Skillbuilder to view your Feedback!

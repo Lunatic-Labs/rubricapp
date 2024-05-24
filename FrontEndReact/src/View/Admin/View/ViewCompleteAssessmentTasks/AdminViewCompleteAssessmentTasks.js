@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks.js";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility.js';
+import { Box } from '@mui/material';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -72,19 +74,18 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         } else if (!isLoaded || !completedAssessments || !roles || !users) {
             return(
-                <div className='container mt-5'>
-                    <h1 className='text-center'>Loading...</h1>
-                </div>
+                <Loading />
             )
 
         } else {
             return(
                 <>
-                    <div className='container'>
+                    <Box>
                         <ViewCompleteAssessmentTasks
                             navbar={navbar}
+                            completedAssessment={completedAssessments}
                         />
-                    </div>
+                    </Box>
                 </>
             )
         }

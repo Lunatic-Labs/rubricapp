@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories, } from "../../../../utility.js";
 import AddCustomRubric from "./AddCustomRubric";
+import Loading from "../../../Loading/Loading.js";
 
 class AdminAddCustomRubric extends Component {
     constructor(props) {
@@ -17,7 +18,8 @@ class AdminAddCustomRubric extends Component {
     }
 
     componentDidMount() {
-        genericResourceGET(`/rubric?default='${true}'`, "rubrics", this);
+        genericResourceGET(`/rubric`, "rubrics", this);
+
         genericResourceGET(`/category`, "categories", this);
     }
 
@@ -35,9 +37,7 @@ class AdminAddCustomRubric extends Component {
             );
         } else if (!isLoaded || !rubrics || !categories) {
             return (
-                <div className="container">
-                    <h1> Loading... </h1>
-                </div>
+                <Loading />
             );
         } else {
             return (

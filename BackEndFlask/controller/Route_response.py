@@ -6,9 +6,8 @@ import os
 from models.logger import logger
 import inspect
 
-
-
 ma = Marshmallow()
+
 
 
 def __init_response() -> dict:
@@ -23,7 +22,7 @@ def __init_response() -> dict:
     return response
 
 
-def create_bad_response(msg: str, content_type: str, status: int|None = None) -> dict:
+def create_bad_response(msg: str, content_type: str, status: int|None = None) -> tuple[dict, int|None]:
     """
     Description:
     Creates a bad response.
@@ -35,6 +34,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     Returns:
     A dictionary for the response.
     """
+
     response = __init_response()
 
     JSON = {content_type: []}
@@ -49,7 +49,7 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
 
     logger.error(f"Bad response sent: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}, error raised from function: {inspect.stack()[1][3]}")
 
-    return response
+    return response, response['status']
 
 
 def create_good_response(whole_json: list[dict], status: int, content_type: str, jwt=None, refresh=None) -> dict:
@@ -85,4 +85,4 @@ def create_good_response(whole_json: list[dict], status: int, content_type: str,
 
     JSON = {content_type: []}
 
-    return response
+    return response, response['status']

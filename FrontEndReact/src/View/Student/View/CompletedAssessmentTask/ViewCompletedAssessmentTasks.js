@@ -13,11 +13,9 @@ class ViewCompletedAssessmentTasks extends Component {
 
     var completedAssessments = this.props.completedAssessments;
 
-    var assessmentTasks = this.props.assessmentTasks;
-
     const columns = [
       {
-        name: "assessment_task_name",
+        name: "team_name",
         label: "Team Name",
         options: {
           filter: true,
@@ -70,13 +68,12 @@ class ViewCompletedAssessmentTasks extends Component {
                   <div>
                       <IconButton
                           onClick={() => {
-                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                              navbar.setAssessmentTaskInstructions(completedAssessments, atId);
                           }}
                           aria-label="completedAssessmentTasksViewIconButton"
                       >
                         <VisibilityIcon sx={{color:"black"}} />
                       </IconButton>
-          
                   </div>
               )
               

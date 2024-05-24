@@ -138,7 +138,7 @@ class AdminAddUser extends Component {
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
 
-        if (role === '') {
+        if (!navbar.props.isSuperAdmin && role === '') {
             newErrors["role"] = "Role cannot be empty";
         }
 
@@ -319,7 +319,7 @@ class AdminAddUser extends Component {
 
                                                 {/* <MenuItem value={3}>Admin</MenuItem> */}
                                             </Select>
-                                            <FormHelperText>{errors.role ? "Role cannot be empty" : ""}</FormHelperText>
+                                            <FormHelperText>{errors.role}</FormHelperText>
                                         </FormControl>
                                     }
 

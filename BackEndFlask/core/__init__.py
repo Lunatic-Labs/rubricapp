@@ -5,6 +5,38 @@ from models.tests import testing
 from flask import Flask
 import sys
 import os
+import subprocess
+import re
+
+
+
+"""
+Checks to see if the correct job exists.
+If it does not, it adds it.
+"""
+pull_cron_jobs = subprocess.run(
+    ["crontab", "-l"],
+    stdout=subprocess.PIPE, text=True
+)
+
+find_job = re.search(
+    ".*rm -f.*tempCsv/[*].*",
+    str(pull_cron_jobs.stdout)
+) # str to adddress potential NoneType
+
+if(not find_job):
+    f = open(os.path.abspath(".") + "/cronJobs", "a")
+
+    f.write(pull_cron_jobs.stdout)
+
+    f.write("0 3 * * * rm -f " + os.path.abspath(".") + "/tempCsv/*\n")
+
+    f.close()
+
+    os.system("crontab " + os.path.abspath(".") + "/cronJobs")
+
+    os.system("rm -f " + os.path.abspath(".") + "/cronJobs")
+
 
 if len(sys.argv) == 2 and sys.argv[1]=="test":
     testing()
