@@ -103,7 +103,7 @@ class Section extends Component {
                         <Box className="assessment-card">
                             <h5>Ratings</h5>
 
-                            <Typography sx={{fontSize: "18px"}}>{ rating["description"] }</Typography>
+                            <Typography sx={{fontSize: "1.2rem"}}>{ rating["description"] }</Typography>
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
@@ -117,26 +117,26 @@ class Section extends Component {
                         </Box>
 
                         <Box className="assessment-card" >
-                            <h5>Observable Characteristics</h5>
+                            <h4>Observable Characteristics</h4>
 
                             <Box className="checkbox-spacing">
-                                {observableCharacteristicList}
+                            <Typography sx={{fontSize: "1.2rem"}}>{observableCharacteristicList}</Typography>
                             </Box>
                         </Box>
 
                         {rating["show_suggestions"] &&
                             <Box className="assessment-card">
 
-                                <h5>Suggestions For Improvement</h5>
+                                <h4>Suggestions For Improvement</h4>
 
                                 <Box className="checkbox-spacing">
-                                    {suggestionList}
+                                <Typography sx={{fontSize: "1.2rem"}}>{suggestionList}</Typography>
                                 </Box>
                             </Box>
                         }
 
                         <Box className="assessment-card">
-                            <Box><h5>Comment Box</h5></Box>
+                            <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
                                 teamValue={this.props.teamValue}

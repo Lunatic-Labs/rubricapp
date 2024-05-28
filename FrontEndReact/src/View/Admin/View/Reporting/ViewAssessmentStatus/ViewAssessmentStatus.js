@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
-import Button from '@mui/material/Button';
+//import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
@@ -195,7 +195,8 @@ export default function ViewAssessmentStatus(props) {
                   </div>
                 </Grid>
               }
-
+              {/* work in progress */}
+              {/*
               <Grid sx={outerQuadrantSX} item xs={props.showRatings ? 6 : 12}>
                 <div className={innerDivClassName} style={innerGridStyle}>
                   { props.completedByTAs && 
@@ -214,6 +215,7 @@ export default function ViewAssessmentStatus(props) {
                   }
                 </div>
               </Grid>
+                */}
             </Grid>
           </Grid>
         </Grid>

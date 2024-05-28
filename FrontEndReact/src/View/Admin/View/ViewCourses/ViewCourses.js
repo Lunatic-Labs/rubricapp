@@ -26,6 +26,7 @@ class ViewCourses extends Component {
           customBodyRender: (courseName) => {
             return(
               <Typography
+                variant="h4"
                 aria-label={ courseName }
               >
                 { courseName }

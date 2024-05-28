@@ -79,12 +79,12 @@ class Rating extends Component {
 
           sx={{
             '.MuiSlider-markLabel': {
-              fontSize: "14px !important",
+              fontSize: "1.0rem !important",
               '@media (max-width: 600px)': {
-                fontSize: "8px !important",
+                fontSize: ".55rem !important",
               },
               '@media (max-width: 400px)': {
-                fontSize: "8px !important",
+                fontSize: ".5rem !important",
               },
             },
             '.MuiSlider-thumb': {
@@ -95,8 +95,8 @@ class Rating extends Component {
               border: '1px solid #2E8BEF '
             },
             '.MuiSlider-mark': {
-              height: "0.1rem !important",
-              width: "0.1rem !important"
+              height: "0.2rem !important",
+              width: "0.2rem !important"
             },
           }}
 

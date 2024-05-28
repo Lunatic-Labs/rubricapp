@@ -151,6 +151,7 @@ class CompletedAssessment(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     completed_assessment_id = db.Column(db.Integer, primary_key=True)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
+    completed_by = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
     initial_time = db.Column(db.DateTime(timezone=True), nullable=False)
