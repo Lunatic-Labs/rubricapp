@@ -40,12 +40,12 @@ var aarubo = "addAssessmentRubricOption";
 
 
 
-test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
 
-test("AdminAddAssessmentTask.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked", async () => {
+test("AdminAddAssessmentTask.test.js Test 1: Should render the AdminAddCourse component given the Add Task button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -141,11 +141,9 @@ test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text fie
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-        
         expectElementWithAriaLabelToBeInDocument(adt);
 
         clickElementWithAriaLabel(atb);
-        
     });
 
     await waitFor(() => {
@@ -155,7 +153,6 @@ test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text fie
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aatp);
     });
-
 });
 
 
@@ -177,19 +174,20 @@ test("AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error w
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-        
         expectElementWithAriaLabelToBeInDocument(adt);
 
         clickElementWithAriaLabel(atb);
-        
     });
 
     await waitFor(() => {
         clickElementWithAriaLabel(aacoub);
     });
 
-    expectElementWithAriaLabelToHaveErrorMessage(aatn, "Task Name cannot be empty");
-
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToHaveErrorMessage(aatn, "Task Name cannot be empty");
+        }, 3000);
+    });
 });
 
 
@@ -211,7 +209,7 @@ test("AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessmen
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-        
+
         expectElementWithAriaLabelToBeInDocument(adt);
 
         clickElementWithAriaLabel(atb);
@@ -246,5 +244,110 @@ test("AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessmen
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(adt);
         }, 3000)
+    });
+});
+
+
+test("AdminAddAssessmentTask.test.js Test 6: Should provide a HelperText error when no option is selected in the Time Zone Dropdown", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
+        clickElementWithAriaLabel(atb);
+    });
+
+    await waitFor(() => {
+        clickElementWithAriaLabel(aacoub);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToHaveErrorMessage(aatd, "Time Zone cannot be empty");
+        }, 3000);
+    });
+});
+
+
+test("AdminAddAssessmentTask.test.js Test 7: Should provide a HelperText error when no option is selected in the Rubric Dropdown", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
+        clickElementWithAriaLabel(atb);
+    });
+
+    await waitFor(() => {
+        clickElementWithAriaLabel(aacoub);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToHaveErrorMessage(aard, "Term cannot be empty");
+        }, 3000);
+    });
+});
+
+
+test("AdminAddAssessmentTask.test.js Test 8: Should provide a HelperText error when Instructions to Students/TA's is left empty", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
+        clickElementWithAriaLabel(atb);
+    });
+
+    await waitFor(() => {
+        clickElementWithAriaLabel(aacoub);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToHaveErrorMessage(aan, "Assessment Notes cannot be empty");
+        }, 3000);
     });
 });
