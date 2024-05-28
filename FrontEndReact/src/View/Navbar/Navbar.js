@@ -38,11 +38,7 @@ export default function ButtonAppBar(props) {
           px:{xs:"0.5rem",md:"1rem"},
           display: "flex", 
           justifyContent: "space-between"}}>
-          <link
-            rel="icon"
-            href="sb text.jpeg"
-            type="image/x-icon"
-          />
+          <img src="sbText.jpeg" alt="SkillBuilder text"  />
           {/*<Typography variant="h6" component="div" sx={{
               color: "#2E8BEF",
               fontFeatureSettings: "'clig' off, 'liga' off",
@@ -54,7 +50,7 @@ export default function ButtonAppBar(props) {
               letterSpacing: "0.15px"
           }}>
               SkillBuilder
-        </Typography> */}
+          </Typography> */}
 
           <Box component="div" sx={{ paddingLeft:{xs:"2rem"},display: 'flex', justifyContent:'space-between',alignItems:'center'}}>
             <Typography variant='h5' sx={{

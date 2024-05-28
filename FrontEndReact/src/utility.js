@@ -74,6 +74,8 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
                 getResource = (getResource === "teamMembers") ? "team_members": getResource;
 
+                getResource = (getResource === "indiv_users") ? "user": getResource;
+
                 state[resource] = result['content'][getResource][0];
             }
 

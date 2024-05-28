@@ -61,6 +61,7 @@ def create_completed_assessment(completed_assessment_data):
 
     completed_assessment_data = CompletedAssessment(
         assessment_task_id=completed_assessment_data["assessment_task_id"],
+        completed_by=completed_assessment_data["completed_by"],
         team_id=completed_assessment_data["team_id"],
         user_id=completed_assessment_data["user_id"],
         initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
@@ -175,8 +176,8 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 3
+            "user_id": 3,
+            "completed_by": 4
         },
         {
             "assessment_task_id": 2,
@@ -292,8 +293,8 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 3
+            "user_id": 3,
+            "completed_by": 4
         },
         {
             "assessment_task_id": 5,
@@ -364,8 +365,8 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 3
+            "user_id": 3,
+            "completed_by": 2
         },
         {
             "assessment_task_id": 8,
@@ -466,8 +467,8 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 3
+            "user_id": 3,
+            "completed_by": 3
         },
         {
             "assessment_task_id": 9,
@@ -584,7 +585,7 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 3
+            "completed_by": 4
         },
         {
             "assessment_task_id": 10,
@@ -700,8 +701,8 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 3
+            "user_id": 3,
+            "completed_by": 2
         },
         {
             "assessment_task_id": 11,
@@ -773,7 +774,7 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 3
+            "completed_by": 3
         },
         {
             "assessment_task_id": 12,
@@ -860,7 +861,7 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 4
+            "completed_by": 4
         },
         {
             "assessment_task_id": 13,
@@ -947,13 +948,14 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 4
+            "completed_by": 4
         }
     ]
 
     for comp_assessment in list_of_completed_assessments:
         create_completed_assessment({
             "assessment_task_id": comp_assessment["assessment_task_id"],
+            "completed_by": comp_assessment["completed_by"], # "completed_by" is the user_id of the person who completed the assessment
             "team_id": comp_assessment["team_id"],
             "user_id": comp_assessment["user_id"],
             "initial_time": comp_assessment["initial_time"],

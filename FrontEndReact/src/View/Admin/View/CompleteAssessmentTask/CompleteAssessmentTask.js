@@ -129,13 +129,14 @@ class CompleteAssessmentTask extends Component {
             `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
              "checkin", this
         );
-
+// TODO - this isn't working right now
         if (unitOfAssessment) {
             genericResourceGET(
                 `/team?course_id=${chosenCourse["course_id"]}`,
                 "teams", this
             );
         } else {
+            console.log("inside else - individual assessment:");
             genericResourceGET(
                 `/user?course_id=${chosenCourse["course_id"]}`,
                 "indiv_users", this
@@ -214,7 +215,7 @@ class CompleteAssessmentTask extends Component {
                 } else {
                     data = json;
                 }
-
+// TODO - this isn't working right now
                 if (unitOfAssessment)  { 
                     var teamId = chosenCompleteAssessmentTask["team_id"];
                     singleTeamData[teamId] = data;
