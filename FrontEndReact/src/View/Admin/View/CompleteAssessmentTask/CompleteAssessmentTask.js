@@ -20,7 +20,7 @@ class CompleteAssessmentTask extends Component {
             teams: null,
             users: null,
             unitOfAssessment: null,
-            indiv_users: null,    // unit of assessment is for individuals
+            indiv_users: null,      // use if unit of assessment is for individuals
             roles: null,
             completedAssessments: null,
             checkin: null
@@ -89,7 +89,7 @@ class CompleteAssessmentTask extends Component {
 
     componentDidUpdate(prevProps, prevState) {
         if (prevState.rubrics === null && prevState.teams === null && prevState.users === null) {
-            if (this.state.teams && this.state.teams.length > 0) {
+            if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
                 var teamIds = this.state.teams.map(team => team.team_id);
     
                 genericResourceGET(
@@ -129,25 +129,27 @@ class CompleteAssessmentTask extends Component {
             `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
              "checkin", this
         );
-// TODO - this isn't working right now
+
         if (unitOfAssessment) {
             genericResourceGET(
                 `/team?course_id=${chosenCourse["course_id"]}`,
                 "teams", this
             );
+            console.log("team");
         } else {
-            console.log("inside else - individual assessment:");
             genericResourceGET(
                 `/user?course_id=${chosenCourse["course_id"]}`,
-                "indiv_users", this
+                "users", this
             );
-            console.log("individual assessment:");
-        }
+            console.log("user");
 
+        }
+ 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
             "completedAssessments", this
         );
+
     }
 
     render() {
@@ -170,12 +172,14 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !teams || !users || !completedAssessments) {
+        } else if (!isLoaded || !rubrics || !users || !completedAssessments) {
+            console.log(isLoaded, rubrics, users, completedAssessments);
             return (
                 <Loading />
             );
 
         } else {
+            console.log("render - else:");
             var navbar = this.props.navbar;
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
@@ -186,24 +190,33 @@ class CompleteAssessmentTask extends Component {
 
             json["comments"] = "";
 
-            var initialTeamData = {};
+            var initialUnitData = {};
 
             Object.keys(users).forEach((teamId) => {
-                var complete = this.getCompleteTeam(teamId - "0");
-
-                if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+                if (unitOfAssessment) {     
+                    var complete = this.getCompleteTeam(teamId - "0");
+                } else {
+                    var complete = this.getCompleteIndividual(teamId - "0");
+                }
+                console.log("getCompleteTeam:");
+                if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
+                                        this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
                     complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
 
-                    initialTeamData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
+                    initialUnitData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
 
                 } else {
-                    initialTeamData[teamId] = json;
+                    initialUnitData[teamId] = json;
                 }
             });
 
             var singleTeamData = {};
 
+            var singleUserData = {};
+
             var singleTeam = [];
+
+            var singleUser = [];
 
             if (chosenCompleteAssessmentTask !== null) {
 
@@ -228,10 +241,10 @@ class CompleteAssessmentTask extends Component {
                     });
                 } else {
                     var userId = chosenCompleteAssessmentTask["user_id"];
-                    singleTeamData[userId] = data;
+                    singleUserData[userId] = data;
                     indiv_users.map((user) => {
                         if (user["user_id"] === chosenCompleteAssessmentTask["user_id"]) {
-                            singleTeam.push(user);
+                            singleUser.push(user);
                         }
 
                         return user;
@@ -253,15 +266,18 @@ class CompleteAssessmentTask extends Component {
                     <Form
                         navbar={this.props.navbar}
 
+                        unitOfAssessment={this.state.unitOfAssessment}
+
                         role_name={this.state.roles["role_name"]}
 
                         checkin={this.state.checkin}
 
                         form={{
                             "rubric": rubrics,
-                            "teams": (unitOfAssessment ? (chosenCompleteAssessmentTask !== null ? singleTeam : teams) : users),
+                            "units": (unitOfAssessment ? (chosenCompleteAssessmentTask !== null ? singleTeam : teams) : 
+                                                         (chosenCompleteAssessmentTask !== null ? singleUser : users)),
                             "users": users,
-                            "teamInfo": (chosenCompleteAssessmentTask !== null ? singleTeamData : initialTeamData)
+                            "unitInfo": chosenCompleteAssessmentTask !== null ? singleTeamData : initialUnitData,
                         }}
 
                         formReference={this}

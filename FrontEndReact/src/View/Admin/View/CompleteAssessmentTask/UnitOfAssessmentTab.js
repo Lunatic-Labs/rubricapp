@@ -7,42 +7,44 @@ import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator.js';
 
+// This component is used to display the tabs for the names in the unit of assessment (team or individual) 
+// in the complete assessment task page.
+// It will display the team or individual name and the status of the unit
 
-
-class TeamsTab extends Component {
+class UnitOfAssessmentTab extends Component {
     render() {
-        var teams = this.props.form.teams;
+        var units = this.props.form.units;
 
-        var teamList = []
+        var unitList = []
         
-        for(var i = 0; i < teams.length; i++) {
-            var currentTeam = teams[i];
-            var teamName = currentTeam["team_name"];
-            var teamId = currentTeam["team_id"]
-            var teamMembers = this.props.form.users[teamId];
+        for(var i = 0; i < units.length; i++) {
+            var currentUnit = units[i];
+            var unitName = currentUnit["team_name"];
+            var unitId = currentUnit["team_id"]
+            var unitMembers = this.props.form.users[unitId];
             var checkin = this.props.checkin;
-            var teamNames = [];
+            var unitNames = [];
 
                    
-            for(var index = 0; index < teamMembers.length; index++){
+            for(var index = 0; index < unitMembers.length; index++){
                 for (let i = 0; i < checkin.length; i++) {
                     const currentObject = checkin[i];
                     
-                    if ('user_id' in currentObject && currentObject.user_id === teamMembers[index]["user_id"]) {
-                        var firstName = teamMembers[index]["first_name"];
-                        var lastName = teamMembers[index]["last_name"];
+                    if ('user_id' in currentObject && currentObject.user_id === unitMembers[index]["user_id"]) {
+                        var firstName = unitMembers[index]["first_name"];
+                        var lastName = unitMembers[index]["last_name"];
                         var fullName = firstName + " " + lastName;
-                        teamNames = [...teamNames, <Box key={index}> {fullName} </Box>];
+                        unitNames = [...unitNames, <Box key={index}> {fullName} </Box>];
                     }
                 }
             }
 
-            teamNames = teamNames.length === 0
+            unitNames = unitNames.length === 0
             ? [<Box key={0}> No Team Members Checked In</Box>]
-            : teamNames;
+            : unitNames;
             
 
-            teamList.push(
+            unitList.push(
                 <Tab
                     label={
                         <Box sx={{
@@ -51,16 +53,16 @@ class TeamsTab extends Component {
                             alignItems: "center",
                             justifyContent: "center"
                         }}>
-                            <Tooltip title={teamNames}>
-                                <span>{teamName}</span>
+                            <Tooltip title={unitNames}>
+                                <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={this.props.isTeamCompleteAssessmentComplete(teamId)}
+                                status={this.props.isTeamCompleteAssessmentComplete(unitId)}
                             />
                         </Box>
                     }
-                    value={teamId}
-                    key={teamId}
+                    value={unitId}
+                    key={unitId}
                     sx={{
                         maxWidth: 250,
                         maxHeight: 10,
@@ -70,7 +72,7 @@ class TeamsTab extends Component {
                         padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
-                        border: this.props.currentTeamTab === teamId ? '2px solid #2E8BEF ' : '2px solid gray',
+                        border: this.props.currentUnitTab === unitId ? '2px solid #2E8BEF ' : '2px solid gray',
                         '&.Mui-selected': {
                             color: '#2E8BEF '
                         },
@@ -81,7 +83,7 @@ class TeamsTab extends Component {
         return (
             <React.Fragment> 
                 <Tabs
-                    value={this.props.teamValue}
+                    value={this.props.unitValue}
                     onChange={(event, newValue) => {
                         this.props.handleTeamChange(event, newValue);
                         this.props.handleTeamTabChange(newValue);
@@ -99,11 +101,11 @@ class TeamsTab extends Component {
                         },
                     }}
                 >
-                    {teamList}
+                    {unitList}
                 </Tabs>
             </React.Fragment>
         )
     }
 }
 
-export default TeamsTab;
+export default UnitOfAssessmentTab;
