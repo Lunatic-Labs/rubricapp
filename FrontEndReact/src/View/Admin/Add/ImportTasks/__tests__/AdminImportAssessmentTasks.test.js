@@ -31,6 +31,7 @@ var aiatsb = "adminImportAssessmentTasksSubmitButton";
 var aiacs = "adminImportAssessmentCourseSelect";
 var aiacc = "adminImportAssessmentCourseChoice";
 var aiacd = "adminImportAssessmentCourseDropdown";
+var adt = "assessmentDashboardTitle"
 
 
 
@@ -61,6 +62,8 @@ test("AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAs
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
         clickElementWithAriaLabel(iab);
 
         expectElementWithAriaLabelToBeInDocument(aiatt);
@@ -84,6 +87,8 @@ test("AdminImportAssessmentTasks.test.js Test 2: Should render the page that cam
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
         clickElementWithAriaLabel(iab);
 
         expectElementWithAriaLabelToBeInDocument(aiatt);
@@ -93,13 +98,13 @@ test("AdminImportAssessmentTasks.test.js Test 2: Should render the page that cam
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
+            expectElementWithAriaLabelToBeInDocument(adt);
         }, 3000);
     });
 });
 
 
-test("AdminImportAssessmentTasks.test.js Test 3: Should render the page that came before given that the back button is clicked", async () => {
+test("AdminImportAssessmentTasks.test.js Test 3: Should render the assessment dashboard title page given that the back button is clicked on the ImportAssessmentTasks page", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -115,6 +120,8 @@ test("AdminImportAssessmentTasks.test.js Test 3: Should render the page that cam
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
         clickElementWithAriaLabel(iab);
 
         expectElementWithAriaLabelToBeInDocument(aiatt);
@@ -124,7 +131,7 @@ test("AdminImportAssessmentTasks.test.js Test 3: Should render the page that cam
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
+            expectElementWithAriaLabelToBeInDocument(adt);
         }, 3000);
     });
 });
@@ -146,6 +153,8 @@ test("AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+
         clickElementWithAriaLabel(iab);
 
         expectElementWithAriaLabelToBeInDocument(aiatt);
@@ -159,7 +168,7 @@ test("AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(aiacs, "Invalid Form: Missing Course!");
+            expectElementWithAriaLabelToHaveErrorMessage(aiacs, "Missing Course to Import Tasks From");
         }, 3000);
     });
 });
@@ -181,6 +190,8 @@ test("AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+        
         clickElementWithAriaLabel(iab);
 
         expectElementWithAriaLabelToBeInDocument(aiatt);
@@ -198,7 +209,7 @@ test("AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back 
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
+            expectElementWithAriaLabelToBeInDocument(adt);
         }, 3000);
     });
 });

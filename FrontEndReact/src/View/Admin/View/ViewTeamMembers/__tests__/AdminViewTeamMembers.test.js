@@ -30,10 +30,11 @@ var amb = "addMemberButton";
 var atmt = "addTeamMembersTitle";
 var rmb = "removeMemberButton";
 var rtmt = "removeTeamMembersTitle";
+var aetmstb = "adminEditTeamMembersSaveTeamButton";
 
 
 
-test("NOTE: Tests 1-4 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -135,10 +136,9 @@ test("AdminViewTeamMembers.test.js Test 3: Should render the View Team page if t
         }, 3000);
     });
 
-
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
+            expectElementWithAriaLabelToBeInDocument(td);
         }, 3000);
     });
 });
@@ -176,7 +176,6 @@ test("AdminViewTeamMembers.test.js Test 4: Should render the Add Team Members pa
             clickElementWithAriaLabel(amb);
         }, 3000);
     });
-
 
     await waitFor(() => {
         setTimeout(() => {
@@ -219,10 +218,206 @@ test("AdminViewTeamMembers.test.js Test 5: Should render the Remove Team Members
         }, 3000);
     });
 
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rtmt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewTeamMembers.test.js Test 6: Should render the AdminViewTeamMembers page if the back button on the AddMembers page is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(vtib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+
+            clickElementWithAriaLabel(amb);
+        }, 3000);
+    });
+
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(atmt);
+
+            clickElementWithAriaLabel(mhbb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewTeamMembers.test.js Test 7: Should render the AdminViewTeamMembers page if the back button on the RemoveMembers page is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(vtib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+
+            clickElementWithAriaLabel(rmb);
+        }, 3000);
+    });
 
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(rtmt);
+
+            clickElementWithAriaLabel(mhbb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewTeamMembers.test.js Test 8: Should render the AdminViewTeamMembers page if the save team button on the AddMembers page is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(vtib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+
+            clickElementWithAriaLabel(amb);
+        }, 3000);
+    });
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(atmt);
+
+            clickElementWithAriaLabel(aetmstb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+        }, 3000);
+    });
+});
+
+
+test("AdminViewTeamMembers.test.js Test 9: Should render the AdminViewTeamMembers page if the save team button on the RemoveMembers page is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rt);
+        }, 3000);
+    });
+
+    clickElementWithAriaLabel(tt);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(td);
+
+            clickElementWithAriaLabel(vtib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
+
+            clickElementWithAriaLabel(rmb);
+        }, 3000);
+    });
+    
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(rtmt);
+
+            clickElementWithAriaLabel(aetmstb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(avtmt);
         }, 3000);
     });
 });
