@@ -375,6 +375,7 @@ class Form extends Component {
                         onClick={() => {
                             this.props.refreshTeams();
                         }}
+                        aria-label="refreshButton"
                     >
                         Refresh
                     </Button>
@@ -390,6 +391,7 @@ class Form extends Component {
                         }}
 
                         disabled={this.state.displaySavedNotification}
+                        aria-label="saveButton"
                     >
                         Save
                     </Button>

@@ -100,7 +100,7 @@ class Section extends Component {
             <Box id="rating">
                 <Box className="assessment-task-spacing" aria-label="ratingsSection">
                     <FormControl>
-                        <Box className="assessment-card">
+                        <Box className="assessment-card" aria-label="ratingsSection">
                             <h5>Ratings</h5>
 
                             <Typography sx={{fontSize: "18px"}} >{ rating["description"] }</Typography>
