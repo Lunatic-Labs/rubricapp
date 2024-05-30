@@ -107,11 +107,13 @@ class AdminAddCourse extends Component {
             courseName,
             courseNumber,
             term,
-            year,
+            year: yearState,
             active,
             useTas,
             useFixedTeams,
         } = this.state;
+
+        var year = yearState.toString().trim();
 
         var navbar = this.props.navbar;
 
@@ -133,7 +135,7 @@ class AdminAddCourse extends Component {
         if (year.trim() === "")
             newErrors["year"] = "Year cannot be empty";
 
-        else if (year < 2023)
+        else if (parseInt(year) < 2023)
             newErrors["year"] = "Year should be at least 2023 or later";
 
         else if (typeof(year) === "string" && !validator.isNumeric(year))
