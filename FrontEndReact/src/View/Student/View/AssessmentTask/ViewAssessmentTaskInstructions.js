@@ -139,6 +139,7 @@ class ViewAssessmentTaskInstructions extends Component {
                   onClick={() => {
                     this.handleContinueClick();
                   }}
+                  aria-label="viewAssessmentTaskInstructionsContinueButton"
                 >
                   CONTINUE
                 </Button>
