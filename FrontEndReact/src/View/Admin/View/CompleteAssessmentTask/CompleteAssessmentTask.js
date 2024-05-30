@@ -125,24 +125,22 @@ class CompleteAssessmentTask extends Component {
             "roles", this
         );
 
-        genericResourceGET(
+        genericResourceGET( 
             `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
              "checkin", this
         );
 
-        if (unitOfAssessment) {
+        if (unitOfAssessment) {    // if team assessments, get teams for this course
             genericResourceGET(
                 `/team?course_id=${chosenCourse["course_id"]}`,
                 "teams", this
             );
             console.log("team");
-        } else {
+        } else {                // if individual assessments, get student users for this course
             genericResourceGET(
-                `/user?course_id=${chosenCourse["course_id"]}`,
+                `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
                 "users", this
             );
-            console.log("user");
-
         }
  
         genericResourceGET(
@@ -159,11 +157,10 @@ class CompleteAssessmentTask extends Component {
             rubrics,
             teams,
             unitOfAssessment,
-            indiv_users,
             users,
             completedAssessments
         } = this.state;
-
+        console.log("render - state:", this.state);
         if (errorMessage) {
             return (
                 <ErrorMessage
@@ -191,28 +188,49 @@ class CompleteAssessmentTask extends Component {
             json["comments"] = "";
 
             var initialUnitData = {};
+            if (unitOfAssessment) { 
 
-            Object.keys(users).forEach((teamId) => {
-                if (unitOfAssessment) {     
+                Object.keys(users).forEach((teamId) => {
                     var complete = this.getCompleteTeam(teamId - "0");
+                    console.log("getCompleteTeam:");
+                    if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
+                                            this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+                        complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
+
+                        initialUnitData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
+
+                    } else {
+                        initialUnitData[teamId] = json;
+                    }
+                });
+            } else {
+                if (users === null || users.length === 0) {
+                    return (
+                        <ErrorMessage
+                            fetchedResource={"Student users for this course"}
+                            errorMessage={"No users found for this course."}
+                        />
+                    );
                 } else {
-                    var complete = this.getCompleteIndividual(teamId - "0");
+                    users.map((user) => {
+            
+                        var complete = this.getCompleteIndividual(user["user_id"]);
+                        console.log("getCompleteIndividual:");
+                        if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
+                                                this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+                            complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
+
+                            initialUnitData[user["user_id"]] = complete["rating_observable_characteristics_suggestions_data"];
+
+                        } else {
+                            initialUnitData[user["user_id"]] = json;
+                        }
+                    });
+                    console.log("initialUnitData:", initialUnitData);
                 }
-                console.log("getCompleteTeam:");
-                if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
-                                        this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                    complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
-
-                    initialUnitData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
-
-                } else {
-                    initialUnitData[teamId] = json;
-                }
-            });
-
-            var singleTeamData = {};
-
-            var singleUserData = {};
+            }
+            
+            var singleUnitData = {};
 
             var singleTeam = [];
 
@@ -228,10 +246,10 @@ class CompleteAssessmentTask extends Component {
                 } else {
                     data = json;
                 }
-// TODO - this isn't working right now
+
                 if (unitOfAssessment)  { 
                     var teamId = chosenCompleteAssessmentTask["team_id"];
-                    singleTeamData[teamId] = data;
+                    singleUnitData[teamId] = data;
                     teams.map((team) => {
                         if (team["team_id"] === chosenCompleteAssessmentTask["team_id"]) {
                             singleTeam.push(team);
@@ -241,8 +259,8 @@ class CompleteAssessmentTask extends Component {
                     });
                 } else {
                     var userId = chosenCompleteAssessmentTask["user_id"];
-                    singleUserData[userId] = data;
-                    indiv_users.map((user) => {
+                    singleUnitData[userId] = data;
+                    users.map((user) => {
                         if (user["user_id"] === chosenCompleteAssessmentTask["user_id"]) {
                             singleUser.push(user);
                         }
@@ -277,7 +295,7 @@ class CompleteAssessmentTask extends Component {
                             "units": (unitOfAssessment ? (chosenCompleteAssessmentTask !== null ? singleTeam : teams) : 
                                                          (chosenCompleteAssessmentTask !== null ? singleUser : users)),
                             "users": users,
-                            "unitInfo": chosenCompleteAssessmentTask !== null ? singleTeamData : initialUnitData,
+                            "unitInfo": chosenCompleteAssessmentTask !== null ? singleUnitData : initialUnitData,
                         }}
 
                         formReference={this}

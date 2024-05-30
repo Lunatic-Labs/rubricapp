@@ -44,14 +44,14 @@ class Section extends Component {
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={this.props.navbar}
-                    teamValue={this.props.teamValue}
+                    unitValue={this.props.unitValue}
                     observableCharacteristic={observableCharacteristics[index]}
                     categoryName={category}
                     setObservableCharacteristics={this.props.setObservableCharacteristics}
                     observableCharacteristics={currentData[category]["observable_characteristics"]}
                     id={index}
                     key={index}
-                    isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                 />
             );
 
@@ -64,14 +64,14 @@ class Section extends Component {
             suggestionList.push(
                 <Suggestion
                     navbar={this.props.navbar}
-                    teamValue={this.props.teamValue}
+                    unitValue={this.props.unitValue}
                     suggestion={suggestions[index]}
                     suggestions={currentData[category]["suggestions"]}
                     setSuggestions={this.props.setSuggestions}
                     categoryName={category}
                     id={index}
                     key={index}
-                    isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                 />
             );
 
@@ -109,9 +109,9 @@ class Section extends Component {
                                 <Rating
                                     setSliderValue={this.props.setSliderValue}
                                     navbar={this.props.navbar}
-                                    teamValue={this.props.teamValue}
+                                    unitValue={this.props.unitValue}
                                     rating={rating}
-                                    isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                                 />
                             </Box>
                         </Box>
@@ -139,11 +139,11 @@ class Section extends Component {
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
-                                teamValue={this.props.teamValue}
+                                unitValue={this.props.unitValue}
                                 setComments={this.props.setComments}
                                 currentData={currentData}
                                 categoryName={category}
-                                isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                                isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                             />
                         </Box>
                     </FormControl> 

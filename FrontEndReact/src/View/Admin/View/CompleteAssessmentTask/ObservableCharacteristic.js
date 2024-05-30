@@ -33,7 +33,7 @@ class ObservableCharacteristic extends Component {
       }
 
       this.props.setObservableCharacteristics(
-        this.props.teamValue,
+        this.props.unitValue,
         this.props.categoryName,
         newData
       );
@@ -47,7 +47,7 @@ class ObservableCharacteristic extends Component {
 
         onClick={handleChange}
 
-        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
       >
         <Checkbox
           sx={{
@@ -61,7 +61,7 @@ class ObservableCharacteristic extends Component {
 
           checked={this.state.checked}
 
-          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
+          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
         />
 
         <label>{this.props.observableCharacteristic}</label>

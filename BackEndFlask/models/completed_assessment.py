@@ -176,6 +176,7 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
+            "team_id": None,
             "user_id": 3,
             "completed_by": 4
         },
@@ -293,6 +294,7 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
+            "team_id": None,
             "user_id": 3,
             "completed_by": 4
         },
@@ -365,6 +367,7 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
+            "team_id": None,
             "user_id": 3,
             "completed_by": 2
         },
@@ -467,6 +470,7 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
+            "team_id": None,
             "user_id": 3,
             "completed_by": 3
         },
@@ -585,6 +589,7 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
+            "user_id": None,
             "completed_by": 4
         },
         {
@@ -701,6 +706,7 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
+            "team_id": None,
             "user_id": 3,
             "completed_by": 2
         },
@@ -774,6 +780,7 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
+            "user_id": None,
             "completed_by": 3
         },
         {
@@ -861,6 +868,7 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
+            "user_id": None,
             "completed_by": 4
         },
         {
@@ -948,6 +956,7 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
+            "user_id": None,
             "completed_by": 4
         }
     ]

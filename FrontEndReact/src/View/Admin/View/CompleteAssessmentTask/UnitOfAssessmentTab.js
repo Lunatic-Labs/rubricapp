@@ -13,36 +13,51 @@ import StatusIndicator from './StatusIndicator.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
+        console.log("UnitOfAssessmentTab",this.props);
         var units = this.props.form.units;
 
         var unitList = []
-        
-        for(var i = 0; i < units.length; i++) {
-            var currentUnit = units[i];
-            var unitName = currentUnit["team_name"];
-            var unitId = currentUnit["team_id"]
-            var unitMembers = this.props.form.users[unitId];
-            var checkin = this.props.checkin;
-            var unitNames = [];
 
-                   
-            for(var index = 0; index < unitMembers.length; index++){
-                for (let i = 0; i < checkin.length; i++) {
-                    const currentObject = checkin[i];
-                    
-                    if ('user_id' in currentObject && currentObject.user_id === unitMembers[index]["user_id"]) {
-                        var firstName = unitMembers[index]["first_name"];
-                        var lastName = unitMembers[index]["last_name"];
-                        var fullName = firstName + " " + lastName;
-                        unitNames = [...unitNames, <Box key={index}> {fullName} </Box>];
+        for(var i = 0; i < units.length; i++) {        
+
+            var currentUnit = units[i];
+            var checkin = this.props.checkin;
+            if (this.props.unit_of_assessment) {
+                var unitName = currentUnit["team_name"];
+                var unitId = currentUnit["team_id"];
+                var unitMembers = this.props.form.users[unitId];
+
+                var unitNames = [];
+   
+                for(var index = 0; index < unitMembers.length; index++){
+                    for (var ci = 0; ci < checkin.length; ci++) {
+                        const currentObject = checkin[ci];
+                        
+                        if ('user_id' in currentObject && currentObject.user_id === unitMembers[index]["user_id"]) {
+                            var firstName = unitMembers[index]["first_name"];
+                            var lastName = unitMembers[index]["last_name"];
+                            var fullName = firstName + " " + lastName;
+                            unitNames = [...unitNames, <Box key={index}> {fullName} </Box>];
+                        }
                     }
                 }
-            }
 
-            unitNames = unitNames.length === 0
-            ? [<Box key={0}> No Team Members Checked In</Box>]
-            : unitNames;
-            
+                unitNames = unitNames.length === 0
+                ? [<Box key={0}> No Team Members Checked In</Box>]
+                : unitNames;
+            } else {
+                var unitName = currentUnit["first_name"] + " " + currentUnit["last_name"];
+                var unitId = currentUnit["user_id"];
+                for (var ci = 0; ci < checkin.length; ci++) {
+                    if (checkin[ci].user_id === unitId)
+                    {
+                        //var firstName = checkin["first_name"];
+                        //var lastName = checkin["last_name"];
+                        //var fullName = firstName + " " + lastName;
+                        unitNames = [ <Box key={0}> Checked In </Box>];
+                    }  
+                } 
+            }
 
             unitList.push(
                 <Tab
@@ -57,7 +72,7 @@ class UnitOfAssessmentTab extends Component {
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={this.props.isTeamCompleteAssessmentComplete(unitId)}
+                                status={this.props.isUnitCompleteAssessmentComplete(unitId)}
                             />
                         </Box>
                     }
@@ -85,8 +100,8 @@ class UnitOfAssessmentTab extends Component {
                 <Tabs
                     value={this.props.unitValue}
                     onChange={(event, newValue) => {
-                        this.props.handleTeamChange(event, newValue);
-                        this.props.handleTeamTabChange(newValue);
+                        this.props.handleUnitChange(event, newValue);
+                        this.props.handleUnitTabChange(newValue);
                     }}
                     variant="scrollable"
                     scrollButtons

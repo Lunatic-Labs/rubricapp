@@ -110,6 +110,7 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
     course_id: int (The id of a course)
     role_id: int (The role of a user)
     """
+    print("course_id", course_id, "role_id", role_id)
     users_and_role_ids = db.session.query(
         User.user_id,
         User.first_name,

@@ -20,7 +20,7 @@ import Cookies from 'universal-cookie';
 class Form extends Component {
     constructor(props) {
         super(props);
-
+        console.log(this.props);
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
@@ -34,6 +34,7 @@ class Form extends Component {
             categoryList: null,
             section: null
         }
+        console.log(this.state);
 
         this.handleUnitChange = (event, newValue) => {
             this.setState({
@@ -44,6 +45,7 @@ class Form extends Component {
 
                 this.generateCategoriesAndSection
             );
+            console.log("handleUnitChange:",this.state.value);
         };
 
         this.handleUnitTabChange = (id) => {
@@ -55,6 +57,7 @@ class Form extends Component {
 
                 this.generateCategoriesAndSection
             );
+            console.log("handleUnitTabChange:",this.state.value);
         };
 
         this.handleChange = (event, newValue) => {
@@ -75,6 +78,7 @@ class Form extends Component {
                     this.generateCategoriesAndSection
                 );
             }
+            console.log("handleCategoryChange:",this.state.value);
         };
 
         this.deepClone = (obj) => {
@@ -110,34 +114,36 @@ class Form extends Component {
             );
         };
 
-        this.setObservableCharacteristics = (UnitValue, categoryName, observableCharacteristics) => {
-            if(this.isTeamCompleteAssessmentComplete(UnitValue)) return;
+        this.setObservableCharacteristics = (unitValue, categoryName, observableCharacteristics) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue)) return;
 
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedUnitData[UnitValue][categoryName]["observable_characteristics"] = observableCharacteristics;
+                updatedUnitData[unitValue][categoryName]["observable_characteristics"] = observableCharacteristics;
 
                 return { unitData: updatedUnitData };
             },
 
             this.generateCategoriesAndSection
             );
+            console.log("setObservableCharacteristics:",this.state.value);
         }
 
-        this.setSuggestions = (UnitValue, categoryName, suggestions) => {
-            if(this.isTeamCompleteAssessmentComplete(UnitValue)) return;
+        this.setSuggestions = (unitValue, categoryName, suggestions) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue)) return;
 
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedUnitData[UnitValue][categoryName]["suggestions"] = suggestions;
+                updatedUnitData[unitValue][categoryName]["suggestions"] = suggestions;
 
                 return { unitData: updatedUnitData };
             },
 
             this.generateCategoriesAndSection
             );
+            console.log("setSuggestions:",this.state.value);
         }
 
         this.setComments = (UnitValue, categoryName, comments) => {
@@ -151,6 +157,7 @@ class Form extends Component {
 
             this.generateCategoriesAndSection
             );
+            console.log("setComments:",this.state.value);
         }
 
         this.isCategoryComplete = (unitId, categoryName) => {
@@ -174,7 +181,7 @@ class Form extends Component {
             return status;
         }
 
-        this.isTeamCompleteAssessmentComplete = (unitId) => {
+        this.isUnitCompleteAssessmentComplete = (unitId) => {
             return this.state.unitData[unitId]["done"];
         }
 
@@ -220,6 +227,7 @@ class Form extends Component {
                         '&.Mui-selected': { color: '#2E8BEF ' }
                     }}/>
                 );
+                console.log("generateCategoriesandSections:",index);
 
                 if(this.state.tabCurrentlySelected === index) {
                     section.push(
@@ -227,8 +235,8 @@ class Form extends Component {
                             navbar={this.props.navbar}
                             category={category}
                             rubric={this.props.form.rubric}
-                            UnitValue={this.state.UnitValue}
-                            currentData={this.state.unitData[this.state.UnitValue]}
+                            unitValue={this.state.unitValue}
+                            currentData={this.state.unitData[this.state.unitValue]}
                             active={this.state.tabCurrentlySelected===index}
                             key={index}
                             setSliderValue={this.setSliderValue}
@@ -238,7 +246,7 @@ class Form extends Component {
                             setComments={this.setComments}
                             handleSaveForLater={this.handleSaveForLater}
                             handleSubmit={this.handleSubmit}
-                            isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
+                            isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
                         />
                     );
                 }
@@ -375,15 +383,15 @@ class Form extends Component {
                 <Box>
                     {this.props.role_name !== "Student" &&
                         <Box sx={{pb: 1}} className="content-spacing">
-                            <unitsTab
+                            <UnitOfAssessmentTab
                                 navbar={this.props.navbar}
                                 currentUnitTab={this.state.currentUnitTab}
-                                UnitValue={this.state.unitValue}
+                                unitValue={this.state.unitValue}
                                 checkin={this.props.checkin}
                                 form={this.props.form}
                                 handleUnitChange={this.handleUnitChange}
                                 handleUnitTabChange={this.handleUnitTabChange}
-                                isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
+                                isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
                             />
                         </Box>
                     }
@@ -391,7 +399,7 @@ class Form extends Component {
                     <Box sx={{mt: 2}}>
                         <Tabs
                             value={this.state.value} 
-
+                        
                             onChange={(event, newValue) => {
                                 this.handleChange(event, newValue);
                                 this.handleCategoryChange(newValue);
