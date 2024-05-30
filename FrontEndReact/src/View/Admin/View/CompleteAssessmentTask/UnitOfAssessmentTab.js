@@ -13,7 +13,7 @@ import StatusIndicator from './StatusIndicator.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
-        console.log("UnitOfAssessmentTab",this.props);
+
         var units = this.props.form.units;
 
         var unitList = []
@@ -51,9 +51,6 @@ class UnitOfAssessmentTab extends Component {
                 for (var ci = 0; ci < checkin.length; ci++) {
                     if (checkin[ci].user_id === unitId)
                     {
-                        //var firstName = checkin["first_name"];
-                        //var lastName = checkin["last_name"];
-                        //var fullName = firstName + " " + lastName;
                         unitNames = [ <Box key={0}> Checked In </Box>];
                     }  
                 } 

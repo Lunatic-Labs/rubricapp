@@ -214,9 +214,11 @@ class AppState extends Component {
         }
 
         // The ===null section of the next line is not permanent. 
-        // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
-        // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
-        // By adding ===null as a test case, we were able to have it populate.
+        // The only purpose was to test to see if we could see the "My Assessment Task" 
+        // on the student dashboard
+        // When you click "complete" on the "TO DO" column the completed fields were null 
+        // thus it would not display anything
+        // By adding === null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({

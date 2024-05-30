@@ -73,11 +73,14 @@ def get_all_completed_assessments():
 @AuthCheck()
 def add_completed_assessment():
     try:
+        assessment_data = request.json
+        print(assessment_data)
+
         team_id = int(request.args.get("team_id"))
 
         assessment_task_id = int(request.args.get("assessment_task_id"))
 
-        user_id = int(request.args.get("user_id"))
+        user_id = int(assessment_data["user_id"])
 
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
@@ -114,6 +117,7 @@ class CompletedAssessmentSchema(ma.Schema):
             'completed_assessment_id',
             'assessment_task_id',
             'assessment_task_name',
+            'completed_by',
             'team_id',
             'team_name',
             'user_id',

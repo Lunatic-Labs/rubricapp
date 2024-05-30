@@ -57,7 +57,7 @@ from models.queries import (
 @AuthCheck()
 def get_all_users():
     try:
-        print("request.args", request.args)
+
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
@@ -100,12 +100,12 @@ def get_all_users():
             course_id = request.args.get("course_id")
 
             get_course(course_id)  # Trigger an error if not exists.
-            print ("course_id", course_id)
+
             if(request.args.get("role_id")):
                 role_id = request.args.get("role_id")
 
                 get_role(role_id)  # Trigger an error if not exists.
-                print ("calling get_users_by_course_id_and_role_id")
+
                 all_users = get_users_by_course_id_and_role_id(course_id, role_id)
 
             else:

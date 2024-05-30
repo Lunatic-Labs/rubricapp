@@ -38,7 +38,7 @@ class Form extends Component {
 
         this.handleUnitChange = (event, newValue) => {
             this.setState({
-                    UnitValue: newValue,
+                    unitValue: newValue,
                     value: 0,
                     tabCurrentlySelected: 0
                 },
@@ -57,7 +57,7 @@ class Form extends Component {
 
                 this.generateCategoriesAndSection
             );
-            console.log("handleUnitTabChange:",this.state.value);
+            console.log("handleUnitTabChange:",this.state.currentUnitTab);
         };
 
         this.handleChange = (event, newValue) => {
@@ -101,11 +101,11 @@ class Form extends Component {
             }
         }
 
-        this.setSliderValue = (UnitValue, categoryName, rating) => {
+        this.setSliderValue = (unitValue, categoryName, rating) => {
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedUnitData[UnitValue][categoryName]["rating"] = rating;
+                updatedUnitData[unitValue][categoryName]["rating"] = rating;
 
                 return { unitData: updatedUnitData };
             },
@@ -121,13 +121,12 @@ class Form extends Component {
                 const updatedUnitData = this.deepClone(prevState.unitData);
 
                 updatedUnitData[unitValue][categoryName]["observable_characteristics"] = observableCharacteristics;
-
+                
                 return { unitData: updatedUnitData };
             },
 
             this.generateCategoriesAndSection
             );
-            console.log("setObservableCharacteristics:",this.state.value);
         }
 
         this.setSuggestions = (unitValue, categoryName, suggestions) => {
@@ -146,11 +145,11 @@ class Form extends Component {
             console.log("setSuggestions:",this.state.value);
         }
 
-        this.setComments = (UnitValue, categoryName, comments) => {
+        this.setComments = (unitValue, categoryName, comments) => {
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedUnitData[UnitValue][categoryName]["comments"] = comments;
+                updatedUnitData[unitValue][categoryName]["comments"] = comments;
 
                 return { unitData: updatedUnitData };
             },
@@ -182,6 +181,7 @@ class Form extends Component {
         }
 
         this.isUnitCompleteAssessmentComplete = (unitId) => {
+            console.log("isUnitCompleteAssessmentComplete:",this.state.unitData[unitId]);
             return this.state.unitData[unitId]["done"];
         }
 
@@ -227,7 +227,6 @@ class Form extends Component {
                         '&.Mui-selected': { color: '#2E8BEF ' }
                     }}/>
                 );
-                console.log("generateCategoriesandSections:",index);
 
                 if(this.state.tabCurrentlySelected === index) {
                     section.push(
@@ -275,7 +274,7 @@ class Form extends Component {
         var selected = this.state.unitData[currentUnitTab];
 
         var date = new Date();
-
+console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosenCompleteAssessmentTask)
         if(chosenCompleteAssessmentTask) {
             chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
 
@@ -292,26 +291,40 @@ class Form extends Component {
         } else {
             var cookies = new Cookies();
 
-            if(this.props.userRole) {
+            if(chosenCompleteAssessmentTask && this.props.userRole) {
                 var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTab, this.props.completedAssessments);
 
                 var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
+                
+                var route = `/completed_assessment${completedAssessmentId}`
+            } else {
+                var route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
             }
-            
-            var route = this.props.userRole ? `/completed_assessment${completedAssessmentId}` :
-            `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
-            
-            var assessmentData = {
-                "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                "rating_observable_characteristics_suggestions_data": selected,
-                "completed_by": cookies.get("user")["user_id"],
-                "team_id": currentUnitTab,
-                "initial_time": date,
-                "last_update": date,
-                done: done,
-            };
-            
-            if (this.props.userRole) {
+            if (this.state.unitOfAssessment) { 
+                var assessmentData = {
+                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+                    "rating_observable_characteristics_suggestions_data": selected,
+                    "completed_by": cookies.get("user")["user_id"],
+                    "team_id": currentUnitTab,
+                    "user_id": null,
+                    "initial_time": date,
+                    "last_update": date,
+                    done: done,
+                };
+            } else { 
+                var assessmentData = {
+                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+                    "rating_observable_characteristics_suggestions_data": selected,
+                    "completed_by": cookies.get("user")["user_id"],
+                    "team_id": null,
+                    "user_id": currentUnitTab,
+                    "initial_time": date,
+                    "last_update": date,
+                    done: done,
+                };
+            }            
+
+            if (chosenCompleteAssessmentTask && this.props.userRole) {
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {

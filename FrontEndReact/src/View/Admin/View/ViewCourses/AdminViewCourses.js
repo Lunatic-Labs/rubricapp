@@ -7,7 +7,8 @@ import { genericResourceGET, parseCourseRoles } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 
-
+// AdminViewCourses is a component that displays the courses that are available to the admin.
+// The admin can add a course by clicking the "Add Course" button.
 
 class AdminViewCourses extends Component {
   constructor(props) {
