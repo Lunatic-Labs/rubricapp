@@ -137,7 +137,7 @@ class AdminAddAssessmentTask extends Component {
                     dueDate: dueDate === '' ? 'Due Date cannot be empty' : '',
                     timeZone: timeZone === '' ? 'Time Zone cannot be empty' : '',
                     roleId: roleId === '' ? 'Completed By cannot be empty' : '',
-                    rubricId: rubricId === '' ? 'Term cannot be empty' : '',
+                    rubricId: rubricId === '' ? 'Rubric cannot be empty' : '',
                     notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
                 },
             });
