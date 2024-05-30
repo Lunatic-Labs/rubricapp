@@ -312,7 +312,7 @@ test("AdminAddAssessmentTask.test.js Test 7: Should provide a HelperText error w
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(aard, "Term cannot be empty");
+            expectElementWithAriaLabelToHaveErrorMessage(aard, "Rubric cannot be empty");
         }, 3000);
     });
 });
