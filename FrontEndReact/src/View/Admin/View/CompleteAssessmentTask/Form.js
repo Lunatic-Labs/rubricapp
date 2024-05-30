@@ -370,6 +370,7 @@ class Form extends Component {
                         variant="text"
                         color="primary"
                         startIcon={<RefreshIcon />}
+                        arialabel="refreshButton"
 
                         onClick={() => {
                             this.props.refreshTeams();
@@ -383,13 +384,13 @@ class Form extends Component {
                         id="formSubmitButton"
                         variant="contained"
                         color="primary"
+                        aria-label="saveButton"
 
                         onClick={() => {
                             this.handleSubmit(true);
                         }}
 
                         disabled={this.state.displaySavedNotification}
-                        aria-label="saveButton"
                     >
                         Save
                     </Button>
