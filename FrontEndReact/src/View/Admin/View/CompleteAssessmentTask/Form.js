@@ -391,7 +391,6 @@ class Form extends Component {
                         }}
 
                         disabled={this.state.displaySavedNotification}
-                        aria-label="saveButton"
                     >
                         Save
                     </Button>
