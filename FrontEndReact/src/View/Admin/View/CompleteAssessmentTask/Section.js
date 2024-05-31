@@ -109,7 +109,6 @@ class Section extends Component {
                                 <Rating
                                     navbar={this.props.navbar}
                                     setSliderValue={this.props.setSliderValue}
-                                    navbar={this.props.navbar}
                                     unitValue={this.props.unitValue}
                                     rating={rating}
                                     isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}

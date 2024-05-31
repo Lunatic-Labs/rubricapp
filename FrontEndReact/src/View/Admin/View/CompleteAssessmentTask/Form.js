@@ -9,7 +9,7 @@ import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
-
+import Alert from '@mui/material/Alert';
 
 
 class Form extends Component {
@@ -232,7 +232,7 @@ class Form extends Component {
                     section.push(
                         <Section
                             navbar={this.props.navbar}
-                            isDone={this.isTeamCompleteAssessmentComplete(this.state.teamValue)}
+                            isDone={this.isUnitCompleteAssessmentComplete(this.state.unitValue)}
                             category={category}
                             rubric={this.props.form.rubric}
                             unitValue={this.state.unitValue}

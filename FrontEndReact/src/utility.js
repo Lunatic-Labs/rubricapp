@@ -2,8 +2,6 @@ import { apiUrl } from './App.js';
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
-
-
 var timeToWait = 500;
 
 export function genericResourceGET(fetchURL, resource, component) {
