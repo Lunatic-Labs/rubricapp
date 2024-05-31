@@ -124,7 +124,7 @@ export default function ViewAssessmentStatus(props) {
     borderRadius: '10px',
     border: "3px #2e8bef",
     borderTopStyle : "solid",
-    margin: "2px 2px 2px 2px",
+    margin: "2px 2px 2px 0px",
     boxShadow: "0 2px 0 #d6d6d6",
   };
 
@@ -137,8 +137,8 @@ export default function ViewAssessmentStatus(props) {
 
   return (
     <Container>
-      <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
-        <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "95vw" }}>
+      <Box sx={{ maxHeight:"150vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
+        <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw" }}>
           <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
             <div className={innerDivClassName} style={innerGridStyle} >
               <CharacteristicsAndImprovements
@@ -181,7 +181,7 @@ export default function ViewAssessmentStatus(props) {
 
                     <h6>Avg: {avg}; StdDev: {stdev}</h6>
 
-                      <BarChart width={300} height={150} data={ratingsData["ratings"]} barCategoryGap={0.5}>
+                      <BarChart width={400} height={300} data={ratingsData["ratings"]} barCategoryGap={0.5}>
                         <XAxis dataKey="rating"/>
 
                         <YAxis width={25} domain={[0, 'auto']}/>
