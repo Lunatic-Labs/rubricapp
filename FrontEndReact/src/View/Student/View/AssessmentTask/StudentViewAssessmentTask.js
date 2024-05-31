@@ -28,7 +28,7 @@ class StudentViewAssessmentTask extends Component {
 
         var chosenCourseID = state.chosenCourse["course_id"];
 
-        genericResourceGET(`/assessment_task?course_id=${chosenCourseID}&role_id=5`, "assessmentTasks", this);
+        genericResourceGET(`/assessment_task?course_id=${chosenCourseID}&role_id=${this.props.role["role_id"]}`, "assessmentTasks", this);
 
         genericResourceGET(`/checkin?course_id=${chosenCourseID}`, "checkin", this);
 
