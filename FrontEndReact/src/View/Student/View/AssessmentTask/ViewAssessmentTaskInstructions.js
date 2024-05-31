@@ -20,9 +20,13 @@ class ViewAssessmentTaskInstructions extends Component {
 
   render() {
     var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+
     var rubricName = this.props.rubrics["rubric_name"];
+
     var rubricDescription = this.props.rubrics["rubric_description"];
+
     var categoryList = Object.keys(this.state.categories).map((category, index) => {
+
       if(index !== Object.keys(this.state.categories).length-1) {
         category += ", ";
       }
@@ -135,6 +139,7 @@ class ViewAssessmentTaskInstructions extends Component {
                   onClick={() => {
                     this.handleContinueClick();
                   }}
+                  aria-label="viewAssessmentTaskInstructionsContinueButton"
                 >
                   CONTINUE
                 </Button>

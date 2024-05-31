@@ -28,6 +28,7 @@ class ObservableCharacteristic extends Component {
       }));
 
       var newData = "";
+
       for (var i = 0; i < this.props.observableCharacteristics.length; i++) {
         newData += i === this.props.id ? (this.props.observableCharacteristics[i] === "0" ? "1" : "0") : this.props.observableCharacteristics[i];
       }
@@ -47,7 +48,7 @@ class ObservableCharacteristic extends Component {
 
         onClick={handleChange}
 
-        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
+        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
       >
         <Checkbox
           sx={{
@@ -61,7 +62,7 @@ class ObservableCharacteristic extends Component {
 
           checked={this.state.checked}
 
-          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
+          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
         />
 
         <label>{this.props.observableCharacteristic}</label>

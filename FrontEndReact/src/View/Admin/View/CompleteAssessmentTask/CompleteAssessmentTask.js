@@ -195,7 +195,7 @@ class CompleteAssessmentTask extends Component {
                     console.log("getCompleteTeam:");
                     if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
                                             this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                        complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
+                        complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
 
                         initialUnitData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
 
@@ -303,8 +303,6 @@ class CompleteAssessmentTask extends Component {
                         handleDone={this.handleDone}
 
                         refreshTeams={this.refreshTeams}
-
-                        userRole={this.props.userRole}
 
                         completedAssessments={completedAssessments}
                     />

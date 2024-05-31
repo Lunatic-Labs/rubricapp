@@ -96,7 +96,8 @@ class ViewAssessmentTasks extends Component {
 
                                         style={{
                                             width: "fit-content",
-                                            margin: "5px"
+                                            margin: "5px",
+                                            display:  role["role_id"] === 5 ? "block" : "none"
                                         }}
 
                                         variant='contained'
@@ -118,7 +119,6 @@ class ViewAssessmentTasks extends Component {
                                     }}
 
                                     variant='contained'
-
                                     disabled={(this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5) || this.isObjectFound(atId) === true} 
 
                                     onClick={() => {

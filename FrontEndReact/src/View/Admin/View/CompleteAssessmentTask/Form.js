@@ -10,12 +10,7 @@ import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 
-// Form component is used to display the form for the assessment task.  
-// It is used in the CompleteAssessmentTask component.
-// It needs to know if this is a team or individual assessment task, the rubric, the units, 
-// the users, the unit of assessment, the roles, the completed assessments, and the checkin.
-// It uses the Section component to display the sections of the form.
-// It uses the UnitOfAssessmentTab component to display the tabs for the individuals or teams.
+
 
 class Form extends Component {
     constructor(props) {
@@ -32,7 +27,8 @@ class Form extends Component {
                                                           this.props.form.units[0]["user_id"], 
             unitData: this.props.form.unitInfo,
             categoryList: null,
-            section: null
+            section: null,
+            displaySavedNotification: false
         }
         console.log(this.state);
 
@@ -102,6 +98,8 @@ class Form extends Component {
         }
 
         this.setSliderValue = (unitValue, categoryName, rating) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
+
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
 
@@ -115,7 +113,7 @@ class Form extends Component {
         };
 
         this.setObservableCharacteristics = (unitValue, categoryName, observableCharacteristics) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue)) return;
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
@@ -130,7 +128,7 @@ class Form extends Component {
         }
 
         this.setSuggestions = (unitValue, categoryName, suggestions) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue)) return;
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
@@ -146,6 +144,8 @@ class Form extends Component {
         }
 
         this.setComments = (unitValue, categoryName, comments) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
+
             this.setState(prevState => {
                 const updatedUnitData = this.deepClone(prevState.unitData);
 
@@ -166,7 +166,7 @@ class Form extends Component {
 
             var observableCharacteristic = category["observable_characteristics"].includes("1");
 
-            var suggestions = category["suggestions"].includes("1");
+            var suggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"] ? category["suggestions"].includes("1"): true;
 
             var status = null;
 
@@ -232,6 +232,7 @@ class Form extends Component {
                     section.push(
                         <Section
                             navbar={this.props.navbar}
+                            isDone={this.isTeamCompleteAssessmentComplete(this.state.teamValue)}
                             category={category}
                             rubric={this.props.form.rubric}
                             unitValue={this.state.unitValue}
@@ -332,9 +333,19 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
             }
         }
 
+        this.setState({
+            displaySavedNotification: true
+        });
+
         setTimeout(() => {
             this.props.handleDone();
         }, 1000);
+
+        setTimeout(() => {
+            this.setState({
+                displaySavedNotification: false
+            });
+        }, 3000);
     };
 
     componentDidMount() {
@@ -366,16 +377,23 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
                 <Box sx={{
                     display:"flex",
                     justifyContent:"end",
-                    gap:"20px"
+                    gap:"20px",
+                    height: "2.5rem"
                 }}>
+                    { this.state.displaySavedNotification &&
+                        <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
+                    }
+
                      <Button
                         variant="text"
                         color="primary"
                         startIcon={<RefreshIcon />}
+                        arialabel="refreshButton"
 
                         onClick={() => {
                             this.props.refreshunits();
                         }}
+                        aria-label="refreshButton"
                     >
                         Refresh
                     </Button>
@@ -384,10 +402,13 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
                         id="formSubmitButton"
                         variant="contained"
                         color="primary"
+                        aria-label="saveButton"
 
                         onClick={() => {
                             this.handleSubmit(true);
                         }}
+
+                        disabled={this.state.displaySavedNotification}
                     >
                         Save
                     </Button>

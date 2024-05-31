@@ -103,7 +103,13 @@ def update_completed_assessment():
     try:
         completed_assessment_id = request.args.get("completed_assessment_id")
 
-        updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
+        updated_completed_assessment = None
+
+        if(completed_assessment_id):
+            updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
+
+        else:
+            updated_completed_assessment = create_completed_assessment(request.json)
 
         return create_good_response(completed_assessment_schema.dump(updated_completed_assessment), 201, "completed_assessments")
 

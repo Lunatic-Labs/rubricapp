@@ -15,6 +15,12 @@ export default function ResponsiveNotification ( props ) {
                     open={props.show}
                     aria-labelledby="responsive-dialog-title"
                 >
+                    <DialogContent>
+                        <DialogContentText>
+                            Your skill development assessment is available to view and act upon. Please log in to SkillBuilder and look in Your Completed Assessments.
+                        </DialogContentText>
+                    </DialogContent>
+
                     <DialogTitle id="responsive-dialog-title">
                         {"Add Message"}
                     </DialogTitle>
@@ -30,6 +36,7 @@ export default function ResponsiveNotification ( props ) {
                                 label="Add Message"
                                 value={props.notes}
                                 error={!!props.error.notes}
+                                helperText={props.error.notes}
                                 onChange={props.handleChange}
                                 required
                                 multiline
@@ -42,11 +49,11 @@ export default function ResponsiveNotification ( props ) {
                     </DialogContent>
 
                     <DialogActions>
-                        <Button autoFocus onClick={props.handleDialog}>
+                        <Button autoFocus onClick={props.handleDialog} aria-label="addMessagePromptCancelButton">
                             Cancel
                         </Button>
 
-                        <Button variant="contained" autoFocus onClick={props.sendNotification}>
+                        <Button variant="contained" autoFocus onClick={props.sendNotification} aria-label="addMessagePromptSendNotificationButton">
                             Send Notification
                         </Button>
                     </DialogActions>

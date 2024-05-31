@@ -98,15 +98,16 @@ class Section extends Component {
 
         return (
             <Box id="rating">
-                <Box className="assessment-task-spacing">
+                <Box className="assessment-task-spacing" aria-label="ratingsSection">
                     <FormControl>
-                        <Box className="assessment-card">
+                        <Box className="assessment-card" aria-label="ratingsSection">
                             <h5>Ratings</h5>
 
                             <Typography sx={{fontSize: "1.2rem"}}>{ rating["description"] }</Typography>
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
+                                    navbar={this.props.navbar}
                                     setSliderValue={this.props.setSliderValue}
                                     navbar={this.props.navbar}
                                     unitValue={this.props.unitValue}
@@ -116,7 +117,7 @@ class Section extends Component {
                             </Box>
                         </Box>
 
-                        <Box className="assessment-card" >
+                        <Box className="assessment-card" aria-label="observableCharacteristicsSection">
                             <h4>Observable Characteristics</h4>
 
                             <Box className="checkbox-spacing">
@@ -125,7 +126,7 @@ class Section extends Component {
                         </Box>
 
                         {rating["show_suggestions"] &&
-                            <Box className="assessment-card">
+                            <Box className="assessment-card" aria-label="suggestionsForImprovementSection">
 
                                 <h4>Suggestions For Improvement</h4>
 
@@ -135,7 +136,7 @@ class Section extends Component {
                             </Box>
                         }
 
-                        <Box className="assessment-card">
+                        <Box className="assessment-card" aria-label="commentBoxSection">
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}

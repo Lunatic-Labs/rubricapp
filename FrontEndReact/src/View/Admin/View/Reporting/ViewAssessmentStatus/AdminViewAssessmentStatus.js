@@ -26,11 +26,13 @@ class AdminViewAssessmentStatus extends Component {
         this.fetchData = () => {
             var chosenCourse = this.props.navbar.state.chosenCourse;
 
-            // Fetch completed assessment tasks data for the chosen assessment task
-            genericResourceGET(
-                `/completed_assessment?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
-                "completedAssessments", this
-            );
+            if(this.props.chosenAssessmentId !== "") {
+                // Fetch completed assessment tasks data for the chosen assessment task
+                genericResourceGET(
+                    `/completed_assessment?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
+                    "completedAssessments", this
+                );
+            }
 
             // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT, among other things
             var rubricId = 1;
@@ -100,7 +102,7 @@ class AdminViewAssessmentStatus extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !completedAssessments || !categories || !rubrics){
+        } else if (!isLoaded || (!completedAssessments && this.props.chosenAssessmentId !== "") || !categories || !rubrics){
             return(
                 <Loading />
             )
