@@ -15,6 +15,12 @@ export default function ResponsiveNotification ( props ) {
                     open={props.show}
                     aria-labelledby="responsive-dialog-title"
                 >
+                    <DialogContent>
+                        <DialogContentText>
+                            Your skill development assessment is available to view and act upon. Please log in to SkillBuilder and look in Your Completed Assessments.
+                        </DialogContentText>
+                    </DialogContent>
+
                     <DialogTitle id="responsive-dialog-title">
                         {"Add Message"}
                     </DialogTitle>
