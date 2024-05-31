@@ -21,12 +21,12 @@ class ViewCourses extends Component {
         label: "Course Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"178px" } },
-          setCellProps: () => { return { width:"178px" } },
+          setCellHeaderProps: () => { return { width:"25%" } },
+          setCellProps: () => { return { width:"25%" } },
           customBodyRender: (courseName) => {
             return(
               <Typography
-                variant="h4"
+                sx={{fontSize: "1.8rem"}}
                 aria-label={ courseName }
               >
                 { courseName }
@@ -40,8 +40,8 @@ class ViewCourses extends Component {
         label: "Course Number",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"183px" } },
-          setCellProps: () => { return { width:"183px" } },
+          setCellHeaderProps: () => { return { width:"10%" } },
+          setCellProps: () => { return { width:"10%" } },
         }
       },  
       {
@@ -49,8 +49,8 @@ class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"1%" } },
+          setCellProps: () => { return { width:"10%" } },
         }
       },  
       {
@@ -58,8 +58,8 @@ class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"10%" } },
+          setCellProps: () => { return { width:"10%" } },
         }
       },
       {
@@ -67,8 +67,8 @@ class ViewCourses extends Component {
         label: "Active",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"10%" } },
+          setCellProps: () => { return { width:"10%" } },
           customBodyRender: (value) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
@@ -81,8 +81,8 @@ class ViewCourses extends Component {
         label: "Use TA's",
         options : {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"5%" } },
+          setCellProps: () => { return { width:"6%" } },
           customBodyRender: (value) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
@@ -95,8 +95,8 @@ class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"10%" } },
+          setCellProps: () => { return { width:"10%" } },
           customBodyRender: (value) => {
             return(
               <>{value===null ? "N/A": (value ? "Yes":"No")}</>

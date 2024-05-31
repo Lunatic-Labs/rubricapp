@@ -66,7 +66,7 @@ class AdminViewCourses extends Component {
                     justifyContent: "space-between",
                     alignItems: "center",
                     alignSelf: "stretch"}}>
-                        <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h5">
+                        <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h4">
                             Courses
                         </Typography>
                 

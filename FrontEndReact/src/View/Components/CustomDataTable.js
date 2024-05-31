@@ -8,7 +8,7 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           fontSize: "1.7rem",
-          padding: "4px",
+          padding: "2px",
           alignItems:"center"
         },
       },
@@ -31,7 +31,7 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#A4C4F4",
-          padding: "12px", 
+          padding: "2px", 
           fontSize: "1.8rem",
         },
       },
@@ -60,7 +60,7 @@ const customTheme = createTheme({
 
 const customDataTable = ({ data, columns, options }) => {
   const defaultOptions = {
-    rowStyle: { height: 10 },
+    rowStyle: { height: 6 },
   };
 
   const tableOptions = { ...defaultOptions, ...options };

@@ -355,7 +355,7 @@ class ViewAssessmentTasks extends Component {
             selectableRows: "none",
             selectableRowsHeader: false,
             responsive: "vertical",
-            tableBodyMaxHeight: "45vh"
+            tableBodyMaxHeight: "60vh"
         };
 
         return(

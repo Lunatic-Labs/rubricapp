@@ -138,7 +138,7 @@ export default function ViewAssessmentStatus(props) {
   return (
     <Container>
       <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
-        <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw" }}>
+        <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "95vw" }}>
           <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
             <div className={innerDivClassName} style={innerGridStyle} >
               <CharacteristicsAndImprovements
