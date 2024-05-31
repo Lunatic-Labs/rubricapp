@@ -247,9 +247,10 @@ export default function ViewAssessmentStatus(props) {
               </div>
             </Grid>
           </Grid>
+          </Grid>
         </Box>
       </Container>
-    </>
+  
     // <>
     //   <Container>
     //     <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' >
