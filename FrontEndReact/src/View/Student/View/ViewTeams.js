@@ -61,7 +61,7 @@ class ViewTeams extends Component{
       onRowsDelete: false,
       download: false,
       print: false,
-      viewColumns : false,
+      viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",

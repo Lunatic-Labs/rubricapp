@@ -83,10 +83,11 @@ class ViewTeamRatings extends Component {
       }
     ];
 
-    const options= {
+    const options = {
       onRowsDelete: false,
       download: false,
       print: false,
+      viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "standard",
