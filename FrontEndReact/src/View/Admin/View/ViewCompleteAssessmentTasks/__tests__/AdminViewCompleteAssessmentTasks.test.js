@@ -6,7 +6,8 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickFirstElementWithAriaLabel,
+    expectElementWithAriaLabelToHaveErrorMessage
 } from "../../../../../testUtilities.js";
 
 import {
@@ -39,7 +40,7 @@ var sb = "saveButton";
 
 
 
-test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-10 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -490,4 +491,53 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 9: Should save the selection
             expectElementWithAriaLabelToBeInDocument(cbs);
         }, 3000);
     });
+});
+
+
+test("AdminViewCompleteAssessmentTasks.test.js Test 10: Should provide a HelperText error when the Add Message box is left empty", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            clickFirstElementWithAriaLabel(vcib);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcatt);
+
+            clickElementWithAriaLabel(vcasnb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(vcaamt);
+
+            clickElementWithAriaLabel(ampsnb);
+        }, 3000);
+    });
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToHaveErrorMessage(vcaamt,"Notification Message cannot be empty");
+        }, 3000);
+    })
 });

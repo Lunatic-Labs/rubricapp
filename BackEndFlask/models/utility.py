@@ -34,7 +34,7 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
         message = f'''Greetings {student.first_name} {student.last_name},
 
-                    Your Feedback is ready to view! Login to Skillbuilder to view your Feedback!
+                    Your skill development assessment is available to view and act upon. Please log in to SkillBuilder and look in Your Completed Assessments.
 
                     Message from Professor:
                     {notification_message}
