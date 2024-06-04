@@ -15,8 +15,8 @@ class ViewCompletedAssessmentTasks extends Component {
 
     const columns = [
       {
-        name: "team_name",
-        label: "Team Name",
+        name: "assessment_task_name",
+        label: "Task Name",
         options: {
           filter: true,
           setCellHeaderProps: () => { return { width:"230px" } },

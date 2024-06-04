@@ -762,8 +762,8 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
         AssessmentTask.assessment_task_name,
-        AssessmentTask.rubric_id,
-        Team.team_name
+        AssessmentTask.rubric_id
+        # removed comma from preceding line when commenting this out - Team.team_name
     ).filter(
         CompletedAssessment.user_id == user_id,
     ).join(
@@ -771,14 +771,15 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
         AssessmentTask.course_id == course_id
-    ).outerjoin(
-        Team,
-        Team.team_id == CompletedAssessment.team_id
-    ).outerjoin(
-        TeamUser,
-        TeamUser.team_id == CompletedAssessment.team_id
-    ).filter(
-        TeamUser.user_id == user_id
+
+#    ).outerjoin(
+#        Team,
+#        Team.team_id == CompletedAssessment.team_id
+#    ).outerjoin(
+#        TeamUser,
+#        TeamUser.team_id == CompletedAssessment.team_id
+#    ).filter(
+#        TeamUser.user_id == user_id
     ).all()
 
     return complete_assessments

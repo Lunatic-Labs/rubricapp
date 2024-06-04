@@ -46,7 +46,7 @@ class StudentCompletedAssessmentTasks extends Component {
             assessmentTasks,
             completedAssessments,
         } = this.state;
-        
+
         if (errorMessage) {
             return(
                 <div className='container'>
@@ -63,12 +63,13 @@ class StudentCompletedAssessmentTasks extends Component {
             )
 
         } else {
+            console.log("Completed assessments: ",this.state.completedAssessments)
             return(
                 <div className='container'>
                     <ViewCompletedAssessmentTasks
                         navbar={this.props.navbar}
-                        completedAssessments={completedAssessments}
-                        assessmentTasks={assessmentTasks}
+                        completedAssessments={this.state.completedAssessments}
+                        assessmentTasks={this.state.assessmentTasks}
                     />
                 </div>
             )
