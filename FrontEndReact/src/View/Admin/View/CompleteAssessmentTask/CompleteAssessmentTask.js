@@ -12,7 +12,6 @@ import Loading from '../../../Loading/Loading.js';
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
-        console.log("CompleteAssessmentTask - constructor:", this.props)
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -24,7 +23,6 @@ class CompleteAssessmentTask extends Component {
             completedAssessments: null,
             checkin: null
         }
-console.log("CompleteAssessmentTask - constructor:", this.state)
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
 
@@ -54,7 +52,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
         }
 
         this.getCompleteIndividual = (userId) => {
-            console.log("getCompleteIndividual:", this.state.completedAssessments)
             for (let index = 0; index < this.state.completedAssessments.length; index++) {
                 if (this.state.completedAssessments[index]["user_id"] === userId) {
                     return this.state.completedAssessments[index];
@@ -73,7 +70,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&type=${this.state.unitOfAssessment ? "team" : "individual"}`,
                 "completedAssessments", this
             );
-            console.log("handleDone - completedAssessments:", this.completedAssessments)
         }
 
         this.refreshTeams = () => {
@@ -160,7 +156,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
             users,
             completedAssessments
         } = this.state;
-        console.log("render - state:", this.state);
         if (errorMessage) {
             return (
                 <ErrorMessage
@@ -170,7 +165,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
             );
 
         } else if (!isLoaded || !rubrics || !users || !completedAssessments) {
-            console.log(isLoaded, rubrics, users, completedAssessments);
             return (
                 <Loading />
             );
@@ -191,7 +185,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
 
                 Object.keys(users).forEach((teamId) => {
                     var complete = this.getCompleteTeam(teamId - "0");
-                    console.log("getCompleteTeam:");
                     if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
                                             this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
                         complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
@@ -214,7 +207,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
                     users.map((user) => {
             
                         var complete = this.getCompleteIndividual(user["user_id"]);
-                        console.log("getCompleteIndividual:", complete);
                         if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
                                                 this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
                             complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
@@ -225,7 +217,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
                             initialUnitData[user["user_id"]] = json;
                         }
                     });
-                    console.log("initialUnitData:", initialUnitData);
                 }
             }
             

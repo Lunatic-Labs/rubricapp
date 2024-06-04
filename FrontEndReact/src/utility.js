@@ -62,7 +62,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             state['errorMessage'] = null;
 
             if(resource != null) {
-            //console.log("result: ", result);                
+              
                 var getResource = resource;
 
                 getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;

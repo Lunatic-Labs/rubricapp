@@ -25,7 +25,6 @@ class UnitOfAssessmentTab extends Component {
             if (this.props.unitOfAssessment) {
                 var unitName = currentUnit["team_name"];
                 var unitId = currentUnit["team_id"];
-                console.log("unitId: ", unitId);
                 var unitMembers = this.props.form.users[unitId];
 
                 var unitNames = [];
@@ -70,7 +69,7 @@ class UnitOfAssessmentTab extends Component {
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={this.props.isUnitCompleteAssessmentComplete(unitId)}
+                                status={this.props.form.unitInfo[unitId].done}
                             />
                         </Box>
                     }

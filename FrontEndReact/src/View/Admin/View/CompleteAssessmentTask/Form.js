@@ -15,7 +15,6 @@ import Alert from '@mui/material/Alert';
 class Form extends Component {
     constructor(props) {
         super(props);
-        console.log("Form props: ",this.props);
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
@@ -29,7 +28,6 @@ class Form extends Component {
             section: null,
             displaySavedNotification: false
         }
-        console.log("Form state: ",this.state);
 
         this.handleUnitChange = (event, newValue) => {
             this.setState({
@@ -40,7 +38,6 @@ class Form extends Component {
 
                 this.generateCategoriesAndSection
             );
-            console.log("handleUnitChange:",this.state.value);
         };
 
         this.handleUnitTabChange = (id) => {
@@ -52,7 +49,6 @@ class Form extends Component {
 
                 this.generateCategoriesAndSection
             );
-            console.log("handleUnitTabChange:",this.state.currentUnitTab);
         };
 
         this.handleChange = (event, newValue) => {
@@ -73,7 +69,6 @@ class Form extends Component {
                     this.generateCategoriesAndSection
                 );
             }
-            console.log("handleCategoryChange:",this.state.value);
         };
 
         this.deepClone = (obj) => {
@@ -139,7 +134,6 @@ class Form extends Component {
 
             this.generateCategoriesAndSection
             );
-            console.log("setSuggestions:",this.state.value);
         }
 
         this.setComments = (unitValue, categoryName, comments) => {
@@ -155,7 +149,6 @@ class Form extends Component {
 
             this.generateCategoriesAndSection
             );
-            console.log("setComments:",this.state.value);
         }
 
         this.isCategoryComplete = (unitValue, categoryName) => {
@@ -337,7 +330,6 @@ class Form extends Component {
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {
-                console.log("Stringify assessmentData:",JSON.stringify(assessmentData));
                 genericResourcePOST(route, this, JSON.stringify(assessmentData));
             }
         }
