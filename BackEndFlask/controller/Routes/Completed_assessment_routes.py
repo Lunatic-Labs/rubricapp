@@ -15,7 +15,8 @@ from models.completed_assessment import (
 
 from models.queries import (
     get_completed_assessment_with_team_name,
-    get_completed_assessment_by_user_id
+    get_completed_assessment_by_user_id,
+    get_completed_assessment_with_user_name
 )
 
 
@@ -35,6 +36,19 @@ def get_all_completed_assessments():
             completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
 
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
+
+        if request.args and request.args.get("assessment_task_id") and request.args.get("type"):
+            assessment_task_id = int(request.args.get("assessment_task_id"))
+            type = request.args.get("type")
+
+            get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
+
+            if (type == "team"):
+                completed_assessments_by_assessment_task_id = get_completed_assessment_with_team_name(assessment_task_id)
+            else:
+                completed_assessments_by_assessment_task_id = get_completed_assessment_with_user_name(assessment_task_id)
+            print(completed_assessments_by_assessment_task_id)
+            return create_good_response(completed_assessment_schemas.dump(completed_assessments_by_assessment_task_id), 200, "completed_assessments")
 
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))

@@ -691,6 +691,34 @@ def get_completed_assessment_with_team_name(assessment_task_id):
     return complete_assessments
 
 @error_log
+def get_completed_assessment_with_user_name(assessment_task_id):
+    """
+    Description:
+    Gets all of the completed assessments with user names
+    for the given assessment task.
+
+    Parameters: 
+    assessment_task_id: int (The id of an assessment task)
+    """
+    complete_assessments=db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        User.first_name + " " + User.last_name
+    ).join(
+        User, User.user_id == CompletedAssessment.user_id
+    ). filter(
+        CompletedAssessment.assessment_task_id == assessment_task_id,
+    ).all()
+
+    return complete_assessments
+
+@error_log
 def get_assessment_task_by_course_id_and_role_id(course_id, role_id):
     """
     Description:

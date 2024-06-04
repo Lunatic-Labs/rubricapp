@@ -54,6 +54,7 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
         }
 
         this.getCompleteIndividual = (userId) => {
+            console.log("getCompleteIndividual:", this.state.completedAssessments)
             for (let index = 0; index < this.state.completedAssessments.length; index++) {
                 if (this.state.completedAssessments[index]["user_id"] === userId) {
                     return this.state.completedAssessments[index];
@@ -69,9 +70,10 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
             var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
             genericResourceGET(
-                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&type=${this.state.unitOfAssessment ? "team" : "individual"}`,
                 "completedAssessments", this
             );
+            console.log("handleDone - completedAssessments:", this.completedAssessments)
         }
 
         this.refreshTeams = () => {
@@ -134,7 +136,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
                 `/team?course_id=${chosenCourse["course_id"]}`,
                 "teams", this
             );
-            console.log("team");
         } else {                // if individual assessments, get student users for this course
             genericResourceGET(
                 `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
@@ -143,7 +144,7 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
         }
  
         genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&type=${this.state.unitOfAssessment ? "team" : "individual"}`,
             "completedAssessments", this
         );
 
@@ -175,7 +176,6 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
             );
 
         } else {
-            console.log("render - else:");
             var navbar = this.props.navbar;
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
@@ -214,7 +214,7 @@ console.log("CompleteAssessmentTask - constructor:", this.state)
                     users.map((user) => {
             
                         var complete = this.getCompleteIndividual(user["user_id"]);
-                        console.log("getCompleteIndividual:");
+                        console.log("getCompleteIndividual:", complete);
                         if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
                                                 this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
                             complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
