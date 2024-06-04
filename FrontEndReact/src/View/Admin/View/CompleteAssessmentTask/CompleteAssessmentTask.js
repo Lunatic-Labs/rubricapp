@@ -12,20 +12,19 @@ import Loading from '../../../Loading/Loading.js';
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
-
+        console.log("CompleteAssessmentTask - constructor:", this.props)
         this.state = {
             errorMessage: null,
             isLoaded: false,
             rubrics: null,
             teams: null,
             users: null,
-            unitOfAssessment: null,
-            indiv_users: null,      // use if unit of assessment is for individuals
+            unitOfAssessment: this.props.navbar.state.chosenAssessmentTask["unit_of_assessment"],
             roles: null,
             completedAssessments: null,
             checkin: null
         }
-
+console.log("CompleteAssessmentTask - constructor:", this.state)
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
 
@@ -88,6 +87,8 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+        var navbar = this.props.navbar;
+        
         if (prevState.rubrics === null && prevState.teams === null && prevState.users === null) {
             if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
                 var teamIds = this.state.teams.map(team => team.team_id);
@@ -109,8 +110,6 @@ class CompleteAssessmentTask extends Component {
 
         var chosenCourse = state.chosenCourse;
 
-        var unitOfAssessment = chosenAssessmentTask["unit_of_assessment"];
-
         const cookies = new Cookies();
 
         const userId = cookies.get('user')["user_id"];
@@ -130,7 +129,7 @@ class CompleteAssessmentTask extends Component {
              "checkin", this
         );
 
-        if (unitOfAssessment) {    // if team assessments, get teams for this course
+        if (this.state.unitOfAssessment) {    // if team assessments, get teams for this course
             genericResourceGET(
                 `/team?course_id=${chosenCourse["course_id"]}`,
                 "teams", this

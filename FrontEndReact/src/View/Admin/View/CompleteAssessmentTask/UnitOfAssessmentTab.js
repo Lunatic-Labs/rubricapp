@@ -13,7 +13,7 @@ import StatusIndicator from './StatusIndicator.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
-
+        console.log("UnitOfAssessmentTab: ", this.props);
         var units = this.props.form.units;
 
         var unitList = []
@@ -22,9 +22,10 @@ class UnitOfAssessmentTab extends Component {
 
             var currentUnit = units[i];
             var checkin = this.props.checkin;
-            if (this.props.unit_of_assessment) {
+            if (this.props.unitOfAssessment) {
                 var unitName = currentUnit["team_name"];
                 var unitId = currentUnit["team_id"];
+                console.log("unitId: ", unitId);
                 var unitMembers = this.props.form.users[unitId];
 
                 var unitNames = [];

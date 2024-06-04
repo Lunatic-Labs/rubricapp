@@ -76,12 +76,12 @@ def add_completed_assessment():
         assessment_data = request.json
         print(assessment_data)
 
-        team_id = int(request.args.get("team_id"))
-
+        team_id = int(assessment_data["team_id"])
+        print("team_id: ", team_id)
         assessment_task_id = int(request.args.get("assessment_task_id"))
-
+        print("assessment_task_id: ", assessment_task_id)
         user_id = int(assessment_data["user_id"])
-
+        print("user_id: ", user_id)     
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:

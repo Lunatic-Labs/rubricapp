@@ -42,7 +42,10 @@ def get_completed_assessment_by_course_id(course_id):
 
 @error_log
 def completed_assessment_exists(team_id, assessment_task_id, user_id):
-    return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
+    if (team_id == -1):
+        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
+    else:   
+        return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
 
 
 @error_log

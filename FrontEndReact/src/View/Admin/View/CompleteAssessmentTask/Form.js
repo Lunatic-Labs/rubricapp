@@ -15,12 +15,11 @@ import Alert from '@mui/material/Alert';
 class Form extends Component {
     constructor(props) {
         super(props);
-        console.log(this.props);
+        console.log("Form props: ",this.props);
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
             unitOfAssessment: this.props.unitOfAssessment,
-            unitId: this.props.unitOfAssessment ? "team_id" : "user_id",
             unitValue: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
                                                      this.props.form.units[0]["user_id"], 
             currentUnitTab: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
@@ -30,7 +29,7 @@ class Form extends Component {
             section: null,
             displaySavedNotification: false
         }
-        console.log(this.state);
+        console.log("Form state: ",this.state);
 
         this.handleUnitChange = (event, newValue) => {
             this.setState({
@@ -159,8 +158,8 @@ class Form extends Component {
             console.log("setComments:",this.state.value);
         }
 
-        this.isCategoryComplete = (unitId, categoryName) => {
-            var unit = this.state.unitData[unitId];
+        this.isCategoryComplete = (unitValue, categoryName) => {
+            var unit = this.state.unitData[unitValue];
 
             var category = unit[categoryName];
 
@@ -180,9 +179,10 @@ class Form extends Component {
             return status;
         }
 
-        this.isUnitCompleteAssessmentComplete = (unitId) => {
-            console.log("isUnitCompleteAssessmentComplete:",this.state.unitData[unitId]);
-            return this.state.unitData[unitId]["done"];
+        this.isUnitCompleteAssessmentComplete = (unitValue) => {
+
+            //console.log("isUnitCompleteAssessmentComplete:",unitValue,this.state.unitData);
+            return this.state.unitData[unitValue]["done"];
         }
 
         this.findCompletedAssessmentTask = (chosenAssessmentTask, currentUnitTab, completedAssessments) => {
@@ -203,6 +203,8 @@ class Form extends Component {
             var categoryList = [];
 
             var section = [];
+
+            console.log("generateCategoriesAndSection:",this.state.currentUnitTab,this.state.unitValue,this.state.unitData)
 
             Object.keys(rubric["category_json"]).map((category, index) => {
                 categoryList.push(
@@ -299,7 +301,11 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
                 
                 var route = `/completed_assessment${completedAssessmentId}`
             } else {
-                var route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                if (this.state.unitOfAssessment) {
+                    var route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                } else {
+                    var route = `/completed_assessment?uid=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                }
             }
             if (this.state.unitOfAssessment) { 
                 var assessmentData = {
@@ -307,7 +313,7 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
                     "rating_observable_characteristics_suggestions_data": selected,
                     "completed_by": cookies.get("user")["user_id"],
                     "team_id": currentUnitTab,
-                    "user_id": null,
+                    "user_id": -1,        // team assessment has no user.
                     "initial_time": date,
                     "last_update": date,
                     done: done,
@@ -317,18 +323,21 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
                     "rating_observable_characteristics_suggestions_data": selected,
                     "completed_by": cookies.get("user")["user_id"],
-                    "team_id": null,
+                    "team_id": -1,          // individual assessment has no team.
                     "user_id": currentUnitTab,
                     "initial_time": date,
                     "last_update": date,
                     done: done,
                 };
-            }            
+            }  
+            console.log("handleSubmit:",route,assessmentData,chosenCompleteAssessmentTask,this.props.userRole)  
+
 
             if (chosenCompleteAssessmentTask && this.props.userRole) {
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {
+                console.log("Stringify assessmentData:",JSON.stringify(assessmentData));
                 genericResourcePOST(route, this, JSON.stringify(assessmentData));
             }
         }
@@ -355,12 +364,12 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
     componentDidUpdate() {
         var rerender = false;
 
-        Object.keys(this.props.form.unitInfo).map((unitId) => {
-            if(this.props.form.unitInfo[unitId]["done"] !== this.state.unitData[unitId]["done"]) {
+        Object.keys(this.props.form.unitInfo).map((unitValue) => {
+            if(this.props.form.unitInfo[unitValue]["done"] !== this.state.unitData[unitValue]["done"]) {
                 rerender = true;
             }
 
-            return unitId;
+            return unitValue;
         });
 
         if(rerender) {
@@ -421,6 +430,7 @@ console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosen
                                 navbar={this.props.navbar}
                                 currentUnitTab={this.state.currentUnitTab}
                                 unitValue={this.state.unitValue}
+                                unitOfAssessment={this.state.unitOfAssessment}
                                 checkin={this.props.checkin}
                                 form={this.props.form}
                                 handleUnitChange={this.handleUnitChange}
