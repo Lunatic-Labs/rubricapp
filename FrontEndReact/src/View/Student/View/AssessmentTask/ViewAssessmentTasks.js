@@ -12,7 +12,7 @@ class ViewAssessmentTasks extends Component {
 
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments;
-console.log("Completed assessments: ",completedAssessments)
+
             if(completedAssessments) {
                 for (let i = 0; i < completedAssessments.length; i++) {
                     if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === true) {

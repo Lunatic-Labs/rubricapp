@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams.js';
+import TAViewTeams from './View/TAViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
 import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
@@ -84,28 +85,33 @@ class StudentDashboard extends Component {
                             </Box>
                         </Box>
 
-                        {role["role_id"] === 5 &&
-                            <Box className="page-spacing">
-                                <Box sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    alignSelf: "stretch"
-                                }}>
-                                    <Box sx={{ width: "100%" }} className="content-spacing">
-                                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
-                                            My Teams
-                                        </Typography>
-                                    </Box>
-                                </Box>
-
-                                <Box>
-                                    <StudentViewTeams
-                                        navbar={navbar}
-                                    />
+                        <Box className="page-spacing">
+                            <Box sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                alignSelf: "stretch"
+                            }}>
+                                <Box sx={{ width: "100%" }} className="content-spacing">
+                                    <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
+                                        My Teams
+                                    </Typography>
                                 </Box>
                             </Box>
-                        }
+
+                            <Box>
+                                {role["role_id"] == 5 &&
+                                <StudentViewTeams
+                                    navbar={navbar}
+                                />
+                                }
+                                {role["role_id"] == 4 &&
+                                <TAViewTeams
+                                    navbar={navbar}
+                                />
+                                }
+                            </Box>
+                        </Box>
                     </>
                 }
             </>

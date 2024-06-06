@@ -46,7 +46,7 @@ class ConfirmCurrentTeamTable extends Component {
 				name: "email",
 				label: "Email",
 				options: {
-					customBodyRender: (value) => <div style={{ textAlign: 'right' }}>{value}</div>,
+					customBodyRender: (value) => <div style={{ textAlign: 'left' }}>{value}</div>,
 					filter: true
 				},
 			},

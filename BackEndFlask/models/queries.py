@@ -211,6 +211,29 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
 
     return teams
 
+@error_log
+def get_team_by_course_id_and_observer_id(course_id, observer_id):
+    """
+    Description:
+    Gets the teams for the given observer (primarily TA) in the given course.
+    Returns None if the given observer is not in the given course.
+
+    Parameters:
+    observer_id: int (The id of a user (observer) logged in)
+    course_id: int (The id of a course)
+    """
+    teams = db.session.query(
+        Team
+    ).join(
+        TeamUser, TeamUser.team_id == Team.team_id
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            Team.observer_id == observer_id
+        )
+    ).all()
+
+    return teams
 
 @error_log
 def get_students_by_team_id(course_id: int, team_id: int):
@@ -320,50 +343,38 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
 
 
 @error_log
-def get_team_members(user_id: int, course_id: int): 
+def get_team_members_in_course(course_id: int): 
     """
     Description:
-    Gets all of the team members in the team the given
-    user is in. Ensures the team the given user is in
-    is assigned to the given course.
+    Gets all of the team members in the teams in the course. 
 
-    Returns a tuple: 
+    Returns a two dimensional list of team members with their team id: 
     - List of team members 
     - team_id
 
-    Returns (None, None) on fail 
+    Returns None on fail 
 
     Parameters:
-    user_id: int (The id of a user)
     course_id: int (The id of a course)
     """
-    team_id = db.session.query(TeamUser.team_id).\
-        join(Team, TeamUser.team_id == Team.team_id).\
-        join(User, TeamUser.user_id == User.user_id).\
-        filter(
-            and_(
-                Team.course_id == course_id, 
-                User.user_id == user_id
-            )
-        ).first()
     
-    if team_id is None: 
-        return None, None
+    name_list = []
+    team_list = []
+    for (team_id,) in db.session.query(Team.team_id).filter_by(course_id=course_id).all():
+        for (team_member,) in db.session.query(
+            User.last_name
+        ).join(
+            TeamUser, 
+            TeamUser.user_id == User.user_id
+        ).filter(
+            TeamUser.team_id == team_id
+        ).all():
+            name_list.append(team_member)
+        
+        team_list.append([name_list, team_id])
+        name_list = []
     
-    team_id = team_id[0]
-    team_members = db.session.query(
-        User
-    ).join(
-        TeamUser, 
-        TeamUser.user_id == User.user_id
-    ).join( 
-        UserCourse, 
-        User.user_id == UserCourse.user_id
-    ).filter(
-        TeamUser.team_id == team_id
-    ).all()
-
-    return team_members, team_id
+    return team_list
 
 
 @error_log
@@ -763,7 +774,6 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.done,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id
-        # removed comma from preceding line when commenting this out - Team.team_name
     ).filter(
         CompletedAssessment.user_id == user_id,
     ).join(
@@ -771,15 +781,6 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
         AssessmentTask.course_id == course_id
-
-#    ).outerjoin(
-#        Team,
-#        Team.team_id == CompletedAssessment.team_id
-#    ).outerjoin(
-#        TeamUser,
-#        TeamUser.team_id == CompletedAssessment.team_id
-#    ).filter(
-#        TeamUser.user_id == user_id
     ).all()
 
     return complete_assessments

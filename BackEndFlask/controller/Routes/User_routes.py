@@ -40,13 +40,13 @@ from models.user import(
 )
 
 from models.queries import (
+    get_team_members_in_course,
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_students_by_team_id,
     get_students_not_in_a_team,
     add_user_to_team,
-    remove_user_from_team, 
-    get_team_members
+    remove_user_from_team
 )
 
 
@@ -139,17 +139,25 @@ def get_all_team_members():
 
             user_id=request.args.get("user_id")
 
-            team_members, team_id = get_team_members(user_id, course_id)
-
+            team_list = get_team_members_in_course(course_id)
             result = {}
+            resultList = []
 
-            result["users"] = users_schema.dump(team_members)
+            for team in team_list:
 
-            result["team_id"] = team_id
+                result["users"] = team[0]
 
-            result["team_name"] = get_team(team_id).team_name
+                result["team_id"] = team[1]
 
-            return create_good_response(result, 200, "team_members")
+                result["team_name"] = get_team(team[1]).team_name
+
+                result["observer_id"] = get_team(team[1]).observer_id
+
+                resultList.append(result)
+
+                result = {}
+
+            return create_good_response(resultList, 200, "team_members")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)

@@ -270,7 +270,7 @@ class Form extends Component {
         var selected = this.state.unitData[currentUnitTab];
 
         var date = new Date();
-//console.log("handleSubmit before if:",currentUnitTab,chosenAssessmentTask,chosenCompleteAssessmentTask)
+
         if(chosenCompleteAssessmentTask) {
             chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
 
