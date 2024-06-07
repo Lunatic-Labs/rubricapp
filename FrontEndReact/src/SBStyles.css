@@ -16,6 +16,7 @@
 /* Table aligment */
 @media only screen and (max-width: 768px) {
   .button-column-alignment {
+    font-size: 1.5rem !important;
     text-align: left !important;
   }
 }

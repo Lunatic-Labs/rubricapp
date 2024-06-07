@@ -80,8 +80,8 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment", padding:"0rem 1rem"}},
-                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment", padding:"0rem 1rem"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
                         return (
                             <Box

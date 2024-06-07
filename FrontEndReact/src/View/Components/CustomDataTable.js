@@ -8,7 +8,8 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           fontSize: "1.5rem",
-          padding: "0rem .5rem",
+          padding: ".01rem .5rem",
+          margin: ".01rem",
           alignItems:"center"
         },
       },
@@ -30,15 +31,15 @@ const customTheme = createTheme({
     MuiDataTableFooter: {
       styleOverrides: {
         root: {
-          padding: "0rem 0rem",
-          fontSize: "1rem",
+          padding: ".01rem .5rem",
+          fontSize: "1.5rem",
         },
       },
     },
     MuiToolbar: {
       styleOverrides: {
         root: {
-          padding: "0rem 0rem",
+          padding: ".01rem .5rem",
           fontSize: "1rem",
         },
       },
@@ -47,7 +48,7 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#A4C4F4",
-          padding: "0rem .5rem", 
+          padding: ".01rem .5rem", 
           fontSize: "1.8rem",
         },
       },
@@ -59,7 +60,7 @@ const customTheme = createTheme({
           flexDirection: "row",
           justifyContent: 'space-around',
           fontSize: "1.8rem",
-          padding: "0rem 2rem",
+          padding: ".01rem 2rem",
         },
       },
     },

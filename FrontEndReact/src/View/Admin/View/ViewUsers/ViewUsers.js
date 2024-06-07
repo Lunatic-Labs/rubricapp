@@ -21,8 +21,8 @@ class ViewUsers extends Component{
         label: "First Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"240px"}},
-          setCellProps: () => { return { width:"240px"} },
+          setCellHeaderProps: () => { return { width:"260px"}},
+          setCellProps: () => { return { width:"260px"} },
         }
       },
       {
@@ -30,8 +30,8 @@ class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"240px"}},
-          setCellProps: () => { return { width:"240px"} },
+          setCellHeaderProps: () => { return { width:"260px"}},
+          setCellProps: () => { return { width:"260px"} },
         }
       },  
       {
@@ -51,7 +51,8 @@ class ViewUsers extends Component{
             label: "Role",
             options: {
               filter: true,
-              setCellProps: () => { return },
+              setCellHeaderProps: () => { return { width:"40px"}},
+              setCellProps: () => { return { width:"40px" } },
               customBodyRender: (roleId) => {
                 return (
                   <p className="role_p pt-3" variant="contained">{ roleNames[roleId] }</p>
@@ -80,11 +81,14 @@ class ViewUsers extends Component{
       options: {
         filter: false,
         sort: false,
+        setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+        setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
         customBodyRender: (userId) => {
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersEditButton"+userId}
               align="center"
+              size="small"
               hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
               onClick={() => {
                 setAddUserTabWithUser(users, userId);
