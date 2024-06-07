@@ -72,7 +72,7 @@ class CompleteAssessmentTask extends Component {
             );
         }
 
-        this.refreshTeams = () => {
+        this.refreshUnits = () => {
             var navbar = this.props.navbar;
 
             var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
@@ -85,7 +85,6 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        var navbar = this.props.navbar;
         
         if (prevState.rubrics === null && prevState.teams === null && prevState.users === null) {
             if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
@@ -216,6 +215,7 @@ class CompleteAssessmentTask extends Component {
                         } else {
                             initialUnitData[user["user_id"]] = json;
                         }
+                        return initialUnitData;
                     });
                 }
             }
@@ -292,7 +292,7 @@ class CompleteAssessmentTask extends Component {
 
                         handleDone={this.handleDone}
 
-                        refreshTeams={this.refreshTeams}
+                        refreshUnits={this.refreshUnits}
 
                         completedAssessments={completedAssessments}
                     />

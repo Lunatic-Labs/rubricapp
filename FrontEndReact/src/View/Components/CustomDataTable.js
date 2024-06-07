@@ -7,8 +7,8 @@ const customTheme = createTheme({
     MUIDataTableBodyCell: {
       styleOverrides: {
         root: {
-          fontSize: "1.7rem",
-          padding: "2px",
+          fontSize: "1.5rem",
+          padding: "0rem .5rem",
           alignItems:"center"
         },
       },
@@ -23,7 +23,23 @@ const customTheme = createTheme({
     MuiButton: {
       styleOverrides: {
         root: {
-          fontSize: "1.7rem",
+          fontSize: "1.2rem",
+        },
+      },
+    },
+    MuiDataTableFooter: {
+      styleOverrides: {
+        root: {
+          padding: "0rem 0rem",
+          fontSize: "1rem",
+        },
+      },
+    },
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          padding: "0rem 0rem",
+          fontSize: "1rem",
         },
       },
     },
@@ -31,7 +47,7 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: "#A4C4F4",
-          padding: "2px", 
+          padding: "0rem .5rem", 
           fontSize: "1.8rem",
         },
       },
@@ -43,15 +59,7 @@ const customTheme = createTheme({
           flexDirection: "row",
           justifyContent: 'space-around',
           fontSize: "1.8rem",
-        },
-      },
-    },
-    MuiToolbar: {
-      styleOverrides: {
-        root: {
-          display: "flex",
-          alignItems: "baseline",
-          padding: "0.5rem",
+          padding: "0rem 2rem",
         },
       },
     },
@@ -60,7 +68,7 @@ const customTheme = createTheme({
 
 const customDataTable = ({ data, columns, options }) => {
   const defaultOptions = {
-    rowStyle: { height: 6 },
+    rowStyle: { height: 4 },
   };
 
   const tableOptions = { ...defaultOptions, ...options };

@@ -286,22 +286,23 @@ class Form extends Component {
 
         } else {
             var cookies = new Cookies();
-
+            var route="";
             if(chosenCompleteAssessmentTask && this.props.userRole) {
                 var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTab, this.props.completedAssessments);
 
                 var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
                 
-                var route = `/completed_assessment${completedAssessmentId}`
+                route = `/completed_assessment${completedAssessmentId}`
             } else {
                 if (this.state.unitOfAssessment) {
-                    var route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 } else {
-                    var route = `/completed_assessment?uid=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?uid=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 }
             }
+            var assessmentData = {};
             if (this.state.unitOfAssessment) { 
-                var assessmentData = {
+                assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
                     "rating_observable_characteristics_suggestions_data": selected,
                     "completed_by": cookies.get("user")["user_id"],
@@ -312,7 +313,7 @@ class Form extends Component {
                     done: done,
                 };
             } else { 
-                var assessmentData = {
+                assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
                     "rating_observable_characteristics_suggestions_data": selected,
                     "completed_by": cookies.get("user")["user_id"],
@@ -392,7 +393,7 @@ class Form extends Component {
                         arialabel="refreshButton"
 
                         onClick={() => {
-                            this.props.refreshunits();
+                            this.props.refreshUnits();
                         }}
                         aria-label="refreshButton"
                     >

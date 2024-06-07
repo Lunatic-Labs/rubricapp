@@ -26,7 +26,7 @@ class ViewCourses extends Component {
           customBodyRender: (courseName) => {
             return(
               <Typography
-                sx={{fontSize: "1.8rem"}}
+                sx={{fontSize: "1.6rem"}}
                 aria-label={ courseName }
               >
                 { courseName }
@@ -177,7 +177,7 @@ class ViewCourses extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
-      tableBodyMaxHeight: "60vh",
+      tableBodyMaxHeight: "70vh",
     };
 
     return (

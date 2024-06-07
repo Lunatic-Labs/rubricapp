@@ -39,8 +39,8 @@ class ViewUsers extends Component{
         label: "Email",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"350px"}},
-          setCellProps: () => { return { width:"350px"} },
+          setCellHeaderProps: () => { return { width:"400px"}},
+          setCellProps: () => { return { width:"450px" } },
         }
       }];
 
@@ -51,6 +51,7 @@ class ViewUsers extends Component{
             label: "Role",
             options: {
               filter: true,
+              setCellProps: () => { return },
               customBodyRender: (roleId) => {
                 return (
                   <p className="role_p pt-3" variant="contained">{ roleNames[roleId] }</p>
@@ -105,7 +106,7 @@ class ViewUsers extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
-      tableBodyMaxHeight: "45vh"
+      tableBodyMaxHeight: "50vh"
     };
 
     return (

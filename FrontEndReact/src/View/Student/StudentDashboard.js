@@ -100,12 +100,12 @@ class StudentDashboard extends Component {
                             </Box>
 
                             <Box>
-                                {role["role_id"] == 5 &&
+                                {role["role_id"] === 5 &&
                                 <StudentViewTeams
                                     navbar={navbar}
                                 />
                                 }
-                                {role["role_id"] == 4 &&
+                                {role["role_id"] === 4 &&
                                 <TAViewTeams
                                     navbar={navbar}
                                 />

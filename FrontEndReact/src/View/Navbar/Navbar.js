@@ -35,8 +35,8 @@ export default function ButtonAppBar(props) {
       <AppBar position="static">
         <Toolbar sx={{
           backgroundColor:"white", 
-          py:"0.5rem", 
-          px:{xs:"0.5rem",md:"1rem"},
+          py:"0rem", 
+          px:{xs:"0.25rem",md:"1rem"},
           display: "flex", 
           justifyContent: "space-between"}}>
           <Box

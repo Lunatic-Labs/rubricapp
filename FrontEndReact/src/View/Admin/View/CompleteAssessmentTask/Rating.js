@@ -63,7 +63,7 @@ class Rating extends Component {
           justifyContent:'center'
         }}
 
-        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
+        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
       >
         <Slider 
           id="slider"
@@ -101,7 +101,7 @@ class Rating extends Component {
           }}
 
           onChange={(event) => {
-            if(this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin) return;
+            if(this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)) return;
 
             setSliderValue(
               this.props.unitValue,
@@ -114,7 +114,7 @@ class Rating extends Component {
             });
           }}
 
-          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
+          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue)}
         />
       </Box>
     )

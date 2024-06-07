@@ -22,15 +22,15 @@ class UnitOfAssessmentTab extends Component {
 
             var currentUnit = units[i];
             var checkin = this.props.checkin;
+            var unitNames = [];
+            var ci=0;
             if (this.props.unitOfAssessment) {
                 var unitName = currentUnit["team_name"];
                 var unitId = currentUnit["team_id"];
                 var unitMembers = this.props.form.users[unitId];
 
-                var unitNames = [];
-   
                 for(var index = 0; index < unitMembers.length; index++){
-                    for (var ci = 0; ci < checkin.length; ci++) {
+                    for (ci = 0; ci < checkin.length; ci++) {
                         const currentObject = checkin[ci];
                         
                         if ('user_id' in currentObject && currentObject.user_id === unitMembers[index]["user_id"]) {
@@ -46,9 +46,9 @@ class UnitOfAssessmentTab extends Component {
                 ? [<Box key={0}> No Team Members Checked In</Box>]
                 : unitNames;
             } else {
-                var unitName = currentUnit["first_name"] + " " + currentUnit["last_name"];
-                var unitId = currentUnit["user_id"];
-                for (var ci = 0; ci < checkin.length; ci++) {
+                unitName = currentUnit["first_name"] + " " + currentUnit["last_name"];
+                unitId = currentUnit["user_id"];
+                for (ci = 0; ci < checkin.length; ci++) {
                     if (checkin[ci].user_id === unitId)
                     {
                         unitNames = [ <Box key={0}> Checked In </Box>];

@@ -38,8 +38,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Task Name",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"200x"}},
-                    setCellProps: () => { return { width:"200px"} },
+                    setCellHeaderProps: () => { return { width:"300x"}},
+                    setCellProps: () => { return { width:"300px"} },
                 }
             },
             {
@@ -47,8 +47,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"200px"}},
-                    setCellProps: () => { return { width:"200px"} },
+                    setCellHeaderProps: () => { return { width:"170px"}},
+                    setCellProps: () => { return { width:"170px"} },
                     customBodyRender: (dueDate) => {
                         let dueDateString = getHumanReadableDueDate(dueDate);
 
@@ -65,8 +65,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"140px"}},
-                    setCellProps: () => { return { width:"140px"} },
+                    setCellHeaderProps: () => { return { width:"270px"}},
+                    setCellProps: () => { return { width:"270px"} },
                     customBodyRender: (rubricId) => {
                         return (
                             <p className='mt-3' variant="contained">{this.props.rubricNames ? this.props.rubricNames[rubricId]:""}</p>
@@ -80,8 +80,8 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment", padding:"0rem 1rem"}},
+                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment", padding:"0rem 1rem"} },
                     customBodyRender: (atId) => {
                         return (
                             <Box

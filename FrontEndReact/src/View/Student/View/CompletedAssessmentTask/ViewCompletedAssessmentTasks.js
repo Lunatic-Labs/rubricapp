@@ -19,8 +19,8 @@ class ViewCompletedAssessmentTasks extends Component {
         label: "Task Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"230px" } },
-          setCellProps: () => { return { width:"230px" } },
+          setCellHeaderProps: () => { return { width:"290px" } },
+          setCellProps: () => { return { width:"290px" } },
         }
       },
       {
