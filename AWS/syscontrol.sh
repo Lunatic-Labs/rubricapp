@@ -50,45 +50,52 @@ SERVICE_NAME="rubricapp.service"
 # ///////////////////////////////////
 
 NGINX_BACKEND_CONFIG="server {
-    listen 5000;
-    server_name _;
+    listen 5000 ssl;
+    server_name skill-builder.net;
+
+    ssl_certificate /etc/letsencrypt/live/skill-builder.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/skill-builder.net/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
-        include proxy_params;
-        proxy_pass http://unix:/home/$USER/$PROD_NAME/rubricapp/BackEndFlask/rubricapp.sock;
-        proxy_set_header X-Real-IP $remote_addr;
+        proxy_pass http://unix/home/ubuntu/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
         proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
         proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-
-        # WebSocket support
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
-        proxy_set_header Connection "upgrade";
+        proxy_set_header X-Forwarded-Proto $scheme;
     }
-}
-"
+}"
 
 NGINX_FRONTEND_CONFIG="server {
     listen 80;
     server_name skill-builder.net;
-    return 301 https://\$host\$request_uri;
+    return 301 https://$host$request_uri/;
 }
 
 server {
     listen 443 ssl;
     server_name skill-builder.net;
 
-    location / {
-        include proxy_params;
-        proxy_pass http://localhost:3000;
-    }
-
     ssl_certificate /etc/letsencrypt/live/skill-builder.net/fullchain.pem;
     ssl_certificate_key /etc/letsencrypt/live/skill-builder.net/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-}
-"
+
+    location / {
+        proxy_pass http://localhost:3000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # WebSocket support
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}"
+
 # ///////////////////////////////////
 # GUNICORN CONFIG
 # This gets put into /etc/systemd/system/rubricapp.service
