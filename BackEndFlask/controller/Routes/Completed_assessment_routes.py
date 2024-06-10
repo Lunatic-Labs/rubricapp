@@ -14,6 +14,7 @@ from models.completed_assessment import (
 )
 
 from models.queries import (
+    get_completed_assessment_by_ta_user_id,
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id,
     get_completed_assessment_with_user_name
@@ -27,6 +28,18 @@ from models.queries import (
 @AuthCheck()
 def get_all_completed_assessments():
     try:
+        if request.args and request.args.get("course_id") and request.args.get("role_id"):
+
+            course_id = int(request.args.get("course_id"))
+
+            user_id = request.args.get("user_id")
+            print("course_id: ", course_id, "user_id", user_id)
+
+            completed_assessments_task_by_user = get_completed_assessment_by_ta_user_id(course_id, user_id)
+            print("Route:", completed_assessments_task_by_user)
+
+            return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
+
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
 
             course_id = int(request.args.get("course_id"))

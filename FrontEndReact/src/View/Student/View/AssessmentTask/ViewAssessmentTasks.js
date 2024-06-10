@@ -23,6 +23,22 @@ class ViewAssessmentTasks extends Component {
 
             return false;
         }
+
+        this.areAllATsComplete = (atId) => {
+            // Contains all Assessments completed by the TA
+            var completedAssessments = this.props.completedAssessments;
+
+            var assessmentTasks = this.props.assessmentTasks;
+console.log("completedAssessments: ", completedAssessments);
+            if(assessmentTasks && completedAssessments) {
+                for (let i = 0; i < completedAssessments.length; i++) {
+                    if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === false) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
     }
 
     render() {
@@ -119,8 +135,14 @@ class ViewAssessmentTasks extends Component {
                                     }}
 
                                     variant='contained'
-                                    disabled={(this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5) || this.isObjectFound(atId) === true} 
-
+                                    
+                                    disabled={role["role_id"] === 5 ? 
+                                        (this.props.checkin.indexOf(atId) === -1 && 
+                                        (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) || 
+                                        this.isObjectFound(atId) === true 
+                                    :
+                                        this.areAllATsComplete(atId) === true
+                                    }
                                     onClick={() => {
                                         navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                     }}

@@ -768,6 +768,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.assessment_task_id,
         CompletedAssessment.team_id,
         CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
         CompletedAssessment.initial_time,
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
@@ -783,6 +784,40 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         AssessmentTask.course_id == course_id
     ).all()
 
+    return complete_assessments
+
+@error_log
+def get_completed_assessment_by_ta_user_id(course_id, user_id):
+    """
+    Description:
+    Gets all of the completed assessments by
+    the given user in the given course.
+
+    Parameters: 
+    user_id: int (The id of the current logged student user)
+    course_id: int (The id of given course)
+    """
+    complete_assessments = db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.rubric_id
+    ).filter(
+        CompletedAssessment.completed_by == user_id,
+    ).join(
+        AssessmentTask,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).filter(
+        AssessmentTask.course_id == course_id
+    ).all()
+    print("TA: ", complete_assessments)
     return complete_assessments
 
 
