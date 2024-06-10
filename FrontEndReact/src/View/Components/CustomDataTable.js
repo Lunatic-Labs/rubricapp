@@ -3,6 +3,8 @@ import MUIDataTable from 'mui-datatables';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const customTheme = createTheme({
+  spacing: 4,
+  fontSize: "1.5rem",
   components: {
     MUIDataTableBodyCell: {
       styleOverrides: {
@@ -25,6 +27,8 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           fontSize: "1.2rem",
+          padding: ".01rem .5rem",
+          margin: ".01rem",
         },
       },
     },
@@ -32,7 +36,7 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           padding: ".01rem .5rem",
-          fontSize: "1.5rem",
+          fontSize: "1rem",
         },
       },
     },
@@ -40,7 +44,16 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           padding: ".01rem .5rem",
+          margin: ".01rem",
           fontSize: "1rem",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          fontSize: "1rem",
+          padding: ".01rem .5rem",
         },
       },
     },
@@ -49,7 +62,7 @@ const customTheme = createTheme({
         root: {
           backgroundColor: "#A4C4F4",
           padding: ".01rem .5rem", 
-          fontSize: "1.8rem",
+          fontSize: "1.4rem",
         },
       },
     },
@@ -59,15 +72,15 @@ const customTheme = createTheme({
           display: "flex",
           flexDirection: "row",
           justifyContent: 'space-around',
-          fontSize: "1.8rem",
-          padding: ".01rem 2rem",
+          //fontSize: "1.5rem",
+          //padding: ".01rem 2rem",
         },
       },
     },
   },
 });
 
-const customDataTable = ({ data, columns, options }) => {
+const CustomDataTable = ({ data, columns, options }) => {
   const defaultOptions = {
     rowStyle: { height: 4 },
   };
@@ -85,4 +98,4 @@ const customDataTable = ({ data, columns, options }) => {
   );
 };
 
-export default customDataTable;
+export default CustomDataTable;

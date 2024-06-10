@@ -14,6 +14,7 @@ class ViewUsers extends Component{
     var users = adminViewUsers.users;
     var roleNames = adminViewUsers.roleNames;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
+    var denseTable = true;
 
     const columns = [
       {
@@ -21,8 +22,8 @@ class ViewUsers extends Component{
         label: "First Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"260px"}},
-          setCellProps: () => { return { width:"260px"} },
+          setCellHeaderProps: () => { return { width:"20%"}},
+          setCellProps: () => { return { width:"20%"} },
         }
       },
       {
@@ -30,8 +31,8 @@ class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"260px"}},
-          setCellProps: () => { return { width:"260px"} },
+          setCellHeaderProps: () => { return { width:"20%"}},
+          setCellProps: () => { return { width:"20%"} },
         }
       },  
       {
@@ -39,8 +40,8 @@ class ViewUsers extends Component{
         label: "Email",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"400px"}},
-          setCellProps: () => { return { width:"450px" } },
+          setCellHeaderProps: () => { return { width:"40%"}},
+          setCellProps: () => { return { width:"40%" } },
         }
       }];
 
@@ -51,11 +52,11 @@ class ViewUsers extends Component{
             label: "Role",
             options: {
               filter: true,
-              setCellHeaderProps: () => { return { width:"40px"}},
-              setCellProps: () => { return { width:"40px" } },
+              setCellHeaderProps: () => { return { width:"10%"}},
+              setCellProps: () => { return { width:"10%" } },
               customBodyRender: (roleId) => {
                 return (
-                  <p className="role_p pt-3" variant="contained">{ roleNames[roleId] }</p>
+                  <p>{ roleNames[roleId] }</p>
                 )
               }
             }
@@ -77,12 +78,12 @@ class ViewUsers extends Component{
 
     columns.push({
       name: "user_id",
-      label: "EDIT",
+      label: "Edit",
       options: {
         filter: false,
         sort: false,
-        setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
-        setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
         customBodyRender: (userId) => {
           var cookies = new Cookies();
           return (
@@ -110,7 +111,9 @@ class ViewUsers extends Component{
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
-      tableBodyMaxHeight: "50vh"
+      tableBodyMaxHeight: "50vh",
+      //setRowProps: () => { return { padding: "none" } },
+      //setTableProps: () => { return { padding: denseTable ? "none" : "default" } }
     };
 
     return (

@@ -18,6 +18,8 @@
   .button-column-alignment {
     font-size: 1.5rem !important;
     text-align: left !important;
+    padding: .25rem !important;
+    margin: .25rem !important;
   }
 }
 
@@ -172,3 +174,10 @@ h4, h5 {
     font-size: 1.3rem !important;
 }
 
+.table-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  height: .1rem;
+  padding: 0.15rem;
+}

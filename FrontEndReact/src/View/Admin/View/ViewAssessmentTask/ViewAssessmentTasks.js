@@ -222,7 +222,7 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "EDIT",
+                label: "Edit",
                 options: {
                     filter: false,
                     sort: false,
@@ -260,13 +260,11 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "VIEW",
+                label: "View",
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { 
-                        style: {fontSize: "1.5rem"},
-                        align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
@@ -297,7 +295,7 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "TO DO",
+                label: "To Do",
                 options: {
                     filter: false,
                     sort: false,
@@ -324,7 +322,7 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "EXPORT",
+                label: "Export",
                 options: {
                     filter: false,
                     sort: false,

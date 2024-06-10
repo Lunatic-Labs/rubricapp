@@ -40,8 +40,8 @@ class ViewCourses extends Component {
         label: "Course Number",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"10%" } },
-          setCellProps: () => { return { width:"10%" } },
+          setCellHeaderProps: () => { return { width:"15%" } },
+          setCellProps: () => { return { width:"15%" } },
         }
       },  
       {
@@ -49,7 +49,7 @@ class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"1%" } },
+          setCellHeaderProps: () => { return { width:"10%" } },
           setCellProps: () => { return { width:"10%" } },
         }
       },  
@@ -58,8 +58,8 @@ class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"10%" } },
-          setCellProps: () => { return { width:"10%" } },
+          setCellHeaderProps: () => { return { width:"7%" } },
+          setCellProps: () => { return { width:"7%" } },
         }
       },
       {
@@ -67,8 +67,8 @@ class ViewCourses extends Component {
         label: "Active",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"10%" } },
-          setCellProps: () => { return { width:"10%" } },
+          setCellHeaderProps: () => { return { width:"8%" } },
+          setCellProps: () => { return { width:"8%" } },
           customBodyRender: (value) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
@@ -81,7 +81,7 @@ class ViewCourses extends Component {
         label: "Use TA's",
         options : {
           filter: true,
-          setCellHeaderProps: () => { return { width:"5%" } },
+          setCellHeaderProps: () => { return { width:"6%" } },
           setCellProps: () => { return { width:"6%" } },
           customBodyRender: (value) => {
             return(
@@ -95,8 +95,8 @@ class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"10%" } },
-          setCellProps: () => { return { width:"10%" } },
+          setCellHeaderProps: () => { return { width:"7%" } },
+          setCellProps: () => { return { width:"7%" } },
           customBodyRender: (value) => {
             return(
               <>{value===null ? "N/A": (value ? "Yes":"No")}</>
@@ -118,8 +118,8 @@ class ViewCourses extends Component {
           options: {
             filter: false,
             sort: false,
-            setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
-            setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+            setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+            setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
             customBodyRender: (courseId) => {
               return (
                 <IconButton id={courseId}
@@ -146,8 +146,8 @@ class ViewCourses extends Component {
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
-          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+          setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+          setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
                 <IconButton id={courseId}

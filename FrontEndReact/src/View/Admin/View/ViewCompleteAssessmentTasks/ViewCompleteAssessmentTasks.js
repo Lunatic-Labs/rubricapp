@@ -107,7 +107,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
           customBodyRender: () => {
             return (
-              <p className="mt-3" variant="contained" align="left">
+              <p variant="contained" align="left">
                 {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
               </p>
             );
@@ -122,7 +122,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
           customBodyRender: (team_name) => {
             return (
-              <p className="mt-3" variant="contained" align="left">
+              <p variant="contained" align="left">
                 {team_name ? team_name : "N/A"}
               </p>
             );
@@ -137,7 +137,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
           customBodyRender: (userId) => {
             return (
-              <p className="mt-3" variant="contained" align="left">
+              <p variant="contained" align="left">
                 {userNames && userId ? userNames[userId] : "N/A"}
               </p>
             );
@@ -175,7 +175,7 @@ class ViewCompleteAssessmentTasks extends Component {
             var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
 
             return (
-              <p className="mt-3" variant="contained" align="left">
+              <p variant="contained" align="left">
                 {dueDate && initialTimeString ? initialTimeString : "N/A"}
               </p>
             );
@@ -213,7 +213,7 @@ class ViewCompleteAssessmentTasks extends Component {
             var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
 
             return(
-              <p className='mt-3' variant='contained' align='left' >
+              <p  variant='contained' align='left' >
                 {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
               </p>
             )
@@ -248,7 +248,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
             } else {
               return(
-                <p className='mt-3' variant='contained' align='center' > {"N/A"} </p>
+                <p variant='contained' align='center' > {"N/A"} </p>
               )
             }
           }
