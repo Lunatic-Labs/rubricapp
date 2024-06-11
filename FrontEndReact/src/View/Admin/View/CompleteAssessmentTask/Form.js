@@ -375,12 +375,12 @@ class Form extends Component {
 
     render() {
         return (
-            <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
+            <Box sx={{mt:1}} id="formDiv" className="assessment-task-spacing">
                 <Box sx={{
                     display:"flex",
                     justifyContent:"end",
                     gap:"20px",
-                    height: "2.5rem"
+                    height: "1.5rem"
                 }}>
                     { this.state.displaySavedNotification &&
                         <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
@@ -433,7 +433,7 @@ class Form extends Component {
                         </Box>
                     }
 
-                    <Box sx={{mt: 2}}>
+                    <Box sx={{mt: 1}}>
                         <Tabs
                             value={this.state.value} 
                         

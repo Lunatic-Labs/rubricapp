@@ -33,7 +33,7 @@ h4, h5 {
 .page-spacing {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
   @media (max-width: 600px) {
     padding: var(--2, 8px) var(--6, 8px);
   }
@@ -125,18 +125,19 @@ h4, h5 {
 .assessment-task-spacing {
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  gap: 10px;
 }
 
 .assessment-card {
   width: 100%;
   display: flex;
   flex-direction: column;
-  padding: var(--2, 16px) ;
-  border-radius: 10px;
+  padding: var(--2, 4px) ;
+  border-radius: px;
   border-top: 3px solid #2E8BEF ;
   background:#FFF;
-  margin-bottom: 20px;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
 }
 
 .checkbox-alignment {
@@ -150,10 +151,11 @@ h4, h5 {
 }
 
 .checkbox-spacing {
-  margin-top: 10px;
+  margin-top: 2px;
   display: flex;
   flex-direction: column;
-  gap: 15px;
+  gap: 2px;
+  font-size: 1.3rem;
 }
 
 .errorSelect {

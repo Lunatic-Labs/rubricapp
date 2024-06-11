@@ -29,7 +29,8 @@ from models.team import (
 
 from sqlalchemy import (
     and_,
-    or_
+    or_,
+    union
 )
 
 import sqlalchemy
@@ -807,7 +808,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     user_id: int (The id of the current logged student user)
     course_id: int (The id of given course)
     """
-    complete_assessments = db.session.query(
+    complete_assessments_team = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
         CompletedAssessment.team_id,
@@ -819,15 +820,37 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.done,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id
-    ).filter(
-        CompletedAssessment.user_id == user_id,
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
         AssessmentTask.course_id == course_id
-    ).all()
-
+    ).join(
+        TeamUser,
+        CompletedAssessment.team_id == TeamUser.team_id and TeamUser.user_id == user_id  
+    )#.all()
+    print("completed team assessments: ", complete_assessments_team)
+    complete_assessments_ind = db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.rubric_id
+    ).join(
+        AssessmentTask,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).filter(
+        CompletedAssessment.user_id == user_id,
+    )#.all()
+    print("completed ind assessments: ", complete_assessments_ind)
+    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
+    print("completed assessments: ", complete_assessments)
     return complete_assessments
 
 @error_log

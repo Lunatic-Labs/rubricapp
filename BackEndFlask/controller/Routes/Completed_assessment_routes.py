@@ -29,14 +29,13 @@ from models.queries import (
 def get_all_completed_assessments():
     try:
         if request.args and request.args.get("course_id") and request.args.get("role_id"):
+            # if the args have a role id, then it is a TA so it should return their completed assessments
 
             course_id = int(request.args.get("course_id"))
 
             user_id = request.args.get("user_id")
-            print("course_id: ", course_id, "user_id", user_id)
 
             completed_assessments_task_by_user = get_completed_assessment_by_ta_user_id(course_id, user_id)
-            print("Route:", completed_assessments_task_by_user)
 
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
@@ -101,14 +100,11 @@ def get_all_completed_assessments():
 def add_completed_assessment():
     try:
         assessment_data = request.json
-        print(assessment_data)
 
         team_id = int(assessment_data["team_id"])
-        print("team_id: ", team_id)
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        print("assessment_task_id: ", assessment_task_id)
         user_id = int(assessment_data["user_id"])
-        print("user_id: ", user_id)     
+  
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:

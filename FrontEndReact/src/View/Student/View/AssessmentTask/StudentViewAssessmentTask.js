@@ -73,7 +73,6 @@ class StudentViewAssessmentTask extends Component {
             )
 
         } else {
-            console.log("completedAssessments: ", this.state.completedAssessments);
             return(
                 <div className='container'>
                     <ViewAssessmentTasks

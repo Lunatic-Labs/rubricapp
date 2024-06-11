@@ -101,9 +101,9 @@ class Section extends Component {
                 <Box className="assessment-task-spacing" aria-label="ratingsSection">
                     <FormControl>
                         <Box className="assessment-card" aria-label="ratingsSection">
-                            <h5>Ratings</h5>
+                            <h4>Ratings</h4>
 
-                            <Typography sx={{fontSize: "1.2rem"}}>{ rating["description"] }</Typography>
+                            {rating["description"] }
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
@@ -120,7 +120,7 @@ class Section extends Component {
                             <h4>Observable Characteristics</h4>
 
                             <Box className="checkbox-spacing">
-                            <Typography sx={{fontSize: "1.2rem"}}>{observableCharacteristicList}</Typography>
+                            {observableCharacteristicList}
                             </Box>
                         </Box>
 
@@ -130,7 +130,7 @@ class Section extends Component {
                                 <h4>Suggestions For Improvement</h4>
 
                                 <Box className="checkbox-spacing">
-                                <Typography sx={{fontSize: "1.2rem"}}>{suggestionList}</Typography>
+                                {suggestionList}
                                 </Box>
                             </Box>
                         }

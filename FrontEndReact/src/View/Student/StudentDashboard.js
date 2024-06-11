@@ -7,6 +7,10 @@ import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 
+// StudentDashboard is used for both students and TAs.
+// StudentDashboard component is a parent component that renders the StudentViewAssessmentTask, 
+// StudentCompletedAssessmentTasks, and depending on the role, either the StudentViewTeams or
+// the TAViewTeams components.
 
 
 class StudentDashboard extends Component {
@@ -81,6 +85,7 @@ class StudentDashboard extends Component {
                             <Box>
                                 <StudentCompletedAssessmentTasks
                                     navbar={navbar}
+                                    role={role}
                                 />
                             </Box>
                         </Box>
