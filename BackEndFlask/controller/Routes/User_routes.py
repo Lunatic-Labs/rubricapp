@@ -40,6 +40,7 @@ from models.user import(
 )
 
 from models.queries import (
+    get_team_members,
     get_team_members_in_course,
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
@@ -134,10 +135,10 @@ def get_all_users():
 @AuthCheck()
 def get_all_team_members(): 
     try:
-        if request.args and request.args.get("course_id") and request.args.get("user_id"):
+        if request.args and request.args.get("course_id") and request.args.get("observer_id"):
             course_id=request.args.get("course_id")
 
-            user_id=request.args.get("user_id")
+            user_id=request.args.get("observer_id")
 
             team_list = get_team_members_in_course(course_id)
             result = {}
@@ -158,6 +159,23 @@ def get_all_team_members():
                 result = {}
 
             return create_good_response(resultList, 200, "team_members")
+        
+        if request.args and request.args.get("course_id") and request.args.get("user_id"):
+            course_id=request.args.get("course_id")
+
+            user_id=request.args.get("user_id")
+
+            team_members, team_id = get_team_members(user_id, course_id)
+
+            result = {}
+
+            result["users"] = users_schema.dump(team_members)
+
+            result["team_id"] = team_id
+
+            result["team_name"] = get_team(team_id).team_name
+
+            return create_good_response(result, 200, "team_members")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)

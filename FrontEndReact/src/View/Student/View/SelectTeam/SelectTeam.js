@@ -96,7 +96,7 @@ class SelectTeam extends Component {
                                             sx={{ mb: 3 }}
                                         >
                                             {teams.map((x) =>
-                                                <MenuItem value={x["team_id"]}>{x["team_name"]}</MenuItem>)
+                                                <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>

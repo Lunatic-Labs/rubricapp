@@ -30,7 +30,7 @@ class StudentViewAssessmentTask extends Component {
 
         var userRole = this.props.role["role_id"];
 
-        genericResourceGET(`/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`, "assessmentTasks", this);
+        genericResourceGET(`/assessment_task?course_id=${chosenCourseID}`, "assessmentTasks", this);
 
         genericResourceGET(`/checkin?course_id=${chosenCourseID}`, "checkin", this);
 

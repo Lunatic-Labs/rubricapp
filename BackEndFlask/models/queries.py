@@ -341,6 +341,50 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
 
     return sorted_list
 
+def get_team_members(user_id: int, course_id: int): 
+    """
+    Description:
+    Gets all of the team members in the team the given
+    user is in. Ensures the team the given user is in
+    is assigned to the given course.
+
+    Returns a tuple: 
+    - List of team members 
+    - team_id
+
+    Returns (None, None) on fail 
+
+    Parameters:
+    user_id: int (The id of a user)
+    course_id: int (The id of a course)
+    """
+    team_id = db.session.query(TeamUser.team_id).\
+        join(Team, TeamUser.team_id == Team.team_id).\
+        join(User, TeamUser.user_id == User.user_id).\
+        filter(
+            and_(
+                Team.course_id == course_id, 
+                User.user_id == user_id
+            )
+        ).first()
+    
+    if team_id is None: 
+        return None, None
+    
+    team_id = team_id[0]
+    team_members = db.session.query(
+        User
+    ).join(
+        TeamUser, 
+        TeamUser.user_id == User.user_id
+    ).join( 
+        UserCourse, 
+        User.user_id == UserCourse.user_id
+    ).filter(
+        TeamUser.team_id == team_id
+    ).all()
+
+    return team_members, team_id
 
 @error_log
 def get_team_members_in_course(course_id: int): 
