@@ -29,7 +29,7 @@ class ViewAssessmentTasks extends Component {
             var completedAssessments = this.props.completedAssessments;
 
             var assessmentTasks = this.props.assessmentTasks;
-console.log("completedAssessments: ", completedAssessments);
+console.log("VAT completedAssessments: ", completedAssessments);
             if(assessmentTasks && completedAssessments) {
                 for (let i = 0; i < completedAssessments.length; i++) {
                     if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === false) {
@@ -85,7 +85,9 @@ console.log("completedAssessments: ", completedAssessments);
                     setCellProps: () => { return { width:"270px"} },
                     customBodyRender: (rubricId) => {
                         return (
-                            <p className='mt-3' variant="contained">{this.props.rubricNames ? this.props.rubricNames[rubricId]:""}</p>
+                            <p className='mt-3' variant="contained">
+                                {this.props.rubricNames ? this.props.rubricNames[rubricId]:""}
+                            </p>
                         )
                     }
                 }

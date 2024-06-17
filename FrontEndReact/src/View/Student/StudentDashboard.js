@@ -29,7 +29,8 @@ class StudentDashboard extends Component {
 
         var chosenCourse = state.chosenCourse["course_id"];
 
-        genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
+        genericResourceGET(
+            `/role?course_id=${chosenCourse}`, 'roles', this);
     }
 
     render() {
@@ -83,10 +84,18 @@ class StudentDashboard extends Component {
                             </Box>
 
                             <Box>
-                                <StudentCompletedAssessmentTasks
-                                    navbar={navbar}
-                                    role={role}
-                                />
+                                {role["role_id"] === 5 &&
+                                    <StudentCompletedAssessmentTasks
+                                        navbar={navbar}
+                                        role={role}
+                                    />
+                                }
+                                {role["role_id"] === 4 &&
+                                    <StudentCompletedAssessmentTasks
+                                        navbar={navbar}
+                                        role={role}
+                                    />
+                                }
                             </Box>
                         </Box>
 

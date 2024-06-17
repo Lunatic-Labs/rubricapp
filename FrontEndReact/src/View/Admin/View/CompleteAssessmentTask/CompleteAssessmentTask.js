@@ -12,13 +12,14 @@ import Loading from '../../../Loading/Loading.js';
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
+        console.log("CAT: ", this.props)
         this.state = {
             errorMessage: null,
             isLoaded: false,
             rubrics: null,
             teams: null,
             users: null,
-            unitOfAssessment: this.props.navbar.state.chosenAssessmentTask["unit_of_assessment"],
+            unitOfAssessment: this.props.navbar.state.unitOfAssessment,
             roles: null,
             completedAssessments: null,
             checkin: null
@@ -64,10 +65,10 @@ class CompleteAssessmentTask extends Component {
         this.handleDone = () => {
             var navbar = this.props.navbar;
 
-            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
 
             genericResourceGET(
-                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&type=${this.state.unitOfAssessment ? "team" : "individual"}`,
+                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
                 "completedAssessments", this
             );
         }
@@ -75,7 +76,7 @@ class CompleteAssessmentTask extends Component {
         this.refreshUnits = () => {
             var navbar = this.props.navbar;
 
-            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
 
             genericResourceGET(
                 `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
@@ -91,7 +92,7 @@ class CompleteAssessmentTask extends Component {
                 var teamIds = this.state.teams.map(team => team.team_id);
     
                 genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
+                    `/user?team_id=${teamIds}`,
                     "users", this
                 );
             }
@@ -103,7 +104,7 @@ class CompleteAssessmentTask extends Component {
 
         var state = navbar.state;
 
-        var chosenAssessmentTask = state.chosenAssessmentTask;
+        var chosenAssessmentTask = state.chosenCompleteAssessmentTask;
 
         var chosenCourse = state.chosenCourse;
 
@@ -139,7 +140,7 @@ class CompleteAssessmentTask extends Component {
         }
  
         genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&type=${this.state.unitOfAssessment ? "team" : "individual"}`,
+            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
             "completedAssessments", this
         );
 
@@ -180,7 +181,7 @@ class CompleteAssessmentTask extends Component {
             json["comments"] = "";
 
             var initialUnitData = {};
-            if (unitOfAssessment) { 
+            if (this.state.unitOfAssessment) { 
 
                 Object.keys(users).forEach((teamId) => {
                     var complete = this.getCompleteTeam(teamId - "0");
@@ -236,8 +237,8 @@ class CompleteAssessmentTask extends Component {
                 } else {
                     data = json;
                 }
-
-                if (unitOfAssessment)  { 
+                console.log("chosenCompleteAssessmentTask: ", chosenCompleteAssessmentTask)
+                if (this.state.unitOfAssessment)  { 
                     var teamId = chosenCompleteAssessmentTask["team_id"];
                     singleUnitData[teamId] = data;
                     teams.map((team) => {
@@ -250,9 +251,12 @@ class CompleteAssessmentTask extends Component {
                 } else {
                     var userId = chosenCompleteAssessmentTask["user_id"];
                     singleUnitData[userId] = data;
+                    console.log("UserId: ", userId, " singleUnitData: ", singleUnitData)
                     users.map((user) => {
+                        console.log("User: ", user)
                         if (user["user_id"] === chosenCompleteAssessmentTask["user_id"]) {
                             singleUser.push(user);
+                            console.log("Single User: ", singleUser)
                         }
 
                         return user;

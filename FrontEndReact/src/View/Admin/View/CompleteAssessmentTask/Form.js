@@ -15,6 +15,7 @@ import Alert from '@mui/material/Alert';
 class Form extends Component {
     constructor(props) {
         super(props);
+           console.log("Form:",this.props)
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,

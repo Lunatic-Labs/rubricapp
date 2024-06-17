@@ -50,6 +50,7 @@ class AppState extends Component {
 
             chosenAssessmentTask: null,
             chosenCompleteAssessmentTask: null,
+            unitOfAssessment: null,
 
             team: null,
             addTeam: true,
@@ -122,7 +123,15 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId) => { // wip
+        this.setAssessmentTaskInstructions = (completedAssessments, assessmentTasks, assessmentTaskId) => { // wip
+            var completedAssessment = null;
+
+            for (var index = 0; index < completedAssessments.length; index++) {
+                if (completedAssessments[index]["assessment_task_id"] === assessmentTaskId) {
+                    completedAssessment = completedAssessments[index];
+                }
+            }
+
             var assessmentTask = null;
 
             for (var index = 0; index < assessmentTasks.length; index++) {
@@ -130,10 +139,11 @@ class AppState extends Component {
                     assessmentTask = assessmentTasks[index];
                 }
             }
-
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
-                chosenAssessmentTask: assessmentTask
+                chosenCompleteAssessmentTask: completedAssessment,
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 
@@ -150,7 +160,8 @@ class AppState extends Component {
 
             this.setState({
                 activeTab: tab,
-                chosenAssessmentTask: assessmentTask
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 
@@ -181,10 +192,12 @@ class AppState extends Component {
                     newAssessmentTask = assessmentTasks[a];
                 }
             }
+            console.log("AppState setCompleteAssessmentTaskTabWithID: chosenAssessmentTask:", newAssessmentTask)
 
             this.setState({
                 activeTab: "ViewComplete",
-                chosenAssessmentTask: newAssessmentTask
+                chosenAssessmentTask: newAssessmentTask,
+                unitOfAssessment: newAssessmentTask["unit_of_assessment"]
             });
         }
 
@@ -224,6 +237,7 @@ class AppState extends Component {
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenAssessmentTask: null,
+                    unitOfAssessment: null,
                     chosenCompleteAssessmentTask: null
                 });
 
@@ -235,11 +249,12 @@ class AppState extends Component {
                         newCompletedAssessmentTask = completedAssessmentTasks[c];
                     }
                 }
-
+console.log("AppState setViewCompleteAssessmentTaskTabWithAssessmentTask: chosenAssessmentTask:", chosenAssessmentTask, "newCompletedAssessmentTask: ",newCompletedAssessmentTask)
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
-                    chosenAssessmentTask: chosenAssessmentTask
+                    chosenAssessmentTask: chosenAssessmentTask,
+                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
                 });
             }
         }
@@ -255,7 +270,8 @@ class AppState extends Component {
 
             this.setState({
                 activeTab: "CompleteAssessment",
-                chosenAssessmentTask: selectedAssessment
+                chosenAssessmentTask: selectedAssessment,
+                unitOfAssessment: selectedAssessment["unit_of_assessment"]
             });
         };
 
@@ -340,7 +356,8 @@ class AppState extends Component {
                     } else if(resource==="StudentCompleteTask") {
                         this.setState({
                             activeTab: "StudentDashboard",
-                            chosenAssessmentTask: null
+                            chosenAssessmentTask: null,
+                            unitOfAssessment: null
                         });
                     } else if (resource==="CreateCustomRubric") {
                         this.setState({

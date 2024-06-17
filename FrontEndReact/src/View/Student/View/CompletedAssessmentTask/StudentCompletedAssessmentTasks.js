@@ -40,8 +40,9 @@ class StudentCompletedAssessmentTasks extends Component {
                 "completedAssessments", this
             );
         } else {            // If the user is a TA, this returns assessments completed by the TA
-            genericResourceGET(`/completed_assessment?course_id=${chosenCourseID}&
-                                role_id=${userRole}`, "completedAssessments", this);
+            genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                "completedAssessments", this);
         }
     }
 
@@ -69,7 +70,7 @@ class StudentCompletedAssessmentTasks extends Component {
             )
 
         } else {
-            console.log("Completed assessments: ",this.state.completedAssessments)
+            console.log("SCAT Completed assessments: ",this.state.completedAssessments, this.state.assessmentTasks)
             return(
                 <div className='container'>
                     <ViewCompletedAssessmentTasks

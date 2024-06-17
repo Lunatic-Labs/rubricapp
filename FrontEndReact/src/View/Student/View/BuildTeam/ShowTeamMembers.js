@@ -40,7 +40,9 @@ class ShowTeamMembers extends Component {
         var courseID = navbar.state.chosenCourse.course_id; 
 
         if (teamId !== null && teamId !== this.state.selectedTeam) {
-            genericResourceGET(`/user?course_id=${courseID}&team_id=${teamId}`, 'users', this);
+            genericResourceGET(
+                `/user?course_id=${courseID}&team_id=${teamId}`, 
+                'users', this);
         }
     }
 

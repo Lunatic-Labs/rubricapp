@@ -13,6 +13,8 @@ class ViewCompletedAssessmentTasks extends Component {
 
     var completedAssessments = this.props.completedAssessments;
 
+    var assessmentTasks = this.props.assessmentTasks;
+
     const columns = [
       {
         name: "assessment_task_name",
@@ -68,7 +70,7 @@ class ViewCompletedAssessmentTasks extends Component {
                   <div>
                       <IconButton
                           onClick={() => {
-                              navbar.setAssessmentTaskInstructions(completedAssessments, atId);
+                              navbar.setAssessmentTaskInstructions(completedAssessments, assessmentTasks, atId);
                           }}
                           aria-label="completedAssessmentTasksViewIconButton"
                       >

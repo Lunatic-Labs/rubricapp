@@ -37,7 +37,9 @@ class SelectTeam extends Component {
         if (course["use_fixed_teams"]) {
             let courseID = this.props.navbar.state.chosenCourse["course_id"];
 
-            genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
+            genericResourceGET(
+                `/team?course_id=${courseID}`, 
+                "teams", this);
         }
         else {
             let teams = [];

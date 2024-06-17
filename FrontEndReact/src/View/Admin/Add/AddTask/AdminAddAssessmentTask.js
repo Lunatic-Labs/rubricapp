@@ -64,7 +64,9 @@ class AdminAddAssessmentTask extends Component {
         var addAssessmentTask = state.addAssessmentTask;
 
         if (assessmentTask && !addAssessmentTask) {
-            genericResourceGET(`/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, "completedAssessments", this);
+            genericResourceGET(
+            `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, 
+            "completedAssessments", this);
 
             this.setState({
                 taskName: assessmentTask["assessment_task_name"],

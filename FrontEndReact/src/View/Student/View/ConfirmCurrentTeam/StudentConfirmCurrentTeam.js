@@ -50,7 +50,6 @@ class StudentConfirmCurrentTeam extends Component {
             )
 
         } else {
-            console.log("teamMembers: ", teamMembers)
             return (
                 <ConfirmCurrentTeamTable
                     students={teamMembers["users"]}

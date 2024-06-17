@@ -33,7 +33,7 @@ def get_all_completed_assessments():
 
             course_id = int(request.args.get("course_id"))
 
-            user_id = request.args.get("user_id")
+            user_id = request.args.get("user_id")   
 
             completed_assessments_task_by_user = get_completed_assessment_by_ta_user_id(course_id, user_id)
 
@@ -42,20 +42,21 @@ def get_all_completed_assessments():
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
 
             course_id = int(request.args.get("course_id"))
-
+            print("Course ID: ", course_id)
             user_id = request.args.get("user_id")
+            print("User ID: ", user_id)
 
             completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
 
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
-        if request.args and request.args.get("assessment_task_id") and request.args.get("type"):
+        if request.args and request.args.get("assessment_task_id") and request.args.get("unit"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
-            type = request.args.get("type")
+            unit = request.args.get("unit")
 
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
 
-            if (type == "team"):
+            if (unit == "team"):
                 completed_assessments_by_assessment_task_id = get_completed_assessment_with_team_name(assessment_task_id)
             else:
                 completed_assessments_by_assessment_task_id = get_completed_assessment_with_user_name(assessment_task_id)
@@ -150,6 +151,8 @@ class CompletedAssessmentSchema(ma.Schema):
             'team_id',
             'team_name',
             'user_id',
+            'first_name',
+            'last_name',                                
             'initial_time',
             'done',
             'last_update',

@@ -25,13 +25,17 @@ class AdminViewUsers extends Component {
         var navbar = this.props.navbar;
 
         if(navbar.props.isSuperAdmin) {
-            genericResourceGET(`/user?isAdmin=True`, "users", this);
+            genericResourceGET(
+                `/user?isAdmin=True`, "users", this);
 
         } else {
-            genericResourceGET(`/user?course_id=${navbar.state.chosenCourse["course_id"]}`, "users", this);
+            genericResourceGET(
+                `/user?course_id=${navbar.state.chosenCourse["course_id"]}`, 
+                "users", this);
         }
 
-        genericResourceGET("/role?", "roles", this);
+        genericResourceGET(
+            "/role?", "roles", this);
     }
 
     render() {

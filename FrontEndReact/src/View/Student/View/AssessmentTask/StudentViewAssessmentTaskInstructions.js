@@ -22,7 +22,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
     var state = this.props.navbar.state;
 
     genericResourceGET(
-      `/rubric?rubric_id=${state.chosenAssessmentTask["rubric_id"]}`,
+      `/rubric?rubric_id=${state.chosenCompleteAssessmentTask["rubric_id"]}`,
       "rubrics", this
     )
   }

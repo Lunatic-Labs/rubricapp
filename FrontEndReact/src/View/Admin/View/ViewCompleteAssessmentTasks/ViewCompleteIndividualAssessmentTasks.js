@@ -13,7 +13,7 @@ import CourseInfo from "../../../Components/CourseInfo";
 
 
 
-class ViewCompleteAssessmentTasks extends Component {
+class ViewCompleteIndividualAssessmentTasks extends Component {
   constructor(props) {
     super(props);
 
@@ -97,7 +97,7 @@ class ViewCompleteAssessmentTasks extends Component {
     var notificationSent = state.notificationSent;
 
     var chosenCourse = state.chosenCourse;
-
+console.log("completed assessment tasks: ",completedAssessmentTasks)
     const columns = [
       {
         name: "assessment_task_id",
@@ -115,30 +115,30 @@ class ViewCompleteAssessmentTasks extends Component {
         },
       },
       {
-        name: "team_name",
-        label: "Team Name",
+        name: "last_name",
+        label: "Student Name",
         options: {
           filter: true,
 
-          customBodyRender: (team_name) => {
+          customBodyRender: (last_name) => {
             return (
               <p variant="contained" align="left">
-                {team_name ? team_name : "N/A"}
+                {last_name ? last_name : "N/A"}
               </p>
             );
           },
         },
       },
       {
-        name: "user_id",
+        name: "completed_by",
         label: "Assessor",
         options: {
           filter: true,
 
-          customBodyRender: (userId) => {
+          customBodyRender: (completed_by) => {
             return (
               <p variant="contained" align="left">
-                {userNames && userId ? userNames[userId] : "N/A"}
+                {userNames && completed_by ? userNames[completed_by] : "N/A"}
               </p>
             );
           },
@@ -313,4 +313,4 @@ class ViewCompleteAssessmentTasks extends Component {
   }
 }
 
-export default ViewCompleteAssessmentTasks;
+export default ViewCompleteIndividualAssessmentTasks;

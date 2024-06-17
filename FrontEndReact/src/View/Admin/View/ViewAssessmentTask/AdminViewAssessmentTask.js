@@ -25,7 +25,9 @@ class AdminViewAssessmentTask extends Component {
     componentDidMount() {
         var navbar = this.props.navbar;
 
-        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessmentTasks", this);
+        genericResourceGET(
+            `/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 
+            "assessmentTasks", this);
 
         genericResourceGET(`/role?`,'roles', this);
 

@@ -7,10 +7,10 @@ import Button from '@mui/material/Button';
 class ViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
-
+console.log("ViewAssessmentTaskInstructions: ", this.props.rubrics, this.props.navbar)
     this.state = {
       categories: this.props.rubrics["category_json"],
-      instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
+      instructions: this.props.navbar.state.chosenCompleteAssessmentTask["comment"],
     }
   }
 
@@ -19,7 +19,7 @@ class ViewAssessmentTaskInstructions extends Component {
   }
 
   render() {
-    var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+    var assessmentTaskName = this.props.navbar.state.chosenCompleteAssessmentTask.assessmentTaskName;
 
     var rubricName = this.props.rubrics["rubric_name"];
 

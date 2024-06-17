@@ -30,16 +30,31 @@ class StudentViewAssessmentTask extends Component {
 
         var userRole = this.props.role["role_id"];
 
-        genericResourceGET(`/assessment_task?course_id=${chosenCourseID}`, "assessmentTasks", this);
-
-        genericResourceGET(`/checkin?course_id=${chosenCourseID}`, "checkin", this);
-
-        genericResourceGET(`/rubric?all=${true}`, "rubrics", this);
-
         if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student
-            genericResourceGET(`/completed_assessment?course_id=${chosenCourseID}`, "completedAssessments", this);
+ 
+        genericResourceGET(
+            `/assessment_task?course_id=${chosenCourseID}`, 
+            "assessmentTasks", this);
         } else {            // If the user is a TA, this returns assessments completed by the TA
-            genericResourceGET(`/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, "completedAssessments", this);
+            genericResourceGET(
+                `/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                "assessmentTasks", this);
+        }
+        genericResourceGET(
+            `/checkin?course_id=${chosenCourseID}`, 
+            "checkin", this);
+
+        genericResourceGET(
+            `/rubric?all=${true}`, "rubrics", this);
+
+        if (userRole === 5) {       // If the user is a student, this returns assessments for students
+            genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourseID}`, 
+                "completedAssessments", this);
+        } else {            // If the user is a TA, this returns assessments completed by the TA
+            genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                "completedAssessments", this);
         }
     }
 

@@ -733,6 +733,7 @@ def get_completed_assessment_with_team_name(assessment_task_id):
         CompletedAssessment.assessment_task_id,
         CompletedAssessment.team_id,
         CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
         CompletedAssessment.initial_time,
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
@@ -761,11 +762,13 @@ def get_completed_assessment_with_user_name(assessment_task_id):
         CompletedAssessment.assessment_task_id,
         CompletedAssessment.team_id,
         CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
         CompletedAssessment.initial_time,
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
-        User.first_name + " " + User.last_name
+        User.first_name,
+        User.last_name
     ).join(
         User, User.user_id == CompletedAssessment.user_id
     ). filter(
@@ -808,6 +811,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     user_id: int (The id of the current logged student user)
     course_id: int (The id of given course)
     """
+    print("user_id: ", user_id, "course_id: ", course_id)
     complete_assessments_team = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -819,7 +823,8 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
         AssessmentTask.assessment_task_name,
-        AssessmentTask.rubric_id
+        AssessmentTask.rubric_id,
+        AssessmentTask.unit_of_assessment
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
@@ -829,7 +834,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         TeamUser,
         CompletedAssessment.team_id == TeamUser.team_id and TeamUser.user_id == user_id  
     )#.all()
-    print("completed team assessments: ", complete_assessments_team)
+    #print("completed team assessments: ", complete_assessments_team)
     complete_assessments_ind = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -841,14 +846,15 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
         AssessmentTask.assessment_task_name,
-        AssessmentTask.rubric_id
+        AssessmentTask.rubric_id,
+        AssessmentTask.unit_of_assessment
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
         CompletedAssessment.user_id == user_id,
     )#.all()
-    print("completed ind assessments: ", complete_assessments_ind)
+    #print("completed ind assessments: ", complete_assessments_ind)
     complete_assessments = complete_assessments_team.union(complete_assessments_ind)
     print("completed assessments: ", complete_assessments)
     return complete_assessments
@@ -875,7 +881,8 @@ def get_completed_assessment_by_ta_user_id(course_id, user_id):
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
         AssessmentTask.assessment_task_name,
-        AssessmentTask.rubric_id
+        AssessmentTask.rubric_id,
+        AssessmentTask.unit_of_assessment
     ).filter(
         CompletedAssessment.completed_by == user_id,
     ).join(

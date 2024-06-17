@@ -32,7 +32,9 @@ class TAViewTeams extends Component {
 
         // team_members returns a dictionary with keys users, team_id, team_name, observer_id.
         // users is an array with a list of team members
-        genericResourceGET(`/team_members?course_id=${chosenCourse["course_id"]}&observer_id=user_id`, "team_members", this);
+        genericResourceGET(
+            `/team_members?course_id=${chosenCourse["course_id"]}&observer_id=user_id`, 
+            "team_members", this);
 
     }
 
