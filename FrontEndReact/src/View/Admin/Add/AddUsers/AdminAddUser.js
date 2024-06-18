@@ -176,6 +176,8 @@ class AdminAddUser extends Component {
         } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
             genericResourcePOST(`/user`, this, body);
 
+        } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
+            genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
         } else {
             genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
