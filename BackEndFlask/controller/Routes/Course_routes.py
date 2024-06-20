@@ -12,7 +12,8 @@ from models.course import(
 )
 
 from models.user_course import (
-    create_user_course
+    create_user_course,
+    get_user_course_student_count_by_course_id
 )
 
 from models.queries import (
@@ -32,6 +33,13 @@ def get_all_courses():
             all_courses = get_courses_by_admin_id(admin_id)
 
             return create_good_response(courses_schema.dump(all_courses), 200, "courses")
+        
+        elif request.args and request.args.get("course_id"):
+            course_id = request.args.get("course_id")
+            print("course_id", course_id)
+            student_count = get_user_course_student_count_by_course_id(course_id)
+            print("student count", student_count)
+            return create_good_response(student_count, 200, "courses")
 
         all_courses = get_courses_by_user_courses_by_user_id(int(request.args.get("user_id")))
 

@@ -10,7 +10,7 @@ import Loading from '../../../Loading/Loading.js';
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
-
+console.log("SVAT: ",props)
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -29,17 +29,27 @@ class StudentViewAssessmentTask extends Component {
         var chosenCourseID = state.chosenCourse["course_id"];
 
         var userRole = this.props.role["role_id"];
+        console.log("userRole: ", userRole)
 
         if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student
  
-        genericResourceGET(
-            `/assessment_task?course_id=${chosenCourseID}`, 
-            "assessmentTasks", this);
+            genericResourceGET(
+                `/assessment_task?course_id=${chosenCourseID}`, 
+                "assessmentTasks", this);
+
+            genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourseID}`, 
+                "completedAssessments", this);
         } else {            // If the user is a TA, this returns assessments completed by the TA
             genericResourceGET(
                 `/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`, 
                 "assessmentTasks", this);
+
+                genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                "completedAssessments", this);
         }
+
         genericResourceGET(
             `/checkin?course_id=${chosenCourseID}`, 
             "checkin", this);
@@ -47,16 +57,10 @@ class StudentViewAssessmentTask extends Component {
         genericResourceGET(
             `/rubric?all=${true}`, "rubrics", this);
 
-        if (userRole === 5) {       // If the user is a student, this returns assessments for students
-            genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourseID}`, 
-                "completedAssessments", this);
-        } else {            // If the user is a TA, this returns assessments completed by the TA
-            genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
-                "completedAssessments", this);
+        genericResourceGET(
+            `/course?course_id=${chosenCourseID}`, 
+            "count", this);
         }
-    }
 
     render() {
         const {
@@ -66,6 +70,7 @@ class StudentViewAssessmentTask extends Component {
             completedAssessments,
             checkin,
             rubrics,
+            count
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -82,12 +87,13 @@ class StudentViewAssessmentTask extends Component {
                 </div>
             )
 
-        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics) {
+        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics || !count) {
             return(
                 <Loading />
             )
 
         } else {
+            console.log("count: ", this.count)
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
@@ -97,6 +103,7 @@ class StudentViewAssessmentTask extends Component {
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
+                        count={count}
                     />
                 </div>
             )
