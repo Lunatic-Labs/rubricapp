@@ -10,7 +10,7 @@ import Loading from '../../../Loading/Loading.js';
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
-console.log("SVAT: ",props)
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -29,7 +29,6 @@ console.log("SVAT: ",props)
         var chosenCourseID = state.chosenCourse["course_id"];
 
         var userRole = this.props.role["role_id"];
-        console.log("userRole: ", userRole)
 
         if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student
  
@@ -93,7 +92,7 @@ console.log("SVAT: ",props)
             )
 
         } else {
-            console.log("count: ", this.count)
+
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
@@ -103,7 +102,7 @@ console.log("SVAT: ",props)
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
-                        count={count}
+                        studentCount={count}
                     />
                 </div>
             )

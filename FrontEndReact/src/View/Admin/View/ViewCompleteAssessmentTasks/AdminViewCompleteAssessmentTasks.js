@@ -19,7 +19,6 @@ class AdminViewCompleteAssessmentTasks extends Component {
             roles: null,
             users: null,
         }
-        console.log("AdminViewCompleteAssessmentTasks constructor: ", this.state, this.props)
     }
 
     componentDidMount() {
@@ -27,7 +26,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         var state = navbar.state;
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
-        console.log("chosenAssessmentTask: ", chosenAssessmentTask)
+
         if (chosenAssessmentTask["unit_of_assessment"]) {
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=team`,
@@ -67,7 +66,6 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         var navbar = this.props.navbar;
         var unitOfAssessment = navbar.state.chosenAssessmentTask["unit_of_assessment"];
-        console.log("unitOfAssessment: ", unitOfAssessment)
 
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;

@@ -9,7 +9,7 @@ import { getHumanReadableDueDate } from '../../../../utility';
 class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
-        console.log("VAT props: ", props);
+
 
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments;
@@ -35,7 +35,7 @@ class ViewAssessmentTasks extends Component {
             } else {
                 var count = this.props.studentCount;
             }
-console.log("VAT completedAssessments: ", completedAssessments, "count: ", count);
+
             if (completedAssessments.length === 0) {
                 return false;
             }

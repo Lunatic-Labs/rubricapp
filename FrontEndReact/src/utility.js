@@ -62,7 +62,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             state['errorMessage'] = null;
 
             if(resource != null) {
-              
+
                 var getResource = resource;
 
                 getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
@@ -74,7 +74,9 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
                 getResource = (getResource === "teamMembers") ? "team_members": getResource;
 
                 getResource = (getResource === "indiv_users") ? "users": getResource;
-
+                
+                getResource = (getResource === "count") ? "course_count": getResource;
+                
                 state[resource] = result['content'][getResource][0];
             }
 

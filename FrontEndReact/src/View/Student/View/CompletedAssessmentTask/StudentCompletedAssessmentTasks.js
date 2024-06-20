@@ -70,7 +70,6 @@ class StudentCompletedAssessmentTasks extends Component {
             )
 
         } else {
-            console.log("SCAT Completed assessments: ",this.state.completedAssessments, this.state.assessmentTasks)
             return(
                 <div className='container'>
                     <ViewCompletedAssessmentTasks

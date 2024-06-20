@@ -111,7 +111,7 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
     course_id: int (The id of a course)
     role_id: int (The role of a user)
     """
-    print("course_id", course_id, "role_id", role_id)
+
     users_and_role_ids = db.session.query(
         User.user_id,
         User.first_name,
@@ -811,7 +811,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     user_id: int (The id of the current logged student user)
     course_id: int (The id of given course)
     """
-    print("user_id: ", user_id, "course_id: ", course_id)
+
     complete_assessments_team = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -833,8 +833,8 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).join(
         TeamUser,
         CompletedAssessment.team_id == TeamUser.team_id and TeamUser.user_id == user_id  
-    )#.all()
-    #print("completed team assessments: ", complete_assessments_team)
+    )
+
     complete_assessments_ind = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -853,10 +853,10 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
         CompletedAssessment.user_id == user_id,
-    )#.all()
-    #print("completed ind assessments: ", complete_assessments_ind)
+    )
+
     complete_assessments = complete_assessments_team.union(complete_assessments_ind)
-    print("completed assessments: ", complete_assessments)
+
     return complete_assessments
 
 @error_log
@@ -891,7 +891,7 @@ def get_completed_assessment_by_ta_user_id(course_id, user_id):
     ).filter(
         AssessmentTask.course_id == course_id
     ).all()
-    print("TA: ", complete_assessments)
+
     return complete_assessments
 
 

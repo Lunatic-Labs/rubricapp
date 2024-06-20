@@ -192,7 +192,6 @@ class AppState extends Component {
                     newAssessmentTask = assessmentTasks[a];
                 }
             }
-            console.log("AppState setCompleteAssessmentTaskTabWithID: chosenAssessmentTask:", newAssessmentTask)
 
             this.setState({
                 activeTab: "ViewComplete",
@@ -249,7 +248,6 @@ class AppState extends Component {
                         newCompletedAssessmentTask = completedAssessmentTasks[c];
                     }
                 }
-console.log("AppState setViewCompleteAssessmentTaskTabWithAssessmentTask: chosenAssessmentTask:", chosenAssessmentTask, "newCompletedAssessmentTask: ",newCompletedAssessmentTask)
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,

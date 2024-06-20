@@ -7,10 +7,8 @@ import CustomDataTable from "../../Components/CustomDataTable";
 class ViewTeamsTA extends Component{
   render() {
     var teams = this.props.teams;
-    console.log("teams", teams);
 
     var users = this.props.users;
-    console.log("users", users);
 
     const columns = [
       {

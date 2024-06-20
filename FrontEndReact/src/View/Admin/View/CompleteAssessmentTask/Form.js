@@ -15,7 +15,7 @@ import Alert from '@mui/material/Alert';
 class Form extends Component {
     constructor(props) {
         super(props);
-           console.log("Form:",this.props)
+
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
@@ -175,7 +175,6 @@ class Form extends Component {
 
         this.isUnitCompleteAssessmentComplete = (unitValue) => {
 
-            //console.log("isUnitCompleteAssessmentComplete:",unitValue,this.state.unitData);
             return this.state.unitData[unitValue]["done"];
         }
 
@@ -197,8 +196,6 @@ class Form extends Component {
             var categoryList = [];
 
             var section = [];
-
-            console.log("generateCategoriesAndSection:",this.state.currentUnitTab,this.state.unitValue,this.state.unitData)
 
             Object.keys(rubric["category_json"]).map((category, index) => {
                 categoryList.push(
@@ -325,9 +322,7 @@ class Form extends Component {
                     done: done,
                 };
             }  
-            console.log("handleSubmit:",route,assessmentData,chosenCompleteAssessmentTask,this.props.userRole)  
-
-
+ 
             if (chosenCompleteAssessmentTask && this.props.userRole) {
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 

@@ -12,7 +12,7 @@ import Loading from '../../../Loading/Loading.js';
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
-        console.log("CAT: ", this.props)
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -237,7 +237,7 @@ class CompleteAssessmentTask extends Component {
                 } else {
                     data = json;
                 }
-                console.log("chosenCompleteAssessmentTask: ", chosenCompleteAssessmentTask)
+
                 if (this.state.unitOfAssessment)  { 
                     var teamId = chosenCompleteAssessmentTask["team_id"];
                     singleUnitData[teamId] = data;
@@ -251,12 +251,11 @@ class CompleteAssessmentTask extends Component {
                 } else {
                     var userId = chosenCompleteAssessmentTask["user_id"];
                     singleUnitData[userId] = data;
-                    console.log("UserId: ", userId, " singleUnitData: ", singleUnitData)
+
                     users.map((user) => {
-                        console.log("User: ", user)
+
                         if (user["user_id"] === chosenCompleteAssessmentTask["user_id"]) {
                             singleUser.push(user);
-                            console.log("Single User: ", singleUser)
                         }
 
                         return user;

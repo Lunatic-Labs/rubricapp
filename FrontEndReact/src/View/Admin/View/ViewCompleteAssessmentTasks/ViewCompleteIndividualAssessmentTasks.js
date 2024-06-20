@@ -97,7 +97,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     var notificationSent = state.notificationSent;
 
     var chosenCourse = state.chosenCourse;
-console.log("completed assessment tasks: ",completedAssessmentTasks)
+
     const columns = [
       {
         name: "assessment_task_id",

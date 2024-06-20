@@ -42,9 +42,9 @@ def get_all_completed_assessments():
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
 
             course_id = int(request.args.get("course_id"))
-            print("Course ID: ", course_id)
+
             user_id = request.args.get("user_id")
-            print("User ID: ", user_id)
+
 
             completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
 
@@ -60,7 +60,7 @@ def get_all_completed_assessments():
                 completed_assessments_by_assessment_task_id = get_completed_assessment_with_team_name(assessment_task_id)
             else:
                 completed_assessments_by_assessment_task_id = get_completed_assessment_with_user_name(assessment_task_id)
-            print(completed_assessments_by_assessment_task_id)
+
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_by_assessment_task_id), 200, "completed_assessments")
 
         if request.args and request.args.get("assessment_task_id"):

@@ -13,7 +13,7 @@ import StatusIndicator from './StatusIndicator.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
-        console.log("UnitOfAssessmentTab: ", this.props);
+
         var units = this.props.form.units;
 
         var unitList = []

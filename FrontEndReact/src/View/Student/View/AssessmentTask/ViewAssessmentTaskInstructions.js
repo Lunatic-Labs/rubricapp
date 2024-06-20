@@ -7,7 +7,7 @@ import Button from '@mui/material/Button';
 class ViewAssessmentTaskInstructions extends Component {
   constructor(props) {
     super(props);
-console.log("ViewAssessmentTaskInstructions: ", this.props.rubrics, this.props.navbar)
+
     this.state = {
       categories: this.props.rubrics["category_json"],
       instructions: this.props.navbar.state.chosenCompleteAssessmentTask["comment"],
