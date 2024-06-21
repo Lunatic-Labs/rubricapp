@@ -24,6 +24,9 @@ def get_teams():
 def get_team_by_course_id(course_id):
     return Team.query.filter_by(course_id=course_id).all()
 
+@error_log
+def get_team_count_by_course_id(course_id):
+    return Team.query.filter_by(course_id=course_id,active_until=None).count()
 
 @error_log
 def get_team_by_team_name_and_course_id(team_name, course_id):

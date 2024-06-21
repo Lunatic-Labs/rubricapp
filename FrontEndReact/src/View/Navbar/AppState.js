@@ -123,25 +123,18 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (completedAssessments, assessmentTasks, assessmentTaskId) => { // wip
+        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null) => { // wip
             var completedAssessment = null;
 
-            for (var index = 0; index < completedAssessments.length; index++) {
-                if (completedAssessments[index]["assessment_task_id"] === assessmentTaskId) {
-                    completedAssessment = completedAssessments[index];
-                }
+            if (completedAssessments) {
+               completedAssessment = completedAssessments.filter(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId);
             }
-
-            var assessmentTask = null;
-
-            for (var index = 0; index < assessmentTasks.length; index++) {
-                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
-                    assessmentTask = assessmentTasks[index];
-                }
-            }
+            console.log("completedAssessment", completedAssessment)
+            const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
+          console.log("assessmentTask", assessmentTask)
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
-                chosenCompleteAssessmentTask: completedAssessment,
+                chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
                 unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
@@ -184,7 +177,9 @@ class AppState extends Component {
             });
         }
 
-        this.setCompleteAssessmentTaskTabWithID = (assessmentTasks, assessmentTaskId) => {
+        this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
+            console.log("assessmentTask", assessmentTask)
+            /*
             var newAssessmentTask = null;
 
             for (var a = 0; a < assessmentTasks.length; a++) {
@@ -192,11 +187,11 @@ class AppState extends Component {
                     newAssessmentTask = assessmentTasks[a];
                 }
             }
-
+*/
             this.setState({
                 activeTab: "ViewComplete",
-                chosenAssessmentTask: newAssessmentTask,
-                unitOfAssessment: newAssessmentTask["unit_of_assessment"]
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 

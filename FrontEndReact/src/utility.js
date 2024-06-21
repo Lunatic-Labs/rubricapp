@@ -64,7 +64,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             if(resource != null) {
 
                 var getResource = resource;
-
+                console.log("getResource",getResource, "result", result['content']);
                 getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
 
                 getResource = (getResource === "completedAssessments") ? "completed_assessments": getResource;
@@ -75,7 +75,11 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
                 getResource = (getResource === "indiv_users") ? "users": getResource;
                 
-                getResource = (getResource === "count") ? "course_count": getResource;
+                getResource = (getResource === "counts") ? "course_count": getResource;
+                
+                getResource = (getResource === "team") ? "teams": getResource;
+                
+                //getResource = (getResource === "teams_users") ? "users": getResource;
                 
                 state[resource] = result['content'][getResource][0];
             }

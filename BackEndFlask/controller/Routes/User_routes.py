@@ -76,8 +76,8 @@ def get_all_users():
                     all_users.append(get_user(team_user.user_id))
 
                 teams_and_team_members[team_id] = users_schema.dump(all_users)
-
-            return create_good_response(teams_and_team_members, 200, "users")
+            print ("teams and members", teams_and_team_members)
+            return create_good_response(teams_and_team_members, 200, "teams_users")
 
         if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")

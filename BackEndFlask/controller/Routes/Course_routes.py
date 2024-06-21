@@ -20,6 +20,9 @@ from models.queries import (
     get_courses_by_user_courses_by_user_id
 )
 
+from models.team import (
+    get_team_count_by_course_id
+)
 
 @bp.route('/course', methods=['GET'])
 @jwt_required()
@@ -37,7 +40,12 @@ def get_all_courses():
         elif request.args and request.args.get("course_id"):
             course_id = request.args.get("course_id")
 
-            student_count = get_user_course_student_count_by_course_id(course_id)
+            student_count = []
+
+            student_count.append(get_user_course_student_count_by_course_id(course_id))
+            print(student_count)
+            student_count.append(get_team_count_by_course_id(course_id))
+            print(student_count)
 
             return create_good_response(student_count, 200, "course_count")
 

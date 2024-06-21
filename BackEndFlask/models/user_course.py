@@ -19,11 +19,9 @@ def get_user_courses():
 def get_user_courses_by_course_id(course_id):
     return UserCourse.query.filter_by(course_id=course_id, active=True).all()
 
-
 @error_log
 def get_user_course_student_count_by_course_id(course_id):
     return UserCourse.query.filter_by(course_id=course_id, active=True, role_id=5).count()
-
 
 @error_log
 def get_user_courses_by_user_id(user_id):

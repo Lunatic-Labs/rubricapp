@@ -42,7 +42,7 @@ def get_all_teams():
 @AuthCheck()
 def get_all_teams_by_user():
     try:
-        # if request.args and request.args.get("course_id"):
+        if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
 

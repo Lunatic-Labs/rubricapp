@@ -58,7 +58,7 @@ class StudentViewAssessmentTask extends Component {
 
         genericResourceGET(
             `/course?course_id=${chosenCourseID}`, 
-            "count", this);
+            "counts", this);
         }
 
     render() {
@@ -69,7 +69,7 @@ class StudentViewAssessmentTask extends Component {
             completedAssessments,
             checkin,
             rubrics,
-            count
+            counts
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -86,7 +86,7 @@ class StudentViewAssessmentTask extends Component {
                 </div>
             )
 
-        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics || !count) {
+        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics || !counts) {
             return(
                 <Loading />
             )
@@ -102,7 +102,7 @@ class StudentViewAssessmentTask extends Component {
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
-                        studentCount={count}
+                        counts={counts}
                     />
                 </div>
             )

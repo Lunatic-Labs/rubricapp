@@ -10,7 +10,7 @@ class ViewAssessmentTaskInstructions extends Component {
 
     this.state = {
       categories: this.props.rubrics["category_json"],
-      instructions: this.props.navbar.state.chosenCompleteAssessmentTask["comment"],
+      instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
     }
   }
 
@@ -19,7 +19,7 @@ class ViewAssessmentTaskInstructions extends Component {
   }
 
   render() {
-    var assessmentTaskName = this.props.navbar.state.chosenCompleteAssessmentTask.assessmentTaskName;
+    var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
 
     var rubricName = this.props.rubrics["rubric_name"];
 

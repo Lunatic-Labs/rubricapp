@@ -209,7 +209,7 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
             TeamUser.user_id == user_id
         )
     ).all()
-
+    print ("teams", teams[0])
     return teams
 
 @error_log

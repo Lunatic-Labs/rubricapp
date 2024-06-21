@@ -30,10 +30,17 @@ class ViewAssessmentTasks extends Component {
             var completedAssessments = this.props.completedAssessments.filter(at => at.assessment_task_id === atId);
 
             var assessmentTasks = this.props.assessmentTasks.filter(at => at.assessment_task_id === atId);
-            if (assessmentTasks["unit_of_assessment"]) {
-                var count = this.props.teamCount;
+
+            var count = 0;
+            if (assessmentTasks["unit_of_assessment"]) {          // Team Assessment
+                if (assessmentTasks["number_of_teams"] !== null)  // If the number of teams is specified, use that
+                {
+                    count = assessmentTasks["number_of_teams"]
+                } else {                                          // Otherwise, use the number of fixed teams    
+                    count = this.props.counts[1];
+                }
             } else {
-                var count = this.props.studentCount;
+                count = this.props.counts[0];
             }
 
             if (completedAssessments.length === 0) {
@@ -158,7 +165,7 @@ class ViewAssessmentTasks extends Component {
                                         this.areAllATsComplete(atId) === true
                                     }
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, this.props.completedAssessments);
                                     }}
 
                                     aria-label="completedAssessmentTasksButton"
