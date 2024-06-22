@@ -7,6 +7,7 @@ from models.team import (
     get_teams,
     get_team_by_course_id,
     create_team,
+    get_teams_by_observer_id,
     replace_team
 )
 from models.team_user import *
@@ -41,7 +42,7 @@ def get_all_teams():
 @AuthCheck()
 def get_all_teams_by_user():
     try:
-        # if request.args and request.args.get("course_id"):
+        if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
 
@@ -52,6 +53,22 @@ def get_all_teams_by_user():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
+@bp.route('/team_by_observer', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_all_teams_by_observer():
+    try:
+        # if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            observer_id = int(request.args.get("user_id"))
+
+            teams = get_teams_by_observer_id(observer_id, course_id)
+
+            return create_good_response(teams_schema.dump(teams), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
 @bp.route('/team', methods=['GET'])
 @jwt_required()

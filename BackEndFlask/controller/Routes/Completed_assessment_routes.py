@@ -14,8 +14,10 @@ from models.completed_assessment import (
 )
 
 from models.queries import (
+    get_completed_assessment_by_ta_user_id,
     get_completed_assessment_with_team_name,
-    get_completed_assessment_by_user_id
+    get_completed_assessment_by_user_id,
+    get_completed_assessment_with_user_name
 )
 
 
@@ -26,15 +28,40 @@ from models.queries import (
 @AuthCheck()
 def get_all_completed_assessments():
     try:
+        if request.args and request.args.get("course_id") and request.args.get("role_id"):
+            # if the args have a role id, then it is a TA so it should return their completed assessments
+
+            course_id = int(request.args.get("course_id"))
+
+            user_id = request.args.get("user_id")   
+
+            completed_assessments_task_by_user = get_completed_assessment_by_ta_user_id(course_id, user_id)
+
+            return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
+
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
 
             course_id = int(request.args.get("course_id"))
 
             user_id = request.args.get("user_id")
 
+
             completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
 
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
+
+        if request.args and request.args.get("assessment_task_id") and request.args.get("unit"):
+            assessment_task_id = int(request.args.get("assessment_task_id"))
+            unit = request.args.get("unit")
+
+            get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
+
+            if (unit == "team"):
+                completed_assessments_by_assessment_task_id = get_completed_assessment_with_team_name(assessment_task_id)
+            else:
+                completed_assessments_by_assessment_task_id = get_completed_assessment_with_user_name(assessment_task_id)
+
+            return create_good_response(completed_assessment_schemas.dump(completed_assessments_by_assessment_task_id), 200, "completed_assessments")
 
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
@@ -73,12 +100,12 @@ def get_all_completed_assessments():
 @AuthCheck()
 def add_completed_assessment():
     try:
-        team_id = int(request.args.get("team_id"))
+        assessment_data = request.json
 
+        team_id = int(assessment_data["team_id"])
         assessment_task_id = int(request.args.get("assessment_task_id"))
-
-        user_id = int(request.args.get("user_id"))
-
+        user_id = int(assessment_data["user_id"])
+  
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:
@@ -120,9 +147,12 @@ class CompletedAssessmentSchema(ma.Schema):
             'completed_assessment_id',
             'assessment_task_id',
             'assessment_task_name',
+            'completed_by',
             'team_id',
             'team_name',
             'user_id',
+            'first_name',
+            'last_name',                                
             'initial_time',
             'done',
             'last_update',

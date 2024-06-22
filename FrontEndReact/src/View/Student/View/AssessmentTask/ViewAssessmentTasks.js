@@ -10,6 +10,7 @@ class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
 
+
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments;
 
@@ -22,6 +23,40 @@ class ViewAssessmentTasks extends Component {
             }
 
             return false;
+        }
+
+        this.areAllATsComplete = (atId) => {
+            // Contains all Assessments completed by the TA
+            var completedAssessments = this.props.completedAssessments.filter(at => at.assessment_task_id === atId);
+
+            var assessmentTasks = this.props.assessmentTasks.filter(at => at.assessment_task_id === atId);
+
+            var count = 0;
+            if (assessmentTasks["unit_of_assessment"]) {          // Team Assessment
+                if (assessmentTasks["number_of_teams"] !== null)  // If the number of teams is specified, use that
+                {
+                    count = assessmentTasks["number_of_teams"]
+                } else {                                          // Otherwise, use the number of fixed teams    
+                    count = this.props.counts[1];
+                }
+            } else {
+                count = this.props.counts[0];
+            }
+
+            if (completedAssessments.length === 0) {
+                return false;
+            }
+            if(completedAssessments) {
+                if (completedAssessments.length < count) {
+                    return false;
+                }
+                for (let i = 0; i < completedAssessments.length; i++) {
+                    if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === false) {
+                        return false;
+                    }
+                }
+            }
+            return true;
         }
     }
 
@@ -38,8 +73,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Task Name",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"200x"}},
-                    setCellProps: () => { return { width:"200px"} },
+                    setCellHeaderProps: () => { return { width:"300x"}},
+                    setCellProps: () => { return { width:"300px"} },
                 }
             },
             {
@@ -47,8 +82,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"200px"}},
-                    setCellProps: () => { return { width:"200px"} },
+                    setCellHeaderProps: () => { return { width:"170px"}},
+                    setCellProps: () => { return { width:"170px"} },
                     customBodyRender: (dueDate) => {
                         let dueDateString = getHumanReadableDueDate(dueDate);
 
@@ -65,11 +100,13 @@ class ViewAssessmentTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"140px"}},
-                    setCellProps: () => { return { width:"140px"} },
+                    setCellHeaderProps: () => { return { width:"270px"}},
+                    setCellProps: () => { return { width:"270px"} },
                     customBodyRender: (rubricId) => {
                         return (
-                            <p className='mt-3' variant="contained">{this.props.rubricNames ? this.props.rubricNames[rubricId]:""}</p>
+                            <p className='mt-3' variant="contained">
+                                {this.props.rubricNames ? this.props.rubricNames[rubricId]:""}
+                            </p>
                         )
                     }
                 }
@@ -119,10 +156,16 @@ class ViewAssessmentTasks extends Component {
                                     }}
 
                                     variant='contained'
-                                    disabled={(this.props.checkin.indexOf(atId) === -1 && (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"]) && role["role_id"] === 5) || this.isObjectFound(atId) === true} 
-
+                                    
+                                    disabled={role["role_id"] === 5 ? 
+                                        (this.props.checkin.indexOf(atId) === -1 && 
+                                        (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) || 
+                                        this.isObjectFound(atId) === true 
+                                    :
+                                        this.areAllATsComplete(atId) === true
+                                    }
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, this.props.completedAssessments);
                                     }}
 
                                     aria-label="completedAssessmentTasksButton"

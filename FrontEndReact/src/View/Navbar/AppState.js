@@ -50,6 +50,7 @@ class AppState extends Component {
 
             chosenAssessmentTask: null,
             chosenCompleteAssessmentTask: null,
+            unitOfAssessment: null,
 
             team: null,
             addTeam: true,
@@ -122,18 +123,19 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId) => { // wip
-            var assessmentTask = null;
+        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null) => { // wip
+            var completedAssessment = null;
 
-            for (var index = 0; index < assessmentTasks.length; index++) {
-                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
-                    assessmentTask = assessmentTasks[index];
-                }
+            if (completedAssessments) {
+               completedAssessment = completedAssessments.filter(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId);
             }
+            const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
 
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
-                chosenAssessmentTask: assessmentTask
+                chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 
@@ -150,7 +152,8 @@ class AppState extends Component {
 
             this.setState({
                 activeTab: tab,
-                chosenAssessmentTask: assessmentTask
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 
@@ -173,18 +176,12 @@ class AppState extends Component {
             });
         }
 
-        this.setCompleteAssessmentTaskTabWithID = (assessmentTasks, assessmentTaskId) => {
-            var newAssessmentTask = null;
-
-            for (var a = 0; a < assessmentTasks.length; a++) {
-                if (assessmentTasks[a]["assessment_task_id"] === assessmentTaskId) {
-                    newAssessmentTask = assessmentTasks[a];
-                }
-            }
+        this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
 
             this.setState({
                 activeTab: "ViewComplete",
-                chosenAssessmentTask: newAssessmentTask
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 
@@ -214,14 +211,17 @@ class AppState extends Component {
         }
 
         // The ===null section of the next line is not permanent. 
-        // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
-        // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
-        // By adding ===null as a test case, we were able to have it populate.
+        // The only purpose was to test to see if we could see the "My Assessment Task" 
+        // on the student dashboard
+        // When you click "complete" on the "TO DO" column the completed fields were null 
+        // thus it would not display anything
+        // By adding === null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenAssessmentTask: null,
+                    unitOfAssessment: null,
                     chosenCompleteAssessmentTask: null
                 });
 
@@ -233,11 +233,11 @@ class AppState extends Component {
                         newCompletedAssessmentTask = completedAssessmentTasks[c];
                     }
                 }
-
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
-                    chosenAssessmentTask: chosenAssessmentTask
+                    chosenAssessmentTask: chosenAssessmentTask,
+                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
                 });
             }
         }
@@ -253,7 +253,8 @@ class AppState extends Component {
 
             this.setState({
                 activeTab: "CompleteAssessment",
-                chosenAssessmentTask: selectedAssessment
+                chosenAssessmentTask: selectedAssessment,
+                unitOfAssessment: selectedAssessment["unit_of_assessment"]
             });
         };
 
@@ -338,7 +339,8 @@ class AppState extends Component {
                     } else if(resource==="StudentCompleteTask") {
                         this.setState({
                             activeTab: "StudentDashboard",
-                            chosenAssessmentTask: null
+                            chosenAssessmentTask: null,
+                            unitOfAssessment: null
                         });
                     } else if (resource==="CreateCustomRubric") {
                         this.setState({

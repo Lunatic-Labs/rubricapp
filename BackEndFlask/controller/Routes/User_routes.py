@@ -40,13 +40,14 @@ from models.user import(
 )
 
 from models.queries import (
+    get_team_members,
+    get_team_members_in_course,
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_students_by_team_id,
     get_students_not_in_a_team,
     add_user_to_team,
-    remove_user_from_team, 
-    get_team_members
+    remove_user_from_team
 )
 
 
@@ -57,6 +58,7 @@ from models.queries import (
 @AuthCheck()
 def get_all_users():
     try:
+
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
@@ -75,7 +77,7 @@ def get_all_users():
 
                 teams_and_team_members[team_id] = users_schema.dump(all_users)
 
-            return create_good_response(teams_and_team_members, 200, "users")
+            return create_good_response(teams_and_team_members, 200, "teams_users")
 
         if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")
@@ -133,6 +135,31 @@ def get_all_users():
 @AuthCheck()
 def get_all_team_members(): 
     try:
+        if request.args and request.args.get("course_id") and request.args.get("observer_id"):
+            course_id=request.args.get("course_id")
+
+            user_id=request.args.get("observer_id")
+
+            team_list = get_team_members_in_course(course_id)
+            result = {}
+            resultList = []
+
+            for team in team_list:
+
+                result["users"] = team[0]
+
+                result["team_id"] = team[1]
+
+                result["team_name"] = get_team(team[1]).team_name
+
+                result["observer_id"] = get_team(team[1]).observer_id
+
+                resultList.append(result)
+
+                result = {}
+
+            return create_good_response(resultList, 200, "team_members")
+        
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
             course_id=request.args.get("course_id")
 

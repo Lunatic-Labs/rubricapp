@@ -80,91 +80,96 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
             </TableRow>
           </TableHead>
           <TableBody>
-            {rubrics.map((rubric) => (
-              <React.Fragment key={rubric["rubric_id"]}>
-                <TableRow onClick={() => handleRubricClick(rubric["rubric_id"])}>
-                  <TableCell>
-                    {rubric["rubric_name"]}
-                    {openRubric === rubric["rubric_id"] ? (
-                      <KeyboardArrowUp />
-                    ) : (
-                        <KeyboardArrowDown />
-                      )}
-                  </TableCell>
-                </TableRow>
-                <TableRow>
-                  <TableCell
-                    style={{ paddingBottom: 0, paddingTop: 0 }}
-                    colSpan={6}
-                  >
-                    <Collapse
-                      in={openRubric === rubric["rubric_id"]}
-                      timeout="auto"
-                      unmountOnExit
-                      aria-label="rubricCategoryIcon"
+            {rubrics.length === 0 ? (
+              <TableRow>
+                <TableCell>No Custom Rubrics Found</TableCell>
+              </TableRow>
+            ) : (
+              rubrics.map((rubric) => (
+                <React.Fragment key={rubric["rubric_id"]}>
+                  <TableRow onClick={() => handleRubricClick(rubric["rubric_id"])}>
+                    <TableCell>
+                      {rubric["rubric_name"]}
+                      {openRubric === rubric["rubric_id"] ? (
+                        <KeyboardArrowUp />
+                      ) : (
+                          <KeyboardArrowDown />
+                        )}
+                    </TableCell>
+                  </TableRow>
+                  <TableRow>
+                    <TableCell
+                      style={{ paddingBottom: 0, paddingTop: 0 }}
+                      colSpan={6}
                     >
-                      <Table>
-                        <TableBody>
-                          {categories
-                            .filter(
-                              (category) =>
-                                category["rubric_id"] === rubric["rubric_id"],
-                            )
-                            .map((category) => (
-                              <TableRow key={category["category_id"]}>
-                                <TableCell component="th" scope="row" aria-label="rubricCategoryNames">
-                                  <div
-                                    style={{
-                                      display: "flex",
-                                      flexDirection: "row",
-                                      justifyContent: readOnly ? "space-around": "",
-                                    }}
-                                  >
+                      <Collapse
+                        in={openRubric === rubric["rubric_id"]}
+                        timeout="auto"
+                        unmountOnExit
+                        aria-label="rubricCategoryIcon"
+                      >
+                        <Table>
+                          <TableBody>
+                            {categories
+                              .filter(
+                                (category) =>
+                                  category["rubric_id"] === rubric["rubric_id"],
+                              )
+                              .map((category) => (
+                                <TableRow key={category["category_id"]}>
+                                  <TableCell component="th" scope="row" aria-label="rubricCategoryNames">
                                     <div
                                       style={{
                                         display: "flex",
                                         flexDirection: "row",
+                                        justifyContent: readOnly ? "space-around": "",
                                       }}
                                     >
-                                      { !readOnly &&
-                                        <Checkbox
-                                          checked={checkedCategories.includes(
-                                            category["category_id"],
-                                          )}
-                                        aria-label="rubricNamesCheckBox"
-                                          onChange={() =>
-                                            handleCheckboxChange(category["category_id"])
-                                          }
-                                        />
-                                      }
-                                      <p
+                                      <div
                                         style={{
-                                          marginTop: "1rem",
-                                          minWidth: "10rem"
+                                          display: "flex",
+                                          flexDirection: "row",
                                         }}
-                                      >{category["category_name"]}</p>
-                                    </div>
+                                      >
+                                        { !readOnly &&
+                                          <Checkbox
+                                            checked={checkedCategories.includes(
+                                              category["category_id"],
+                                            )}
+                                          aria-label="rubricNamesCheckBox"
+                                            onChange={() =>
+                                              handleCheckboxChange(category["category_id"])
+                                            }
+                                          />
+                                        }
+                                        <p
+                                          style={{
+                                            marginTop: "1rem",
+                                            minWidth: "10rem"
+                                          }}
+                                        >{category["category_name"]}</p>
+                                      </div>
 
-                                    { readOnly &&
-                                      <p
-                                        style={{
-                                          marginTop: "1rem",
-                                          minWidth: "10rem"
-                                        }}
-                                      >{category["default_rubric"] ? category["default_rubric"] : "N/A"}</p>
-                                    }
-                                  </div>
-                                </TableCell>
-                              </TableRow>
-                            ))}
-                        </TableBody>
-                      </Table>
-                    </Collapse>
-                  </TableCell>
-                </TableRow>
-              </React.Fragment>
-            ))}
-          </TableBody>
+                                      { readOnly &&
+                                        <p
+                                          style={{
+                                            marginTop: "1rem",
+                                            minWidth: "10rem"
+                                          }}
+                                        >{category["default_rubric"] ? category["default_rubric"] : "N/A"}</p>
+                                      }
+                                    </div>
+                                  </TableCell>
+                                </TableRow>
+                              ))}
+                          </TableBody>
+                        </Table>
+                      </Collapse>
+                    </TableCell>
+                  </TableRow>
+                </React.Fragment>
+            )))}
+           </TableBody>
         </Table>
       </TableContainer>
     </ThemeProvider>

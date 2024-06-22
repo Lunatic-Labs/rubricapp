@@ -63,7 +63,7 @@ class Rating extends Component {
           justifyContent:'center'
         }}
 
-        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
+        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
       >
         <Slider 
           id="slider"
@@ -79,12 +79,12 @@ class Rating extends Component {
 
           sx={{
             '.MuiSlider-markLabel': {
-              fontSize: "14px !important",
+              fontSize: "1.0rem !important",
               '@media (max-width: 600px)': {
-                fontSize: "8px !important",
+                fontSize: ".55rem !important",
               },
               '@media (max-width: 400px)': {
-                fontSize: "8px !important",
+                fontSize: ".5rem !important",
               },
             },
             '.MuiSlider-thumb': {
@@ -95,16 +95,16 @@ class Rating extends Component {
               border: '1px solid #2E8BEF '
             },
             '.MuiSlider-mark': {
-              height: "0.1rem !important",
-              width: "0.1rem !important"
+              height: "0.2rem !important",
+              width: "0.2rem !important"
             },
           }}
 
           onChange={(event) => {
-            if(this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin) return;
+            if(this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)) return;
 
             setSliderValue(
-              this.props.teamValue,
+              this.props.unitValue,
               categoryName,
               event.target.value/20
             );
@@ -114,7 +114,7 @@ class Rating extends Component {
             });
           }}
 
-          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
+          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
         />
       </Box>
     )

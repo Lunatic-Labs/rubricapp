@@ -48,7 +48,9 @@ class CodeRequirement extends Component {
 	componentDidMount() {
 		let atId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
 
-		genericResourceGET(`/assessment_task?assessment_task_id=${atId}`, "assessmentTasks", this);
+		genericResourceGET(
+			`/assessment_task?assessment_task_id=${atId}`, 
+			"assessmentTasks", this);
 	}
 
 	render() {

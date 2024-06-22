@@ -19,11 +19,13 @@ class CompleteAssessmentTask extends Component {
             rubrics: null,
             teams: null,
             users: null,
+            teams_users: null,
+            unitOfAssessment: this.props.navbar.state.unitOfAssessment,
             roles: null,
             completedAssessments: null,
-            checkin: null
+            checkin: null,
+            userId: null
         }
-
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
 
@@ -42,31 +44,33 @@ class CompleteAssessmentTask extends Component {
             return true;
         }
 
-        this.getComplete = (teamId) => {
-            for (let index = 0; index < this.state.completedAssessments.length; index++) {
-                if (this.state.completedAssessments[index]["team_id"] === teamId) {
-                    return this.state.completedAssessments[index];
-                }
-            }
+        this.getCompleteTeam = (teamId) => {
+            var completedTeam = this.state.completedAssessments.find(completedAssessment => completedAssessment["team_id"] === teamId);
+            
+            return completedTeam ? completedTeam : false;
+        }
 
-            return false;
+        this.getCompleteIndividual = (userId) => {
+            var completedAssessment = this.state.completedAssessments.find(completedAssessment => completedAssessment["user_id"] === userId);
+
+            return completedAssessment ? completedAssessment : false;
         }
 
         this.handleDone = () => {
             var navbar = this.props.navbar;
 
-            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
 
             genericResourceGET(
-                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
                 "completedAssessments", this
             );
         }
 
-        this.refreshTeams = () => {
+        this.refreshUnits = () => {
             var navbar = this.props.navbar;
 
-            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
 
             genericResourceGET(
                 `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
@@ -76,13 +80,14 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        if (prevState.rubrics === null && prevState.teams === null && prevState.users === null) {
-            if (this.state.teams && this.state.teams.length > 0) {
+        
+        if (prevState.rubrics === null && prevState.teams === null && prevState.teams_users === null) {
+            if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
                 var teamIds = this.state.teams.map(team => team.team_id);
-    
+
                 genericResourceGET(
                     `/user?team_ids=${teamIds}`,
-                    "users", this
+                    "teams_users", this
                 );
             }
         }
@@ -96,10 +101,10 @@ class CompleteAssessmentTask extends Component {
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
         var chosenCourse = state.chosenCourse;
-
+    
         const cookies = new Cookies();
 
-        const userId = cookies.get('user')["user_id"];
+        this.userId = cookies.get('user')["user_id"];
 
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
@@ -107,11 +112,18 @@ class CompleteAssessmentTask extends Component {
         );
 
         genericResourceGET(
-            `/role?user_id=${userId}&course_id=${chosenCourse["course_id"]}`,
+            `/role?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
             "roles", this
         );
 
-        genericResourceGET(
+        if (chosenAssessmentTask["role_id"] === 5) {
+            genericResourceGET(
+                `/team_by_user?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
+                "team", this
+            );
+        }
+
+        genericResourceGET( 
             `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
              "checkin", this
         );
@@ -120,11 +132,17 @@ class CompleteAssessmentTask extends Component {
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
         );
+    
+        genericResourceGET(
+            `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
+            "users", this
+        );
 
         genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
             "completedAssessments", this
         );
+
     }
 
     render() {
@@ -133,10 +151,13 @@ class CompleteAssessmentTask extends Component {
             isLoaded,
             rubrics,
             teams,
+            team,
+            unitOfAssessment,
             users,
+            teams_users,
+            roles,
             completedAssessments
         } = this.state;
-
         if (errorMessage) {
             return (
                 <ErrorMessage
@@ -145,63 +166,113 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !teams || !users || !completedAssessments) {
+        } else if (!isLoaded || !rubrics || !completedAssessments|| !roles || !users || !teams ) {
             return (
                 <Loading />
             );
 
+        } 
+        var role_name=roles["role_name"]
+        if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
+            return (
+                <Loading />
+            );  
         } else {
             var navbar = this.props.navbar;
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-
+            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+   
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
-            json["done"] = null;
+            json["done"] = false;
 
             json["comments"] = "";
 
-            var initialTeamData = {};
+            if (role_name === "Student") {  
+                // If the user is a student, this prepares assessments for the student or their team
+                var singleUnitData = {};
 
-            Object.keys(users).forEach((teamId) => {
-                var complete = this.getComplete(teamId - "0");
+                var singleTeam = [];
+    
+                var singleUser = [];
 
-                if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                    complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
+                var data = json;
+                // There is an existing assessment for this student
+                if (Object.keys(chosenCompleteAssessmentTask).length > 0) {
+                    chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
+                    data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
+    
+                    if (data && this.doRubricsForCompletedMatch(json, data)) {
+                        data["done"] = chosenCompleteAssessmentTask["done"];
+                    } 
+  
+                    if (this.state.unitOfAssessment)  { 
 
-                    initialTeamData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
-
+                        var teamId = chosenCompleteAssessmentTask["team_id"];
+                        singleUnitData[teamId] = data; 
+                        singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);
+                    } else {
+                        var CATuserId = chosenCompleteAssessmentTask["user_id"];
+                        singleUnitData[CATuserId] = data;  
+                        singleUser.push(users.filter(user => user["user_id"] === CATuserId)[0]);
+                    } 
                 } else {
-                    initialTeamData[teamId] = json;
-                }
-            });
-
-            var singleTeamData = {};
-
-            var singleTeam = [];
-
-            if (chosenCompleteAssessmentTask !== null) {
-                var teamId = chosenCompleteAssessmentTask["team_id"];
-
-                var data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
-
-                if (data && this.doRubricsForCompletedMatch(json, data)) {
-                    data["done"] = chosenCompleteAssessmentTask["done"];
-
-                } else {
-                    data = json;
-                }
-
-                singleTeamData[teamId] = data;
-
-                teams.map((team) => {
-                    if (team["team_id"] === chosenCompleteAssessmentTask["team_id"]) {
-                        singleTeam.push(team);
+                    // new student assessment
+                    if (this.state.unitOfAssessment)  { 
+                        var teamId = team[0]["team_id"];
+                        singleUnitData[teamId] = data;
+                        singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);   
+                    }  else {
+                        singleUnitData[this.userId] = data; 
+                        singleUser.push(users.filter(user => user["user_id"] === this.userId)[0]);
                     }
+                }
+            } else {
+                // If the user is a TA or Admin, this returns assessments completed by the TA
+                var initialUnitData = {};
+                if (this.state.unitOfAssessment) { 
 
-                    return team;
-                });
-            }
+                    Object.keys(teams).forEach((teamId) => {
+                        var t_id = teams[teamId].team_id;
+                        var complete = this.getCompleteTeam(t_id);
+                        if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
+                                                this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+                            complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
+
+                            initialUnitData[t_id] = complete["rating_observable_characteristics_suggestions_data"];
+
+                        } else {
+                            initialUnitData[t_id] = json;
+                        }
+                        //return initialUnitData;
+                    });
+                } else {
+                    if (users === null || users.length === 0) {
+                        return (
+                            <ErrorMessage
+                                fetchedResource={"Student users for this course"}
+                                errorMessage={"No users found for this course."}
+                            />
+                        );
+                    } else {
+                        users.map((user) => {
+                
+                            var complete = this.getCompleteIndividual(user["user_id"]);
+                            if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
+                                                    this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+                                complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
+
+                                initialUnitData[user["user_id"]] = complete["rating_observable_characteristics_suggestions_data"];
+
+                            } else {
+                                initialUnitData[user["user_id"]] = json;
+                            }
+                            //return initialUnitData;
+                        });
+                    }
+                }
+            }            
 
             return (
                 <Box>
@@ -209,12 +280,14 @@ class CompleteAssessmentTask extends Component {
                         <Box className='d-flex flex-column justify-content-start'>
                             <h4>{rubrics["rubric_name"]}</h4>
 
-                            <p>{rubrics["rubric_description"]}</p>
+                            <h5>{rubrics["rubric_description"]}</h5>
                         </Box>
                     </Box>
 
                     <Form
                         navbar={this.props.navbar}
+
+                        unitOfAssessment={this.state.unitOfAssessment}
 
                         role_name={this.state.roles["role_name"]}
 
@@ -222,16 +295,17 @@ class CompleteAssessmentTask extends Component {
 
                         form={{
                             "rubric": rubrics,
-                            "teams": (chosenCompleteAssessmentTask !== null ? singleTeam : teams),
-                            "users": users,
-                            "teamInfo": (chosenCompleteAssessmentTask !== null ? singleTeamData : initialTeamData)
+                            "units": (unitOfAssessment ? (role_name === "Student" ? singleTeam : teams) : 
+                                                         (role_name === "Student" ? singleUser : users)),
+                            "teams_users": teams_users,
+                            "unitInfo": role_name === "Student" ? singleUnitData : initialUnitData,
                         }}
 
                         formReference={this}
 
                         handleDone={this.handleDone}
 
-                        refreshTeams={this.refreshTeams}
+                        refreshUnits={this.refreshUnits}
 
                         completedAssessments={completedAssessments}
                     />

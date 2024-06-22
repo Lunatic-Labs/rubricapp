@@ -21,7 +21,9 @@ class StudentManageCurrentTeam extends Component {
     componentDidMount() {
         var courseId = this.props.navbar.state.chosenCourse["course_id"];
 
-        genericResourceGET(`/user?course_id=${courseId}`, "users", this);
+        genericResourceGET(
+            `/user?course_id=${courseId}`, 
+            "users", this);
     }
 
     render() {

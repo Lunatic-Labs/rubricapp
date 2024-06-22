@@ -37,7 +37,9 @@ class SelectTeam extends Component {
         if (course["use_fixed_teams"]) {
             let courseID = this.props.navbar.state.chosenCourse["course_id"];
 
-            genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
+            genericResourceGET(
+                `/team?course_id=${courseID}`, 
+                "teams", this);
         }
         else {
             let teams = [];
@@ -96,7 +98,7 @@ class SelectTeam extends Component {
                                             sx={{ mb: 3 }}
                                         >
                                             {teams.map((x) =>
-                                                <MenuItem value={x["team_id"]}>{x["team_name"]}</MenuItem>)
+                                                <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>

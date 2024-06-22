@@ -5,12 +5,11 @@ import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import RefreshIcon from '@mui/icons-material/Refresh';
-import TeamsTab from './TeamsTab.js';
+import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
-
 
 
 class Form extends Component {
@@ -20,17 +19,20 @@ class Form extends Component {
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
-            teamValue: this.props.form.teams[0]["team_id"],
-            currentTeamTab: this.props.form.teams[0]["team_id"],
-            teamData: this.props.form.teamInfo,
+            unitOfAssessment: this.props.unitOfAssessment,
+            unitValue: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
+                                                     this.props.form.units[0]["user_id"], 
+            currentUnitTab: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
+                                                          this.props.form.units[0]["user_id"], 
+            unitData: this.props.form.unitInfo,
             categoryList: null,
             section: null,
             displaySavedNotification: false
         }
 
-        this.handleTeamChange = (event, newValue) => {
+        this.handleUnitChange = (event, newValue) => {
             this.setState({
-                    teamValue: newValue,
+                    unitValue: newValue,
                     value: 0,
                     tabCurrentlySelected: 0
                 },
@@ -39,9 +41,9 @@ class Form extends Component {
             );
         };
 
-        this.handleTeamTabChange = (id) => {
+        this.handleUnitTabChange = (id) => {
             this.setState({
-                    currentTeamTab: id,
+                    currentUnitTab: id,
                     value: 0,
                     tabCurrentlySelected: 0
                 },
@@ -90,70 +92,70 @@ class Form extends Component {
             }
         }
 
-        this.setSliderValue = (teamValue, categoryName, rating) => {
-            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
+        this.setSliderValue = (unitValue, categoryName, rating) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
-                const updatedTeamData = this.deepClone(prevState.teamData);
+                const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedTeamData[teamValue][categoryName]["rating"] = rating;
+                updatedUnitData[unitValue][categoryName]["rating"] = rating;
 
-                return { teamData: updatedTeamData };
+                return { unitData: updatedUnitData };
             },
 
             this.generateCategoriesAndSection
             );
         };
 
-        this.setObservableCharacteristics = (teamValue, categoryName, observableCharacteristics) => {
-            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
+        this.setObservableCharacteristics = (unitValue, categoryName, observableCharacteristics) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
-                const updatedTeamData = this.deepClone(prevState.teamData);
+                const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedTeamData[teamValue][categoryName]["observable_characteristics"] = observableCharacteristics;
-
-                return { teamData: updatedTeamData };
+                updatedUnitData[unitValue][categoryName]["observable_characteristics"] = observableCharacteristics;
+                
+                return { unitData: updatedUnitData };
             },
 
             this.generateCategoriesAndSection
             );
         }
 
-        this.setSuggestions = (teamValue, categoryName, suggestions) => {
-            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
+        this.setSuggestions = (unitValue, categoryName, suggestions) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
-                const updatedTeamData = this.deepClone(prevState.teamData);
+                const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedTeamData[teamValue][categoryName]["suggestions"] = suggestions;
+                updatedUnitData[unitValue][categoryName]["suggestions"] = suggestions;
 
-                return { teamData: updatedTeamData };
+                return { unitData: updatedUnitData };
             },
 
             this.generateCategoriesAndSection
             );
         }
 
-        this.setComments = (teamValue, categoryName, comments) => {
-            if(this.isTeamCompleteAssessmentComplete(teamValue) && !this.props.navbar.props.isAdmin) return;
+        this.setComments = (unitValue, categoryName, comments) => {
+            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
-                const updatedTeamData = this.deepClone(prevState.teamData);
+                const updatedUnitData = this.deepClone(prevState.unitData);
 
-                updatedTeamData[teamValue][categoryName]["comments"] = comments;
+                updatedUnitData[unitValue][categoryName]["comments"] = comments;
 
-                return { teamData: updatedTeamData };
+                return { unitData: updatedUnitData };
             },
 
             this.generateCategoriesAndSection
             );
         }
 
-        this.isCategoryComplete = (teamId, categoryName) => {
-            var team = this.state.teamData[teamId];
+        this.isCategoryComplete = (unitValue, categoryName) => {
+            var unit = this.state.unitData[unitValue];
 
-            var category = team[categoryName];
+            var category = unit[categoryName];
 
             var observableCharacteristic = category["observable_characteristics"].includes("1");
 
@@ -171,15 +173,16 @@ class Form extends Component {
             return status;
         }
 
-        this.isTeamCompleteAssessmentComplete = (teamId) => {
-            return this.state.teamData[teamId]["done"];
+        this.isUnitCompleteAssessmentComplete = (unitValue) => {
+
+            return this.state.unitData[unitValue]["done"];
         }
 
-        this.findCompletedAssessmentTask = (chosenAssessmentTask, currentTeamTab, completedAssessments) => {
+        this.findCompletedAssessmentTask = (chosenAssessmentTask, currentUnitTab, completedAssessments) => {
             let foundItem = null;
 
             completedAssessments.forEach(obj => {
-                if (obj["assessment_task_id"] === chosenAssessmentTask && obj["team_id"] === currentTeamTab) {
+                if (obj["assessment_task_id"] === chosenAssessmentTask && obj["team_id"] === currentUnitTab) {
                     foundItem = obj;
                 }
             });
@@ -201,7 +204,7 @@ class Form extends Component {
                             <span>{category}</span>
 
                             <StatusIndicator
-                                status={this.isCategoryComplete(this.state.currentTeamTab, category)}
+                                status={this.isCategoryComplete(this.state.currentUnitTab, category)}
                             />
                         </Box>
                     }
@@ -222,11 +225,11 @@ class Form extends Component {
                     section.push(
                         <Section
                             navbar={this.props.navbar}
-                            isDone={this.isTeamCompleteAssessmentComplete(this.state.teamValue)}
+                            isDone={this.isUnitCompleteAssessmentComplete(this.state.unitValue)}
                             category={category}
                             rubric={this.props.form.rubric}
-                            teamValue={this.state.teamValue}
-                            currentData={this.state.teamData[this.state.teamValue]}
+                            unitValue={this.state.unitValue}
+                            currentData={this.state.unitData[this.state.unitValue]}
                             active={this.state.tabCurrentlySelected===index}
                             key={index}
                             setSliderValue={this.setSliderValue}
@@ -236,7 +239,7 @@ class Form extends Component {
                             setComments={this.setComments}
                             handleSaveForLater={this.handleSaveForLater}
                             handleSubmit={this.handleSubmit}
-                            isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
+                            isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
                         />
                     );
                 }
@@ -260,9 +263,9 @@ class Form extends Component {
 
         var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
 
-        var currentTeamTab = this.state.currentTeamTab;
+        var currentUnitTab = this.state.currentUnitTab;
 
-        var selected = this.state.teamData[currentTeamTab];
+        var selected = this.state.unitData[currentUnitTab];
 
         var date = new Date();
 
@@ -281,33 +284,46 @@ class Form extends Component {
 
         } else {
             var cookies = new Cookies();
+            var route="";
+            if(chosenCompleteAssessmentTask && this.props.userRole) {
+                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTab, this.props.completedAssessments);
 
-            var completedAssessment = null;
-
-            var completedAssessmentId = "";
-
-            if(navbar.props.isAdmin) {
-                completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentTeamTab, this.props.completedAssessments);
-
-                if(completedAssessment) {
-                    completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
+                var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
+                
+                route = `/completed_assessment${completedAssessmentId}`
+            } else {
+                if (this.state.unitOfAssessment) {
+                    route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                } else {
+                    route = `/completed_assessment?uid=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 }
             }
-
-            var route = navbar.props.isAdmin ? `/completed_assessment${completedAssessmentId}` :
-            `/completed_assessment?team_id=${currentTeamTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
-
-            var assessmentData = {
-                "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                "rating_observable_characteristics_suggestions_data": selected,
-                "user_id": cookies.get("user")["user_id"],
-                "team_id": currentTeamTab,
-                "initial_time": date,
-                "last_update": date,
-                done: done,
-            };
-
-            if (navbar.props.isAdmin) {
+            var assessmentData = {};
+            if (this.state.unitOfAssessment) { 
+                assessmentData = {
+                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+                    "rating_observable_characteristics_suggestions_data": selected,
+                    "completed_by": cookies.get("user")["user_id"],
+                    "team_id": currentUnitTab,
+                    "user_id": -1,        // team assessment has no user.
+                    "initial_time": date,
+                    "last_update": date,
+                    done: done,
+                };
+            } else { 
+                assessmentData = {
+                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
+                    "rating_observable_characteristics_suggestions_data": selected,
+                    "completed_by": cookies.get("user")["user_id"],
+                    "team_id": -1,          // individual assessment has no team.
+                    "user_id": currentUnitTab,
+                    "initial_time": date,
+                    "last_update": date,
+                    done: done,
+                };
+            }  
+ 
+            if (chosenCompleteAssessmentTask && this.props.userRole) {
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {
@@ -337,17 +353,17 @@ class Form extends Component {
     componentDidUpdate() {
         var rerender = false;
 
-        Object.keys(this.props.form.teamInfo).map((teamId) => {
-            if(this.props.form.teamInfo[teamId]["done"] !== this.state.teamData[teamId]["done"]) {
+        Object.keys(this.props.form.unitInfo).map((unitValue) => {
+            if(this.props.form.unitInfo[unitValue]["done"] !== this.state.unitData[unitValue]["done"]) {
                 rerender = true;
             }
 
-            return teamId;
+            return unitValue;
         });
 
         if(rerender) {
             this.setState(
-                { teamData: this.props.form.teamInfo },
+                { unitData: this.props.form.unitInfo },
                 this.generateCategoriesAndSection
             );
         }
@@ -355,12 +371,12 @@ class Form extends Component {
 
     render() {
         return (
-            <Box sx={{mt:2}} id="formDiv" className="assessment-task-spacing">
+            <Box sx={{mt:1}} id="formDiv" className="assessment-task-spacing">
                 <Box sx={{
                     display:"flex",
                     justifyContent:"end",
                     gap:"20px",
-                    height: "2.5rem"
+                    height: "1.5rem"
                 }}>
                     { this.state.displaySavedNotification &&
                         <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
@@ -373,7 +389,7 @@ class Form extends Component {
                         arialabel="refreshButton"
 
                         onClick={() => {
-                            this.props.refreshTeams();
+                            this.props.refreshUnits();
                         }}
                         aria-label="refreshButton"
                     >
@@ -399,23 +415,24 @@ class Form extends Component {
                 <Box>
                     {this.props.role_name !== "Student" &&
                         <Box sx={{pb: 1}} className="content-spacing">
-                            <TeamsTab
+                            <UnitOfAssessmentTab
                                 navbar={this.props.navbar}
-                                currentTeamTab={this.state.currentTeamTab}
-                                teamValue={this.state.teamValue}
+                                currentUnitTab={this.state.currentUnitTab}
+                                unitValue={this.state.unitValue}
+                                unitOfAssessment={this.state.unitOfAssessment}
                                 checkin={this.props.checkin}
                                 form={this.props.form}
-                                handleTeamChange={this.handleTeamChange}
-                                handleTeamTabChange={this.handleTeamTabChange}
-                                isTeamCompleteAssessmentComplete={this.isTeamCompleteAssessmentComplete}
+                                handleUnitChange={this.handleUnitChange}
+                                handleUnitTabChange={this.handleUnitTabChange}
+                                isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
                             />
                         </Box>
                     }
 
-                    <Box sx={{mt: 2}}>
+                    <Box sx={{mt: 1}}>
                         <Tabs
                             value={this.state.value} 
-
+                        
                             onChange={(event, newValue) => {
                                 this.handleChange(event, newValue);
                                 this.handleCategoryChange(newValue);

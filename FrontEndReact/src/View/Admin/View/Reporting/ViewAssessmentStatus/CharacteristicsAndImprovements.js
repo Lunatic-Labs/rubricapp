@@ -30,15 +30,15 @@ export default function CharacteristicsAndImprovements(props) {
         <BarChart
           layout='vertical'
           data={tabId === 0 ? props.characteristicsData["characteristics"] : props.improvementsData["improvements"]}
-          width={750}
-          height={250}
+          width={675}
+          height={375}
           aria-label={tabId === 0 ? "barChartCharacteristicsData" : "barChartImprovementsData"}
         >
           <XAxis type='number' domain={[0, 'auto']}/>
 
           <YAxis
             width={350}
-            style={{fontSize: '0.8rem'}}
+            style={{fontSize: '.9rem'}}
             type='category'
             dataKey={tabId === 0 ? "characteristic" : "improvement"}
           />

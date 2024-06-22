@@ -6,7 +6,7 @@ const CustomButton = ({ label, onClick, style, isOutlined, position }) => {
   const defaultStyle = {
     backgroundColor: isOutlined ? 'white' : '#2E8BEF',
     color: isOutlined ? '#2E8BEF' : 'white',
-    margin: '10px 5px 5px 0',
+    margin: '5px 2.5px 2.5px 0',
     position,
 		border: isOutlined ? '1px solid #2E8BEF' : 'none',
   };

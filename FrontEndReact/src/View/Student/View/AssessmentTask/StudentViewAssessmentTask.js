@@ -28,14 +28,38 @@ class StudentViewAssessmentTask extends Component {
 
         var chosenCourseID = state.chosenCourse["course_id"];
 
-        genericResourceGET(`/assessment_task?course_id=${chosenCourseID}&role_id=${this.props.role["role_id"]}`, "assessmentTasks", this);
+        var userRole = this.props.role["role_id"];
 
-        genericResourceGET(`/checkin?course_id=${chosenCourseID}`, "checkin", this);
+        if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student
+ 
+            genericResourceGET(
+                `/assessment_task?course_id=${chosenCourseID}`, 
+                "assessmentTasks", this);
 
-        genericResourceGET(`/rubric?all=${true}`, "rubrics", this);
+            genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourseID}`, 
+                "completedAssessments", this);
+        } else {            // If the user is a TA, this returns assessments completed by the TA
+            genericResourceGET(
+                `/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                "assessmentTasks", this);
 
-        genericResourceGET(`/completed_assessment?course_id=${chosenCourseID}`, "completedAssessments", this);
-    }
+                genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                "completedAssessments", this);
+        }
+
+        genericResourceGET(
+            `/checkin?course_id=${chosenCourseID}`, 
+            "checkin", this);
+
+        genericResourceGET(
+            `/rubric?all=${true}`, "rubrics", this);
+
+        genericResourceGET(
+            `/course?course_id=${chosenCourseID}`, 
+            "counts", this);
+        }
 
     render() {
         const {
@@ -45,6 +69,7 @@ class StudentViewAssessmentTask extends Component {
             completedAssessments,
             checkin,
             rubrics,
+            counts
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -61,12 +86,13 @@ class StudentViewAssessmentTask extends Component {
                 </div>
             )
 
-        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics) {
+        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics || !counts) {
             return(
                 <Loading />
             )
 
         } else {
+
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
@@ -76,6 +102,7 @@ class StudentViewAssessmentTask extends Component {
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
+                        counts={counts}
                     />
                 </div>
             )

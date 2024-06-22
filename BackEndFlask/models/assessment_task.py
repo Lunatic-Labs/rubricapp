@@ -80,7 +80,7 @@ def create_assessment_task(assessment_task):
 
 def load_demo_admin_assessment_task():
     list_of_assessment_tasks = [
-        {
+        {    # Assessment Task 1
             "assessment_task_name": "Critical Thinking Assessment",
             "comment": "An example comment",
             "create_team_password": "at_cta",
@@ -93,7 +93,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False
         },
-        {
+        {    # Assessment Task 2
             "assessment_task_name": "Formal Communication Assessment",
             "comment": None,
             "create_team_password": "at_fca",
@@ -106,7 +106,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False
         },
-        {
+        {      # Assessment Task 3
             "assessment_task_name": "Information Processing Assessment",
             "comment": None,
             "create_team_password": "at_ipa",
@@ -119,7 +119,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 4
             "assessment_task_name": "Interpersonal Communication",
             "comment": None,
             "create_team_password": "at_ic",
@@ -132,7 +132,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 5
             "assessment_task_name": "Management Assessment",
             "comment": None,
             "create_team_password": "at_ma",
@@ -145,7 +145,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": True
         },
-        {
+        {   # Assessment Task 6
             "assessment_task_name": "Problem Solving Assessment",
             "comment": None,
             "create_team_password": "at_psa",
@@ -158,7 +158,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 7
             "assessment_task_name": "Teamwork Assessment",
             "comment": None,
             "create_team_password": "at_ta",
@@ -171,7 +171,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": True
         },
-        {
+        {   # Assessment Task 8
             "assessment_task_name": "Critical Thinking Assessment 2",
             "comment": "sadfasdfasdfasdfasdfasdfasdfasdfasdf",
             "create_team_password": "",
@@ -184,7 +184,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "CST",
             "unit_of_assessment": True
         },
-        {
+        {   # Assessment Task 9
             "assessment_task_name": "AAAAAAAAAAAA",
             "comment": "t",
             "create_team_password": "",
@@ -197,7 +197,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": True
         },
-        {
+        {  # Assessment Task 10
             "assessment_task_name": "CCCCCCCCCCCCC",
             "comment": "asdasdassdasdasd",
             "create_team_password": "",
@@ -210,7 +210,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": True
         },
-        {
+        {   # Assessment Task 11
             "assessment_task_name": "DDDDDDDDDDDDDD",
             "comment": "s",
             "create_team_password": "",
@@ -223,7 +223,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": True
         },
-        {
+        {   # Assessment Task 12
             "assessment_task_name": "Student 1",
             "comment": "Henry",
             "create_team_password": "",
@@ -236,7 +236,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 13
             "assessment_task_name": "Student 2 Individ",
             "comment": "asdfasdfasdf",
             "create_team_password": "",
@@ -249,7 +249,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 14
             "assessment_task_name": "UI 1",
             "comment": "sdfgsdfgsdfg",
             "create_team_password": "",
@@ -262,7 +262,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 15
             "assessment_task_name": "UI 2",
             "comment": "wertwertwertwertwert",
             "create_team_password": "asdf",
@@ -275,7 +275,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 16
             "assessment_task_name": "Calc 1",
             "comment": "xcvbxcvbxcvbxcvbxcvb",
             "create_team_password": "",
@@ -288,7 +288,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 17
             "assessment_task_name": "Calc 2",
             "comment": "vbmvbmvbnm",
             "create_team_password": "",
@@ -301,7 +301,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 18
             "assessment_task_name": "Phys 1",
             "comment": "tyiutyuityiu",
             "create_team_password": "",
@@ -314,7 +314,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "MST",
             "unit_of_assessment": False
         },
-        {
+        {   # Assessment Task 19
             "assessment_task_name": "Phys 2",
             "comment": "zxcvzxcvzxcv",
             "create_team_password": "",

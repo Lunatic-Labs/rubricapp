@@ -13,7 +13,7 @@ import CourseInfo from "../../../Components/CourseInfo";
 
 
 
-class ViewCompleteAssessmentTasks extends Component {
+class ViewCompleteIndividualAssessmentTasks extends Component {
   constructor(props) {
     super(props);
 
@@ -107,7 +107,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
           customBodyRender: () => {
             return (
-              <p className="mt-3" variant="contained" align="left">
+              <p variant="contained" align="left">
                 {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
               </p>
             );
@@ -115,30 +115,30 @@ class ViewCompleteAssessmentTasks extends Component {
         },
       },
       {
-        name: "team_name",
-        label: "Team Name",
+        name: "last_name",
+        label: "Student Name",
         options: {
           filter: true,
 
-          customBodyRender: (team_name) => {
+          customBodyRender: (last_name) => {
             return (
-              <p className="mt-3" variant="contained" align="left">
-                {team_name ? team_name : "N/A"}
+              <p variant="contained" align="left">
+                {last_name ? last_name : "N/A"}
               </p>
             );
           },
         },
       },
       {
-        name: "user_id",
+        name: "completed_by",
         label: "Assessor",
         options: {
           filter: true,
 
-          customBodyRender: (userId) => {
+          customBodyRender: (completed_by) => {
             return (
-              <p className="mt-3" variant="contained" align="left">
-                {userNames && userId ? userNames[userId] : "N/A"}
+              <p variant="contained" align="left">
+                {userNames && completed_by ? userNames[completed_by] : "N/A"}
               </p>
             );
           },
@@ -175,7 +175,7 @@ class ViewCompleteAssessmentTasks extends Component {
             var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
 
             return (
-              <p className="mt-3" variant="contained" align="left">
+              <p variant="contained" align="left">
                 {dueDate && initialTimeString ? initialTimeString : "N/A"}
               </p>
             );
@@ -213,7 +213,7 @@ class ViewCompleteAssessmentTasks extends Component {
             var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
 
             return(
-              <p className='mt-3' variant='contained' align='left' >
+              <p  variant='contained' align='left' >
                 {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
               </p>
             )
@@ -248,7 +248,7 @@ class ViewCompleteAssessmentTasks extends Component {
 
             } else {
               return(
-                <p className='mt-3' variant='contained' align='center' > {"N/A"} </p>
+                <p variant='contained' align='center' > {"N/A"} </p>
               )
             }
           }
@@ -313,4 +313,4 @@ class ViewCompleteAssessmentTasks extends Component {
   }
 }
 
-export default ViewCompleteAssessmentTasks;
+export default ViewCompleteIndividualAssessmentTasks;
