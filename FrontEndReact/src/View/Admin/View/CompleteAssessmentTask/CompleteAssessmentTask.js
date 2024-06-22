@@ -184,13 +184,15 @@ console.log("userId", this.userId)
                 <Loading />
             );
 
-        } else if (roles["role_name"] !== "Student" && this.state.teams_users === null) {
+        } 
+        var role_name=roles["role_name"]
+        //console.log("role_name", role_name, this.state.unitOfAssessment, teams_users)
+        if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
             return (
                 <Loading />
             );  
         } else {
             var navbar = this.props.navbar;
-            var role_name=roles["role_name"]
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
             var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
