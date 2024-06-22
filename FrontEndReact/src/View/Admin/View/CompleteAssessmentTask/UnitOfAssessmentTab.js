@@ -13,7 +13,7 @@ import StatusIndicator from './StatusIndicator.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
-console.log("UnitOfAssessmentTab.js, this.props: ", this.props);
+
         var units = this.props.form.units;
 
         var unitList = []
@@ -28,7 +28,7 @@ console.log("UnitOfAssessmentTab.js, this.props: ", this.props);
                 var unitName = currentUnit["team_name"];
                 var unitId = currentUnit["team_id"];
                 var unitMembers = this.props.form.teams_users[unitId];
-                console.log("teams_users",this.props.form.teams_users[unitId][i],"unitMembers: ", unitMembers);
+                console.log("teams_users",this.props.form.teams_users[unitId],"unitMembers: ", unitMembers);
 
                 for(var index = 0; index < unitMembers.length; index++){
                     for (ci = 0; ci < checkin.length; ci++) {
@@ -70,7 +70,7 @@ console.log("UnitOfAssessmentTab.js, this.props: ", this.props);
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={this.props.form.unitInfo[i].done}
+                                status={this.props.form.unitInfo.done}
                             />
                         </Box>
                     }

@@ -248,16 +248,16 @@ console.log("userId", this.userId)
                 if (this.state.unitOfAssessment) { 
 
                     Object.keys(teams).forEach((teamId) => {
-                        console.log("teamId: ", teams[teamId].team_id)
-                        var complete = this.getCompleteTeam(teams[teamId].team_id);
+                        var t_id = teams[teamId].team_id;
+                        var complete = this.getCompleteTeam(t_id);
                         if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
                                                 this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
                             complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
 
-                            initialUnitData[teamId] = complete["rating_observable_characteristics_suggestions_data"];
+                            initialUnitData[t_id] = complete["rating_observable_characteristics_suggestions_data"];
 
                         } else {
-                            initialUnitData[teamId] = json;
+                            initialUnitData[t_id] = json;
                         }
                         return initialUnitData;
                     });
