@@ -43,9 +43,8 @@ def get_all_courses():
             student_count = []
 
             student_count.append(get_user_course_student_count_by_course_id(course_id))
-            print(student_count)
+
             student_count.append(get_team_count_by_course_id(course_id))
-            print(student_count)
 
             return create_good_response(student_count, 200, "course_count")
 

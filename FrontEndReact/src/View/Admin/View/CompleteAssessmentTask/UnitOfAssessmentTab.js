@@ -28,7 +28,6 @@ class UnitOfAssessmentTab extends Component {
                 var unitName = currentUnit["team_name"];
                 var unitId = currentUnit["team_id"];
                 var unitMembers = this.props.form.teams_users[unitId];
-                console.log("teams_users",this.props.form.teams_users[unitId],"unitMembers: ", unitMembers);
 
                 for(var index = 0; index < unitMembers.length; index++){
                     for (ci = 0; ci < checkin.length; ci++) {

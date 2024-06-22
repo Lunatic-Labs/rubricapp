@@ -129,9 +129,8 @@ class AppState extends Component {
             if (completedAssessments) {
                completedAssessment = completedAssessments.filter(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId);
             }
-            console.log("completedAssessment", completedAssessment)
             const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
-          console.log("assessmentTask", assessmentTask)
+
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
@@ -178,16 +177,7 @@ class AppState extends Component {
         }
 
         this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
-            console.log("assessmentTask", assessmentTask)
-            /*
-            var newAssessmentTask = null;
 
-            for (var a = 0; a < assessmentTasks.length; a++) {
-                if (assessmentTasks[a]["assessment_task_id"] === assessmentTaskId) {
-                    newAssessmentTask = assessmentTasks[a];
-                }
-            }
-*/
             this.setState({
                 activeTab: "ViewComplete",
                 chosenAssessmentTask: assessmentTask,

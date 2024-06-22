@@ -15,7 +15,7 @@ import Alert from '@mui/material/Alert';
 class Form extends Component {
     constructor(props) {
         super(props);
-console.log("Form.js: ", this.props)
+
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
@@ -153,7 +153,6 @@ console.log("Form.js: ", this.props)
         }
 
         this.isCategoryComplete = (unitValue, categoryName) => {
-            console.log("unitValue: ", unitValue, "unit: ", this.state.unitData)
             var unit = this.state.unitData[unitValue];
 
             var category = unit[categoryName];

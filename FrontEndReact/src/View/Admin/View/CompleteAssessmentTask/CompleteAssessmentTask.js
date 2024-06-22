@@ -12,7 +12,7 @@ import Loading from '../../../Loading/Loading.js';
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
-console.log("CompleteAssessmentTask-props", props)
+
         this.state = {
             errorMessage: null,
             isLoaded: false,
@@ -46,27 +46,14 @@ console.log("CompleteAssessmentTask-props", props)
 
         this.getCompleteTeam = (teamId) => {
             var completedTeam = this.state.completedAssessments.find(completedAssessment => completedAssessment["team_id"] === teamId);
-            console.log("completedTeam: ", completedTeam, "teamId: ", teamId)
-/*            for (let index = 0; index < this.state.completedAssessments.length; index++) {
-                if (this.state.completedAssessments[index]["team_id"] === teamId) {
-                    return this.state.completedAssessments[index];
-                }
-            }
-*/
+            
             return completedTeam ? completedTeam : false;
         }
 
         this.getCompleteIndividual = (userId) => {
             var completedAssessment = this.state.completedAssessments.find(completedAssessment => completedAssessment["user_id"] === userId);
-            /* 
-            for (let index = 0; index < this.state.completedAssessments.length; index++) {
-                if (this.state.completedAssessments[index]["user_id"] === userId) {
-                    return this.state.completedAssessments[index];
-                }
-            }
-*/
+
             return completedAssessment ? completedAssessment : false;
-//            return false;
         }
 
         this.handleDone = () => {
@@ -97,7 +84,7 @@ console.log("CompleteAssessmentTask-props", props)
         if (prevState.rubrics === null && prevState.teams === null && prevState.teams_users === null) {
             if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
                 var teamIds = this.state.teams.map(team => team.team_id);
-    console.log("teamIds", teamIds)
+
                 genericResourceGET(
                     `/user?team_ids=${teamIds}`,
                     "teams_users", this
@@ -110,7 +97,7 @@ console.log("CompleteAssessmentTask-props", props)
         var navbar = this.props.navbar;
 
         var state = navbar.state;
-console.log("state", state)
+
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
         var chosenCourse = state.chosenCourse;
@@ -118,7 +105,7 @@ console.log("state", state)
         const cookies = new Cookies();
 
         this.userId = cookies.get('user')["user_id"];
-console.log("userId", this.userId)
+
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
             "rubrics", this
@@ -186,7 +173,6 @@ console.log("userId", this.userId)
 
         } 
         var role_name=roles["role_name"]
-        //console.log("role_name", role_name, this.state.unitOfAssessment, teams_users)
         if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
             return (
                 <Loading />
@@ -196,9 +182,7 @@ console.log("userId", this.userId)
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
             var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-            console.log("chosenCompleteAssessmentTask: ", chosenCompleteAssessmentTask,
-                        "chosenAssessmentTask: ", chosenAssessmentTask, "teams: ", teams, "users: ", users);
-
+   
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
             json["done"] = false;
@@ -224,7 +208,7 @@ console.log("userId", this.userId)
                     } 
   
                     if (this.state.unitOfAssessment)  { 
-                        console.log("assessment, team")
+
                         var teamId = chosenCompleteAssessmentTask["team_id"];
                         singleUnitData[teamId] = data; 
                         singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);
@@ -236,16 +220,12 @@ console.log("userId", this.userId)
                 } else {
                     // new student assessment
                     if (this.state.unitOfAssessment)  { 
-                        console.log("no assessment, team")
                         var teamId = team[0]["team_id"];
                         singleUnitData[teamId] = data;
                         singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);   
                     }  else {
-                        console.log("no assessment, individual")
                         singleUnitData[this.userId] = data; 
                         singleUser.push(users.filter(user => user["user_id"] === this.userId)[0]);
-                        console.log("singleUser: ", singleUser, 
-                        "singleUnitData: ", singleUnitData, "data: ", data, "userId: ", this.userId)
                     }
                 }
             } else {
