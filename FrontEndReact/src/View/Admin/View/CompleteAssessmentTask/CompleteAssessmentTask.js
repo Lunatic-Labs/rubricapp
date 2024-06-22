@@ -179,11 +179,15 @@ console.log("userId", this.userId)
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !completedAssessments|| !roles || !users || !teams || !teams_users) {
+        } else if (!isLoaded || !rubrics || !completedAssessments|| !roles || !users || !teams ) {
             return (
                 <Loading />
             );
 
+        } else if (roles["role_name"] !== "Student" && this.state.teams_users === null) {
+            return (
+                <Loading />
+            );  
         } else {
             var navbar = this.props.navbar;
             var role_name=roles["role_name"]
@@ -210,7 +214,7 @@ console.log("userId", this.userId)
                 var data = json;
                 // There is an existing assessment for this student
                 if (Object.keys(chosenCompleteAssessmentTask).length > 0) {
-                    var chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
+                    chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
                     data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
     
                     if (data && this.doRubricsForCompletedMatch(json, data)) {
@@ -259,7 +263,7 @@ console.log("userId", this.userId)
                         } else {
                             initialUnitData[t_id] = json;
                         }
-                        return initialUnitData;
+                        //return initialUnitData;
                     });
                 } else {
                     if (users === null || users.length === 0) {
@@ -282,7 +286,7 @@ console.log("userId", this.userId)
                             } else {
                                 initialUnitData[user["user_id"]] = json;
                             }
-                            return initialUnitData;
+                            //return initialUnitData;
                         });
                     }
                 }

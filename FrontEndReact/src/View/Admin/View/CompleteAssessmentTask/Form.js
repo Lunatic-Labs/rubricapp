@@ -153,6 +153,7 @@ console.log("Form.js: ", this.props)
         }
 
         this.isCategoryComplete = (unitValue, categoryName) => {
+            console.log("unitValue: ", unitValue, "unit: ", this.state.unitData)
             var unit = this.state.unitData[unitValue];
 
             var category = unit[categoryName];

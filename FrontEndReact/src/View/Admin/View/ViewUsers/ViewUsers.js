@@ -14,7 +14,6 @@ class ViewUsers extends Component{
     var users = adminViewUsers.users;
     var roleNames = adminViewUsers.roleNames;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
-    var denseTable = true;
 
     const columns = [
       {
@@ -113,7 +112,6 @@ class ViewUsers extends Component{
       responsive: "vertical",
       tableBodyMaxHeight: "50vh",
       //setRowProps: () => { return { padding: "none" } },
-      //setTableProps: () => { return { padding: denseTable ? "none" : "default" } }
     };
 
     return (
