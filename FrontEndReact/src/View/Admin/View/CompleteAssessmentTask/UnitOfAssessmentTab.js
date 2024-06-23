@@ -55,7 +55,7 @@ class UnitOfAssessmentTab extends Component {
                     }  
                 } 
             }
-
+//console.log("this.props.form", this.props.form)
             unitList.push(
                 <Tab
                     label={
@@ -69,7 +69,7 @@ class UnitOfAssessmentTab extends Component {
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={this.props.form.unitInfo.done}
+                                status={this.props.form.unitInfo[unitId].done}
                             />
                         </Box>
                     }

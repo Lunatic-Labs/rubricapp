@@ -65,7 +65,14 @@ class ViewAssessmentTasks extends Component {
 
         const role = this.props.role;
 
+        var chosenCAT = null;
+
+        if (role["role_id"] === 5) {
+            chosenCAT = this.props.completedAssessments;
+            console.log("chosenCAT inside if: ", chosenCAT)
+        }
         var assessmentTasks = this.props.assessmentTasks;
+        console.log("student VAT: ", role["role_id"], chosenCAT)
 
         const columns = [
             {
@@ -165,7 +172,7 @@ class ViewAssessmentTasks extends Component {
                                         this.areAllATsComplete(atId) === true
                                     }
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, this.props.completedAssessments);
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, chosenCAT);
                                     }}
 
                                     aria-label="completedAssessmentTasksButton"

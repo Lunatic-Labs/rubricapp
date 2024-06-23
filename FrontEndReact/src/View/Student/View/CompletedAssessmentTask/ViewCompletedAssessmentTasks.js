@@ -12,6 +12,7 @@ class ViewCompletedAssessmentTasks extends Component {
     var navbar = this.props.navbar;
 
     var completedAssessments = this.props.completedAssessments;
+    console.log("student VCAT: ", completedAssessments)
 
     var assessmentTasks = this.props.assessmentTasks;
 
@@ -70,7 +71,7 @@ class ViewCompletedAssessmentTasks extends Component {
                   <div>
                       <IconButton
                           onClick={() => {
-                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId, completedAssessments);
+                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                           }}
                           aria-label="completedAssessmentTasksViewIconButton"
                       >
