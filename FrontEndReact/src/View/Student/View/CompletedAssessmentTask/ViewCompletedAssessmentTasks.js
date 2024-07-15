@@ -12,6 +12,7 @@ class ViewCompletedAssessmentTasks extends Component {
     var navbar = this.props.navbar;
 
     var completedAssessments = this.props.completedAssessments;
+    console.log("student VCAT: ", completedAssessments)
 
     var assessmentTasks = this.props.assessmentTasks;
 

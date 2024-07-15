@@ -26,6 +26,7 @@ class CompleteAssessmentTask extends Component {
             checkin: null,
             userId: null
         }
+        console.log("CompleteAssessmentTask", this.props.navbar.state)
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
 
@@ -58,9 +59,12 @@ class CompleteAssessmentTask extends Component {
 
         this.handleDone = () => {
             var navbar = this.props.navbar;
-
-            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-
+            console.log(navbar.state.chosenAssessmentTask);
+            if (navbar.state.chosenCompleteAssessmentTask !== null) {   
+                var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
+            } else {
+                var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+            }
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
                 "completedAssessments", this
@@ -182,7 +186,7 @@ class CompleteAssessmentTask extends Component {
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
             var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-   
+   console.log("chosenCompleteAssessmentTask", chosenCompleteAssessmentTask)
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
             json["done"] = false;

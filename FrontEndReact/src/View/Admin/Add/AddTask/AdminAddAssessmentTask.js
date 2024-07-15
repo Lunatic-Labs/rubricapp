@@ -301,7 +301,7 @@ class AdminAddAssessmentTask extends Component {
                                         >
                                             <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
 
-                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
+                                            <FormControlLabel value={true} control={<Radio />} label="Team Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
                                         </RadioGroup>
                                     </FormControl>
 

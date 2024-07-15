@@ -42,17 +42,23 @@ class Form extends Component {
         };
 
         this.handleUnitTabChange = (id) => {
+            console.log("id", id)
+            var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], id, this.props.completedAssessments);
             this.setState({
                     currentUnitTab: id,
                     value: 0,
-                    tabCurrentlySelected: 0
+                    tabCurrentlySelected: 0,
+                    chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
                 },
-
-                this.generateCategoriesAndSection
+//TODO:  fix in the case that chosenCompleteAssessmentTask is null
+            this.generateCategoriesAndSection
             );
+            console.log("handleUnitTabChange chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
+
         };
 
         this.handleChange = (event, newValue) => {
+            console.log("newValue", newValue)
             this.setState({
                     value: newValue,
                 },
@@ -258,7 +264,7 @@ class Form extends Component {
         var navbar = this.props.navbar;
 
         var state = navbar.state;
-
+console.log("state", state)
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
         var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
@@ -268,14 +274,14 @@ class Form extends Component {
         var selected = this.state.unitData[currentUnitTab];
 
         var date = new Date();
-
+console.log("before the if chosenCompleteAssessmentTask", chosenCompleteAssessmentTask)
         if(chosenCompleteAssessmentTask) {
             chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
 
             chosenCompleteAssessmentTask["last_update"] = date;
 
             chosenCompleteAssessmentTask["done"] = done;
-
+console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
             genericResourcePUT(
                 `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
                 this,
@@ -322,11 +328,13 @@ class Form extends Component {
                     done: done,
                 };
             }  
- 
+ console.log("chosenCompleteAssessmentTask", chosenCompleteAssessmentTask, "userRole", this.props.userRole)
             if (chosenCompleteAssessmentTask && this.props.userRole) {
+                console.log("PUT")
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {
+                console.log("POST")
                 genericResourcePOST(route, this, JSON.stringify(assessmentData));
             }
         }
