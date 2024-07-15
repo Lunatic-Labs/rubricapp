@@ -26,6 +26,7 @@ class CompleteAssessmentTask extends Component {
             checkin: null,
             userId: null
         }
+        console.log("CompleteAssessmentTask", this.props.navbar.state)
         this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
 
@@ -58,7 +59,7 @@ class CompleteAssessmentTask extends Component {
 
         this.handleDone = () => {
             var navbar = this.props.navbar;
-            console.log(chosenAssessmentTask);
+            console.log(navbar.state.chosenAssessmentTask);
             if (navbar.state.chosenCompleteAssessmentTask !== null) {   
                 var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
             } else {
