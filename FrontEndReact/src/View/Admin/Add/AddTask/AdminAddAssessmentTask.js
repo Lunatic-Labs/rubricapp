@@ -227,6 +227,7 @@ class AdminAddAssessmentTask extends Component {
             ratings,
             usingTeams,
             editAssessmentTask,
+            numberOfTeams,
         } = this.state;
 
         return (
@@ -308,6 +309,7 @@ class AdminAddAssessmentTask extends Component {
                                     {usingTeams && !chosenCourse["use_fixed_teams"] &&
                                         <TextField
                                             id="numberOfTeams"
+                                            value={numberOfTeams}
                                             name="newPassword"
                                             variant='outlined'
                                             label="Number of teams"

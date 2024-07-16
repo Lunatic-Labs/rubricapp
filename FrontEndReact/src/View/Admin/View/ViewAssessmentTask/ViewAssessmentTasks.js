@@ -272,8 +272,9 @@ class ViewAssessmentTasks extends Component {
                                 <IconButton
                                     id=""
                                     onClick={() => {
+                                        console.log("VAT: ", assessmentTaskId, assessmentTasks)
                                         setCompleteAssessmentTaskTabWithID(
-                                            assessmentTasks[assessmentTaskId-1]
+                                            assessmentTasks, assessmentTaskId
                                         );
                                     }}
                                     aria-label='viewCompletedAssessmentIconButton'

@@ -176,7 +176,10 @@ class AppState extends Component {
             });
         }
 
-        this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
+        this.setCompleteAssessmentTaskTabWithID = (assessmentTasks, assessmentTaskId) => {
+            console.log(assessmentTasks)
+
+            const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
 
             this.setState({
                 activeTab: "ViewComplete",
