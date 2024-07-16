@@ -69,10 +69,8 @@ class ViewAssessmentTasks extends Component {
 
         if (role["role_id"] === 5) {
             chosenCAT = this.props.completedAssessments;
-            console.log("chosenCAT inside if: ", chosenCAT)
         }
         var assessmentTasks = this.props.assessmentTasks;
-        console.log("student VAT: ", role["role_id"], chosenCAT)
 
         const columns = [
             {

@@ -55,7 +55,6 @@ class UnitOfAssessmentTab extends Component {
                     }  
                 } 
             }
-//console.log("this.props.form", this.props.form)
             unitList.push(
                 <Tab
                     label={
