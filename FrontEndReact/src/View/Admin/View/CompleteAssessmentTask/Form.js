@@ -42,7 +42,6 @@ class Form extends Component {
         };
 
         this.handleUnitTabChange = (id) => {
-            console.log("id", id)
             var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], id, this.props.completedAssessments);
             this.setState({
                     currentUnitTab: id,
