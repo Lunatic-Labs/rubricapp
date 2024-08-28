@@ -302,7 +302,7 @@ def setup(num_of_tables, verbose):
 # When swapping off of mysql, for databases like postgres, the WAL will need testing.
 # Verbose will post all the actions that are being done along with what the database is doing.
 def testing():
-    num_of_tables = input("Number of expectd tables: ")
+    num_of_tables = input("Number of expected tables: ")
     while(not num_of_tables.strip().isnumeric()):
         num_of_tables = input("Please enter a valid number: ")
     num_of_tables = int(num_of_tables)
