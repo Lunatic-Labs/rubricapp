@@ -230,7 +230,7 @@ export function getDueDateString(dueDate) {
 
     let month = dueDate.getMonth() + 1;
 
-    let day = dueDate.getDay();
+    let day = dueDate.getDate();
 
     let hours = dueDate.getHours();
 
