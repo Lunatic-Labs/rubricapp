@@ -95,10 +95,10 @@ def start_server():
         exit_code = cmd("brew services start redis")
 
     else:
-        isactive = cmd("systemctl is-active redis-server.service > /dev/null")
+        isactive = cmd("sudo systemctl is-active redis-server.service > /dev/null")
 
         if isactive != 0:  # 0 = active
-            exit_code = cmd("systemctl start redis-server.service")
+            exit_code = cmd("sudo systemctl start redis-server.service")
 
             if exit_code != 0:
                 err(f"Failed to start redis server. Exit code: {exit_code}")
