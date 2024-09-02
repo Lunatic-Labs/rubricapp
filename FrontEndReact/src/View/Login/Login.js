@@ -255,7 +255,7 @@ class Login extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
-                                                onKeyPress={this.keyPress}
+                                                onKeyDown={this.keyPress}
                                                 aria-label="passwordInput"
                                                 InputProps={{
                                                     endAdornment: (
