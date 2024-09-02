@@ -208,7 +208,7 @@ class Login extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <form aria-label='loginForm'>
+                                    <form aria-label='loginForm' onKeyDown={this.keyPress}>
                                         <Typography variant="h6" component="div"
                                             sx={{
                                                 color: "#2E8BEF",
@@ -239,6 +239,7 @@ class Login extends Component {
                                                 helperText={errors.email}
                                                 value={email}
                                                 onChange={this.handleChange}
+                                                onKeyDown={this.keyPress}
                                                 aria-label="emailInput"
                                             />
 
