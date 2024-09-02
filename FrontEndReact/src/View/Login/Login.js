@@ -167,7 +167,7 @@ class Login extends Component {
         }
 
         this.keyPress = (e) => {
-            if (e.key == 'Enter') {
+            if (e.key == 13) {
                 this.login
             };
         }
