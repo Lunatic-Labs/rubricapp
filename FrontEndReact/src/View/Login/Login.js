@@ -165,6 +165,12 @@ class Login extends Component {
                 resettingPassword: null
             });
         }
+
+        this.keyPress = (e) => {
+            if (e.key == 'Enter') {
+                this.login
+            };
+        }
     }
 
     render() {
@@ -249,6 +255,7 @@ class Login extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
+                                                onKeyPress={this.keyPress}
                                                 aria-label="passwordInput"
                                                 InputProps={{
                                                     endAdornment: (
