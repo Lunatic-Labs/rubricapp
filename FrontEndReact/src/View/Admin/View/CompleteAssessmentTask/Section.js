@@ -17,6 +17,10 @@ class Section extends Component {
         var currentData = this.props.currentData;
 
         var category = this.props.category;
+        
+        const autosave = () => {
+            this.props.handleSubmit(true);
+        };
 
         var categoryJson = rubric["category_json"][category];
 
@@ -52,6 +56,7 @@ class Section extends Component {
                     id={index}
                     key={index}
                     isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                    autosave={autosave}
                 />
             );
 
@@ -72,6 +77,7 @@ class Section extends Component {
                     id={index}
                     key={index}
                     isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                    autosave={autosave}
                 />
             );
 
@@ -112,6 +118,7 @@ class Section extends Component {
                                     unitValue={this.props.unitValue}
                                     rating={rating}
                                     isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                                    autosave={autosave}
                                 />
                             </Box>
                         </Box>
@@ -144,6 +151,7 @@ class Section extends Component {
                                 currentData={currentData}
                                 categoryName={category}
                                 isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                                autosave={autosave}
                             />
                         </Box>
                     </FormControl> 
