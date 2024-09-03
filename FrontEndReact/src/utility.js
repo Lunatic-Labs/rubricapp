@@ -279,6 +279,16 @@ export function getHumanReadableDueDate(dueDate, timeZone) {
     return dueDateString;
 }
 
+export function debounce(func, wait) {
+    let timeoutId = null;
+    return (...args) => {
+        window.clearTimeout(timeoutId);
+        timeoutId = window.setTimeout(() => {
+        func(...args);
+        }, wait);
+   };
+}
+
 const modules = {
     genericResourceFetch
 };
