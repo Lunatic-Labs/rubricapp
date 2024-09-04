@@ -196,7 +196,7 @@ class AdminAddAssessmentTask extends Component {
 
         Object.keys(roleNames).map((role) => {
             if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
-                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} aria-label="addAssessmentRoleOption" />];
+                roleOptions = [...roleOptions, <FormControlLabel checked={roleNames[role] === "TA/Instructor"} value={role} control={<Radio />} label={roleNames[role]} key={role} aria-label="addAssessmentRoleOption" />];
             }
 
             return role;
