@@ -330,7 +330,6 @@ class AdminAddAssessmentTask extends Component {
                                             name="roleID"
                                             sx={{ mb: 2 }}
                                             onChange={(event) => this.handleSelect("roleId", event)}
-                                            
                                         >
                                             {roleOptions}
                                         </RadioGroup>
