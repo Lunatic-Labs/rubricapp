@@ -112,6 +112,8 @@ class Rating extends Component {
             this.setState({
               sliderValue: event.target.value
             });
+            
+            this.props.autosave();
           }}
 
           disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
