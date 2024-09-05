@@ -22,7 +22,7 @@ class AdminAddAssessmentTask extends Component {
             dueDate: new Date(),
             taskName: '',
             timeZone: '',
-            roleId: '',
+            roleId: '4',
             rubricId: '',
             password: '',
             notes: '',
@@ -195,13 +195,13 @@ class AdminAddAssessmentTask extends Component {
 
         var roleOptions = [];
 
-        // Object.keys(roleNames).map((role) => {
-        //     if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
-        //         roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} aria-label="addAssessmentRoleOption" />];
-        //     }
+        Object.keys(roleNames).map((role) => {
+            if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
+                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} aria-label="addAssessmentRoleOption" />];
+            }
 
-        //     return role;
-        // });
+            return role;
+        });
 
         var confirmCreateResource = navbar.confirmCreateResource;
 
@@ -332,9 +332,7 @@ class AdminAddAssessmentTask extends Component {
                                             sx={{ mb: 2 }}
                                             onChange={(event) => this.handleSelect("roleId", event)}
                                         >
-                                            <FormControlLabel value={4} control={<Radio />} label={"TA/Instructor"} key={4} aria-label="addAssessmentRoleOption" />
-
-                                            <FormControlLabel value={5} control={<Radio />} label={"Student"} key={5} aria-label="addAssessmentRoleOption" />
+                                            {roleOptions}
                                         </RadioGroup>
                                     </FormControl>
 
