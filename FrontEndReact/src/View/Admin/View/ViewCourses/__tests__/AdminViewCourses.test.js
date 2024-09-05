@@ -32,7 +32,7 @@ var rt = "rosterTitle";
 
 
 
-test("NOTE: Tests 2-7 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
