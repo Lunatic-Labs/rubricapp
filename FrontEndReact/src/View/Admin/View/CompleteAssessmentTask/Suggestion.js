@@ -38,6 +38,8 @@ class Suggestion extends Component {
         this.props.categoryName,
         newData
       );
+      
+      this.props.autosave();
     };
 
     return (

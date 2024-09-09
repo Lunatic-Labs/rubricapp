@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDateString } from '../../../../utility.js';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
+import { Box, Button, FormControl, Typography, IconButton, TextField, Tooltip, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
+import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 import FormHelperText from '@mui/material/FormHelperText';
 
 
@@ -31,6 +34,7 @@ class AdminAddAssessmentTask extends Component {
             ratings: true,
             usingTeams: false,
             completedAssessments: null,
+            isHelpOpen: false,
 
             errors: {
                 taskName: '',
@@ -41,7 +45,13 @@ class AdminAddAssessmentTask extends Component {
                 password: '',
                 notes: '',
             }
-        }
+        };
+
+        this.toggleHelp = () => {
+            this.setState({
+                isHelpOpen: !this.state.isHelpOpen,
+            });
+        };
     }
 
     componentDidUpdate() {
@@ -191,6 +201,7 @@ class AdminAddAssessmentTask extends Component {
         var roleNames = adminViewAssessmentTask.roleNames;
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
+        const { isHelpOpen } = this.state;
 
         var roleOptions = [];
 
@@ -266,11 +277,9 @@ class AdminAddAssessmentTask extends Component {
                                         sx={{ mb: 2 }}
                                         aria-label="addAssessmentTaskName"
                                     />
-
-                                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
+                                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
                                         <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }} error={!!errors.rubricId} required>
                                             <InputLabel required id="rubricId">Rubric</InputLabel>
-
                                             <Select
                                                 id="rubricId"
                                                 name="rubricID"
@@ -285,8 +294,19 @@ class AdminAddAssessmentTask extends Component {
                                             </Select>
                                             <FormHelperText>{errors.rubricId}</FormHelperText>
                                         </FormControl>
+                                        <div style={{padding: '3px'}}>
+                                            <Tooltip title="Help">
+                                                <IconButton aria-label="help" onClick={this.toggleHelp}>
+                                                    <HelpOutlineIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                        <ImageModal 
+                                            isOpen={isHelpOpen}
+                                            handleClose={this.toggleHelp}
+                                            imageUrl={RubricDescriptionsImage}
+                                        />
                                     </div>
-
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
 

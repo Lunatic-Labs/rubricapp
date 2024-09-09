@@ -23,6 +23,8 @@ class TextArea extends Component {
     this.setState({ textareaValue });
 
     setComments(unitValue, categoryName, textareaValue);
+    
+    this.props.autosave();
   };
   
   componentDidUpdate() {

@@ -279,6 +279,28 @@ export function getHumanReadableDueDate(dueDate, timeZone) {
     return dueDateString;
 }
 
+/**
+ * Accepts a function and returns another function. Calling the returned function
+ * will schedule func to be called after the wait time has elasped, and calling it
+ * again will reset wait time. This prevents func from being called more than once
+ * per wait time.
+ * 
+ * @param {function(...): void} func - The function.
+ * @param {number} wait - The wait time in milliseconds.
+ * @returns {function(...): void} The debounced function.
+ */
+export function debounce(func, wait) {
+    let timeoutId = null;
+    
+    return (...args) => {
+        window.clearTimeout(timeoutId);
+        
+        timeoutId = window.setTimeout(() => {
+            func(...args);
+        }, wait);
+   };
+}
+
 const modules = {
     genericResourceFetch
 };
