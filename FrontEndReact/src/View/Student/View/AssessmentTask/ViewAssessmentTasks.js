@@ -62,7 +62,6 @@ class ViewAssessmentTasks extends Component {
 
     render() {
         var navbar = this.props.navbar;
-console.log("studio/rubricapp/FrontEndReact/src/View/Student/View/AssessmentTask/ViewAssessmentTasks.js navbar: ", navbar)
 
         const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
 

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
-import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
+import { FormControl, MenuItem, InputLabel, Select, FormHelperText } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility.js';
 
 
@@ -12,18 +12,30 @@ class SelectTeam extends Component {
 
         this.state = {
             teams: null,
-            teamID: ""
+            teamID: "",
+            error: false,
+            errorMessage: ""
         };
 
         this.handleSelect = (event) => {
             this.setState({
                 teamID: event.target.value,
+                error: false,
+                errorMessage: ""
             })
         };
 
         this.checkInUser = () => {
             var navbar = this.props.navbar; 
 	        var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
+            
+            if (this.state.teamID === '') {
+                this.setState({
+                    error: true,
+                    errorMessage: "Please select a team"
+                });
+                return;
+            }
 
 	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {});
 
@@ -42,6 +54,7 @@ class SelectTeam extends Component {
                 "teams", this);
         }
         else {
+        // using Ad Hoc teams
             let teams = [];
             let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
 
@@ -51,15 +64,17 @@ class SelectTeam extends Component {
                     "team_name": `Team ${i}`
                 });
             }
-
+            
             this.setState({
                 teams: teams
             });
+
         }
     }
-
+    
     render() {
         var teams = this.state.teams;
+console.log("rubricapp/FrontEndReact/src/View/Student/View/SelectTeam/SelectTeam.js this.props.navbar.state: ", this.props.navbar.state);
 
         return (
             <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
@@ -101,6 +116,9 @@ class SelectTeam extends Component {
                                                 <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>
+                                        {this.state.errorMessage && ( // Show FormHelperText if errorMessage is not empty
+                                            <FormHelperText>{this.state.errorMessage}</FormHelperText>
+                                        )}
                                     </FormControl>
                                 </div>
                             </div>
