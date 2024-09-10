@@ -25,7 +25,7 @@ class AdminAddAssessmentTask extends Component {
             dueDate: new Date(),
             taskName: '',
             timeZone: '',
-            roleId: '',
+            roleId: '4', // 4 = TA/Instructor
             rubricId: '',
             password: '',
             notes: '',
@@ -110,6 +110,7 @@ class AdminAddAssessmentTask extends Component {
     handleSelect = (key, event) => {
         this.setState({
             [key]: event.target.value,
+            roleId: event.target.value,
         });
     };
 
