@@ -68,13 +68,11 @@ class SelectTeam extends Component {
             this.setState({
                 teams: teams
             });
-
         }
     }
     
     render() {
         var teams = this.state.teams;
-console.log("rubricapp/FrontEndReact/src/View/Student/View/SelectTeam/SelectTeam.js this.props.navbar.state: ", this.props.navbar.state);
 
         return (
             <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
