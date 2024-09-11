@@ -37,7 +37,7 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test("AdminViewCourses.test.js Test 1: should render Login Form component", () => {
+test("AdminViewCourses.test.js Test 1: Should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);

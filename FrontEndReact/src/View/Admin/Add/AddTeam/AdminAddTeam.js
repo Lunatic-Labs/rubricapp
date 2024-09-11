@@ -188,8 +188,11 @@ class AdminAddTeam extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing" aria-label="addTeamForm">
-                                <Typography id="addTeamTitle" variant="h5" aria-label="adminAddTeamTitle">
-                                    {this.state.editTeam ? "Edit Team" : "Add Team"}
+                                <Typography 
+                                id="addTeamTitle" 
+                                variant="h5" 
+                                aria-label={this.state.editTeam ? "editTeamTitle" : "addTeamTitle"}>
+                                {this.state.editTeam ? "Edit Team" : "Add Team"}
                                 </Typography>
 
                                 <Box className="form-input">
