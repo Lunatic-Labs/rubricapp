@@ -415,7 +415,7 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
 
                         disabled={this.state.displaySavedNotification}
                     >
-                        Save
+                        Done
                     </Button>
                 </Box>
 
