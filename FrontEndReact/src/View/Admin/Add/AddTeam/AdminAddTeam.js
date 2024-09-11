@@ -191,8 +191,8 @@ class AdminAddTeam extends Component {
                                 <Typography 
                                 id="addTeamTitle" 
                                 variant="h5" 
-                                aria-label={this.state.editTeam ? "editTeamTitle" : "addTeamTitle"}>
-                                {this.state.editTeam ? "Edit Team" : "Add Team"}
+                                aria-label={this.state.editTeam ? "adminEditTeamTitle" : "adminAddTeamTitle"}>
+                                    {this.state.editTeam ? "Edit Team" : "Add Team"}
                                 </Typography>
 
                                 <Box className="form-input">

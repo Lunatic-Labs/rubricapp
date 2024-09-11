@@ -28,7 +28,7 @@ var abut = "adminBulkUploadTitle";
 var aatb = "adminAddTeamButton";
 var aatt = "adminAddTeamTitle";
 var etib = "editTeamIconButton";
-var ett = "editTeamTitle";
+var aett = "adminEditTeamTitle";
 var vtib = "viewTeamsIconButton";
 var avtmt = "adminViewTeamMembersTitle";
 var lb = "loginButton";
@@ -170,7 +170,7 @@ test("AdminViewTeams.test.js Test 5: Should render the Edit Team Form given the 
 
     await waitFor(() => {
         setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ett);
+            expectElementWithAriaLabelToBeInDocument(aett);
         }, 3000);
     });
 });
