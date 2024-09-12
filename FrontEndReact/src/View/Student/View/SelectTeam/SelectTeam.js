@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
-import { FormControl, MenuItem, InputLabel, Select, FormHelperText } from '@mui/material';
+import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility.js';
 
 
@@ -64,13 +64,13 @@ class SelectTeam extends Component {
                     "team_name": `Team ${i}`
                 });
             }
-            
+
             this.setState({
                 teams: teams
             });
         }
     }
-    
+
     render() {
         var teams = this.state.teams;
 
@@ -114,9 +114,6 @@ class SelectTeam extends Component {
                                                 <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>
-                                        {this.state.errorMessage && ( // Show FormHelperText if errorMessage is not empty
-                                            <FormHelperText>{this.state.errorMessage}</FormHelperText>
-                                        )}
                                     </FormControl>
                                 </div>
                             </div>
