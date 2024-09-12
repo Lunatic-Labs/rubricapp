@@ -411,12 +411,15 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                         aria-label="saveButton"
 
                         onClick={() => {
-                            this.handleSubmit(true);
+                            const categories = Object.keys(this.props.form.rubric["category_json"]);
+                            const unitIsDone = categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category))
+                            
+                            this.handleSubmit(unitIsDone);
                         }}
 
                         disabled={this.state.displaySavedNotification}
                     >
-                        Save
+                        Done
                     </Button>
                 </Box>
 
