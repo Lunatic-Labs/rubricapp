@@ -244,10 +244,7 @@ class AdminAddUser extends Component {
                         <Box className="card-style">
                             <FormControl className="form-spacing" aria-label="addUserForm">
                                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
-                                    <Typography 
-                                    id="addCourseTitle" 
-                                    variant="h5" 
-                                    aria-label={this.state.editUser ? 'editUserTitle' : 'addUserTitle'}> 
+                                    <Typography id="addCourseTitle" variant="h5" aria-label={this.state.editUser ? 'editUserTitle' : 'addUserTitle'}> 
                                     {editUser ? "Edit User" : "Add User"} </Typography>
 
                                     { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
