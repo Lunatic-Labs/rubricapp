@@ -20,8 +20,7 @@ class SelectTeam extends Component {
         this.handleSelect = (event) => {
             this.setState({
                 teamID: event.target.value,
-                error: false,
-                errorMessage: ""
+                error: false
             })
         };
 
@@ -31,8 +30,7 @@ class SelectTeam extends Component {
             
             if (this.state.teamID === '') {
                 this.setState({
-                    error: true,
-                    errorMessage: "Please select a team"
+                    error: true
                 });
                 return;
             }
