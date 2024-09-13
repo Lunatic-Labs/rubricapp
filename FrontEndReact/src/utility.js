@@ -2,24 +2,16 @@ import { apiUrl } from './App.js';
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
-var timeToWait = 500;
-
 export function genericResourceGET(fetchURL, resource, component) {
-    setTimeout(() => {
-        genericResourceFetch(fetchURL, resource, component, "GET", null);
-    }, timeToWait);
+    genericResourceFetch(fetchURL, resource, component, "GET", null);
 }
 
 export function genericResourcePOST(fetchURL, component, body) {
-    setTimeout(() => {
-        genericResourceFetch(fetchURL, null, component, "POST", body);
-    }, timeToWait);
+    genericResourceFetch(fetchURL, null, component, "POST", body);
 }
 
 export function genericResourcePUT(fetchURL, component, body) {
-    setTimeout(() => {
-        genericResourceFetch(fetchURL, null, component, "PUT", body);
-    }, timeToWait);
+    genericResourceFetch(fetchURL, null, component, "PUT", body);
 }
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
