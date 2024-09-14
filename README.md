@@ -59,9 +59,10 @@ terminal:
       sudo mysql -u root
 
 - Next use these commands to create an account
-named skillbuilder and set the passowrd to
+named skillbuilder and set the password to
 "WasPogil1#"
 
+      CREATE DATABASE account;
       CREATE USER 'skillbuilder'@'localhost' IDENTIFIED BY 'WasPogil1#';
       GRANT ALL PRIVILEGES ON *.* TO 'skillbuilder'@'localhost';
       FLUSH PRIVILEGES;
