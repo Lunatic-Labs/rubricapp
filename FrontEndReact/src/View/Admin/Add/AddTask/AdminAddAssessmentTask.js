@@ -169,6 +169,7 @@ class AdminAddAssessmentTask extends Component {
                 "comment": notes,
                 "number_of_teams": numberOfTeams
             });
+            
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
                     "/assessment_task",
