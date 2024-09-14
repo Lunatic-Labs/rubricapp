@@ -1,0 +1,28 @@
+# Use Python 3.12 slim image as base
+FROM python:3.12-slim-bullseye
+
+# Install necessary dependencies
+RUN apt-get update && apt-get install -y cron
+
+# Set the working directory
+WORKDIR /app
+
+# Copy only requirements and setup scripts first to leverage Docker cache
+COPY BackEndFlask/requirements.txt BackEndFlask/setupEnv.py /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the backend code
+COPY BackEndFlask/ /app/
+
+# Initialize the Backend environment
+RUN python setupEnv.py -id
+
+# Expose the Backend port
+EXPOSE 5000
+
+# Start the Flask server
+CMD ["python", "setupEnv.py", "-s"]
+

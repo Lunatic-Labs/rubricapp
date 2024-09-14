@@ -85,35 +85,43 @@ def load_demo():
 
     log("Demo data loaded.")
 
+def is_docker():
+    path = '/proc/self/cgroup'
+    try:
+        with open(path, 'r') as f:
+            for line in f:
+                if 'docker' in line:
+                    return True
+        return os.path.exists('/.dockerenv')
+    except Exception:
+        return False
 
 def start_server():
     global SYSTEM
 
     log("Starting server...")
 
-    if SYSTEM == "Darwin":
-        exit_code = cmd("brew services start redis")
-
+    if is_docker():
+        log("Running inside Docker. Skipping Redis server start.")
     else:
-        isactive = cmd("systemctl is-active redis-server.service > /dev/null")
+        if SYSTEM == "Darwin":
+            exit_code = cmd("brew services start redis")
+        else:
+            isactive = cmd("systemctl is-active redis-server.service > /dev/null")
 
-        if isactive != 0:  # 0 = active
-            exit_code = cmd("systemctl start redis-server.service")
+            if isactive != 0:  # 0 = active
+                exit_code = cmd("systemctl start redis-server.service")
 
-            if exit_code != 0:
-                err(f"Failed to start redis server. Exit code: {exit_code}")
-
-                sys.exit(1)
+                if exit_code != 0:
+                    err(f"Failed to start redis server. Exit code: {exit_code}")
+                    sys.exit(1)
 
     exit_code = os.system("python3 run.py")
 
     if exit_code != 0 and exit_code != 2:
         err("python3 failed to run. Is it installed?")
-
         err(f"Process exited with exit code {exit_code}")
-
         sys.exit(1)
-
 
 def reset_db():
     log("Resetting database...")
