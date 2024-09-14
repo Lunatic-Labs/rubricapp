@@ -22,8 +22,38 @@ for analysis.
 
 ## Setting up and running with Docker and Docker Compose: ##
 
+- UPDATE: Using Docker and Docker Compose should become the sole
+  method for running this application locally as it solves
+  dependency issues across all platforms! Also makes developing
+  easier as there are now only two commands to worry about.
+
 - Follow the link for instructions on downloading Docker Desktop:
   https://www.docker.com/products/docker-desktop/
+
+- NOTE: If you have an intel chip with Windows OS, you will need
+  to go to the following link to install Docker Desktop:
+  https://docs.docker.com/desktop/install/windows-install/
+
+- NOTE: Make sure that there are no running frontend,
+  redis, or backend processes as there will be port
+  conflicts. To view if you have processes running
+  on important ports, run the following and expect
+  no output:
+
+      lsof -i :3000,5000,6379
+  
+  If output, there is a chance you still have processes
+  running and you need to use the following command to
+  kill them off:
+
+      kill <pid>
+  
+  There is a chance that your OS has an important process
+  running on one of these ports that should not be terminated.
+  In that case, change the port for conflicting processes in the
+  compose.yml file. Make sure that you also update changed
+  ports in the frontend or backend .env and anywhere else
+  needed!
 
   Step 1:
   After following the instructions, ensure you have Docker
@@ -47,6 +77,11 @@ for analysis.
   build run the following:
 
       docker compose build --no-cache
+
+  NOTE: To view all of the build logs instead of the default
+  summary run the following:
+
+      docker compose build --process=plain
 
   Step 5:
   Run the following command to run containers from the images:
