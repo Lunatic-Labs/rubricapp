@@ -37,6 +37,18 @@ with app.app_context():
         os.abort()
     print("[dbcreate] successfully created new db")
     time.sleep(sleep_time)
+    if (get_roles().__len__() == 0):
+        print("[dbcreate] attempting to load existing roles...")
+        time.sleep(sleep_time)
+        load_existing_roles()
+        print("[dbcreate] successfully loaded existing roles")
+        time.sleep(sleep_time)
+    if(get_users().__len__()==0):
+        print("[dbcreate] attempting to load SuperAdminUser...")
+        time.sleep(sleep_time)
+        load_SuperAdminUser()
+        print("[dbcreate] successfully loaded SuperAdminUser")
+        time.sleep(sleep_time)
     if(get_rubrics().__len__()==0):
         print("[dbcreate] attempting to load existing rubrics...")
         time.sleep(sleep_time)
@@ -60,18 +72,6 @@ with app.app_context():
         time.sleep(sleep_time)
         load_existing_suggestions()
         print("[dbcreate] successfully loaded existing suggestions")
-    if (get_roles().__len__() == 0):
-        print("[dbcreate] attempting to load existing roles...")
-        time.sleep(sleep_time)
-        load_existing_roles()
-        print("[dbcreate] successfully loaded existing roles")
-        time.sleep(sleep_time)
-    if(get_users().__len__()==0):
-        print("[dbcreate] attempting to load SuperAdminUser...")
-        time.sleep(sleep_time)
-        load_SuperAdminUser()
-        print("[dbcreate] successfully loaded SuperAdminUser")
-        time.sleep(sleep_time)
     if len(sys.argv) == 2 and sys.argv[1]=="demo":
         if(get_users().__len__()==1):
             print("[dbcreate] attempting to load demo Admin...")
@@ -129,17 +129,17 @@ with app.app_context():
             load_demo_admin_assessment_task()
             print("[dbcreate] successfully loaded demo AssessmentTask")
             time.sleep(sleep_time)
-        if(get_feedback().__len__()==0):
-            print("[dbcreate] attempting to load demo Feedback...")
-            time.sleep(sleep_time)
-            load_demo_feedback()
-            print("[dbcreate] successfully loaded demo Feedback")
-            time.sleep(sleep_time)
         if (get_completed_assessments().__len__() == 0):
             print("[dbcreate] attempting to load demo completed assessments...")
             time.sleep(sleep_time)
             load_demo_completed_assessment()
             print("[dbcreate] successfully loaded demo completed assessments")
+            time.sleep(sleep_time)
+        if(get_feedback().__len__()==0):
+            print("[dbcreate] attempting to load demo Feedback...")
+            time.sleep(sleep_time)
+            load_demo_feedback()
+            print("[dbcreate] successfully loaded demo Feedback")
             time.sleep(sleep_time)
 
     print("[dbcreate] exiting...")
