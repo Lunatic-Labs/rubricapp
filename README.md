@@ -42,6 +42,11 @@ for analysis.
   Run the following command to build the images:
 
       docker compose build
+  
+  NOTE: To rebuild with new changes applied and ignore cached
+  build run the following:
+
+      docker compose build --no-cache
 
   Step 5:
   Run the following command to run containers from the images:
