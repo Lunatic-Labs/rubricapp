@@ -218,7 +218,7 @@ export default function ViewAssessmentStatus(props) {
 
                 </div>
                 </Grid>
-          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 20px 0px 0px" }} item xs={6}>
+          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
             <div className={innerDivClassName} style={innerGridStyle} >
               <CharacteristicsAndImprovements
                 characteristicsData={characteristicsData}
