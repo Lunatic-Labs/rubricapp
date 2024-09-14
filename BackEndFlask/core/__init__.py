@@ -47,13 +47,9 @@ CORS(app)
 
 # Initialize JWT
 jwt = JWTManager(app)
+account_db_path = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
 
-# Database configuration
-account_db_path = os.path.join(os.getcwd(), "core", "account.db")
-if os.path.exists(account_db_path):
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///./account.db'
-else:
-    app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///../instance/account.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://skillbuilder:WasPogil1#@localhost/account'
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)

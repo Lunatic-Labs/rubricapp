@@ -24,6 +24,8 @@ for analysis.
 
 - Python 3.12 and up.
 
+- MySQL-Server.
+
 - Homebrew 4.2.18 and up.
 
 - Redis 7.2.4 and up.
@@ -44,6 +46,38 @@ NOTE:
 - WINDOWS DEVELOPERS ARE NO LONGER SUPPORTED.
 
 
+## Setting up the MySQL Environment: ##
+
+- Run the following command to install MySQL-Server
+on Linux:
+
+      sudo apt install mysql-server
+
+- Run the following command to open MySQL in the
+terminal:
+
+      sudo mysql -u root
+
+- Next use these commands to create an account
+named skillbuilder and set the passowrd to
+"WasPogil1#"
+
+      CREATE USER 'skillbuilder'@'localhost' IDENTIFIED BY 'WasPogil1#';
+      GRANT ALL PRIVILEGES ON *.* TO 'skillbuilder'@'localhost';
+      FLUSH PRIVILEGES;
+      exit;
+
+NOTE:
+
+- The password should be changed for deployment.
+
+- Once this is done, you can use: `setupEnv.py` as normal
+to create the database. If for any reason you want to
+access the database directly, run the following command:
+
+      mysql -u skillbuilder -p
+
+and then type the password.
 
 ## Installing requirements ##
 

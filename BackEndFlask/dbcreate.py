@@ -28,6 +28,7 @@ with app.app_context():
     print("[dbcreate] attempting to create new db...")
     time.sleep(sleep_time)
     try:
+        db.drop_all()
         db.create_all()
         start_redis()
     except Exception as e:
@@ -59,7 +60,7 @@ with app.app_context():
         time.sleep(sleep_time)
         load_existing_suggestions()
         print("[dbcreate] successfully loaded existing suggestions")
-    if(get_roles().__len__()==0):
+    if (get_roles().__len__() == 0):
         print("[dbcreate] attempting to load existing roles...")
         time.sleep(sleep_time)
         load_existing_roles()
