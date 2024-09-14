@@ -169,7 +169,6 @@ class AdminAddAssessmentTask extends Component {
                 "comment": notes,
                 "number_of_teams": numberOfTeams
             });
-console.log("rubricapp/FrontEndReact/src/View/Admin/Add/AddTask/AdminAddAssessmentTask.js this.state: ", this.state);
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
                     "/assessment_task",
