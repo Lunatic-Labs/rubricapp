@@ -20,6 +20,39 @@ for analysis.
 
 
 
+## Setting up and running with Docker and Docker Compose: ##
+
+- Follow the link for instructions on downloading Docker Desktop:
+  https://www.docker.com/products/docker-desktop/
+
+  Step 1:
+  After following the instructions, ensure you have Docker
+  Desktop open and running.
+
+  Step 2:
+  Open a new terminal and navigate to where you have this
+  repository cloned.
+
+  Step 3:
+  Run the following command to ensure you have docker running:
+
+      docker ps
+
+  Step 4:
+  Run the following command to build the images:
+
+      docker compose build
+
+  Step 5:
+  Run the following command to run containers from the images:
+
+      docker compose up
+
+  Step 6:
+  Open a browser with the link http://localhost:3000 to see the frontend.
+
+
+
 ## REQUIREMENTS: ##
 
 - Python 3.12 and up.
