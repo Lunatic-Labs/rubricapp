@@ -109,8 +109,7 @@ class AdminAddAssessmentTask extends Component {
 
     handleSelect = (key, event) => {
         this.setState({
-            [key]: event.target.value,
-            roleId: event.target.value,
+            [key]: event.target.value
         });
     };
 
@@ -170,7 +169,7 @@ class AdminAddAssessmentTask extends Component {
                 "comment": notes,
                 "number_of_teams": numberOfTeams
             });
-
+            
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
                     "/assessment_task",
