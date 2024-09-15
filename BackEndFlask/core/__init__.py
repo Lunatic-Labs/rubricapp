@@ -2,11 +2,13 @@ from flask_jwt_extended import JWTManager
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from models.tests import testing
+from dotenv import load_dotenv
 from flask import Flask
 from flask_cors import CORS
+import subprocess
+load_dotenv()
 import sys
 import os
-import subprocess
 import re
 
 def setup_cron_jobs():
@@ -62,7 +64,17 @@ CORS(app)
 jwt = JWTManager(app)
 account_db_path = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
 
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://skillbuilder:WasPogil1#@localhost/account'
+MYSQL_HOST=os.getenv('MYSQL_HOST')
+
+MYSQL_USER=os.getenv('MYSQL_USER')
+
+MYSQL_PASSWORD=os.getenv('MYSQL_PASSWORD')
+
+MYSQL_DATABASE=os.getenv('MYSQL_DATABASE')
+
+db_uri = (f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}")
+
+app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)

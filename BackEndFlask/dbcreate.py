@@ -28,7 +28,6 @@ with app.app_context():
     print("[dbcreate] attempting to create new db...")
     time.sleep(sleep_time)
     try:
-        db.drop_all()
         db.create_all()
         is_docker = os.getenv('DOCKER_BUILD', 'false').lower() == 'true'
         if not is_docker:
@@ -36,7 +35,7 @@ with app.app_context():
     except Exception as e:
         print(f"[dbcreate] an error ({e}) occured with db.create_all()")
         print("[dbcreate] exiting...")
-        os.abort()
+        raise e
     print("[dbcreate] successfully created new db")
     time.sleep(sleep_time)
     if (get_roles().__len__() == 0):
