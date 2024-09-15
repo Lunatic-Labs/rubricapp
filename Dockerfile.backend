@@ -9,7 +9,7 @@ ARG DOCKER_BUILD=true
 ENV DOCKER_BUILD=$DOCKER_BUILD
 
 # Install necessary dependencies
-RUN apt-get update && apt-get install -y cron nano
+RUN apt-get update
 
 # Set the working directory
 WORKDIR /app
