@@ -30,7 +30,9 @@ with app.app_context():
     try:
         db.drop_all()
         db.create_all()
-        start_redis()
+        is_docker = os.getenv('DOCKER_BUILD', 'false').lower() == 'true'
+        if not is_docker:
+            start_redis()
     except Exception as e:
         print(f"[dbcreate] an error ({e}) occured with db.create_all()")
         print("[dbcreate] exiting...")
