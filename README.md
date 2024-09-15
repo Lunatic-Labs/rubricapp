@@ -53,8 +53,18 @@ on Linux:
 
       sudo apt install mysql-server
 
-- Run the following command to open MySQL in the
-terminal:
+- Run the following command to install MySQL-Server
+on MacOS:
+
+      brew install mysql
+
+- Run the following command to start MySQL-Server
+on MacOS:
+
+      brew services start mysql
+
+- Run the following command to start MySQL-Server
+in a new terminal:
 
       sudo mysql -u root
 
