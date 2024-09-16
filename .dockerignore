@@ -1,0 +1,15 @@
+# OS
+**/*.DS_Store
+**/Thumbs.db
+
+# IDE
+**/.vscode
+**/*.idea
+**/*.iml
+
+# Backend
+**/__pycache__
+BackEndFlask/BackEndFlaskVenv
+
+# Frontend
+FrontEndReact/node_modules
