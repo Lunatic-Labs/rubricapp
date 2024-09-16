@@ -8,3 +8,4 @@ passwordResetLogger = Logger("passwordResetLogger", logfile="/BackEndFlask/logs/
 @app.route('/reset-password', methods=['POST'])
 def reset_password():
     email=request.form.get("email")
+    
