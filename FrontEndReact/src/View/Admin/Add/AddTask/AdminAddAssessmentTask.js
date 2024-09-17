@@ -25,7 +25,7 @@ class AdminAddAssessmentTask extends Component {
             dueDate: new Date(),
             taskName: '',
             timeZone: '',
-            roleId: '',
+            roleId: '4',
             rubricId: '',
             password: '',
             notes: '',
