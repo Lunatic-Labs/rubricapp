@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "5000:5000"
+      - "127.0.0.1:5050:5000"
     depends_on:
       - redis
     networks:
@@ -15,7 +15,7 @@ services:
   redis:
     image: redis:7.2.4
     ports:
-      - "6379:6379"
+      - "127.0.0.1:6379:6379"
     networks:
       - app-network
 
@@ -24,9 +24,13 @@ services:
       context: .
       dockerfile: Dockerfile.frontend
     ports:
-      - "3000:3000"
+      - "127.0.0.1:3000:3000"
+    volumes:
+      # Mount the source files inside the container to allow for React hot reloading to work
+      - "./FrontEndReact/src:/app/src:ro"
+      - "./FrontEndReact/public:/app/public:ro"
     environment:
-      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_API_URL=http://localhost:5050/api
     networks:
       - app-network
 
