@@ -155,7 +155,7 @@ export default function ViewAssessmentStatus(props) {
                         <BarChart width={500} height={300} data={ratingsData["ratings"]} barCategoryGap={0.5}>
                           <XAxis dataKey="rating"/>
                           <YAxis width={40} domain={[0, 'auto']}/>
-                          <CartesianGrid horizontal={false}/>
+                          <CartesianGrid vertical={false}/>
                           <Bar dataKey= "number" fill = "#2e8bef">
                             <LabelList dataKey="number" fill="#ffffff" position="inside"/>
                           </Bar>
