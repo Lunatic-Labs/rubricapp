@@ -68,6 +68,8 @@ export default function ViewAssessmentStatus(props) {
 
   var stdev = 0;
 
+  var progress = 43;
+
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
     for (var i = 0; i < props.completedAssessments.length; i++) {
@@ -203,12 +205,12 @@ export default function ViewAssessmentStatus(props) {
                           <u>Assessment Tasks Completed:</u>
                         </h3>
                         <div class="progress" style={{height: "35px", width:"100%", borderRadius:'50px',margin:'30px'}}>
-                          <div className={"progress-bar"} role={"progressbar"} style={{width: "43%", backgroundColor:'#2e8bef'}} 
-                          aria-valuenow={43} aria-valuemin={0} aria-valuemax={100}>
+                          <div className={"progress-bar"} role={"progressbar"} style={{width: '43%', backgroundColor:'#2e8bef'}} 
+                          aria-valuenow={{progress}} aria-valuemin={0} aria-valuemax={100}>
                             <h5>
                               <b style={{
                                 float: 'right', 
-                                padding:'10px 10px 0 0'}}>43%
+                                padding:'10px 10px 0 0'}}>{progress}
                               </b>
                             </h5>
                           </div>
@@ -220,20 +222,22 @@ export default function ViewAssessmentStatus(props) {
                 </Grid>
           <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
             <div className={innerDivClassName} style={innerGridStyle} >
-              <CharacteristicsAndImprovements
-                characteristicsData={characteristicsData}
-                improvementsData={improvementsData}
-                showSuggestions={props.showSuggestions}
-              />
+            <CharacteristicsAndImprovements 
+              dataType="characteristics"
+              characteristicsData={characteristicsData}
+              improvementsData={improvementsData}
+              showSuggestions={props.showSuggestions}
+            />
             </div>
           </Grid>
           <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
             <div className={innerDivClassName} style={innerGridStyle} >
-              <CharacteristicsAndImprovements
-                characteristicsData={characteristicsData}
-                improvementsData={improvementsData}
-                showSuggestions={props.showSuggestions}
-              />
+            <CharacteristicsAndImprovements 
+              dataType="improvements"
+              characteristicsData={characteristicsData}
+              improvementsData={improvementsData}
+              showSuggestions={props.showSuggestions}
+            />
             </div>
           </Grid>
         </Grid>
