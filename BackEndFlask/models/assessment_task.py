@@ -29,7 +29,7 @@ def validate_number_of_teams(number_of_teams):
             number = int(number_of_teams)
             if number <= 0:
                 raise InvalidNumberOfTeams()
-            except ValueError:
+        except ValueError:
                 raise InvalidNumberOfTeams()
 
 @error_log
