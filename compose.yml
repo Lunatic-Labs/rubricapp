@@ -25,6 +25,10 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "127.0.0.1:3000:3000"
+    volumes:
+      # Mount the source files inside the container to allow for React hot reloading to work
+      - "./FrontEndReact/src:/app/src:ro"
+      - "./FrontEndReact/public:/app/public:ro"
     environment:
       - REACT_APP_API_URL=http://localhost:5050/api
     networks:
