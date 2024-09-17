@@ -205,7 +205,7 @@ export default function ViewAssessmentStatus(props) {
                           <u>Assessment Tasks Completed:</u>
                         </h3>
                         <div class="progress" style={{height: "35px", width:"100%", borderRadius:'50px',margin:'30px'}}>
-                          <div className={"progress-bar"} role={"progressbar"} style={{width: '43%', backgroundColor:'#2e8bef'}} 
+                          <div className={"progress-bar"} role={"progressbar"} style={{width: `${progress}%`, backgroundColor:'#2e8bef'}} 
                           aria-valuenow={{progress}} aria-valuemin={0} aria-valuemax={100}>
                             <h5>
                               <b style={{
