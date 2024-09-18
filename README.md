@@ -40,7 +40,7 @@ for analysis.
   on important ports, run the following and expect
   no output:
 
-      lsof -i :3000,5000,6379
+      lsof -i :3000,5050,6379
   
   If output, there is a chance you still have processes
   running and you need to use the following command to
