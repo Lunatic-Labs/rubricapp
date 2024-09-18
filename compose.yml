@@ -50,7 +50,7 @@ services:
       MYSQL_USER: skillbuilder
       MYSQL_PASSWORD: WasPogil1#
     ports:
-      - "3306:3306"
+      - "5551:3306"
     volumes:
       - mysql-data:/var/lib/mysql
     networks:
