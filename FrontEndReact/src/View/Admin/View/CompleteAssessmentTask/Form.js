@@ -416,7 +416,6 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                             this.handleSubmit(unitIsDone);
                         }}
 
-                        disabled={this.state.displaySavedNotification}
                     >
                         Done
                     </Button>
