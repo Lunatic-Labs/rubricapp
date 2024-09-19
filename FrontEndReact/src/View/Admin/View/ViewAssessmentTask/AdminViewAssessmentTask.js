@@ -64,6 +64,7 @@ class AdminViewAssessmentTask extends Component {
             )
 
         } else if (!isLoaded || !assessmentTasks || !roles || !rubrics) {
+            console.log("Loading")
             return(
                 <Loading />
             )
