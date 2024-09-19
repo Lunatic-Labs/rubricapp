@@ -25,7 +25,7 @@ class AdminAddAssessmentTask extends Component {
             dueDate: new Date(),
             taskName: '',
             timeZone: '',
-            roleId: '4',
+            roleId: '4', // 4 = TA/Instructor
             rubricId: '',
             password: '',
             notes: '',
@@ -109,7 +109,7 @@ class AdminAddAssessmentTask extends Component {
 
     handleSelect = (key, event) => {
         this.setState({
-            [key]: event.target.value,
+            [key]: event.target.value
         });
     };
 
@@ -169,7 +169,7 @@ class AdminAddAssessmentTask extends Component {
                 "comment": notes,
                 "number_of_teams": numberOfTeams
             });
-
+            
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
                     "/assessment_task",

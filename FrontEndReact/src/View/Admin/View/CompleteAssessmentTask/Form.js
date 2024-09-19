@@ -164,11 +164,12 @@ class Form extends Component {
 
             var observableCharacteristic = category["observable_characteristics"].includes("1");
 
-            var suggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"] ? category["suggestions"].includes("1"): true;
+            const showSuggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
+            const suggestions = showSuggestions ? category["suggestions"].includes("1") : false;
 
             var status = null;
 
-            if(observableCharacteristic && suggestions) {
+            if (observableCharacteristic && (!showSuggestions || suggestions)) {
                 status = true;
 
             } else if (observableCharacteristic || suggestions) {
@@ -410,12 +411,15 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                         aria-label="saveButton"
 
                         onClick={() => {
-                            this.handleSubmit(true);
+                            const categories = Object.keys(this.props.form.rubric["category_json"]);
+                            const unitIsDone = categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category))
+                            
+                            this.handleSubmit(unitIsDone);
                         }}
 
                         disabled={this.state.displaySavedNotification}
                     >
-                        Save
+                        Done
                     </Button>
                 </Box>
 

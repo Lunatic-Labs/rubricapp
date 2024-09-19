@@ -12,18 +12,28 @@ class SelectTeam extends Component {
 
         this.state = {
             teams: null,
-            teamID: ""
+            teamID: "",
+            error: false,
+            errorMessage: ""
         };
 
         this.handleSelect = (event) => {
             this.setState({
                 teamID: event.target.value,
+                error: false
             })
         };
 
         this.checkInUser = () => {
             var navbar = this.props.navbar; 
 	        var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
+            
+            if (this.state.teamID === '') {
+                this.setState({
+                    error: true
+                });
+                return;
+            }
 
 	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {});
 
@@ -42,6 +52,7 @@ class SelectTeam extends Component {
                 "teams", this);
         }
         else {
+        // using Ad Hoc teams
             let teams = [];
             let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
 

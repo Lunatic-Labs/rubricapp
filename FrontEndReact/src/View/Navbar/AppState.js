@@ -157,6 +157,22 @@ class AppState extends Component {
             });
         }
 
+        this.setSelectCurrentTeam = (assessmentTasks, assessmentTaskId) => {
+            var assessmentTask = null;
+
+            for (var index = 0; index < assessmentTasks.length; index++) {
+                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
+                    assessmentTask = assessmentTasks[index];
+                }
+            }
+
+            this.setState({
+                activeTab: "SelectTeam",
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
+            });
+        }
+
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks, assessmentTaskId, course, roleNames, rubricNames) => {
             var newAssessmentTask = null;
 

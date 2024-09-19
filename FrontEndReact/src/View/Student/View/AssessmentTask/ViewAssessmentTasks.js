@@ -63,6 +63,8 @@ class ViewAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
 
+        const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
+
         const role = this.props.role;
 
         var chosenCAT = null;
@@ -145,7 +147,11 @@ class ViewAssessmentTasks extends Component {
                                         variant='contained'
 
                                         onClick={() => {
-                                            navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
+                                            if (!fixedTeams && navbar.state.team === null) {
+                                                navbar.setSelectCurrentTeam(assessmentTasks, atId)
+                                            } else {
+                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
+                                            }
                                         }}
                                     >
                                         {this.props.checkin.indexOf(atId) === -1 ? 'Check In' : 'Switch Teams'}
