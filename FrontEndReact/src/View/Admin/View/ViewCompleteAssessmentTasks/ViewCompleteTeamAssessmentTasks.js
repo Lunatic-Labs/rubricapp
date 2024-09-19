@@ -251,6 +251,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
               )
 
             } else {
+              console.log("This is view complete Team AT  in Admin and line 254")
               return(
                 <p variant='contained' align='center' > {"N/A"} </p>
               )
@@ -270,7 +271,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "21rem",
     };
-    console.log("This is view complete Team AT  in Admin and line 269")
+    console.log("This is view complete Team AT  in Admin and line 274")
     return (
       <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
         <Box className="content-spacing">

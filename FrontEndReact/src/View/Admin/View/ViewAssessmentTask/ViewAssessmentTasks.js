@@ -106,9 +106,10 @@ class ViewAssessmentTasks extends Component {
                 label: "Task Name",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"117px"}},
-                    setCellProps: () => { return { width:"117px"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 109"); return { width:"117px"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 110"); return { width:"117px"} },
                     customBodyRender: (assessmentTaskName) => {
+                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 112")
                         return(
                             <>
                                 {assessmentTaskName ? assessmentTaskName : "N/A"}
@@ -122,14 +123,14 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"160px"}},
-                    setCellProps: () => { return { width:"160px"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 126"); return { width:"160px"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 127"); return { width:"160px"} },
                     customBodyRender: (assessmentTaskId) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
                             //assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
-                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 132")
+                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 133")
                         return(
                             <>
                                 {assessmentTasksToDueDates[assessmentTaskId]["due_date"] && dueDateString ? dueDateString : "N/A"}
@@ -143,10 +144,10 @@ class ViewAssessmentTasks extends Component {
                 label: "Completed By",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"80px"}},
-                    setCellProps: () => { return { width:"80px"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 147"); return { width:"80px"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 148"); return { width:"80px"} },
                     customBodyRender: (roleId) => {
-                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 149")
+                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 150")
                         return (
                             <>
                                 {roleNames && roleId ? roleNames[roleId] : "N/A"}
@@ -160,10 +161,10 @@ class ViewAssessmentTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"117px"}},
-                    setCellProps: () => { return { width:"117px"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 164"); return { width:"117px"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 165"); return { width:"117px"} },
                     customBodyRender: (rubricId) => {
-                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 166")
+                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 167")
                         return (
                             <>
                                 {rubricNames && rubricId ? rubricNames[rubricId] : "N/A"}
@@ -211,10 +212,10 @@ class ViewAssessmentTasks extends Component {
                 label: "Team?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"80px"}},
-                    setCellProps: () => { return { width:"80px"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 215"); return { width:"80px"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 216"); return { width:"80px"} },
                     customBodyRender: (unitOfAssessment) => {
-                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 217")
+                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 218")
                         return(
                             <>
                                 {unitOfAssessment ? "Yes" : "No"}
@@ -229,11 +230,11 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 233"); return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 234"); return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
-                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 236")
+                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 237")
                             return (
                                 <IconButton
                                     id=""
@@ -253,7 +254,7 @@ class ViewAssessmentTasks extends Component {
                             )
 
                         } else {
-                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 256")
+                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 257")
                             return(
                                 <>
                                     {"N/A"}
@@ -269,11 +270,11 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 273"); return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 274"); return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
-                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 276")
+                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 277")
                             return(
                                 <IconButton
                                     id=""
@@ -289,7 +290,7 @@ class ViewAssessmentTasks extends Component {
                             )
 
                         } else {
-                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 292")
+                            console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 293")
                             return(
                                 <>
                                     {"N/A"}
@@ -305,10 +306,10 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 309"); return { align:"center", width:"80px", className:"button-column-alignment"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 310"); return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
-                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 311")
+                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 312")
                         return (
                             <Button
                                 className='primary-color'
@@ -333,10 +334,10 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 337"); return { align:"center", width:"80px", className:"button-column-alignment"}},
+                    setCellProps: () => {console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 338"); return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
-                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 362")
+                        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 340")
                         return (
                                 <Button
                                     id={"assessment_export_" + atId}
@@ -367,7 +368,7 @@ class ViewAssessmentTasks extends Component {
             responsive: "vertical",
             tableBodyMaxHeight: "50vh"
         };
-        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 370")
+        console.log("This is viewAssessmentTasks.js , the general one, its in admin folder and it is line 371")
         return(
             <>
                 <CustomDataTable
