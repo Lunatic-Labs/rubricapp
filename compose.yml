@@ -7,10 +7,17 @@ services:
       - "127.0.0.1:5050:5000"
     depends_on:
       - redis
+    volumes:
+      # Mount the source files inside the container to allow for Flask hot reloading to work
+      - "./BackEndFlask/Functions:/app/Functions:rw"
+      - "./BackEndFlask/controller:/app/controller:rw"
+      - "./BackEndFlask/core:/app/core:rw"
+      - "./BackEndFlask/models:/app/models:rw"
     networks:
       - app-network
     environment:
       - REDIS_HOST=redis
+      - FLASK_DEBUG=1
 
   redis:
     image: redis:7.2.4
