@@ -3,9 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
-import { Typography } from "@mui/material";
-
-
+import { Typography, Box } from "@mui/material";
 
 class ViewCourses extends Component {
   render() {
@@ -60,20 +58,6 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"7%" } },
           setCellProps: () => { return { width:"7%" } },
-        }
-      },
-      {
-        name: "active",
-        label: "Active",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"8%" } },
-          setCellProps: () => { return { width:"8%" } },
-          customBodyRender: (value) => {
-            return(
-              <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
-            )
-          }
         }
       },
       {
@@ -177,19 +161,77 @@ class ViewCourses extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
-      tableBodyMaxHeight: "70vh",
+      tableBodyMaxHeight: "35vh",
+      customToolbar: () => (
+        <Typography 
+          variant="h6" 
+          style={{
+            position: 'absolute',
+            right: '90px',
+            top: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          Active Courses
+        </Typography>
+      ),
     };
 
+    const inactiveOptions = {
+      ...options,
+      customToolbar: () => (
+        <Typography 
+          variant="h6" 
+          style={{
+            position: 'absolute',
+            right: '90px',
+            top: 0,
+            bottom: 0,
+            display: 'flex',
+            alignItems: 'center',
+          }}
+        >
+          Inactive Courses
+        </Typography>
+      ),
+    };
+
+    const activeCourses = courses ? courses.filter(course => course.active) : [];
+    const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
+
+  if (navbar.props.isAdmin) {
     return (
-      <div aria-label="viewCourseDiv" >
+      <Box aria-label="viewCourseDiv">
         <CustomDataTable
-          data={courses ? courses : []}
+          data={activeCourses}
           columns={columns}
           options={options}
         />
-      </div>
-    )
+        
+        <Box mt={3}>
+          <CustomDataTable
+            data={inactiveCourses}
+            columns={columns}
+            options={inactiveOptions}
+          />
+        </Box>
+      </Box>
+    );
   }
+  return (
+    <Box aria-label="viewCourseDiv">
+          <CustomDataTable
+            data={activeCourses}
+            columns={columns}
+            options={options}
+          />
+        </Box>
+      );
+  }
+  
 }
 
+  
 export default ViewCourses;
