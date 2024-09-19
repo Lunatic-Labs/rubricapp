@@ -257,6 +257,12 @@ class Form extends Component {
                 section: section
             });
         }
+        
+        this.areAllCategoriesCompleted = () => {
+            const categories = Object.keys(this.props.form.rubric["category_json"]);
+            
+            return categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category));
+        };
     }
 
     handleSubmit = (done) => {
@@ -410,13 +416,10 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                         aria-label="saveButton"
 
                         onClick={() => {
-                            const categories = Object.keys(this.props.form.rubric["category_json"]);
-                            const unitIsDone = categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category))
-                            
-                            this.handleSubmit(unitIsDone);
+                            this.handleSubmit(this.areAllCategoriesCompleted());
                         }}
 
-                        disabled={this.state.displaySavedNotification}
+                        disabled={!this.areAllCategoriesCompleted()}
                     >
                         Done
                     </Button>
