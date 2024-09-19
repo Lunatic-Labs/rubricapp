@@ -36,7 +36,6 @@ from sqlalchemy import (
 import sqlalchemy
 
 
-
 @error_log
 def get_courses_by_user_courses_by_user_id(user_id):
     """

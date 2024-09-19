@@ -1,10 +1,6 @@
-#----------------------------------------------------------------------------------------------------
-# Developer: Aldo Vera-Espinoza
-# Date: 8 May, 2024
-# File Purpose: 
-#   Creates a way for the front end to ask for a csv file and get a properly filled
-#   csv sent back.
-#----------------------------------------------------------------------------------------------------
+import os
+import json
+import pandas as pd
 from flask import request
 from controller import bp
 from controller.Route_response import *
@@ -13,7 +9,6 @@ from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from Functions.exportCsv import create_csv
 from models.assessment_task import get_assessment_task
 from models.user import get_user
-
 
 
 @bp.route('/csv_assessment_export', methods = ['GET'])

@@ -2,6 +2,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Check
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React, { useState } from "react";
+import  Button from "@mui/material/Button";
 
 
 
@@ -39,7 +40,7 @@ const customTheme = createTheme({
   },
 });
 
-const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly }) => {
+const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly, showEditButton, showDeleteButton }) => {
 
   // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
@@ -94,6 +95,31 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                         <KeyboardArrowUp />
                       ) : (
                           <KeyboardArrowDown />
+                        )}
+                        {showEditButton && (
+                          <Button
+                            variant="contained"
+                            label="Edit Custom Rubric"
+                            isOutlined={false}
+                            // onClick={}
+                            style={{
+                              marginLeft: '330px',
+                              marginRight: '15px',
+                              fontSize: '14px',       
+                              minWidth: '70px',
+                              spacing: '80px'
+                            }}
+                            aria-label="myCustomRubricsEditCustomRubricButton"
+                          >Edit</Button>
+                        )}
+                        {showDeleteButton && (
+                          <Button
+                            variant="contained"
+                            label="Edit Custom Rubric"
+                            isOutlined={false}
+                            // onClick={}
+                            aria-label="myCustomRubricsDeleteCustomRubricButton"
+                          >Delete</Button>
                         )}
                     </TableCell>
                   </TableRow>

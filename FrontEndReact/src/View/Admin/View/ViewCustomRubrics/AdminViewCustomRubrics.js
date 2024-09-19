@@ -65,8 +65,9 @@ class AdminViewCustomRubrics extends Component {
                     <CollapsableRubricCategoryTable
                         categories={categories}
                         rubrics={rubrics}
-                        onCategorySelect={null}
                         readOnly={true}
+                        showEditButton={true}
+                        showDeleteButton={true}
                     />
                 </Grid>
 

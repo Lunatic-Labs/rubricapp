@@ -8,7 +8,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
 
 
-
 class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
@@ -43,20 +42,17 @@ class ViewAssessmentTasks extends Component {
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate () {
         if(this.state.isLoaded && this.state.csvCreation) {
             const fileData = this.state.csvCreation["csv_data"];
 
             const blob = new Blob([fileData], { type: 'csv' });
-
             const url = URL.createObjectURL(blob);
 
             const link = document.createElement("a");
-
             link.download = this.state.downloadedAssessment + ".csv";
-            
             link.href = url;
-
+            link.setAttribute('download', 'export.csv');
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;

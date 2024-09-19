@@ -15,8 +15,6 @@ from models.queries import *
 from enum import Enum
 from datetime import datetime
 
-
-
 def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     """
     Description:
@@ -154,7 +152,6 @@ def create_csv(at_id: int, file_name: str) -> None:
                             [i] +
                             [entry[Csv_data.JSON.value][i]["rating"]] +
                             [sfi_oc_data[1][j][1]] +
-                            [lag] +
                             ["OC"]
                         )
 
