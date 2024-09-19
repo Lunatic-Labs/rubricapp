@@ -16,9 +16,9 @@ export default function CharacteristicsAndImprovements({
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem"}}>
-      <h5 style= {{textAlign:"center"}}>
-        {dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}
-      </h5>
+      <h6 style= {{textAlign:"center"}}>
+        <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
+      </h6>
       <div>
         <BarChart
           layout='vertical'
