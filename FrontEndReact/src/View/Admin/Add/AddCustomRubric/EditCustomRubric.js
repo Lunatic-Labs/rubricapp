@@ -37,11 +37,7 @@ class EditCustomRubric extends React.Component {
         this.handleCreateRubric = (pickedCategories) => {
             var categoryIds = [];
 
-            for (
-                var categoryIndex = 0;
-                categoryIndex < pickedCategories.length;
-                categoryIndex++
-            ) {
+            for (var categoryIndex = 0; categoryIndex < pickedCategories.length;categoryIndex++) {
                 categoryIds = [
                     ...categoryIds,
                     pickedCategories[categoryIndex]["category_id"],
@@ -106,7 +102,6 @@ class EditCustomRubric extends React.Component {
 
         if (isSelected)
             selectedCategories[categoryId] = true;
-
         else
             delete selectedCategories[categoryId];
 
@@ -167,7 +162,6 @@ class EditCustomRubric extends React.Component {
                     }
                 }
             }
-
             return categoryId;
         });
 
@@ -176,7 +170,6 @@ class EditCustomRubric extends React.Component {
                 {this.state.isLoaded && this.state.errorMessage && (
                     <ErrorMessage errorMessage={this.state.errorMessage} />
                 )}
-
                 <div>
                     <Grid container spacing={10}>
                         <Grid item xs={6}>
