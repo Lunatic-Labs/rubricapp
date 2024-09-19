@@ -65,7 +65,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
               notes: 'Notification Message cannot be empty',
           },
       });
-
+      console.log("This is in viewCompleteTeamAT.js  in Admin Folder and line 68")
       return;
     }
 
@@ -106,6 +106,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: () => {
+            console.log("this is team complete view AT in Admin folder and its line 109")
             return (
               <p variant="contained" align="left">
                 {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
@@ -121,6 +122,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: (team_name) => {
+            console.log("this is team complete view AT in Admin folder and its line 124")
             return (
               <p variant="contained" align="left">
                 {team_name ? team_name : "N/A"}
@@ -136,6 +138,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: (completed_by) => {
+            console.log("This is view team complete AT in Admin Folder and its line 124")
             return (
               <p variant="contained" align="left">
                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
@@ -173,7 +176,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
             ];
 
             var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-
+            console.log("This is view team complete AT in Admin Folder and its line 176")
             return (
               <p variant="contained" align="left">
                 {dueDate && initialTimeString ? initialTimeString : "N/A"}
@@ -211,7 +214,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
             ];
 
             var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-
+            console.log("this is view complete team assessment task in Admin folder and its line 214")
             return(
               <p  variant='contained' align='left' >
                 {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
@@ -230,6 +233,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId) => {
             if (completedAssessmentId) {
+              console.log("This is view team complete AT in the Admin folder and it is line 233")
               return (
                 <IconButton
                 align="center"
@@ -266,7 +270,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "21rem",
     };
-
+    console.log("This is view complete Team AT  in Admin and line 269")
     return (
       <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
         <Box className="content-spacing">
@@ -310,6 +314,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
         
       </Box>
     );
+    
   }
 }
 

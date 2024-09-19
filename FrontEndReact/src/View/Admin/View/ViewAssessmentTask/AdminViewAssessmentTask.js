@@ -54,6 +54,7 @@ class AdminViewAssessmentTask extends Component {
         navbar.adminViewAssessmentTask.rubricNames = rubrics ? parseRubricNames(rubrics) : [];
 
         if(errorMessage) {
+            console.log("Admin View AT in Admin and line 57")
             return(
                 <div className='container'>
                     <ErrorMessage
@@ -64,12 +65,13 @@ class AdminViewAssessmentTask extends Component {
             )
 
         } else if (!isLoaded || !assessmentTasks || !roles || !rubrics) {
-            console.log("Loading")
+            console.log("Admin View AT and line 68")
             return(
                 <Loading />
             )
 
         } else if (this.props.show === "AdminAddAssessmentTask") {
+            console.log("Admin View AT and line 74")
             return (
                 <AdminAddAssessmentTask
                     navbar={navbar}
@@ -77,6 +79,7 @@ class AdminViewAssessmentTask extends Component {
             )
 
         } else {
+            console.log("Admin View AT and line 82")
             return(
                 <Box>
                     <ViewAssessmentTasks

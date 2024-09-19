@@ -65,7 +65,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
               notes: 'Notification Message cannot be empty',
           },
       });
-
+      console.log("We are viewing completed individual AT on line 68")
       return;
     }
 
@@ -136,6 +136,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: (completed_by) => {
+            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 139")
             return (
               <p variant="contained" align="left">
                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
@@ -173,7 +174,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             ];
 
             var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-
+            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 177")
             return (
               <p variant="contained" align="left">
                 {dueDate && initialTimeString ? initialTimeString : "N/A"}
@@ -211,7 +212,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             ];
 
             var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-
+            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 215")
             return(
               <p  variant='contained' align='left' >
                 {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
@@ -230,6 +231,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId) => {
             if (completedAssessmentId) {
+              console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 233")
               return (
                 <IconButton
                 align="center"
@@ -247,6 +249,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
               )
 
             } else {
+              console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 252")
               return(
                 <p variant='contained' align='center' > {"N/A"} </p>
               )
@@ -266,7 +269,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "21rem",
     };
-
+    console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 272")
     return (
       <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
         <Box className="content-spacing">
