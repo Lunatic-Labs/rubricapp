@@ -122,7 +122,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: (team_name) => {
-            console.log("this is team complete view AT in Admin folder and its line 124")
+            console.log("this is team complete view AT in Admin folder and its line 125")
             return (
               <p variant="contained" align="left">
                 {team_name ? team_name : "N/A"}
@@ -138,7 +138,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: (completed_by) => {
-            console.log("This is view team complete AT in Admin Folder and its line 124")
+            console.log("This is view team complete AT in Admin Folder and its line 141")
             return (
               <p variant="contained" align="left">
                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
@@ -176,7 +176,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
             ];
 
             var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-            console.log("This is view team complete AT in Admin Folder and its line 176")
+            console.log("This is view team complete AT in Admin Folder and its line 179")
             return (
               <p variant="contained" align="left">
                 {dueDate && initialTimeString ? initialTimeString : "N/A"}
@@ -214,7 +214,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
             ];
 
             var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-            console.log("this is view complete team assessment task in Admin folder and its line 214")
+            console.log("this is view complete team assessment task in Admin folder and its line 217")
             return(
               <p  variant='contained' align='left' >
                 {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
@@ -229,11 +229,11 @@ class ViewCompleteTeamAssessmentTasks extends Component {
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
+          setCellHeaderProps: () => {console.log("this is view complete team assessment task in Admin folder and its line 232"); return { align:"center", className:"button-column-alignment"}},
+          setCellProps: () => {console.log("this is view complete team assessment task in Admin folder and its line 233"); return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId) => {
             if (completedAssessmentId) {
-              console.log("This is view team complete AT in the Admin folder and it is line 233")
+              console.log("This is view team complete AT in the Admin folder and it is line 236")
               return (
                 <IconButton
                 align="center"

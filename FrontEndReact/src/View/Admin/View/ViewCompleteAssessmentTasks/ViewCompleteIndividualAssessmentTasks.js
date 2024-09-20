@@ -106,6 +106,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: () => {
+            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 109")
             return (
               <p variant="contained" align="left">
                 {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
@@ -121,6 +122,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: (last_name) => {
+            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 125")
             return (
               <p variant="contained" align="left">
                 {last_name ? last_name : "N/A"}
@@ -136,7 +138,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           filter: true,
 
           customBodyRender: (completed_by) => {
-            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 139")
+            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 141")
             return (
               <p variant="contained" align="left">
                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
@@ -174,7 +176,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             ];
 
             var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 177")
+            console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 179")
             return (
               <p variant="contained" align="left">
                 {dueDate && initialTimeString ? initialTimeString : "N/A"}
@@ -227,11 +229,11 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
+          setCellHeaderProps: () => {console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 232"); return { align:"center", className:"button-column-alignment"}},
+          setCellProps: () => { console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 233"); return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId) => {
             if (completedAssessmentId) {
-              console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 233")
+              console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 236")
               return (
                 <IconButton
                 align="center"
@@ -249,7 +251,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
               )
 
             } else {
-              console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 252")
+              console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 254")
               return(
                 <p variant='contained' align='center' > {"N/A"} </p>
               )
@@ -269,7 +271,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       responsive: "vertical",
       tableBodyMaxHeight: "21rem",
     };
-    console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 272")
+    console.log("this should be printing for individual completed assessment tasks in Admin folder and its line 274")
     return (
       <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
         <Box className="content-spacing">
