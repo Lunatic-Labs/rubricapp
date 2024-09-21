@@ -154,6 +154,7 @@ def create_csv(at_id: int) -> str:
                             [i] +
                             [entry[Csv_data.JSON.value][i]["rating"]] +
                             [sfi_oc_data[1][j][1]] +
+                            [""] +
                             [lag]
                         )
 
@@ -173,8 +174,9 @@ def create_csv(at_id: int) -> str:
                             [entry[Csv_data.LAST_NAME.value]]  +
                             [i] +
                             [entry[Csv_data.JSON.value][i]["rating"]] +
-                            [lag] +
-                            [sfi_oc_data[0][j][1]] 
+                            [""] +
+                            [sfi_oc_data[0][j][1]]  +
+                            [lag]
                         )
 
             return csvFile.getvalue()
