@@ -74,7 +74,7 @@ class Csv_data(Enum):
     JSON = 11
 
 
-def create_csv(at_id: int, file_name: str) -> str:
+def create_csv(at_id: int) -> str:
     """
     Description:
     Creates the csv file and dumps info in to it.
@@ -82,10 +82,9 @@ def create_csv(at_id: int, file_name: str) -> str:
 
     Parameters:
     at_id: int (The id of an assessment task)
-    file_name: str (csv file to write to)
 
     Return:
-    None
+    str
     """
     # Assessment_task_name, Completion_date, Rubric_name, AT_type (Team/individual), AT_completer_role (Admin, TA/Instructor, Student), Notification_date
     with app.app_context():

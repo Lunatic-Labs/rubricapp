@@ -48,8 +48,7 @@ def get_completed_assessment_csv() -> dict:
         file_name += assessment.assessment_task_name.replace(" ", "_") + ".csv"
 
         csv_data = create_csv(
-            assessment_task_id,
-            file_name
+            assessment_task_id
         )
         
         return create_good_response({ "csv_data": csv_data.strip() }, 200, "csv_creation")
