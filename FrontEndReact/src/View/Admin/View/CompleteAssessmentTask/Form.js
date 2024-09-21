@@ -164,11 +164,12 @@ class Form extends Component {
 
             var observableCharacteristic = category["observable_characteristics"].includes("1");
 
-            var suggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"] ? category["suggestions"].includes("1"): true;
+            const showSuggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
+            const suggestions = showSuggestions ? category["suggestions"].includes("1") : false;
 
             var status = null;
 
-            if(observableCharacteristic && suggestions) {
+            if (observableCharacteristic && (!showSuggestions || suggestions)) {
                 status = true;
 
             } else if (observableCharacteristic || suggestions) {
@@ -201,55 +202,60 @@ class Form extends Component {
             var categoryList = [];
 
             var section = [];
+            
+            // We sort rubric["category_json"] by the index of each entry, since the the data gets
+            // automatically sorted when it comes out of the backend
 
-            Object.keys(rubric["category_json"]).map((category, index) => {
-                categoryList.push(
-                    <Tab label={
-                        <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
-                            <span>{category}</span>
+            Object.entries(rubric["category_json"])
+                .toSorted((a, b) => a[1].index - b[1].index)
+                .map(([category, _], index) => {
+                    categoryList.push(
+                        <Tab label={
+                            <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
+                                <span>{category}</span>
 
-                            <StatusIndicator
-                                status={this.isCategoryComplete(this.state.currentUnitTab, category)}
+                                <StatusIndicator
+                                    status={this.isCategoryComplete(this.state.currentUnitTab, category)}
+                                />
+                            </Box>
+                        }
+
+                        value={index} key={index}
+
+                        sx={{
+                            minWidth: 170,
+                            padding: "",
+                            borderRadius: "10px",
+                            margin : "0 0px 0 10px",
+                            border: this.state.tabCurrentlySelected === index ? '2px solid #2E8BEF ' : '2px solid gray',
+                            '&.Mui-selected': { color: '#2E8BEF ' }
+                        }}/>
+                    );
+
+                    if(this.state.tabCurrentlySelected === index) {
+                        section.push(
+                            <Section
+                                navbar={this.props.navbar}
+                                isDone={this.isUnitCompleteAssessmentComplete(this.state.unitValue)}
+                                category={category}
+                                rubric={this.props.form.rubric}
+                                unitValue={this.state.unitValue}
+                                currentData={this.state.unitData[this.state.unitValue]}
+                                active={this.state.tabCurrentlySelected===index}
+                                key={index}
+                                setSliderValue={this.setSliderValue}
+                                setObservableCharacteristics={this.setObservableCharacteristics}
+                                setSuggestions={this.setSuggestions}
+                                setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
+                                setComments={this.setComments}
+                                handleSaveForLater={this.handleSaveForLater}
+                                handleSubmit={this.handleSubmit}
+                                isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
                             />
-                        </Box>
+                        );
                     }
 
-                    value={index} key={index}
-
-                    sx={{
-                        minWidth: 170,
-                        padding: "",
-                        borderRadius: "10px",
-                        margin : "0 0px 0 10px",
-                        border: this.state.tabCurrentlySelected === index ? '2px solid #2E8BEF ' : '2px solid gray',
-                        '&.Mui-selected': { color: '#2E8BEF ' }
-                    }}/>
-                );
-
-                if(this.state.tabCurrentlySelected === index) {
-                    section.push(
-                        <Section
-                            navbar={this.props.navbar}
-                            isDone={this.isUnitCompleteAssessmentComplete(this.state.unitValue)}
-                            category={category}
-                            rubric={this.props.form.rubric}
-                            unitValue={this.state.unitValue}
-                            currentData={this.state.unitData[this.state.unitValue]}
-                            active={this.state.tabCurrentlySelected===index}
-                            key={index}
-                            setSliderValue={this.setSliderValue}
-                            setObservableCharacteristics={this.setObservableCharacteristics}
-                            setSuggestions={this.setSuggestions}
-                            setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
-                            setComments={this.setComments}
-                            handleSaveForLater={this.handleSaveForLater}
-                            handleSubmit={this.handleSubmit}
-                            isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
-                        />
-                    );
-                }
-
-                return index;
+                    return index;
             });
 
             this.setState({
@@ -257,6 +263,12 @@ class Form extends Component {
                 section: section
             });
         }
+        
+        this.areAllCategoriesCompleted = () => {
+            const categories = Object.keys(this.props.form.rubric["category_json"]);
+            
+            return categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category));
+        };
     }
 
     handleSubmit = (done) => {
@@ -410,13 +422,10 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                         aria-label="saveButton"
 
                         onClick={() => {
-                            const categories = Object.keys(this.props.form.rubric["category_json"]);
-                            const unitIsDone = categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category))
-                            
-                            this.handleSubmit(unitIsDone);
+                            this.handleSubmit(this.areAllCategoriesCompleted());
                         }}
 
-                        disabled={this.state.displaySavedNotification}
+                        disabled={!this.areAllCategoriesCompleted()}
                     >
                         Done
                     </Button>

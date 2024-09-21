@@ -2,16 +2,22 @@ import { apiUrl } from './App.js';
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
-export function genericResourceGET(fetchURL, resource, component) {
-    genericResourceFetch(fetchURL, resource, component, "GET", null);
+export async function genericResourceGET(fetchURL, resource, component) {
+    await new Promise((resolve) => setTimeout(resolve, timeToWait));
+    
+    return await genericResourceFetch(fetchURL, resource, component, "GET", null);
 }
 
-export function genericResourcePOST(fetchURL, component, body) {
-    genericResourceFetch(fetchURL, null, component, "POST", body);
+export async function genericResourcePOST(fetchURL, component, body) {
+    await new Promise((resolve) => setTimeout(resolve, timeToWait));
+    
+    return await genericResourceFetch(fetchURL, null, component, "POST", body);
 }
 
-export function genericResourcePUT(fetchURL, component, body) {
-    genericResourceFetch(fetchURL, null, component, "PUT", body);
+export async function genericResourcePUT(fetchURL, component, body) {
+    await new Promise((resolve) => setTimeout(resolve, timeToWait));
+    
+    return await genericResourceFetch(fetchURL, null, component, "PUT", body);
 }
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
@@ -27,22 +33,26 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         if(url.indexOf('bulk_upload') === -1) {
             headers["Content-Type"] = "application/json";
         }
-
-        const response = await fetch(
-            url,
-            {
-                method: type,
-                headers: headers,
-                body: body
-            }
-        ).catch(
-            (error) => {
-                component.setState({
-                    isLoaded: true,
-                    errorMessage: error,
-                });
-            }
-        )
+        
+        let response;
+        
+        try {
+            response = await fetch(
+                url,
+                {
+                    method: type,
+                    headers: headers,
+                    body: body
+                }
+            );
+        } catch (error) {
+            component.setState({
+                isLoaded: true,
+                errorMessage: error,
+            });
+            
+            throw error;
+        }
 
         const result = await response.json();
    
@@ -74,24 +84,34 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             }
 
             component.setState(state);
-
+            
+            return state;
+        
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
             cookies.remove('user');
 
             window.location.reload(false);
+            
+            return undefined;
 
         } else if (result['msg']==="Token has expired") {
             cookies.remove('access_token');
 
             window.location.reload(false);
+            
+            return undefined;
 
         } else {
-            component.setState({
+            const state = {
                 isLoaded: true,
                 errorMessage: result['message'],
-            });
+            };
+            
+            component.setState(state);
+            
+            return state;
         }
     }
 }
