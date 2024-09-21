@@ -134,7 +134,6 @@ def create_csv(at_id: int) -> str:
 
                 try:
                     lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
-
                 except:
                     pass
 
@@ -155,8 +154,7 @@ def create_csv(at_id: int) -> str:
                             [i] +
                             [entry[Csv_data.JSON.value][i]["rating"]] +
                             [sfi_oc_data[1][j][1]] +
-                            [lag] +
-                            ["OC"]
+                            [lag]
                         )
 
                 for i in entry[Csv_data.JSON.value]:
@@ -175,9 +173,8 @@ def create_csv(at_id: int) -> str:
                             [entry[Csv_data.LAST_NAME.value]]  +
                             [i] +
                             [entry[Csv_data.JSON.value][i]["rating"]] +
-                            [sfi_oc_data[0][j][1]] +
                             [lag] +
-                            ["SFI"]
+                            [sfi_oc_data[0][j][1]] 
                         )
 
             return csvFile.getvalue()
