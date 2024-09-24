@@ -82,17 +82,18 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-        
-        if (prevState.rubrics === null && prevState.teams === null && prevState.teams_users === null) {
-            if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
-                var teamIds = this.state.teams.map(team => team.team_id);
+        // console.log(`Joe ${prevState.rubrics === null} && ${prevState.teams === null} && ${prevState.teams_users === null}`);
+        // if (prevState.rubrics === null && prevState.teams === null && prevState.teams_users === null) {
+        //     console.log(`Has teams: ${this.state.teams != null}`);
+        //     if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
+        //         var teamIds = this.state.teams.map(team => team.team_id);
 
-                genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
-                    "teams_users", this
-                );
-            }
-        }
+        //         genericResourceGET(
+        //             `/user?team_ids=${teamIds}`,
+        //             "teams_users", this
+        //         );
+        //     }
+        // }
     }
 
     componentDidMount() {
@@ -133,7 +134,16 @@ class CompleteAssessmentTask extends Component {
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
-        );
+        ).then((result) => {
+            if (this.state.unitOfAssessment && result.teams && result.teams.length > 0) {
+                var teamIds = result.teams.map(team => team.team_id);
+
+                genericResourceGET(
+                    `/user?team_ids=${teamIds}`,
+                    "teams_users", this
+                );
+            }
+        });
     
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
@@ -158,7 +168,8 @@ class CompleteAssessmentTask extends Component {
             users,
             teams_users,
             roles,
-            completedAssessments
+            completedAssessments,
+            checkin
         } = this.state;
         if (errorMessage) {
             return (
@@ -168,7 +179,7 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !completedAssessments|| !roles || !users || !teams ) {
+        } else if (!isLoaded || !rubrics || !completedAssessments || !roles || !users || !teams || !checkin) {
             return (
                 <Loading />
             );
