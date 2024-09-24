@@ -60,10 +60,15 @@ class AdminBulkUpload extends Component {
     onFormSubmit = (e) => {
         e.preventDefault();
 
-        var fileName = this.state.selectedFile.name;
-        var lastDot = fileName.lastIndexOf('.');
+        var fileName;
+        var lastDot;
+        var fileExtension;
 
-        var fileExtension = fileName.substring(lastDot + 1);
+        if (this.state.selectedFile !== null) {
+            fileName = this.state.selectedFile.name;
+            lastDot = fileName.lastIndexOf('.');
+            fileExtension = fileName.substring(lastDot + 1);
+        }
 
         // TODO: Ask Andre about test data that exists in the system
 
@@ -105,7 +110,7 @@ class AdminBulkUpload extends Component {
                         confirmCreateResource("Team");
                     }
                 }
-            }, 1000);
+            }, 4000);
         }
     }
 

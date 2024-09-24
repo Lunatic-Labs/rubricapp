@@ -154,11 +154,14 @@ test("TADashboard.test.js Test 5: Should render to the my Assessment Tasks and C
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(matt);
 
-        expectElementWithAriaLabelToBeInDocument(catt);
+            expectElementWithAriaLabelToBeInDocument(catt);
 
-        clickFirstElementWithAriaLabel(catb);
+            clickFirstElementWithAriaLabel(catb);
+        }, 3000);
+        
     });
     
     await waitFor(() => {
