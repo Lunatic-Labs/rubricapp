@@ -98,15 +98,15 @@ class AdminBulkUpload extends Component {
 
             url += navbar.state.chosenCourse["course_id"];
 
-            var result = genericResourcePOST(url, this, formData);
-            
-            if (result !== undefined && result.errorMessage === null) {
-                if (this.props.tab === "BulkUpload") {
-                    confirmCreateResource("User");
-                } else {
-                    confirmCreateResource("Team");
+            genericResourcePOST(url, this, formData).then((result) => {
+                if (result !== undefined && result.errorMessage === null) {
+                    if (this.props.tab === "BulkUpload") {
+                        confirmCreateResource("User");
+                    } else {
+                        confirmCreateResource("Team");
+                    }
                 }
-            }
+            });
         }
     }
 
