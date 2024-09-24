@@ -70,8 +70,6 @@ class AdminBulkUpload extends Component {
             fileExtension = fileName.substring(lastDot + 1);
         }
 
-        // TODO: Ask Andre about test data that exists in the system
-
         if(this.state.selectedFile === null) {
             this.setState({
                 errorMessage: "Please Select a File to Upload!"
@@ -100,17 +98,15 @@ class AdminBulkUpload extends Component {
 
             url += navbar.state.chosenCourse["course_id"];
 
-            genericResourcePOST(url, this, formData);
+            var result = genericResourcePOST(url, this, formData);
             
-            setTimeout(() => {
-                if (this.state.errorMessage === null) {
-                    if (this.props.tab === "BulkUpload") {
-                        confirmCreateResource("User");
-                    } else {
-                        confirmCreateResource("Team");
-                    }
+            if (result !== undefined && result.errorMessage === null) {
+                if (this.props.tab === "BulkUpload") {
+                    confirmCreateResource("User");
+                } else {
+                    confirmCreateResource("Team");
                 }
-            }, 4000);
+            }
         }
     }
 
