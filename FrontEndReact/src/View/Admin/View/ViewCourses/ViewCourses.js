@@ -162,76 +162,63 @@ class ViewCourses extends Component {
       selectableRowsHeader: false,
       responsive: "vertical",
       tableBodyMaxHeight: "35vh",
-      customToolbar: () => (
-        <Typography 
-          variant="h6" 
-          style={{
-            position: 'absolute',
-            right: '90px',
-            top: 0,
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          Active Courses
-        </Typography>
-      ),
-    };
-
-    const inactiveOptions = {
-      ...options,
-      customToolbar: () => (
-        <Typography 
-          variant="h6" 
-          style={{
-            position: 'absolute',
-            right: '90px',
-            top: 0,
-            bottom: 0,
-            display: 'flex',
-            alignItems: 'center',
-          }}
-        >
-          Inactive Courses
-        </Typography>
-      ),
     };
 
     const activeCourses = courses ? courses.filter(course => course.active) : [];
     const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
 
-  if (navbar.props.isAdmin) {
     return (
       <Box aria-label="viewCourseDiv">
-        <CustomDataTable
-          data={activeCourses}
-          columns={columns}
-          options={options}
-        />
-        
-        <Box mt={3}>
-          <CustomDataTable
-            data={inactiveCourses}
-            columns={columns}
-            options={inactiveOptions}
-          />
+        <Box className="page-spacing">
+          <Box sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            alignSelf: "stretch"
+          }}>
+            <Box sx={{ width: "100%" }} className="content-spacing">
+              <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="activeCourses">
+                Active Courses
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box>
+            <CustomDataTable
+              data={activeCourses}
+              columns={columns}
+              options={options}
+            />
+          </Box>
         </Box>
+
+        {navbar.props.isAdmin && (
+          <Box className="page-spacing">
+            <Box sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              alignSelf: "stretch"
+            }}>
+              <Box sx={{ width: "100%" }} className="content-spacing">
+                <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="inactiveCourses">
+                  Inactive Courses
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box>
+              <CustomDataTable
+                data={inactiveCourses}
+                columns={columns}
+                options={options}
+              />
+            </Box>
+          </Box>
+        )}
       </Box>
     );
   }
-  return (
-    <Box aria-label="viewCourseDiv">
-          <CustomDataTable
-            data={activeCourses}
-            columns={columns}
-            options={options}
-          />
-        </Box>
-      );
-  }
-  
 }
 
-  
 export default ViewCourses;
