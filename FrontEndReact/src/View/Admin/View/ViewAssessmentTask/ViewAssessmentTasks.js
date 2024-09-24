@@ -38,8 +38,6 @@ class ViewAssessmentTasks extends Component {
                 downloadedAssessment: assessmentName,
                 exportButtonId: newExportButtonJSON
             });
-
-            document.getElementById(exportButtonId).setAttribute("disabled", true);
         }
     }
 

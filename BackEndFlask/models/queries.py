@@ -941,7 +941,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     ).join(
         CompletedAssessment,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
-    ).join(
+    ).outerjoin(
         Team,
         CompletedAssessment.team_id == Team.team_id
     ).join(
