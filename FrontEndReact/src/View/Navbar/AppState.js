@@ -313,7 +313,7 @@ class AppState extends Component {
                             user: null,
                             addUser: null
                         });
-                        
+
                     } else if (resource === "Course") {
                         this.setState({
                             activeTab: "Courses",
