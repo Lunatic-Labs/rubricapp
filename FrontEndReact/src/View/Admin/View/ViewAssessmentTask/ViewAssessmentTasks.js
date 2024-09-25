@@ -311,7 +311,7 @@ class ViewAssessmentTasks extends Component {
 
                                 aria-label='completeAssessmentTaskButton'
                             >
-                                Complete
+                                START
                             </Button>
                         )
                     }
