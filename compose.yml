@@ -32,6 +32,8 @@ services:
       dockerfile: Dockerfile.frontend
     ports:
       - "127.0.0.1:3000:3000"
+    depends_on:
+      - backend
     volumes:
       # Mount the source files inside the container to allow for React hot reloading to work
       - "./FrontEndReact/src:/app/src:ro"

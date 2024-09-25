@@ -1,0 +1,15 @@
+include:
+  - compose.yml
+
+services:
+  frontend-tests:
+    container_name: rubricapp-frontend-tests
+    extends:
+      file: compose.yml
+      service: frontend
+    entrypoint: npm test
+    command: []
+    depends_on:
+      - backend
+    environment:
+      - REACT_APP_API_URL=http://backend:5000/api
