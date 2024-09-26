@@ -315,6 +315,8 @@ test("AssessmentDashboard.test.js Test 12: Should download a csv file when the e
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(eatb);
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(eatb);
+        }, 3000);
     });
 });

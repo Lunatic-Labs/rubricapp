@@ -1,51 +1,41 @@
-import React, { useState } from 'react';
+import { alignProperty } from '@mui/material/styles/cssUtils';
+import React from 'react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
-import Tabs from '@mui/material/Tabs';
-import Tab from '@mui/material/Tab';
 
+export default function CharacteristicsAndImprovements({ 
+  dataType, 
+  characteristicsData, 
+  improvementsData, 
+  showSuggestions 
+}) {
+  const data = dataType === 'characteristics' 
+    ? characteristicsData.characteristics 
+    : improvementsData.improvements;
 
-export default function CharacteristicsAndImprovements(props) {
-  const [tabId, setTabId] = useState(0);
-  
-  const handleChange = (event, newValue) => {
-    setTabId(newValue);
-  };
-
-  // If suggestions for improvement are turned off for the selected AT, set the tabId to
-  // correspond to the observable characteristics tab
-  if (!props.showSuggestions && tabId === 1) {
-    setTabId(0);
-  }
+  const dataKey = dataType === 'characteristics' ? 'characteristic' : 'improvement';
 
   return (
     <div style={{ display: "flex", flexDirection: "column", gap: "2rem"}}>
-      <Tabs value={tabId} onChange={handleChange} centered>
-        <Tab label="Characteristics" aria-label='characteristicsAndImprovementsCharacteristicsTab'/>
-        { props.showSuggestions &&
-          <Tab label="Improvement" aria-label='characteristicsAndImprovementsImprovementTab'/>
-        }
-      </Tabs>
-
+      <h6 style= {{textAlign:"center"}}>
+        <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
+      </h6>
       <div>
         <BarChart
           layout='vertical'
-          data={tabId === 0 ? props.characteristicsData["characteristics"] : props.improvementsData["improvements"]}
+          data={data}
           width={675}
           height={375}
-          aria-label={tabId === 0 ? "barChartCharacteristicsData" : "barChartImprovementsData"}
+          aria-label={`barChart${dataType.charAt(0).toUpperCase() + dataType.slice(1)}Data`}
         >
           <XAxis type='number' domain={[0, 'auto']}/>
-
           <YAxis
             width={350}
             style={{fontSize: '.9rem'}}
             type='category'
-            dataKey={tabId === 0 ? "characteristic" : "improvement"}
+            dataKey={dataKey}
           />
-
-          <CartesianGrid horizontal= {false} />
-
-          <Bar dataKey= "number" fill = "#2e8bef">
+          <CartesianGrid horizontal={false} />
+          <Bar dataKey="number" fill="#2e8bef">
             <LabelList dataKey="percentage" fill="#ffffff" position="inside"/>
           </Bar>
         </BarChart>

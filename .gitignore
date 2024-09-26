@@ -45,6 +45,7 @@ BackEndFlask/logs/all.log
 
 # Nginx configuration files
 /etc/nginx/sites-available/*
+/AWS/syscontrol.sh
 
 # SSL/TLS certificate files
 /etc/letsencrypt/live/*

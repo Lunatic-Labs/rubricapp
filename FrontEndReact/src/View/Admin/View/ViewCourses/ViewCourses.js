@@ -3,9 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
-import { Typography } from "@mui/material";
-
-
+import { Typography, Box } from "@mui/material";
 
 class ViewCourses extends Component {
   render() {
@@ -60,20 +58,6 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"7%" } },
           setCellProps: () => { return { width:"7%" } },
-        }
-      },
-      {
-        name: "active",
-        label: "Active",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"8%" } },
-          setCellProps: () => { return { width:"8%" } },
-          customBodyRender: (value) => {
-            return(
-              <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
-            )
-          }
         }
       },
       {
@@ -177,18 +161,63 @@ class ViewCourses extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
-      tableBodyMaxHeight: "70vh",
+      tableBodyMaxHeight: "35vh",
     };
 
+    const activeCourses = courses ? courses.filter(course => course.active) : [];
+    const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
+
     return (
-      <div aria-label="viewCourseDiv" >
-        <CustomDataTable
-          data={courses ? courses : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
-    )
+      <Box aria-label="viewCourseDiv">
+        <Box className="page-spacing">
+          <Box sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            alignSelf: "stretch"
+          }}>
+            <Box sx={{ width: "100%" }} className="content-spacing">
+              <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="activeCourses">
+                Active Courses
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box>
+            <CustomDataTable
+              data={activeCourses}
+              columns={columns}
+              options={options}
+            />
+          </Box>
+        </Box>
+
+        {navbar.props.isAdmin && (
+          <Box className="page-spacing">
+            <Box sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              alignSelf: "stretch"
+            }}>
+              <Box sx={{ width: "100%" }} className="content-spacing">
+                <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="inactiveCourses">
+                  Inactive Courses
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box>
+              <CustomDataTable
+                data={inactiveCourses}
+                columns={columns}
+                options={options}
+              />
+            </Box>
+          </Box>
+        )}
+      </Box>
+    );
   }
 }
 

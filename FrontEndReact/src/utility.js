@@ -2,24 +2,16 @@ import { apiUrl } from './App.js';
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
-var timeToWait = 500;
-
-export function genericResourceGET(fetchURL, resource, component) {
-    setTimeout(() => {
-        genericResourceFetch(fetchURL, resource, component, "GET", null);
-    }, timeToWait);
+export async function genericResourceGET(fetchURL, resource, component) {    
+    return await genericResourceFetch(fetchURL, resource, component, "GET", null);
 }
 
-export function genericResourcePOST(fetchURL, component, body) {
-    setTimeout(() => {
-        genericResourceFetch(fetchURL, null, component, "POST", body);
-    }, timeToWait);
+export async function genericResourcePOST(fetchURL, component, body) {    
+    return await genericResourceFetch(fetchURL, null, component, "POST", body);
 }
 
-export function genericResourcePUT(fetchURL, component, body) {
-    setTimeout(() => {
-        genericResourceFetch(fetchURL, null, component, "PUT", body);
-    }, timeToWait);
+export async function genericResourcePUT(fetchURL, component, body) {    
+    return await genericResourceFetch(fetchURL, null, component, "PUT", body);
 }
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
@@ -35,22 +27,26 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         if(url.indexOf('bulk_upload') === -1) {
             headers["Content-Type"] = "application/json";
         }
-
-        const response = await fetch(
-            url,
-            {
-                method: type,
-                headers: headers,
-                body: body
-            }
-        ).catch(
-            (error) => {
-                component.setState({
-                    isLoaded: true,
-                    errorMessage: error,
-                });
-            }
-        )
+        
+        let response;
+        
+        try {
+            response = await fetch(
+                url,
+                {
+                    method: type,
+                    headers: headers,
+                    body: body
+                }
+            );
+        } catch (error) {
+            component.setState({
+                isLoaded: true,
+                errorMessage: error,
+            });
+            
+            throw error;
+        }
 
         const result = await response.json();
    
@@ -82,24 +78,34 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             }
 
             component.setState(state);
-
+            
+            return state;
+        
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
             cookies.remove('user');
 
             window.location.reload(false);
+            
+            return undefined;
 
         } else if (result['msg']==="Token has expired") {
             cookies.remove('access_token');
 
             window.location.reload(false);
+            
+            return undefined;
 
         } else {
-            component.setState({
+            const state = {
                 isLoaded: true,
                 errorMessage: result['message'],
-            });
+            };
+            
+            component.setState(state);
+            
+            return state;
         }
     }
 }
@@ -230,7 +236,7 @@ export function getDueDateString(dueDate) {
 
     let month = dueDate.getMonth() + 1;
 
-    let day = dueDate.getDay();
+    let day = dueDate.getDate();
 
     let hours = dueDate.getHours();
 
@@ -277,6 +283,28 @@ export function getHumanReadableDueDate(dueDate, timeZone) {
     var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone ? timeZone : ""}`;
 
     return dueDateString;
+}
+
+/**
+ * Accepts a function and returns another function. Calling the returned function
+ * will schedule func to be called after the wait time has elasped, and calling it
+ * again will reset wait time. This prevents func from being called more than once
+ * per wait time.
+ * 
+ * @param {function(...): void} func - The function.
+ * @param {number} wait - The wait time in milliseconds.
+ * @returns {function(...): void} The debounced function.
+ */
+export function debounce(func, wait) {
+    let timeoutId = null;
+    
+    return (...args) => {
+        window.clearTimeout(timeoutId);
+        
+        timeoutId = window.setTimeout(() => {
+            func(...args);
+        }, wait);
+   };
 }
 
 const modules = {

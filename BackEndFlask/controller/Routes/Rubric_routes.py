@@ -31,7 +31,7 @@ def get_all_rubrics():
             category_json = {}
             category_rating_observable_characteristics_suggestions_json = {}
 
-            for category in all_category_for_specific_rubric:
+            for index, category in enumerate(all_category_for_specific_rubric):
                 current_category_json = {
                     "rating": 0,
                     "rating_json": category.rating_json,
@@ -44,6 +44,7 @@ def get_all_rubrics():
                 category_json[category.category_name] = {}
                 category_json[category.category_name]["observable_characteristics"] = []
                 category_json[category.category_name]["suggestions"] = []
+                category_json[category.category_name]["index"] = index
 
                 ratings = get_ratings_by_category(category.category_id)
 

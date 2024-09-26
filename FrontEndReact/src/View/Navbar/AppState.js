@@ -157,6 +157,22 @@ class AppState extends Component {
             });
         }
 
+        this.setSelectCurrentTeam = (assessmentTasks, assessmentTaskId) => {
+            var assessmentTask = null;
+
+            for (var index = 0; index < assessmentTasks.length; index++) {
+                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
+                    assessmentTask = assessmentTasks[index];
+                }
+            }
+
+            this.setState({
+                activeTab: "SelectTeam",
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
+            });
+        }
+
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks, assessmentTaskId, course, roleNames, rubricNames) => {
             var newAssessmentTask = null;
 
@@ -291,8 +307,9 @@ class AppState extends Component {
         this.confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
-                    if (resource === "User") {
+                    if (resource === "User" || resource === "UserBulkUpload") {
                         this.setState({
+                            successMessage: resource === "UserBulkUpload" ? "The user bulk upload was successful!" : null,
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
@@ -317,8 +334,9 @@ class AppState extends Component {
                             activeTab: "AssessmentTasks"
                         });
 
-                    } else if (resource === "Team") {
+                    } else if (resource === "Team" || resource === "TeamBulkUpload") {
                         this.setState({
+                            successMessage: resource === "TeamBulkUpload" ? "The team bulk upload was successful!" : null,
                             activeTab: "Teams",
                             team: null,
                             addTeam: true

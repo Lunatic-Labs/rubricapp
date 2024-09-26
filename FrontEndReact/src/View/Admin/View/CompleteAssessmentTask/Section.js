@@ -7,10 +7,19 @@ import Rating from './Rating.js';
 import TextArea from './TextArea.js';
 import Box from '@mui/material/Box';
 import { FormControl, Typography } from '@mui/material';
+import { debounce } from '../../../../utility.js';
 
 
 
 class Section extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.autosave = debounce(() => {
+            this.props.handleSubmit(false);
+        }, 2000);
+    }
+    
     render() {
         var rubric = this.props.rubric;
 
@@ -52,6 +61,7 @@ class Section extends Component {
                     id={index}
                     key={index}
                     isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                    autosave={this.autosave}
                 />
             );
 
@@ -72,6 +82,7 @@ class Section extends Component {
                     id={index}
                     key={index}
                     isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                    autosave={this.autosave}
                 />
             );
 
@@ -112,6 +123,7 @@ class Section extends Component {
                                     unitValue={this.props.unitValue}
                                     rating={rating}
                                     isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                                    autosave={this.autosave}
                                 />
                             </Box>
                         </Box>
@@ -144,6 +156,7 @@ class Section extends Component {
                                 currentData={currentData}
                                 categoryName={category}
                                 isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                                autosave={this.autosave}
                             />
                         </Box>
                     </FormControl> 
