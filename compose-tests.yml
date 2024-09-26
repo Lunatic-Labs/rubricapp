@@ -9,7 +9,12 @@ services:
       service: frontend
     entrypoint: npm test
     command: []
+    volumes:
+      - "frontend-jest-cache:/tmp"
     depends_on:
       - backend
     environment:
       - REACT_APP_API_URL=http://backend:5000/api
+
+volumes:
+  frontend-jest-cache:
