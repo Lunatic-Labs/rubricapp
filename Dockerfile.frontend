@@ -1,0 +1,18 @@
+# Use a valid Node.js version as base
+FROM node:20
+
+# Set the working directory
+WORKDIR /app
+
+# Copy package files and install dependencies
+COPY FrontEndReact/package*.json /app/
+RUN npm install
+
+# Copy the rest of the frontend code
+COPY FrontEndReact/ /app/
+
+# Expose the Frontend port
+EXPOSE 3000
+
+# Start the Frontend server
+CMD ["npm", "start"]

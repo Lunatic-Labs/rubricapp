@@ -1,0 +1,46 @@
+services:
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    ports:
+      - "127.0.0.1:5050:5000"
+    depends_on:
+      - redis
+    volumes:
+      # Mount the source files inside the container to allow for Flask hot reloading to work
+      - "./BackEndFlask/Functions:/app/Functions:rw"
+      - "./BackEndFlask/controller:/app/controller:rw"
+      - "./BackEndFlask/core:/app/core:rw"
+      - "./BackEndFlask/models:/app/models:rw"
+    networks:
+      - app-network
+    environment:
+      - REDIS_HOST=redis
+      - FLASK_DEBUG=1
+
+  redis:
+    image: redis:7.2.4
+    ports:
+      - "127.0.0.1:6379:6379"
+    networks:
+      - app-network
+
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    ports:
+      - "127.0.0.1:3000:3000"
+    volumes:
+      # Mount the source files inside the container to allow for React hot reloading to work
+      - "./FrontEndReact/src:/app/src:ro"
+      - "./FrontEndReact/public:/app/public:ro"
+    environment:
+      - REACT_APP_API_URL=http://localhost:5050/api
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge

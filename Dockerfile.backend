@@ -1,0 +1,34 @@
+# Use Python 3.12 slim image as base
+FROM python:3.12-slim-bullseye
+
+# Set build-time arguments
+ARG SKIP_CRONTAB_SETUP=true
+ENV SKIP_CRONTAB_SETUP=$SKIP_CRONTAB_SETUP
+
+ARG DOCKER_BUILD=true
+ENV DOCKER_BUILD=$DOCKER_BUILD
+
+# Install necessary dependencies
+RUN apt-get update
+
+# Set the working directory
+WORKDIR /app
+
+# Copy only requirements and setup scripts first to leverage Docker cache
+COPY BackEndFlask/requirements.txt BackEndFlask/setupEnv.py /app/
+
+# Install Python dependencies
+RUN pip install --no-cache-dir --upgrade pip \
+    && pip install --no-cache-dir -r requirements.txt
+
+# Copy the rest of the backend code
+COPY BackEndFlask/ /app/
+
+# Initialize the Backend environment
+RUN python setupEnv.py -d
+
+# Expose the Backend port
+EXPOSE 5000
+
+# Start the Flask server
+CMD ["python", "setupEnv.py", "-s"]
