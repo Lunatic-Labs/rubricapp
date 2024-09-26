@@ -88,9 +88,9 @@ class AdminBulkUpload extends Component {
             genericResourcePOST(url, this, formData);
 
             if (this.props.tab === "BulkUpload") {
-                confirmCreateResource("User");
+                confirmCreateResource("UserBulkUpload");
             } else {
-                confirmCreateResource("Team");
+                confirmCreateResource("TeamBulkUpload");
             }
         }
     }
