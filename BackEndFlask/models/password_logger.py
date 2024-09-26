@@ -1,4 +1,3 @@
-from flask import Flask, request
-from logger import Logger
+from logger import password_reset
 
     
