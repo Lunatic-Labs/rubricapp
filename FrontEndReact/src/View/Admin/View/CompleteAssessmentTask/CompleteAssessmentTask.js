@@ -200,8 +200,8 @@ class CompleteAssessmentTask extends Component {
 
                 var data = json;
                 // There is an existing assessment for this student
-                if (Object.keys(chosenCompleteAssessmentTask).length > 0) {
-                    chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
+                if (chosenCompleteAssessmentTask && Object.keys(chosenCompleteAssessmentTask).length > 0) {
+                    // chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
                     data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
     
                     if (data && this.doRubricsForCompletedMatch(json, data)) {
