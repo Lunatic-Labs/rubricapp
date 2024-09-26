@@ -81,21 +81,6 @@ class CompleteAssessmentTask extends Component {
         }
     }
 
-    componentDidUpdate(prevProps, prevState) {
-        // console.log(`Joe ${prevState.rubrics === null} && ${prevState.teams === null} && ${prevState.teams_users === null}`);
-        // if (prevState.rubrics === null && prevState.teams === null && prevState.teams_users === null) {
-        //     console.log(`Has teams: ${this.state.teams != null}`);
-        //     if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
-        //         var teamIds = this.state.teams.map(team => team.team_id);
-
-        //         genericResourceGET(
-        //             `/user?team_ids=${teamIds}`,
-        //             "teams_users", this
-        //         );
-        //     }
-        // }
-    }
-
     componentDidMount() {
         var navbar = this.props.navbar;
 
