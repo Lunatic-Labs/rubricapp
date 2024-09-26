@@ -60,11 +60,24 @@ class AdminBulkUpload extends Component {
     onFormSubmit = (e) => {
         e.preventDefault();
 
+        var fileName;
+        var lastDot;
+        var fileExtension;
+
+        if (this.state.selectedFile !== null) {
+            fileName = this.state.selectedFile.name;
+            lastDot = fileName.lastIndexOf('.');
+            fileExtension = fileName.substring(lastDot + 1);
+        }
+
         if(this.state.selectedFile === null) {
             this.setState({
                 errorMessage: "Please Select a File to Upload!"
             });
-
+        } else if (fileExtension !== "csv" && fileExtension !== "xlsx") {
+            this.setState({
+                errorMessage: "Please Select a File using the .csv or .xlsx format!"
+            });
         } else {
             var navbar = this.props.navbar;
 
@@ -85,13 +98,15 @@ class AdminBulkUpload extends Component {
 
             url += navbar.state.chosenCourse["course_id"];
 
-            genericResourcePOST(url, this, formData);
-
-            if (this.props.tab === "BulkUpload") {
-                confirmCreateResource("User");
-            } else {
-                confirmCreateResource("Team");
-            }
+            genericResourcePOST(url, this, formData).then((result) => {
+                if (result !== undefined && result.errorMessage === null) {
+                    if (this.props.tab === "BulkUpload") {
+                        confirmCreateResource("User");
+                    } else {
+                        confirmCreateResource("Team");
+                    }
+                }
+            });
         }
     }
 
