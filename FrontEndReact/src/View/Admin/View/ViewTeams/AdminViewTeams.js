@@ -44,6 +44,7 @@ class AdminViewTeams extends Component {
                 this.setState({
                     successMessage: null
                 });
+                this.props.navbar.confirmCreateResource("Team");
             }, 3000);
         }
     }
