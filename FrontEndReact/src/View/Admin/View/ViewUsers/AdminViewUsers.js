@@ -46,6 +46,7 @@ class AdminViewUsers extends Component {
                 this.setState({
                     successMessage: null
                 });
+                this.props.navbar.confirmCreateResource("User");
             }, 3000);
         }
     }
