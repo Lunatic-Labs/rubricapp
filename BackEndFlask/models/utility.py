@@ -23,6 +23,8 @@ def send_new_user_email(address: str, password: str):
 def send_reset_code_email(address: str, code: str): 
     subject = "Skillbuilder - Reset your password"
     message = f'''Your reset code is <b>{code}</b>.
+
+                go to skill-builder.net to login.
                 
                 Cheers,
                 The Skillbuilder Team'''
