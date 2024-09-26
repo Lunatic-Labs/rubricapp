@@ -137,7 +137,8 @@ class Logger:
         self.__try_clear()
         self.logger.critical(msg)
 
-    def password_reset():
+    def password_reset(self, msg:str):
+        self.__try_clear()
         pass
     
 logger = Logger("rubricapp_logger")
