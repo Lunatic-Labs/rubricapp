@@ -307,6 +307,7 @@ class AssessmentTaskSchema(ma.Schema):
             "create_team_password",
             "comment",
             "number_of_teams",
+            "max_team_size"
             "notification_sent"
         )
 
