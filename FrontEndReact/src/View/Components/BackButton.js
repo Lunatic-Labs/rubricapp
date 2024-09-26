@@ -23,7 +23,8 @@ export default function BackButton (props){
           onClick={() => {
             props.navbar.setState({
               activeTab: "Courses",
-              chosenCourse: null
+              chosenCourse: null,
+              successMessage: null
             });
           }}
           variant="contained"
