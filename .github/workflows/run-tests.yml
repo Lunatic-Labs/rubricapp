@@ -19,25 +19,13 @@ jobs:
         uses: docker/setup-buildx-action@v3
       
       - name: Build backend
-        uses: docker/bake-action@v5
-        with:
-          targets: backend
-          push: false
-          load: true
+        run: docker compose build backend
       
       - name: Start backend
         run: |
-          docker images
-          docker compose up -d backend
+          docker compose up --no-build -d backend
           sleep 5
           curl -v 'http://127.0.0.1:5050/api'
-      
-      # - name: Start backend
-      #   run: |
-      #     cd BackEndFlask
-      #     python setupEnv.py -d
-      #     python setupEnv.py -s &
-      #     for attempt in {1..20}; do sleep 1; if curl 'http://localhost:5050/api'; then echo ready; break; fi; echo waiting...; done
       
       - name: Install Node dependencies
         run: |
