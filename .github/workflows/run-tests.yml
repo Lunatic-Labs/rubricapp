@@ -39,12 +39,14 @@ jobs:
       #     python setupEnv.py -s &
       #     for attempt in {1..20}; do sleep 1; if curl 'http://localhost:5050/api'; then echo ready; break; fi; echo waiting...; done
       
-      # - name: Install Node dependencies
-      #   run: |
-      #     cd FrontEndReact
-      #     npm install
+      - name: Install Node dependencies
+        run: |
+          cd FrontEndReact
+          npm install
       
-      # - name: Run Jest tests
-      #   run: |
-      #     cd FrontEndReact
-      #     npm test
+      - name: Run Jest tests
+        run: |
+          cd FrontEndReact
+          npm test
+        env:
+          REACT_APP_API_URL: 'http://127.0.0.1:5050/api'
