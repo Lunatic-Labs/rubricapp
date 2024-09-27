@@ -18,16 +18,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      # - name: Build and push
-      #   uses: docker/bake-action@v5
-      #   with:
-      #     targets: backend
-      #     push: false
-      #     load: true
+      - name: Build backend
+        uses: docker/bake-action@v5
+        with:
+          targets: backend
+          push: false
+          load: true
       
       - name: Start backend
         run: |
-          docker compose run -d --no-build backend
+          docker compose run -d --rm backend
+          sleep 5
       
       # - name: Start backend
       #   run: |
@@ -36,12 +37,12 @@ jobs:
       #     python setupEnv.py -s &
       #     for attempt in {1..20}; do sleep 1; if curl 'http://localhost:5050/api'; then echo ready; break; fi; echo waiting...; done
       
-      # - name: Install Node dependencies
-      #   run: |
-      #     cd FrontEndReact
-      #     npm install
+      - name: Install Node dependencies
+        run: |
+          cd FrontEndReact
+          npm install
       
-      # - name: Run Jest tests
-      #   run: |
-      #     cd FrontEndReact
-      #     npm test
+      - name: Run Jest tests
+        run: |
+          cd FrontEndReact
+          npm test
