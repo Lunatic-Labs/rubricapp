@@ -27,7 +27,7 @@ jobs:
       
       - name: Start backend
         run: |
-          docker compose run -d --rm backend
+          docker compose up -d --no-build backend
           sleep 5
           curl -v 'http://127.0.0.1:5050/api'
       
