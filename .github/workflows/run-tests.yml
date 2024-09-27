@@ -27,7 +27,7 @@ jobs:
       
       - name: Start backend
         run: |
-          docker compose run -d backend
+          docker compose run -d --no-build backend
       
       # - name: Start backend
       #   run: |
