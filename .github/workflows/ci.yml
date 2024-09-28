@@ -35,8 +35,6 @@ jobs:
           key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('FrontEndReact/**/*.js', 'FrontEndReact/package.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
-            ${{ runner.os }}-build-
-            ${{ runner.os }}-
       
       - name: Build backend
         run: docker compose build backend
