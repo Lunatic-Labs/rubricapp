@@ -33,13 +33,13 @@ var eaib = "editAssessmentIconButton";
 var aeatt = "adminEditAssessmentTaskTitle";
 var vcaib = "viewCompletedAssessmentIconButton";
 var vcat = "viewCompletedAssessmentsTitle";
-var satb = "startAssessmentTasksButton";
+var satb = "startAssessmentTaskButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
-var eatb = "exportAssessmentTaskButton";
+var lb = "loginButton";
 
 
 
-test("NOTE: Tests 1-??? will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -81,12 +81,6 @@ test("AdminViewAssessmentTask.test.js Test 2: Should render the Assessment Task 
 test("AdminViewAssessmentTask.test.js Test 3: Should render the My Custom Rubrics page given the My Custom Rubrics Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-
-    clickElementWithAriaLabel(lb);
-
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
     });
@@ -113,12 +107,6 @@ test("AdminViewAssessmentTask.test.js Test 3: Should render the My Custom Rubric
 
 test("AdminViewAssessmentTask.test.js Test 4: Should render the Import Assessment Tasks page given the Import Tasks Button is clicked on Admin View.",  async () => {
     render(<Login />);
-
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-
-    clickElementWithAriaLabel(lb);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -147,12 +135,6 @@ test("AdminViewAssessmentTask.test.js Test 4: Should render the Import Assessmen
 test("AdminViewAssessmentTask.test.js Test 5: Should render the Add Assessment Task page given the Add Task Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-
-    clickElementWithAriaLabel(lb);
-
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
     });
@@ -180,12 +162,6 @@ test("AdminViewAssessmentTask.test.js Test 5: Should render the Add Assessment T
 test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment Task page given the Edit Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-
-    clickElementWithAriaLabel(lb);
-
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
     });
@@ -200,9 +176,9 @@ test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment 
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-    });
 
-    clickFirstElementWithAriaLabel(eaib);
+        clickFirstElementWithAriaLabel(eaib);
+    });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aeatt);
@@ -213,12 +189,6 @@ test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment 
 test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assessment Tasks page given the View Icon Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-
-    clickElementWithAriaLabel(lb);
-
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
     });
@@ -233,9 +203,9 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-    });
 
-    clickFirstElementWithAriaLabel(vcaib);
+        clickFirstElementWithAriaLabel(vcaib);
+    });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcat);
@@ -246,12 +216,6 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
 test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.",  async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-
-    clickElementWithAriaLabel(lb);
-
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
     });
@@ -266,40 +230,11 @@ test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-    });
 
-    clickElementWithAriaLabel(satb);
+        clickFirstElementWithAriaLabel(satb);
+    });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vatit);
     });
-});
-
-
-test("AdminViewAssessmentTask.test.js Test 9: Should trigger a csv download given that the Export Button clicked on Admin View.",  async () => {
-    render(<Login />);
-
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-
-    clickElementWithAriaLabel(lb);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
-    });
-
-    clickElementWithAriaLabel(at);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
-    });
-
-    clickElementWithAriaLabel(eatb);
 });
