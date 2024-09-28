@@ -8,6 +8,8 @@ services:
       service: frontend
     entrypoint: npm test -- --cacheDirectory /tmp/jest-cache
     command: []
+    depends_on:
+      - backend
     volumes:
       - "frontend-jest-cache:/tmp/jest-cache"
     environment:
