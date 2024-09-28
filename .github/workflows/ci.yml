@@ -1,6 +1,12 @@
 name: CI
 
-on: [pull_request, push]
+on:
+  pull_request:
+  
+  push:
+    branches:
+      - "master"
+      - "SKIL-462" # For testing
 
 jobs:
   build:
@@ -14,7 +20,7 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 20
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: FrontEndReact/package.json
       
       - name: Set up Docker Buildx
@@ -35,13 +41,14 @@ jobs:
       - name: Build backend
         run: docker compose build backend
       
-      # TODO: Run pytests here
+      # TODO: Run pytests here using docker compose run or something
       
       - name: Start backend
         run: |
           docker compose up --no-build -d backend
           sleep 5
           curl -v 'http://127.0.0.1:5050/api'
+        # Use curl to make sure the backend is up and accessible
       
       - name: Install Node dependencies
         run: |
@@ -57,5 +64,9 @@ jobs:
         run: |
           cd FrontEndReact
           npm test -- --all --cacheDirectory /tmp/jest-cache --setupFiles ./jest-ci-setup.js --setupFiles ./node_modules/react-app-polyfill/jsdom.js
+        # See FrontEndReact/jest-ci-setup.js for the rationale behind the --setupFiles ./jest-ci-setup.js hack
+        # The ./node_modules/react-app-polyfill/jsdom.js setup file is enabled by default, but
+        #  using any setupFiles args overrides the defaults so I have to add it
+        #  manually
         env:
-          REACT_APP_API_URL: 'http://127.0.0.1:5050/api'
+          REACT_APP_API_URL: "http://127.0.0.1:5050/api"
