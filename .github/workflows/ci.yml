@@ -1,6 +1,6 @@
 name: CI
 
-on: [pull_request]
+on: [pull_request, push]
 
 jobs:
   build:
@@ -41,10 +41,9 @@ jobs:
           cd FrontEndReact
           npx eslint --max-warnings=0 .
       
-      # TODO: Fix Jest tests so that they work on CI
-      # - name: Run Jest tests
-      #   run: |
-      #     cd FrontEndReact
-      #     npm test
-      #   env:
-      #     REACT_APP_API_URL: 'http://127.0.0.1:5050/api'
+      - name: Run Jest tests
+        run: |
+          cd FrontEndReact
+          npm test --maxWorkers 1 --all
+        env:
+          REACT_APP_API_URL: 'http://127.0.0.1:5050/api'
