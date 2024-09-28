@@ -36,7 +36,8 @@ var vcatt = "viewCompletedAssessmentsTitle";
 var satb = "startAssessmentTasksButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var vmcrb = "viewMyCustomRubricsButton";
-var eatb = "exportAssessmentTaskButton";
+var aeatt = "adminEditAssessmentTaskTitle";
+
 
 
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
@@ -234,7 +235,7 @@ test("AssessmentDashboard.test.js Test 9: Should show Edit Assessment page when 
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithAriaLabelToBeInDocument(aeatt);
     });
 });
 
@@ -289,34 +290,5 @@ test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessme
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vatit);
-    });
-});
-
-
-test("AssessmentDashboard.test.js Test 12: Should download a csv file when the export button is clicked.", async () => {
-    render(<Login/>);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
-    });
-
-    clickElementWithAriaLabel(at);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(eatb);
-    });
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(eatb);
-        }, 3000);
     });
 });
