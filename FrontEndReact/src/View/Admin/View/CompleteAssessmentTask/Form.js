@@ -12,8 +12,8 @@ import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
 
 // Eslint warning
-var jj = 6;
-var jj = 3;
+// var jj = 6;
+// var jj = 3;
 
 class Form extends Component {
     constructor(props) {
