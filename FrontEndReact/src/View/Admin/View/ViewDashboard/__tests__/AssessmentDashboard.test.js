@@ -33,7 +33,7 @@ var aaatt = "adminAddAssessmentTaskTitle";
 var eaib = "editAssessmentIconButton";
 var vcaib = "viewCompletedAssessmentIconButton";
 var vcatt = "viewCompletedAssessmentsTitle";
-var catb = "completeAssessmentTaskButton";
+var satb = "startAssessmentTaskButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var vmcrb = "viewMyCustomRubricsButton";
 var eatb = "exportAssessmentTaskButton";
@@ -284,7 +284,7 @@ test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessme
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
 
-        clickFirstElementWithAriaLabel(catb);
+        clickFirstElementWithAriaLabel(satb);
     });
 
     await waitFor(() => {
