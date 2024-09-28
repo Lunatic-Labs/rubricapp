@@ -32,7 +32,7 @@ jobs:
           cache-name: jest-cache
         with:
           path: /tmp/jest-cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('FrontEndReact/**/*.js') }}
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('FrontEndReact/**/*.js', 'FrontEndReact/package.json') }}
           restore-keys: |
             ${{ runner.os }}-build-${{ env.cache-name }}-
             ${{ runner.os }}-build-
@@ -45,7 +45,7 @@ jobs:
       
       - name: Start backend
         run: |
-          docker compose up --no-build -d backend
+          docker compose up --no-build --detach backend
           sleep 5
           curl -v 'http://127.0.0.1:5050/api'
         # Use curl to make sure the backend is up and accessible
