@@ -44,6 +44,6 @@ jobs:
       - name: Run Jest tests
         run: |
           cd FrontEndReact
-          npm test -- --maxWorkers 1 --all
+          npm test -- --all --setupFiles ./jest-ci-setup.js --setupFiles ./node_modules/react-app-polyfill/jsdom.js
         env:
           REACT_APP_API_URL: 'http://127.0.0.1:5050/api'
