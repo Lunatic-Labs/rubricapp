@@ -1,6 +1,6 @@
 name: CI
 
-on: [push, pull_request]
+on: [pull_request]
 
 jobs:
   build:
@@ -48,4 +48,3 @@ jobs:
       #     npm test
       #   env:
       #     REACT_APP_API_URL: 'http://127.0.0.1:5050/api'
-
