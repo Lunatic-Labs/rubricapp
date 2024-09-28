@@ -33,7 +33,7 @@ var eaib = "editAssessmentIconButton";
 var aeatt = "adminEditAssessmentTaskTitle";
 var vcaib = "viewCompletedAssessmentIconButton";
 var vcat = "viewCompletedAssessmentsTitle";
-var satb = "startAssessmentTaskButton";
+var satb = "startAssessmentTasksButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var lb = "loginButton";
 
