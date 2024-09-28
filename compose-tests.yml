@@ -3,18 +3,22 @@ include:
 
 services:
   frontend-tests:
-    container_name: rubricapp-frontend-tests
     extends:
       file: compose.yml
       service: frontend
-    entrypoint: npm test
+    entrypoint: npm test -- --cacheDirectory /tmp/jest-cache
     command: []
     volumes:
-      - "frontend-jest-cache:/tmp"
-    depends_on:
-      - backend
+      - "frontend-jest-cache:/tmp/jest-cache"
     environment:
       - REACT_APP_API_URL=http://backend:5000/api
+  
+  backend-tests:
+    extends:
+      file: compose.yml
+      service: backend
+    entrypoint: python setupEnv.py -t
+    command: []
 
 volumes:
   frontend-jest-cache:
