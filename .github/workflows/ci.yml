@@ -20,6 +20,18 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
+      - name: Cache jest cache
+        uses: actions/cache@v3
+        env:
+          cache-name: jest-cache
+        with:
+          path: /tmp/jest-cache
+          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('FrontEndReact/**/*.js') }}
+          restore-keys: |
+            ${{ runner.os }}-build-${{ env.cache-name }}-
+            ${{ runner.os }}-build-
+            ${{ runner.os }}-
+      
       - name: Build backend
         run: docker compose build backend
       
@@ -44,6 +56,6 @@ jobs:
       - name: Run Jest tests
         run: |
           cd FrontEndReact
-          npm test -- --all --setupFiles ./jest-ci-setup.js --setupFiles ./node_modules/react-app-polyfill/jsdom.js
+          npm test -- --all --cacheDirectory /tmp/jest-cache --setupFiles ./jest-ci-setup.js --setupFiles ./node_modules/react-app-polyfill/jsdom.js
         env:
           REACT_APP_API_URL: 'http://127.0.0.1:5050/api'
