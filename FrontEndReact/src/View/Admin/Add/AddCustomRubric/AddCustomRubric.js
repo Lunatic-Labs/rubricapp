@@ -4,7 +4,7 @@ import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CustomButton from "./Components/CustomButton.js";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { genericResourcePOST } from "../../../../utility";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
@@ -80,22 +80,37 @@ class AddCustomRubric extends React.Component {
             }
 
             var cookies = new Cookies();
+            if (categoryIds !== null) {
+                genericResourcePUT(
+                    `/rubric`,
+                    this,
+                    JSON.stringify({
+                        rubric: {
+                            rubric_name: document.getElementById("rubricNameInput").value,
+                            rubric_description: document.getElementById(
+                                "rubricDescriptionInput",
+                            ).value,
+                            owner: cookies.get("user")["user_id"],
+                        },
+                    }),
+                );
+            } else {
+                genericResourcePOST(
+                    `/rubric`,
+                    this,
+                    JSON.stringify({
+                        rubric: {
+                            rubric_name: document.getElementById("rubricNameInput").value,
+                            rubric_description: document.getElementById(
+                                "rubricDescriptionInput",
+                            ).value,
+                            owner: cookies.get("user")["user_id"],
+                        },
 
-            genericResourcePOST(
-                `/rubric`,
-                this,
-                JSON.stringify({
-                    rubric: {
-                        rubric_name: document.getElementById("rubricNameInput").value,
-                        rubric_description: document.getElementById(
-                            "rubricDescriptionInput",
-                        ).value,
-                        owner: cookies.get("user")["user_id"],
-                    },
-
-                    categories: categoryIds,
-                }),
-            );
+                        categories: categoryIds,
+                    }),
+                );
+            }
 
             this.props.navbar.confirmCreateResource("MyCustomRubrics");
         };

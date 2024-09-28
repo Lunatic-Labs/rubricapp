@@ -1,9 +1,10 @@
+import { Component } from "react";
+import AdminViewCustomRubrics from "../../View/ViewCustomRubrics/AdminViewCustomRubrics";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React, { useState } from "react";
 import  Button from "@mui/material/Button";
-
 
 
 // NOTE: Custom Theme for the Collapsible table
@@ -40,7 +41,7 @@ const customTheme = createTheme({
   },
 });
 
-const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly, showEditButton, showDeleteButton }) => {
+const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly, showEditButton, showDeleteButton, navbar }) => {
 
   // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
@@ -101,7 +102,9 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             variant="contained"
                             label="Edit Custom Rubric"
                             isOutlined={false}
-                            // onClick={}
+                            onClick={() => {
+                              navbar.setNewTab("AddCustomRubric");
+                            }}
                             style={{
                               marginLeft: '330px',
                               marginRight: '15px',
@@ -117,7 +120,6 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             variant="contained"
                             label="Edit Custom Rubric"
                             isOutlined={false}
-                            // onClick={}
                             aria-label="myCustomRubricsDeleteCustomRubricButton"
                           >Delete</Button>
                         )}

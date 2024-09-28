@@ -1,3 +1,11 @@
+#----------------------------------------------------------------------------------------------------
+# Developer: Aldo Vera-Espinoza
+# Date: 8 May, 2024
+# File Purpose: 
+#   Creates a way for the front end to ask for a csv file and get a properly filled
+#   csv sent back.
+#----------------------------------------------------------------------------------------------------
+
 import os
 import json
 import pandas as pd

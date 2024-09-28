@@ -22,6 +22,12 @@ export function genericResourcePUT(fetchURL, component, body) {
     }, timeToWait);
 }
 
+export function genericResourceDELETE(fetchURL, component, body) {
+    setTimeout(() => {
+        genericResourceFetch(fetchURL, null, component, "DELETE", body);
+    }, timeToWait);
+}
+
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
 
