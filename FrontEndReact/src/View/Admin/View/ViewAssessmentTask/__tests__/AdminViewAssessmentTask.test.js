@@ -33,6 +33,9 @@ var eaib = "editAssessmentIconButton";
 var aeatt = "adminEditAssessmentTaskTitle";
 var vcaib = "viewCompletedAssessmentIconButton";
 var vcat = "viewCompletedAssessmentsTitle";
+var satb = "startAssessmentTasksButton";
+var vatit = "viewAssessmentTaskInstructionsTitle";
+var eatb = "exportAssessmentTaskButton";
 
 
 
@@ -237,4 +240,66 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcat);
     });
+});
+
+
+test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.",  async () => {
+    render(<Login />);
+
+    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+
+    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+
+    clickElementWithAriaLabel(lb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    clickElementWithAriaLabel(satb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vatit);
+    });
+});
+
+
+test("AdminViewAssessmentTask.test.js Test 9: Should trigger a csv download given that the Export Button clicked on Admin View.",  async () => {
+    render(<Login />);
+
+    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+
+    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+
+    clickElementWithAriaLabel(lb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    clickElementWithAriaLabel(eatb);
 });
