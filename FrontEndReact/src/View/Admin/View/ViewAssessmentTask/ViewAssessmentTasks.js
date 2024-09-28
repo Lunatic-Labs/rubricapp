@@ -312,7 +312,7 @@ class ViewAssessmentTasks extends Component {
                                             className='primary-color'
                                             variant='contained'
                                             disabled
-                                            aria-label='completeAssessmentTaskButton'
+                                            aria-label='startAssessmentTasksButton'
                                         >
                                             START
                                         </Button>
@@ -328,7 +328,7 @@ class ViewAssessmentTasks extends Component {
                                 onClick={() => {
                                     navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                 }}
-                                aria-label='completeAssessmentTaskButton'
+                                aria-label='startAssessmentTasksButton'
                             >
                                 START
                             </Button>

@@ -179,7 +179,7 @@ class ViewAssessmentTasks extends Component {
                                         navbar.setAssessmentTaskInstructions(assessmentTasks, atId, chosenCAT);
                                     }}
 
-                                    aria-label="completedAssessmentTasksButton"
+                                    aria-label="startAssessmentTasksButton"
                                 >
                                     START
                                 </Button>
