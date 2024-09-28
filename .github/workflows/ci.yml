@@ -6,7 +6,6 @@ on:
   push:
     branches:
       - "master"
-      - "SKIL-462" # For testing
 
 jobs:
   build:
