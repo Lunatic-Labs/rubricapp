@@ -23,7 +23,7 @@ var vcib = "viewCourseIconButton";
 var matt = "myAssessmentTasksTitle";
 var catt = "completedAssessmentTasksTitle";
 var mtt = "myTeamsTitle";
-var catb = "completedAssessmentTasksButton";
+var satb = "startAssessmentTasksButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var catvib = "completedAssessmentTasksViewIconButton";
 var mhbb = "mainHeaderBackButton";
@@ -80,7 +80,7 @@ test("StudentDashboard.test.js Test 2: Should render the completed assessment ta
             expectElementWithAriaLabelToBeInDocument(mtt);
         }, 3000);
 
-        clickFirstElementWithAriaLabel(catb);
+        clickFirstElementWithAriaLabel(satb);
     });
 
     await waitFor(() => {
@@ -168,7 +168,7 @@ test("StudentDashboard.test.js Test 5: Should render the assessment tasks, compl
             expectElementWithAriaLabelToBeInDocument(mtt);
         }, 3000);
 
-        clickFirstElementWithAriaLabel(catb);
+        clickFirstElementWithAriaLabel(satb);
     });
 
     await waitFor(() => {
