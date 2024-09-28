@@ -38,6 +38,9 @@ services:
       # Mount the source files inside the container to allow for React hot reloading to work
       - "./FrontEndReact/src:/app/src:ro"
       - "./FrontEndReact/public:/app/public:ro"
+      # Store React build cache in a volume to allow it to persist between container builds
+      # This improves startup time
+      - "frontend-cache:/app/node_modules/.cache"
     environment:
       - REACT_APP_API_URL=http://localhost:5050/api
     networks:
@@ -46,3 +49,6 @@ services:
 networks:
   app-network:
     driver: bridge
+
+volumes:
+  frontend-cache:

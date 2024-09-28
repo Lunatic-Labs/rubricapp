@@ -121,20 +121,14 @@ export default function ViewAssessmentStatus(props) {
       improvementsData['improvements'][i]['percentage'] = percent  + "%";
     }
   }
-{/*remove border color top and fix it*/}
+/*remove border color top and fix it*/
   const innerGridStyle = {
     borderRadius: '1px',
     border: "#7F7F7F", 
     margin: "2px 2px 2px 0px",
     boxShadow: "0.3em 0.3em 1em #d6d6d6"
   };
-  const thinBox  = {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: '1px',
-    padding: '0'
-  };
+  
   const outerQuadrantSX = {
     display:"flex",
     justifyContent:"center"
