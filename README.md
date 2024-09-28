@@ -93,6 +93,33 @@ for analysis.
 
 
 
+## Runnng tests using Docker: ##
+
+- First open a new terminal and navigate to where you have this
+  repository cloned.
+  
+- Use `docker compose build` as described above to build the docker containers.
+  
+- To run the Jest tests for the frontend use
+  ```
+  docker compose -f compose-tests.yml run --rm frontend-tests
+  ```
+  NOTE: Running the frontend tests will automatically start the backend.
+  Once you are done testing, you can use `docker compose stop` to stop the
+  backend from running in the background.
+  
+- To check for any linter warnings/errors for the frontend use
+  ```
+  docker compose -f compose-tests.yml run --rm frontend-lint
+  ```
+  
+- To run the Pytests for the backend use
+  ```
+  docker compose -f compose-tests.yml run --rm backend-tests
+  ```
+
+
+
 ## REQUIREMENTS: ##
 
 - Python 3.12 and up.
