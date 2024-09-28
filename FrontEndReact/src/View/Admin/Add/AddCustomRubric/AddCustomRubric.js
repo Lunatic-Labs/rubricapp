@@ -80,9 +80,9 @@ class AddCustomRubric extends React.Component {
             }
 
             var cookies = new Cookies();
-            if (categoryIds !== null) {
+            if (document.getElementById("rubricNameInput").value !== "" && document.getElementById("rubricDescriptionInput").value !== "") {
                 genericResourcePUT(
-                    `/rubric`,
+                    `/rubric?rubric_id=${rubric["rubric_id"]}`,
                     this,
                     JSON.stringify({
                         rubric: {
@@ -92,6 +92,7 @@ class AddCustomRubric extends React.Component {
                             ).value,
                             owner: cookies.get("user")["user_id"],
                         },
+                        categories: categoryIds,
                     }),
                 );
             } else {
@@ -106,7 +107,6 @@ class AddCustomRubric extends React.Component {
                             ).value,
                             owner: cookies.get("user")["user_id"],
                         },
-
                         categories: categoryIds,
                     }),
                 );
