@@ -111,6 +111,13 @@ for analysis.
   ```
   to stop the backend from running in the background.
   
+  NOTE: If have a computer that has 8GB or fewer, then Docker might run out of
+  memory when trying to run the Jest tests and they'll freeze. To fix this use
+  this command instead of the one above:
+  ```sh
+  docker compose -f compose-tests.yml run --rm frontend-tests -w 2
+  ```
+  
 - To check for any linter warnings/errors for the frontend use
   ```sh
   docker compose -f compose-tests.yml run --rm frontend-lint

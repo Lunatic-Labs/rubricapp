@@ -8,7 +8,6 @@ services:
       service: frontend
     entrypoint: npm test -- --cacheDirectory /tmp/jest-cache
     command: []
-    mem_limit: 3G
     depends_on:
       - backend
     volumes:
