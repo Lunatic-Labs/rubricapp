@@ -717,6 +717,50 @@ def get_all_checkins_for_assessment(assessment_task_id):
 
     return checkins
 
+# This query was written by ChatGPT
+@error_log
+def get_all_nonfull_adhoc_teams(assessment_task_id):
+    """
+    Description:
+    Gets all team numbers where the number of users checked into a team
+    does not exceed the max_team_size for the given assessment task
+    and returns only the team numbers up to number_of_teams.
+
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
+    """
+    # Get the max_team_size and number_of_teams for the given assessment_task_id
+    assessment_task = db.session.query(
+        AssessmentTask
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id
+    ).first()
+
+    if not assessment_task:
+        return []  # No assessment task found
+
+    max_team_size = assessment_task.max_team_size
+    number_of_teams = assessment_task.number_of_teams
+
+    # Query to get all team_numbers where the team size is less than max_team_size
+    teams_above_max_size = db.session.query(
+        Checkin.team_number
+    ).filter(
+        Checkin.assessment_task_id == assessment_task_id
+    ).group_by(
+        Checkin.team_number
+    ).having(
+        db.func.count(Checkin.user_id) >= max_team_size
+    ).all()
+
+    # Extracting team numbers from the result tuples
+    invalid_team_numbers = {team[0] for team in teams_above_max_size}
+
+    # Generate a list of all team numbers up to number_of_teams
+    all_team_numbers = set(range(1, number_of_teams + 1))
+
+    # Return only those team numbers that are not invalid
+    return list(all_team_numbers - invalid_team_numbers)
 
 @error_log
 def get_completed_assessment_with_team_name(assessment_task_id):
