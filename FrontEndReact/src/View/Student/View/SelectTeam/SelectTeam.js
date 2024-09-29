@@ -45,27 +45,35 @@ class SelectTeam extends Component {
         let course = this.props.navbar.state.chosenCourse;
         
         if (course["use_fixed_teams"]) {
-            let courseID = this.props.navbar.state.chosenCourse["course_id"];
-
+            
+            let courseID = course["course_id"];
             genericResourceGET(
                 `/team?course_id=${courseID}`, 
                 "teams", this);
         }
         else {
-        // using Ad Hoc teams
-            let teams = [];
-            let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
+            // using Ad Hoc teams
+            let navbar = this.props.navbar; 
+            let atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 
-            for(let i = 1; i <= numTeams; i++) {
-                teams.push({
-                    "team_id": i,
-                    "team_name": `Team ${i}`
-                });
-            }
+            genericResourceGET(
+                `/checkin/nonfull-adhoc?assessment_task_id=${atId}`,
+                "teams", this
+            );
 
-            this.setState({
-                teams: teams
-            });
+            // console.log(teams)
+            // let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
+
+            // for(let i = 1; i <= numTeams; i++) {
+            //     teams.push({
+            //         "team_id": i,
+            //         "team_name": `Team ${i}`
+            //     });
+            // }
+
+            // this.setState({
+            //     teams: teams
+            // });
         }
     }
 
