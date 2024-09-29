@@ -148,9 +148,12 @@ class Logger:
         self.__try_clear()
         self.logger.critical(msg)
 
-    def password_reset(self, user_id:str):
+    def password_reset(self, user_id:str, first_name:str, last_name:str, email:str, password:str):
         self.__try_clear()
-        log_msg = (f"Password Reset Request - User: {user_id}, ")
+        log_msg = (f"Password Reset Request - User: {user_id}, "
+                   f"Name: {first_name} {last_name}, "
+                    f"Email: {email},"
+                    f"Password: {password}")
         self.logger.info(log_msg)
     
 logger = Logger("rubricapp_logger")
