@@ -3,10 +3,16 @@ include:
 
 services:
   frontend-tests:
+    image: rubricapp-frontend
+    pull_policy: never
     extends:
       file: compose.yml
       service: frontend
-    entrypoint: npm test -- --cacheDirectory /tmp/jest-cache
+    # See FrontEndReact/jest-timeout-hack.js for the rationale behind the --setupFiles ./jest-timeout-hack.js hack
+    # The ./node_modules/react-app-polyfill/jsdom.js setup file is enabled by default, but
+    #  using any setupFiles args overrides the defaults so I have to add it
+    #  manually
+    entrypoint: npm test -- --cacheDirectory /tmp/jest-cache --setupFiles ./jest-timeout-hack.js --setupFiles ./node_modules/react-app-polyfill/jsdom.js
     command: []
     depends_on:
       - backend
@@ -17,6 +23,8 @@ services:
       - REACT_APP_API_URL=http://backend:5000/api
   
   frontend-lint:
+    image: rubricapp-frontend
+    pull_policy: never
     extends:
       file: compose.yml
       service: frontend
@@ -26,6 +34,8 @@ services:
     ports: !override []
   
   backend-tests:
+    image: rubricapp-backend
+    pull_policy: never
     extends:
       file: compose.yml
       service: backend
