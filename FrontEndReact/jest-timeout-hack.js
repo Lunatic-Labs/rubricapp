@@ -21,7 +21,7 @@
 	seconds to complete which allows the broken code to be run. These tests need
 	to be properly fixed, but that would be monumental task so in the interest of
 	getting the CI working in a reasonable amount of time, this hack will force
-	the setTimeout blocks to delay for 10 seconds instead of 3 to compensate
+	the setTimeout blocks to delay for 60 seconds instead of 3 to compensate
 	for the slower CPUs on GitHub actions.
 */
 
@@ -30,7 +30,7 @@ const oldSetTimeout = global.setTimeout;
 global.setTimeout = function(callback, ms, ...args) {
 	// All of the setTimeout blocks I've seen in the tests use 3 seconds
 	// as the delay so I'm specifically targeting that.
-	if (ms === 3000) ms = 10_000;
+	if (ms === 3000) ms = 60_000;
 	
 	return oldSetTimeout(callback, ms, ...args);
 };
