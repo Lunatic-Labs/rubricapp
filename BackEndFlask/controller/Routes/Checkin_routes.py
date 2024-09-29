@@ -5,7 +5,8 @@ from controller.Route_response import *
 
 from models.queries import (
     get_all_checkins_for_assessment,
-    get_all_checkins_for_student_for_course
+    get_all_checkins_for_student_for_course,
+    get_all_nonfull_adhoc_teams
 )
 
 @bp.route('/checkin', methods = ['POST'])
@@ -52,6 +53,21 @@ def get_checked_in():
     except Exception as e:
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
+@bp.route('/checkin/nonfull-adhoc', methods = ["GET"])
+def get_nonfull_adhoc_teams():
+    # given an assessment task id, return list of team ids that have not reached the max team size
+    try:
+        if request.args and request.args.get("assessment_task_id"):
+            assessment_task_id = int(request.args.get("assessment_task_id"))
+            
+            valid_teams = [{"team_number": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]
+            
+            return create_good_response(valid_teams, 200, "int")
+            
+            
+    except Exception as e:
+        return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "checkin", 400)
+        
 class CheckinSchema(ma.Schema):
     class Meta:
         fields = (
