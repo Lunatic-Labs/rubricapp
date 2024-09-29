@@ -58,11 +58,14 @@ class CompleteAssessmentTask extends Component {
 
         this.handleDone = () => {
             var navbar = this.props.navbar;
+            let chosenAssessmentTask;
+            
             if (navbar.state.chosenCompleteAssessmentTask !== null) {   
-                var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
+                chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
             } else {
-                var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+                chosenAssessmentTask = navbar.state.chosenAssessmentTask;
             }
+            
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
                 "completedAssessments", this
@@ -78,20 +81,6 @@ class CompleteAssessmentTask extends Component {
                 `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
                  "checkin", this
             );
-        }
-    }
-
-    componentDidUpdate(prevProps, prevState) {
-        
-        if (prevState.rubrics === null && prevState.teams === null && prevState.teams_users === null) {
-            if (this.state.unitOfAssessment && this.state.teams && this.state.teams.length > 0) {
-                var teamIds = this.state.teams.map(team => team.team_id);
-
-                genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
-                    "teams_users", this
-                );
-            }
         }
     }
 
@@ -133,7 +122,16 @@ class CompleteAssessmentTask extends Component {
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
-        );
+        ).then((result) => {
+            if (this.state.unitOfAssessment && result.teams && result.teams.length > 0) {
+                var teamIds = result.teams.map(team => team.team_id);
+
+                genericResourceGET(
+                    `/user?team_ids=${teamIds}`,
+                    "teams_users", this
+                );
+            }
+        });
     
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
@@ -158,7 +156,8 @@ class CompleteAssessmentTask extends Component {
             users,
             teams_users,
             roles,
-            completedAssessments
+            completedAssessments,
+            checkin
         } = this.state;
         if (errorMessage) {
             return (
@@ -168,7 +167,7 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !completedAssessments|| !roles || !users || !teams ) {
+        } else if (!isLoaded || !rubrics || !completedAssessments || !roles || !users || !teams || !checkin) {
             return (
                 <Loading />
             );
@@ -183,7 +182,6 @@ class CompleteAssessmentTask extends Component {
             var navbar = this.props.navbar;
 
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-            var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
             json["done"] = false;
@@ -221,7 +219,7 @@ class CompleteAssessmentTask extends Component {
                 } else {
                     // new student assessment
                     if (this.state.unitOfAssessment)  { 
-                        var teamId = team[0]["team_id"];
+                        const teamId = team[0]["team_id"];
                         singleUnitData[teamId] = data;
                         singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);   
                     }  else {
@@ -257,7 +255,7 @@ class CompleteAssessmentTask extends Component {
                             />
                         );
                     } else {
-                        users.map((user) => {
+                        users.forEach((user) => {
                 
                             var complete = this.getCompleteIndividual(user["user_id"]);
                             if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 

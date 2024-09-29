@@ -27,11 +27,11 @@ var vasb = "viewAssessmentStatusBox";
 var mhbb = "mainHeaderBackButton";
 var raft = "ratingAndFeedbackTab";
 var avrb = "adminViewRatingsBox";
-var caiit = "characteristicsAndImprovementsImprovementTab";
-var bcid = "barChartImprovementsData";
+// var caiit = "characteristicsAndImprovementsImprovementTab";
+// var bcid = "barChartImprovementsData";
 var ast = "assessmentStatusTab";
-var caict = "characteristicsAndImprovementsCharacteristicsTab";
-var bccd = "barChartCharacteristicsData";
+// var caict = "characteristicsAndImprovementsCharacteristicsTab";
+// var bccd = "barChartCharacteristicsData";
 
 
 

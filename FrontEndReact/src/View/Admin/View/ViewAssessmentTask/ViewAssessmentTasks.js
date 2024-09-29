@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { IconButton } from '@mui/material';
 import { Button } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
@@ -299,17 +300,35 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
+                        const assessmentTask = assessmentTasks.find(task => task.assessment_task_id === atId);
+                        const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
+                        const teamsExist = this.props.teams && this.props.teams.length > 0;
+            
+                        if (isTeamAssessment && !teamsExist) {
+                            return (
+                                <Tooltip title="No teams available for this team assessment">
+                                    <span>
+                                        <Button
+                                            className='primary-color'
+                                            variant='contained'
+                                            disabled
+                                            aria-label='startAssessmentTasksButton'
+                                        >
+                                            START
+                                        </Button>
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
+            
                         return (
                             <Button
                                 className='primary-color'
-
                                 variant='contained'
-
                                 onClick={() => {
                                     navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                 }}
-
-                                aria-label='completeAssessmentTaskButton'
+                                aria-label='startAssessmentTasksButton'
                             >
                                 START
                             </Button>
