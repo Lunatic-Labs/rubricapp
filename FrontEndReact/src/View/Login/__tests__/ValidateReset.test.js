@@ -7,7 +7,7 @@ import {
     expectElementWithAriaLabelToBeInDocument,
     expectElementWithAriaLabelToHaveErrorMessage,
     changeElementWithAriaLabelWithInput,
-    changeElementWithAriaLabelWithCode
+    // changeElementWithAriaLabelWithCode
 } from "../../../testUtilities.js";
 
 
@@ -19,11 +19,11 @@ var vrbb = "validateResetBackButton";
 var vrcb = "validateResetConfirmButton";
 var vrf = "validateResetForm";
 var vrei = "validateResetEmailInput";
-var ecf = "enterCodeForm";
-var vcb = "verifyCodeButton";
-var scbb = "sendCodeBackButton";
+// var ecf = "enterCodeForm";
+// var vcb = "verifyCodeButton";
+// var scbb = "sendCodeBackButton";
 var ema = "errorMessageAlert";
-var sci = "sendCodeInput";
+// var sci = "sendCodeInput";
 
 
 
