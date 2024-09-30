@@ -1,4 +1,3 @@
-import { alignProperty } from '@mui/material/styles/cssUtils';
 import React from 'react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
 
