@@ -154,6 +154,6 @@ class Logger:
                    f"LMS: {lms_id}, "
                    f"Name: {first_name} {last_name}, "
                     f"Email: {email},")
-        self.logger.info(log_msg)
+        self.password_logger.info(log_msg)
     
 logger = Logger("rubricapp_logger")
