@@ -40,7 +40,6 @@ class EmailAlreadyExists(Exception):
 def get_users():
     return User.query.all()
 
-
 @error_log
 def get_users_by_role_id(role_id):
     return User.query.filter_by(role_id=role_id).all()

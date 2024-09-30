@@ -23,8 +23,8 @@ class ViewTeams extends Component{
         label: "Team Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"178px"}},
-          setCellProps: () => { return { width:"178px"} },
+          setCellHeaderProps: () => { return { width:"20%"}},
+          setCellProps: () => { return { width:"20%"} },
         }
       },
       {
@@ -32,13 +32,13 @@ class ViewTeams extends Component{
         label: "Observer Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"165px"}},
-          setCellProps: () => { return { width:"165px"} },
+          setCellHeaderProps: () => { return { width:"30%"}},
+          setCellProps: () => { return { width:"30%"} },
           customBodyRender: (observerId) => {
             return(
               observerId === chosenCourse["admin_id"] ?
-              <p className="pt-3" variant='contained'> Admin </p> :
-              <p className="pt-3" variant='contained'>{users[observerId]}</p>
+              <p> Admin </p> :
+              <p>{users[observerId]}</p>
             )
           }
         }
@@ -48,8 +48,8 @@ class ViewTeams extends Component{
         label: "Date Created",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"165px"}},
-          setCellProps: () => { return { width:"165px"} },
+          setCellHeaderProps: () => { return { width:"20%"}},
+          setCellProps: () => { return { width:"20%"} },
           customBodyRender: (date) => {
             var year = "";
             var month = "";
@@ -72,19 +72,19 @@ class ViewTeams extends Component{
             }
 
             return(
-              <p className="pt-3" variant='contained'>{month+'/'+day+'/'+year}</p>
+              <p>{month+'/'+day+'/'+year}</p>
             )
           }
         }
       },
       {
         name: "team_id",
-        label: "EDIT",
+        label: "Edit",
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", width:"130px", className:"button-column-alignment"} },
+          setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment"} },
           customBodyRender: (teamId) => {
             return(
               <IconButton
@@ -102,12 +102,12 @@ class ViewTeams extends Component{
       },
       {
         name: "team_id",
-        label: "VIEW TEAM MEMBERS",
+        label: "View Team Members",
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"120px", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", width:"120px", className:"button-column-alignment"} },
+          setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment"} },
           customBodyRender: (teamId) => {
             return(
               <IconButton
@@ -132,12 +132,15 @@ class ViewTeams extends Component{
       viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "standard",
+      responsive: "vertical",
       tableBodyMaxHeight: "55vh"
     };
 
     return (
-      <CustomDataTable data={teams ? teams:[]} columns={columns} options={options}/>
+      <CustomDataTable 
+        data={teams ? teams:[]} 
+        columns={columns} 
+        options={options}/>
     )
   }
 }

@@ -12,15 +12,16 @@ class ViewCompletedAssessmentTasks extends Component {
     var navbar = this.props.navbar;
 
     var completedAssessments = this.props.completedAssessments;
+    var assessmentTasks = this.props.assessmentTasks;
 
     const columns = [
       {
-        name: "team_name",
-        label: "Team Name",
+        name: "assessment_task_name",
+        label: "Task Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"230px" } },
-          setCellProps: () => { return { width:"230px" } },
+          setCellHeaderProps: () => { return { width:"290px" } },
+          setCellProps: () => { return { width:"290px" } },
         }
       },
       {
@@ -68,7 +69,7 @@ class ViewCompletedAssessmentTasks extends Component {
                   <div>
                       <IconButton
                           onClick={() => {
-                              navbar.setAssessmentTaskInstructions(completedAssessments, atId);
+                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId, completedAssessments);
                           }}
                           aria-label="completedAssessmentTasksViewIconButton"
                       >

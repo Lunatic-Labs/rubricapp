@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { Container } from '@mui/material';
-import Button from '@mui/material/Button';
+//import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
@@ -68,6 +68,8 @@ export default function ViewAssessmentStatus(props) {
 
   var stdev = 0;
 
+  var progress = 43;
+
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
     for (var i = 0; i < props.completedAssessments.length; i++) {
@@ -119,102 +121,130 @@ export default function ViewAssessmentStatus(props) {
       improvementsData['improvements'][i]['percentage'] = percent  + "%";
     }
   }
-
+/*remove border color top and fix it*/
   const innerGridStyle = {
-    borderRadius: '10px',
-    border: "3px #2e8bef",
-    borderTopStyle : "solid",
-    margin: "2px 2px 2px 2px",
-    boxShadow: "0 2px 0 #d6d6d6",
+    borderRadius: '1px',
+    border: "#7F7F7F", 
+    margin: "2px 2px 2px 0px",
+    boxShadow: "0.3em 0.3em 1em #d6d6d6"
   };
-
+  
   const outerQuadrantSX = {
     display:"flex",
     justifyContent:"center"
   };
 
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
-
+  
   return (
     <Container>
-      <Box sx={{ maxHeight:"100vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
-        <Grid container rowSpacing={0} columnSpacing={0} style={{ width: "90vw" }}>
-          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
-            <div className={innerDivClassName} style={innerGridStyle} >
-              <CharacteristicsAndImprovements
-                characteristicsData={characteristicsData}
-                improvementsData={improvementsData}
-                showSuggestions={props.showSuggestions}
-              />
-            </div>
-          </Grid>
+      <Box sx={{ maxHeight:"150vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
+        <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw" }}>
 
-          <Grid sx={{ display:"flex", flexDirection: "column", justifyContent:"center" }} item xs={6}>
-            <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
-              <Grid sx={outerQuadrantSX} item xs={6}>
-                <div className={innerDivClassName} style={innerGridStyle}> 
-                  <AssessmentTaskDropdown
-                    assessmentTasks={props.assessmentTasks}
-                    chosenAssessmentId={props.chosenAssessmentId}
-                    setChosenAssessmentId={props.setChosenAssessmentId}
-                  />
-                </div>
-              </Grid>
-
-              <Grid sx={outerQuadrantSX} item xs={6}>
-                <div className={innerDivClassName} style={innerGridStyle}> 
-                  <CategoryDropdown
-                    categories={categoryList}
-                    chosenCategoryId={chosenCategoryId}
-                    setChosenCategoryId={handleChosenCategoryIdChange}
-                    disabled={props.completedAssessments !== null && props.completedAssessments.length === 0}
-                  />
-                </div>
-              </Grid>
-            </Grid>
-
-            <Grid sx={{ display:"flex", flexDirection: "row", justifyContent:"center" }} item xs={12}>
-              { props.showRatings && 
-                <Grid sx={outerQuadrantSX} item xs={6}>
-                  <div className={innerDivClassName} style={innerGridStyle}>
-                    <h6>Distribution of Ratings</h6>
-
-                    <h6>Avg: {avg}; StdDev: {stdev}</h6>
-
-                      <BarChart width={300} height={150} data={ratingsData["ratings"]} barCategoryGap={0.5}>
-                        <XAxis dataKey="rating"/>
-
-                        <YAxis width={25} domain={[0, 'auto']}/>
-
-                        <CartesianGrid vertical={false}/>
-
-                        <Bar dataKey= "number" fill = "#2e8bef">
+          <Grid sx={{ display:"flex", marginBottom:'20px'}} item xs={12}>
+                { props.showRatings && 
+                  <Grid sx={outerQuadrantSX} item xs={6}>
+                    <div className={innerDivClassName} style={innerGridStyle}>
+                      <h6><u>Distribution of Ratings</u></h6>
+                      <BarChart
+                        layout='vertical'
+                        width={500}
+                        height={300}
+                        data={ratingsData["ratings"].slice().reverse()}
+                        barCategoryGap={0.5}
+                      >  
+                      {/* auto needs to be replaced with total amount of students or teams */}
+                        <XAxis type='number' width={40} domain={[0, 'auto' ]}/>
+                        <YAxis 
+                          dataKey="rating" 
+                          type="category"
+                          reverseAxisMapping={true}
+                          domain={[0, 5]} 
+                        />
+                        <CartesianGrid horizontal={false}/>
+                        <Bar dataKey="number" fill="#2e8bef">
                           <LabelList dataKey="number" fill="#ffffff" position="inside"/>
                         </Bar>
                       </BarChart>
-                  </div>
-                </Grid>
-              }
+                        <h6>Avg: {avg}; StdDev: {stdev}</h6>
+                    </div>
+                  </Grid> 
+                }
+                
+                <div style={{marginLeft:'20px'}}>
+                  <Grid item xs={12} sx={{ mb: 2 }}>
+                    <div style={{
+                      ...innerGridStyle,
+                      display: 'flex',
+                      flexDirection: 'row',
+                      justifyContent: 'space-between',
+                      gap: '16px',
+                      alignItems: 'center',
+                      width: '100%',
+                      marginBottom: '20px'
+                    }}>
+                      <AssessmentTaskDropdown
+                        assessmentTasks={props.assessmentTasks}
+                        chosenAssessmentId={props.chosenAssessmentId}
+                        setChosenAssessmentId={props.setChosenAssessmentId}
+                        style={{ flex: 1 }}
+                      />
+                      <CategoryDropdown
+                        categories={categoryList}
+                        chosenCategoryId={chosenCategoryId}
+                        setChosenCategoryId={handleChosenCategoryIdChange}
+                        disabled={props.completedAssessments !== null && props.completedAssessments.length === 0}
+                        style={{ flex: 1 }}
+                      />
+                    </div>
+                      <div style={{
+                        ...innerGridStyle,
+                        display: 'flex',
+                        flexDirection: 'column',
+                        justifyContent: 'space-between',
+                        alignItems: 'center',
+                        width: '100%',
+                        padding: "20px",
+                        height: '100%'
+                      }}>
+                        <h3>
+                          <u>Assessment Tasks Completed:</u>
+                        </h3>
+                        <div class="progress" style={{height: "35px", width:"100%", borderRadius:'50px',margin:'30px'}}>
+                          <div className={"progress-bar"} role={"progressbar"} style={{width: `${progress}%`, backgroundColor:'#2e8bef'}} 
+                          aria-valuenow={{progress}} aria-valuemin={0} aria-valuemax={100}>
+                            <h5>
+                              <b style={{
+                                float: 'right', 
+                                padding:'10px 10px 0 0'}}>{progress}
+                              </b>
+                            </h5>
+                          </div>
+                        </div> 
+                      </div>                                    
+                  </Grid>
 
-              <Grid sx={outerQuadrantSX} item xs={props.showRatings ? 6 : 12}>
-                <div className={innerDivClassName} style={innerGridStyle}>
-                  { props.completedByTAs && 
-                    <>
-                      <h1>43% of TA evaluations (43/100) are complete</h1>
-
-                      <Button style={{ marginTop: "1rem", backgroundColor: "#2E8BEF", color:"white", position: "center" }}>
-                        View Details
-                      </Button>
-                    </>
-                  }
-                  { !props.completedByTAs && 
-                    <>
-                      <h1>43% of student evaluations (43/100) are complete</h1>
-                    </>
-                  }
                 </div>
-              </Grid>
-            </Grid>
+                </Grid>
+          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
+            <div className={innerDivClassName} style={innerGridStyle} >
+            <CharacteristicsAndImprovements 
+              dataType="characteristics"
+              characteristicsData={characteristicsData}
+              improvementsData={improvementsData}
+              showSuggestions={props.showSuggestions}
+            />
+            </div>
+          </Grid>
+          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
+            <div className={innerDivClassName} style={innerGridStyle} >
+            <CharacteristicsAndImprovements 
+              dataType="improvements"
+              characteristicsData={characteristicsData}
+              improvementsData={improvementsData}
+              showSuggestions={props.showSuggestions}
+            />
+            </div>
           </Grid>
         </Grid>
       </Box>

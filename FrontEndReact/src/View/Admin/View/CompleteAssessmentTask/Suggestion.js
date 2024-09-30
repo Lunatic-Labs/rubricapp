@@ -34,10 +34,12 @@ class Suggestion extends Component {
       }
 
       this.props.setSuggestions(
-        this.props.teamValue,
+        this.props.unitValue,
         this.props.categoryName,
         newData
       );
+      
+      this.props.autosave();
     };
 
     return (
@@ -48,7 +50,7 @@ class Suggestion extends Component {
 
         onClick={handleChange}
 
-        disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
+        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
       >
         <Checkbox
           sx={{
@@ -62,7 +64,7 @@ class Suggestion extends Component {
 
           checked={this.state.checked}
 
-          disabled={this.props.isTeamCompleteAssessmentComplete(this.props.teamValue) && !this.props.navbar.props.isAdmin}
+          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
         />
 
         <label>{this.props.suggestion}</label>

@@ -12,18 +12,28 @@ class SelectTeam extends Component {
 
         this.state = {
             teams: null,
-            teamID: ""
+            teamID: "",
+            error: false,
+            errorMessage: ""
         };
 
         this.handleSelect = (event) => {
             this.setState({
                 teamID: event.target.value,
+                error: false
             })
         };
 
         this.checkInUser = () => {
             var navbar = this.props.navbar; 
 	        var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
+            
+            if (this.state.teamID === '') {
+                this.setState({
+                    error: true
+                });
+                return;
+            }
 
 	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {});
 
@@ -37,9 +47,12 @@ class SelectTeam extends Component {
         if (course["use_fixed_teams"]) {
             let courseID = this.props.navbar.state.chosenCourse["course_id"];
 
-            genericResourceGET(`/team?course_id=${courseID}`, "teams", this);
+            genericResourceGET(
+                `/team?course_id=${courseID}`, 
+                "teams", this);
         }
         else {
+        // using Ad Hoc teams
             let teams = [];
             let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
 
@@ -96,7 +109,7 @@ class SelectTeam extends Component {
                                             sx={{ mb: 3 }}
                                         >
                                             {teams.map((x) =>
-                                                <MenuItem value={x["team_id"]}>{x["team_name"]}</MenuItem>)
+                                                <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>

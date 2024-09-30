@@ -6,6 +6,7 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
+import SuccessMessage from '../../../Success/SuccessMessage.js';
 
 
 
@@ -14,6 +15,7 @@ class AdminViewUsers extends Component {
         super(props);
 
         this.state = {
+            successMessage: this.props.navbar.state.successMessage,
             errorMessage: null,
             isLoaded: false,
             users: null,
@@ -25,13 +27,28 @@ class AdminViewUsers extends Component {
         var navbar = this.props.navbar;
 
         if(navbar.props.isSuperAdmin) {
-            genericResourceGET(`/user?isAdmin=True`, "users", this);
+            genericResourceGET(
+                `/user?isAdmin=True`, "users", this);
 
         } else {
-            genericResourceGET(`/user?course_id=${navbar.state.chosenCourse["course_id"]}`, "users", this);
+            genericResourceGET(
+                `/user?course_id=${navbar.state.chosenCourse["course_id"]}`, 
+                "users", this);
         }
 
-        genericResourceGET("/role?", "roles", this);
+        genericResourceGET(
+            "/role?", "roles", this);
+    }
+
+    componentDidUpdate() {
+        if (this.state.successMessage !== null) {
+            setTimeout(() => {
+                this.setState({
+                    successMessage: null
+                });
+                this.props.navbar.confirmCreateResource("User");
+            }, 3000);
+        }
     }
 
     render() {
@@ -67,8 +84,18 @@ class AdminViewUsers extends Component {
             )
 
         } else if (user===null && addUser===null) {
+
             return(
                 <Box>
+                    {this.state.successMessage !== null && 
+                        <div className='container'>
+                          <SuccessMessage 
+                            navbar={this.props.navbar}
+                            successMessage={this.state.successMessage}
+                            aria-label="adminViewUsersSuccessMessage"
+                          />
+                        </div>
+                    }
                     <ViewUsers
                         navbar={navbar}
                     />

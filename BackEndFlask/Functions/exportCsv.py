@@ -10,10 +10,12 @@
 #        unitofasess...     roleid                                                     rating,oc,sfi
 #----------------------------------------------------------------------------------------------------
 import csv
+import io
 from core import app
 from models.queries import *
 from enum import Enum
 from datetime import datetime
+
 
 
 
@@ -72,7 +74,7 @@ class Csv_data(Enum):
     JSON = 11
 
 
-def create_csv(at_id: int, file_name: str) -> None:
+def create_csv(at_id: int) -> str:
     """
     Description:
     Creates the csv file and dumps info in to it.
@@ -80,14 +82,13 @@ def create_csv(at_id: int, file_name: str) -> None:
 
     Parameters:
     at_id: int (The id of an assessment task)
-    file_name: str (csv file to write to)
 
     Return:
-    None
+    str
     """
     # Assessment_task_name, Completion_date, Rubric_name, AT_type (Team/individual), AT_completer_role (Admin, TA/Instructor, Student), Notification_date
     with app.app_context():
-        with open("./tempCsv/" + file_name, 'w', newline='') as csvFile:
+        with io.StringIO() as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
 
             # Next line is the header line and its values.
@@ -103,7 +104,7 @@ def create_csv(at_id: int, file_name: str) -> None:
             completed_assessment_data = get_csv_data_by_at_id(at_id)
 
             if len(completed_assessment_data) == 0:
-                return
+                return csvFile.getvalue()
 
             writer.writerow(
                 [completed_assessment_data[0][Csv_data.AT_NAME.value]]      +
@@ -133,7 +134,6 @@ def create_csv(at_id: int, file_name: str) -> None:
 
                 try:
                     lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
-
                 except:
                     pass
 
@@ -154,8 +154,8 @@ def create_csv(at_id: int, file_name: str) -> None:
                             [i] +
                             [entry[Csv_data.JSON.value][i]["rating"]] +
                             [sfi_oc_data[1][j][1]] +
-                            [lag] +
-                            ["OC"]
+                            [""] +
+                            [lag]
                         )
 
                 for i in entry[Csv_data.JSON.value]:
@@ -174,9 +174,9 @@ def create_csv(at_id: int, file_name: str) -> None:
                             [entry[Csv_data.LAST_NAME.value]]  +
                             [i] +
                             [entry[Csv_data.JSON.value][i]["rating"]] +
-                            [sfi_oc_data[0][j][1]] +
-                            [lag] +
-                            ["SFI"]
+                            [""] +
+                            [sfi_oc_data[0][j][1]]  +
+                            [lag]
                         )
 
-    return
+            return csvFile.getvalue()

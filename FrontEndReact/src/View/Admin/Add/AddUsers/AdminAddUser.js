@@ -175,6 +175,9 @@ class AdminAddUser extends Component {
         } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
             genericResourcePOST(`/user`, this, body);
 
+        } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
+            genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
+        
         } else {
             genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
@@ -240,7 +243,8 @@ class AdminAddUser extends Component {
                         <Box className="card-style">
                             <FormControl className="form-spacing" aria-label="addUserForm">
                                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
-                                    <Typography id="addCourseTitle" variant="h5" aria-label='addUserTitle'> {editUser ? "Edit User" : "Add User"} </Typography>
+                                    <Typography id="addCourseTitle" variant="h5" aria-label={this.state.editUser ? 'editUserTitle' : 'addUserTitle'}> 
+                                    {editUser ? "Edit User" : "Add User"} </Typography>
 
                                     { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                         <Box>

@@ -24,8 +24,17 @@ class AdminViewAssessmentTask extends Component {
 
     componentDidMount() {
         var navbar = this.props.navbar;
+        var state = navbar.state;
+        var chosenCourse = state.chosenCourse;
+        
+        genericResourceGET(
+            `/team?course_id=${chosenCourse["course_id"]}`,
+            "teams", this
+        );
 
-        genericResourceGET(`/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, "assessmentTasks", this);
+        genericResourceGET(
+            `/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 
+            "assessmentTasks", this);
 
         genericResourceGET(`/role?`,'roles', this);
 
@@ -38,7 +47,8 @@ class AdminViewAssessmentTask extends Component {
             isLoaded,
             assessmentTasks,
             roles,
-            rubrics
+            rubrics,
+            teams
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -61,7 +71,7 @@ class AdminViewAssessmentTask extends Component {
                 </div>
             )
 
-        } else if (!isLoaded || !assessmentTasks || !roles || !rubrics) {
+        } else if (!isLoaded || !assessmentTasks || !roles || !rubrics || !teams) {
             return(
                 <Loading />
             )
@@ -78,6 +88,7 @@ class AdminViewAssessmentTask extends Component {
                 <Box>
                     <ViewAssessmentTasks
                         navbar={navbar}
+                        teams = {teams}
                     />
                 </Box>
             )
