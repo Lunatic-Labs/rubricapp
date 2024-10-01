@@ -124,16 +124,11 @@ export default function ViewAssessmentStatus(props) {
 {/*remove border color top and fix it*/}
   const innerGridStyle = {
     borderRadius: '1px',
+    height: '100%',
     border: "#7F7F7F", 
-    margin: "2px 2px 2px 0px",
+    padding: 0,
+    margin: 0,
     boxShadow: "0.3em 0.3em 1em #d6d6d6"
-  };
-  const thinBox  = {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: '1px',
-    padding: '0'
   };
   const outerQuadrantSX = {
     display:"flex",
@@ -144,39 +139,51 @@ export default function ViewAssessmentStatus(props) {
   
   return (
     <Container>
-      <Box sx={{ maxHeight:"150vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
-        <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw" }}>
-
-          <Grid sx={{ display:"flex", marginBottom:'20px'}} item xs={12}>
-                { props.showRatings && 
-                  <Grid sx={outerQuadrantSX} item xs={6}>
-                    <div className={innerDivClassName} style={innerGridStyle}>
-                      <h6><u>Distribution of Ratings</u></h6>
-                      <BarChart
-                        layout='vertical'
-                        width={500}
-                        height={300}
-                        data={ratingsData["ratings"].slice().reverse()}
-                        barCategoryGap={0.5}
-                      >  
-                      {/* auto needs to be replaced with total amount of students or teams */}
-                        <XAxis type='number' width={40} domain={[0, 'auto' ]}/>
-                        <YAxis 
-                          dataKey="rating" 
-                          type="category"
-                          reverseAxisMapping={true}
-                          domain={[0, 5]} 
-                        />
-                        <CartesianGrid horizontal={false}/>
-                        <Bar dataKey="number" fill="#2e8bef">
-                          <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                        </Bar>
-                      </BarChart>
-                        <h6>Avg: {avg}; StdDev: {stdev}</h6>
-                    </div>
-                  </Grid> 
-                }
-                
+      <Box sx={{ maxHeight:"135vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
+        <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw",  }}>
+        <Grid sx={{ display: "flex", marginBottom: '20px', height: "268px" }} item xs={12}>
+          {props.showRatings &&
+            <Grid sx={{ ...outerQuadrantSX, padding: '0', height: '100%' }} item xs={6}>
+              <div className={innerDivClassName} style={{
+                ...innerGridStyle, 
+                margin: '0',
+                padding: '0', 
+                height: '100%', 
+                display: 'flex', 
+                flexDirection: 'column' 
+              }}>
+                <h6 style={{ margin: '0', padding: '1px', lineHeight: '1' }}><u>Distribution of Ratings</u></h6>
+                <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+                  <BarChart
+                    layout="horizontal"
+                    width={650}
+                    height={210}
+                    data={ratingsData["ratings"]}
+                    barCategoryGap={0.5}
+                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                  >  
+                    <XAxis
+                      dataKey="rating"
+                      type="category"
+                      style={{ fontSize: '0.75rem' }}
+                    />
+                    <YAxis
+                      type="number"
+                      domain={[0, 'auto']}
+                      style={{ fontSize: '0.75rem' }}
+                    />
+                    <CartesianGrid vertical={false}/>
+                    <Bar dataKey="number" fill="#2e8bef">
+                      <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                    </Bar>
+                  </BarChart>
+                </div>
+                <h6 style={{ fontSize: '0.8rem', margin: '0', padding: '0', lineHeight: '1' }}>
+                  Avg: {avg}; StdDev: {stdev}
+                </h6>
+              </div>
+            </Grid>
+          } 
                 <div style={{marginLeft:'20px'}}>
                   <Grid item xs={12} sx={{ mb: 2 }}>
                     <div style={{
@@ -213,10 +220,10 @@ export default function ViewAssessmentStatus(props) {
                         padding: "20px",
                         height: '100%'
                       }}>
-                        <h3>
+                        <h3 style={{fontWeight: 'normal !important'}}>
                           <u>Assessment Tasks Completed:</u>
                         </h3>
-                        <div class="progress" style={{height: "35px", width:"100%", borderRadius:'50px',margin:'30px'}}>
+                        <div class="progress" style={{height: "30px", width:"100%", borderRadius:'50px',margin:'15px'}}>
                           <div className={"progress-bar"} role={"progressbar"} style={{width: `${progress}%`, backgroundColor:'#2e8bef'}} 
                           aria-valuenow={{progress}} aria-valuemin={0} aria-valuemax={100}>
                             <h5>
@@ -231,8 +238,8 @@ export default function ViewAssessmentStatus(props) {
                   </Grid>
 
                 </div>
-                </Grid>
-          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
+            </Grid>
+          <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
             <div className={innerDivClassName} style={innerGridStyle} >
             <CharacteristicsAndImprovements 
               dataType="characteristics"
