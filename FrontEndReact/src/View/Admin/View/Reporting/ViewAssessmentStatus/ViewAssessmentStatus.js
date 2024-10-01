@@ -121,20 +121,14 @@ export default function ViewAssessmentStatus(props) {
       improvementsData['improvements'][i]['percentage'] = percent  + "%";
     }
   }
-{/*remove border color top and fix it*/}
+/*remove border color top and fix it*/
   const innerGridStyle = {
     borderRadius: '1px',
     border: "#7F7F7F", 
     margin: "2px 2px 2px 0px",
     boxShadow: "0.3em 0.3em 1em #d6d6d6"
   };
-  const thinBox  = {
-    display: 'flex',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    gap: '1px',
-    padding: '0'
-  };
+  
   const outerQuadrantSX = {
     display:"flex",
     justifyContent:"center"
@@ -151,15 +145,27 @@ export default function ViewAssessmentStatus(props) {
                 { props.showRatings && 
                   <Grid sx={outerQuadrantSX} item xs={6}>
                     <div className={innerDivClassName} style={innerGridStyle}>
-                      <h6>Distribution of Ratings</h6>
-                        <BarChart width={500} height={300} data={ratingsData["ratings"]} barCategoryGap={0.5}>
-                          <XAxis dataKey="rating"/>
-                          <YAxis width={40} domain={[0, 'auto']}/>
-                          <CartesianGrid vertical={false}/>
-                          <Bar dataKey= "number" fill = "#2e8bef">
-                            <LabelList dataKey="number" fill="#ffffff" position="inside"/>
-                          </Bar>
-                        </BarChart>
+                      <h6><u>Distribution of Ratings</u></h6>
+                      <BarChart
+                        layout='vertical'
+                        width={500}
+                        height={300}
+                        data={ratingsData["ratings"].slice().reverse()}
+                        barCategoryGap={0.5}
+                      >  
+                      {/* auto needs to be replaced with total amount of students or teams */}
+                        <XAxis type='number' width={40} domain={[0, 'auto' ]}/>
+                        <YAxis 
+                          dataKey="rating" 
+                          type="category"
+                          reverseAxisMapping={true}
+                          domain={[0, 5]} 
+                        />
+                        <CartesianGrid horizontal={false}/>
+                        <Bar dataKey="number" fill="#2e8bef">
+                          <LabelList dataKey="number" fill="#ffffff" position="inside"/>
+                        </Bar>
+                      </BarChart>
                         <h6>Avg: {avg}; StdDev: {stdev}</h6>
                     </div>
                   </Grid> 

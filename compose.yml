@@ -10,10 +10,17 @@ services:
         condition: service_started
       mysql:
         condition: service_healthy
+    volumes:
+      # Mount the source files inside the container to allow for Flask hot reloading to work
+      - "./BackEndFlask/Functions:/app/Functions:rw"
+      - "./BackEndFlask/controller:/app/controller:rw"
+      - "./BackEndFlask/core:/app/core:rw"
+      - "./BackEndFlask/models:/app/models:rw"
     networks:
       - app-network
     environment:
       - REDIS_HOST=redis
+      - FLASK_DEBUG=1
       - MYSQL_HOST=mysql
       - MYSQL_USER=skillbuilder
       - MYSQL_PASSWORD=WasPogil1#
@@ -36,6 +43,9 @@ services:
       # Mount the source files inside the container to allow for React hot reloading to work
       - "./FrontEndReact/src:/app/src:ro"
       - "./FrontEndReact/public:/app/public:ro"
+      # Store React build cache in a volume to allow it to persist between container builds
+      # This improves startup time
+      - "frontend-cache:/app/node_modules/.cache"
     environment:
       - REACT_APP_API_URL=http://localhost:5050/api
     networks:
@@ -67,3 +77,4 @@ networks:
 
 volumes:
   mysql-data:
+  frontend-cache:
