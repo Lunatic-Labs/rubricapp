@@ -179,7 +179,6 @@ class Form extends Component {
             return status;
         }
 
-
         this.isUnitCompleteAssessmentComplete = (unitValue) => {
 
             return this.state.unitData[unitValue]["done"];
