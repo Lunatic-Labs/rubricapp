@@ -239,25 +239,27 @@ export default function ViewAssessmentStatus(props) {
 
                 </div>
             </Grid>
-          <Grid sx={{ display:"flex", justifyContent:"center" }} item xs={6}>
-            <div className={innerDivClassName} style={innerGridStyle} >
-            <CharacteristicsAndImprovements 
-              dataType="characteristics"
-              characteristicsData={characteristicsData}
-              improvementsData={improvementsData}
-              showSuggestions={props.showSuggestions}
-            />
-            </div>
-          </Grid>
-          <Grid sx={{ display:"flex", justifyContent:"center", margin:"0px 0px 0px 0px" }} item xs={6}>
-            <div className={innerDivClassName} style={innerGridStyle} >
-            <CharacteristicsAndImprovements 
-              dataType="improvements"
-              characteristicsData={characteristicsData}
-              improvementsData={improvementsData}
-              showSuggestions={props.showSuggestions}
-            />
-            </div>
+          <Grid sx={{ display: "flex", height: "268px" }} item xs={12}> 
+            <Grid sx={{ display:"flex", justifyContent:"center", paddingRight:'13px',marginRight:'9px'}} item xs={6}>
+              <div className={innerDivClassName} style={innerGridStyle} >
+              <CharacteristicsAndImprovements 
+                dataType="characteristics"
+                characteristicsData={characteristicsData}
+                improvementsData={improvementsData}
+                showSuggestions={props.showSuggestions}
+              />
+              </div>
+            </Grid>
+            <Grid sx={{ display:"flex", justifyContent:"center"}} item xs={6}>
+              <div className={innerDivClassName} style={innerGridStyle} >
+              <CharacteristicsAndImprovements 
+                dataType="improvements"
+                characteristicsData={characteristicsData}
+                improvementsData={improvementsData}
+                showSuggestions={props.showSuggestions}
+              />
+              </div>
+            </Grid>
           </Grid>
         </Grid>
       </Box>

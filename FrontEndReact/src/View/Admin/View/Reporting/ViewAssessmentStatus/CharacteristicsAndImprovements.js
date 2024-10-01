@@ -22,7 +22,7 @@ export default function CharacteristicsAndImprovements({
         <BarChart
           layout='vertical'
           data={data}
-          width={625}
+          width={650}
           height={210}
           aria-label={`barChart${dataType.charAt(0).toUpperCase() + dataType.slice(1)}Data`}
         >
