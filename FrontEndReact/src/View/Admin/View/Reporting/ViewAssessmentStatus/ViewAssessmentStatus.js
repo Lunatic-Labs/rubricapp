@@ -63,11 +63,8 @@ export default function ViewAssessmentStatus(props) {
   };
 
   var allRatings = [];
-
   var avg = 0;
-
   var stdev = 0;
-
   var progress = 43;
 
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
@@ -142,23 +139,25 @@ export default function ViewAssessmentStatus(props) {
       <Box sx={{ maxHeight:"135vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
         <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw",  }}>
         <Grid sx={{ display: "flex", marginBottom: '20px', height: "268px" }} item xs={12}>
-          {props.showRatings &&
-            <Grid sx={{ ...outerQuadrantSX, padding: '0', height: '100%' }} item xs={6}>
-              <div className={innerDivClassName} style={{
-                ...innerGridStyle, 
-                margin: '0',
-                padding: '0', 
-                height: '100%', 
-                display: 'flex', 
-                flexDirection: 'column' 
-              }}>
-                <h6 style={{ margin: '0', padding: '1px', lineHeight: '1' }}><u>Distribution of Ratings</u></h6>
-                <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center' }}>
+          
+          <Grid sx={{ ...outerQuadrantSX, padding: '0', height: '100%' }} item xs={6}>
+            <div className={innerDivClassName} style={{
+              ...innerGridStyle,
+              margin: '0',
+              padding: '0',
+              height: '100%',
+              display: 'flex',
+              flexDirection: 'column'
+            }}>
+              
+              <h6 style={{ margin: '0', padding: '1px', lineHeight: '1' }}><u>Distribution of Ratings</u></h6>
+              <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                {props.showRatings ? (
                   <BarChart
                     layout="horizontal"
                     width={650}
                     height={210}
-                    data={ratingsData["ratings"]}
+                    data={ratingsData.ratings}
                     barCategoryGap={0.5}
                     margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                   >  
@@ -177,13 +176,20 @@ export default function ViewAssessmentStatus(props) {
                       <LabelList dataKey="number" fill="#ffffff" position="inside"/>
                     </Bar>
                   </BarChart>
-                </div>
+                ) : (
+                  <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="light grey" className="bi bi-bar-chart" viewBox="0 0 16 16">
+                    <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                  </svg>
+                )}
+              </div>
+              {props.showRatings && (
                 <h6 style={{ fontSize: '0.8rem', margin: '0', padding: '0', lineHeight: '1' }}>
                   Avg: {avg}; StdDev: {stdev}
                 </h6>
-              </div>
-            </Grid>
-          } 
+              )}
+            </div>         
+          </Grid>
+
                 <div style={{marginLeft:'20px'}}>
                   <Grid item xs={12} sx={{ mb: 2 }}>
                     <div style={{
