@@ -15,7 +15,7 @@ from controller.Routes.RouteExceptions import MissingException, InvalidCredentia
 @bp.route('/login', methods=['POST'])
 def login():
     try:
-        email, password = request.args.get('email'), request.args.get('password')
+        email, password = request.json.get('email'), request.json.get('password')
 
         if is_any_variable_in_array_missing([email, password]):
             raise MissingException(["Email", "Password"])
@@ -47,7 +47,7 @@ def login():
 @bp.route('/password', methods = ['PUT'])
 def set_new_password():
     try:
-        email, password = request.args.get('email'), request.args.get('password')
+        email, password = request.json.get('email'), request.json.get('password')
 
         if is_any_variable_in_array_missing([email, password]):
             raise MissingException(["Email", "Password"])

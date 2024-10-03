@@ -70,9 +70,16 @@ class Login extends Component {
 
             } else {
                 fetch(
-                    apiUrl + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                    apiUrl + "/login",
                     {
-                        method: "POST"
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password,
+                        }),
                     }
                 )
                 .then(res => res.json())
