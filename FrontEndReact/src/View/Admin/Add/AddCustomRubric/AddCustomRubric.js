@@ -20,6 +20,7 @@ class AddCustomRubric extends React.Component {
             errorMessage: null,
             isLoaded: null,
             isHelpOpen: false,
+            editRubric: false,
 
             errors: {
                 rubricName: '',
@@ -37,11 +38,7 @@ class AddCustomRubric extends React.Component {
         this.handleCreateRubric = (pickedCategories) => {
             var categoryIds = [];
 
-            for (
-                var categoryIndex = 0;
-                categoryIndex < pickedCategories.length;
-                categoryIndex++
-            ) {
+            for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
                 categoryIds = [
                     ...categoryIds,
                     pickedCategories[categoryIndex]["category_id"],
@@ -116,6 +113,16 @@ class AddCustomRubric extends React.Component {
         };
     }
 
+    componentDidMount() {
+        var rubric = state.rubric;
+        if(rubricName !== null && rubricDescription !== null && rubricCategories !== null) {
+            this.setState({
+                rubricName: rubric["rubric_name"],
+                editRubric: true,
+            });
+        }
+    }
+
     handleCategorySelect = (categoryId, isSelected) => {
         const selectedCategories = { ...this.state.selectedCategories };
 
@@ -133,7 +140,7 @@ class AddCustomRubric extends React.Component {
     render() {
         const { rubrics, categories } = this.props;
 
-        const { selectedCategories, isHelpOpen, errors } = this.state;
+        const { selectedCategories, isHelpOpen, errors, editRubric } = this.state;
 
         const categoryTableColumns = [
             {
@@ -205,7 +212,7 @@ class AddCustomRubric extends React.Component {
                                 }}
                                 aria-label="addCustomizeYourRubricTitle"
                             >
-                                Customize Your Rubric
+                                <Typography>{editRubric ? "Edit Your Rubric" : "Customize Your Rubric"}</Typography>
                             </h2>
                         </Grid>
 
