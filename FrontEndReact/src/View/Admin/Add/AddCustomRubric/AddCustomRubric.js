@@ -4,7 +4,7 @@ import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CustomButton from "./Components/CustomButton.js";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { genericResourcePOST, genericResourcePUT } from "../../../../utility";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
@@ -79,7 +79,8 @@ class AddCustomRubric extends React.Component {
             var cookies = new Cookies();
             if (document.getElementById("rubricNameInput").value !== "" && document.getElementById("rubricDescriptionInput").value !== "") {
                 genericResourcePUT(
-                    `/rubric?rubric_id=${rubric["rubric_id"]}`,
+                    // `/rubric?rubric_id=${rubric["rubric_id"]}`,
+                    `/rubric`,
                     this,
                     JSON.stringify({
                         rubric: {
@@ -113,15 +114,14 @@ class AddCustomRubric extends React.Component {
         };
     }
 
-    componentDidMount() {
-        var rubric = state.rubric;
-        if(rubricName !== null && rubricDescription !== null && rubricCategories !== null) {
-            this.setState({
-                rubricName: rubric["rubric_name"],
-                editRubric: true,
-            });
-        }
-    }
+    // componentDidMount() {
+    //     if(rubricName !== null && rubricDescription !== null && rubricCategories !== null) {
+    //         this.setState({
+    //             rubricName: rubric["rubric_name"],
+    //             editRubric: true,
+    //         });
+    //     }
+    // }
 
     handleCategorySelect = (categoryId, isSelected) => {
         const selectedCategories = { ...this.state.selectedCategories };
@@ -211,8 +211,7 @@ class AddCustomRubric extends React.Component {
                                     bold: true,
                                 }}
                                 aria-label="addCustomizeYourRubricTitle"
-                            >
-                                <Typography>{editRubric ? "Edit Your Rubric" : "Customize Your Rubric"}</Typography>
+                            > Customize Your Rubric
                             </h2>
                         </Grid>
 
