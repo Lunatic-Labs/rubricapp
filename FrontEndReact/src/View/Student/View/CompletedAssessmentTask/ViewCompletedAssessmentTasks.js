@@ -20,8 +20,8 @@ class ViewCompletedAssessmentTasks extends Component {
         label: "Task Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"290px" } },
-          setCellProps: () => { return { width:"290px" } },
+          setCellHeaderProps: () => { return { width:"250px" } },
+          setCellProps: () => { return { width:"250px" } },
         }
       },
       {
@@ -29,8 +29,8 @@ class ViewCompletedAssessmentTasks extends Component {
         label: "Initial Time",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"230px" } },
-          setCellProps: () => { return { width:"230px" } },
+          setCellHeaderProps: () => { return { width:"150px" } },
+          setCellProps: () => { return { width:"150px" } },
           customBodyRender: (initial_time) => {
             return(
               <>
@@ -45,8 +45,8 @@ class ViewCompletedAssessmentTasks extends Component {
         label: "Last Update",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"160px" } },
-          setCellProps: () => { return { width:"160px" } },
+          setCellHeaderProps: () => { return { width:"150px" } },
+          setCellProps: () => { return { width:"150px" } },
           customBodyRender: (last_update) => {
             return(
               <>
@@ -58,12 +58,37 @@ class ViewCompletedAssessmentTasks extends Component {
       },
       {
         name: "assessment_task_id",
+        label: "Unit of Assessment",
+        options: {
+          filter: true,
+          setCellHeaderProps: () => { return { width:"170px" } },
+          setCellProps: () => { return { width:"140px" } },
+          customBodyRender: (atId) => {
+            const assessmentTask = assessmentTasks.find(at => at.assessment_task_id === atId);
+            return <>{assessmentTask.unit_of_assessment ? "Team" : "Individual"}</>;
+          }
+        }
+      },
+      {
+        name: "completed_by_role_id",
+        label: "Completed By",
+        options: {
+          filter: true,
+          setCellHeaderProps: () => { return { width:"140px" } },
+          setCellProps: () => { return { width:"140px" } },
+          customBodyRender: (roleId) => {
+            return <>{roleId === 5 ? "Student" : "TA/Instructor"}</>;
+          }
+        }
+      },
+      {
+        name: "assessment_task_id",
         label: "View",
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
-          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+          setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
+          setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
           customBodyRender: (atId) => {
               return (
                   <div>
