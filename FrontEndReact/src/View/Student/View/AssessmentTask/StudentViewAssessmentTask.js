@@ -86,7 +86,7 @@ class StudentViewAssessmentTask extends Component {
                 </div>
             )
 
-        } else if (!isLoaded ||!assessmentTasks || !checkin || !rubrics || !counts) {
+        } else if (!isLoaded || !assessmentTasks || !checkin || !rubrics || !counts || !completedAssessments) {
             return(
                 <Loading />
             )
