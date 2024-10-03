@@ -174,8 +174,17 @@ class UserAccount extends Component {
         }
 
         fetch(
-            apiUrl + `/password?email=${user.email}&password=${pass1}`,
-            { method: 'PUT' }
+            apiUrl + "/password",
+            {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    email: user.email,
+                    password: pass1,
+                }),
+            }
         )
             .then(res => res.json())
             .then(

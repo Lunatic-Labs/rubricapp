@@ -156,9 +156,17 @@ class SetNewPassword extends Component {
             }
 
             fetch(
-                apiUrl + `/password?email=${this.props.email}&password=${pass1}`,
-
-                { method: 'PUT' }
+                apiUrl + "/password",
+                {
+                    method: "PUT",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        email: this.props.email,
+                        password: pass1,
+                    }),
+                }
             )
 
             .then(res => res.json())
