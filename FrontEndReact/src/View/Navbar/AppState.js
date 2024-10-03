@@ -127,10 +127,10 @@ class AppState extends Component {
             var completedAssessment = null;
 
             if (completedAssessments) {
-               completedAssessment = completedAssessments.filter(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId);
+               completedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId) ?? null;
             }
             const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
-
+            
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
@@ -152,6 +152,22 @@ class AppState extends Component {
 
             this.setState({
                 activeTab: tab,
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
+            });
+        }
+
+        this.setSelectCurrentTeam = (assessmentTasks, assessmentTaskId) => {
+            var assessmentTask = null;
+
+            for (var index = 0; index < assessmentTasks.length; index++) {
+                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
+                    assessmentTask = assessmentTasks[index];
+                }
+            }
+
+            this.setState({
+                activeTab: "SelectTeam",
                 chosenAssessmentTask: assessmentTask,
                 unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
@@ -291,8 +307,9 @@ class AppState extends Component {
         this.confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
-                    if (resource === "User") {
+                    if (resource === "User" || resource === "UserBulkUpload") {
                         this.setState({
+                            successMessage: resource === "UserBulkUpload" ? "The user bulk upload was successful!" : null,
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
@@ -317,8 +334,9 @@ class AppState extends Component {
                             activeTab: "AssessmentTasks"
                         });
 
-                    } else if (resource === "Team") {
+                    } else if (resource === "Team" || resource === "TeamBulkUpload") {
                         this.setState({
+                            successMessage: resource === "TeamBulkUpload" ? "The team bulk upload was successful!" : null,
                             activeTab: "Teams",
                             team: null,
                             addTeam: true

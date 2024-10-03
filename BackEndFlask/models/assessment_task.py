@@ -16,6 +16,22 @@ class InvalidAssessmentTaskID(Exception):
     def __str__(self):
         return self.message
 
+class InvalidNumberOfTeams(Exception):
+    def __init__(self):
+        self.message = "Number of teams must be a greater than 0."
+
+    def __str__(self):
+        return self.message
+
+def validate_number_of_teams(number_of_teams):
+    if number_of_teams is not None:
+        try:
+            number = int(number_of_teams)
+            if number <= 0:
+                raise InvalidNumberOfTeams()
+        except ValueError:
+                raise InvalidNumberOfTeams()
+
 @error_log
 def get_assessment_tasks():
     return AssessmentTask.query.all()
@@ -56,6 +72,8 @@ def create_assessment_task(assessment_task):
 
     if "Z" not in assessment_task["due_date"]:
         assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+
+    validate_number_of_teams(assessment_task["number_of_teams"])
 
     new_assessment_task = AssessmentTask(
         assessment_task_name=assessment_task["assessment_task_name"],
@@ -352,6 +370,8 @@ def replace_assessment_task(assessment_task, assessment_task_id):
 
     if "Z" not in assessment_task["due_date"]:
         assessment_task["due_date"] = assessment_task["due_date"] + "Z"
+
+    validate_number_of_teams(assessment_task["number_of_teams"])
 
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
 

@@ -22,7 +22,7 @@ var ct = "coursesTitle";
 var matt = "myAssessmentTasksTitle";
 var catt = "completedAssessmentTasksTitle";
 var vcib = "viewCourseIconButton";
-var catb = "completedAssessmentTasksButton";
+var satb = "startAssessmentTasksButton";
 var catvib = "completedAssessmentTasksViewIconButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var mhbb = "mainHeaderBackButton";
@@ -81,7 +81,7 @@ test("TADashboard.test.js Test 2: Should render the completed assessment task pa
     });
 
     setTimeout(() => {
-        clickFirstElementWithAriaLabel(catb);
+        clickFirstElementWithAriaLabel(satb);
     }, 3000);
         
     await waitFor(() => {
@@ -154,11 +154,14 @@ test("TADashboard.test.js Test 5: Should render to the my Assessment Tasks and C
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(matt);
 
-        expectElementWithAriaLabelToBeInDocument(catt);
+            expectElementWithAriaLabelToBeInDocument(catt);
 
-        clickFirstElementWithAriaLabel(catb);
+            clickFirstElementWithAriaLabel(satb);
+        }, 3000);
+        
     });
     
     await waitFor(() => {
@@ -194,7 +197,7 @@ test("TADashboard.test.js Test 6: Should render to the Feedback page of the Asse
         expectElementWithAriaLabelToBeInDocument(catt);
 
         setTimeout(() => {
-            clickFirstElementWithAriaLabel(catb);
+            clickFirstElementWithAriaLabel(satb);
         }, 3000);
     });
     
@@ -234,7 +237,7 @@ test("TADashboard.test.js Test 7: Should render to the my Assessment Tasks and C
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        clickFirstElementWithAriaLabel(catb);
+        clickFirstElementWithAriaLabel(satb);
     });
     
     await waitFor(() => {
@@ -284,7 +287,7 @@ test("TADashboard.test.js Test 8: Should render to the sections page when the re
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        clickFirstElementWithAriaLabel(catb);
+        clickFirstElementWithAriaLabel(satb);
     });
     
     await waitFor(() => {
@@ -330,7 +333,7 @@ test("TADashboard.test.js Test 9: Should successfully save all the changes when 
         expectElementWithAriaLabelToBeInDocument(catt);
 
         setTimeout(() => {
-            clickFirstElementWithAriaLabel(catb);
+            clickFirstElementWithAriaLabel(satb);
         }, 3000);
     });
     

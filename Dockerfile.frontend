@@ -16,3 +16,4 @@ EXPOSE 3000
 
 # Start the Frontend server
 CMD ["npm", "start"]
+

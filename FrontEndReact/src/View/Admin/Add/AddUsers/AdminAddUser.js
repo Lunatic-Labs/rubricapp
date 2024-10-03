@@ -138,9 +138,8 @@ class AdminAddUser extends Component {
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
 
-        if (!navbar.props.isSuperAdmin && role === '') {
+        if (!navbar.props.isSuperAdmin && role === '')
             newErrors["role"] = "Role cannot be empty";
-        }
 
         if (!validator.isEmail(email) && newErrors["email"] === '')
             newErrors["email"] = "Please enter a valid email address";
@@ -244,7 +243,8 @@ class AdminAddUser extends Component {
                         <Box className="card-style">
                             <FormControl className="form-spacing" aria-label="addUserForm">
                                 <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "space-between", width: "100%"}}>
-                                    <Typography id="addCourseTitle" variant="h5" aria-label='addUserTitle'> {editUser ? "Edit User" : "Add User"} </Typography>
+                                    <Typography id="addCourseTitle" variant="h5" aria-label={this.state.editUser ? 'editUserTitle' : 'addUserTitle'}> 
+                                    {editUser ? "Edit User" : "Add User"} </Typography>
 
                                     { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                         <Box>

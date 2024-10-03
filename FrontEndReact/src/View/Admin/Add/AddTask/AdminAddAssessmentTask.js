@@ -25,7 +25,7 @@ class AdminAddAssessmentTask extends Component {
             dueDate: new Date(),
             taskName: '',
             timeZone: '',
-            roleId: '',
+            roleId: '4', // 4 = TA/Instructor
             rubricId: '',
             password: '',
             notes: '',
@@ -98,6 +98,19 @@ class AdminAddAssessmentTask extends Component {
     handleChange = (e) => {
         const { id, value } = e.target;
 
+        if (id === 'numberOfTeams') {
+            const regex = /^[1-9]\d*$/;
+            if (value !== '' && !regex.test(value)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        [id]: 'Number of teams must be greater than zero',
+                    },
+                });
+                return;
+            }
+        }
+
         this.setState({
             [id]: value,
             errors: {
@@ -109,7 +122,7 @@ class AdminAddAssessmentTask extends Component {
 
     handleSelect = (key, event) => {
         this.setState({
-            [key]: event.target.value,
+            [key]: event.target.value
         });
     };
 
@@ -142,6 +155,18 @@ class AdminAddAssessmentTask extends Component {
         var assessmentTask = state.assessmentTask;
         var chosenCourse = state.chosenCourse;
 
+        if (usingTeams && !chosenCourse["use_fixed_teams"]) {
+            if (!numberOfTeams || !/^[1-9]\d*$/.test(numberOfTeams)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        numberOfTeams: 'Number of teams must be greater than zero',
+                    },
+                });
+                return;
+            }
+            
+        }
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || notes === '') {
             this.setState({
                 errors: {
@@ -169,7 +194,7 @@ class AdminAddAssessmentTask extends Component {
                 "comment": notes,
                 "number_of_teams": numberOfTeams
             });
-
+            
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
                     "/assessment_task",
@@ -261,7 +286,7 @@ class AdminAddAssessmentTask extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
-                                <Typography id="addTaskTitle" variant="h5" aria-label='adminAddAssessmentTaskTitle'> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+                                <Typography id="addTaskTitle" variant="h5" aria-label={editAssessmentTask ? 'adminEditAssessmentTaskTitle' : 'adminAddAssessmentTaskTitle'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
 
                                 <Box className="form-input">
                                     <TextField
@@ -331,10 +356,16 @@ class AdminAddAssessmentTask extends Component {
                                             name="newPassword"
                                             variant='outlined'
                                             label="Number of teams"
+                                            value={this.state.numberOfTeams}
                                             error={!!errors.numberOfTeams}
+                                            helperText={errors.numberOfTeams}
                                             onChange={this.handleChange}
                                             required
-                                            type={"number"}
+                                            type={"text"}
+                                            inputProps={{ 
+                                                pattern: "[1-9][0-9]*", 
+                                                inputMode: "numeric"
+                                            }}
                                             sx={{ mb: 2 }}
                                         />
                                     }

@@ -50,15 +50,9 @@ def get_completed_assessment_csv() -> dict:
 
         file_name += assessment.assessment_task_name.replace(" ", "_") + ".csv"
 
-        create_csv(
-            assessment_task_id,
-            file_name
+        csv_data = create_csv(
+            assessment_task_id
         )
-
-        csv_data = None
-
-        with open("./tempCsv/" + file_name) as fp:
-            csv_data = fp.read()
         
         return create_good_response({ "csv_data": csv_data.strip() }, 200, "csv_creation")
 
