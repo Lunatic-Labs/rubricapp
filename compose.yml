@@ -21,8 +21,9 @@ services:
 
   redis:
     image: redis:7.2.4
-    ports:
-      - "127.0.0.1:6379:6379"
+    ports: 
+    - "127.0.0.1:6379:6379"
+    #[] # Disable exposed port so that Redis can run inside of the container and not be exposed to host machine 
     networks:
       - app-network
 
