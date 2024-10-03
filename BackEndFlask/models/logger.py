@@ -42,17 +42,6 @@ class Logger:
         filehandler.setFormatter(formatter)
         self.logger.addHandler(filehandler)
 
-        self.password_logger = logger.getLogger(f"{name}_password_resets")
-        self.password_logger.setLevel(logging.info)
-
-        password_logfile = os.path.abspath(os.path.join(os.path.dirname(__file__),'..','logs','password_reset.log'))
-        if not os.path.exists(password_logfile):
-            open(password_logfile, "w").close()
-    
-        password_filehandler = logging.FileHandler(password_logfile)
-        password_filehandler.setFormatter(formatter)
-        self.password_logger.addHandler(password_filehandler)
-
 
     def __try_clear(self):
         """
@@ -154,6 +143,6 @@ class Logger:
                    f"LMS: {lms_id}, "
                    f"Name: {first_name} {last_name}, "
                     f"Email: {email},")
-        self.password_logger.info(log_msg)
+        self.logger.info(log_msg)
     
 logger = Logger("rubricapp_logger")
