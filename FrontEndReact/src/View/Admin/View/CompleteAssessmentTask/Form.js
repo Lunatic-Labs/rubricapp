@@ -162,12 +162,12 @@ class Form extends Component {
 
             var category = unit[categoryName];
 
-            var observableCharacteristic = category["observable_characteristics"].includes("1");
+                var observableCharacteristic = category["observable_characteristics"].includes("1");
 
             const showSuggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
             const suggestions = showSuggestions ? category["suggestions"].includes("1") : false;
 
-            var status = null;
+            var status = false;
 
             if (observableCharacteristic && (!showSuggestions || suggestions)) {
                 status = true;

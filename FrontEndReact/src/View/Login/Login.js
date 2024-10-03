@@ -136,16 +136,35 @@ class Login extends Component {
             .then(res => res.json())
             .then(
                 (result) => {
-                    cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
 
-                    this.setState({
-                        loggedIn: null
-                    });
+                    if(result["success"]) {
+                        console.log("results: ",result);
+                        cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
+
+                        this.setState({
+                            loggedIn: null
+                        });
+                    } else {
+                        cookies.remove('access_token');
+                        cookies.remove('refresh_token');
+                        cookies.remove('user');
+
+                        this.setState(() => ({
+                            isLoaded: true,
+                            errorMessage: result["message"]
+                        }));
+                    }
                 },
                 (error) => {
                     cookies.remove('user');
                     cookies.remove('access_token');
                     cookies.remove('refresh_token');
+
+                    this.setState(() => ({
+                        isLoaded: true,
+                        errorMessage: error
+                    }));
+
                 }
             )
         }
@@ -167,7 +186,7 @@ class Login extends Component {
         }
 
         this.keyPress = (e) => {
-            if (e.key == 'Enter') {
+            if (e.key === 'Enter') {
                 this.login();
             };
         }

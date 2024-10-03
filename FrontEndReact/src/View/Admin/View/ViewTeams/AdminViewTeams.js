@@ -58,7 +58,6 @@ class AdminViewTeams extends Component {
         } = this.state;
 
         var navbar = this.props.navbar;
-        var state = navbar.state;
 
         navbar.adminViewTeams.teams = teams;
         navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
