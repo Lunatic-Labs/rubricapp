@@ -5,6 +5,7 @@ import ViewTeams from './ViewTeams.js';
 import { genericResourceGET, parseUserNames } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
+import SuccessMessage from '../../../Success/SuccessMessage.js';
 
 
 
@@ -13,6 +14,7 @@ class AdminViewTeams extends Component {
         super(props);
 
         this.state = {
+            successMessage: this.props.navbar.state.successMessage,
             errorMessage: null,
             isLoaded: false,
             teams: null,
@@ -35,6 +37,18 @@ class AdminViewTeams extends Component {
 
         genericResourceGET(url, "users", this);
     }
+
+    componentDidUpdate() {
+        if (this.state.successMessage !== null) {
+            setTimeout(() => {
+                this.setState({
+                    successMessage: null
+                });
+                this.props.navbar.confirmCreateResource("Team");
+            }, 3000);
+        }
+    }
+
     render() {
         const {
             errorMessage,
@@ -69,6 +83,15 @@ class AdminViewTeams extends Component {
         } else {
             return(
                 <Box>
+                    {this.state.successMessage !== null && 
+                        <div className='container'>
+                          <SuccessMessage 
+                            navbar={this.props.navbar}
+                            successMessage={this.state.successMessage}
+                            aria-label="adminViewTeamsSuccessMessage"
+                          />
+                        </div>
+                    }
                     <Box sx={{mb:"20px"}}className="subcontent-spacing" >
                         <Typography sx={{fontWeight:'700'}} variant="h5">Teams</Typography>
                         <Box sx={{display:"flex", gap:"20px"}}>

@@ -141,7 +141,7 @@ class ViewAssessmentTaskInstructions extends Component {
                   }}
                   aria-label="viewAssessmentTaskInstructionsContinueButton"
                 >
-                  CONTINUE
+                  Complete rubric
                 </Button>
               </div>
           </div>

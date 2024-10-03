@@ -307,8 +307,9 @@ class AppState extends Component {
         this.confirmCreateResource = (resource) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
-                    if (resource === "User") {
+                    if (resource === "User" || resource === "UserBulkUpload") {
                         this.setState({
+                            successMessage: resource === "UserBulkUpload" ? "The user bulk upload was successful!" : null,
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
@@ -333,8 +334,9 @@ class AppState extends Component {
                             activeTab: "AssessmentTasks"
                         });
 
-                    } else if (resource === "Team") {
+                    } else if (resource === "Team" || resource === "TeamBulkUpload") {
                         this.setState({
+                            successMessage: resource === "TeamBulkUpload" ? "The team bulk upload was successful!" : null,
                             activeTab: "Teams",
                             team: null,
                             addTeam: true
