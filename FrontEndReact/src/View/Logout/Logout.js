@@ -21,9 +21,16 @@ class Logout extends Component {
         const userId = cookies.get('user')['user_id'];
 
         fetch(
-            apiUrl + `/logout?user_id=${userId}&access_token=${accessToken}&refresh_token=${refreshToken}`,
+            apiUrl + `/logout?user_id=${userId}`,
             {
-                method:'POST'
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({
+                    access_token: accessToken,
+                    refresh_token: refreshToken,
+                }),
             }
         )
         .then(res => res.json())

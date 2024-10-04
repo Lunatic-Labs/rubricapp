@@ -13,7 +13,7 @@ from controller.security.utility import(
 @bp.route('/logout', methods=['POST'])
 def logout():
     try:
-        _id, jwt, refresh = request.args.get('user_id'), request.args.get('access_token'), request.args.get('refresh_token')
+        _id, jwt, refresh = request.args.get('user_id'), request.json.get('access_token'), request.json.get('refresh_token')
         _id = to_int(_id, 'user_id')
 
         if jwt and not token_expired(jwt):
