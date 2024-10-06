@@ -127,10 +127,10 @@ class AppState extends Component {
             var completedAssessment = null;
 
             if (completedAssessments) {
-               completedAssessment = completedAssessments.filter(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId);
+               completedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId) ?? null;
             }
             const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
-
+            
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
@@ -193,12 +193,20 @@ class AppState extends Component {
         }
 
         this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
-
-            this.setState({
-                activeTab: "ViewComplete",
-                chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
-            });
+            if(assessmentTask && assessmentTask.unit_of_assessment !== undefined){
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: assessmentTask,
+                    unitOfAssessment: assessmentTask.unit_of_assessment
+                });
+            }
+            else {
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: null,
+                    unitOfAssessment: null
+                });
+            }
         }
 
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
