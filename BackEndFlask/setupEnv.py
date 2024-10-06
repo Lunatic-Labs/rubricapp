@@ -41,6 +41,8 @@ def cmd(command, parent_function):
 
         err(f"Error running command: {command} in function: {parent_function}")
 
+        err(f"Exception: {e}")
+
         err(f"Return code: {e.returncode}")
 
         err(f"Output: {e.output}")
