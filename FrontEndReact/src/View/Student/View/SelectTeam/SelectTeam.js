@@ -57,23 +57,9 @@ class SelectTeam extends Component {
             let atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 
             genericResourceGET(
-                `/checkin/nonfull-adhoc?assessment_task_id=${atId}`,
+                `/team/nonfull-adhoc?assessment_task_id=${atId}`,
                 "teams", this
-            );
-
-            // console.log(teams)
-            // let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
-
-            // for(let i = 1; i <= numTeams; i++) {
-            //     teams.push({
-            //         "team_id": i,
-            //         "team_name": `Team ${i}`
-            //     });
-            // }
-
-            // this.setState({
-            //     teams: teams
-            // });
+            )
         }
     }
 
