@@ -267,27 +267,27 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
-                            return(
-                                <IconButton
-                                    id=""
-                                    onClick={() => {
-                                        setCompleteAssessmentTaskTabWithID(
-                                            assessmentTasks[assessmentTaskId-1]
-                                        );
-                                    }}
-                                    aria-label='viewCompletedAssessmentIconButton'
-                                >
-                               <VisibilityIcon sx={{color:"black"}} />
-                             </IconButton>
-                            )
-
-                        } else {
-                            return(
-                                <>
-                                    {"N/A"}
-                                </>
-                            )
-                        }
+                            const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
+        
+                            if (selectedTask) {
+                                return (
+                                    <IconButton
+                                        id=""
+                                        onClick={() => {
+                                            setCompleteAssessmentTaskTabWithID(selectedTask);
+                                        }}
+                                        aria-label='viewCompletedAssessmentIconButton'
+                                    >
+                                    <VisibilityIcon sx={{color:"black"}} />
+                                    </IconButton>
+                                );
+                            }
+                        } 
+                        return(
+                            <>
+                                {"N/A"}
+                            </>
+                        )
                     }
                 }
             },
