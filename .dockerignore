@@ -9,7 +9,12 @@
 
 # Backend
 **/__pycache__
+**/*.pyc
 BackEndFlask/BackEndFlaskVenv
+**/*.db
+**/*.db-journal
+**/*.rdb
+**/*.log
 
 # Frontend
 FrontEndReact/node_modules
