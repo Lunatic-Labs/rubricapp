@@ -92,12 +92,9 @@ def get_nonfull_adhoc_teams():
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
             
-            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]
+            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]   
             
-            print(valid_teams, flush=True)
-            
-            return create_good_response(valid_teams, 200, "teams")
-            
+            return create_good_response(valid_teams, 200, "teams")      
             
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
