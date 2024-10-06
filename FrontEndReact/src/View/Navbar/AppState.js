@@ -193,12 +193,20 @@ class AppState extends Component {
         }
 
         this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
-
-            this.setState({
-                activeTab: "ViewComplete",
-                chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
-            });
+            if(assessmentTask && assessmentTask.unit_of_assessment !== undefined){
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: assessmentTask,
+                    unitOfAssessment: assessmentTask.unit_of_assessment
+                });
+            }
+            else {
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: null,
+                    unitOfAssessment: null
+                });
+            }
         }
 
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
