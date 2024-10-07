@@ -36,6 +36,8 @@ class AddCustomRubric extends React.Component {
         };
 
         this.handleCreateRubric = (pickedCategories) => {
+            var rubric = this.state.rubric;
+            var rubricId = this.state.rubricId;
             var categoryIds = [];
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
@@ -77,10 +79,9 @@ class AddCustomRubric extends React.Component {
             }
 
             var cookies = new Cookies();
-            if (document.getElementById("rubricNameInput").value !== "" && document.getElementById("rubricDescriptionInput").value !== "") {
+            if (rubricId) {
                 genericResourcePUT(
-                    // `/rubric?rubric_id=${rubric["rubric_id"]}`,
-                    `/rubric`,
+                    `/rubric?rubric_id=${rubric["rubric_id"]}`,
                     this,
                     JSON.stringify({
                         rubric: {
@@ -109,19 +110,23 @@ class AddCustomRubric extends React.Component {
                     }),
                 );
             }
-
             this.props.navbar.confirmCreateResource("MyCustomRubrics");
         };
     }
-
     // componentDidMount() {
-    //     if(rubricName !== null && rubricDescription !== null && rubricCategories !== null) {
+    //     var rubric = this.state.rubric;
+    //     var rubricId = this.state.rubricId;
+
+    //     if (this.props.rubricId) {
+    //         this.setState({ rubricId: this.props.rubricId });
+    //     }
+    //     if (rubricId) {
     //         this.setState({
-    //             rubricName: rubric["rubric_name"],
-    //             editRubric: true,
+    //             rubricName: rubric["rubricNameInput"],
+    //             rubricDescription: rubric["rubricDescriptionInput"],
     //         });
     //     }
-    // }
+    // }\\\
 
     handleCategorySelect = (categoryId, isSelected) => {
         const selectedCategories = { ...this.state.selectedCategories };
