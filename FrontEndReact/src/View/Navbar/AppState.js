@@ -65,6 +65,9 @@ class AppState extends Component {
             userConsent: null,
 
             addTeamAction: null,
+            
+            successMessage: null,
+            successMessageTimeout: undefined,
         }
 
         this.setNewTab = (newTab) => {
@@ -193,12 +196,20 @@ class AppState extends Component {
         }
 
         this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
-
-            this.setState({
-                activeTab: "ViewComplete",
-                chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
-            });
+            if(assessmentTask && assessmentTask.unit_of_assessment !== undefined){
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: assessmentTask,
+                    unitOfAssessment: assessmentTask.unit_of_assessment
+                });
+            }
+            else {
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: null,
+                    unitOfAssessment: null
+                });
+            }
         }
 
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
@@ -309,11 +320,14 @@ class AppState extends Component {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
                     if (resource === "User" || resource === "UserBulkUpload") {
                         this.setState({
-                            successMessage: resource === "UserBulkUpload" ? "The user bulk upload was successful!" : null,
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
                         });
+                        
+                        if (resource === "UserBulkUpload") {
+                            this.setSuccessMessage("The user bulk upload was successful!");
+                        }
 
                     } else if (resource === "Course") {
                         this.setState({
@@ -336,11 +350,14 @@ class AppState extends Component {
 
                     } else if (resource === "Team" || resource === "TeamBulkUpload") {
                         this.setState({
-                            successMessage: resource === "TeamBulkUpload" ? "The team bulk upload was successful!" : null,
                             activeTab: "Teams",
                             team: null,
                             addTeam: true
                         });
+                        
+                        if (resource === "TeamBulkUpload") {
+                            this.setSuccessMessage("The team bulk upload was successful!");
+                        }
 
                     } else if (resource==="TeamMembers") {
                         this.setState({
@@ -382,6 +399,22 @@ class AppState extends Component {
                 }
             }
         }
+        
+        this.setSuccessMessage = (newSuccessMessage) => {
+            clearTimeout(this.state.successMessageTimeout);
+            
+            const timeoutId = setTimeout(() => {
+                this.setState({
+                    successMessage: null,
+                    successMessageTimeout: undefined,
+                });
+            }, 3000);
+            
+            this.setState({
+                successMessage: newSuccessMessage,
+                successMessageTimeout: timeoutId,
+            });
+        };
     }
 
     // The commented out code below saves the state of the Navbar,

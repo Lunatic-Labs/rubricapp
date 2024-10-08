@@ -43,6 +43,9 @@ def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     list[str]: The head of the `lst` variable.
     """
     hd: list[str] = lst.pop(0)
+    # If the last column in a row is empty, remove it
+    if hd[-1] == "Unnamed: 1" or hd[-1] == '':
+        hd.pop()
     if cols is not None and len(hd) != cols:
         assert False, f'len(list[list[str]])[0] does not match cols expected. Namely: {len(hd)} =/= {cols}'
     return hd
@@ -225,9 +228,14 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         course_uses_tas = tainfo[2]
 
         if team is None:
+            if course_uses_tas:
+                observer_id = ta_id if not missing_ta else owner_id
+            else:
+                observer_id = owner_id
+
             team = create_team({
                 "team_name": team_name,
-                "observer_id": (lambda: owner_id, lambda: (lambda: ta_id, lambda: owner_id)[missing_ta]())[course_uses_tas](),
+                "observer_id": observer_id,
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id": course_id
             })
