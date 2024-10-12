@@ -25,6 +25,7 @@ class AdminDeleteTeam extends Component {
       users: null,
 
       errors: {
+        users: null,
         teamName: "",
         observerId: "",
       },
@@ -69,17 +70,53 @@ class AdminDeleteTeam extends Component {
   };
 
   handleSubmit = () => {
-    const { teamName, observerId } = this.state;
+    const { teamName, observerId, users } = this.state;
     const errors = {};
 
     var date = new Date().getDate();
+
     var month = new Date().getMonth() + 1;
+
     var year = new Date().getFullYear();
+
     var navbar = this.props.navbar;
+
+    var state = navbar.state;
+
     var confirmDeleteResource = navbar.confirmDeleteResource;
+
+    var chosenCourse = state.chosenCourse;
+
+    var team = state.team;
+
+    var teamusers = state.teamusers;
+
+    var deleteTeam = state.deleteTeam;
 
     if (users > 0) {
       errors.users = "there needs to be no users at all";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      this.setState({ errors });
+    } else {
+      const body = JSON.stringify({
+        team_name: teamName,
+        observer_id: observerId,
+        course_id: chosenCourse.course_id,
+        date_deleted: `${month}/${date}/${year}`,
+      });
+
+      if (team === null && teamusers === null && deleteTeam === null) {
+        genericResourcePOST(
+          `/team?course_id=${chosenCourse.course_id}`,
+          this,
+          body,
+        );
+      } else if (team !== null && teamusers === null && deleteTeam === false) {
+        genericResourcePUT(`/team?team_id=${team.team_id}`, this, body);
+      }
+      confirmDeleteResource("Team");
     }
   };
 }
