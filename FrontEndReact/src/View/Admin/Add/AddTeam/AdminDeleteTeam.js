@@ -16,7 +16,7 @@ class AdminDeleteTeam extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      isLoaded: null,
+      isRemoved: null,
       errorMessage: null,
       validMessage: "",
       editTeam: false,
@@ -119,4 +119,39 @@ class AdminDeleteTeam extends Component {
       confirmDeleteResource("Team");
     }
   };
+
+  handleChange = (e) => {
+    const { id, value } = e.target;
+    this.setState({
+      [id]: value,
+      errors: {
+        ...this.state.errors,
+        [id]:
+          value.trim() === ""
+            ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`
+            : "",
+      },
+    });
+  };
+
+  render() {
+    const cookies = new Cookies();
+
+    const userId = cookies.get("user")["user_id"];
+
+    const userName = cookies.get("user")["user_name"];
+
+    var instructor = [];
+
+    if (this.state.isRemoved) {
+      instructor = this.state.users.map((item) => {
+        return {
+          id: item[null],
+          firstName: item[null],
+          lastName: item[null],
+        };
+      });
+    }
+    return;
+  }
 }
