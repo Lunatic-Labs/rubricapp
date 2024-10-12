@@ -94,7 +94,7 @@ class AdminDeleteTeam extends Component {
     var deleteTeam = state.deleteTeam;
 
     if (users > 0) {
-      errors.users = "there needs to be no users at all";
+      errors.users = "there needs to be no students in the teams at all";
     }
 
     if (Object.keys(errors).length > 0) {
