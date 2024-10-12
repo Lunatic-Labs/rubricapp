@@ -67,4 +67,19 @@ class AdminDeleteTeam extends Component {
       observerId: event.target.value,
     });
   };
+
+  handleSubmit = () => {
+    const { teamName, observerId } = this.state;
+    const errors = {};
+
+    var date = new Date().getDate();
+    var month = new Date().getMonth() + 1;
+    var year = new Date().getFullYear();
+    var navbar = this.props.navbar;
+    var confirmDeleteResource = navbar.confirmDeleteResource;
+
+    if (users > 0) {
+      errors.users = "there needs to be no users at all";
+    }
+  };
 }
