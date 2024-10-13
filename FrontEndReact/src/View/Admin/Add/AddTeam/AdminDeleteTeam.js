@@ -2,13 +2,9 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { Box, Button, Typography, TextField } from "@mui/material";
-import {
-  genericResourceDelete,
-  genericResourceGET,
-} from "../../../../utility.js";
+import { Box, Button, Typography} from "@mui/material";
+import {genericResourceDelete,genericResourceGET} from "../../../../utility.js";
 import { FormControl, MenuItem, InputLabel, Select } from "@mui/material";
-import Cookies from "universal-cookie";
 import FormHelperText from "@mui/material/FormHelperText";
 
 class AdminDeleteTeam extends Component {
@@ -109,7 +105,7 @@ class AdminDeleteTeam extends Component {
             errorMessage={errorMessage}
           />
         )}
-        {validMessage && <ErrorMessage delete={true} error={validMessage} />}
+        {validMessage && (<ErrorMessage delete={true} error={validMessage} />)}
         <Box style={{ marginTop: "5rem" }} className="card-spacing">
           <Box className="form-position">
             <Box className="card-style">
@@ -190,3 +186,4 @@ class AdminDeleteTeam extends Component {
     );
   }
 }
+export default AdminDeleteTeam
