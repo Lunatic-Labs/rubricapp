@@ -18,54 +18,48 @@ class AdminDeleteTeam extends Component {
       isRemoved: null,
       errorMessage: null,
       validMessage: "",
-      editTeam: false,
-      observerId: "",
-      teamName: "",
-      users: null,
+      teams: [],
+      selectedTeamId: "",
+      selectedTeamUsers: [],
 
       errors: {
-        users: null,
-        teamName: "",
-        observerId: "",
+        selectedTeamId: "",
       },
-    };
-    this.handleSelect = (event) => {
-      this.setState({
-        observerId: event.target.value,
-      });
     };
   }
 
   componentDidMount() {
-    var navbar = this.props.navbar;
-
-    var state = navbar.state;
-
-    var team = state.team;
-
-    var deleteTeam = state.deleteTeam;
-
-    genericResourceGET(
-      `/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`,
-      "users",
-      this,
-    );
-
-    if (team !== null && !deleteTeam) {
-      this.setState({
-        teamName: null,
-
-        observerId: null,
-
-        editTeam: false,
-      });
-    }
+    this.fetchTeams();
   }
 
+  fetchTeams = () => {
+    genericResourceGET(
+      `/teams?course_id=${this.props.navbar.state.chosenCourse["course_id"]}`,
+      "teams",
+      this,
+    );
+  };
+
+  fetchTeamUsers = (teamId) => {
+    genericResourceGET(
+      `/team-users?team_id=${teamId}`,
+      "selectedTeamUsers",
+      this,
+    );
+  };
+
   handleSelect = (event) => {
+    const teamId = event.target.value;
     this.setState({
-      observerId: event.target.value,
+      selectedTeamId: teamId,
+      errors: {
+        ...this.state.errors,
+        selectedTeamId: "",
+      },
     });
+    if (teamId) {
+      this.fetchTeamUsers(teamId);
+    }
   };
 
   handleSubmit = () => {
