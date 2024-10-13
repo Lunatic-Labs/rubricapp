@@ -152,6 +152,12 @@ class AdminDeleteTeam extends Component {
         };
       });
     }
+    var navbar = this.prop.navbar;
+    var state = navbar.state;
+    var deleteTeam = state.deleteTeam;
+
+    const { errorMessage, errors, validMessage, teamName, observerId } =
+      this.state;
     return;
   }
 }
