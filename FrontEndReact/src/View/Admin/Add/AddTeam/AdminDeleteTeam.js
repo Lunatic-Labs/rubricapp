@@ -63,176 +63,90 @@ class AdminDeleteTeam extends Component {
   };
 
   handleSubmit = () => {
-    const { teamName, observerId, users } = this.state;
+    const { selectedTeamId, selectedTeamUsers } = this.state;
     const errors = {};
-
-    var date = new Date().getDate();
-
-    var month = new Date().getMonth() + 1;
-
-    var year = new Date().getFullYear();
-
-    var navbar = this.props.navbar;
-
-    var state = navbar.state;
-
-    var confirmDeleteResource = navbar.confirmDeleteResource;
-
-    var chosenCourse = state.chosenCourse;
-
-    var team = state.team;
-
-    var teamusers = state.teamusers;
-
-    var deleteTeam = state.deleteTeam;
-
-    if (users > 0) {
-      errors.users = "there needs to be no students in the teams at all";
+    if (!selectedTeamId) {
+      errors.selectedTeamId = "Please select team to delete";
+    } else if (selectedTeamUsers.length > 0) {
+      errors.selectedTeamId =
+        "Please make sure that there are currently no one in the teams before deleting team";
     }
-
-    if (Object.keys(errors).length > 0) {
+    if (Object.keys(errors).length) {
       this.setState({ errors });
     } else {
-      const body = JSON.stringify({
-        team_name: teamName,
-        observer_id: observerId,
-        course_id: chosenCourse.course_id,
-        date_deleted: `${month}/${date}/${year}`,
-      });
-
-      if (team === null && teamusers === null && deleteTeam === null) {
-        genericResourcePOST(
-          `/team?course_id=${chosenCourse.course_id}`,
-          this,
-          body,
-        );
-      } else if (team !== null && teamusers === null && deleteTeam === false) {
-        genericResourcePUT(`/team?team_id=${team.team_id}`, this, body);
-      }
-      confirmDeleteResource("Team");
+      this.deleteTeam(selectedTeamId);
     }
   };
 
-  handleChange = (e) => {
-    const { id, value } = e.target;
-    this.setState({
-      [id]: value,
-      errors: {
-        ...this.state.errors,
-        [id]:
-          value.trim() === ""
-            ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`
-            : "",
+  deleteTeam = (teamId) => {
+    genericResourceDelete(
+      `/team?team_id=${teamId}`,
+      this,
+      () => {
+        this.setState({
+          isRemoved: true,
+          validMessage: "The team was successfully deleted",
+          selectedTeamId: "",
+          selectedTeamUsers: [],
+        });
+        this.fetchTeams();
       },
-    });
+      (error) => {
+        this.setState({
+          errorMessage: `Failed to delete team: ${error.message}`,
+        });
+      },
+    );
   };
-
   render() {
-    const cookies = new Cookies();
-
-    const userId = cookies.get("user")["user_id"];
-
-    const userName = cookies.get("user")["user_name"];
-
-    var instructor = [];
-
-    if (this.state.isRemoved) {
-      instructor = this.state.users.map((item) => {
-        return {
-          id: item[null],
-          firstName: item[null],
-          lastName: item[null],
-        };
-      });
-    }
-    var navbar = this.prop.navbar;
-    var state = navbar.state;
-    var deleteTeam = state.deleteTeam;
-
-    const { errorMessage, errors, validMessage, teamName, observerId } =
-      this.state;
+    const { errorMessage, validMessage, selectedTeamId, errors } = this.state;
     return (
       <>
         {errorMessage && (
           <ErrorMessage
-            delete={deleteTeam}
+            delete={true}
             resource={"Team"}
             errorMessage={errorMessage}
           />
         )}
-
-        {validMessage !== "" && (
-          <ErrorMessage delete={deleteTeam} error={validMessage} />
-        )}
-
+        {validMessage && <ErrorMessage delete={true} error={validMessage} />}
         <Box style={{ marginTop: "5rem" }} className="card-spacing">
           <Box className="form-position">
             <Box className="card-style">
-              <FormControl className="form-spacing" aria-label="addTeamForm">
+              <FormControl className="form-spacing" aria-label="deleteTeamForm">
                 <Typography
                   id="deleteTeamTitle"
                   variant="h5"
-                  aria-label={
-                    this.state.editTeam
-                      ? "adminEditTeamTitle"
-                      : "adminDeleteTeamTitle"
-                  }
+                  aria-label="adminDeleteTeamTitle"
                 >
-                  {this.state.editTeam ? "Edit Team" : "Delete Team"}
+                  Delete Team
                 </Typography>
 
                 <Box className="form-input">
-                  <TextField
-                    id="teamName"
-                    name="newTeamName"
-                    variant="outlined"
-                    label="Team Name"
-                    fullWidth
-                    value={teamName}
-                    error={!!errors.teamName}
-                    helperText={errors.teamName}
-                    onChange={this.handleChange}
-                    required
-                    sx={{ mb: 3 }}
-                    aria-label="userTeamNameInput"
-                  />
-
                   <FormControl
-                    error={!!errors.observerId}
+                    error={!!errors.selectedTeamId}
                     required
                     fullWidth
                     sx={{ mb: 3 }}
                   >
-                    <InputLabel
-                      className={errors.observerId ? "errorSelect" : ""}
-                      id="Observer"
-                    >
-                      Observer
+                    <InputLabel id="teamSelect">
+                      Select Team to Delete
                     </InputLabel>
-
                     <Select
-                      id="Observer"
-                      labelId="Observer"
-                      value={observerId}
-                      label="Observer"
-                      onChange={(event) => this.handleSelect(event)}
-                      required
-                      error={!!errors.observerId}
-                      aria-label="userObserverDropDown"
+                      labelId="teamSelect"
+                      value={selectedTeamId}
+                      label="Select Team to Delete"
+                      onChange={this.handleSelect}
+                      error={!!errors.selectedTeamId}
+                      aria-label="teamSelectDropdown"
                     >
-                      {navbar.props.isAdmin && (
-                        <MenuItem value={userId} key={userId}>
-                          {userName}
-                        </MenuItem>
-                      )}
-
-                      {instructor.map((x) => (
-                        <MenuItem value={x.id} key={x.id}>
-                          {x.firstName + " " + x.lastName}
+                      {teams.map((team) => (
+                        <MenuItem value={team.team_id} key={team.team_id}>
+                          {team.team_name}
                         </MenuItem>
                       ))}
                     </Select>
-                    <FormHelperText>{errors.observerId}</FormHelperText>
+                    <FormHelperText>{errors.selectedTeamId}</FormHelperText>
                   </FormControl>
 
                   <Box
@@ -245,15 +159,14 @@ class AdminDeleteTeam extends Component {
                   >
                     <Button
                       id="deleteTeamCancel"
-                      className=""
                       onClick={() => {
-                        navbar.setState({
+                        this.props.navbar.setState({
                           activeTab: "Teams",
                           team: null,
                           addTeam: null,
                         });
                       }}
-                      aria-label="cancelAddTeamButton"
+                      aria-label="cancelDeleteTeamButton"
                     >
                       Cancel
                     </Button>
@@ -261,10 +174,11 @@ class AdminDeleteTeam extends Component {
                     <Button
                       id="deleteTeam"
                       variant="contained"
+                      color="error"
                       onClick={this.handleSubmit}
-                      aria-label="addOrSaveDeleteTeamButton"
+                      aria-label="confirmDeleteTeamButton"
                     >
-                      {this.state.editTeam ? "Save" : "Delete Team"}
+                      Delete Team
                     </Button>
                   </Box>
                 </Box>
@@ -276,5 +190,3 @@ class AdminDeleteTeam extends Component {
     );
   }
 }
-
-export default AdminDeleteTeam;
