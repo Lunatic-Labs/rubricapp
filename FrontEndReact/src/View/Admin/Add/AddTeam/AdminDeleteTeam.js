@@ -4,8 +4,7 @@ import "../../../../SBStyles.css";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 import { Box, Button, Typography, TextField } from "@mui/material";
 import {
-  genericResourcePOST,
-  genericResourcePUT,
+  genericResourceDelete,
   genericResourceGET,
 } from "../../../../utility.js";
 import { FormControl, MenuItem, InputLabel, Select } from "@mui/material";
@@ -158,6 +157,130 @@ class AdminDeleteTeam extends Component {
 
     const { errorMessage, errors, validMessage, teamName, observerId } =
       this.state;
-    return;
+    return (
+      <>
+        {errorMessage && (
+          <ErrorMessage
+            delete={deleteTeam}
+            resource={"Team"}
+            errorMessage={errorMessage}
+          />
+        )}
+
+        {validMessage !== "" && (
+          <ErrorMessage delete={deleteTeam} error={validMessage} />
+        )}
+
+        <Box style={{ marginTop: "5rem" }} className="card-spacing">
+          <Box className="form-position">
+            <Box className="card-style">
+              <FormControl className="form-spacing" aria-label="addTeamForm">
+                <Typography
+                  id="deleteTeamTitle"
+                  variant="h5"
+                  aria-label={
+                    this.state.editTeam
+                      ? "adminEditTeamTitle"
+                      : "adminDeleteTeamTitle"
+                  }
+                >
+                  {this.state.editTeam ? "Edit Team" : "Delete Team"}
+                </Typography>
+
+                <Box className="form-input">
+                  <TextField
+                    id="teamName"
+                    name="newTeamName"
+                    variant="outlined"
+                    label="Team Name"
+                    fullWidth
+                    value={teamName}
+                    error={!!errors.teamName}
+                    helperText={errors.teamName}
+                    onChange={this.handleChange}
+                    required
+                    sx={{ mb: 3 }}
+                    aria-label="userTeamNameInput"
+                  />
+
+                  <FormControl
+                    error={!!errors.observerId}
+                    required
+                    fullWidth
+                    sx={{ mb: 3 }}
+                  >
+                    <InputLabel
+                      className={errors.observerId ? "errorSelect" : ""}
+                      id="Observer"
+                    >
+                      Observer
+                    </InputLabel>
+
+                    <Select
+                      id="Observer"
+                      labelId="Observer"
+                      value={observerId}
+                      label="Observer"
+                      onChange={(event) => this.handleSelect(event)}
+                      required
+                      error={!!errors.observerId}
+                      aria-label="userObserverDropDown"
+                    >
+                      {navbar.props.isAdmin && (
+                        <MenuItem value={userId} key={userId}>
+                          {userName}
+                        </MenuItem>
+                      )}
+
+                      {instructor.map((x) => (
+                        <MenuItem value={x.id} key={x.id}>
+                          {x.firstName + " " + x.lastName}
+                        </MenuItem>
+                      ))}
+                    </Select>
+                    <FormHelperText>{errors.observerId}</FormHelperText>
+                  </FormControl>
+
+                  <Box
+                    sx={{
+                      display: "flex",
+                      justifyContent: "flex-end",
+                      alignItems: "center",
+                      gap: "20px",
+                    }}
+                  >
+                    <Button
+                      id="deleteTeamCancel"
+                      className=""
+                      onClick={() => {
+                        navbar.setState({
+                          activeTab: "Teams",
+                          team: null,
+                          addTeam: null,
+                        });
+                      }}
+                      aria-label="cancelAddTeamButton"
+                    >
+                      Cancel
+                    </Button>
+
+                    <Button
+                      id="deleteTeam"
+                      variant="contained"
+                      onClick={this.handleSubmit}
+                      aria-label="addOrSaveDeleteTeamButton"
+                    >
+                      {this.state.editTeam ? "Save" : "Delete Team"}
+                    </Button>
+                  </Box>
+                </Box>
+              </FormControl>
+            </Box>
+          </Box>
+        </Box>
+      </>
+    );
   }
 }
+
+export default AdminDeleteTeam;
