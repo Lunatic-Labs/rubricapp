@@ -15,6 +15,7 @@ import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers.js';
 import AdminEditTeamMembers from '../Admin/Add/AddTeam/AdminEditTeamMembers.js'
 import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard.js';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam.js';
+import AdminDeleteTeam from '../Admin/Delete/DeleteTeam/AdminDeleteTeam.js';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask.js';
 import ButtonAppBar from './Navbar.js';
 import { Box, Typography } from '@mui/material';
@@ -210,6 +211,13 @@ class AppState extends Component {
                     unitOfAssessment: null
                 });
             }
+        }
+
+        this.setDeleteTeamTab = (teamId) => {
+            this.setState({
+                activeTab: "DeleteTeam",
+                teamToDelete: teamId
+            });
         }
 
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
