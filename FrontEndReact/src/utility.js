@@ -13,6 +13,9 @@ export async function genericResourcePOST(fetchURL, component, body) {
 export async function genericResourcePUT(fetchURL, component, body) {    
     return await genericResourceFetch(fetchURL, null, component, "PUT", body);
 }
+export async function genericResourceDelete(fetchURL, component, body) {    
+    return await genericResourceFetch(fetchURL, null, component, "DELETE", body);
+}
 
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();

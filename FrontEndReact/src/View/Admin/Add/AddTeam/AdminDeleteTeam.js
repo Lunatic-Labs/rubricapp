@@ -95,7 +95,7 @@ class AdminDeleteTeam extends Component {
     );
   };
   render() {
-    const { errorMessage, validMessage, selectedTeamId, errors } = this.state;
+    const { errorMessage, validMessage, selectedTeamId, errors, teams } = this.state;
     return (
       <>
         {errorMessage && (
@@ -136,7 +136,7 @@ class AdminDeleteTeam extends Component {
                       error={!!errors.selectedTeamId}
                       aria-label="teamSelectDropdown"
                     >
-                      {teams.map((team) => ( //Todo:Fix this here (teams is not defined)
+                      {teams.map((team) => (
                         <MenuItem value={team.team_id} key={team.team_id}>
                           {team.team_name}
                         </MenuItem>
