@@ -136,7 +136,7 @@ class AdminDeleteTeam extends Component {
                       error={!!errors.selectedTeamId}
                       aria-label="teamSelectDropdown"
                     >
-                      {teams.map((team) => (
+                      {teams.map((team) => ( //Fix this here (teams is not defined)
                         <MenuItem value={team.team_id} key={team.team_id}>
                           {team.team_name}
                         </MenuItem>

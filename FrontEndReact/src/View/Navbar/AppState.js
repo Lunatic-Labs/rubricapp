@@ -15,7 +15,7 @@ import StudentTeamMembers from '../Student/View/Team/StudentTeamMembers.js';
 import AdminEditTeamMembers from '../Admin/Add/AddTeam/AdminEditTeamMembers.js'
 import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard.js';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam.js';
-import AdminDeleteTeam from '../Admin/Delete/DeleteTeam/AdminDeleteTeam.js';
+import AdminDeleteTeam from '../Admin/Add/AddTeam/AdminDeleteTeam.js';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask.js';
 import ButtonAppBar from './Navbar.js';
 import { Box, Typography } from '@mui/material';
@@ -565,6 +565,24 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <StudentManageCurrentTeam
                             navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab === "DeleteTeam" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Team"}
+                        />
+
+                        <AdminDeleteTeam
+                            navbar={this}
+                            teamId={this.state.teamToDelete}
+                            onDeleteSuccess={() => {
+                                this.setNewTab("Teams");
+                                this.setSuccessMessage("Team successfully deleted");
+                            }}
                         />
                     </Box>
                 }
