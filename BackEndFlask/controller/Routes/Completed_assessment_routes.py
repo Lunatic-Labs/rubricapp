@@ -52,25 +52,35 @@ def get_all_completed_assessments():
 
         if request.args and request.args.get("course_id") and request.args.get("role_id"):
             # if the args have a role id, then it is a TA so it should return their completed assessments
+
             course_id = int(request.args.get("course_id"))
-            user_id = request.args.get("user_id")   
+
+            user_id = request.args.get("user_id")
+
             completed_assessments_task_by_user = get_completed_assessment_by_ta_user_id(course_id, user_id)
+
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
             course_id = int(request.args.get("course_id"))
+
             user_id = request.args.get("user_id")
+
             completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
+
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
         if request.args and request.args.get("assessment_task_id") and request.args.get("unit"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
             unit = request.args.get("unit")
+
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
+
             if (unit == "team"):
                 completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
             else:
                 completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
+            
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
@@ -80,6 +90,7 @@ def get_all_completed_assessments():
 
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
+            
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
             completed_count = get_completed_assessment_count(assessment_task_id)
