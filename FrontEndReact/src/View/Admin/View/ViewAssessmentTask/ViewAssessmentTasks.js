@@ -19,7 +19,9 @@ class ViewAssessmentTasks extends Component {
             errorMessage: null,
             csvCreation: null,
             downloadedAssessment: null,
-            exportButtonId: {}
+            exportButtonId: {},
+            completedAssessments: [],
+            assessmentTasks: []  // Initialize assessmentTasks as an empty array
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
@@ -69,6 +71,25 @@ class ViewAssessmentTasks extends Component {
                 csvCreation: null
             });
         }
+    }
+
+    componentDidMount() {
+        const courseId = this.props.navbar.state.chosenCourse.course_id;
+        console.log("Course ID:", courseId);
+    
+        genericResourceGET(
+            `/assessment_task?course_id=${courseId}`,
+            "assessmentTasks",
+            this
+        );
+        genericResourceGET(
+            `/completed_assessment?course_id=${courseId}`,
+            "completedAssessments",
+            this,
+            () => {
+                console.log("Completed Assessments:", this.state.completedAssessments);
+            }
+        );
     }
 
     render() {
@@ -345,6 +366,26 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
+                        const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === atId);
+                        const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
+
+                        if (completedCount === 0) {
+                            return (
+                                <Tooltip title="No completed assessments to export">
+                                    <span>
+                                        <Button
+                                            id={"assessment_export_" + atId}
+                                            className='primary-color'
+                                            variant='contained'
+                                            disabled
+                                            aria-label='exportAssessmentTaskButton'
+                                            >
+                                            EXPORT
+                                        </Button>
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
                         return (
                                 <Button
                                     id={"assessment_export_" + atId}
@@ -379,7 +420,7 @@ class ViewAssessmentTasks extends Component {
         return(
             <>
                 <CustomDataTable
-                    data={assessmentTasks ? assessmentTasks : []}
+                    data={assessmentTasks}
                     columns={columns}
                     options={options}
                 />
