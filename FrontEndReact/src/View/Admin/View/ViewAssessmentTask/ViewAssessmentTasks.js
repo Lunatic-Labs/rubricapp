@@ -7,6 +7,7 @@ import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -20,8 +21,8 @@ class ViewAssessmentTasks extends Component {
             csvCreation: null,
             downloadedAssessment: null,
             exportButtonId: {},
-            completedAssessments: [],
-            assessmentTasks: []  // Initialize assessmentTasks as an empty array
+            completedAssessments: null,
+            assessmentTasks: null  
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
@@ -75,7 +76,6 @@ class ViewAssessmentTasks extends Component {
 
     componentDidMount() {
         const courseId = this.props.navbar.state.chosenCourse.course_id;
-        console.log("Course ID:", courseId);
     
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
@@ -85,14 +85,16 @@ class ViewAssessmentTasks extends Component {
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}`,
             "completedAssessments",
-            this,
-            () => {
-                console.log("Completed Assessments:", this.state.completedAssessments);
-            }
+            this
         );
     }
 
     render() {
+
+        if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
+            return <Loading />;
+        }
+
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
