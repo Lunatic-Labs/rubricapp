@@ -118,7 +118,7 @@ export default function ViewAssessmentStatus(props) {
       improvementsData['improvements'][i]['percentage'] = percent  + "%";
     }
   }
-{/*remove border color top and fix it*/}
+/*remove border color top and fix it*/
   const innerGridStyle = {
     borderRadius: '1px',
     height: '100%',
@@ -127,6 +127,7 @@ export default function ViewAssessmentStatus(props) {
     margin: 0,
     boxShadow: "0.3em 0.3em 1em #d6d6d6"
   };
+
   const outerQuadrantSX = {
     display:"flex",
     justifyContent:"center"

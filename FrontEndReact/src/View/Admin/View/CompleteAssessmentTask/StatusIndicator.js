@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { Box } from '@mui/material';
-import FiberManualRecordIcon from '@mui/icons-material/FiberManualRecord';
 
 
 

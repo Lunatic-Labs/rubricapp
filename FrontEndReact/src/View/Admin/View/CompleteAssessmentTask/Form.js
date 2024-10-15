@@ -167,13 +167,13 @@ class Form extends Component {
             const showSuggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
             const suggestions = showSuggestions ? category["suggestions"].includes("1") : false;
 
-            var status = null;
+            let status = null; // null is for not filled out at all (grey empty circle on category tab)
 
             if (observableCharacteristic && (!showSuggestions || suggestions)) {
-                status = true;
+                status = true; // true is for fully filled out (green filled in circle on category tab)
 
             } else if (observableCharacteristic || suggestions) {
-                status = false;
+                status = false; // false is for partially filled out (yellow half filled in circle on category tab)
             }
 
             return status;

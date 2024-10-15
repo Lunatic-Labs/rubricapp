@@ -6,7 +6,7 @@ import Suggestion from './Suggestion.js';
 import Rating from './Rating.js';
 import TextArea from './TextArea.js';
 import Box from '@mui/material/Box';
-import { FormControl, Typography } from '@mui/material';
+import { FormControl } from '@mui/material';
 import { debounce } from '../../../../utility.js';
 
 

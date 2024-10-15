@@ -14,7 +14,6 @@ class AdminViewTeams extends Component {
         super(props);
 
         this.state = {
-            successMessage: this.props.navbar.state.successMessage,
             errorMessage: null,
             isLoaded: false,
             teams: null,
@@ -38,17 +37,6 @@ class AdminViewTeams extends Component {
         genericResourceGET(url, "users", this);
     }
 
-    componentDidUpdate() {
-        if (this.state.successMessage !== null) {
-            setTimeout(() => {
-                this.setState({
-                    successMessage: null
-                });
-                this.props.navbar.confirmCreateResource("Team");
-            }, 3000);
-        }
-    }
-
     render() {
         const {
             errorMessage,
@@ -58,7 +46,6 @@ class AdminViewTeams extends Component {
         } = this.state;
 
         var navbar = this.props.navbar;
-        var state = navbar.state;
 
         navbar.adminViewTeams.teams = teams;
         navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
@@ -84,11 +71,10 @@ class AdminViewTeams extends Component {
         } else {
             return(
                 <Box>
-                    {this.state.successMessage !== null && 
+                    {navbar.state.successMessage !== null && 
                         <div className='container'>
                           <SuccessMessage 
-                            navbar={this.props.navbar}
-                            successMessage={this.state.successMessage}
+                            successMessage={navbar.state.successMessage}
                             aria-label="adminViewTeamsSuccessMessage"
                           />
                         </div>

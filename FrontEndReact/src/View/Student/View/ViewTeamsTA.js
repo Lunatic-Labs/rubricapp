@@ -8,8 +8,6 @@ class ViewTeamsTA extends Component{
   render() {
     var teams = this.props.teams;
 
-    var users = this.props.users;
-
     const columns = [
       {
         name: "teamName",

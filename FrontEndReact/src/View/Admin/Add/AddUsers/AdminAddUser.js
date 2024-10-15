@@ -138,9 +138,8 @@ class AdminAddUser extends Component {
         if (email.trim() === '') 
             newErrors["email"] = "Email cannot be empty";
 
-        if (!navbar.props.isSuperAdmin && role === '') {
+        if (!navbar.props.isSuperAdmin && role === '')
             newErrors["role"] = "Role cannot be empty";
-        }
 
         if (!validator.isEmail(email) && newErrors["email"] === '')
             newErrors["email"] = "Please enter a valid email address";
