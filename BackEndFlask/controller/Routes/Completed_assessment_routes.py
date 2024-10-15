@@ -76,7 +76,6 @@ def get_all_completed_assessments():
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
                 for assessment in completed_assessments
             ]
-            print("Response data:", result)  
             return create_good_response(result, 200, "completed_assessments")
 
         if request.args and request.args.get("assessment_task_id"):
