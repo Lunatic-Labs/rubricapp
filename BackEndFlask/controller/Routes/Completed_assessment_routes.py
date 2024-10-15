@@ -49,6 +49,7 @@ def get_all_completed_assessments():
                 })
             
             return create_good_response(result, 200, "completed_assessments")
+
         if request.args and request.args.get("course_id") and request.args.get("role_id"):
             # if the args have a role id, then it is a TA so it should return their completed assessments
             course_id = int(request.args.get("course_id"))
@@ -88,35 +89,6 @@ def get_all_completed_assessments():
                 for assessment in completed_assessments
             ]
             return create_good_response(result, 200, "completed_assessments")
-
-        if request.args and request.args.get("course_id"):
-            course_id = int(request.args.get("course_id"))
-            all_completed_assessments = get_completed_assessment_by_course_id(course_id)
-            assessment_tasks = get_assessment_tasks_by_course_id(course_id)
-            
-            result = []
-            for task in assessment_tasks:
-                completed_count = get_completed_assessment_count(task.assessment_task_id)
-                completed_assessments = [ca for ca in all_completed_assessments if ca.assessment_task_id == task.assessment_task_id]
-                
-                if completed_assessments:
-                    for ca in completed_assessments:
-                        result.append({
-                            **completed_assessment_schema.dump(ca),
-                            'completed_count': completed_count,
-                            'assessment_task_name': task.assessment_task_name,
-                            'unit_of_assessment': task.unit_of_assessment
-                        })
-                else:
-                    # Include tasks with no completed assessments
-                    result.append({
-                        'assessment_task_id': task.assessment_task_id,
-                        'assessment_task_name': task.assessment_task_name,
-                        'completed_count': 0,
-                        'unit_of_assessment': task.unit_of_assessment
-                    })
-            
-            return create_good_response(result, 200, "completed_assessments")
         
         if request.args and request.args.get("completed_assessment_task_id"):
             completed_assessment_task_id = int(request.args.get("completed_assessment_task_id"))
@@ -124,7 +96,6 @@ def get_all_completed_assessments():
             return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
 
         all_completed_assessments = get_completed_assessments()
-
         return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
 
     except Exception as e:
