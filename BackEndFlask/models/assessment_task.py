@@ -54,7 +54,7 @@ def get_assessment_tasks():
 
 @error_log
 def get_assessment_tasks_by_course_id(course_id):
-    return AssessmentTask.query.filter_by(course_id=course_id).all()
+    return AssessmentTask.query.filter_by(course_id=course_id).all() # query completed assesment tasks
 
 @error_log
 def get_assessment_tasks_by_role_id(role_id):
