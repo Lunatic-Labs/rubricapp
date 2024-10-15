@@ -127,7 +127,7 @@ class AddCustomRubric extends React.Component {
 
     componentDidMount() {
         var navbar = this.props.navbar;
-        this.state.addCustomRubric = navbar.addCustomRubric;
+        this.setState({addCustomRubric: navbar.addCustomRubric});
         var rubricId = navbar.rubricId;
         if (this.state.addCustomRubric === false) {
             genericResourceGET(`/category?rubric_id=${rubricId}`, "categories", this);
