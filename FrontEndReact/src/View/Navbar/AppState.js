@@ -317,7 +317,7 @@ class AppState extends Component {
             });
         }
 
-        this.confirmCreateResource = (resource) => {
+        this.confirmCreateResource = (resource, delay = 1000) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
                     if (resource === "User" || resource === "UserBulkUpload") {
@@ -389,7 +389,7 @@ class AppState extends Component {
                         });
                     }
                 }
-            }, 1000);
+            }, delay);
         }
 
         this.Reset = (listOfElements) => {
