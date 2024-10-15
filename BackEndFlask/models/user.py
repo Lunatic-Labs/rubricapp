@@ -388,9 +388,6 @@ def delete_user(user_id):
 def delete_user_by_user_id(user_id: int) -> bool:
     user = User.query.filter_by(user_id=user_id).first()
     
-    if not user:
-        return False  # User not found
-    
     db.session.delete(user)
     db.session.commit()
 
