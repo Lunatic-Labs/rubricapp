@@ -68,6 +68,8 @@ class AppState extends Component {
             
             successMessage: null,
             successMessageTimeout: undefined,
+
+            addCustomRubric: null,
         }
 
         this.setNewTab = (newTab) => {

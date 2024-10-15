@@ -3,6 +3,8 @@ import AdminViewCustomRubrics from "../../View/ViewCustomRubrics/AdminViewCustom
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import DialogContent from '@mui/material/DialogContent';
+import DialogContentText from '@mui/material/DialogContentText';
 import React, { useState } from "react";
 import  Button from "@mui/material/Button";
 
@@ -103,11 +105,13 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             label="Edit Custom Rubric"
                             isOutlined={false}
                             onClick={() => {
+                              navbar.addCustomRubric = false;
+                              navbar.rubricId = rubric["rubric_id"];
                               navbar.setNewTab("AddCustomRubric");
                             }}
                             style={{
-                              marginLeft: '330px',
-                              marginRight: '15px',
+                              marginLeft: '270px',
+                              marginRight: '10px',
                               fontSize: '14px',       
                               minWidth: '70px',
                               spacing: '80px'
@@ -115,14 +119,14 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             aria-label="myCustomRubricsEditCustomRubricButton"
                           >Edit</Button>
                         )}
-                        {showDeleteButton && (
+                        {/* {showDeleteButton && (
                           <Button
                             variant="contained"
                             label="Edit Custom Rubric"
                             isOutlined={false}
                             aria-label="myCustomRubricsDeleteCustomRubricButton"
                           >Delete</Button>
-                        )}
+                        )} */}
                     </TableCell>
                   </TableRow>
                   <TableRow>

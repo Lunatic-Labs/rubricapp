@@ -33,10 +33,8 @@ class AdminViewCustomRubrics extends Component {
             errorMessage,
             rubrics,
             categories,
-            navbar
         } = this.state;
 
-        //this.state.navbar = props.navbar;
 
         if (!isLoaded || !rubrics || !categories) {
             return(
@@ -81,6 +79,7 @@ class AdminViewCustomRubrics extends Component {
                         label="Add Custom Rubric"
                         isOutlined={false}
                         onClick={() => {
+                            this.props.navbar.addCustomRubric = true;
                             this.props.navbar.setNewTab("AddCustomRubric");
                         }}
                         aria-label="myCustomRubricsAddCustomRubricButton"
