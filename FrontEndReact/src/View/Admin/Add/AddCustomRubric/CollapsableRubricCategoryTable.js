@@ -110,8 +110,7 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                               navbar.setNewTab("AddCustomRubric");
                             }}
                             style={{
-                              marginLeft: '270px',
-                              marginRight: '10px',
+                              marginLeft: '380px',
                               fontSize: '14px',       
                               minWidth: '70px',
                               spacing: '80px'
