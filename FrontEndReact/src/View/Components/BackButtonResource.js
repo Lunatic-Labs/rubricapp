@@ -25,7 +25,7 @@ export default function BackButtonResource (props){
       <Box>
         <ColorButton
           onClick={() => {
-            confirmResource(props.tabSelected);
+            confirmResource(props.tabSelected, 0);
           }}
           variant="contained"
           startIcon={<ArrowBackIcon/>}
