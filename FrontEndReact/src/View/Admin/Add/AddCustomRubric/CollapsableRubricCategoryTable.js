@@ -1,10 +1,6 @@
-import { Component } from "react";
-import AdminViewCustomRubrics from "../../View/ViewCustomRubrics/AdminViewCustomRubrics";
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import DialogContent from '@mui/material/DialogContent';
-import DialogContentText from '@mui/material/DialogContentText';
 import React, { useState } from "react";
 import  Button from "@mui/material/Button";
 

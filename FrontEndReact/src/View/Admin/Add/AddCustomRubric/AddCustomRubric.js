@@ -74,7 +74,7 @@ class AddCustomRubric extends React.Component {
                 return;
             } 
             var cookies = new Cookies();
-            if (this.state.addCustomRubric == false) {
+            if (this.state.addCustomRubric === false) {
                 genericResourcePUT(
                     `/rubric?rubric_id=${this.state.rubric_id}`,
                     this,
@@ -127,20 +127,10 @@ class AddCustomRubric extends React.Component {
 
     componentDidMount() {
         var navbar = this.props.navbar;
-        var rubrics = this.state.rubrics;
         this.state.addCustomRubric = navbar.addCustomRubric;
         var rubricId = navbar.rubricId;
-        console.log(this.state.addCustomRubric);
         if (this.state.addCustomRubric === false) {
-            console.log(rubricId);
             genericResourceGET(`/category?rubric_id=${rubricId}`, "categories", this);
-            //get categories of the one rubric that you are editing
-            //compare them to categories that are the rights ones
-            // this.setState({
-                // rubricName: rubrics.rubric_name,
-                // rubricDescription: rubrics.rubric_description,
-                // rubricCategories: '',
-            // });
         }
     }
 
@@ -197,7 +187,7 @@ class AddCustomRubric extends React.Component {
             )
         }
 
-        else if (addCustomRubric==false) {
+        else if (addCustomRubric===false) {
             if (!isLoaded || !categories){
             return (
                 <Loading />
