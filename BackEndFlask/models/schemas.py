@@ -115,7 +115,7 @@ class TeamUser(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     team_user_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     
 class AssessmentTask(db.Model):
     __tablename__ = "AssessmentTask"
