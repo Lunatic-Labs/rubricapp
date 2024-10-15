@@ -312,7 +312,7 @@ def delete_user():
 
             delete_user_by_user_id(user_id)
 
-            return create_good_response([], 204, "")
+            return create_good_response([], 200, "")
         
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
