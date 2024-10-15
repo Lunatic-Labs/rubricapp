@@ -100,6 +100,29 @@ class ViewTeams extends Component{
           }
         }
       },
+      // {
+      //   name: "team_id",
+      //   label: "Delete",
+      //   options: {
+      //     filter: false,
+      //     sort: false,
+      //     setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment"}},
+      //     setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment"} },
+      //     customBodyRender: (teamId) => {
+      //       return(
+      //         <IconButton
+      //          align="center"
+      //          onClick={() => {
+      //           setAddTeamTabWithTeam(teams, teamId, users, "AddTeam");;
+      //          }}
+      //          aria-label="editTeamIconButton"
+      //         >
+      //           <EditIcon sx={{color:"black"}}/>
+      //         </IconButton>
+      //       )
+      //     }
+      //   }
+      // },
       {
         name: "team_id",
         label: "View Team Members",

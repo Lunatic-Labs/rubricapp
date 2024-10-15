@@ -212,14 +212,6 @@ class AppState extends Component {
                 });
             }
         }
-
-        this.setDeleteTeamTab = (teamId) => {
-            this.setState({
-                activeTab: "DeleteTeam",
-                teamToDelete: teamId
-            });
-        }
-
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
             var newTeam = null;
 
@@ -565,24 +557,6 @@ class AppState extends Component {
                     <Box className="page-spacing">
                         <StudentManageCurrentTeam
                             navbar={this}
-                        />
-                    </Box>
-                }
-
-                {this.state.activeTab === "DeleteTeam" &&
-                    <Box className="page-spacing">
-                        <BackButtonResource
-                            navbar={this}
-                            tabSelected={"Team"}
-                        />
-
-                        <AdminDeleteTeam
-                            navbar={this}
-                            teamId={this.state.teamToDelete}
-                            onDeleteSuccess={() => {
-                                this.setNewTab("Teams");
-                                this.setSuccessMessage("Team successfully deleted");
-                            }}
                         />
                     </Box>
                 }
