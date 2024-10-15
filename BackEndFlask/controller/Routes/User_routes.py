@@ -36,7 +36,8 @@ from models.user import(
     get_user_password,
     replace_user,
     make_admin,
-    unmake_admin
+    unmake_admin,
+    delete_user_by_user_id
 )
 
 from models.queries import (
@@ -299,6 +300,23 @@ def update_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
+    
+@bp.route('/user', methods = ['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def delete_user():
+    try:
+        if request.args and request.args.get("uid"):
+            user_id = request.args.get("uid")
+
+            delete_user_by_user_id(user_id)
+
+            return create_good_response([], 204, "")
+        
+    except Exception as e:
+        return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
+    
 
 
 class UserSchema(ma.Schema):
