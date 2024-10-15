@@ -6,7 +6,7 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function DropConfirmation( props ) {
+export default function DeleteConfirmation( props ) {
     var userInformation = `${props.userFirstName} ${props.userLastName}`;
 
     return (
@@ -17,13 +17,13 @@ export default function DropConfirmation( props ) {
                     aria-labelledby="responsive-dialog-title"
                 >
                     <DialogTitle id="responsive-dialog-title">
-                        {"Confirm Dropping User"}
+                        {"Confirm Deleting User"}
                     </DialogTitle>
 
                     <DialogContent>
                         <DialogContentText>
                             Warning! This action can not be undone. <br></br>
-                            Dropping will permanently remove <strong> {userInformation} </strong> from the current course. 
+                            Deleting will permanently remove <strong> {userInformation} </strong> from the entire database. 
                         </DialogContentText>
                     </DialogContent>
 
@@ -32,8 +32,8 @@ export default function DropConfirmation( props ) {
                             Cancel
                         </Button>
 
-                        <Button variant="contained" autoFocus onClick={props.dropUser}>
-                            Drop User
+                        <Button variant="contained" autoFocus onClick={props.deleteUser}>
+                            Delete User
                         </Button>
                     </DialogActions>
                 </Dialog>
