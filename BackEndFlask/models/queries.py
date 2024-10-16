@@ -165,37 +165,6 @@ def get_users_by_role_id(role_id):
 
 
 @error_log
-def get_course_active_users(course_id, role_id):
-    """
-    Description:
-    Gets all active users for the course.
-    Parameters:
-    course_id: int (The id of a course)
-    role_id: int (The role id to filter users by role)
-    """
-    active_user = db.session.query(
-        User.user_id,
-        User.first_name,
-        User.last_name,
-        User.email,
-        User.lms_id,
-        User.consent,
-        User.owner_id,
-        UserCourse.role_id,
-        UserCourse.active
-    ).join(
-        UserCourse,
-        UserCourse.user_id == User.user_id
-    ).filter(
-        UserCourse.course_id == course_id,
-        UserCourse.active == True,
-        UserCourse.role_id == role_id
-    ).all()
-
-    return active_user
-
-
-@error_log
 def get_role_in_course(user_id: int, course_id: int):
     """
     Description:
