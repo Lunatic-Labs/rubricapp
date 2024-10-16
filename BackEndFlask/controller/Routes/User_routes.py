@@ -47,7 +47,8 @@ from models.queries import (
     get_students_by_team_id,
     get_students_not_in_a_team,
     add_user_to_team,
-    remove_user_from_team
+    remove_user_from_team,
+    get_course_active_users
 )
 
 
@@ -128,6 +129,21 @@ def get_all_users():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
+@bp.route('/user/active', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_active_user_by_course():
+    try:
+        if(request.args and request.args.get("course_id")):
+            course_id = request.args.get("course_id")
+            role_id = request.args.get("role_id")
+
+            active_users = get_course_active_users(course_id, role_id)
+
+            return create_good_response(users_schema.dump(active_users), 200, "users")
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all users: {e}", "users", 400)
 
 @bp.route('/team_members', methods=['GET'])
 @jwt_required()
