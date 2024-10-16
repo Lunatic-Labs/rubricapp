@@ -46,7 +46,7 @@ from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_students_by_team_id,
-    get_students_not_in_a_team,
+    get_active_students_not_in_a_team,
     add_user_to_team,
     remove_user_from_team,
     get_course_active_users
@@ -90,7 +90,7 @@ def get_all_users():
             
             # We are going to add students by default!
             # Return students that are not in the team!
-            all_users = get_students_not_in_a_team(course_id, team_id)
+            all_users = get_active_students_not_in_a_team(course_id, team_id)
 
             if request.args.get("assign") == 'true':
                 # We are going to remove students!
