@@ -47,7 +47,7 @@ class AdminAddTeam extends Component {
         var addTeam = state.addTeam;
 
         genericResourceGET(
-            `/user?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`, 
+            `/user/active?course_id=${this.props.navbar.state.chosenCourse["course_id"]}&role_id=4`, 
             "users", this);
         
         if (team !== null && !addTeam) {
