@@ -16,9 +16,6 @@ from models.queries import *
 from enum import Enum
 from datetime import datetime
 
-
-
-
 def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     """
     Description:

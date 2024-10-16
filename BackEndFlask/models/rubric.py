@@ -59,3 +59,15 @@ def replace_rubric(rubric, rubric_id):
     db.session.commit()
 
     return one_rubric
+
+@error_log
+def delete_rubric(rubric_id):
+    one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
+
+    if one_rubric is None:
+        raise InvalidRubricID(rubric_id)
+
+    db.session.delete(one_rubric)
+    db.session.commit()
+
+    return one_rubric

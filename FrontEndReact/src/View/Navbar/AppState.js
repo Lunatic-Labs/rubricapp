@@ -69,6 +69,8 @@ class AppState extends Component {
             
             successMessage: null,
             successMessageTimeout: undefined,
+
+            addCustomRubric: null,
         }
 
         this.setNewTab = (newTab) => {
@@ -532,6 +534,29 @@ class AppState extends Component {
                     </Box>
                 }
 
+                {/* {this.state.activeTab==="EditCustomRubric" &&
+                  <Box className="page-spacing">
+                      <BackButtonResource
+                          navbar={this}
+                          tabSelected={"MyCustomRubrics"}
+                      />
+                      <AdminEditCustomRubric
+                          navbar={this}
+                      />
+                  </Box>
+                }
+
+                {this.state.activeTab==="DeleteCustomRubric" &&
+                  <Box className="page-spacing">
+                      <BackButtonResource
+                          navbar={this}
+                          tabSelected={"MyCustomRubrics"}
+                      />
+                      <AdminDeleteCustomRubric
+                          navbar={this}
+                      />
+                  </Box>
+                } */}
                 {this.state.activeTab==="AddCourse" &&
                     <Box className="page-spacing">
                         <BackButtonResource
