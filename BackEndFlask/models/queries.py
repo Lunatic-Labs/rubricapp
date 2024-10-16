@@ -274,7 +274,7 @@ def get_students_by_team_id(course_id: int, team_id: int):
 
 
 @error_log
-def get_students_not_in_a_team(course_id: int, team_id: int):
+def get_active_students_not_in_a_team(course_id: int, team_id: int):
     """
     Description:
     Gets all of the students not assigned to a team.
@@ -296,6 +296,7 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
         and_(
             UserCourse.course_id == course_id,
             UserCourse.role_id == 5,
+            UserCourse.active == True,
             UserCourse.user_id.notin_(
                 db.session.query(
                     TeamUser.user_id
