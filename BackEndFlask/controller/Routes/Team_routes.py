@@ -11,6 +11,7 @@ from models.team import (
     replace_team,
     delete_team
 )
+from models.assessment_task import get_assessment_tasks_by_team_id
 from models.team_user import *
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.queries import (
@@ -174,9 +175,18 @@ def delete_selected_teams():
         if request.args and request.args.get("team_id"):
             team_id = int(request.args.get("team_id"))
 
+            team = get_team(team_id)
+            if not team:
+                return create_bad_response("Team does not exist", "teams", 400)
+            
+            associated_tasks = get_assessment_tasks_by_team_id(team_id)
+            if associated_tasks:
+                return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
+            
             delete_team(team_id)
 
             return create_good_response([], 200, "teams")
+        
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
 
