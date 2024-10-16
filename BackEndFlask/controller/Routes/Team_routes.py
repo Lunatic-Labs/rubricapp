@@ -8,7 +8,8 @@ from models.team import (
     get_team_by_course_id,
     create_team,
     get_teams_by_observer_id,
-    replace_team
+    replace_team,
+    delete_team
 )
 from models.team_user import *
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
@@ -164,6 +165,20 @@ def update_team_user_by_edit():
     except Exception as e:
         return create_bad_response(f"An error occurred updating a team: {e}", "teams", 400)
 
+@bp.route('/team', methods = ['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def delete_selected_teams():
+    try:
+        if request.args and request.args.get("team_id"):
+            team_id = int(request.args.get("team_id"))
+
+            delete_team(team_id)
+
+            return create_good_response([], 200, "teams")
+    except Exception as e:
+        return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
 
 class TeamSchema(ma.Schema):
     class Meta:

@@ -113,7 +113,7 @@ class ViewTeams extends Component{
       //         <IconButton
       //          align="center"
       //          onClick={() => {
-      //           setAddTeamTabWithTeam(teams, teamId, users, "AddTeam");;
+      //           DeleteTeam(teams, teamId, users, "AddTeam");;
       //          }}
       //          aria-label="deleteTeamIconButton"
       //         >
