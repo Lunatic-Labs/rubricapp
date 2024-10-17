@@ -101,9 +101,8 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             label="Edit Custom Rubric"
                             isOutlined={false}
                             onClick={() => {
-                              navbar.addCustomRubric = false;
                               navbar.rubricId = rubric["rubric_id"];
-                              navbar.setNewTab("AddCustomRubric");
+                              navbar.setAddCustomRubric(false)
                             }}
                             style={{
                               marginLeft: '380px',

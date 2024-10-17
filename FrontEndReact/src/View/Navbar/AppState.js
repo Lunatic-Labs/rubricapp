@@ -317,6 +317,14 @@ class AppState extends Component {
             });
         }
 
+        this.setAddCustomRubric = (addCustomRubric) => {
+
+            this.setState({
+                activeTab: "AddCustomRubric",
+                addCustomRubric: addCustomRubric
+            });
+        }
+
         this.confirmCreateResource = (resource, delay = 1000) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
@@ -534,29 +542,6 @@ class AppState extends Component {
                     </Box>
                 }
 
-                {/* {this.state.activeTab==="EditCustomRubric" &&
-                  <Box className="page-spacing">
-                      <BackButtonResource
-                          navbar={this}
-                          tabSelected={"MyCustomRubrics"}
-                      />
-                      <AdminEditCustomRubric
-                          navbar={this}
-                      />
-                  </Box>
-                }
-
-                {this.state.activeTab==="DeleteCustomRubric" &&
-                  <Box className="page-spacing">
-                      <BackButtonResource
-                          navbar={this}
-                          tabSelected={"MyCustomRubrics"}
-                      />
-                      <AdminDeleteCustomRubric
-                          navbar={this}
-                      />
-                  </Box>
-                } */}
                 {this.state.activeTab==="AddCourse" &&
                     <Box className="page-spacing">
                         <BackButtonResource

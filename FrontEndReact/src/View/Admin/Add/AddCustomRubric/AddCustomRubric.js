@@ -109,8 +109,6 @@ class AddCustomRubric extends React.Component {
         };
     }
 
-
-
     handleCategorySelect = (categoryId, isSelected) => {
         const selectedCategories = { ...this.state.selectedCategories };
 
@@ -127,13 +125,17 @@ class AddCustomRubric extends React.Component {
 
     componentDidMount() {
         var navbar = this.props.navbar;
-        this.setState({addCustomRubric: navbar.addCustomRubric});
+        
+        this.setState({
+            addCustomRubric: navbar.addCustomRubric
+        });
+
         var rubricId = navbar.rubricId;
         if (this.state.addCustomRubric === false) {
-            genericResourceGET(`/category?rubric_id=${rubricId}`, "categories", this);
+            genericResourceGET(`/category?rubric_id=${rubricId}`, "selectedCategories", this);
         }
     }
-
+    
     render() {
         const { rubrics, categories, navbar } = this.props;
 
@@ -189,9 +191,9 @@ class AddCustomRubric extends React.Component {
 
         else if (addCustomRubric===false) {
             if (!isLoaded || !categories){
-            return (
-                <Loading />
-            )
+                return (
+                    <Loading />
+                )
             }
         }
 
