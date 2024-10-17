@@ -104,7 +104,7 @@ test("AdminAddTeam.test.js Test 2: Should render the Add Team page if the adminA
 });
 
 
-test("AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back button on the Add Team page is clicked ", async () => {
+test("AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back button on the Add Team page is clicked", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -145,7 +145,7 @@ test("AdminAddTeam.test.js Test 3: Should render the teams dashboard if the back
 });
 
 
-test("AdminAddTeam.test.js Test 4: Should render the teams dashboard if the cancel button on the Add Team page is clicked ", async () => {
+test("AdminAddTeam.test.js Test 4: Should render the teams dashboard if the cancel button on the Add Team page is clicked", async () => {
     render(<Login/>);
 
     await waitFor(() => {

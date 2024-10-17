@@ -6,6 +6,7 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
+import SuccessMessage from '../../../Success/SuccessMessage.js';
 
 
 
@@ -25,13 +26,17 @@ class AdminViewUsers extends Component {
         var navbar = this.props.navbar;
 
         if(navbar.props.isSuperAdmin) {
-            genericResourceGET(`/user?isAdmin=True`, "users", this);
+            genericResourceGET(
+                `/user?isAdmin=True`, "users", this);
 
         } else {
-            genericResourceGET(`/user?course_id=${navbar.state.chosenCourse["course_id"]}`, "users", this);
+            genericResourceGET(
+                `/user?course_id=${navbar.state.chosenCourse["course_id"]}`, 
+                "users", this);
         }
 
-        genericResourceGET("/role?", "roles", this);
+        genericResourceGET(
+            "/role?", "roles", this);
     }
 
     render() {
@@ -67,8 +72,17 @@ class AdminViewUsers extends Component {
             )
 
         } else if (user===null && addUser===null) {
+
             return(
                 <Box>
+                    {state.successMessage !== null && 
+                        <div className='container'>
+                          <SuccessMessage 
+                            successMessage={state.successMessage}
+                            aria-label="adminViewUsersSuccessMessage"
+                          />
+                        </div>
+                    }
                     <ViewUsers
                         navbar={navbar}
                     />

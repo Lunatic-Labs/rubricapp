@@ -3,10 +3,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { IconButton } from '@mui/material';
 import { Button } from '@mui/material';
+import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
-
+import Loading from '../../../Loading/Loading.js';
 
 
 class ViewAssessmentTasks extends Component {
@@ -18,7 +19,9 @@ class ViewAssessmentTasks extends Component {
             errorMessage: null,
             csvCreation: null,
             downloadedAssessment: null,
-            exportButtonId: {}
+            exportButtonId: {},
+            completedAssessments: null,
+            assessmentTasks: null  
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
@@ -38,25 +41,20 @@ class ViewAssessmentTasks extends Component {
                 downloadedAssessment: assessmentName,
                 exportButtonId: newExportButtonJSON
             });
-
-            document.getElementById(exportButtonId).setAttribute("disabled", true);
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate () {
         if(this.state.isLoaded && this.state.csvCreation) {
             const fileData = this.state.csvCreation["csv_data"];
 
             const blob = new Blob([fileData], { type: 'csv' });
-
             const url = URL.createObjectURL(blob);
 
             const link = document.createElement("a");
-
             link.download = this.state.downloadedAssessment + ".csv";
-            
             link.href = url;
-
+            link.setAttribute('download', 'export.csv');
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
@@ -72,7 +70,27 @@ class ViewAssessmentTasks extends Component {
         }
     }
 
+    componentDidMount() {
+        const courseId = this.props.navbar.state.chosenCourse.course_id;
+    
+        genericResourceGET(
+            `/assessment_task?course_id=${courseId}`,
+            "assessmentTasks",
+            this
+        );
+        genericResourceGET(
+            `/completed_assessment?course_id=${courseId}`,
+            "completedAssessments",
+            this
+        );
+    }
+
     render() {
+
+        if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
+            return <Loading />;
+        }
+
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
@@ -122,12 +140,12 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"117px"}},
-                    setCellProps: () => { return { width:"117px"} },
+                    setCellHeaderProps: () => { return { width:"160px"}},
+                    setCellProps: () => { return { width:"160px"} },
                     customBodyRender: (assessmentTaskId) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
-                            assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
+                            //assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
 
                         return(
@@ -143,8 +161,8 @@ class ViewAssessmentTasks extends Component {
                 label: "Completed By",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"117px"}},
-                    setCellProps: () => { return { width:"117px"} },
+                    setCellHeaderProps: () => { return { width:"80px"}},
+                    setCellProps: () => { return { width:"80px"} },
                     customBodyRender: (roleId) => {
                         return (
                             <>
@@ -170,13 +188,14 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            /*
             {
                 name: "show_ratings",
                 label: "Ratings?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"100px"}},
-                    setCellProps: () => { return { width:"100px"} },
+                    setCellHeaderProps: () => { return { width:"80px"}},
+                    setCellProps: () => { return { width:"80px"} },
                     customBodyRender: (ratings) => {
                         return(
                             <>
@@ -202,13 +221,14 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            */
             {
                 name: "unit_of_assessment",
-                label: "Team Assessment?",
+                label: "Team?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"165px"}},
-                    setCellProps: () => { return { width:"165px"} },
+                    setCellHeaderProps: () => { return { width:"80px"}},
+                    setCellProps: () => { return { width:"80px"} },
                     customBodyRender: (unitOfAssessment) => {
                         return(
                             <>
@@ -220,12 +240,12 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "EDIT",
+                label: "Edit",
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
                             return (
@@ -258,61 +278,78 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "VIEW",
+                label: "View",
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
-                            return(
-                                <IconButton
-                                    id=""
-                                    onClick={() => {
-                                        setCompleteAssessmentTaskTabWithID(
-                                            assessmentTasks,
-                                            assessmentTaskId
-                                        );
-                                    }}
-                                    aria-label='viewCompletedAssessmentIconButton'
-                                >
-                               <VisibilityIcon sx={{color:"black"}} />
-                             </IconButton>
-                            )
-
-                        } else {
-                            return(
-                                <>
-                                    {"N/A"}
-                                </>
-                            )
-                        }
+                            const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
+        
+                            if (selectedTask) {
+                                return (
+                                    <IconButton
+                                        id=""
+                                        onClick={() => {
+                                            setCompleteAssessmentTaskTabWithID(selectedTask);
+                                        }}
+                                        aria-label='viewCompletedAssessmentIconButton'
+                                    >
+                                    <VisibilityIcon sx={{color:"black"}} />
+                                    </IconButton>
+                                );
+                            }
+                        } 
+                        return(
+                            <>
+                                {"N/A"}
+                            </>
+                        )
                     }
                 }
             },
             {
                 name: "assessment_task_id",
-                label: "TO DO",
+                label: "To Do",
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
+                        const assessmentTask = assessmentTasks.find(task => task.assessment_task_id === atId);
+                        const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
+                        const teamsExist = this.props.teams && this.props.teams.length > 0;
+            
+                        if (isTeamAssessment && !teamsExist) {
+                            return (
+                                <Tooltip title="No teams available for this team assessment">
+                                    <span>
+                                        <Button
+                                            className='primary-color'
+                                            variant='contained'
+                                            disabled
+                                            aria-label='startAssessmentTasksButton'
+                                        >
+                                            START
+                                        </Button>
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
+            
                         return (
                             <Button
                                 className='primary-color'
-
                                 variant='contained'
-
                                 onClick={() => {
                                     navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
                                 }}
-
-                                aria-label='completeAssessmentTaskButton'
+                                aria-label='startAssessmentTasksButton'
                             >
-                                Complete
+                                START
                             </Button>
                         )
                     }
@@ -320,13 +357,33 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "EXPORT",
+                label: "Export",
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
+                        const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === atId);
+                        const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
+
+                        if (completedCount === 0) {
+                            return (
+                                <Tooltip title="No completed assessments to export">
+                                    <span>
+                                        <Button
+                                            id={"assessment_export_" + atId}
+                                            className='primary-color'
+                                            variant='contained'
+                                            disabled
+                                            aria-label='exportAssessmentTaskButton'
+                                            >
+                                            EXPORT
+                                        </Button>
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
                         return (
                                 <Button
                                     id={"assessment_export_" + atId}
@@ -355,13 +412,13 @@ class ViewAssessmentTasks extends Component {
             selectableRows: "none",
             selectableRowsHeader: false,
             responsive: "vertical",
-            tableBodyMaxHeight: "45vh"
+            tableBodyMaxHeight: "50vh"
         };
 
         return(
             <>
                 <CustomDataTable
-                    data={assessmentTasks ? assessmentTasks : []}
+                    data={assessmentTasks}
                     columns={columns}
                     options={options}
                 />

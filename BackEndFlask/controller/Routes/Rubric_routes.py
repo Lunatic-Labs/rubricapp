@@ -31,7 +31,7 @@ def get_all_rubrics():
             category_json = {}
             category_rating_observable_characteristics_suggestions_json = {}
 
-            for category in all_category_for_specific_rubric:
+            for index, category in enumerate(all_category_for_specific_rubric):
                 current_category_json = {
                     "rating": 0,
                     "rating_json": category.rating_json,
@@ -44,6 +44,7 @@ def get_all_rubrics():
                 category_json[category.category_name] = {}
                 category_json[category.category_name]["observable_characteristics"] = []
                 category_json[category.category_name]["suggestions"] = []
+                category_json[category.category_name]["index"] = index
 
                 ratings = get_ratings_by_category(category.category_id)
 
@@ -155,6 +156,48 @@ def get_all_categories():
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all categories: {e}", "categories", 400)
+
+@bp.route('/rubric', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def edit_rubric(rubric_id):
+    try: 
+        data = request.json
+        rubric = get_rubric(rubric_id)
+
+        rubric.rubric_name = data.get('rubric_name', rubric.rubric_name)
+        rubric.rubric_description = data.get('rubric_description', rubric.rubric_description)
+
+        if 'categories' in data:
+            rubric.categories = []
+            for category_id in data['categories']:
+                category = get_all_categories(category_id)  # Assuming a function to get category by ID
+                if category:
+                    rubric.categories.append(category)
+
+        db.session.commit()
+        return create_good_response(rubric_schema.dump(rubric), 200, "rubric updated successfully")
+    
+    except Exception as e:
+        db.session.rollback()
+        return create_bad_response(f"An error occurred editing a rubric: {e}", "rubrics", 400)
+
+
+@bp.route('/rubric', methods=['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def delete_rubric(rubric_id):
+    try:
+        rubric = get_rubric(rubric_id)
+        db.session.delete(rubric)
+        db.session.commit()
+        return create_good_response(rubric_schema.dump(rubric), 200, "rubric deleted successfully")
+    except Exception as e:
+        db.session.rollback()
+        return create_bad_response(f"An error occurred deleting a rubric: {e}", "rubrics", 400)
+
 
 class RatingsSchema(ma.Schema):
     class Meta:

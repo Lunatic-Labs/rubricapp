@@ -14,6 +14,7 @@ import {
 } from "../../../../../App.js";
 
 
+
 var lf = "loginForm";
 var lb = "loginButton";
 var ei = "emailInput";
@@ -25,6 +26,7 @@ var sbub = "studentBulkUploadButton";
 var abut = "adminBulkUploadTitle";
 var aub = "addUserButton";
 var aut = "addUserTitle";
+var eut = "editUserTitle";
 var eub = "editUserButton";
 
 
@@ -129,6 +131,6 @@ test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking t
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithAriaLabelToBeInDocument(eut);
     });
 });

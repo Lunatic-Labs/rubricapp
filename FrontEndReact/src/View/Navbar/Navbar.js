@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 // import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout.js';
+import Logo from "./sbText.png";
 
 export default function ButtonAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -34,23 +35,15 @@ export default function ButtonAppBar(props) {
       <AppBar position="static">
         <Toolbar sx={{
           backgroundColor:"white", 
-          py:"0.5rem", 
-          px:{xs:"0.5rem",md:"1rem"},
+          py:".1rem", 
+          px:{xs:"0.25rem",md:"1rem"},
           display: "flex", 
           justifyContent: "space-between"}}>
-          <Typography variant="h6" component="div" sx={{
-              color: "#2E8BEF",
-              fontFeatureSettings: "'clig' off, 'liga' off",
-              fontFamily: "Roboto",
-              fontSize: {xs:"24px", md:"24px"},
-              fontStyle: "normal",
-              fontWeight: "500",
-              lineHeight: "160%",
-              letterSpacing: "0.15px"
-          }}>
-              SkillBuilder
-          </Typography>
-
+          <Box
+            component="img" sx={{height: 48, }}
+            alt="SkillBuilder logo"
+            src={Logo}
+          />
           <Box component="div" sx={{ paddingLeft:{xs:"2rem"},display: 'flex', justifyContent:'space-between',alignItems:'center'}}>
             <Typography variant='h5' sx={{
                 color:"black",

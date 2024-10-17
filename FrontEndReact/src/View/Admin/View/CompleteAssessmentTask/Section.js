@@ -6,11 +6,20 @@ import Suggestion from './Suggestion.js';
 import Rating from './Rating.js';
 import TextArea from './TextArea.js';
 import Box from '@mui/material/Box';
-import { FormControl, Typography } from '@mui/material';
+import { FormControl } from '@mui/material';
+import { debounce } from '../../../../utility.js';
 
 
 
 class Section extends Component {
+    constructor(props) {
+        super(props);
+        
+        this.autosave = debounce(() => {
+            this.props.handleSubmit(false);
+        }, 2000);
+    }
+    
     render() {
         var rubric = this.props.rubric;
 
@@ -44,14 +53,15 @@ class Section extends Component {
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={this.props.navbar}
-                    teamValue={this.props.teamValue}
+                    unitValue={this.props.unitValue}
                     observableCharacteristic={observableCharacteristics[index]}
                     categoryName={category}
                     setObservableCharacteristics={this.props.setObservableCharacteristics}
                     observableCharacteristics={currentData[category]["observable_characteristics"]}
                     id={index}
                     key={index}
-                    isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                    autosave={this.autosave}
                 />
             );
 
@@ -64,14 +74,15 @@ class Section extends Component {
             suggestionList.push(
                 <Suggestion
                     navbar={this.props.navbar}
-                    teamValue={this.props.teamValue}
+                    unitValue={this.props.unitValue}
                     suggestion={suggestions[index]}
                     suggestions={currentData[category]["suggestions"]}
                     setSuggestions={this.props.setSuggestions}
                     categoryName={category}
                     id={index}
                     key={index}
-                    isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                    autosave={this.autosave}
                 />
             );
 
@@ -101,49 +112,51 @@ class Section extends Component {
                 <Box className="assessment-task-spacing" aria-label="ratingsSection">
                     <FormControl>
                         <Box className="assessment-card" aria-label="ratingsSection">
-                            <h5>Ratings</h5>
+                            <h4>Ratings</h4>
 
-                            <Typography sx={{fontSize: "18px"}} >{ rating["description"] }</Typography>
+                            {rating["description"] }
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
                                     navbar={this.props.navbar}
                                     setSliderValue={this.props.setSliderValue}
-                                    teamValue={this.props.teamValue}
+                                    unitValue={this.props.unitValue}
                                     rating={rating}
-                                    isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                                    autosave={this.autosave}
                                 />
                             </Box>
                         </Box>
 
                         <Box className="assessment-card" aria-label="observableCharacteristicsSection">
-                            <h5>Observable Characteristics</h5>
+                            <h4>Observable Characteristics</h4>
 
                             <Box className="checkbox-spacing">
-                                {observableCharacteristicList}
+                            {observableCharacteristicList}
                             </Box>
                         </Box>
 
                         {rating["show_suggestions"] &&
                             <Box className="assessment-card" aria-label="suggestionsForImprovementSection">
 
-                                <h5>Suggestions For Improvement</h5>
+                                <h4>Suggestions For Improvement</h4>
 
                                 <Box className="checkbox-spacing">
-                                    {suggestionList}
+                                {suggestionList}
                                 </Box>
                             </Box>
                         }
 
                         <Box className="assessment-card" aria-label="commentBoxSection">
-                            <Box><h5>Comment Box</h5></Box>
+                            <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
-                                teamValue={this.props.teamValue}
+                                unitValue={this.props.unitValue}
                                 setComments={this.props.setComments}
                                 currentData={currentData}
                                 categoryName={category}
-                                isTeamCompleteAssessmentComplete={this.props.isTeamCompleteAssessmentComplete}
+                                isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
+                                autosave={this.autosave}
                             />
                         </Box>
                     </FormControl> 

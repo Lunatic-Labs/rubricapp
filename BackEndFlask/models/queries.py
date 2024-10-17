@@ -29,11 +29,11 @@ from models.team import (
 
 from sqlalchemy import (
     and_,
-    or_
+    or_,
+    union
 )
 
 import sqlalchemy
-
 
 
 @error_log
@@ -110,6 +110,7 @@ def get_users_by_course_id_and_role_id(course_id, role_id):
     course_id: int (The id of a course)
     role_id: int (The role of a user)
     """
+
     users_and_role_ids = db.session.query(
         User.user_id,
         User.first_name,
@@ -210,6 +211,29 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
 
     return teams
 
+@error_log
+def get_team_by_course_id_and_observer_id(course_id, observer_id):
+    """
+    Description:
+    Gets the teams for the given observer (primarily TA) in the given course.
+    Returns None if the given observer is not in the given course.
+
+    Parameters:
+    observer_id: int (The id of a user (observer) logged in)
+    course_id: int (The id of a course)
+    """
+    teams = db.session.query(
+        Team
+    ).join(
+        TeamUser, TeamUser.team_id == Team.team_id
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            Team.observer_id == observer_id
+        )
+    ).all()
+
+    return teams
 
 @error_log
 def get_students_by_team_id(course_id: int, team_id: int):
@@ -249,7 +273,7 @@ def get_students_by_team_id(course_id: int, team_id: int):
 
 
 @error_log
-def get_students_not_in_a_team(course_id: int, team_id: int):
+def get_active_students_not_in_a_team(course_id: int, team_id: int):
     """
     Description:
     Gets all of the students not assigned to a team.
@@ -271,6 +295,7 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
         and_(
             UserCourse.course_id == course_id,
             UserCourse.role_id == 5,
+            UserCourse.active == True,
             UserCourse.user_id.notin_(
                 db.session.query(
                     TeamUser.user_id
@@ -317,8 +342,6 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
 
     return sorted_list
 
-
-@error_log
 def get_team_members(user_id: int, course_id: int): 
     """
     Description:
@@ -363,6 +386,40 @@ def get_team_members(user_id: int, course_id: int):
     ).all()
 
     return team_members, team_id
+
+@error_log
+def get_team_members_in_course(course_id: int): 
+    """
+    Description:
+    Gets all of the team members in the teams in the course. 
+
+    Returns a two dimensional list of team members with their team id: 
+    - List of team members 
+    - team_id
+
+    Returns None on fail 
+
+    Parameters:
+    course_id: int (The id of a course)
+    """
+    
+    name_list = []
+    team_list = []
+    for (team_id,) in db.session.query(Team.team_id).filter_by(course_id=course_id).all():
+        for (team_member,) in db.session.query(
+            User.last_name
+        ).join(
+            TeamUser, 
+            TeamUser.user_id == User.user_id
+        ).filter(
+            TeamUser.team_id == team_id
+        ).all():
+            name_list.append(team_member)
+        
+        team_list.append([name_list, team_id])
+        name_list = []
+    
+    return team_list
 
 
 @error_log
@@ -660,6 +717,50 @@ def get_all_checkins_for_assessment(assessment_task_id):
 
     return checkins
 
+# This query was written by ChatGPT
+@error_log
+def get_all_nonfull_adhoc_teams(assessment_task_id):
+    """
+    Description:
+    Gets all team numbers where the number of users checked into a team
+    does not exceed the max_team_size for the given assessment task
+    and returns only the team numbers up to number_of_teams.
+
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
+    """
+    # Get the max_team_size and number_of_teams for the given assessment_task_id
+    assessment_task = db.session.query(
+        AssessmentTask
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id
+    ).first()
+
+    if not assessment_task:
+        return []  # No assessment task found
+
+    max_team_size = assessment_task.max_team_size
+    number_of_teams = assessment_task.number_of_teams
+
+    # Query to get all team_numbers where the team size is less than max_team_size
+    teams_above_max_size = db.session.query(
+        Checkin.team_number
+    ).filter(
+        Checkin.assessment_task_id == assessment_task_id
+    ).group_by(
+        Checkin.team_number
+    ).having(
+        db.func.count(Checkin.user_id) >= max_team_size
+    ).all()
+
+    # Extracting team numbers from the result tuples
+    invalid_team_numbers = {team[0] for team in teams_above_max_size}
+
+    # Generate a list of all team numbers up to number_of_teams
+    all_team_numbers = set(range(1, number_of_teams + 1))
+
+    # Return only those team numbers that are not invalid
+    return list(all_team_numbers - invalid_team_numbers)
 
 @error_log
 def get_completed_assessment_with_team_name(assessment_task_id):
@@ -676,6 +777,7 @@ def get_completed_assessment_with_team_name(assessment_task_id):
         CompletedAssessment.assessment_task_id,
         CompletedAssessment.team_id,
         CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
         CompletedAssessment.initial_time,
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
@@ -683,6 +785,36 @@ def get_completed_assessment_with_team_name(assessment_task_id):
         Team.team_name
     ).join(
         Team, Team.team_id == CompletedAssessment.team_id
+    ). filter(
+        CompletedAssessment.assessment_task_id == assessment_task_id,
+    ).all()
+
+    return complete_assessments
+
+@error_log
+def get_completed_assessment_with_user_name(assessment_task_id):
+    """
+    Description:
+    Gets all of the completed assessments with user names
+    for the given assessment task.
+
+    Parameters: 
+    assessment_task_id: int (The id of an assessment task)
+    """
+    complete_assessments=db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        User.first_name,
+        User.last_name
+    ).join(
+        User, User.user_id == CompletedAssessment.user_id
     ). filter(
         CompletedAssessment.assessment_task_id == assessment_task_id,
     ).all()
@@ -723,33 +855,85 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     user_id: int (The id of the current logged student user)
     course_id: int (The id of given course)
     """
-    complete_assessments = db.session.query(
+
+    complete_assessments_team = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
         CompletedAssessment.team_id,
         CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
         CompletedAssessment.initial_time,
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
-        Team.team_name
-    ).filter(
-        CompletedAssessment.user_id == user_id,
+        AssessmentTask.unit_of_assessment
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
         AssessmentTask.course_id == course_id
-    ).outerjoin(
-        Team,
-        Team.team_id == CompletedAssessment.team_id
-    ).outerjoin(
+    ).join(
         TeamUser,
-        TeamUser.team_id == CompletedAssessment.team_id
+        CompletedAssessment.team_id == TeamUser.team_id and TeamUser.user_id == user_id  
+    )
+
+    complete_assessments_ind = db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.rubric_id,
+        AssessmentTask.unit_of_assessment
+    ).join(
+        AssessmentTask,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
-        TeamUser.user_id == user_id
+        CompletedAssessment.user_id == user_id,
+    )
+
+    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
+
+    return complete_assessments
+
+@error_log
+def get_completed_assessment_by_ta_user_id(course_id, user_id):
+    """
+    Description:
+    Gets all of the completed assessments by
+    the given user in the given course.
+
+    Parameters: 
+    user_id: int (The id of the current logged student user)
+    course_id: int (The id of given course)
+    """
+    complete_assessments = db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.rubric_id,
+        AssessmentTask.unit_of_assessment
+    ).filter(
+        CompletedAssessment.completed_by == user_id,
+    ).join(
+        AssessmentTask,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).filter(
+        AssessmentTask.course_id == course_id
     ).all()
 
     return complete_assessments
@@ -801,7 +985,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     ).join(
         CompletedAssessment,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
-    ).join(
+    ).outerjoin(
         Team,
         CompletedAssessment.team_id == Team.team_id
     ).join(

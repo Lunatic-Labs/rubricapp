@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import ViewCompleteAssessmentTasks from "./ViewCompleteAssessmentTasks.js";
+import ViewCompleteTeamAssessmentTasks from "./ViewCompleteTeamAssessmentTasks.js";
+import ViewCompleteIndividualAssessmentTasks from "./ViewCompleteIndividualAssessmentTasks.js";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility.js';
 import { Box } from '@mui/material';
@@ -26,12 +27,20 @@ class AdminViewCompleteAssessmentTasks extends Component {
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
 
-        genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-            "completedAssessments",
-            this
-        );
-        
+        if (chosenAssessmentTask["unit_of_assessment"]) {
+            genericResourceGET(
+                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=team`,
+                "completedAssessments",
+                this
+            );
+        } else {
+            genericResourceGET(
+                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=individual`,
+                "completedAssessments",
+                this
+            );
+
+        }
         genericResourceGET(
             `/role`,
             'roles',
@@ -56,6 +65,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
         } = this.state;
 
         var navbar = this.props.navbar;
+        var unitOfAssessment = navbar.state.chosenAssessmentTask["unit_of_assessment"];
 
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;
@@ -78,16 +88,29 @@ class AdminViewCompleteAssessmentTasks extends Component {
             )
 
         } else {
-            return(
-                <>
-                    <Box>
-                        <ViewCompleteAssessmentTasks
-                            navbar={navbar}
-                            completedAssessment={completedAssessments}
-                        />
-                    </Box>
-                </>
-            )
+            if (unitOfAssessment) {
+                return(
+                    <>
+                        <Box>
+                            <ViewCompleteTeamAssessmentTasks
+                                navbar={navbar}
+                                completedAssessment={completedAssessments}
+                            />
+                        </Box>
+                    </>
+                )
+            } else {
+                return(
+                    <>
+                        <Box>
+                            <ViewCompleteIndividualAssessmentTasks
+                                navbar={navbar}
+                                completedAssessment={completedAssessments}
+                            />
+                        </Box>
+                    </>
+                )
+            }
         }
     }
 }

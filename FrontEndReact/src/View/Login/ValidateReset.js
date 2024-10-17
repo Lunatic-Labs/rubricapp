@@ -29,11 +29,30 @@ class ValidateReset extends Component {
                 });
 
             } else {
-                fetch(apiUrl + `/reset_code?email=${email}`);
+                fetch(apiUrl + `/reset_code?email=${email}`)
 
-                this.setState({
-                    activeTab: "SendCodePage"
-                });
+                .then(res => res.json())
+
+                .then(
+                    (result) => {
+                        if (result['success']) {
+                            this.setState({
+                                activeTab: "SendCodePage"
+                            });
+                        } else {
+                            this.setState({
+                                errorMessage: result['message']
+                            });
+                        }
+                    }
+                )
+                .catch(
+                    (error) => {
+                        this.setState({
+                            errorMessage: error
+                        });
+                    }
+                );
             }
         }
 

@@ -5,6 +5,10 @@
 #   Creates a way for the front end to ask for a csv file and get a properly filled
 #   csv sent back.
 #----------------------------------------------------------------------------------------------------
+
+import os
+import json
+import pandas as pd
 from flask import request
 from controller import bp
 from controller.Route_response import *
@@ -13,9 +17,6 @@ from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from Functions.exportCsv import create_csv
 from models.assessment_task import get_assessment_task
 from models.user import get_user
-
-
-
 
 
 @bp.route('/csv_assessment_export', methods = ['GET'])
@@ -49,15 +50,9 @@ def get_completed_assessment_csv() -> dict:
 
         file_name += assessment.assessment_task_name.replace(" ", "_") + ".csv"
 
-        create_csv(
-            assessment_task_id,
-            file_name
+        csv_data = create_csv(
+            assessment_task_id
         )
-
-        csv_data = None
-
-        with open("./tempCsv/" + file_name) as fp:
-            csv_data = fp.read()
         
         return create_good_response({ "csv_data": csv_data.strip() }, 200, "csv_creation")
 

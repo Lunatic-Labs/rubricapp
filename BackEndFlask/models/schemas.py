@@ -87,7 +87,7 @@ class Course(db.Model):
     year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.String(50), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    admin_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
     use_fixed_teams = db.Column(db.Boolean, nullable=False)
 
@@ -106,7 +106,7 @@ class Team(db.Model): # keeps track of default teams for a fixed team scenario
     team_id = db.Column(db.Integer, primary_key=True)
     team_name = db.Column(db.String(25), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-    observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
 
@@ -133,6 +133,7 @@ class AssessmentTask(db.Model):
     comment = db.Column(db.String(3000), nullable=True) 
     create_team_password = db.Column(db.String(25), nullable=True)
     number_of_teams = db.Column(db.Integer, nullable=True)
+    max_team_size = db.Column(db.Integer, nullable=True)
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
@@ -151,6 +152,7 @@ class CompletedAssessment(db.Model):
     __table_args__ = {'sqlite_autoincrement': True}
     completed_assessment_id = db.Column(db.Integer, primary_key=True)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id))
+    completed_by = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
     initial_time = db.Column(db.DateTime(timezone=True), nullable=False)

@@ -50,26 +50,51 @@ SERVICE_NAME="rubricapp.service"
 # ///////////////////////////////////
 
 NGINX_BACKEND_CONFIG="server {
-    listen 5000;
-    server_name 0.0.0.0;
+    listen 5000 ssl;
+    server_name skill-builder.net;
+
+    ssl_certificate /etc/letsencrypt/live/skill-builder.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/skill-builder.net/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
-        include proxy_params;
-        proxy_pass http://unix:/home/$USER/$PROD_NAME/rubricapp/BackEndFlask/rubricapp.sock;
- }
-}
-"
+        proxy_pass http://unix/home/ubuntu/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+    }
+}"
 
 NGINX_FRONTEND_CONFIG="server {
     listen 80;
-    server_name 0.0.0.0;
+    server_name skill-builder.net;
+    return 301 https://$host$request_uri/;
+}
+
+server {
+    listen 443 ssl;
+    server_name skill-builder.net;
+
+    ssl_certificate /etc/letsencrypt/live/skill-builder.net/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/skill-builder.net/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
-        include proxy_params;
-        proxy_pass http://0.0.0.0:3000;
- }
-}
-"
+        proxy_pass http://localhost:3000/;
+        proxy_set_header Host $host;
+        proxy_set_header X-Real-IP $remote_addr;
+        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto $scheme;
+
+        # WebSocket support
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Connection "upgrade";
+    }
+}"
 
 # ///////////////////////////////////
 # GUNICORN CONFIG
@@ -325,20 +350,6 @@ function configure_nginx() {
     log "done"
 }
 
-# Allow ports for UFW.
-function configure_ufw() {
-    log "configuring ufw"
-
-    sudo ufw allow 80
-
-    sudo ufw delete allow 5000
-    sudo ufw delete allow 5001
-    sudo ufw delete allow 3000
-    sudo ufw allow 'Nginx Full'
-
-    log "done"
-}
-
 # Configure gunicorn. It uses the configuration
 # file that is stored in the same directory as
 # this script. See `SERVICE_NAME` for the name
@@ -410,16 +421,8 @@ function serve_rubricapp() {
     # Start gunicorn
     log "Starting gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --bind 0.0.0.0:5001 wsgi:app &
+    gunicorn --bind unix:rubricapp.sock wsgi:app &
     sudo systemctl start rubricapp.service
-
-    # If an issue occurs with Nginx not running, run the following command:
-    # sudo apachectl stop
-
-    # Running this command will stop the apache server running in the background.
-
-    # Here is a helpful link to the Stack Overflow Post about this issue:
-    # https://stackoverflow.com/questions/14972792/nginx-nginx-emerg-bind-to-80-failed-98-address-already-in-use
 
     # Start nginx
     log "starting NGINX"

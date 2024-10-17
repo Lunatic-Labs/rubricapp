@@ -70,9 +70,16 @@ class Login extends Component {
 
             } else {
                 fetch(
-                    apiUrl + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                    apiUrl + "/login",
                     {
-                        method: "POST"
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password,
+                        }),
                     }
                 )
                 .then(res => res.json())
@@ -136,16 +143,35 @@ class Login extends Component {
             .then(res => res.json())
             .then(
                 (result) => {
-                    cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
 
-                    this.setState({
-                        loggedIn: null
-                    });
+                    if(result["success"]) {
+                        console.log("results: ",result);
+                        cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
+
+                        this.setState({
+                            loggedIn: null
+                        });
+                    } else {
+                        cookies.remove('access_token');
+                        cookies.remove('refresh_token');
+                        cookies.remove('user');
+
+                        this.setState(() => ({
+                            isLoaded: true,
+                            errorMessage: result["message"]
+                        }));
+                    }
                 },
                 (error) => {
                     cookies.remove('user');
                     cookies.remove('access_token');
                     cookies.remove('refresh_token');
+
+                    this.setState(() => ({
+                        isLoaded: true,
+                        errorMessage: error
+                    }));
+
                 }
             )
         }
@@ -164,6 +190,12 @@ class Login extends Component {
                 hasSetPassword: null,
                 resettingPassword: null
             });
+        }
+
+        this.keyPress = (e) => {
+            if (e.key === 'Enter') {
+                this.login();
+            };
         }
     }
 
@@ -202,7 +234,7 @@ class Login extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <form aria-label='loginForm'>
+                                    <form aria-label='loginForm' onKeyDown={this.keyPress}>
                                         <Typography variant="h6" component="div"
                                             sx={{
                                                 color: "#2E8BEF",
@@ -233,6 +265,7 @@ class Login extends Component {
                                                 helperText={errors.email}
                                                 value={email}
                                                 onChange={this.handleChange}
+                                                onKeyDown={this.keyPress}
                                                 aria-label="emailInput"
                                             />
 
@@ -249,6 +282,7 @@ class Login extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
+                                                onKeyDown={this.keyPress}
                                                 aria-label="passwordInput"
                                                 InputProps={{
                                                     endAdornment: (

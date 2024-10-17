@@ -7,12 +7,14 @@ from models.team import (
     get_teams,
     get_team_by_course_id,
     create_team,
+    get_teams_by_observer_id,
     replace_team
 )
 from models.team_user import *
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.queries import (
-    get_team_by_course_id_and_user_id
+    get_team_by_course_id_and_user_id,
+    get_all_nonfull_adhoc_teams
 )
 
 @bp.route('/team', methods = ['GET'])
@@ -41,7 +43,7 @@ def get_all_teams():
 @AuthCheck()
 def get_all_teams_by_user():
     try:
-        # if request.args and request.args.get("course_id"):
+        if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
 
@@ -52,6 +54,22 @@ def get_all_teams_by_user():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
+@bp.route('/team_by_observer', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_all_teams_by_observer():
+    try:
+        # if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            observer_id = int(request.args.get("user_id"))
+
+            teams = get_teams_by_observer_id(observer_id, course_id)
+
+            return create_good_response(teams_schema.dump(teams), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
 @bp.route('/team', methods=['GET'])
 @jwt_required()
@@ -67,6 +85,20 @@ def get_one_team():
     except Exception as e:
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
 
+@bp.route('/team/nonfull-adhoc', methods = ["GET"])
+def get_nonfull_adhoc_teams():
+    # given an assessment task id, return list of team ids that have not reached the max team size
+    try:
+        if request.args and request.args.get("assessment_task_id"):
+            assessment_task_id = int(request.args.get("assessment_task_id"))
+            
+            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]   
+            
+            return create_good_response(valid_teams, 200, "teams")      
+            
+    except Exception as e:
+        return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
+        
 
 @bp.route('/team', methods = ['POST'])
 @jwt_required()

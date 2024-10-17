@@ -1,12 +1,15 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDateString } from '../../../../utility.js';
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
+import { Box, Button, FormControl, Typography, IconButton, TextField, Tooltip, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
+import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 import FormHelperText from '@mui/material/FormHelperText';
 
 
@@ -22,26 +25,35 @@ class AdminAddAssessmentTask extends Component {
             dueDate: new Date(),
             taskName: '',
             timeZone: '',
-            roleId: '',
+            roleId: '4', // 4 = TA/Instructor
             rubricId: '',
             password: '',
             notes: '',
-            numberOfTeams: null,
+            numberOfTeams: '',
+            maxTeamSize: '',
             suggestions: true,
             ratings: true,
             usingTeams: false,
             completedAssessments: null,
+            isHelpOpen: false,
 
             errors: {
                 taskName: '',
                 timeZone: '',
                 numberOfTeams: '',
+                maxTeamSize: '',
                 roleId: '',
                 rubricId: '',
                 password: '',
                 notes: '',
             }
-        }
+        };
+
+        this.toggleHelp = () => {
+            this.setState({
+                isHelpOpen: !this.state.isHelpOpen,
+            });
+        };
     }
 
     componentDidUpdate() {
@@ -58,13 +70,18 @@ class AdminAddAssessmentTask extends Component {
     }
 
     componentDidMount() {
+        
         var navbar = this.props.navbar;
         var state = navbar.state;
         var assessmentTask = state.assessmentTask;
         var addAssessmentTask = state.addAssessmentTask;
 
         if (assessmentTask && !addAssessmentTask) {
-            genericResourceGET(`/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, "completedAssessments", this);
+            genericResourceGET(
+            `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, 
+            "completedAssessments", 
+            this
+        );
 
             this.setState({
                 taskName: assessmentTask["assessment_task_name"],
@@ -78,13 +95,39 @@ class AdminAddAssessmentTask extends Component {
                 usingTeams: assessmentTask["unit_of_assessment"],
                 dueDate: new Date(assessmentTask["due_date"]),
                 editAssessmentTask: true,
-                numberOfTeams: assessmentTask["number_of_teams"]
+                numberOfTeams: assessmentTask["number_of_teams"],
+                maxTeamSize: assessmentTask["max_team_size"]
             });
         }
     }
 
     handleChange = (e) => {
         const { id, value } = e.target;
+        const regex = /^[1-9]\d*$/; // Positive digits
+
+        if (id === 'numberOfTeams') {
+            if (value !== '' && !regex.test(value)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        [id]: 'Number of teams must be greater than zero',
+                    }
+                });
+            return;
+            }
+        }
+
+        if (id === 'maxTeamSize') {
+            if (value !== '' && !regex.test(value)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        [id]: 'Number of members on a team must be greater than zero',
+                    }
+                });
+                return;
+            }
+        }
 
         this.setState({
             [id]: value,
@@ -97,7 +140,7 @@ class AdminAddAssessmentTask extends Component {
 
     handleSelect = (key, event) => {
         this.setState({
-            [key]: event.target.value,
+            [key]: event.target.value
         });
     };
 
@@ -121,7 +164,8 @@ class AdminAddAssessmentTask extends Component {
             suggestions,
             ratings,
             usingTeams,
-            numberOfTeams
+            numberOfTeams,
+            maxTeamSize
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -130,6 +174,27 @@ class AdminAddAssessmentTask extends Component {
         var assessmentTask = state.assessmentTask;
         var chosenCourse = state.chosenCourse;
 
+        if (usingTeams && !chosenCourse["use_fixed_teams"]) {
+            if (!numberOfTeams || !/^[1-9]\d*$/.test(numberOfTeams)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        numberOfTeams: 'Number of teams must be greater than zero',
+                    },
+                });
+                return;
+            }
+            
+            if (!maxTeamSize || !/^[1-9]\d*$/.test(maxTeamSize)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        maxTeamSize: 'Number of members on a team must be greater than zero'
+                    }
+                });
+                return;
+            }
+        }
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || notes === '') {
             this.setState({
                 errors: {
@@ -155,9 +220,10 @@ class AdminAddAssessmentTask extends Component {
                 "unit_of_assessment": usingTeams,
                 "create_team_password": password,
                 "comment": notes,
-                "number_of_teams": numberOfTeams
+                "number_of_teams": numberOfTeams,
+                "max_team_size": maxTeamSize
             });
-
+            
             if (navbar.state.addAssessmentTask) {
                 genericResourcePOST(
                     "/assessment_task",
@@ -189,6 +255,7 @@ class AdminAddAssessmentTask extends Component {
         var roleNames = adminViewAssessmentTask.roleNames;
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
+        const { isHelpOpen } = this.state;
 
         var roleOptions = [];
 
@@ -248,7 +315,7 @@ class AdminAddAssessmentTask extends Component {
                     <Box className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
-                                <Typography id="addTaskTitle" variant="h5" aria-label='adminAddAssessmentTaskTitle'> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+                                <Typography id="addTaskTitle" variant="h5" aria-label={editAssessmentTask ? 'adminEditAssessmentTaskTitle' : 'adminAddAssessmentTaskTitle'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
 
                                 <Box className="form-input">
                                     <TextField
@@ -264,11 +331,9 @@ class AdminAddAssessmentTask extends Component {
                                         sx={{ mb: 2 }}
                                         aria-label="addAssessmentTaskName"
                                     />
-
-                                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '20px', justifyContent: 'start' }}>
+                                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
                                         <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }} error={!!errors.rubricId} required>
                                             <InputLabel required id="rubricId">Rubric</InputLabel>
-
                                             <Select
                                                 id="rubricId"
                                                 name="rubricID"
@@ -283,8 +348,19 @@ class AdminAddAssessmentTask extends Component {
                                             </Select>
                                             <FormHelperText>{errors.rubricId}</FormHelperText>
                                         </FormControl>
+                                        <div style={{padding: '3px'}}>
+                                            <Tooltip title="Help">
+                                                <IconButton aria-label="help" onClick={this.toggleHelp}>
+                                                    <HelpOutlineIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                        </div>
+                                        <ImageModal 
+                                            isOpen={isHelpOpen}
+                                            handleClose={this.toggleHelp}
+                                            imageUrl={RubricDescriptionsImage}
+                                        />
                                     </div>
-
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
 
@@ -299,7 +375,7 @@ class AdminAddAssessmentTask extends Component {
                                         >
                                             <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
 
-                                            <FormControlLabel value={true} control={<Radio />} label="Group Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
+                                            <FormControlLabel value={true} control={<Radio />} label="Team Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
                                         </RadioGroup>
                                     </FormControl>
 
@@ -309,10 +385,36 @@ class AdminAddAssessmentTask extends Component {
                                             name="newPassword"
                                             variant='outlined'
                                             label="Number of teams"
+                                            value={this.state.numberOfTeams}
                                             error={!!errors.numberOfTeams}
+                                            helperText={errors.numberOfTeams}
                                             onChange={this.handleChange}
                                             required
-                                            type={"number"}
+                                            type={"text"}
+                                            inputProps={{ 
+                                                pattern: "[1-9][0-9]*", 
+                                                inputMode: "numeric"
+                                            }}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    }
+
+                                    {usingTeams && !chosenCourse["use_fixed_teams"] &&
+                                        <TextField 
+                                            id="maxTeamSize"
+                                            name="setTeamSize"
+                                            variant='outlined'
+                                            label="Max team size"
+                                            value={this.state.maxTeamSize}
+                                            error={!!errors.maxTeamSize}
+                                            helperText={errors.maxTeamSize}
+                                            onChange={this.handleChange}
+                                            required
+                                            type={"text"}
+                                            inputProps={{
+                                                pattern: "[1-9][0-9]*",
+                                                inputMode: "numeric"
+                                            }}
                                             sx={{ mb: 2 }}
                                         />
                                     }

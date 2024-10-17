@@ -1,9 +1,12 @@
 from core import db
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
 from datetime import datetime
 from models.utility import error_log
+
+# new function to read number of records for a particular assessment task id, if 0 disable the export button, ask how many get_completed_assessment_by_course
+# get total assessments by course id and return it to assessment taks cancatenate that to the 
 
 class InvalidCRID(Exception):
     def __init__(self, id):
@@ -39,10 +42,16 @@ def get_completed_assessment_by_course_id(course_id):
             AssessmentTask.course_id == course_id
         ).all()
 
+@error_log
+def get_completed_assessment_count(assessment_task_id):
+    return db.session.query(func.count(CompletedAssessment.completed_assessment_id)).filter_by(assessment_task_id=assessment_task_id).scalar()
 
 @error_log
 def completed_assessment_exists(team_id, assessment_task_id, user_id):
-    return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
+    if (user_id == -1):   # Team assessment, otherwise individual assessment
+        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
+    else:   
+        return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
 
 
 @error_log
@@ -61,6 +70,7 @@ def create_completed_assessment(completed_assessment_data):
 
     completed_assessment_data = CompletedAssessment(
         assessment_task_id=completed_assessment_data["assessment_task_id"],
+        completed_by=completed_assessment_data["completed_by"],
         team_id=completed_assessment_data["team_id"],
         user_id=completed_assessment_data["user_id"],
         initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
@@ -76,7 +86,7 @@ def create_completed_assessment(completed_assessment_data):
 
 def load_demo_completed_assessment():
     list_of_completed_assessments = [
-        {
+        {    # Completed Assessment id 1
             "assessment_task_id": 1,
             "done": True,
             "initial_time": "2024-01-28T21:08:36.376000",
@@ -175,10 +185,11 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 3
+            "team_id": None,
+            "user_id": 4,
+            "completed_by": 3
         },
-        {
+        {   # Completed Assessment id 2
             "assessment_task_id": 2,
             "done": True,
             "initial_time": "2024-01-28T21:08:55.755000",
@@ -292,10 +303,11 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 3
+            "team_id": None,
+            "user_id": 4,
+            "completed_by": 3
         },
-        {
+        {   # Completed Assessment id 3
             "assessment_task_id": 5,
             "done": True,
             "initial_time": "2024-01-28T21:09:24.685000",
@@ -365,9 +377,10 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 3
+            "user_id": None,
+            "completed_by": 3
         },
-        {
+        {   # Completed Assessment id 4
             "assessment_task_id": 8,
             "done": True,
             "initial_time": "2024-01-28T21:22:03.218000",
@@ -467,9 +480,10 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 3
+            "user_id": None,
+            "completed_by": 3
         },
-        {
+        {   # Completed Assessment id 5
             "assessment_task_id": 9,
             "done": True,
             "initial_time": "2024-01-28T21:26:21.901000",
@@ -584,9 +598,10 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 3
+            "user_id": None,
+            "completed_by": 3
         },
-        {
+        {   # Completed Assessment id 6
             "assessment_task_id": 10,
             "done": True,
             "initial_time": "2024-01-30T15:11:00.760000",
@@ -701,9 +716,10 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 3
+            "user_id": None,
+            "completed_by": 2
         },
-        {
+        {   # Completed Assessment id 7
             "assessment_task_id": 11,
             "done": True,
             "initial_time": "2024-01-30T15:12:56.525000",
@@ -773,9 +789,10 @@ def load_demo_completed_assessment():
                 "done": True
             },
             "team_id": 1,
-            "user_id": 3
+            "user_id": None,
+            "completed_by": 3
         },
-        {
+        {   # Completed Assessment id 8
             "assessment_task_id": 12,
             "done": True,
             "initial_time": "2024-02-05T17:04:36.368000",
@@ -859,10 +876,11 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 4
+            "team_id": None,
+            "user_id": 4,
+            "completed_by": 4
         },
-        {
+        {  # Completed Assessment id 9
             "assessment_task_id": 13,
             "done": True,
             "initial_time": "2024-02-05T17:07:57.768000",
@@ -946,14 +964,16 @@ def load_demo_completed_assessment():
                 "comments": "",
                 "done": True
             },
-            "team_id": 1,
-            "user_id": 4
+            "team_id": None,
+            "user_id": 4,
+            "completed_by": 4
         }
     ]
 
     for comp_assessment in list_of_completed_assessments:
         create_completed_assessment({
             "assessment_task_id": comp_assessment["assessment_task_id"],
+            "completed_by": comp_assessment["completed_by"], # "completed_by" is the user_id of the person who completed the assessment
             "team_id": comp_assessment["team_id"],
             "user_id": comp_assessment["user_id"],
             "initial_time": comp_assessment["initial_time"],

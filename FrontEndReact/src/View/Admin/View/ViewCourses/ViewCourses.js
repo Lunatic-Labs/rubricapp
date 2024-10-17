@@ -3,9 +3,7 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
-import { Typography } from "@mui/material";
-
-
+import { Typography, Box } from "@mui/material";
 
 class ViewCourses extends Component {
   render() {
@@ -21,11 +19,12 @@ class ViewCourses extends Component {
         label: "Course Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"178px" } },
-          setCellProps: () => { return { width:"178px" } },
+          setCellHeaderProps: () => { return { width:"25%" } },
+          setCellProps: () => { return { width:"25%" } },
           customBodyRender: (courseName) => {
             return(
               <Typography
+                sx={{fontSize: "1.6rem"}}
                 aria-label={ courseName }
               >
                 { courseName }
@@ -39,8 +38,8 @@ class ViewCourses extends Component {
         label: "Course Number",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"183px" } },
-          setCellProps: () => { return { width:"183px" } },
+          setCellHeaderProps: () => { return { width:"15%" } },
+          setCellProps: () => { return { width:"15%" } },
         }
       },  
       {
@@ -48,8 +47,8 @@ class ViewCourses extends Component {
         label: "Term",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"10%" } },
+          setCellProps: () => { return { width:"10%" } },
         }
       },  
       {
@@ -57,22 +56,8 @@ class ViewCourses extends Component {
         label: "Year",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
-        }
-      },
-      {
-        name: "active",
-        label: "Active",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
-          customBodyRender: (value) => {
-            return(
-              <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
-            )
-          }
+          setCellHeaderProps: () => { return { width:"7%" } },
+          setCellProps: () => { return { width:"7%" } },
         }
       },
       {
@@ -80,8 +65,8 @@ class ViewCourses extends Component {
         label: "Use TA's",
         options : {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"6%" } },
+          setCellProps: () => { return { width:"6%" } },
           customBodyRender: (value) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
@@ -94,8 +79,8 @@ class ViewCourses extends Component {
         label: "Fixed Teams",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"140px" } },
-          setCellProps: () => { return { width:"140px" } },
+          setCellHeaderProps: () => { return { width:"7%" } },
+          setCellProps: () => { return { width:"7%" } },
           customBodyRender: (value) => {
             return(
               <>{value===null ? "N/A": (value ? "Yes":"No")}</>
@@ -117,8 +102,8 @@ class ViewCourses extends Component {
           options: {
             filter: false,
             sort: false,
-            setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
-            setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+            setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+            setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
             customBodyRender: (courseId) => {
               return (
                 <IconButton id={courseId}
@@ -145,8 +130,8 @@ class ViewCourses extends Component {
         options: {
           filter: false,
           sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
-          setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment" } },
+          setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+          setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
                 <IconButton id={courseId}
@@ -176,18 +161,63 @@ class ViewCourses extends Component {
       selectableRows: "none",
       selectableRowsHeader: false,
       responsive: "vertical",
-      tableBodyMaxHeight: "60vh",
+      tableBodyMaxHeight: "35vh",
     };
 
+    const activeCourses = courses ? courses.filter(course => course.active) : [];
+    const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
+
     return (
-      <div aria-label="viewCourseDiv" >
-        <CustomDataTable
-          data={courses ? courses : []}
-          columns={columns}
-          options={options}
-        />
-      </div>
-    )
+      <Box aria-label="viewCourseDiv">
+        <Box className="page-spacing">
+          <Box sx={{
+            display: "flex",
+            justifyContent: "space-between",
+            alignItems: "center",
+            alignSelf: "stretch"
+          }}>
+            <Box sx={{ width: "100%" }} className="content-spacing">
+              <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="activeCourses">
+                Active Courses
+              </Typography>
+            </Box>
+          </Box>
+
+          <Box>
+            <CustomDataTable
+              data={activeCourses}
+              columns={columns}
+              options={options}
+            />
+          </Box>
+        </Box>
+
+        {navbar.props.isAdmin && (
+          <Box className="page-spacing">
+            <Box sx={{
+              display: "flex",
+              justifyContent: "space-between",
+              alignItems: "center",
+              alignSelf: "stretch"
+            }}>
+              <Box sx={{ width: "100%" }} className="content-spacing">
+                <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="inactiveCourses">
+                  Inactive Courses
+                </Typography>
+              </Box>
+            </Box>
+
+            <Box>
+              <CustomDataTable
+                data={inactiveCourses}
+                columns={columns}
+                options={options}
+              />
+            </Box>
+          </Box>
+        )}
+      </Box>
+    );
   }
 }
 

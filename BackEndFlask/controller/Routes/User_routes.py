@@ -36,17 +36,19 @@ from models.user import(
     get_user_password,
     replace_user,
     make_admin,
-    unmake_admin
+    unmake_admin,
+    delete_user_by_user_id
 )
 
 from models.queries import (
+    get_team_members,
+    get_team_members_in_course,
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_students_by_team_id,
-    get_students_not_in_a_team,
+    get_active_students_not_in_a_team,
     add_user_to_team,
-    remove_user_from_team, 
-    get_team_members
+    remove_user_from_team
 )
 
 
@@ -57,6 +59,7 @@ from models.queries import (
 @AuthCheck()
 def get_all_users():
     try:
+
         if(request.args and request.args.get("isAdmin")):
             return create_good_response(users_schema.dump(get_user_admins()), 200, "users")
 
@@ -75,7 +78,7 @@ def get_all_users():
 
                 teams_and_team_members[team_id] = users_schema.dump(all_users)
 
-            return create_good_response(teams_and_team_members, 200, "users")
+            return create_good_response(teams_and_team_members, 200, "teams_users")
 
         if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")
@@ -86,7 +89,7 @@ def get_all_users():
             
             # We are going to add students by default!
             # Return students that are not in the team!
-            all_users = get_students_not_in_a_team(course_id, team_id)
+            all_users = get_active_students_not_in_a_team(course_id, team_id)
 
             if request.args.get("assign") == 'true':
                 # We are going to remove students!
@@ -133,6 +136,31 @@ def get_all_users():
 @AuthCheck()
 def get_all_team_members(): 
     try:
+        if request.args and request.args.get("course_id") and request.args.get("observer_id"):
+            course_id=request.args.get("course_id")
+
+            user_id=request.args.get("observer_id")
+
+            team_list = get_team_members_in_course(course_id)
+            result = {}
+            resultList = []
+
+            for team in team_list:
+
+                result["users"] = team[0]
+
+                result["team_id"] = team[1]
+
+                result["team_name"] = get_team(team[1]).team_name
+
+                result["observer_id"] = get_team(team[1]).observer_id
+
+                resultList.append(result)
+
+                result = {}
+
+            return create_good_response(resultList, 200, "team_members")
+        
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
             course_id=request.args.get("course_id")
 
@@ -272,6 +300,23 @@ def update_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
+    
+@bp.route('/user', methods = ['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def delete_user():
+    try:
+        if request.args and request.args.get("uid"):
+            user_id = request.args.get("uid")
+
+            delete_user_by_user_id(user_id)
+
+            return create_good_response([], 200, "")
+        
+    except Exception as e:
+        return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
+    
 
 
 class UserSchema(ma.Schema):

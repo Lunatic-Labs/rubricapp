@@ -40,7 +40,6 @@ class EmailAlreadyExists(Exception):
 def get_users():
     return User.query.all()
 
-
 @error_log
 def get_users_by_role_id(role_id):
     return User.query.filter_by(role_id=role_id).all()
@@ -379,6 +378,16 @@ def replace_user(user_data, user_id):
 def delete_user(user_id):
     User.query.filter_by(user_id=user_id).delete()
 
+    db.session.commit()
+
+    return True
+
+
+@error_log
+def delete_user_by_user_id(user_id: int) -> bool:
+    user = User.query.filter_by(user_id=user_id).first()
+    
+    db.session.delete(user)
     db.session.commit()
 
     return True

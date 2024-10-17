@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams.js';
+import TAViewTeams from './View/TAViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
 import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 
+// StudentDashboard is used for both students and TAs.
+// StudentDashboard component is a parent component that renders the StudentViewAssessmentTask, 
+// StudentCompletedAssessmentTasks, and depending on the role, either the StudentViewTeams or
+// the TAViewTeams components.
 
 
 class StudentDashboard extends Component {
@@ -24,7 +29,8 @@ class StudentDashboard extends Component {
 
         var chosenCourse = state.chosenCourse["course_id"];
 
-        genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
+        genericResourceGET(
+            `/role?course_id=${chosenCourse}`, 'roles', this);
     }
 
     render() {
@@ -78,34 +84,48 @@ class StudentDashboard extends Component {
                             </Box>
 
                             <Box>
-                                <StudentCompletedAssessmentTasks
-                                    navbar={navbar}
-                                />
+                                {role["role_id"] === 5 &&
+                                    <StudentCompletedAssessmentTasks
+                                        navbar={navbar}
+                                        role={role}
+                                    />
+                                }
+                                {role["role_id"] === 4 &&
+                                    <StudentCompletedAssessmentTasks
+                                        navbar={navbar}
+                                        role={role}
+                                    />
+                                }
                             </Box>
                         </Box>
 
-                        {role["role_id"] === 5 &&
-                            <Box className="page-spacing">
-                                <Box sx={{
-                                    display: "flex",
-                                    justifyContent: "space-between",
-                                    alignItems: "center",
-                                    alignSelf: "stretch"
-                                }}>
-                                    <Box sx={{ width: "100%" }} className="content-spacing">
-                                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
-                                            My Teams
-                                        </Typography>
-                                    </Box>
-                                </Box>
-
-                                <Box>
-                                    <StudentViewTeams
-                                        navbar={navbar}
-                                    />
+                        <Box className="page-spacing">
+                            <Box sx={{
+                                display: "flex",
+                                justifyContent: "space-between",
+                                alignItems: "center",
+                                alignSelf: "stretch"
+                            }}>
+                                <Box sx={{ width: "100%" }} className="content-spacing">
+                                    <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
+                                        My Teams
+                                    </Typography>
                                 </Box>
                             </Box>
-                        }
+
+                            <Box>
+                                {role["role_id"] === 5 &&
+                                <StudentViewTeams
+                                    navbar={navbar}
+                                />
+                                }
+                                {role["role_id"] === 4 &&
+                                <TAViewTeams
+                                    navbar={navbar}
+                                />
+                                }
+                            </Box>
+                        </Box>
                     </>
                 }
             </>

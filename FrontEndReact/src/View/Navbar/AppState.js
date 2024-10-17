@@ -50,6 +50,7 @@ class AppState extends Component {
 
             chosenAssessmentTask: null,
             chosenCompleteAssessmentTask: null,
+            unitOfAssessment: null,
 
             team: null,
             addTeam: true,
@@ -64,6 +65,11 @@ class AppState extends Component {
             userConsent: null,
 
             addTeamAction: null,
+            
+            successMessage: null,
+            successMessageTimeout: undefined,
+
+            addCustomRubric: null,
         }
 
         this.setNewTab = (newTab) => {
@@ -122,18 +128,19 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId) => { // wip
-            var assessmentTask = null;
+        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null) => { // wip
+            var completedAssessment = null;
 
-            for (var index = 0; index < assessmentTasks.length; index++) {
-                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
-                    assessmentTask = assessmentTasks[index];
-                }
+            if (completedAssessments) {
+               completedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId) ?? null;
             }
-
+            const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
+            
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
-                chosenAssessmentTask: assessmentTask
+                chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 
@@ -150,7 +157,24 @@ class AppState extends Component {
 
             this.setState({
                 activeTab: tab,
-                chosenAssessmentTask: assessmentTask
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
+            });
+        }
+
+        this.setSelectCurrentTeam = (assessmentTasks, assessmentTaskId) => {
+            var assessmentTask = null;
+
+            for (var index = 0; index < assessmentTasks.length; index++) {
+                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
+                    assessmentTask = assessmentTasks[index];
+                }
+            }
+
+            this.setState({
+                activeTab: "SelectTeam",
+                chosenAssessmentTask: assessmentTask,
+                unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
 
@@ -173,19 +197,21 @@ class AppState extends Component {
             });
         }
 
-        this.setCompleteAssessmentTaskTabWithID = (assessmentTasks, assessmentTaskId) => {
-            var newAssessmentTask = null;
-
-            for (var a = 0; a < assessmentTasks.length; a++) {
-                if (assessmentTasks[a]["assessment_task_id"] === assessmentTaskId) {
-                    newAssessmentTask = assessmentTasks[a];
-                }
+        this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
+            if(assessmentTask && assessmentTask.unit_of_assessment !== undefined){
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: assessmentTask,
+                    unitOfAssessment: assessmentTask.unit_of_assessment
+                });
             }
-
-            this.setState({
-                activeTab: "ViewComplete",
-                chosenAssessmentTask: newAssessmentTask
-            });
+            else {
+                this.setState({
+                    activeTab: "ViewComplete",
+                    chosenAssessmentTask: null,
+                    unitOfAssessment: null
+                });
+            }
         }
 
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
@@ -214,14 +240,17 @@ class AppState extends Component {
         }
 
         // The ===null section of the next line is not permanent. 
-        // The only purpose was to test to see if we could see the "My Assessment Task" on the student dashboard
-        // When you click "complete" on the "TO DO" column the completed fields were null thus it would not display anything
-        // By adding ===null as a test case, we were able to have it populate.
+        // The only purpose was to test to see if we could see the "My Assessment Task" 
+        // on the student dashboard
+        // When you click "complete" on the "TO DO" column the completed fields were null 
+        // thus it would not display anything
+        // By adding === null as a test case, we were able to have it populate.
         this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenAssessmentTask: null,
+                    unitOfAssessment: null,
                     chosenCompleteAssessmentTask: null
                 });
 
@@ -233,11 +262,11 @@ class AppState extends Component {
                         newCompletedAssessmentTask = completedAssessmentTasks[c];
                     }
                 }
-
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
-                    chosenAssessmentTask: chosenAssessmentTask
+                    chosenAssessmentTask: chosenAssessmentTask,
+                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
                 });
             }
         }
@@ -253,7 +282,8 @@ class AppState extends Component {
 
             this.setState({
                 activeTab: "CompleteAssessment",
-                chosenAssessmentTask: selectedAssessment
+                chosenAssessmentTask: selectedAssessment,
+                unitOfAssessment: selectedAssessment["unit_of_assessment"]
             });
         };
 
@@ -287,15 +317,19 @@ class AppState extends Component {
             });
         }
 
-        this.confirmCreateResource = (resource) => {
+        this.confirmCreateResource = (resource, delay = 1000) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
-                    if (resource === "User") {
+                    if (resource === "User" || resource === "UserBulkUpload") {
                         this.setState({
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
                         });
+                        
+                        if (resource === "UserBulkUpload") {
+                            this.setSuccessMessage("The user bulk upload was successful!");
+                        }
 
                     } else if (resource === "Course") {
                         this.setState({
@@ -316,12 +350,16 @@ class AppState extends Component {
                             activeTab: "AssessmentTasks"
                         });
 
-                    } else if (resource === "Team") {
+                    } else if (resource === "Team" || resource === "TeamBulkUpload") {
                         this.setState({
                             activeTab: "Teams",
                             team: null,
                             addTeam: true
                         });
+                        
+                        if (resource === "TeamBulkUpload") {
+                            this.setSuccessMessage("The team bulk upload was successful!");
+                        }
 
                     } else if (resource==="TeamMembers") {
                         this.setState({
@@ -338,7 +376,8 @@ class AppState extends Component {
                     } else if(resource==="StudentCompleteTask") {
                         this.setState({
                             activeTab: "StudentDashboard",
-                            chosenAssessmentTask: null
+                            chosenAssessmentTask: null,
+                            unitOfAssessment: null
                         });
                     } else if (resource==="CreateCustomRubric") {
                         this.setState({
@@ -350,7 +389,7 @@ class AppState extends Component {
                         });
                     }
                 }
-            }, 1000);
+            }, delay);
         }
 
         this.Reset = (listOfElements) => {
@@ -362,6 +401,22 @@ class AppState extends Component {
                 }
             }
         }
+        
+        this.setSuccessMessage = (newSuccessMessage) => {
+            clearTimeout(this.state.successMessageTimeout);
+            
+            const timeoutId = setTimeout(() => {
+                this.setState({
+                    successMessage: null,
+                    successMessageTimeout: undefined,
+                });
+            }, 3000);
+            
+            this.setState({
+                successMessage: newSuccessMessage,
+                successMessageTimeout: timeoutId,
+            });
+        };
     }
 
     // The commented out code below saves the state of the Navbar,
@@ -479,6 +534,29 @@ class AppState extends Component {
                     </Box>
                 }
 
+                {/* {this.state.activeTab==="EditCustomRubric" &&
+                  <Box className="page-spacing">
+                      <BackButtonResource
+                          navbar={this}
+                          tabSelected={"MyCustomRubrics"}
+                      />
+                      <AdminEditCustomRubric
+                          navbar={this}
+                      />
+                  </Box>
+                }
+
+                {this.state.activeTab==="DeleteCustomRubric" &&
+                  <Box className="page-spacing">
+                      <BackButtonResource
+                          navbar={this}
+                          tabSelected={"MyCustomRubrics"}
+                      />
+                      <AdminDeleteCustomRubric
+                          navbar={this}
+                      />
+                  </Box>
+                } */}
                 {this.state.activeTab==="AddCourse" &&
                     <Box className="page-spacing">
                         <BackButtonResource
