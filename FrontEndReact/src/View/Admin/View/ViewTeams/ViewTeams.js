@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 
@@ -113,7 +114,7 @@ class ViewTeams extends Component{
       //         <IconButton
       //          align="center"
       //          onClick={() => {
-      //           DeleteTeam(teams, teamId, users, "AddTeam");;
+      //           DeleteTeam(teams, teamId, assessmentTaskId, "AddTeam");;
       //          }}
       //          aria-label="deleteTeamIconButton"
       //         >
