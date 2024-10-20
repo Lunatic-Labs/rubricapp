@@ -2,7 +2,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import React, { Component } from 'react';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import ViewTeams from './ViewTeams.js';
-import { genericResourceGET, parseUserNames } from '../../../../utility.js';
+import { genericResourceGET, parseUserNames, genericResourceDELETE } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 import SuccessMessage from '../../../Success/SuccessMessage.js';
@@ -19,6 +19,7 @@ class AdminViewTeams extends Component {
             teams: null,
             users: null
         }
+        //this.deleteTeam = this.deleteTeam.bind(this);
     }
 
     componentDidMount() {
@@ -36,6 +37,11 @@ class AdminViewTeams extends Component {
 
         genericResourceGET(url, "users", this);
     }
+
+
+    // deleteTeam(id) {
+        
+    // }
 
     render() {
         const {

@@ -114,7 +114,9 @@ class ViewTeams extends Component{
               <IconButton
                align="center"
                onClick={() => {
-                DeleteTeam(teams, teamId, users, "AddTeam");;
+                if (window.confirm('Are you sure you want to delete this team?')) {
+                  deleteTeam(teamId);
+                }
                }}
                aria-label="deleteTeamIconButton"
               >
