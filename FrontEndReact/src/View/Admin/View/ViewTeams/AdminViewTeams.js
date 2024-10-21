@@ -19,7 +19,7 @@ class AdminViewTeams extends Component {
             teams: null,
             users: null
         }
-        //this.deleteTeam = this.deleteTeam.bind(this);
+        this.deleteTeam = this.deleteTeam.bind(this);
     }
 
     componentDidMount() {
@@ -38,10 +38,40 @@ class AdminViewTeams extends Component {
         genericResourceGET(url, "users", this);
     }
 
+    deleteTeam(teamId) {
+        try {
+           // First, check if there are any associated assessment tasks
+           const assessmentTasks = genericResourceGET(`/assessment_task?team_id=${teamId}`);
+          
+           if (assessmentTasks.length > 0) {
+               this.setState({
+                   errorMessage: "Cannot delete team. There are associated assessment tasks."
+                   });
+                   return;
+               }
+          
+           // If no associated tasks, proceed with deletion
+           genericResourceDELETE(`/team/${teamId}`);
+          
+           // Update the teams list
+           const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
+           this.setState({
+               teams: updatedTeams,
+               successMessage: "Team deleted successfully."
+           });
+          
+               // Clear success message after 3 seconds
+           setTimeout(() => {
+               this.setState({ successMessage: null });
+           }, 3000);
+          
+           } catch (error) {
+               this.setState({
+               errorMessage: `Error deleting team: ${error.message}`
+           });
+       }    
+    }
 
-    // deleteTeam(id) {
-        
-    // }
 
     render() {
         const {
