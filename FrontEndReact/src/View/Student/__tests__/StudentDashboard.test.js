@@ -55,9 +55,8 @@ test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
+
     });
 });
 
@@ -76,17 +75,13 @@ test("StudentDashboard.test.js Test 2: Should render the completed assessment ta
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
 
         clickFirstElementWithAriaLabel(satb);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vatit);
     });
 });
 
@@ -105,9 +100,7 @@ test("StudentDashboard.test.js Test 3: Should render the view completed assessme
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
     });
 
     await waitFor(() => {
@@ -134,17 +127,13 @@ test("StudentDashboard.test.js Test 4: Should render the course dashboard if the
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
     });
 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-           expectElementWithAriaLabelToBeInDocument(ct);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 
 });
@@ -164,29 +153,23 @@ test("StudentDashboard.test.js Test 5: Should render the assessment tasks, compl
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
 
         clickFirstElementWithAriaLabel(satb);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vatit);
     });
 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(matt);
+        expectElementWithAriaLabelToBeInDocument(matt);
 
-            expectElementWithAriaLabelToBeInDocument(catt);
+        expectElementWithAriaLabelToBeInDocument(catt);
 
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
     });
 });
 
@@ -205,9 +188,7 @@ test("StudentDashboard.test.js Test 6: Should render the assessment tasks, compl
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
     });
 
     await waitFor(() => {
@@ -221,12 +202,10 @@ test("StudentDashboard.test.js Test 6: Should render the assessment tasks, compl
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(matt);
+        expectElementWithAriaLabelToBeInDocument(matt);
 
-            expectElementWithAriaLabelToBeInDocument(catt);
+        expectElementWithAriaLabelToBeInDocument(catt);
 
-            expectElementWithAriaLabelToBeInDocument(mtt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(mtt);
     });
 });
