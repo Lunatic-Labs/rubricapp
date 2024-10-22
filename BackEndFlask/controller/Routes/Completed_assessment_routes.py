@@ -31,7 +31,9 @@ from models.assessment_task import get_assessment_tasks_by_course_id
 @AuthCheck()
 def get_all_completed_assessments():
     try:
-        if request.args and request.args.get("course_id"):
+        # only_course is a marker parameter that prevents requests intended for routes
+        #  below from hitting this route
+        if request.args and request.args.get("course_id") and request.args.get("only_course") == "true":
             course_id = int(request.args.get("course_id"))
             all_completed_assessments = get_completed_assessment_by_course_id(course_id)
             assessment_tasks = get_assessment_tasks_by_course_id(course_id)
