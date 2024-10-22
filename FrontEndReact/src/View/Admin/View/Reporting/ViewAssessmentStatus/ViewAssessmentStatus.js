@@ -127,11 +127,6 @@ export default function ViewAssessmentStatus(props) {
     boxShadow: "0.3em 0.3em 1em #d6d6d6"
   };
 
-  const outerQuadrantSX = {
-    display: "flex",
-    justifyContent: "center"
-  };
-
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
   
   return (
