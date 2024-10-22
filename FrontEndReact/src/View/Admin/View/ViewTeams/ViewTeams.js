@@ -5,10 +5,45 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
+import { genericResourceGET, genericResourceDELETE } from '../../../../utility.js';
 
 
 
 class ViewTeams extends Component{
+  async deleteTeam(teamId) {
+
+        try {
+           // First, check if there are any associated assessment tasks
+           const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
+          
+           if (assessmentTasks.length > 0) {
+               this.setState({
+                   errorMessage: "Cannot delete team. There are associated assessment tasks."
+                   });
+                   return;
+               }
+          
+           // If no associated tasks, proceed with deletion
+           await genericResourceDELETE(`/team/${teamId}`);
+          
+           // Update the teams list
+           const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
+           this.setState({
+               teams: updatedTeams,
+               successMessage: "Team deleted successfully."
+           });
+          
+               // Clear success message after 3 seconds
+           setTimeout(() => {
+               this.setState({ successMessage: null });
+           }, 3000);
+          
+           } catch (error) {
+               this.setState({
+               errorMessage: `Error deleting team: ${error.message}`
+           });
+       }    
+    }
   render() {
     var navbar = this.props.navbar;
     var adminViewTeams = navbar.adminViewTeams;
@@ -102,6 +137,7 @@ class ViewTeams extends Component{
         }
       },
       {
+        //need to check if it is just me using deleteTeam or delete_selected_teams
         name: "team_id",
         label: "Delete",
         options: {
@@ -115,7 +151,8 @@ class ViewTeams extends Component{
                align="center"
                onClick={() => {
                 if (window.confirm('Are you sure you want to delete this team?')) {
-                  deleteTeam(teamId);
+                  this.deleteTeam(teamId);
+                  
                 }
                }}
                aria-label="deleteTeamIconButton"

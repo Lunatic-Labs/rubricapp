@@ -20,6 +20,7 @@ class AdminViewTeams extends Component {
             users: null
         }
         this.deleteTeam = this.deleteTeam.bind(this);
+        //this.delete_selected_teams = this.delete_selected_teams.bind(this);
     }
 
     componentDidMount() {
@@ -38,10 +39,12 @@ class AdminViewTeams extends Component {
         genericResourceGET(url, "users", this);
     }
 
-    deleteTeam(teamId) {
+    //need to check if it is just me using deleteTeam or delete_selected_teams
+    async deleteTeam(teamId) {
+
         try {
            // First, check if there are any associated assessment tasks
-           const assessmentTasks = genericResourceGET(`/assessment_task?team_id=${teamId}`);
+           const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
           
            if (assessmentTasks.length > 0) {
                this.setState({
@@ -51,7 +54,7 @@ class AdminViewTeams extends Component {
                }
           
            // If no associated tasks, proceed with deletion
-           genericResourceDELETE(`/team/${teamId}`);
+           await genericResourceDELETE(`/team/${teamId}`);
           
            // Update the teams list
            const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
