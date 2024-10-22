@@ -145,7 +145,6 @@ class Login extends Component {
                 (result) => {
 
                     if(result["success"]) {
-                        console.log("results: ",result);
                         cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
 
                         this.setState({
