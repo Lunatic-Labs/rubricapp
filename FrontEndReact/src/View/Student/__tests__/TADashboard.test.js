@@ -27,12 +27,9 @@ var catvib = "completedAssessmentTasksViewIconButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var mhbb = "mainHeaderBackButton";
 var vaticb = "viewAssessmentTaskInstructionsContinueButton";
-var rs = "ratingsSection";
-var ocs = "observableCharacteristicsSection";
-var sfis = "suggestionsForImprovementSection";
-var cbs = "commentBoxSection";
 var rb = "refreshButton";
 var sb = "saveButton";
+var catnt = "completeAssessmentTaskNameTitle"
 
 
 
@@ -52,7 +49,6 @@ test("TADashboard.test.js Test 1: Should render both assessment tables if valid 
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
-
     });
 
     clickFirstElementWithAriaLabel(vcib);
@@ -70,24 +66,20 @@ test("TADashboard.test.js Test 2: Should render the completed assessment task pa
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
-
-        clickFirstElementWithAriaLabel(vcib);
     });
+
+    clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(matt);
 
         expectElementWithAriaLabelToBeInDocument(catt);
+
+        clickFirstElementWithAriaLabel(satb);
     });
 
-    setTimeout(() => {
-        clickFirstElementWithAriaLabel(satb);
-    }, 3000);
-        
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vatit);
     });
 });
 
@@ -132,14 +124,10 @@ test("TADashboard.test.js Test 4: Should render to the course dashboard when the
         expectElementWithAriaLabelToBeInDocument(catt);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(mhbb);
-    }, 3000);
+    clickElementWithAriaLabel(mhbb);
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
 
@@ -154,30 +142,23 @@ test("TADashboard.test.js Test 5: Should render to the my Assessment Tasks and C
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(matt);
+        expectElementWithAriaLabelToBeInDocument(matt);
 
-            expectElementWithAriaLabelToBeInDocument(catt);
+        expectElementWithAriaLabelToBeInDocument(catt);
 
-            clickFirstElementWithAriaLabel(satb);
-        }, 3000);
-        
+        clickFirstElementWithAriaLabel(satb);
     });
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-
-            clickElementWithAriaLabel(mhbb);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vatit);
     });
     
+    clickElementWithAriaLabel(mhbb);
+    
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(matt);
+        expectElementWithAriaLabelToBeInDocument(matt);
 
-            expectElementWithAriaLabelToBeInDocument(catt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(catt);
     });
 });
 
@@ -196,29 +177,17 @@ test("TADashboard.test.js Test 6: Should render to the Feedback page of the Asse
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            clickFirstElementWithAriaLabel(satb);
-        }, 3000);
+        clickFirstElementWithAriaLabel(satb);
     });
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-
-            clickElementWithAriaLabel(vaticb);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vatit);
     });
 
+    clickElementWithAriaLabel(vaticb);
+
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(catnt);
     });
 });
 
@@ -241,35 +210,21 @@ test("TADashboard.test.js Test 7: Should render to the my Assessment Tasks and C
     });
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-
-            clickElementWithAriaLabel(vaticb);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vatit);
     });
 
+    clickElementWithAriaLabel(vaticb);
+
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(catnt);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(mhbb);
-    }, 3000);
+    clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(matt);
+        expectElementWithAriaLabelToBeInDocument(matt);
 
-            expectElementWithAriaLabelToBeInDocument(catt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(catt);
     });
 });
 
@@ -291,30 +246,20 @@ test("TADashboard.test.js Test 8: Should render to the sections page when the re
     });
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-        }, 3000);
-    });
+        expectElementWithAriaLabelToBeInDocument(vatit);
 
-    setTimeout(() => {
         clickElementWithAriaLabel(vaticb);
-    }, 3000);
+    });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(catnt);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(rb);
-    }, 3000);
+    // clickElementWithAriaLabel(rb);
+
+    // await waitFor(() => {
+    //     expectElementWithAriaLabelToBeInDocument(catnt);
+    // });
 });
 
 
@@ -332,34 +277,21 @@ test("TADashboard.test.js Test 9: Should successfully save all the changes when 
 
         expectElementWithAriaLabelToBeInDocument(catt);
 
-        setTimeout(() => {
-            clickFirstElementWithAriaLabel(satb);
-        }, 3000);
+        clickFirstElementWithAriaLabel(satb);
     });
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vatit);
-        }, 3000);
-    });
+        expectElementWithAriaLabelToBeInDocument(vatit);
 
-    setTimeout(() => {
         clickElementWithAriaLabel(vaticb);
-    }, 3000);
+    });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(catnt);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(sb);
-    }, 3000);
+    // Needs to be redone due to change from Save button to Done.
+    // setTimeout(() => {
+    //     clickElementWithAriaLabel(sb);
+    // }, 3000);
 });

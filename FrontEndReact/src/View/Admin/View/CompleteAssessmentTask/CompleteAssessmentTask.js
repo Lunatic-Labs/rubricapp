@@ -317,7 +317,7 @@ class CompleteAssessmentTask extends Component {
             return (
                 <Box>
                     <Box className="assessment-title-spacing">
-                        <Box className='d-flex flex-column justify-content-start'>
+                        <Box className='d-flex flex-column justify-content-start' aria-label='completeAssessmentTaskNameTitle'>
                             <h4>{rubrics["rubric_name"]}</h4>
 
                             <h5>{rubrics["rubric_description"]}</h5>
