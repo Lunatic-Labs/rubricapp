@@ -53,7 +53,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         }
 
         const result = await response.json();
-   
+
         if(result['success']) {
             let state = {};
 

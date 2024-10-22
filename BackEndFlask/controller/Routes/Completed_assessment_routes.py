@@ -18,7 +18,8 @@ from models.queries import (
     get_completed_assessment_by_ta_user_id,
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id,
-    get_completed_assessment_with_user_name
+    get_completed_assessment_with_user_name,
+    get_all_students_in_course_and_all_students_who_have_completed_assessment_task
 )
 
 from models.assessment_task import get_assessment_tasks_by_course_id
@@ -104,6 +105,10 @@ def get_all_completed_assessments():
             completed_assessment_task_id = int(request.args.get("completed_assessment_task_id"))
             one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_task_id)
             return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
+        
+        if request.args and request.args.get("course_id") and request.args.get("assessment_id"):
+            ratio = get_all_students_in_course_and_all_students_who_have_completed_assessment_task(int(request.args.get("course_id")), int(request.args.get("assessment_id")))
+            return create_good_response(ratio, 200, "completed_assessments")
 
         all_completed_assessments = get_completed_assessments()
         return create_good_response(completed_assessment_schemas.dump(all_completed_assessments), 200, "completed_assessments")
