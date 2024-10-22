@@ -19,6 +19,7 @@ class BuildTeamTable extends Component {
     };
   }
 
+  // TO DO
   // handleConfirmTeamClick = () => {
     // Add your confirm team functionality here
     // console.log('Confirm Team Button Clicked');
@@ -197,7 +198,7 @@ class BuildTeamTable extends Component {
                           backgroundColor: "#2196F3",
                           marginTop: "30px"
                       }}
-
+                      // TO DO 
                       // onClick={
                       //   () => {
                           // console.log("Confirm Team");
