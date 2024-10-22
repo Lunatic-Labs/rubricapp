@@ -78,8 +78,9 @@ class ViewAssessmentTasks extends Component {
             "assessmentTasks",
             this
         );
+        
         genericResourceGET(
-            `/completed_assessment?course_id=${courseId}`,
+            `/completed_assessment?course_id=${courseId}&only_course=true`,
             "completedAssessments",
             this
         );
