@@ -190,6 +190,8 @@ class CompleteAssessmentTask extends Component {
 
         var navbar = this.props.navbar;
 
+        const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
+
         var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
         if (errorMessage) {
@@ -205,14 +207,14 @@ class CompleteAssessmentTask extends Component {
                 <Loading />
             );
 
-        } else if (chosenAssessmentTask["unit_of_assessment"] && teams.length === 0) {
+        } else if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) {
             return (
-                <h1>Please create a team to complete this assessment for.</h1>
+                <h1>Please create a team to complete this assessment.</h1>
             )
 
         } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
-                <h1>Please add students to the roster to complete this assessment for.</h1>
+                <h1>Please add students to the roster to complete this assessment.</h1>
             )
 
         } 
