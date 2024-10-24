@@ -55,7 +55,7 @@ class Login extends Component {
         };
 
         this.login = () => {
-            const {
+            var {
                 email,
                 password,
             } = this.state;
