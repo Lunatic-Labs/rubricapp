@@ -66,8 +66,12 @@ def get_all_completed_assessments():
 
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
             if request.args.get("assessment_id"):
-                ratio = get_all_students_in_course_and_all_students_who_have_completed_assessment_task(int(request.args.get("course_id")), int(request.args.get("assessment_id")))
-                
+                course_id = request.args.get("course_id")
+                assessment_id = request.args.get("assessment_id")
+
+                ratio = get_all_students_in_course_and_all_students_who_have_completed_assessment_task(course_id, assessment_id)
+
+                print(assessment_id, flush=True) # this is always one, work on this later
                 return create_good_response(ratio, 200, "completed_assessments")
             else:
                 course_id = int(request.args.get("course_id"))
