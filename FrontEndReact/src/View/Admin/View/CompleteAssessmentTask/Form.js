@@ -394,19 +394,21 @@ class Form extends Component {
                         <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
                     }
 
-                     <Button
-                        variant="text"
-                        color="primary"
-                        startIcon={<RefreshIcon />}
-                        arialabel="refreshButton"
+                    {this.props.role_name !== "Student" &&
+                        <Button
+                            variant="text"
+                            color="primary"
+                            startIcon={<RefreshIcon />}
+                            arialabel="refreshButton"
 
-                        onClick={() => {
-                            this.props.refreshUnits();
-                        }}
-                        aria-label="refreshButton"
-                    >
-                        Refresh
-                    </Button>
+                            onClick={() => {
+                                this.props.refreshUnits();
+                            }}
+                            aria-label="refreshButton"
+                        >
+                            Refresh
+                        </Button>
+                    }
 
                     <Button
                         id="formSubmitButton"
