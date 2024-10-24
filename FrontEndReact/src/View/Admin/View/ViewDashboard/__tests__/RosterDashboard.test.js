@@ -28,6 +28,8 @@ var aub = "addUserButton";
 var aut = "addUserTitle";
 var eut = "editUserTitle";
 var eub = "editUserButton";
+var dub = "dropUserButton";
+var dut = "dropUserTitle";
 
 
 
@@ -133,4 +135,25 @@ test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking t
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(eut);
     });
+});
+
+test("RosterDashboard.test.js Test 7: Should drop a user when clicking on the drop user button", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+    
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickFirstElementWithAriaLabel(dub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(dut);
+    });
+    
 });
