@@ -60,7 +60,7 @@ class Login extends Component {
                 password,
             } = this.state;
 
-            email.toLowerCase();
+            email = email.toLowerCase();
             if (email.trim() === '' || password.trim() === '') {
                 this.setState({
                     errors: {
