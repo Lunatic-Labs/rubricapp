@@ -11,41 +11,41 @@ import { genericResourceGET, genericResourceDELETE } from '../../../../utility.j
 
 class ViewTeams extends Component{
   async deleteTeam(teamId) {
-
-        try {
-           // First, check if there are any associated assessment tasks
-           const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
-            console.log("Assessment Tasks:", assessmentTasks);
+    console.log("delete team should be called with team id:", teamId);
+    try {
+      // First, check if there are any associated assessment tasks
+      const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
+           
+      if (assessmentTasks.length > 0) {
+        this.setState({
+          errorMessage: "Cannot delete team. There are associated assessment tasks."
+          });
+        return;
+      }
           
-           if (assessmentTasks.length > 0) {
-               this.setState({
-                   errorMessage: "Cannot delete team. There are associated assessment tasks."
-                   });
-                   return;
-               }
+      // If no associated tasks, proceed with deletion
+      await genericResourceDELETE(`/team/${teamId}`);
+            
           
-           // If no associated tasks, proceed with deletion
-           const deleteResponse = await genericResourceDELETE(`/team/${teamId}`);
-           console.log("Delete Response: ", deleteResponse); 
+      // Update the teams list
+      const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
+      this.setState({
+        teams: updatedTeams,
+        successMessage: "Team deleted successfully."
+      });
           
-           // Update the teams list
-           const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
-           this.setState({
-               teams: updatedTeams,
-               successMessage: "Team deleted successfully."
-           });
+      // Clear success message after 3 seconds
+      setTimeout(() => {
+        this.setState({ successMessage: null });
+      }, 3000);
           
-               // Clear success message after 3 seconds
-           setTimeout(() => {
-               this.setState({ successMessage: null });
-           }, 3000);
-          
-           } catch (error) {
-               this.setState({
-               errorMessage: `Error deleting team: ${error.message}`
-           });
+      } catch (error) {
+        this.setState({
+          errorMessage: `Error deleting team: ${error.message}`
+        });
        }    
     }
+
   render() {
     var navbar = this.props.navbar;
     var adminViewTeams = navbar.adminViewTeams;
@@ -152,7 +152,8 @@ class ViewTeams extends Component{
                align="center"
                onClick={() => {
                 if (window.confirm('Are you sure you want to delete this team?')) {
-                  this.deleteTeam(teamId); 
+                  this.deleteTeam(teamId);
+                  console.log("Delete Team should be called ", teamId); 
                 }
                }}
                aria-label="deleteTeamIconButton"
