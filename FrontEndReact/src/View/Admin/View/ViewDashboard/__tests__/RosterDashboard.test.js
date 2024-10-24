@@ -33,7 +33,7 @@ var dut = "dropUserTitle";
 
 
 
-test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -137,6 +137,7 @@ test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking t
     });
 });
 
+
 test("RosterDashboard.test.js Test 7: Should drop a user when clicking on the drop user button", async () => {
     render(<Login/>);
 
@@ -148,6 +149,12 @@ test("RosterDashboard.test.js Test 7: Should drop a user when clicking on the dr
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
+
+        clickFirstElementWithAriaLabel(eub);
+    });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(eut);
     });
 
     clickFirstElementWithAriaLabel(dub);
@@ -155,5 +162,4 @@ test("RosterDashboard.test.js Test 7: Should drop a user when clicking on the dr
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(dut);
     });
-    
 });
