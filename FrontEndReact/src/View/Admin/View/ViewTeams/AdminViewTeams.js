@@ -5,7 +5,7 @@ import ViewTeams from "./ViewTeams.js";
 import {
   genericResourceGET,
   parseUserNames,
-  //genericResourceDELETE,
+  genericResourceDELETE,
 } from "../../../../utility.js";
 import { Box, Button, Typography } from "@mui/material";
 import Loading from "../../../Loading/Loading.js";
@@ -21,7 +21,7 @@ class AdminViewTeams extends Component {
       teams: null,
       users: null,
     };
-    //this.deleteTeam = this.deleteTeam.bind(this);
+    this.deleteTeam = this.deleteTeam.bind(this);
     //this.delete_selected_teams = this.delete_selected_teams.bind(this);
   }
 
@@ -43,41 +43,40 @@ class AdminViewTeams extends Component {
     genericResourceGET(url, "users", this);
   }
 
-  //need to check if it is just me using deleteTeam or delete_selected_teams
-  // async deleteTeam(teamId) {
+  async deleteTeam(teamId) {
 
-  //     try {
-  //        // First, check if there are any associated assessment tasks
-  //        const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
+      try {
+         // First, check if there are any associated assessment tasks
+         const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
 
-  //        if (assessmentTasks.length > 0) {
-  //            this.setState({
-  //                errorMessage: "Cannot delete team. There are associated assessment tasks."
-  //                });
-  //                return;
-  //            }
+         if (assessmentTasks.length > 0) {
+             this.setState({
+                 errorMessage: "Cannot delete team. There are associated assessment tasks."
+                 });
+                 return;
+             }
 
-  //        // If no associated tasks, proceed with deletion
-  //        await genericResourceDELETE(`/team/${teamId}`);
+         // If no associated tasks, proceed with deletion
+         await genericResourceDELETE(`/team/${teamId}`);
 
-  //        // Update the teams list
-  //        const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
-  //        this.setState({
-  //            teams: updatedTeams,
-  //            successMessage: "Team deleted successfully."
-  //        });
+         // Update the teams list
+         const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
+         this.setState({
+             teams: updatedTeams,
+             successMessage: "Team deleted successfully."
+         });
 
-  //            // Clear success message after 3 seconds
-  //        setTimeout(() => {
-  //            this.setState({ successMessage: null });
-  //        }, 3000);
+             // Clear success message after 3 seconds
+         setTimeout(() => {
+             this.setState({ successMessage: null });
+         }, 3000);
 
-  //        } catch (error) {
-  //            this.setState({
-  //            errorMessage: `Error deleting team: ${error.message}`
-  //        });
-  //    }
-  // }
+         } catch (error) {
+             this.setState({
+             errorMessage: `Error deleting team: ${error.message}`
+         });
+     }
+  }
 
   render() {
     const { errorMessage, isLoaded, teams, users } = this.state;

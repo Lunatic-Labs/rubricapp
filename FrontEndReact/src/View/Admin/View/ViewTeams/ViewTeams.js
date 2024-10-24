@@ -15,6 +15,7 @@ class ViewTeams extends Component{
         try {
            // First, check if there are any associated assessment tasks
            const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
+            console.log("Assessment Tasks:", assessmentTasks);
           
            if (assessmentTasks.length > 0) {
                this.setState({
@@ -24,7 +25,8 @@ class ViewTeams extends Component{
                }
           
            // If no associated tasks, proceed with deletion
-           await genericResourceDELETE(`/team/${teamId}`);
+           const deleteResponse = await genericResourceDELETE(`/team/${teamId}`);
+           console.log("Delete Response: ", deleteResponse); 
           
            // Update the teams list
            const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
@@ -137,7 +139,6 @@ class ViewTeams extends Component{
         }
       },
       {
-        //need to check if it is just me using deleteTeam or delete_selected_teams
         name: "team_id",
         label: "Delete",
         options: {
@@ -151,8 +152,7 @@ class ViewTeams extends Component{
                align="center"
                onClick={() => {
                 if (window.confirm('Are you sure you want to delete this team?')) {
-                  this.deleteTeam(teamId);
-                  
+                  this.deleteTeam(teamId); 
                 }
                }}
                aria-label="deleteTeamIconButton"
