@@ -55,11 +55,12 @@ class Login extends Component {
         };
 
         this.login = () => {
-            const {
+            var {
                 email,
                 password,
             } = this.state;
 
+            email = email.toLowerCase();
             if (email.trim() === '' || password.trim() === '') {
                 this.setState({
                     errors: {
