@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
-import { genericResourceGET, genericResourceDELETE } from '../../../../utility.js';
+import { genericResourceGET, genericResourceDelete } from '../../../../utility.js';
 
 
 
@@ -14,7 +14,8 @@ class ViewTeams extends Component{
     console.log("delete team should be called with team id:", teamId);
     try {
       // First, check if there are any associated assessment tasks
-      const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`);
+      const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`, this);
+      console.log("assessment tasks should be accessed: ", assessmentTasks);
            
       if (assessmentTasks.length > 0) {
         this.setState({
@@ -24,7 +25,9 @@ class ViewTeams extends Component{
       }
           
       // If no associated tasks, proceed with deletion
-      await genericResourceDELETE(`/team/${teamId}`);
+      console.log("deleting team with id:", teamId);
+      await genericResourceDelete(`/team?team_id=${teamId}`, this);
+      console.log("team deleted successfully");
             
           
       // Update the teams list
@@ -41,7 +44,7 @@ class ViewTeams extends Component{
           
       } catch (error) {
         this.setState({
-          errorMessage: `Error deleting team: ${error.message}`
+          errorMessage: "Cannot delete team. There are associated assessment tasks."
         });
        }    
     }

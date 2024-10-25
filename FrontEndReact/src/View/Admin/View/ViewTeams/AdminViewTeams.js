@@ -5,7 +5,6 @@ import ViewTeams from "./ViewTeams.js";
 import {
   genericResourceGET,
   parseUserNames,
-  // genericResourceDELETE,
 } from "../../../../utility.js";
 import { Box, Button, Typography } from "@mui/material";
 import Loading from "../../../Loading/Loading.js";
@@ -57,7 +56,7 @@ class AdminViewTeams extends Component {
   //            }
 
   //        // If no associated tasks, proceed with deletion
-  //        await genericResourceDELETE(`/team/${teamId}`);
+  //        await genericResourceDelete(`/team/${teamId}`);
 
   //        // Update the teams list
   //        const updatedTeams = this.state.teams.filter(team => team.team_id !== teamId);
