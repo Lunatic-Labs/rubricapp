@@ -72,7 +72,7 @@ class ViewAssessmentTasks extends Component {
 
     componentDidMount() {
         const courseId = this.props.navbar.state.chosenCourse.course_id;
-    
+
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
             "assessmentTasks",
@@ -91,7 +91,8 @@ class ViewAssessmentTasks extends Component {
         if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
             return <Loading />;
         }
-
+        const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
+        
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
@@ -324,7 +325,7 @@ class ViewAssessmentTasks extends Component {
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
             
-                        if (isTeamAssessment && !teamsExist) {
+                        if (isTeamAssessment && (fixedTeams && !teamsExist)) {
                             return (
                                 <Tooltip title="No teams available for this team assessment">
                                     <span>
