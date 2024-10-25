@@ -14,7 +14,7 @@ class ViewTeams extends Component{
     console.log("delete team should be called with team id:", teamId);
     try {
       // First, check if there are any associated assessment tasks
-      const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`, this);
+      const assessmentTasks = await genericResourceGET(`/assessment_task?team_id=${teamId}`, "assessmentTasks",this);
       console.log("assessment tasks should be accessed: ", assessmentTasks);
            
       if (assessmentTasks.length > 0) {
@@ -26,7 +26,7 @@ class ViewTeams extends Component{
           
       // If no associated tasks, proceed with deletion
       console.log("deleting team with id:", teamId);
-      await genericResourceDelete(`/team?team_id=${teamId}`, this);
+      await genericResourceDelete(`/team?team_id=${teamId}`, "teams", this);
       console.log("team deleted successfully");
             
           
