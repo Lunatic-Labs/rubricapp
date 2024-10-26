@@ -7,7 +7,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import { genericResourceGET, genericResourceDelete } from '../../../../utility.js';
 
-
+// Todo: backend-1   | 2024-10-25 20:05:28,865 - ERROR - Bad response sent: user_id: 2, content type: teams, msg: Cannot delete team with associated tasks, status: 400, error raised from function: delete_selected_teams backend-1   | 172.18.0.1 - - [25/Oct/2024 20:05:28] "DELETE /api/team?team_id=4&user_id=2 HTTP/1.1" 400 -
 
 class ViewTeams extends Component{
   async deleteTeam(teamId) {
