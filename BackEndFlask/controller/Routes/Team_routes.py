@@ -172,27 +172,20 @@ def update_team_user_by_edit():
 @AuthCheck()
 def delete_selected_teams():
     try:
-        if not request.args or not request.args.get("team_id"):
-            return create_bad_response("Team ID is required", "teams", 400)
-            
-        team_id = int(request.args.get("team_id"))
+        if request.args and request.args.get("team_id"):
+            team_id = int(request.args.get("team_id"))
 
-        # Check if team exists
-        team = get_team(team_id)
-        if not team:
-            return create_bad_response("Team does not exist", "teams", 404)
-        
-        # Check for associated tasks
-        associated_tasks = get_assessment_tasks_by_team_id(team_id)
-        if associated_tasks:
-            return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
-        
-        # If we get here, we can safely delete the team
-        deleted = delete_team(team_id)
-        if deleted:
-            return create_good_response({"message": "Team deleted successfully"}, 200, "teams")
-        else:
-            return create_bad_response("Failed to delete team", "teams", 500)
+            team = get_team(team_id)
+            if not team:
+                return create_bad_response("Team does not exist", "teams", 400)
+            
+            associated_tasks = get_assessment_tasks_by_team_id(team_id)
+            if associated_tasks:
+                return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
+            
+            delete_team(team_id)
+
+            return create_good_response([], 200, "teams")
         
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
