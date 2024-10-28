@@ -39,7 +39,7 @@ const customTheme = createTheme({
   },
 });
 
-const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly, showEditButton, showDeleteButton, navbar }) => {
+const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly, showEditButton, selectedCategories, navbar }) => {
 
   // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
@@ -47,9 +47,12 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
   const handleRubricClick = (rubricId) => {
     setOpenRubric(openRubric === rubricId ? null : rubricId);
   };
-
+  
   // NOTE: Manage whether the category was clicked or not
-  const [checkedCategories, setCheckedCategories] = useState([]);
+  const [checkedCategories, setCheckedCategories] = useState(
+    readOnly ? [] : selectedCategories.map(category => category.category_id)
+  );
+
 
   const handleCheckboxChange = (categoryId) => {
     const isChecked = checkedCategories.includes(categoryId);

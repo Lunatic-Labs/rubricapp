@@ -39,13 +39,12 @@ class AddCustomRubric extends React.Component {
         };
 
         this.handleCreateRubric = (pickedCategories) => {
+            var navbar = this.props.navbar;
+            var rubricId = navbar.rubricId;
             var categoryIds = [];
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
-                categoryIds = [
-                    ...categoryIds,
-                    pickedCategories[categoryIndex]["category_id"],
-                ];
+                categoryIds.push(pickedCategories[categoryIndex]["category_id"]);
             }
 
             if (document.getElementById("rubricNameInput").value === "") {
@@ -78,7 +77,7 @@ class AddCustomRubric extends React.Component {
             var cookies = new Cookies();
             if (this.state.addCustomRubric === false) {
                 genericResourcePUT(
-                    `/rubric?rubric_id=${this.state.rubric_id}`,
+                    `/rubric?rubric_id=${rubricId}`,
                     this,
                     JSON.stringify({
                         rubric: {
@@ -112,7 +111,8 @@ class AddCustomRubric extends React.Component {
     }
 
     handleCategorySelect = (categoryId, isSelected) => {
-        const selectedCategories = { ...this.state.categories };
+        var allCategories = this.state.allCategories;
+        var selectedCategories = this.state.categories;
 
         if (isSelected) {
             const correctCategory = allCategories.find(category => category.category_id === categoryId)
@@ -140,7 +140,7 @@ class AddCustomRubric extends React.Component {
     }
     
     render() {
-        const { categories: selectedCategories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric } = this.state;
+        const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, rubrics, allCategories } = this.state;
 
         const categoryTableColumns = [
             {
@@ -191,16 +191,15 @@ class AddCustomRubric extends React.Component {
         }
 
         else if (addCustomRubric===false) {
-            if (!isLoaded || !allCategories){
+            if (!isLoaded || !allCategories || !categories){
                 return (
                     <Loading />
                 )
             }
         }
 
-        console.log(selectedCategories)
         var pickedCategories = [];
-        selectedCategories.forEach((category) => {
+        categories.forEach((category) => {
             if (category) {
                 for (let i = 0; i < allCategories.length; i++) {
                     if (allCategories[i]["category_id"] === category["category_id"]) {                        
@@ -297,6 +296,7 @@ class AddCustomRubric extends React.Component {
                                     categories={allCategories}
                                     rubrics={rubrics}
                                     onCategorySelect={this.handleCategorySelect}
+                                    selectedCategories={pickedCategories}
                                     aria-label="customizeYourRubricRubricCategoryTable"
                                     readOnly={false}
                             />
