@@ -428,6 +428,9 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
     one_assessment_task.create_team_password = assessment_task["create_team_password"]
     one_assessment_task.comment = assessment_task["comment"]
+    one_assessment_task.number_of_teams = assessment_task["number_of_teams"]
+    one_assessment_task.max_team_size = assessment_task["max_team_size"]
+    
 
     db.session.commit()
 

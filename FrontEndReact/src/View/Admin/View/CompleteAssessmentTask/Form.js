@@ -52,12 +52,10 @@ class Form extends Component {
 //TODO:  fix in the case that chosenCompleteAssessmentTask is null
             this.generateCategoriesAndSection
             );
-            console.log("handleUnitTabChange chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
 
         };
 
         this.handleChange = (event, newValue) => {
-            console.log("newValue", newValue)
             this.setState({
                     value: newValue,
                 },
@@ -275,7 +273,7 @@ class Form extends Component {
         var navbar = this.props.navbar;
 
         var state = navbar.state;
-console.log("state", state)
+
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
         var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
@@ -285,14 +283,12 @@ console.log("state", state)
         var selected = this.state.unitData[currentUnitTab];
 
         var date = new Date();
-console.log("before the if chosenCompleteAssessmentTask", chosenCompleteAssessmentTask)
         if(chosenCompleteAssessmentTask) {
             chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
 
             chosenCompleteAssessmentTask["last_update"] = date;
 
             chosenCompleteAssessmentTask["done"] = done;
-console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
             genericResourcePUT(
                 `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
                 this,
@@ -339,13 +335,10 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                     done: done,
                 };
             }  
- console.log("chosenCompleteAssessmentTask", chosenCompleteAssessmentTask, "userRole", this.props.userRole)
             if (chosenCompleteAssessmentTask && this.props.userRole) {
-                console.log("PUT")
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {
-                console.log("POST")
                 genericResourcePOST(route, this, JSON.stringify(assessmentData));
             }
         }
@@ -401,19 +394,21 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                         <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
                     }
 
-                     <Button
-                        variant="text"
-                        color="primary"
-                        startIcon={<RefreshIcon />}
-                        arialabel="refreshButton"
+                    {this.props.role_name !== "Student" &&
+                        <Button
+                            variant="text"
+                            color="primary"
+                            startIcon={<RefreshIcon />}
+                            arialabel="refreshButton"
 
-                        onClick={() => {
-                            this.props.refreshUnits();
-                        }}
-                        aria-label="refreshButton"
-                    >
-                        Refresh
-                    </Button>
+                            onClick={() => {
+                                this.props.refreshUnits();
+                            }}
+                            aria-label="refreshButton"
+                        >
+                            Refresh
+                        </Button>
+                    }
 
                     <Button
                         id="formSubmitButton"

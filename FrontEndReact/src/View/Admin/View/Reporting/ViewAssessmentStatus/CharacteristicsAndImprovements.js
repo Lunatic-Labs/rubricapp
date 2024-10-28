@@ -1,5 +1,5 @@
 import React from 'react';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList , ResponsiveContainer} from 'recharts';
 import "bootstrap/dist/css/bootstrap.css";
 
 export default function CharacteristicsAndImprovements({
@@ -12,9 +12,6 @@ export default function CharacteristicsAndImprovements({
     ? characteristicsData.characteristics
     : improvementsData.improvements;
   const dataKey = dataType === 'characteristics' ? 'characteristic' : 'improvement';
-  const chartHeight = 210;
-  const chartWidth = 650;
-
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
 
   return (
@@ -22,13 +19,12 @@ export default function CharacteristicsAndImprovements({
       <h6 className="text-center text-sm">
         <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
       </h6>
-      <div>
+      <div  style={{ width:'101%', height:'210px', flexGrow: 1, display: 'flex', flexDirection: 'column'}}>
         {shouldShowGraph ? (
+          <ResponsiveContainer>
           <BarChart
             layout='vertical'
             data={data}
-            width={chartWidth}
-            height={chartHeight}
             aria-label={`barChart${dataType.charAt(0).toUpperCase() + dataType.slice(1)}Data`}
           >
             <XAxis
@@ -47,6 +43,7 @@ export default function CharacteristicsAndImprovements({
               <LabelList dataKey="percentage" fill="#ffffff" position="inside" />
             </Bar>
           </BarChart>
+          </ResponsiveContainer>
         ) : (
           <div className="flex justify-center items-center">
             <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="grey" class="bi bi-bar-chart" viewBox="0 0 16 16">

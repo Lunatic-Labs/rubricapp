@@ -1,5 +1,6 @@
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import ResizeObserver from "resize-observer-polyfill";
 import Login from "../../../../Login/Login.js";
 
 import {
@@ -13,7 +14,7 @@ import {
     demoAdminPassword,
 } from "../../../../../App.js";
 
-
+global.ResizeObserver = ResizeObserver;
 
 var lf = "loginForm";
 var lb = "loginButton";
