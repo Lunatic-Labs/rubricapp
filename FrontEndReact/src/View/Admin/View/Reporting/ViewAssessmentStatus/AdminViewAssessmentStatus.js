@@ -65,7 +65,7 @@ class AdminViewAssessmentStatus extends Component {
             
             // Fetch ratio of users who have completed assessment task to total users in the class
             genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourse.course_id}&assessment_id=${props.chosenAssessmentId}`, 
+                `/completed_assessment?course_id=${chosenCourse.course_id}&assessment_id=${this.props.chosenAssessmentId}`, 
                 "completedAssessmentsPercentage", this
             );
 

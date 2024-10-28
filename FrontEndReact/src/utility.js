@@ -84,8 +84,6 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
                 getResource = (getResource === "team") ? "teams": getResource;
                                
                 state[resource] = result['content'][getResource][0];
-
-                console.log(result['content'][getResource][0]);
             }
 
             component.setState(state);

@@ -1055,8 +1055,12 @@ def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
 
     return sfi_data,oc_data
 
-def get_all_students_in_course_and_all_students_who_have_completed_assessment_task(course_id: int, assessment_task_id: int) -> tuple[dict[str],dict[str]]:
+def get_all_students_in_course_and_all_students_who_have_completed_assessment_task(course_id: int, assessment_task_id: int) -> float:
     all_usernames_for_completed_task = get_completed_assessment_with_user_name(assessment_task_id)
     all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
+
+    print("THE STUFF IN get_all_students_in_course_and_all_students_who_have_completed_assessment_task()", flush=True)
+    print(len(all_students_in_course), flush=True)
+    print(len(all_usernames_for_completed_task), flush=True)
 
     return (len(all_usernames_for_completed_task) / len(all_students_in_course)) * 100
