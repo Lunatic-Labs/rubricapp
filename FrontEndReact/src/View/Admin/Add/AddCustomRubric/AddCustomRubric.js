@@ -42,12 +42,14 @@ class AddCustomRubric extends React.Component {
             var navbar = this.props.navbar;
             var rubricId = navbar.rubricId;
             var categoryIds = [];
+            var rubricName = document.getElementById("rubricNameInput").value
+            var rubricDescription = document.getElementById("rubricDescriptionInput").value
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
                 categoryIds.push(pickedCategories[categoryIndex]["category_id"]);
             }
 
-            if (document.getElementById("rubricNameInput").value === "") {
+            if (rubricName === "") {
                 this.setState({
                     errors: {
                         rubricName: "Missing New Rubric Name."
@@ -56,7 +58,7 @@ class AddCustomRubric extends React.Component {
                 return;
             } 
 
-            if (document.getElementById("rubricDescriptionInput").value === "") {
+            if (rubricDescription === "") {
                 this.setState({
                     errors: {
                         rubricDescription: "Missing New Rubric Description."
@@ -81,10 +83,8 @@ class AddCustomRubric extends React.Component {
                     this,
                     JSON.stringify({
                         rubric: {
-                            rubric_name: document.getElementById("rubricNameInput").value,
-                            rubric_description: document.getElementById(
-                                "rubricDescriptionInput",
-                            ).value,
+                            rubric_name: rubricName,
+                            rubric_description: rubricDescription,
                             owner: cookies.get("user")["user_id"],
                         },
                         categories: categoryIds,
@@ -96,10 +96,8 @@ class AddCustomRubric extends React.Component {
                     this,
                     JSON.stringify({
                         rubric: {
-                            rubric_name: document.getElementById("rubricNameInput").value,
-                            rubric_description: document.getElementById(
-                                "rubricDescriptionInput",
-                            ).value,
+                            rubric_name: rubricName,
+                            rubric_description: rubricDescription,
                             owner: cookies.get("user")["user_id"],
                         },
                         categories: categoryIds,

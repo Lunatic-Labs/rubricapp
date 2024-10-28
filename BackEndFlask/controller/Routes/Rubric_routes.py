@@ -169,8 +169,8 @@ def edit_rubric():
             data = request.json
             rubric = get_rubric(rubric_id)
 
-            rubric.rubric_name = data.get('rubric_name', rubric.rubric_name)
-            rubric.rubric_description = data.get('rubric_description', rubric.rubric_description)
+            rubric.rubric_name = data["rubric"].get('rubric_name', rubric.rubric_name)
+            rubric.rubric_description = data["rubric"].get('rubric_description', rubric.rubric_description)
 
             if 'categories' in data:
                 
