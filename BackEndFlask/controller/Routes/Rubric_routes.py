@@ -3,7 +3,7 @@ from controller import bp
 from models.rubric_categories import *
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from models.rubric   import get_rubric, get_rubrics, create_rubric
+from models.rubric   import get_rubric, get_rubrics, create_rubric, delete_rubric_by_id
 from models.category import get_categories_per_rubric, get_categories, get_ratings_by_category
 from models.suggestions import get_suggestions_per_category
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
@@ -188,12 +188,13 @@ def edit_rubric(rubric_id):
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def delete_rubric(rubric_id):
+def delete_rubric():
     try:
-        rubric = get_rubric(rubric_id)
-        db.session.delete(rubric)
-        db.session.commit()
-        return create_good_response(rubric_schema.dump(rubric), 200, "rubric deleted successfully")
+        if request.args and request.args.get("rubric_id"):
+            rubric_id = request.args.get("rubric_id")
+            
+            delete_rubric_by_id(rubric_id)
+            return create_good_response([], 200, "rubric deleted successfully")
     except Exception as e:
         db.session.rollback()
         return create_bad_response(f"An error occurred deleting a rubric: {e}", "rubrics", 400)

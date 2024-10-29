@@ -4,7 +4,7 @@ import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CustomButton from "./Components/CustomButton.js";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility.js";
+import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericResourceDELETE } from "../../../../utility.js";
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
@@ -107,8 +107,15 @@ class AddCustomRubric extends React.Component {
             }
             this.props.navbar.confirmCreateResource("MyCustomRubrics");
         };
-    }
+        
+        this.handleDeleteRubric = (rubricId) => {
+            var navbar = this.props.navbar;
 
+            genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
+
+            navbar.confirmCreateResource("MyCustomRubrics");
+        };
+    }
 
 
     handleCategorySelect = (categoryId, isSelected) => {
@@ -227,13 +234,13 @@ class AddCustomRubric extends React.Component {
                                     bold: true,
                                 }}
                                 aria-label="addCustomizeYourRubricTitle"
-                            > {navbar.props.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
+                            > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
                             </h2>
                         </Grid>
 
                         <Grid item xs={6} container justifyContent="flex-end">
                             <CustomButton
-                                label={navbar.props.addCustomRubric ? "Create Rubric" : "Update Rubric"}
+                                label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
                                 isOutlined={false}
                                 aria-label="customizeYourRubricCreateRubricButton"
                                 onClick={() => {
