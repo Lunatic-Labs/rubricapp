@@ -1,4 +1,4 @@
-from typing import List
+from typing import List, Dict, Tuple as TypingTuple
 
 from core import db
 from Functions.test_files.PopulationFunctions import *
@@ -10,6 +10,53 @@ from models.user_course import *
 from sqlalchemy import *
 import itertools
 import csv
+
+def validate_row(row: List[str], row_num: int, seen_emails: Dict[str, int], 
+                seen_lms_ids: Dict[str, int], valid_roles: List[str]) -> TypingTuple[str, str, str, str, str]:
+    """Validates a single row of CSV data and returns parsed values"""
+    
+    # Check column count
+    if len(row) < 3:
+        raise NotEnoughColumns(row_num, 3, len(row))
+    if len(row) > 4:
+        raise TooManyColumns(row_num, 4, len(row))
+
+    # Validate and parse name
+    name = row[0].strip()
+    if ',' not in name:
+        raise InvalidNameFormat(row_num, name)
+    
+    last_name = name.split(',')[0].strip()
+    first_name = name.split(',')[1].strip()
+    
+    if not last_name or not first_name:
+        raise InvalidNameFormat(row_num, name)
+
+    # Validate email
+    email = row[1].strip()
+    if not helper_verify_email_syntax(email):
+        raise InvalidEmail(row_num, email)
+    
+    if email in seen_emails:
+        raise DuplicateEmail(email, [seen_emails[email], row_num])
+    seen_emails[email] = row_num
+
+    # Validate role
+    role = row[2].strip()
+    if role not in valid_roles:
+        raise InvalidRole(row_num, role, valid_roles)
+
+    # Validate optional LMS ID
+    lms_id = None
+    if len(row) == 4 and row[3].strip():
+        lms_id = row[3].strip()
+        if not lms_id.isdigit():
+            raise InvalidLMSID(row_num, lms_id)
+        if lms_id in seen_lms_ids:
+            raise DuplicateLMSID(lms_id, [seen_lms_ids[lms_id], row_num])
+        seen_lms_ids[lms_id] = row_num
+
+    return first_name, last_name, email, role, lms_id
 
 def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_id):
         """
@@ -117,12 +164,29 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
         # Renamed `reader` -> `roster`.
         roster: list[list[str]] = list(itertools.tee(csv.reader(student_csv))[0])
 
+        if not roster:
+            raise EmptyFile()
+
         # For keeping students in a "queue" as we are parsing
         # the file. During parsing, we add the relevant information
         # to this list (first_name, last_name, email, role_id, lms_id).
         students: list[tuple] = []
 
-        for row in range(0, len(roster)):
+        # Skip header row and verify it exists
+        if len(roster) < 2:  # Need at least header + 1 data row
+            raise EmptyFile()
+
+        header = roster[0]
+        expected_header = ["Last Name, First Name", "Email", "Student or TA", "Optional LMS ID"]
+        if header != expected_header:
+            raise HeaderMisformat(expected_header, header)
+        
+        # Track duplicate checks
+        seen_emails: dict[str, int] = {}
+        seen_lms_ids: dict[str, int] = {}
+        valid_roles = ["Student", "TA", "Instructor"]
+
+        for row in range(1, len(roster)):
             person_attribs: list[str] = roster[row]
 
             # Skip all newlines for convenience
@@ -134,37 +198,53 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
             MAX_PERSON_ATTRIBS_COUNT: int = 4  # Checking for 4 for: FN LN, email, role, (optional) LMS ID
 
             if len(person_attribs) < MIN_PERSON_ATTRIBS_COUNT:
-                raise NotEnoughColumns
+                raise NotEnoughColumns(row + 1, MIN_PERSON_ATTRIBS_COUNT, len(person_attribs))
 
             if len(person_attribs) > MAX_PERSON_ATTRIBS_COUNT:
-                raise TooManyColumns
+                raise TooManyColumns(row + 1, MAX_PERSON_ATTRIBS_COUNT, len(person_attribs))
 
             name: str = person_attribs[0].strip()  # FN,LN
 
-            last_name: str = name.replace(",", "").split()[0].strip()
+            # Validate name format
+            if ',' not in name:
+                raise InvalidNameFormat(row + 1, name)
 
-            first_name: str = name.replace(",", "").split()[1].strip()
+            last_name: str = name.split(',')[0].strip()
+            first_name: str = name.split(',')[1].strip()
+
+            if not last_name or not first_name:
+                raise InvalidNameFormat(row + 1, name)
 
             email: str = person_attribs[1].strip()
 
+            # Check for duplicate emails
+            if email in seen_emails:
+                raise DuplicateEmail(email, [seen_emails[email], row + 1])
+            seen_emails[email] = row + 1
+
             role: str = person_attribs[2].strip()
+
+            # Validate role before conversion
+            if role not in valid_roles:
+                raise InvalidRole(row + 1, role, valid_roles)
 
             lms_id: int|None = None
 
             role = helper_str_to_int_role(role)
-
-            # Corresponding role ID for the string `role`.
-            # TODO: returns tuple, check for the ID attr, or the name.
             role = get_role(role)
-
             role_id = role.role_id
 
-            # If the len of `header` == 4, then the LMS ID is present.
+            # If the len of person_attribs == 4, then the LMS ID is present.
             if len(person_attribs) == 4:
                 lms_id = person_attribs[3].strip()
+                if not lms_id.isdigit():
+                    raise InvalidLMSID(row + 1, lms_id)
+                if lms_id in seen_lms_ids:
+                    raise DuplicateLMSID(lms_id, [seen_lms_ids[lms_id], row + 1])
+                seen_lms_ids[lms_id] = row + 1
 
             if not helper_verify_email_syntax(email):
-                raise SuspectedMisformatting
+                raise InvalidEmail(row + 1, email)
 
             students.append((first_name, last_name, email, role_id, lms_id))
 

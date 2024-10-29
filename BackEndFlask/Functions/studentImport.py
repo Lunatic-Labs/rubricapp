@@ -5,6 +5,48 @@ from models.user_course import *
 from sqlalchemy import *
 import itertools
 import csv
+from typing import List, Dict, Tuple as TypingTuple
+
+def validate_student_row(row: List[str], row_num: int, seen_emails: Dict[str, int], 
+                        seen_lms_ids: Dict[str, int]) -> TypingTuple[str, str, str, str]:
+    """Validates a single row of student CSV data and returns parsed values"""
+    
+    # Check column count
+    if len(row) < 3:
+        raise NotEnoughColumns(row_num, 3, len(row))
+    if len(row) > 3:
+        raise TooManyColumns(row_num, 3, len(row))
+
+    # Validate and parse name
+    name = row[0].strip()
+    if ',' not in name:
+        raise InvalidNameFormat(row_num, name)
+    
+    last_name = name.split(',')[0].strip()
+    first_name = name.split(',')[1].strip()
+    
+    if not last_name or not first_name:
+        raise InvalidNameFormat(row_num, name)
+
+    # Validate LMS ID (required for students)
+    lms_id = row[1].strip()
+    if not lms_id or not lms_id.isdigit():
+        raise InvalidLMSID(row_num, lms_id)
+    
+    if lms_id in seen_lms_ids:
+        raise DuplicateLMSID(lms_id, [seen_lms_ids[lms_id], row_num])
+    seen_lms_ids[lms_id] = row_num
+
+    # Validate email
+    email = row[2].strip()
+    if not is_valid_email(email):
+        raise InvalidEmail(row_num, email)
+    
+    if email in seen_emails:
+        raise DuplicateEmail(email, [seen_emails[email], row_num])
+    seen_emails[email] = row_num
+
+    return first_name, last_name, lms_id, email
 
 # student_csv_to_db()
 #   - takes three parameters:
@@ -27,24 +69,65 @@ def student_csv_to_db(student_file, owner_id, course_id):
         student_file = xlsx_to_csv(student_file)
     try:
         with open(student_file, mode='r', encoding='utf-8-sig') as studentcsv:
-            reader = list(itertools.tee(csv.reader(studentcsv))[0])
-            header = reader[0]
+            # Renamed `reader` -> `roster`.
+            roster: list[list[str]] = list(itertools.tee(csv.reader(studentcsv))[0])
             
-            if len(header) < 3:
-                raise NotEnoughColumns
-            if len(header) > 3:
-                delete_xlsx(student_file, is_xlsx)
-                raise TooManyColumns
+            if not roster:
+                raise EmptyFile()
+
+            # Skip header row and verify it exists
+            if len(roster) < 2:  # Need at least header + 1 data row
+                raise EmptyFile()
             
-            for row in range(0, len(reader)):
-                student_name = reader[row][0].strip()
-                lms_id = reader[row][1].strip()
-                student_email = reader[row][2].strip()
-                last_name = student_name.replace(",", "").split()[0].strip()
-                first_name = student_name.replace(",", "").split()[1].strip()
+            header = roster[0]
+            expected_header = ["Last Name, First Name", "LMS ID", "Email"]
+            if header != expected_header:
+                raise HeaderMisformat(expected_header, header)
+            
+            # Track duplicate checks
+            seen_emails = {}
+            seen_lms_ids = {}
+            
+            for row in range(1, len(roster)):
+                # Skip empty rows
+                if not roster[row]:
+                    continue
                 
-                if not lms_id.isdigit() or not is_valid_email(student_email):
-                    raise SuspectedMisformatting
+                if len(roster[row]) < 3:
+                    raise NotEnoughColumns(row + 1, 3, len(roster[row]))
+                if len(roster[row]) > 3:
+                    delete_xlsx(student_file, is_xlsx)
+                    raise TooManyColumns(row + 1, 3, len(roster[row]))
+                
+                student_name = roster[row][0].strip()
+                lms_id = roster[row][1].strip()
+                student_email = roster[row][2].strip()
+                
+                # Validate name format
+                if ',' not in student_name:
+                    raise InvalidNameFormat(row + 1, student_name)
+                
+                last_name = student_name.split(',')[0].strip()
+                first_name = student_name.split(',')[1].strip()
+                
+                if not last_name or not first_name:
+                    raise InvalidNameFormat(row + 1, student_name)
+                
+                # Validate LMS ID
+                if not lms_id or not lms_id.isdigit():
+                    raise InvalidLMSID(row + 1, lms_id)
+                
+                if lms_id in seen_lms_ids:
+                    raise DuplicateLMSID(lms_id, [seen_lms_ids[lms_id], row + 1])
+                seen_lms_ids[lms_id] = row + 1
+                
+                # Validate email
+                if not is_valid_email(student_email):
+                    raise InvalidEmail(row + 1, student_email)
+                
+                if student_email in seen_emails:
+                    raise DuplicateEmail(student_email, [seen_emails[student_email], row + 1])
+                seen_emails[student_email] = row + 1
                 
                 user = get_user_by_email(
                     student_email

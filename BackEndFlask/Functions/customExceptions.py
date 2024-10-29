@@ -18,14 +18,20 @@ class WrongExtension(Exception):
         return self.message
 
 class TooManyColumns(Exception):
-    def __init__(self):
-        self.message = "Raised when the submitted file has more columns than excepted"
+    def __init__(self, row_num: int, expected: int, found: int):
+        self.row_num = row_num
+        self.expected = expected
+        self.found = found
+        self.message = f"Row {row_num} has {found} columns, expected maximum of {expected}"
     def __str__(self):
         return self.message
 
 class NotEnoughColumns(Exception):
-    def __init__(self):
-        self.message = "Raised when the submitted file has less columns than expected"
+    def __init__(self, row_num: int, expected: int, found: int):
+        self.row_num = row_num
+        self.expected = expected
+        self.found = found
+        self.message = f"Row {row_num} has {found} columns, expected minimum of {expected}"
     def __str__(self):
         return self.message
 
@@ -36,26 +42,8 @@ class SuspectedMisformatting(Exception):
         return self.message
 
 class UserDoesNotExist(Exception):
-    def __init__(self):
-        self.message = "Raised when the submitted file has one email not associated to an existing user"
-    def __str__(self):
-        return self.message
-
-class UsersDoNotExist(Exception):
-    def __init__(self):
-        self.message = "Raised when the submitted file has more than one email not associated to an existing user"
-    def __str__(self):
-        return self.message
-
-class TANotYetAddedToCourse(Exception):
-    def __init__(self):
-        self.message = "Raised when the submitted file has an existing TA who has not been assigned to the course"
-    def __str__(self):
-        return self.message
-
-class StudentNotEnrolledInThisCourse(Exception):
-    def __init__(self):
-        self.message = "Raised when the submitted file has a student email associated to an existing student who is not enrolled in the course"
+    def __init__(self, email):
+        self.message = f"No user found with email: {email}"
     def __str__(self):
         return self.message
 
@@ -78,20 +66,8 @@ class NoStudentsInCourse(Exception):
         return self.message
 
 class InvalidLMSID(Exception):
-    def __init__(self):
-        self.message = "Raise when an expected lms_id is not an integer"
-    def __str__(self):
-        return self.message
-
-class OwnerIDDidNotCreateTheCourse(Exception):
-    def __init__(self):
-        self.message = "Raised when the specified owner did not create the corresponding course"
-    def __str__(self):
-        return self.message
-
-class CourseDoesNotExist(Exception):
-    def __init__(self):
-        self.message = "Raised when course id passed is not a valid course id"
+    def __init__(self, row_num, lms_id):
+        self.message = f"Row {row_num}: LMS ID '{lms_id}' must be a positive integer"
     def __str__(self):
         return self.message
 
@@ -138,8 +114,69 @@ class EmptyStudentEmail(Exception):
     def __str__(self):
         return self.message
 
+
+class InvalidNameFormat(Exception):
+    def __init__(self, row_num, name):
+        self.message = f"Row {row_num}: Name '{name}' is not in format 'Last Name, First Name'"
+    def __str__(self):
+        return self.message
+
+class InvalidEmail(Exception):
+    def __init__(self, row_num, email):
+        self.message = f"Row {row_num}: Invalid email format '{email}'"
+    def __str__(self):
+        return self.message
+
+class DuplicateEmail(Exception):
+    def __init__(self, email, row_nums):
+        self.message = f"Email '{email}' appears multiple times in rows: {row_nums}"
+    def __str__(self):
+        return self.message
+
+class DuplicateLMSID(Exception):
+    def __init__(self, lms_id, row_nums):
+        self.message = f"LMS ID '{lms_id}' appears multiple times in rows: {row_nums}"
+    def __str__(self):
+        return self.message
+
 class InvalidRole(Exception):
-    def __init__(self):
-        self.message = "Raised when a role is not valid"
+    def __init__(self, row_num, role, valid_roles):
+        self.message = f"Row {row_num}: '{role}' is not a valid role. Valid roles are: {', '.join(valid_roles)}"
+    def __str__(self):
+        return self.message
+
+class UsersDoNotExist(Exception):
+    def __init__(self, emails):
+        self.message = f"Multiple users not found with emails: {', '.join(emails)}"
+    def __str__(self):
+        return self.message
+
+class TANotYetAddedToCourse(Exception):
+    def __init__(self, email):
+        self.message = f"TA with email {email} exists but is not assigned to this course"
+    def __str__(self):
+        return self.message
+
+class StudentNotEnrolledInThisCourse(Exception):
+    def __init__(self, email):
+        self.message = f"Student with email {email} exists but is not enrolled in this course"
+    def __str__(self):
+        return self.message
+
+class CourseDoesNotExist(Exception):
+    def __init__(self, course_id):
+        self.message = f"No course found with ID: {course_id}"
+    def __str__(self):
+        return self.message
+
+class OwnerIDDidNotCreateTheCourse(Exception):
+    def __init__(self, owner_id, course_id):
+        self.message = f"User {owner_id} is not the owner of course {course_id}"
+    def __str__(self):
+        return self.message
+
+class HeaderMisformat(Exception):
+    def __init__(self, expected: list[str], found: list[str]):
+        self.message = f"Invalid header format. Expected: {expected}, Found: {found}"
     def __str__(self):
         return self.message
