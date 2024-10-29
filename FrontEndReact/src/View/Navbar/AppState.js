@@ -255,7 +255,8 @@ class AppState extends Component {
                     activeTab: "CompleteAssessment",
                     chosenAssessmentTask: null,
                     unitOfAssessment: null,
-                    chosenCompleteAssessmentTask: null
+                    chosenCompleteAssessmentTask: null,
+                    chosenCompleteAssessmentTaskIsReadOnly: false,
                 });
 
             } else {
@@ -269,6 +270,7 @@ class AppState extends Component {
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
+                    chosenCompleteAssessmentTaskIsReadOnly: false,
                     chosenAssessmentTask: chosenAssessmentTask,
                     unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
                 });
