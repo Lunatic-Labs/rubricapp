@@ -22,8 +22,9 @@ class AddCustomRubric extends React.Component {
             isLoaded: null,
             isHelpOpen: false,
             addCustomRubric: true,
-            rubrics: this.props.rubrics,
+            defaultRubrics: this.props.rubrics,
             allCategories: this.props.categories,
+            rubrics: null,
 
             errors: {
                 rubricName: '',
@@ -134,11 +135,13 @@ class AddCustomRubric extends React.Component {
         var rubricId = navbar.rubricId;
         if (addCustomRubric === false) {
             genericResourceGET(`/category?rubric_id=${rubricId}`, "categories", this);
+
+            genericResourceGET(`/rubric?rubric_id=${rubricId}`, "rubrics", this);
         }
     }
     
     render() {
-        const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, rubrics, allCategories } = this.state;
+        const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics } = this.state;
 
         const categoryTableColumns = [
             {
@@ -181,7 +184,7 @@ class AddCustomRubric extends React.Component {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"rubrics"}
+                        fetchedResource={"Rubric or Category"}
                         errorMessage={errorMessage}
                     />
                 </div>
@@ -189,7 +192,7 @@ class AddCustomRubric extends React.Component {
         }
 
         else if (addCustomRubric===false) {
-            if (!isLoaded || !allCategories || !categories){
+            if (!isLoaded || !allCategories || !categories || !rubrics){
                 return (
                     <Loading />
                 )
@@ -255,6 +258,7 @@ class AddCustomRubric extends React.Component {
                         <Grid style={{ width: "48.25%" }}>
                             <TextField
                                 required
+                                defaultValue={this.state.addCustomRubric ? "" : rubrics.rubric_name}
                                 id="rubricNameInput"
                                 label="Rubric Name"
                                 style={{ width: "100%" }}
@@ -267,6 +271,7 @@ class AddCustomRubric extends React.Component {
                         <Grid style={{ width: "48.5%" }}>
                             <TextField
                                 required
+                                defaultValue={this.state.addCustomRubric ? "" : rubrics.rubric_description}
                                 id="rubricDescriptionInput"
                                 label="Rubric Description"
                                 multiline
@@ -292,7 +297,7 @@ class AddCustomRubric extends React.Component {
                             <FormControl error={!!errors.rubricCategories} required fullWidth>
                                 <CollapsableRubricCategoryTable
                                     categories={allCategories}
-                                    rubrics={rubrics}
+                                    rubrics={defaultRubrics}
                                     onCategorySelect={this.handleCategorySelect}
                                     selectedCategories={pickedCategories}
                                     aria-label="customizeYourRubricRubricCategoryTable"
