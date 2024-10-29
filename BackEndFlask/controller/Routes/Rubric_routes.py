@@ -161,23 +161,32 @@ def get_all_categories():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def edit_rubric(rubric_id):
+def edit_rubric():
     try: 
-        data = request.json
-        rubric = get_rubric(rubric_id)
+        if request.args and request.args.get("rubric_id"):
+            rubric_id = request.args.get("rubric_id")
 
-        rubric.rubric_name = data.get('rubric_name', rubric.rubric_name)
-        rubric.rubric_description = data.get('rubric_description', rubric.rubric_description)
+            data = request.json
+            rubric = get_rubric(rubric_id)
 
-        if 'categories' in data:
-            rubric.categories = []
-            for category_id in data['categories']:
-                category = get_all_categories(category_id)  # Assuming a function to get category by ID
-                if category:
-                    rubric.categories.append(category)
+            rubric.rubric_name = data["rubric"].get('rubric_name', rubric.rubric_name)
+            rubric.rubric_description = data["rubric"].get('rubric_description', rubric.rubric_description)
 
-        db.session.commit()
-        return create_good_response(rubric_schema.dump(rubric), 200, "rubric updated successfully")
+            if 'categories' in data:
+                
+                delete_rubric_categories_by_rubric_id(rubric_id)
+                
+                rc = {}
+                rc["rubric_id"] = rubric_id
+                                
+                category_ids = data.get('categories')
+                for category_id in category_ids:
+                    rc["category_id"] = category_id
+
+                    create_rubric_category(rc)
+
+            db.session.commit()
+            return create_good_response(rubric_schema.dump(rubric), 200, "rubrics")
     
     except Exception as e:
         db.session.rollback()
