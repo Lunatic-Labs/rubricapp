@@ -38,11 +38,11 @@ def get_completed_assessment_csv() -> dict:
     try:
         assessment_task_id = request.args.get("assessment_task_id")
 
-        assessment = get_assessment_task(assessment_task_id)    
+        assessment = get_assessment_task(assessment_task_id)    # Trigger an error if not exists    
 
         user_id = request.args.get("user_id")
 
-        user = get_user(user_id)   
+        user = get_user(user_id)   # Trigger an error if not exists   
 
         file_name = user.first_name + "_"
 
