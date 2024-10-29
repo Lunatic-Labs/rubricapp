@@ -143,6 +143,7 @@ class InvalidRole(Exception):
     def __init__(self, row_num, role, valid_roles):
         self.message = f"Row {row_num}: '{role}' is not a valid role. Valid roles are: {', '.join(valid_roles)}"
     def __str__(self):
+        return self.message
 
 class UsersDoNotExist(Exception):
     def __init__(self, emails):
