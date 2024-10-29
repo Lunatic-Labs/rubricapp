@@ -74,21 +74,12 @@ def student_csv_to_db(student_file, owner_id, course_id):
             
             if not roster:
                 raise EmptyFile()
-
-            # Skip header row and verify it exists
-            if len(roster) < 2:  # Need at least header + 1 data row
-                raise EmptyFile()
-            
-            header = roster[0]
-            expected_header = ["Last Name, First Name", "LMS ID", "Email"]
-            if header != expected_header:
-                raise HeaderMisformat(expected_header, header)
             
             # Track duplicate checks
             seen_emails = {}
             seen_lms_ids = {}
             
-            for row in range(1, len(roster)):
+            for row in range(0, len(roster)):
                 # Skip empty rows
                 if not roster[row]:
                     continue

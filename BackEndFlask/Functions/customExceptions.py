@@ -143,7 +143,6 @@ class InvalidRole(Exception):
     def __init__(self, row_num, role, valid_roles):
         self.message = f"Row {row_num}: '{role}' is not a valid role. Valid roles are: {', '.join(valid_roles)}"
     def __str__(self):
-        return self.message
 
 class UsersDoNotExist(Exception):
     def __init__(self, emails):
@@ -175,8 +174,8 @@ class OwnerIDDidNotCreateTheCourse(Exception):
     def __str__(self):
         return self.message
 
-class HeaderMisformat(Exception):
-    def __init__(self, expected: list[str], found: list[str]):
-        self.message = f"Invalid header format. Expected: {expected}, Found: {found}"
+class EmptyFile(Exception):
+    def __init__(self):
+        self.message = "The submitted file is empty"
     def __str__(self):
         return self.message

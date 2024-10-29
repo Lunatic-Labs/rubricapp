@@ -171,25 +171,16 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
         # the file. During parsing, we add the relevant information
         # to this list (first_name, last_name, email, role_id, lms_id).
         students: list[tuple] = []
-
-        # Skip header row and verify it exists
-        if len(roster) < 2:  # Need at least header + 1 data row
-            raise EmptyFile()
-
-        header = roster[0]
-        expected_header = ["Last Name, First Name", "Email", "Student or TA", "Optional LMS ID"]
-        if header != expected_header:
-            raise HeaderMisformat(expected_header, header)
         
         # Track duplicate checks
         seen_emails: dict[str, int] = {}
         seen_lms_ids: dict[str, int] = {}
         valid_roles = ["Student", "TA", "Instructor"]
 
-        for row in range(1, len(roster)):
+        for row in range(0, len(roster)):
             person_attribs: list[str] = roster[row]
 
-            # Skip all newlines for convenience
+            # Skip empty rows
             if len(person_attribs) == 0:
                 continue
 
