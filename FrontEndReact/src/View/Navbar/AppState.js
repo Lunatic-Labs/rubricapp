@@ -51,6 +51,7 @@ class AppState extends Component {
             chosenAssessmentTask: null,
             chosenCompleteAssessmentTask: null,
             unitOfAssessment: null,
+            chosenCompleteAssessmentTaskIsReadOnly: false,
 
             team: null,
             addTeam: true,
@@ -128,7 +129,9 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null) => { // wip
+        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
+            readOnly = false
+        }={}) => { // wip
             var completedAssessment = null;
 
             if (completedAssessments) {
@@ -140,7 +143,8 @@ class AppState extends Component {
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
+                unitOfAssessment: assessmentTask["unit_of_assessment"],
+                chosenCompleteAssessmentTaskIsReadOnly: readOnly,
             });
         }
 
