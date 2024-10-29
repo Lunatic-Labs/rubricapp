@@ -1054,3 +1054,23 @@ def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
     ).all()
 
     return sfi_data,oc_data
+
+
+def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> int:
+    """
+    Description:
+    Returns the ratio of users who have completed an assessment task
+    
+    Parameters:
+    course_id : int (The id of a course)
+    assessment_task_id : int (The id of an assessment task)
+
+    Return: int (Ratio of users who have completed an assessment task rounded to the nearest whole number)
+    """
+    all_usernames_for_completed_task = get_completed_assessment_with_user_name(assessment_task_id)
+    all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
+    ratio = (len(all_usernames_for_completed_task) / len(all_students_in_course)) * 100
+
+    ratio_rounded = round(ratio)
+
+    return ratio_rounded

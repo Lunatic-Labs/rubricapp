@@ -56,7 +56,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         }
 
         const result = await response.json();
-   
+
         if(result['success']) {
             let state = {};
 
@@ -69,7 +69,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
     
                 getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
 
-                getResource = (getResource === "completedAssessments") ? "completed_assessments": getResource;
+                getResource = (getResource === "completedAssessments" || getResource === "completedAssessmentsPercentage") ? "completed_assessments": getResource;
 
                 getResource = (getResource === "csvCreation") ? "csv_creation": getResource;
 

@@ -21,6 +21,7 @@ class AdminViewAssessmentStatus extends Component {
             showRatings: true,
             showSuggestions: true,
             completedByTAs: true, 
+            completedAssessmentsPercentage: null,
         }
 
         this.fetchData = () => {
@@ -61,6 +62,12 @@ class AdminViewAssessmentStatus extends Component {
                 `/category?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubricId}`,
                 "categories", this
             );
+            
+            // Fetch ratio of users who have completed assessment task to total users in the class
+            genericResourceGET(
+                `/completed_assessment?course_id=${chosenCourse.course_id}&assessment_id=${this.props.chosenAssessmentId}`, 
+                "completedAssessmentsPercentage", this
+            );
 
             this.setState({
                 loadedAssessmentId: this.props.chosenAssessmentId,
@@ -91,6 +98,7 @@ class AdminViewAssessmentStatus extends Component {
             showRatings,
             showSuggestions,
             completedByTAs, 
+            completedAssessmentsPercentage,
         } = this.state;
 
         if(errorMessage) {
@@ -111,6 +119,7 @@ class AdminViewAssessmentStatus extends Component {
             return(
                 <div className='container'>
                     <ViewAssessmentStatus
+                        navbar={this.props.navbar}
                         completedAssessments={completedAssessments}
                         rubrics={rubrics}
                         assessmentTasks={this.props.assessmentTasks}
@@ -119,6 +128,7 @@ class AdminViewAssessmentStatus extends Component {
                         showRatings={showRatings}
                         showSuggestions={showSuggestions}
                         completedByTAs={completedByTAs}
+                        completedAssessmentsPercentage={completedAssessmentsPercentage}
                     />
                 </div>
             )
