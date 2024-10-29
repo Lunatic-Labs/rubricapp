@@ -16,7 +16,7 @@ export default function DropConfirmation( props ) {
                     open={props.show}
                     aria-labelledby="responsive-dialog-title"
                 >
-                    <DialogTitle id="responsive-dialog-title">
+                    <DialogTitle id="responsive-dialog-title" aria-label="dropUserTitle">
                         {"Confirm Dropping User"}
                     </DialogTitle>
 
