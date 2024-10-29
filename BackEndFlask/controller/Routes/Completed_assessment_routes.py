@@ -19,7 +19,7 @@ from models.queries import (
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id,
     get_completed_assessment_with_user_name,
-    get_all_students_in_course_and_all_students_who_have_completed_assessment_task
+    get_completed_assessment_ratio,
 )
 
 from models.assessment_task import get_assessment_tasks_by_course_id
@@ -67,11 +67,11 @@ def get_all_completed_assessments():
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
             if request.args.get("assessment_id"):
                 course_id = request.args.get("course_id")
+                
                 assessment_id = request.args.get("assessment_id")
 
-                ratio = get_all_students_in_course_and_all_students_who_have_completed_assessment_task(course_id, assessment_id)
+                ratio = get_completed_assessment_ratio(course_id, assessment_id)
 
-                print(assessment_id, flush=True) # this is always one, work on this later
                 return create_good_response(ratio, 200, "completed_assessments")
             else:
                 course_id = int(request.args.get("course_id"))

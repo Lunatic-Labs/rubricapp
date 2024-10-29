@@ -21,8 +21,6 @@ export default function AdminReportTabs(props) {
         setChosenAssessmentId(event.target.value);
     };
 
-    console.log(props);
-
     return (
         <>
             <ReportingMainHeader

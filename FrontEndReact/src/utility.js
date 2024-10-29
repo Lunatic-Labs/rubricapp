@@ -54,11 +54,6 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
         const result = await response.json();
 
-        if (resource === "completedAssessmentsPercentage") {
-            console.log("this is the stuff that got back from AdminViewAssessmentStatus.js");
-            console.log(result);
-        }
-
         if(result['success']) {
             let state = {};
 

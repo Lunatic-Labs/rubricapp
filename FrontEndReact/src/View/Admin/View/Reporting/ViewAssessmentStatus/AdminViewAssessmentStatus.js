@@ -89,8 +89,6 @@ class AdminViewAssessmentStatus extends Component {
     }
 
     render() {
-        // console.log(this.props);
-        console.log(this.state);
         const {
             errorMessage,
             isLoaded,
