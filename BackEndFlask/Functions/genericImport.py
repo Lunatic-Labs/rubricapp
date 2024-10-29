@@ -228,11 +228,12 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
             # If the len of person_attribs == 4, then the LMS ID is present.
             if len(person_attribs) == 4:
                 lms_id = person_attribs[3].strip()
-                if not lms_id.isdigit():
-                    raise InvalidLMSID(row + 1, lms_id)
-                if lms_id in seen_lms_ids:
-                    raise DuplicateLMSID(lms_id, [seen_lms_ids[lms_id], row + 1])
-                seen_lms_ids[lms_id] = row + 1
+                if lms_id:  # Only validate if not empty
+                    if not lms_id.isdigit():
+                        raise InvalidLMSID(row + 1, lms_id)
+                    if lms_id in seen_lms_ids:
+                        raise DuplicateLMSID(lms_id, [seen_lms_ids[lms_id], row + 1])
+                    seen_lms_ids[lms_id] = row + 1
 
             if not helper_verify_email_syntax(email):
                 raise InvalidEmail(row + 1, email)
