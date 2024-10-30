@@ -248,7 +248,6 @@ class AddCustomRubric extends React.Component {
                                         isOutlined={false}
                                         aria-label="customizeYourRubricDeleteRubricButton"
                                         onClick={() => {
-                                            console.log(rubrics)
                                             this.handleDeleteRubric(rubrics.rubric_id);
                                         }}
                                         style={{ marginRight: "16px" }}
