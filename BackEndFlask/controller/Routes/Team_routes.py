@@ -175,9 +175,9 @@ def delete_selected_teams():
         if request.args and request.args.get("team_id"):
             team_id = int(request.args.get("team_id"))
             print("line 177", flush=True)
+            team = get_team(4)
 
-            team = get_team(team_id)
-            print("line 180", flush=True)
+            print(team, flush=True)
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
             
@@ -185,19 +185,18 @@ def delete_selected_teams():
             if associated_tasks is None:
                 associated_tasks = []
             print(associated_tasks, flush=True)
-            associated_with_team_course = [
-                task for task in associated_tasks if task.course_id == team.course_id
-            ]
-            #at_false = (task.course_id != team.course_id for task in associated_tasks)
-            at_false = len(associated_with_team_course) > 0
-            print("Filtered associated tasks:", associated_with_team_course, flush=True)
-            print("Deletion eligibility:", at_false, flush=True)
-            if at_false:
-                print(at_false, flush=True)
+            if len(associated_tasks) > 0:
+                refetched_tasks = get_assessment_tasks_by_team_id(int(team_id))
+                print(refetched_tasks, flush=True)
+                if not refetched_tasks:
+                    print(refetched_tasks, flush=True)
+                    delete_team(team_id)
+                    return create_good_response([], 200, "teams")
+                else:
+                    return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
+            else:
                 delete_team(team_id)
                 return create_good_response([], 200, "teams")
-            else:
-                return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
 
         
     except Exception as e:
