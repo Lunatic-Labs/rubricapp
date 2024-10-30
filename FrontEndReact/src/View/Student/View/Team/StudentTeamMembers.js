@@ -69,9 +69,10 @@ class StudentTeamMembers extends Component {
                         <button
                             className='mt-3 btn btn-primary'
 
-                            onClick={() => {
-                                console.log("Add Members!");
-                            }}
+                            //TO DO
+                            // onClick={() => {
+                                // console.log("Add Members!");
+                            // }}
                         >
                             Add Member
                         </button>
