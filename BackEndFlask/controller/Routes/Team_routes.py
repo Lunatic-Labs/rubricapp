@@ -175,18 +175,18 @@ def delete_selected_teams():
         if request.args and request.args.get("team_id"):
             team_id = int(request.args.get("team_id"))
             print("line 177", flush=True)
-            team = get_team(4)
+            team = get_team(team_id)
 
             print(team, flush=True)
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
             
-            associated_tasks = get_assessment_tasks_by_team_id(int(team_id))
+            associated_tasks = get_assessment_tasks_by_team_id(team_id)
             if associated_tasks is None:
                 associated_tasks = []
             print(associated_tasks, flush=True)
             if len(associated_tasks) > 0:
-                refetched_tasks = get_assessment_tasks_by_team_id(int(team_id))
+                refetched_tasks = get_assessment_tasks_by_team_id(team_id)
                 print(refetched_tasks, flush=True)
                 if not refetched_tasks:
                     print(refetched_tasks, flush=True)
