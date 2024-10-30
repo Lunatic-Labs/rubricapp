@@ -410,20 +410,22 @@ class Form extends Component {
                         </Button>
                     }
 
-                    <Button
-                        id="formSubmitButton"
-                        variant="contained"
-                        color="primary"
-                        aria-label="saveButton"
+                    { !this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly &&
+                        <Button
+                            id="formSubmitButton"
+                            variant="contained"
+                            color="primary"
+                            aria-label="saveButton"
 
-                        onClick={() => {
-                            this.handleSubmit(this.areAllCategoriesCompleted());
-                        }}
+                            onClick={() => {
+                                this.handleSubmit(this.areAllCategoriesCompleted());
+                            }}
 
-                        disabled={!this.areAllCategoriesCompleted()}
-                    >
-                        Done
-                    </Button>
+                            disabled={!this.areAllCategoriesCompleted()}
+                        >
+                            Done
+                        </Button>
+                    }
                 </Box>
 
                 <Box>

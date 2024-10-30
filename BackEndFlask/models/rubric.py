@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy import or_
-from models.schemas import Rubric
+from models.schemas import Rubric, AssessmentTask
 from models.utility import error_log
 
 class InvalidRubricID(Exception):
@@ -60,13 +60,22 @@ def replace_rubric(rubric, rubric_id):
 
     return one_rubric
 
+# Generated with ChatGPT
 @error_log
-def delete_rubric(rubric_id):
+def delete_rubric_by_id(rubric_id):
+    # Find the rubric by ID
     one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
 
+    # Raise an error if the rubric does not exist
     if one_rubric is None:
         raise InvalidRubricID(rubric_id)
 
+    # Check if the rubric is used in any assessment tasks
+    is_used_in_assessment = AssessmentTask.query.filter_by(rubric_id=rubric_id).count() > 0
+    if is_used_in_assessment:
+        raise ValueError(f"Cannot delete rubric {rubric_id} as it is used in one or more assessment tasks.")
+
+    # Proceed to delete if the rubric is unused
     db.session.delete(one_rubric)
     db.session.commit()
 
