@@ -181,7 +181,7 @@ def delete_selected_teams():
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
             
-            associated_tasks = get_assessment_tasks_by_team_id(team_id)
+            associated_tasks = get_assessment_tasks_by_team_id(int(team_id))
             if associated_tasks is None:
                 associated_tasks = []
             print(associated_tasks, flush=True)
