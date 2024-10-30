@@ -11,7 +11,7 @@ from models.team import (
     replace_team,
     delete_team
 )
-from models.assessment_task import get_assessment_tasks_by_team_id
+from models.assessment_task import get_assessment_tasks_by_team_id, get_assessment_tasks_by_course_id
 from models.team_user import *
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.queries import (
@@ -176,7 +176,6 @@ def delete_selected_teams():
             team_id = int(request.args.get("team_id"))
             print("line 177", flush=True)
             team = get_team(team_id)
-
             print(team, flush=True)
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
@@ -197,7 +196,18 @@ def delete_selected_teams():
             else:
                 delete_team(team_id)
                 return create_good_response([], 200, "teams")
-
+            # possible_at = get_assessment_tasks_by_course_id(course_id=team.course_id)
+            # print(possible_at, flush=True)
+            # if possible_at is None:
+            #     possible_at = []
+            # print(possible_at, flush=True)
+            # associated_tasks = [task for task in possible_at if task.team_id == team_id]
+            # print(associated_tasks, flush=True)
+            # if len(associated_tasks) > 0:
+            #     return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
+            # else:
+            #     delete_team(team_id)
+            #     return create_good_response([], 200, "teams")
         
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
