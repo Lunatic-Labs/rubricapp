@@ -116,14 +116,6 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             aria-label="myCustomRubricsEditCustomRubricButton"
                           >Edit</Button>
                         )}
-                        {/* {showDeleteButton && (
-                          <Button
-                            variant="contained"
-                            label="Edit Custom Rubric"
-                            isOutlined={false}
-                            aria-label="myCustomRubricsDeleteCustomRubricButton"
-                          >Delete</Button>
-                        )} */}
                     </TableCell>
                   </TableRow>
                   <TableRow>
