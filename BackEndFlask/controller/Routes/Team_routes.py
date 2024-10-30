@@ -186,7 +186,7 @@ def delete_selected_teams():
                 associated_tasks = []
             print(associated_tasks, flush=True)
 
-            at_false = all(task.course_id != team.course_id for task in associated_tasks)
+            at_false = (task.course_id != team.course_id for task in associated_tasks)
             print(at_false, flush=True)
             if at_false:
                 delete_team(team_id)
