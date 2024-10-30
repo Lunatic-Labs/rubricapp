@@ -245,12 +245,13 @@ class AddCustomRubric extends React.Component {
                                 <Grid item>
                                     <CustomButton
                                         label="Delete Rubric"
-                                        isOutlined={true}
+                                        isOutlined={false}
                                         aria-label="customizeYourRubricDeleteRubricButton"
                                         onClick={() => {
-                                            this.handleDeleteRubric(); // Define this method to handle rubric deletion
+                                            console.log(rubrics)
+                                            this.handleDeleteRubric(rubrics.rubric_id);
                                         }}
-                                        style={{ marginRight: "16px" }} // Add margin to create space between buttons
+                                        style={{ marginRight: "16px" }}
                                     />
                                 </Grid>
                             )}
