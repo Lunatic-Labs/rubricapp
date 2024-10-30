@@ -174,18 +174,26 @@ def delete_selected_teams():
     try:
         if request.args and request.args.get("team_id"):
             team_id = int(request.args.get("team_id"))
+            print("line 177", flush=True)
 
             team = get_team(team_id)
+            print("line 180", flush=True)
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
             
             associated_tasks = get_assessment_tasks_by_team_id(team_id)
-            if associated_tasks:
-                return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
-            
-            delete_team(team_id)
+            if associated_tasks is None:
+                associated_tasks = []
+            print(associated_tasks, flush=True)
 
-            return create_good_response([], 200, "teams")
+            at_false = len(associated_tasks) == 0
+            print(at_false, flush=True)
+            if at_false:
+                delete_team(team_id)
+                return create_good_response([], 200, "teams")
+            else:
+                return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
+
         
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
