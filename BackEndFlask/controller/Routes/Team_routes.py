@@ -185,10 +185,15 @@ def delete_selected_teams():
             if associated_tasks is None:
                 associated_tasks = []
             print(associated_tasks, flush=True)
-
-            at_false = (task.course_id != team.course_id for task in associated_tasks)
-            print(at_false, flush=True)
+            associated_with_team_course = [
+                task for task in associated_tasks if task.course_id == team.course_id
+            ]
+            #at_false = (task.course_id != team.course_id for task in associated_tasks)
+            at_false = len(associated_with_team_course) > 0
+            print("Filtered associated tasks:", associated_with_team_course, flush=True)
+            print("Deletion eligibility:", at_false, flush=True)
             if at_false:
+                print(at_false, flush=True)
                 delete_team(team_id)
                 return create_good_response([], 200, "teams")
             else:
