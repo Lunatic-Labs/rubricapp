@@ -240,15 +240,31 @@ class AddCustomRubric extends React.Component {
                             </h2>
                         </Grid>
 
-                        <Grid item xs={6} container justifyContent="flex-end">
-                            <CustomButton
-                                label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
-                                isOutlined={false}
-                                aria-label="customizeYourRubricCreateRubricButton"
-                                onClick={() => {
-                                    this.handleCreateRubric(pickedCategories);
-                                }}
-                            />
+                        <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
+                            {!this.state.addCustomRubric && (
+                                <Grid item>
+                                    <CustomButton
+                                        label="Delete Rubric"
+                                        isOutlined={true}
+                                        aria-label="customizeYourRubricDeleteRubricButton"
+                                        onClick={() => {
+                                            this.handleDeleteRubric(); // Define this method to handle rubric deletion
+                                        }}
+                                        style={{ marginRight: "16px" }} // Add margin to create space between buttons
+                                    />
+                                </Grid>
+                            )}
+
+                            <Grid item>
+                                <CustomButton
+                                    label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
+                                    isOutlined={false}
+                                    aria-label="customizeYourRubricCreateRubricButton"
+                                    onClick={() => {
+                                        this.handleCreateRubric(pickedCategories);
+                                    }}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
 
