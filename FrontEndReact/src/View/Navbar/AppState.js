@@ -51,6 +51,7 @@ class AppState extends Component {
             chosenAssessmentTask: null,
             chosenCompleteAssessmentTask: null,
             unitOfAssessment: null,
+            chosenCompleteAssessmentTaskIsReadOnly: false,
 
             team: null,
             addTeam: true,
@@ -128,7 +129,9 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null) => { // wip
+        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
+            readOnly = false
+        }={}) => { // wip
             var completedAssessment = null;
 
             if (completedAssessments) {
@@ -140,7 +143,8 @@ class AppState extends Component {
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
+                unitOfAssessment: assessmentTask["unit_of_assessment"],
+                chosenCompleteAssessmentTaskIsReadOnly: readOnly,
             });
         }
 
@@ -251,7 +255,8 @@ class AppState extends Component {
                     activeTab: "CompleteAssessment",
                     chosenAssessmentTask: null,
                     unitOfAssessment: null,
-                    chosenCompleteAssessmentTask: null
+                    chosenCompleteAssessmentTask: null,
+                    chosenCompleteAssessmentTaskIsReadOnly: false,
                 });
 
             } else {
@@ -265,6 +270,7 @@ class AppState extends Component {
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
+                    chosenCompleteAssessmentTaskIsReadOnly: false,
                     chosenAssessmentTask: chosenAssessmentTask,
                     unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
                 });
@@ -314,6 +320,14 @@ class AppState extends Component {
             this.setState({
                 activeTab: "StudentDashboard",
                 chosenCourse: chosenCourse
+            });
+        }
+
+        this.setAddCustomRubric = (addCustomRubric) => {
+
+            this.setState({
+                activeTab: "AddCustomRubric",
+                addCustomRubric: addCustomRubric
             });
         }
 
@@ -534,29 +548,6 @@ class AppState extends Component {
                     </Box>
                 }
 
-                {/* {this.state.activeTab==="EditCustomRubric" &&
-                  <Box className="page-spacing">
-                      <BackButtonResource
-                          navbar={this}
-                          tabSelected={"MyCustomRubrics"}
-                      />
-                      <AdminEditCustomRubric
-                          navbar={this}
-                      />
-                  </Box>
-                }
-
-                {this.state.activeTab==="DeleteCustomRubric" &&
-                  <Box className="page-spacing">
-                      <BackButtonResource
-                          navbar={this}
-                          tabSelected={"MyCustomRubrics"}
-                      />
-                      <AdminDeleteCustomRubric
-                          navbar={this}
-                      />
-                  </Box>
-                } */}
                 {this.state.activeTab==="AddCourse" &&
                     <Box className="page-spacing">
                         <BackButtonResource

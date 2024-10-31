@@ -287,7 +287,7 @@ class AdminAddUser extends Component {
 
                                     { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                         <Box>
-                                            <Button id="dropUserButton" onClick={ this.handleDrop }>
+                                            <Button id="dropUserButton" onClick={ this.handleDrop } aria-label="dropUserButton">
                                                 Drop User
                                             </Button>
                                         </Box>

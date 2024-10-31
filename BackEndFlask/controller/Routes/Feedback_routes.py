@@ -11,7 +11,7 @@ def create_new_feedback():
 
         feedback_data["lag_time"] = None
 
-        feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
 
         feedback = create_feedback(request.json)
 
