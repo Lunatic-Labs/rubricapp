@@ -18,9 +18,7 @@ def start_redis() -> None:
 # Checks if a given token exists in a Redis database and returns True if it is blacklisted
 def is_token_blacklisted(token: str) -> bool:
     try:
-        r = red
-        found = r.get(token)
-        r.close()
+        found = red.get(token)
         return True if found else False
     except ConnectionError:
         print('connection error')
@@ -30,10 +28,8 @@ def is_token_blacklisted(token: str) -> bool:
 def blacklist_token(token: str) -> None:
     with app.app_context():
         try:
-            r = red
             expiration = math.ceil(decode_token(token)['exp'] - time.time())
-            r.set(token, r.dbsize()+1, ex=expiration)
-            r.close()
+            red.set(token, red.dbsize()+1, ex=expiration)
         except ExpiredSignatureError:
             return
 
