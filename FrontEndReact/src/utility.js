@@ -18,11 +18,15 @@ export async function genericResourceDELETE(fetchURL, component) {
     return await genericResourceFetch(fetchURL, null, component, "DELETE", null)
 }
 
+function createApiRequestUrl(fetchURL, cookies) {
+    return fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+}
+
 async function genericResourceFetch(fetchURL, resource, component, type, body) {
     const cookies = new Cookies();
 
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
-        let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+        let url = createApiRequestUrl(fetchURL, cookies);
 
         var headers = {
             "Authorization": "Bearer " + cookies.get('access_token')
@@ -111,6 +115,18 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             
             return state;
         }
+    }
+}
+
+export function createEventSource(fetchURL) {
+    const cookies = new Cookies();
+
+    if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+        let url = createApiRequestUrl(fetchURL, cookies);
+        
+        url += "&access_token=" + cookies.get('access_token');
+        
+        return new EventSource(url);
     }
 }
 
