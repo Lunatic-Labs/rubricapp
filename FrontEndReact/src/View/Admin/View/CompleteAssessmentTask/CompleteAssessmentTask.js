@@ -167,17 +167,18 @@ class CompleteAssessmentTask extends Component {
             "completedAssessments", this
         );
         
-        const checkinEventSource = createEventSource(`/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`);
-        
-        checkinEventSource.addEventListener("message", (event) => {
-            this.setState({
-                checkin: JSON.parse(event.data),
+        createEventSource(`/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`, this)
+            .then(checkinEventSource => {
+                checkinEventSource.addEventListener("message", (event) => {
+                    this.setState({
+                        checkin: JSON.parse(event.data),
+                    });
+                });
+                
+                this.setState({
+                    checkinEventSource: checkinEventSource,
+                });
             });
-        });
-        
-        this.setState({
-            checkinEventSource: checkinEventSource,
-        });
     }
     
     componentWillUnmount() {
