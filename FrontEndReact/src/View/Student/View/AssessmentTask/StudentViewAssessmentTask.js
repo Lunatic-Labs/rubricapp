@@ -92,13 +92,23 @@ class StudentViewAssessmentTask extends Component {
             )
 
         } else {
+            // SKIL-503 bugfix:
+            //   For the assessments tasks, we only want to display the ones
+            //   that have not been completed. This compares all the assessment
+            //   tasks to the completed ones and filters all the ones that are also
+            //   in the completed assessments.
+            let uncompletedAssessments = assessmentTasks.filter(task =>
+                !completedAssessments.some(completed =>
+                    completed.assessment_task_id === task.assessment_task_id
+                )
+            );
 
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
                         role={role}
-                        assessmentTasks={assessmentTasks}
+                        assessmentTasks={uncompletedAssessments}
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
