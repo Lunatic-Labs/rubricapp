@@ -72,17 +72,6 @@ class CompleteAssessmentTask extends Component {
                 "completedAssessments", this
             );
         }
-
-        this.refreshUnits = () => {
-            var navbar = this.props.navbar;
-
-            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-
-            genericResourceGET(
-                `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-                 "checkin", this
-            );
-        }
     }
 
     componentDidUpdate() {
@@ -358,8 +347,6 @@ class CompleteAssessmentTask extends Component {
                         formReference={this}
 
                         handleDone={this.handleDone}
-
-                        refreshUnits={this.refreshUnits}
 
                         completedAssessments={completedAssessments}
                     />
