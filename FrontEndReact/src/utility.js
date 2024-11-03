@@ -118,18 +118,16 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
     }
 }
 
-export async function createEventSource(fetchURL, component) {
-    // EventSource has no way to add headers to the request, so the only way to authenticate is through query params
-    // This generates a token that's only valid for 30 seconds, so it's fine to pass using a query param
-    const tokenResult = await genericResourceGET("/get_short_lived_token", "short_lived_token", component);
-    const shortLivedToken = tokenResult.short_lived_token.token;
-    
+export function createEventSource(fetchURL) {
     const cookies = new Cookies();
-    let url = createApiRequestUrl(fetchURL, cookies);
 
-    url += "&token=" + shortLivedToken;
-    
-    return new EventSource(url);
+    if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+        let url = createApiRequestUrl(fetchURL, cookies);
+        
+        url += "&access_token=" + cookies.get('access_token');
+        
+        return new EventSource(url);
+    }
 }
 
 export function parseRoleNames(roles) {

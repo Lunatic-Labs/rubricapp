@@ -1,10 +1,10 @@
 import json
 from flask import request
 import flask
+from flask_jwt_extended import decode_token
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
-from controller.security.short_lived_tokens import verify_short_lived_token
 from core import red, app
 
 from models.queries import (
@@ -63,8 +63,8 @@ def get_checked_in():
 @bp.route('/checkin_events', methods = ['GET'])
 def stream_checked_in_events():
     try:
-        short_lived_token = request.args["token"]
-        verify_short_lived_token(short_lived_token)
+        jwt_token = request.args["access_token"]
+        decode_token(jwt_token)
         
         assessment_task_id = int(request.args.get("assessment_task_id"))
         
