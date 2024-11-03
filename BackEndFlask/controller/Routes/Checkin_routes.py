@@ -1,7 +1,8 @@
 import json
 from flask import request
 import flask
-from flask_jwt_extended import decode_token
+from flask_jwt_extended import jwt_required
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
@@ -61,11 +62,11 @@ def get_checked_in():
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
 @bp.route('/checkin_events', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def stream_checked_in_events():
     try:
-        jwt_token = request.args["access_token"]
-        decode_token(jwt_token)
-        
         assessment_task_id = int(request.args.get("assessment_task_id"))
         
         def encode_message():

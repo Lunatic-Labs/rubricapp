@@ -1,6 +1,7 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
+import * as eventsource from "eventsource-client";
 
 export async function genericResourceGET(fetchURL, resource, component) {    
     return await genericResourceFetch(fetchURL, resource, component, "GET", null);
@@ -118,15 +119,21 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
     }
 }
 
-export function createEventSource(fetchURL) {
+export function createEventSource(fetchURL, onMessage) {
     const cookies = new Cookies();
 
     if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
-        let url = createApiRequestUrl(fetchURL, cookies);
+        const url = createApiRequestUrl(fetchURL, cookies);
         
-        url += "&access_token=" + cookies.get('access_token');
+        const headers = {
+            "Authorization": "Bearer " + cookies.get('access_token')
+        };
         
-        return new EventSource(url);
+        return eventsource.createEventSource({
+            url,
+            headers,
+            onMessage,
+        });
     }
 }
 
