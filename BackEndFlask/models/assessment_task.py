@@ -419,11 +419,11 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         raise InvalidAssessmentTaskID(assessment_task_id)
 
     # Kick all members from ad hoc teams beyond new team count if there are now fewer teams
-    if one_assessment_task.number_of_teams > int(assessment_task["number_of_teams"]):
+    if assessment_task["number_of_teams"] is not None and one_assessment_task.number_of_teams > int(assessment_task["number_of_teams"]):
         delete_checkins_over_team_count(assessment_task_id, int(assessment_task["number_of_teams"]))
     
     # Kick all members from ad hoc teams with too many members if there is now a smaller capacity
-    if one_assessment_task.max_team_size > int(assessment_task["max_team_size"]):
+    if assessment_task["max_team_size"] is not None and one_assessment_task.max_team_size > int(assessment_task["max_team_size"]):
         delete_latest_checkins_over_team_size(assessment_task_id, int(assessment_task["max_team_size"]))
 
     one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
