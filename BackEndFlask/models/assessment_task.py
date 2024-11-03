@@ -412,7 +412,7 @@ def replace_assessment_task(assessment_task, assessment_task_id):
 
     validate_number_of_teams(assessment_task["number_of_teams"])
     validate_max_team_size(assessment_task["max_team_size"])
-    
+
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
 
     if one_assessment_task is None:
