@@ -50,7 +50,7 @@ class CodeRequirement extends Component {
 
 		genericResourceGET(
 			`/assessment_task?assessment_task_id=${atId}`, 
-			"assessmentTasks", this);
+			"assessment_tasks", this, {dest: "assessmentTasks"});
 	}
 
 	render() {

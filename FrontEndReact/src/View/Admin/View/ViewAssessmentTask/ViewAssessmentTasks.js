@@ -75,8 +75,9 @@ class ViewAssessmentTasks extends Component {
 
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
-            "assessmentTasks",
-            this
+            "assessment_tasks",
+            this,
+            {dest: "assessmentTasks"}
         );
         
         genericResourceGET(

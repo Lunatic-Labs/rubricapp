@@ -31,7 +31,7 @@ class StudentCompletedAssessmentTasks extends Component {
 
         genericResourceGET(
             `/assessment_task?course_id=${chosenCourseID}`,
-            "assessmentTasks", this
+            "assessment_tasks", this, {dest: "assessmentTasks"}
         );
 
         if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student

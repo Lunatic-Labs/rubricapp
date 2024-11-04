@@ -34,7 +34,7 @@ class StudentViewAssessmentTask extends Component {
  
             genericResourceGET(
                 `/assessment_task?course_id=${chosenCourseID}`, 
-                "assessmentTasks", this);
+                "assessment_tasks", this, {dest: "assessmentTasks"});
 
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourseID}`, 
@@ -42,7 +42,7 @@ class StudentViewAssessmentTask extends Component {
         } else {            // If the user is a TA, this returns assessments completed by the TA
             genericResourceGET(
                 `/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`, 
-                "assessmentTasks", this);
+                "assessment_tasks", this, {dest: "assessmentTasks"});
 
                 genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
