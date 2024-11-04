@@ -63,9 +63,11 @@ test("AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAs
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
+    });
 
-        clickElementWithAriaLabel(iab);
-
+    clickElementWithAriaLabel(iab);
+    
+    await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 });
@@ -88,9 +90,11 @@ test("AdminImportAssessmentTasks.test.js Test 2: Should render the page that cam
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
+    });
 
-        clickElementWithAriaLabel(iab);
-
+    clickElementWithAriaLabel(iab);
+    
+    await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 
@@ -121,18 +125,18 @@ test("AdminImportAssessmentTasks.test.js Test 3: Should render the assessment da
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickElementWithAriaLabel(iab);
-
+    });
+    
+    clickElementWithAriaLabel(iab);
+    
+    await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(adt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(adt);
     });
 });
 
@@ -154,17 +158,15 @@ test("AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
+    });
 
-        clickElementWithAriaLabel(iab);
-
+    clickElementWithAriaLabel(iab);
+    
+    await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 
-    await waitFor(() => {
-        setTimeout(() => {
-            clickElementWithAriaLabel(aiatsb);
-        }, 3000);
-    });
+    clickElementWithAriaLabel(aiatsb);
 
     await waitFor(() => {
         setTimeout(() => {
@@ -191,9 +193,11 @@ test("AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back 
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-        
-        clickElementWithAriaLabel(iab);
+    });
 
+    clickElementWithAriaLabel(iab);
+    
+    await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 
