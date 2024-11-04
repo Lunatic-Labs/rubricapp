@@ -1,12 +1,17 @@
 import React from 'react';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList , ResponsiveContainer, Tooltip } from 'recharts';
-import "bootstrap/dist/css/bootstrap.css";
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
 
-const CustomTooltip = ({ active, payload}) => {
+const truncateText = (text, limit = 15) => {
+  if (text.length <= limit) return text;
+  return `${text.substring(0, limit)}...`;
+};
+
+const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
+    const fullText = payload[0].payload[payload[0].payload.characteristic ? 'characteristic' : 'improvement'];
     return (
-      <div className="bg-white border border-gray-150 p-2 rounded shadow-lg">
-        <p className="text-sm font-medium">{payload[0].payload[payload[0].payload.characteristic ? 'characteristic' : 'improvement']}</p>
+      <div className="bg-white border border-gray-200 p-2 rounded shadow-lg">
+        <p className="text-sm font-medium">{fullText}</p>
       </div>
     );
   }
@@ -22,7 +27,12 @@ export default function CharacteristicsAndImprovements({
   const data = dataType === 'characteristics'
     ? characteristicsData.characteristics
     : improvementsData.improvements;
-  const dataKey = dataType === 'characteristics' ? 'characteristic' : 'improvement';
+  
+  const processedData = data.map(item => ({
+    ...item,
+    truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement'])
+  }));
+  
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
 
   return (
@@ -30,12 +40,12 @@ export default function CharacteristicsAndImprovements({
       <h6 className="text-center text-sm">
         <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
       </h6>
-      <div style={{ width: '101%', height: '210px', flexGrow: 1, display: 'flex', flexDirection: 'column' }}>
+      <div style={{height: '210px', flexGrow: 1 }}>
         {shouldShowGraph ? (
-          <ResponsiveContainer>
+          <ResponsiveContainer width= '101%'>
             <BarChart
               layout="vertical"
-              data={data}
+              data={processedData}
               aria-label={`barChart${dataType.charAt(0).toUpperCase() + dataType.slice(1)}Data`}
             >
               <XAxis
@@ -44,10 +54,9 @@ export default function CharacteristicsAndImprovements({
                 style={{ fontSize: '0.75rem' }}
               />
               <YAxis
-                width={350}
                 style={{ fontSize: '0.675rem' }}
                 type="category"
-                dataKey={dataKey}
+                dataKey="truncatedLabel"
               />
               <CartesianGrid horizontal={false} />
               <Tooltip
