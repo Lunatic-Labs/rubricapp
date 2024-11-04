@@ -2,7 +2,6 @@ from flask import request
 from controller import bp
 from controller.Route_response import *
 from controller.security.blacklist import blacklist_token
-from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from controller.security.utility import(
     revoke_tokens,
@@ -12,9 +11,6 @@ from controller.security.utility import(
 )
 
 @bp.route('/logout', methods=['POST'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def logout():
     try:
         _id, jwt, refresh = request.args.get('user_id'), request.json.get('access_token'), request.json.get('refresh_token')
