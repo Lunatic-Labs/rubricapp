@@ -6,16 +6,16 @@ export async function genericResourceGET(fetchURL, resource, component, options 
     return await genericResourceFetch(fetchURL, resource, component, "GET", null, options);
 }
 
-export async function genericResourcePOST(fetchURL, component, body) {    
-    return await genericResourceFetch(fetchURL, null, component, "POST", body);
+export async function genericResourcePOST(fetchURL, component, body, options = {}) {    
+    return await genericResourceFetch(fetchURL, null, component, "POST", body, options);
 }
 
-export async function genericResourcePUT(fetchURL, component, body) {    
-    return await genericResourceFetch(fetchURL, null, component, "PUT", body);
+export async function genericResourcePUT(fetchURL, component, body, options = {}) {    
+    return await genericResourceFetch(fetchURL, null, component, "PUT", body, options);
 }
 
-export async function genericResourceDELETE(fetchURL, component) {
-    return await genericResourceFetch(fetchURL, null, component, "DELETE", null)
+export async function genericResourceDELETE(fetchURL, component, options = {}) {
+    return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options)
 }
 
 async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
