@@ -27,8 +27,9 @@ class ViewAssessmentTasks extends Component {
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
             genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}`,
-                "csvCreation",
-                this
+                "csv_creation",
+                this,
+                {dest: "csvCreation"}
             );
 
             var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
