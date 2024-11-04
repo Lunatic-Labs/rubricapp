@@ -2,8 +2,6 @@ from flask import request
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
-from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 from models.queries import (
     get_all_checkins_for_assessment,
@@ -11,9 +9,6 @@ from models.queries import (
 )
 
 @bp.route('/checkin', methods = ['POST'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def checkin_user():
     # needs json with AT id, user id, and team id
     try:
@@ -36,9 +31,6 @@ def checkin_user():
         return create_bad_response(f"An error occurred checking in user: {e}", "checkin", 400)
 
 @bp.route('/checkin', methods = ['GET'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def get_checked_in():
     # given an asessment task id, return checked in information
     try:

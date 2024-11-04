@@ -9,15 +9,10 @@ from models.user import update_password, has_changed_password, set_reset_code, g
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
 from controller.Routes.RouteExceptions import MissingException, InvalidCredentialsException
-from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 
 
 @bp.route('/login', methods=['POST'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def login():
     try:
         email, password = request.json.get('email'), request.json.get('password')
@@ -50,9 +45,6 @@ def login():
 
 
 @bp.route('/password', methods = ['PUT'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def set_new_password():
     try:
         email, password = request.json.get('email'), request.json.get('password')
@@ -76,9 +68,6 @@ def set_new_password():
 
 
 @bp.route('/reset_code', methods = ['GET'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def send_reset_code():
     try:
         email = request.args.get("email")
@@ -108,9 +97,6 @@ def send_reset_code():
 
 
 @bp.route('/reset_code', methods = ['POST'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def check_reset_code():
     try:
         email, code = request.args.get("email"), request.args.get("code")

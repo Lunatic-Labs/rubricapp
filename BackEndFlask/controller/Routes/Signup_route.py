@@ -3,13 +3,9 @@ from controller  import bp
 from models.user import get_user_by_email
 from controller.Route_response import *
 from controller.Routes.User_routes import UserSchema
-from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 @bp.route('/signup', methods=['POST'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def register_user():
     try:
         email, password = request.args.get('email'), request.args.get('password')
