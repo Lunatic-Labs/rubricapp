@@ -8,7 +8,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
-
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 class ViewAssessmentTasks extends Component {
     constructor(props) {
@@ -313,6 +313,26 @@ class ViewAssessmentTasks extends Component {
                 }
             },
             {
+                name: "lock",
+                label: "Lock",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    customBodyRender: (assessmentTaskId) => {
+                        return(
+                            <>
+                                <IconButton aria-label='unlock'>
+                                    <LockOpenIcon />
+                                </IconButton>
+                            </>
+                        )
+                    }
+                }
+
+            },
+            {
                 name: "assessment_task_id",
                 label: "To Do",
                 options: {
@@ -324,7 +344,7 @@ class ViewAssessmentTasks extends Component {
                         const assessmentTask = assessmentTasks.find(task => task.assessment_task_id === atId);
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
-            
+
                         if (isTeamAssessment && (fixedTeams && !teamsExist)) {
                             return (
                                 <Tooltip title="No teams available for this team assessment">
