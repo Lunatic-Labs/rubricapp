@@ -1,6 +1,7 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
+import * as eventsource from "eventsource-client";
 
 export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
     return await genericResourceFetch(fetchURL, resource, component, "GET", null, options);
@@ -18,6 +19,10 @@ export async function genericResourceDELETE(fetchURL, component, options = {}) {
     return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options)
 }
 
+function createApiRequestUrl(fetchURL, cookies) {
+    return fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+}
+
 async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
     const {
         dest = resource
@@ -26,7 +31,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
     const cookies = new Cookies();
 
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
-        let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+        let url = createApiRequestUrl(fetchURL, cookies);
 
         var headers = {
             "Authorization": "Bearer " + cookies.get('access_token')
@@ -99,6 +104,24 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             
             return state;
         }
+    }
+}
+
+export function createEventSource(fetchURL, onMessage) {
+    const cookies = new Cookies();
+
+    if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+        const url = createApiRequestUrl(fetchURL, cookies);
+        
+        const headers = {
+            "Authorization": "Bearer " + cookies.get('access_token')
+        };
+        
+        return eventsource.createEventSource({
+            url,
+            headers,
+            onMessage,
+        });
     }
 }
 
