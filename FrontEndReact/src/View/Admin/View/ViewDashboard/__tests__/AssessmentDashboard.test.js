@@ -125,9 +125,7 @@ test("AssessmentDashboard.test.js Test 5: Should show View Courses page when cli
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
 
