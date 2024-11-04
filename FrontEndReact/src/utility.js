@@ -68,8 +68,6 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             if(resource != null) {
                 var getResource = resource;
 
-                getResource = (getResource === "teamMembers") ? "team_members": getResource;
-
                 getResource = (getResource === "indiv_users") ? "users": getResource;
                 
                 getResource = (getResource === "counts") ? "course_count": getResource;
