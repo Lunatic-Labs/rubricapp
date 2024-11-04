@@ -42,7 +42,8 @@ def create_suggestion(suggestion):
 
     return new_suggestion
 
-
+# Do I need to make another error log, because it wasn't there before.
+# @error_log
 def replace_suggestion(suggestion, id):
     one_suggestion = SuggestionsForImprovement.query.filter_by(suggestion_id=id).first()
     
