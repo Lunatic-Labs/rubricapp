@@ -12,9 +12,6 @@ from controller.security.utility import(
 )
 
 @bp.route('/logout', methods=['POST'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
 def logout():
     try:
         _id, jwt, refresh = request.args.get('user_id'), request.json.get('access_token'), request.json.get('refresh_token')
