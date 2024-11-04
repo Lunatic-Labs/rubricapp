@@ -2,8 +2,8 @@ import { apiUrl } from './App.js';
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
 
-export async function genericResourceGET(fetchURL, resource, component) {    
-    return await genericResourceFetch(fetchURL, resource, component, "GET", null);
+export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
+    return await genericResourceFetch(fetchURL, resource, component, "GET", null, options);
 }
 
 export async function genericResourcePOST(fetchURL, component, body) {    
@@ -18,7 +18,11 @@ export async function genericResourceDELETE(fetchURL, component) {
     return await genericResourceFetch(fetchURL, null, component, "DELETE", null)
 }
 
-async function genericResourceFetch(fetchURL, resource, component, type, body) {
+async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
+    const {
+        dest = resource
+    } = options;
+
     const cookies = new Cookies();
 
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
@@ -77,8 +81,8 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
                 getResource = (getResource === "counts") ? "course_count": getResource;
                 
                 getResource = (getResource === "team") ? "teams": getResource;
-                               
-                state[resource] = result['content'][getResource][0];
+                 
+                state[dest] = result['content'][getResource][0];
             }
 
             component.setState(state);
