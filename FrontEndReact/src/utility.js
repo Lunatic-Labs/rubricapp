@@ -70,7 +70,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
 
             state['errorMessage'] = null;
 
-            if(resource !== null) {
+            if(resource) {
                 state[dest] = result['content'][resource][0];
             }
 
