@@ -76,9 +76,7 @@ test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(sbub);
@@ -90,9 +88,7 @@ test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
 
@@ -107,17 +103,13 @@ test("AdminBulkUpload.test.js Test 3: Should render your files when the Choose F
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(sbub);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abut);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(abut);
     });
 
     clickElementWithAriaLabel(abucfb);
@@ -134,9 +126,7 @@ test("AdminBulkUpload.test.js Test 4: Should render an error message when no fil
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(sbub);
@@ -165,9 +155,7 @@ test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(sbub);
@@ -204,10 +192,12 @@ test("AdminBulkUpload.test.js Test 6: Should render the AdminBulkUpload componen
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(tbub);
         }, 3000);
     });
+
+    setTimeout(() => {
+        clickElementWithAriaLabel(tbub);
+    }, 3000);
 
     await waitFor(() => {
         setTimeout(() => {
@@ -235,9 +225,15 @@ test("AdminBulkUpload.test.js Test 7: Should render the roster dashboard if the 
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
+        }, 3000);
+    });
+    
+    setTimeout(() => {
+        clickElementWithAriaLabel(tbub);
+    }, 3000);
 
-            clickElementWithAriaLabel(tbub);
-
+    await waitFor(() => {
+        setTimeout(() => {            
             expectElementWithAriaLabelToBeInDocument(abut);
         }, 3000);
     });
@@ -270,17 +266,18 @@ test("AdminBulkUpload.test.js Test 8: Should render your files when the Choose F
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(tbub);
         }, 3000);
     });
+
+    setTimeout(() => {
+        clickElementWithAriaLabel(tbub);
+    }, 3000);
 
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(abut);
 
             clickElementWithAriaLabel(abuufb);
-
         }, 3000);
     });
 });
@@ -304,13 +301,18 @@ test("AdminBulkUpload.test.js Test 9: Should render an error message when no fil
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(tbub);
-
-            expectElementWithAriaLabelToBeInDocument(abut);
         }, 3000);
     });
 
+    setTimeout(() => {
+        clickElementWithAriaLabel(tbub);
+    }, 3000);
+
+    await waitFor(() => {
+        setTimeout(() => {
+            expectElementWithAriaLabelToBeInDocument(abut);
+        }, 3000);
+    });
 
     await waitFor(() => {
         setTimeout(() => {
@@ -340,20 +342,22 @@ test("AdminBulkUpload.test.js Test 10: Should render the roster dashboard if the
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(tbub);
-
         }, 3000);
     });
+
+    setTimeout(() => {
+        clickElementWithAriaLabel(tbub);
+    }, 3000);
 
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(abut);
-
-            clickElementWithAriaLabel(cabub)
-
         }, 3000);
     });
+    
+    setTimeout(() => {
+        clickElementWithAriaLabel(cabub) 
+    }, 3000);
 
     await waitFor(() => {
         setTimeout(() => {
