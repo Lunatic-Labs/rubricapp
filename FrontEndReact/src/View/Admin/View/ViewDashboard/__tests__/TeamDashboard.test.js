@@ -55,9 +55,7 @@ test("TeamDashboard.test.js Test 1: Should render the TeamDashboard", async () =
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
@@ -80,9 +78,7 @@ test("TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
@@ -90,10 +86,12 @@ test("TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if 
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(abub);
         }, 3000);
     });
+
+    setTimeout(() => {
+        clickElementWithAriaLabel(abub);
+    }, 3000);
 
     await waitFor(() => {
         setTimeout(() => {
@@ -113,9 +111,7 @@ test("TeamDashboard.test.js Test 3: Should render the Add Team page if the admin
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
@@ -123,11 +119,13 @@ test("TeamDashboard.test.js Test 3: Should render the Add Team page if the admin
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(aatb);
         }, 3000);
     });
 
+    setTimeout(() => {
+        clickElementWithAriaLabel(aatb);
+    }, 3000);
+    
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(aatt);
@@ -146,9 +144,7 @@ test("TeamDashboard.test.js Test 4: Should render the View Team page if the admi
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
@@ -156,10 +152,12 @@ test("TeamDashboard.test.js Test 4: Should render the View Team page if the admi
     await waitFor(() => {
         setTimeout(() => {
             expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(vtib);
         }, 3000);
     });
+    
+    setTimeout(() => {
+        clickElementWithAriaLabel(vtib);
+    }, 3000);
 
     await waitFor(() => {
         setTimeout(() => {
@@ -184,13 +182,9 @@ test("MainHeader.test.js Test 5: Clicking the back button on the page should go 
         }, 3000);
     });
 
-    await waitFor(() => {
-        clickElementWithAriaLabel(mhbb);
-    });
+    clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
