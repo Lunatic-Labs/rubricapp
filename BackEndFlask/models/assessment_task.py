@@ -2,6 +2,7 @@ from core import db
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
 from models.utility import error_log
+from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 
 """
 Something to consider may be the due_date as the default
@@ -419,6 +420,14 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
 
+    # Kick all members from ad hoc teams beyond new team count if there are now fewer teams
+    if assessment_task["number_of_teams"] is not None and one_assessment_task.number_of_teams > int(assessment_task["number_of_teams"]):
+        delete_checkins_over_team_count(assessment_task_id, int(assessment_task["number_of_teams"]))
+    
+    # Kick all members from ad hoc teams with too many members if there is now a smaller capacity
+    if assessment_task["max_team_size"] is not None and one_assessment_task.max_team_size > int(assessment_task["max_team_size"]):
+        delete_latest_checkins_over_team_size(assessment_task_id, int(assessment_task["max_team_size"]))
+
     one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
     one_assessment_task.course_id = assessment_task["course_id"]
     one_assessment_task.due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ')
@@ -433,7 +442,6 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     one_assessment_task.number_of_teams = assessment_task["number_of_teams"]
     one_assessment_task.max_team_size = assessment_task["max_team_size"]
     
-
     db.session.commit()
 
     return one_assessment_task
