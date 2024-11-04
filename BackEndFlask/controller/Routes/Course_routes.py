@@ -57,6 +57,9 @@ def get_all_courses():
 
 
 @bp.route('/course', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def get_one_course():
     try:
         course_id = int(request.args.get("course_id"))
