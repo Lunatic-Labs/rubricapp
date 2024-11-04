@@ -420,6 +420,26 @@ class ViewAssessmentTasks extends Component {
                 }
             },
             {
+                name: "lock",
+                label: "Lock",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    customBodyRender: (assessmentTaskId) => {
+                        return(
+                            <>
+                                <IconButton aria-label='unlock'>
+                                    <LockOpenIcon />
+                                </IconButton>
+                            </>
+                        )
+                    }
+                }
+
+            },
+            {
                 name: "assessment_task_id",
                 label: "To Do",
                 options: {
