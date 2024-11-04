@@ -91,9 +91,7 @@ test("AdminAddUser.test.js Test 2: Should render the roster dashboard if the bac
     clickElementWithAriaLabel(mhbb);
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
 
