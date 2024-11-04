@@ -8,6 +8,7 @@ import sys
 import os
 import subprocess
 import re
+import redis
 
 def setup_cron_jobs():
     # Check if we've already set up cron
@@ -87,6 +88,10 @@ else:
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+
+red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 
 # Register blueprints
 from controller import bp
