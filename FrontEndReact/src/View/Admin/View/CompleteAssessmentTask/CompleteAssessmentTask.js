@@ -68,7 +68,7 @@ class CompleteAssessmentTask extends Component {
             
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-                "completedAssessments", this
+                "completed_assessments", this, {dest: "completedAssessments"}
             );
         }
 
@@ -168,7 +168,7 @@ class CompleteAssessmentTask extends Component {
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-            "completedAssessments", this
+            "completed_assessments", this, {dest: "completedAssessments"}
         );
 
     }

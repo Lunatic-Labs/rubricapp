@@ -31,7 +31,7 @@ class AdminViewAssessmentStatus extends Component {
                 // Fetch completed assessment tasks data for the chosen assessment task
                 genericResourceGET(
                     `/completed_assessment?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
-                    "completedAssessments", this
+                    "completed_assessments", this, {dest: "completedAssessments"}
                 );
             }
 
@@ -66,7 +66,7 @@ class AdminViewAssessmentStatus extends Component {
             // Fetch ratio of users who have completed assessment task to total users in the class
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourse.course_id}&assessment_id=${this.props.chosenAssessmentId}`, 
-                "completedAssessmentsPercentage", this
+                "completed_assessments", this, {dest: "completedAssessmentsPercentage"}
             );
 
             this.setState({
