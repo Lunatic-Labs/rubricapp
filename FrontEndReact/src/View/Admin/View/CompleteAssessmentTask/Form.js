@@ -4,7 +4,6 @@ import '../../../../SBStyles.css';
 import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
@@ -392,22 +391,6 @@ class Form extends Component {
                 }}>
                     { this.state.displaySavedNotification &&
                         <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
-                    }
-
-                    {this.props.role_name !== "Student" &&
-                        <Button
-                            variant="text"
-                            color="primary"
-                            startIcon={<RefreshIcon />}
-                            arialabel="refreshButton"
-
-                            onClick={() => {
-                                this.props.refreshUnits();
-                            }}
-                            aria-label="refreshButton"
-                        >
-                            Refresh
-                        </Button>
                     }
 
                     { !this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly &&
