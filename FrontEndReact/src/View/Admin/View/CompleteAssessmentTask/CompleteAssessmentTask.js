@@ -138,7 +138,7 @@ class CompleteAssessmentTask extends Component {
         if (chosenAssessmentTask["role_id"] === 5) {
             genericResourceGET(
                 `/team_by_user?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
-                "team", this
+                "teams", this, {dest: "team"}
             );
         }
 
