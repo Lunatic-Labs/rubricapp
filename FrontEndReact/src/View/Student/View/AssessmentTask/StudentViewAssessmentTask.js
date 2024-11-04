@@ -58,7 +58,7 @@ class StudentViewAssessmentTask extends Component {
 
         genericResourceGET(
             `/course?course_id=${chosenCourseID}`, 
-            "counts", this);
+            "course_counts", this, {dest: "counts"});
         }
 
     render() {
