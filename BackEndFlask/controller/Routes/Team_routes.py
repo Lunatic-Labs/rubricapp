@@ -12,6 +12,7 @@ from models.team import (
     delete_team
 )
 from models.assessment_task import get_assessment_tasks_by_team_id
+from models.completed_assessment import completed_assessment_team_or_user_exists
 from models.team_user import *
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.queries import (
@@ -180,12 +181,12 @@ def delete_selected_teams():
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
             
-            associated_tasks = get_assessment_tasks_by_team_id(team_id)
+            associated_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
             if associated_tasks is None:
                 associated_tasks = []
             print(associated_tasks, flush=True)
             if len(associated_tasks) > 0:
-                refetched_tasks = get_assessment_tasks_by_team_id(team_id)
+                refetched_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
                 print(refetched_tasks, flush=True)
                 if not refetched_tasks:
                     print(refetched_tasks, flush=True)
