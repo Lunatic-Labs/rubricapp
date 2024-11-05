@@ -224,21 +224,27 @@ class AdminAddAssessmentTask extends Component {
                 "number_of_teams": numberOfTeams,
                 "max_team_size": maxTeamSize
             });
+
+            let promise;
             
             if (navbar.state.addAssessmentTask) {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     "/assessment_task",
                     this, body
                 );
 
             } else {
-                genericResourcePUT(
+                promise = genericResourcePUT(
                     `/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
                     this, body
                 );
             }
 
-            confirmCreateResource("AssessmentTask");
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("AssessmentTask");
+                }
+            });
         }
     };
 
