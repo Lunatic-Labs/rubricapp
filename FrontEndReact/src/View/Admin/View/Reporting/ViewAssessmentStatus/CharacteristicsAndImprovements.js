@@ -42,7 +42,7 @@ export default function CharacteristicsAndImprovements({
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
 
   return (
-    <div className="container-fluid p-0">
+    <div className="container-fluid p-0"> 
       <div className="row">
         <div className="col-12">
           <div className="card border-0 shadow-none" style={{height: '100%', backgroundColor: '#f8f8f8' }}>
