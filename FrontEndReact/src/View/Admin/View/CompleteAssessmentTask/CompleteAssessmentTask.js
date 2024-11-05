@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
-import { genericResourceGET } from '../../../../utility.js';
+import { genericResourceGET, createEventSource } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
@@ -24,7 +24,8 @@ class CompleteAssessmentTask extends Component {
             roles: null,
             completedAssessments: null,
             checkin: null,
-            userId: null
+            userId: null,
+            checkinEventSource: null,
         }
             this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
@@ -69,17 +70,6 @@ class CompleteAssessmentTask extends Component {
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
                 "completedAssessments", this
-            );
-        }
-
-        this.refreshUnits = () => {
-            var navbar = this.props.navbar;
-
-            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-
-            genericResourceGET(
-                `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-                 "checkin", this
             );
         }
     }
@@ -142,11 +132,6 @@ class CompleteAssessmentTask extends Component {
             );
         }
 
-        genericResourceGET( 
-            `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-             "checkin", this
-        );
-
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
@@ -170,7 +155,23 @@ class CompleteAssessmentTask extends Component {
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
             "completedAssessments", this
         );
-
+        
+        const checkinEventSource = createEventSource(
+            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            ({data}) => {
+                this.setState({
+                    checkin: JSON.parse(data),
+                });
+            }
+        );
+        
+        this.setState({
+            checkinEventSource: checkinEventSource,
+        });
+    }
+    
+    componentWillUnmount() {
+        this.state.checkinEventSource?.close();
     }
 
     render() {
@@ -346,8 +347,6 @@ class CompleteAssessmentTask extends Component {
                         formReference={this}
 
                         handleDone={this.handleDone}
-
-                        refreshUnits={this.refreshUnits}
 
                         completedAssessments={completedAssessments}
                     />

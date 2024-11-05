@@ -1,14 +1,21 @@
+import json
 from flask import request
+import flask
+from flask_jwt_extended import jwt_required
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
+from core import red, app
 
 from models.queries import (
     get_all_checkins_for_assessment,
     get_all_checkins_for_student_for_course
 )
+
+CHECK_IN_REDIS_CHANNEL = "check_in_updated"
 
 @bp.route('/checkin', methods = ['POST'])
 @jwt_required()
@@ -29,6 +36,8 @@ def checkin_user():
             update_checkin(new_checkin)
         else: 
             create_checkin(new_checkin)
+        
+        red.publish(CHECK_IN_REDIS_CHANNEL, assessment_task_id)
 
         return create_good_response(new_checkin, 200, "checkin")
 
@@ -56,6 +65,36 @@ def get_checked_in():
         checkins = get_all_checkins_for_assessment(assessment_task_id)
 
         return create_good_response(checkins_schema.dump(checkins), 200, "checkin")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
+
+@bp.route('/checkin_events', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def stream_checked_in_events():
+    try:
+        assessment_task_id = int(request.args.get("assessment_task_id"))
+        
+        def encode_message():
+            checkins = get_all_checkins_for_assessment(assessment_task_id)
+            checkins_json = json.dumps(checkins_schema.dump(checkins))
+            
+            return f"data: {checkins_json}\n\n"
+        
+        def check_in_stream():
+            with app.app_context():
+                with red.pubsub() as pubsub:
+                    pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
+                    
+                    yield encode_message()
+                    
+                    for msg in pubsub.listen():
+                        if msg["type"] == "message" and str(msg["data"]) == str(assessment_task_id):
+                            yield encode_message()
+
+        return flask.Response(check_in_stream(), mimetype="text/event-stream", status=200)
 
     except Exception as e:
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
