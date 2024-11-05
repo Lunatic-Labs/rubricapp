@@ -71,9 +71,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             state['errorMessage'] = null;
 
             if(resource) {
-                var getResource = resource
-
-                state[dest] = result['content'][getResource][0];
+                state[dest] = result['content'][resource][0];
             }
 
             component.setState(state);
