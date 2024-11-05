@@ -34,12 +34,14 @@ class SelectTeam extends Component {
                 });
                 return;
             }
-
-	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {});
-
-            navbar.setNewTab("StudentDashboard");
-        }
-    };
+            
+	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {}).then((result) => {
+                if (result !== undefined && result.errorMessage === null) {
+                    navbar.setNewTab("StudentDashboard");
+                }
+            });
+        };
+};
 
     componentDidMount() {
         let course = this.props.navbar.state.chosenCourse;
