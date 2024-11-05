@@ -1001,7 +1001,8 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
             CompletedAssessment.user_id == Feedback.user_id
         )
     ).filter(
-        AssessmentTask.assessment_task_id == at_id
+        AssessmentTask.assessment_task_id == at_id,
+        #User.first_name == "Maria"
     ).all()
 
     return pertinent_assessments

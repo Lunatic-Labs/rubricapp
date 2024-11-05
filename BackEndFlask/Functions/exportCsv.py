@@ -11,6 +11,7 @@
 #----------------------------------------------------------------------------------------------------
 import csv
 import io
+import contextlib
 from core import app
 from models.queries import *
 from enum import Enum
@@ -97,11 +98,11 @@ def create_csv(at_id: int) -> str:
                 ["AT_completer_role (Admin[TA/Instructor] / Student)"] +
                 ["Notification_data"]
             )
+            
+            completed_assessment_data = get_csv_data_by_at_id(at_id)#WARNING: check with the clients to see if they want a certain order.
 
-            completed_assessment_data = get_csv_data_by_at_id(at_id)
-
-            if len(completed_assessment_data) == 0:
-                return csvFile.getvalue()
+            if len(completed_assessment_data) == 0: #ERROR:make it /= since the list will always be 1 large houseing a dict of data
+                return csvFile.getvalue()           #WARNING:this make defrefrencing it to zero useless; note python inherently makes a alias
 
             writer.writerow(
                 [completed_assessment_data[0][Csv_data.AT_NAME.value]]      +
@@ -123,24 +124,33 @@ def create_csv(at_id: int) -> str:
                 ["Suggestions for Improvement"] +
                 ["feedback time lag"]
             )
-
-            for entry in completed_assessment_data:
-                sfi_oc_data = get_csv_categories(entry[Csv_data.RUBRIC_ID.value])
-
+                            
+            for entry in completed_assessment_data: #WARNING: entry here is essentialy an alias for the only dict in completed assement; yes this loop run only once
+                with open('output.txt', 'w') as f:
+                    with contextlib.redirect_stdout(f):
+                        print(entry[Csv_data.JSON.value])
+                sfi_oc_data = get_csv_categories(entry[Csv_data.RUBRIC_ID.value]) #ERROR: This funciton is where the error is as its not pulling the correct realted oc and sfi
+                
                 lag = ""
 
                 try:
                     lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
-                except:
+                except:#WARNING: better to keep watch of what exceptions are thrown as it seems that its alwasy throwing blanks.
                     pass
 
-                for i in entry[Csv_data.JSON.value]:
-                    if i == "comments" or i == "done":
+                for i in entry[Csv_data.JSON.value]:#WARNING: This is going throught the categories would clients want a specific order same for the names pulled.
+                    if i == "comments" or i == "done": #ERROR: This needs to pass other thing like the description else more work and bugs- potentially the copy of data
                         continue
+                    #WARNING:heres a small dump
+                    #{'Analyzing': {'comments': 'ASDFASDFASDFASDFASDF', 'description': 'Interpreted information to determine meaning and to extract relevant evidence', 'observable_characteristics': '101', 'rating': 3, 'rating_json': {'0': 'No evidence', '1': 'Inaccurately', '2': '', '3': 'With some errors', '4': '', '5': 'Accurately'}, 'suggestions': '00100'}, 
+                    # 'Evaluating': {'comments': 'ASDFJKL;', 'description': 'Determined the relevance and reliability of information that might be used to support the conclusion or argument', 'observable_characteristics': '111', 'rating': 1, 'rating_json': {'0': 'No evidence', '1': 'Minimally', '2': '', '3': 'Partially', '4': '', '5': 'Extensively'}, 'suggestions': '00000'}, 
+                    # 'Forming Arguments (Structure)': {'comments': '', 'description': 'Made an argument that includes a claim (a position), supporting information, and reasoning.', 'observable_characteristics': '0100', 'rating': 5, 'rating_json': {'0': 'No evidence', '1': 'Minimally', '2': '', '3': 'Partially', '4': '', '5': 'Completely'}, 'suggestions': '1111111'}, 
+                    # 'Forming Arguments (Validity)': {'comments': '', 'description': 'The claim, evidence, and reasoning were logical and consistent with broadly accepted principles.', 'observable_characteristics': '10110', 'rating': 4, 'rating_json': {'0': 'No evidence', '1': 'Minimally', '2': '', '3': 'Partially', '4': '', '5': 'Fully'}, 'suggestions': '11111'}, 
+                    # 'Identifying the Goal': {'comments': '', 'description': 'Determined the purpose/context of the argument or conclusion that needed to be made', 'observable_characteristics': '110', 'rating': 2, 'rating_json': {'0': 'No evidence', '1': 'Minimally', '2': '', '3': 'Partially', '4': '', '5': 'Completely'}, 'suggestions': '1010'}, 
+                    # 'Synthesizing': {'comments': '', 'description': 'Connected or integrated information to support an argument or reach a conclusion', 'observable_characteristics': '101', 'rating': 2, 'rating_json': {'0': 'No evidence', '1': 'Inaccurately', '2': '', '3': 'With some errors', '4': '', '5': 'Accurately'}, 'suggestions': '10001'}, 'comments': '', 'done': True}
+                    oc = entry[Csv_data.JSON.value][i]["observable_characteristics"]#WARNING; dumps a string of 1s and 0s that represetns what the client has chosen
 
-                    oc = entry[Csv_data.JSON.value][i]["observable_characteristics"]
-
-                    for j in range (0, len(oc)):
+                    for j in range (0, len(oc)):#
                         if(oc[j] == '0'):
                             continue
 
