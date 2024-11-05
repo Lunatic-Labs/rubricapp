@@ -2,8 +2,6 @@ from flask import request
 from controller import bp
 from controller.Route_response import *
 from controller.security.blacklist import blacklist_token
-from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from controller.security.utility import(
     revoke_tokens,
     token_expired,

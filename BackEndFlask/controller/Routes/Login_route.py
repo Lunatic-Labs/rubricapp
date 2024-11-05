@@ -9,8 +9,6 @@ from models.user import update_password, has_changed_password, set_reset_code, g
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
 from controller.Routes.RouteExceptions import MissingException, InvalidCredentialsException
-from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 
 
