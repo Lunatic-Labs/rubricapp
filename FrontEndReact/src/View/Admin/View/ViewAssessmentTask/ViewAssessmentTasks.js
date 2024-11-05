@@ -25,21 +25,24 @@ class ViewAssessmentTasks extends Component {
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
-            genericResourceGET(
+            let promise = genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}`,
                 "csvCreation",
                 this
             );
 
-            var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
 
-            var newExportButtonJSON = this.state.exportButtonId;
-
-            newExportButtonJSON[assessmentName] = exportButtonId;
-
-            this.setState({
-                downloadedAssessment: assessmentName,
-                exportButtonId: newExportButtonJSON
+                    var newExportButtonJSON = this.state.exportButtonId;
+        
+                    newExportButtonJSON[assessmentName] = exportButtonId;
+        
+                    this.setState({
+                        downloadedAssessment: assessmentName,
+                        exportButtonId: newExportButtonJSON
+                    });                }
             });
         }
     }
