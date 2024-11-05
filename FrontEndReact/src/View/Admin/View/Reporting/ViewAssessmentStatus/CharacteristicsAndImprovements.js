@@ -1,4 +1,3 @@
-import React, { useState, useEffect } from 'react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
 
 const truncateText = (text, limit = 15) => {
