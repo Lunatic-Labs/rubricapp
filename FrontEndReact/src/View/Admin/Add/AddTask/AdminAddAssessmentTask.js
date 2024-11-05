@@ -79,8 +79,9 @@ class AdminAddAssessmentTask extends Component {
         if (assessmentTask && !addAssessmentTask) {
             genericResourceGET(
             `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, 
-            "completedAssessments", 
-            this
+            "completed_assessments", 
+            this,
+            { dest: "completedAssessments" }
         );
 
             this.setState({
