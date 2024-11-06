@@ -66,17 +66,83 @@ class Csv_data(Enum):
     COMP_DATE = 8
 
     LAG_TIME = 9
-
+    
     NOTIFICATION = 10
 
     JSON = 11
 
+def create_csv_new(at_id: int) -> str:
+    """
+    Description:
+    Creates the csv file and dumps info into it.
+    File name follows the convention: [0-9]*.csv
+
+    Parameters:
+    at_id: int (The id of an assessment task)
+
+    Return:
+    str
+    """
+    # Assessment_task_name, Completion_date, Rubric_name, AT_type (Team/individual), AT_completer_role (Admin, TA/Instructor, Student), Notification_date    
+
+    # Setting app context and initing the writer.
+    with app.app_context():
+        with io.StringIO() as csvFile:
+            writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
+
+            # Next line is the header line and its values.
+            writer.writerow(
+                ["Assessment_task_name"] +
+                ["Completion_date"]+
+                ["Rubric_name"]+
+                ["AT_type (Team/individual)"] +
+                ["AT_completer_role (Admin[TA/Instructor] / Student)"] +
+                ["Notification_data"]
+            )
+
+           # List of dicts: Each list is another individual in the AT and the dict is there related data. 
+            completed_assessment_data = get_csv_data_by_at_id(at_id)                                            #WARNING: check with the clients to see if they want a certain order.
+            if len(completed_assessment_data) == 0:
+                return csvFile.getvalue()
+            
+            
+            retrive = lambda user, location : completed_assessment_data[user][location]
+            fixed_retrive = lambda location: retrive(0, location)
+            
+            # Populates the next line in the csv file as per the last write.
+            # Use fixed_retrive since the first user will always exist by this point.
+            writer.writerow(
+                [fixed_retrive(Csv_data.AT_NAME.value)]      +
+                [fixed_retrive(Csv_data.COMP_DATE.value)]    + # Ask if client wants something more generic.
+                [fixed_retrive(Csv_data.RUBRIC_NAME.value)]  +
+                ["Team" if fixed_retrive(Csv_data.AT_TYPE.value) else "Individual"] +
+                [fixed_retrive(Csv_data.AT_COMPLETER.value)] +
+                [fixed_retrive(Csv_data.NOTIFICATION.value)]
+            )
+
+            # Labeling column with client desired specifications.
+            writer.writerow(
+                ["Team name"]  +
+                ["First name"] +
+                ["last name"]  +
+                ["Category"]   +
+                ["Rating"]     +
+                ["Observable Characteristics"]  +
+                ["Suggestions for Improvement"] +
+                ["Feedback time lag"]
+            )
+
+            # Going through through each completed user in the AT.
+            #for user in completed_assessment_data:
+            #    sif_oc_data =  get_csv_categories
+
+            return csvFile.getvalue()
 
 def create_csv(at_id: int) -> str:
     """
     Description:
     Creates the csv file and dumps info in to it.
-    File name follows the convention: [0-9]*.csv
+    File name is decided by the caller.
 
     Parameters:
     at_id: int (The id of an assessment task)

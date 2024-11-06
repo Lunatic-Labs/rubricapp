@@ -54,7 +54,7 @@ class ViewAssessmentTasks extends Component {
             const link = document.createElement("a");
             link.download = this.state.downloadedAssessment + ".csv";
             link.href = url;
-            link.setAttribute('download', 'export.csv');
+            link.setAttribute('download', this.props.navbar.state.chosenCourse['course_name']+'.csv');
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;

@@ -44,12 +44,6 @@ def get_completed_assessment_csv() -> dict:
 
         user = get_user(user_id)   # Trigger an error if not exist
 
-        file_name = user.first_name + "_"
-
-        file_name += user.last_name + "_"
-
-        file_name += assessment.assessment_task_name.replace(" ", "_") + ".csv"
-
         csv_data = create_csv(
             assessment_task_id
         )

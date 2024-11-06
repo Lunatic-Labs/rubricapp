@@ -950,7 +950,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     at_id: int (The id of an assessment task)
 
     Return:
-    list[dict][str]
+    list[dict][str]: (List of dicts: Each list is another individual in the AT and the dict is there related data.)
     """
 
     """
@@ -1001,8 +1001,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
             CompletedAssessment.user_id == Feedback.user_id
         )
     ).filter(
-        AssessmentTask.assessment_task_id == at_id,
-        #User.first_name == "Maria"
+        AssessmentTask.assessment_task_id == at_id
     ).all()
 
     return pertinent_assessments
