@@ -2,7 +2,8 @@ import "bootstrap/dist/css/bootstrap.css";
 import React, { Component } from "react";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 import ViewTeams from "./ViewTeams.js";
-import { genericResourceGET, parseUserNames } from "../../../../utility.js";
+import { genericResourceGET, 
+  parseUserNames } from "../../../../utility.js";
 import { Box, Button, Typography } from "@mui/material";
 import Loading from "../../../Loading/Loading.js";
 import SuccessMessage from "../../../Success/SuccessMessage.js";
@@ -16,10 +17,57 @@ class AdminViewTeams extends Component {
       isLoaded: false,
       teams: null,
       users: null,
+      //lastUpdate: Date.now(), 
+      prevTeamsLength: 0,
+
     };
   }
 
   componentDidMount() {
+    // var navbar = this.props.navbar;
+    // var state = navbar.state;
+    // var chosenCourse = state.chosenCourse;
+
+    // genericResourceGET(
+    //   `/team?course_id=${chosenCourse["course_id"]}`,
+    //   "teams",
+    //   this,
+    // );
+
+    // var url = chosenCourse["use_tas"]
+    //   ? `/user?course_id=${chosenCourse["course_id"]}&role_id=4`
+    //   : `/user?uid=${chosenCourse["admin_id"]}`;
+
+    // genericResourceGET(url, "users", this);
+    this.fetchData(); 
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    // if (Date.now() - this.state.lastUpdate > 2000) {
+    //   var navbar = this.props.navbar;
+    //   var state = navbar.state;
+    //   var chosenCourse = state.chosenCourse;
+
+    //   genericResourceGET(
+    //     `/team?course_id=${chosenCourse["course_id"]}`,
+    //     "teams",
+    //     this,
+    //   ).then(() => {
+    //     this.setState({ lastUpdate: Date.now() });
+    //   });
+
+    //   var url = chosenCourse["use_tas"]
+    //     ? `/user?course_id=${chosenCourse["course_id"]}&role_id=4`
+    //     : `/user?uid=${chosenCourse["admin_id"]}`;
+
+    //   genericResourceGET(url, "users", this);
+    // }
+    if (this.state.teams && this.state.teams.length !== this.state.prevTeamsLength) {
+      this.setState({ prevTeamsLength: this.state.teams.length });
+      this.fetchData();
+    }
+  }
+  fetchData = () => {
     var navbar = this.props.navbar;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
@@ -30,23 +78,6 @@ class AdminViewTeams extends Component {
       this,
     );
 
-    var url = chosenCourse["use_tas"]
-      ? `/user?course_id=${chosenCourse["course_id"]}&role_id=4`
-      : `/user?uid=${chosenCourse["admin_id"]}`;
-
-    genericResourceGET(url, "users", this);
-  }
-
-  componentDidUpdate() {
-    var navbar = this.props.navbar;
-    var state = navbar.state;
-    var chosenCourse = state.chosenCourse;
-
-    genericResourceGET(
-      '/team?course_id=' + chosenCourse["course_id"],
-      "teams",
-      this,
-    );
     var url = chosenCourse["use_tas"]
       ? `/user?course_id=${chosenCourse["course_id"]}&role_id=4`
       : `/user?uid=${chosenCourse["admin_id"]}`;

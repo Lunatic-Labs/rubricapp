@@ -25,7 +25,7 @@ class ViewTeams extends Component {
       console.log("assessment tasks should be accessed: ", assessmentTasks);
 
       if (assessmentTasks && assessmentTasks.length > 0) {
-        this.setState({
+        this.props.navbar.setState({
           errorMessage:
             "Cannot delete team. There are associated assessment tasks.",
         });
@@ -45,6 +45,9 @@ class ViewTeams extends Component {
       );
       this.setState({
         teams: updatedTeams,
+        //successMessage: "Team deleted successfully.",
+      });
+      this.props.navbar.setState({
         successMessage: "Team deleted successfully.",
       });
 
