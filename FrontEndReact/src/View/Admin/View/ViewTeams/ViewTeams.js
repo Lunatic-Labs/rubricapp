@@ -35,8 +35,6 @@ class ViewTeams extends Component {
       await genericResourceDELETE(`/team?team_id=${teamId}`, this);
       console.log("team deleted successfully");
 
-      //await this.fetchTeams();
-
       // Update the teams list
       const updatedTeams = this.state.teams.filter(
         (team) => team.team_id !== teamId,
