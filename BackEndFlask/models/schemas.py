@@ -20,11 +20,11 @@ from sqlalchemy import ForeignKey, func, DateTime, Interval
     Blacklist(id, token)
 """
 
-class Role(db.Model): 
+class Role(db.Model):
     __tablename__ = "Role"
     __table_args__ = {'sqlite_autoincrement': True}
     role_id = db.Column(db.Integer, primary_key=True)
-    role_name = db.Column(db.String(100), nullable=False) 
+    role_name = db.Column(db.String(100), nullable=False)
 
 class User(db.Model):
     __tablename__ = "User"
@@ -37,7 +37,7 @@ class User(db.Model):
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
-    has_set_password = db.Column(db.Boolean, nullable=False) 
+    has_set_password = db.Column(db.Boolean, nullable=False)
     reset_code = db.Column(db.String(6), nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False)
 
@@ -57,13 +57,13 @@ class Category(db.Model):
     description = db.Column(db.String(255), nullable=False)
     rating_json = db.Column(db.JSON, nullable=False)
 
-class RubricCategory(db.Model): 
+class RubricCategory(db.Model):
     __tablename__ = "RubricCategories"
     __table_args__ = {'sqlite_autoincrement': True}
     rubric_category_id = db.Column(db.Integer, primary_key=True)
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id), nullable=False)
     category_id = db.Column(db.Integer, ForeignKey(Category.category_id), nullable=False)
-    
+
 class ObservableCharacteristic(db.Model):
     __tablename__ = "ObservableCharacteristic"
     __table_args__ = {'sqlite_autoincrement': True}
@@ -97,10 +97,10 @@ class UserCourse(db.Model):
     user_course_id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-    active = db.Column(db.Boolean) 
+    active = db.Column(db.Boolean)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
 
-class Team(db.Model): # keeps track of default teams for a fixed team scenario 
+class Team(db.Model): # keeps track of default teams for a fixed team scenario
     __tablename__ = "Team"
     __table_args__ = {'sqlite_autoincrement': True}
     team_id = db.Column(db.Integer, primary_key=True)
@@ -116,7 +116,7 @@ class TeamUser(db.Model):
     team_user_id = db.Column(db.Integer, primary_key=True)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    
+
 class AssessmentTask(db.Model):
     __tablename__ = "AssessmentTask"
     __table_args__ = {'sqlite_autoincrement' : True}
@@ -130,11 +130,12 @@ class AssessmentTask(db.Model):
     show_suggestions = db.Column(db.Boolean, nullable=False)
     show_ratings = db.Column(db.Boolean, nullable=False)
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
-    comment = db.Column(db.String(3000), nullable=True) 
+    comment = db.Column(db.String(3000), nullable=True)
     create_team_password = db.Column(db.String(25), nullable=True)
     number_of_teams = db.Column(db.Integer, nullable=True)
     max_team_size = db.Column(db.Integer, nullable=True)
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
+    locked = db.Column(db.Boolean, nullable=False)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"

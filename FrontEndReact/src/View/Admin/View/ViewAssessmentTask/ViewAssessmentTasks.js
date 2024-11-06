@@ -6,9 +6,10 @@ import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
+import { formatDueDate, genericResourceGET, genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import LockIcon from '@mui/icons-material/Lock';
 
 class ViewAssessmentTasks extends Component {
     constructor(props) {
@@ -21,7 +22,8 @@ class ViewAssessmentTasks extends Component {
             downloadedAssessment: null,
             exportButtonId: {},
             completedAssessments: null,
-            assessmentTasks: null  
+            assessmentTasks: null,
+            lockStatus: {},
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
@@ -42,6 +44,28 @@ class ViewAssessmentTasks extends Component {
                 exportButtonId: newExportButtonJSON
             });
         }
+
+        // Function for toggling the lock icon. Also performs an API call
+        // to the DB.
+        this.toggleLockStatus = (assessmentTaskId) => {
+            this.setState((prevState) => {
+                const newLockStatus = { ...prevState.lockStatus };
+                newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
+                return { lockStatus: newLockStatus };
+            }, () => {
+                // wait until after it updates...
+                const lockStatus = this.state.lockStatus[assessmentTaskId];
+                const courseId = this.props.navbar.state.chosenCourse.course_id;
+
+                genericResourcePUT(
+                    `/assessment_task_toggle_lock?lockStatus=${lockStatus}&assessmentTaskId=${assessmentTaskId}`,
+                    this,
+                    JSON.stringify({
+                        locked: lockStatus,
+                    })
+                );
+            });
+        };
     }
 
     componentDidUpdate () {
@@ -78,7 +102,7 @@ class ViewAssessmentTasks extends Component {
             "assessmentTasks",
             this
         );
-        
+
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}&only_course=true`,
             "completedAssessments",
@@ -92,13 +116,15 @@ class ViewAssessmentTasks extends Component {
             return <Loading />;
         }
         const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
-        
+
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
         var roleNames = adminViewAssessmentTask.roleNames;
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
+
+        const lockStatus = this.state.lockStatus;
 
         let assessmentTasksToDueDates = {};
 
@@ -289,21 +315,29 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
                             const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
-        
+                            const isLocked = lockStatus[assessmentTaskId] ?? selectedTask?.locked;
+
                             if (selectedTask) {
                                 return (
-                                    <IconButton
-                                        id=""
-                                        onClick={() => {
-                                            setCompleteAssessmentTaskTabWithID(selectedTask);
-                                        }}
-                                        aria-label='viewCompletedAssessmentIconButton'
-                                    >
-                                    <VisibilityIcon sx={{color:"black"}} />
-                                    </IconButton>
+                                    <>
+                                        <IconButton
+                                            id=""
+                                            onClick={() => {
+                                                setCompleteAssessmentTaskTabWithID(selectedTask);
+                                            }}
+                                            aria-label='viewCompletedAssessmentIconButton'
+                                        >
+                                        <VisibilityIcon sx={{color:"black"}} />
+                                        </IconButton>
+
+                                        {/* Toggle lock/unlock button */}
+                                        <IconButton onClick={() => this.toggleLockStatus(assessmentTaskId)}>
+                                            {isLocked ? <LockIcon sx={{ color: "black" }} /> : <LockOpenIcon sx={{ color: "black" }} />}
+                                        </IconButton>
+                                    </>
                                 );
                             }
-                        } 
+                        }
                         return(
                             <>
                                 {"N/A"}
@@ -311,26 +345,6 @@ class ViewAssessmentTasks extends Component {
                         )
                     }
                 }
-            },
-            {
-                name: "lock",
-                label: "Lock",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (assessmentTaskId) => {
-                        return(
-                            <>
-                                <IconButton aria-label='unlock'>
-                                    <LockOpenIcon />
-                                </IconButton>
-                            </>
-                        )
-                    }
-                }
-
             },
             {
                 name: "assessment_task_id",
@@ -361,7 +375,7 @@ class ViewAssessmentTasks extends Component {
                                 </Tooltip>
                             );
                         }
-            
+
                         return (
                             <Button
                                 className='primary-color'
@@ -423,7 +437,7 @@ class ViewAssessmentTasks extends Component {
                         )
                     }
                 }
-            }
+            },
         ]
 
         const options = {
