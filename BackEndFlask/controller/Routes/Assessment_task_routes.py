@@ -22,7 +22,8 @@ from models.assessment_task import (
     get_assessment_tasks,
     get_assessment_task,
     create_assessment_task,
-    replace_assessment_task
+    replace_assessment_task,
+    toggle_lock_status,
 )
 
 from models.completed_assessment import (
@@ -253,6 +254,22 @@ def update_assessment_task():
         )
 
 
+# @bp.route('/assessment_task/<int:assessment_task_id>/toggle_lock_status', methods=['PUT'])
+@bp.route('/assessment_task_toggle_lock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def toggle_lock_status_route():
+    try:
+        lockStatus = request.args.get('lockStatus')
+        assessmentTaskId = request.args.get('assessmentTaskId')
+        msg = f"\n\n\tlockStatus = {lockStatus}\n\n\tassessmentTaskId = {assessmentTaskId}"
+        return create_bad_response(f"{msg}", "toggle_lock_status_route", 400)
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred copying course assessments {e}", "assessment_tasks", 400
+        )
+
 
 # /assessment_task/ POST
 # copies over assessment_tasks from an existing course to another course
@@ -314,7 +331,8 @@ class AssessmentTaskSchema(ma.Schema):
             "comment",
             "number_of_teams",
             "max_team_size",
-            "notification_sent"
+            "notification_sent",
+            "locked",
         )
 
 
