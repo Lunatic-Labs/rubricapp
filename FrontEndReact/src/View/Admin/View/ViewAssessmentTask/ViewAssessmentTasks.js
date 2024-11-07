@@ -27,8 +27,9 @@ class ViewAssessmentTasks extends Component {
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
             let promise = genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}`,
-                "csvCreation",
-                this
+                "csv_creation",
+                this,
+                {dest: "csvCreation"}
             );
 
             promise.then(result => {
@@ -78,14 +79,16 @@ class ViewAssessmentTasks extends Component {
 
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
-            "assessmentTasks",
-            this
+            "assessment_tasks",
+            this,
+            {dest: "assessmentTasks"}
         );
         
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}&only_course=true`,
-            "completedAssessments",
-            this
+            "completed_assessments",
+            this,
+            {dest: "completedAssessments"}
         );
     }
 
