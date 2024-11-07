@@ -69,7 +69,7 @@ class CompleteAssessmentTask extends Component {
             
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-                "completedAssessments", this
+                "completed_assessments", this, {dest: "completedAssessments"}
             );
         }
     }
@@ -128,7 +128,7 @@ class CompleteAssessmentTask extends Component {
         if (chosenAssessmentTask["role_id"] === 5) {
             genericResourceGET(
                 `/team_by_user?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
-                "team", this
+                "teams", this, {dest: "team"}
             );
         }
 
@@ -153,7 +153,7 @@ class CompleteAssessmentTask extends Component {
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-            "completedAssessments", this
+            "completed_assessments", this, {dest: "completedAssessments"}
         );
         
         const checkinEventSource = createEventSource(
@@ -220,6 +220,11 @@ class CompleteAssessmentTask extends Component {
 
         } 
         var role_name=roles["role_name"]
+        if (role_name === "Student" && !team){
+            return (
+                <Loading />
+            );
+        }
         if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
             return (
                 <Loading />

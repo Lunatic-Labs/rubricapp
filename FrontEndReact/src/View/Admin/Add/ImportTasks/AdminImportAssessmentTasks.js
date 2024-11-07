@@ -48,11 +48,11 @@ class AdminImportAssessmentTask extends Component {
             }
 
             genericResourcePOST(
-                `/assessment_task_copy?source_course_id=${selectedCourse}&destination_course_id=${chosenCourse["course_id"]}`,
-                this, {}
-            );
-
-            navbar.confirmCreateResource("AssessmentTask");
+                `/assessment_task_copy?source_course_id=${selectedCourse}&destination_course_id=${chosenCourse["course_id"]}`,this, {}).then((result) => {
+                if (result !== undefined && result.errorMessage === null) {
+                    navbar.confirmCreateResource("AssessmentTask");
+                }
+            });
         }
     }
 

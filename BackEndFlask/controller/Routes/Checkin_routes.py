@@ -16,6 +16,9 @@ from models.queries import (
 CHECK_IN_REDIS_CHANNEL = "check_in_updated"
 
 @bp.route('/checkin', methods = ['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def checkin_user():
     # needs json with AT id, user id, and team id
     try:
@@ -40,6 +43,9 @@ def checkin_user():
         return create_bad_response(f"An error occurred checking in user: {e}", "checkin", 400)
 
 @bp.route('/checkin', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def get_checked_in():
     # given an asessment task id, return checked in information
     try:

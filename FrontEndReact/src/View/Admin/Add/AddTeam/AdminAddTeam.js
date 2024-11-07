@@ -7,7 +7,7 @@ import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../
 import { FormControl, MenuItem, InputLabel, Select } from "@mui/material";
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
-
+import Loading from "../../../Loading/Loading.js";
 
 
 class AdminAddTeam extends Component {
@@ -110,13 +110,19 @@ class AdminAddTeam extends Component {
                 active_until: null,
             });
     
+            let promise;
+
             if (team === null && addTeam === null) {
-                genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body);
+                promise = genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body);
             } else if (team !== null && addTeam === false) {
-                genericResourcePUT(`/team?team_id=${team.team_id}`, this, body);
+                promise = genericResourcePUT(`/team?team_id=${team.team_id}`, this, body);
             }
-    
-            confirmCreateResource("Team");
+            
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("Team");
+                }
+            });
         }
     };
 
@@ -144,6 +150,11 @@ class AdminAddTeam extends Component {
         var instructors = []; 
 
         if (this.state.isLoaded){
+            if (this.state.users === null) {
+                return (
+                    <Loading />
+                );
+            }
             instructors = this.state.users.map((item) => { 
                 return {
                     id: item["user_id"],

@@ -25,21 +25,25 @@ class ViewAssessmentTasks extends Component {
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
-            genericResourceGET(
+            let promise = genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}`,
-                "csvCreation",
-                this
+                "csv_creation",
+                this,
+                {dest: "csvCreation"}
             );
 
-            var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
 
-            var newExportButtonJSON = this.state.exportButtonId;
-
-            newExportButtonJSON[assessmentName] = exportButtonId;
-
-            this.setState({
-                downloadedAssessment: assessmentName,
-                exportButtonId: newExportButtonJSON
+                    var newExportButtonJSON = this.state.exportButtonId;
+        
+                    newExportButtonJSON[assessmentName] = exportButtonId;
+        
+                    this.setState({
+                        downloadedAssessment: assessmentName,
+                        exportButtonId: newExportButtonJSON
+                    });                }
             });
         }
     }
@@ -75,14 +79,16 @@ class ViewAssessmentTasks extends Component {
 
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
-            "assessmentTasks",
-            this
+            "assessment_tasks",
+            this,
+            {dest: "assessmentTasks"}
         );
         
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}&only_course=true`,
-            "completedAssessments",
-            this
+            "completed_assessments",
+            this,
+            {dest: "completedAssessments"}
         );
     }
 

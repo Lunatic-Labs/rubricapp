@@ -21,7 +21,7 @@ class AdminViewTeamRatings extends Component {
   componentDidMount() {
     genericResourceGET(
         `/assessment_task?admin_id=${this.props.chosenCourse["admin_id"]}`,
-        "assessmentTasks", this
+        "assessment_tasks", this, {dest: "assessmentTasks"}
     );
   }
 

@@ -89,6 +89,9 @@ def get_one_team():
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
 
 @bp.route('/team/nonfull-adhoc', methods = ["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def get_nonfull_adhoc_teams():
     # given an assessment task id, return list of team ids that have not reached the max team size
     try:
