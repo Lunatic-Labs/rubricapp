@@ -202,7 +202,7 @@ class ViewAssessmentTasks extends Component {
 
                                     aria-label="startAssessmentTasksButton"
                                 >
-                                    START
+                                    {atIsLocked ? <>LOCKED</> : <>START</>}
                                 </Button>
                             </Box>
                         )
