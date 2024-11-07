@@ -17,12 +17,11 @@ class AdminViewTeams extends Component {
       isLoaded: false,
       teams: null,
       users: null,
-      //lastUpdate: Date.now(), 
-      prevTeamsLength: 0,
 
     };
   }
-  fetchData = () => {
+
+  componentDidMount() {
     var navbar = this.props.navbar;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
@@ -40,16 +39,25 @@ class AdminViewTeams extends Component {
     genericResourceGET(url, "users", this);
   }
 
-  componentDidMount() {
-    this.fetchData(); 
+
+  componentDidUpdate(){
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var chosenCourse = state.chosenCourse;
+
+    genericResourceGET(
+      `/team?course_id=${chosenCourse["course_id"]}`,
+      "teams",
+      this,
+    );
+
+    var url = chosenCourse["use_tas"]
+      ? `/user?course_id=${chosenCourse["course_id"]}&role_id=4`
+      : `/user?uid=${chosenCourse["admin_id"]}`;
+
+    genericResourceGET(url, "users", this);
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (this.state.teams && this.state.teams.length !== this.state.prevTeamsLength) {
-      this.setState({ prevTeamsLength: this.state.teams.length });
-      this.fetchData();
-    }
-  }
 
 
   render() {
