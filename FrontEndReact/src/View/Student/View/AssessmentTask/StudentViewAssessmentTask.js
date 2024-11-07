@@ -103,6 +103,8 @@ class StudentViewAssessmentTask extends Component {
                 )
             );
 
+            console.log("uncompletedAssessments: ", uncompletedAssessments);
+
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
