@@ -254,6 +254,7 @@ def update_assessment_task():
 @AuthCheck()
 def toggle_lock_status_route():
     try:
+        # TODO: deprecate _lockStatus
         _lockStatus = request.args.get('lockStatus')
         assessmentTaskId = request.args.get('assessmentTaskId')
 
