@@ -248,17 +248,22 @@ def update_assessment_task():
         )
 
 
-# @bp.route('/assessment_task/<int:assessment_task_id>/toggle_lock_status', methods=['PUT'])
 @bp.route('/assessment_task_toggle_lock', methods=['PUT'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
 def toggle_lock_status_route():
     try:
-        lockStatus = request.args.get('lockStatus')
+        _lockStatus = request.args.get('lockStatus')
         assessmentTaskId = request.args.get('assessmentTaskId')
-        msg = f"\n\n\tlockStatus = {lockStatus}\n\n\tassessmentTaskId = {assessmentTaskId}"
-        return create_bad_response(f"{msg}", "toggle_lock_status_route", 400)
+
+        toggle_lock_status(assessmentTaskId)
+
+        return create_good_response(
+            assessment_task_schema.dump(get_assessment_task(assessmentTaskId)),
+            201,
+            "assessment_tasks"
+        )
     except Exception as e:
         return create_bad_response(
             f"An error occurred copying course assessments {e}", "assessment_tasks", 400
