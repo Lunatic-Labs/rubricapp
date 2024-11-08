@@ -16,6 +16,7 @@ from core import app
 from models.queries import *
 from enum import Enum
 from datetime import datetime
+from collections import deque
 
 def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     """
@@ -90,7 +91,6 @@ def create_csv_new(at_id: int) -> str:
         with io.StringIO() as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
 
-            # Next line is the header line and its values.
             writer.writerow(
                 ["Assessment_task_name"] +
                 ["Completion_date"]+
@@ -106,8 +106,7 @@ def create_csv_new(at_id: int) -> str:
                 return csvFile.getvalue()
             
             
-            retrive = lambda user, location : completed_assessment_data[user][location]
-            fixed_retrive = lambda location: retrive(0, location)
+            fixed_retrive = lambda location: completed_assessment_data[0][location]
             
             # Populates the next line in the csv file as per the last write.
             # Use fixed_retrive since the first user will always exist by this point.
@@ -120,7 +119,6 @@ def create_csv_new(at_id: int) -> str:
                 [fixed_retrive(Csv_data.NOTIFICATION.value)]
             )
 
-            # Labeling column with client desired specifications.
             writer.writerow(
                 ["Team name"]  +
                 ["First name"] +
@@ -132,9 +130,55 @@ def create_csv_new(at_id: int) -> str:
                 ["Feedback time lag"]
             )
 
-            # Going through through each completed user in the AT.
-            #for user in completed_assessment_data:
-            #    sif_oc_data =  get_csv_categories
+            # Going through each individuals information.
+            for individual in completed_assessment_data:
+                sfi_oc_data = get_csv_categories(individual[Csv_data.RUBRIC_ID.value])
+
+                lag = ""
+                try:
+                    lag = rounded_hours_difference(individual[Csv_data.COMP_DATE.value], individual[Csv_data.LAG_TIME.value])
+                except:
+                    pass
+                
+                # This section deals with formating and outputting the data.
+                for category in individual[Csv_data.JSON.value]:
+                    if category == "done" or category == "comments": # Yes those two are "categories" at least from how the data is pulled.
+                        continue
+                    
+                    ocs = individual[Csv_data.JSON.value][category]["observable_characteristics"]
+                    sfis = individual[Csv_data.JSON.value][category]["suggestions"]
+
+                    # Little queue buffer to help organize the final output.
+                    ocs_queue = deque()
+                    sfis_queue = deque()
+
+                    largest_Size = lambda x, y: max(len(x), len(y))
+
+                    for i in range(0, largest_Size(ocs, sfis)):
+                        if i < len(ocs) and ocs[i] == '1':
+                            ocs_queue.append("ocs")
+                        if i < len(sfis) and sfis[i] == '1':
+                            sfis_queue.append("sfis")
+
+                    write_out_oc = ""
+                    write_out_sfi = ""
+
+                    # Write out is dependent on if there are any ocs or sfis to write.
+                    for i in range(0, largest_Size(ocs_queue, sfis_queue)):
+
+                        write_out_oc = "" if len(ocs_queue) == 0 else ocs_queue.popleft()
+                        write_out_sfi = "" if len(sfis_queue) == 0 else sfis_queue.popleft()
+                        
+                        writer.writerow(
+                            [individual[Csv_data.TEAM_NAME.value]]  +
+                            [individual[Csv_data.FIRST_NAME.value]] +
+                            [individual[Csv_data.LAST_NAME.value]]  +
+                            [category] +
+                            [individual[Csv_data.JSON.value][category]["rating"]] +
+                            [write_out_oc] +
+                            [write_out_sfi] +
+                            [lag]
+                        )
 
             return csvFile.getvalue()
 
