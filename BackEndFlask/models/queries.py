@@ -1,3 +1,4 @@
+import contextlib
 from core import db
 from models.utility import error_log
 from models.schemas import *
@@ -988,7 +989,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     ).outerjoin(
         Team,
         CompletedAssessment.team_id == Team.team_id
-    ).join(
+    ).outerjoin(
         User,
         CompletedAssessment.user_id == User.user_id
     ).join(

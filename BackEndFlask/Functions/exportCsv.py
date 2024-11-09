@@ -31,7 +31,14 @@ def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
 
     Return:
     Result: int (The lag_time between completed and seen)
+
+    Exception:
+    TypeError: Both arguements must be datetimes.
     """
+
+    if not isinstance(seen, datetime): raise TypeError(f"Expected: {datetime}, got {type(seen)} for seen.")
+    if not isinstance (completed, datetime): raise TypeError(f"Expected: {datetime}, got {type(completed)} for completed.")
+
     time_delta = seen - completed
 
     hours_remainder = divmod( divmod( time_delta.total_seconds(), 60 )[0], 60)
@@ -101,10 +108,9 @@ def create_csv_new(at_id: int) -> str:
             )
 
            # List of dicts: Each list is another individual in the AT and the dict is there related data. 
-            completed_assessment_data = get_csv_data_by_at_id(at_id)                                            #WARNING: check with the clients to see if they want a certain order.
+            completed_assessment_data = get_csv_data_by_at_id(at_id)
             if len(completed_assessment_data) == 0:
                 return csvFile.getvalue()
-            
             
             fixed_retrive = lambda location: completed_assessment_data[0][location]
             
@@ -136,10 +142,14 @@ def create_csv_new(at_id: int) -> str:
 
                 lag = ""
                 try:
+                    # Possible that a particular individual has not yet seen so its a Nonetype in the backend.
                     lag = rounded_hours_difference(individual[Csv_data.COMP_DATE.value], individual[Csv_data.LAG_TIME.value])
-                except:
+                except TypeError:
                     pass
                 
+                #V2
+                #notedNames = False
+
                 # This section deals with formating and outputting the data.
                 for category in individual[Csv_data.JSON.value]:
                     if category == "done" or category == "comments": # Yes those two are "categories" at least from how the data is pulled.
@@ -169,6 +179,7 @@ def create_csv_new(at_id: int) -> str:
                         write_out_oc = "" if len(ocs_queue) == 0 else ocs_queue.popleft()
                         write_out_sfi = "" if len(sfis_queue) == 0 else sfis_queue.popleft()
                         
+                        #V1
                         writer.writerow(
                             [individual[Csv_data.TEAM_NAME.value]]  +
                             [individual[Csv_data.FIRST_NAME.value]] +
@@ -179,6 +190,40 @@ def create_csv_new(at_id: int) -> str:
                             [write_out_sfi] +
                             [lag]
                         )
+
+                        #V2
+                        #if(i == 0 and not notedNames):
+                        #    writer.writerow(
+                        #    [individual[Csv_data.TEAM_NAME.value]]  +
+                        #    [individual[Csv_data.FIRST_NAME.value]] +
+                        #    [individual[Csv_data.LAST_NAME.value]]  +
+                        #    [category] +
+                        #    [individual[Csv_data.JSON.value][category]["rating"]] +
+                        #    [write_out_oc] +
+                        #    [write_out_sfi] +
+                        #    [lag])
+                        #    notedNames = True
+                        #elif(i == 0 and notedNames):
+                        #    writer.writerow(
+                        #    ['']  +
+                        #    [''] +
+                        #    ['']  +
+                        #    [category] +
+                        #    [individual[Csv_data.JSON.value][category]["rating"]] +
+                        #    [write_out_oc] +
+                        #    [write_out_sfi] +
+                        #    [''])
+                        #else:
+                        #    writer.writerow(
+                        #        ['']+
+                        #        ['']+
+                        #        ['']+
+                        #        ['']+
+                        #        ['']+
+                        #        [write_out_oc]  +
+                        #        [write_out_sfi] +
+                        #        ['']
+                        #    )
 
             return csvFile.getvalue()
 
