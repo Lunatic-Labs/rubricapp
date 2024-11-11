@@ -3,7 +3,6 @@ from models.utility import error_log
 from models.schemas import *
 from sqlalchemy.sql import text
 from sqlalchemy import func
-import contextlib
 
 from models.team_user import (
     create_team_user,
@@ -1031,60 +1030,52 @@ def get_csv_categories(rubric_id: int, user_id: int, at_id: int, category_name: 
     Note that a better choice would be to create a trigger, command, or virtual table
     for performance reasons later down the road. The decision depends on how the
     database evolves from now.
-    Additional note: There are a few ways to do this task. One of them is to make ocs and sfis two
-        different queries but then thats two hits to the database or one slightly more complex query.
-        Moreover, if it is a complex query, then you allow the database to make more powerfull optimizations.
     """
 
-    # Defining row_number functions.
-    oc_row_number = func.row_number().over( 
-        partition_by=ObservableCharacteristic.observable_characteristic_text)
-    sfi_row_number = func.row_number().over(
-        partition_by=SuggestionsForImprovement.suggestion_text) 
-
-    # Createing a subquery that joins sfis, ocs, and category. Here there is still repeated rows.
-    subquery = db.session.query( 
-        ObservableCharacteristic.observable_characteristic_text.label('oc'), 
-        SuggestionsForImprovement.suggestion_text.label('sfi'), 
-        oc_row_number.label('oc_row'), 
-        sfi_row_number.label('sfi_row'), 
-        Category.category_id.label('cat_id') 
+    ocs = db.session.query(
+        ObservableCharacteristic.observable_characteristic_text
     ).join(
-        Category, 
-        ObservableCharacteristic.category_id == Category.category_id 
+        Category,
+        ObservableCharacteristic.category_id == Category.category_id
     ).join(
-        SuggestionsForImprovement, 
-        SuggestionsForImprovement.category_id == Category.category_id 
-    ).filter(
-        Category.category_name == category_name
-    ).subquery()
-    
-    # Main query that eliminates the repetition from the previous one.
-    main_query = db.session.query( 
-    case( 
-        (subquery.c.oc_row == 1, subquery.c.oc), else_=None 
-    ).label('oc'), 
-    case( 
-        (subquery.c.sfi_row == 1, subquery.c.sfi), else_=None 
-    ).label('sfi'),
-    subquery.c.cat_id
-    ).join(
-        RubricCategory, 
-        RubricCategory.category_id == subquery.c.cat_id
+        RubricCategory,
+        RubricCategory.category_id == Category.category_id
     ).join(
         AssessmentTask,
-        AssessmentTask.rubric_id == RubricCategory.rubric_id,
+        AssessmentTask.rubric_id == RubricCategory.rubric_id
     ).join(
         CompletedAssessment,
         CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
-    ).filter( 
-        (subquery.c.oc_row == 1) | (subquery.c.sfi_row == 1), # Filtering out rows where rows have two Nonetypes.
-        CompletedAssessment.assessment_task_id == at_id,
-        RubricCategory.rubric_id == rubric_id,
-        CompletedAssessment.user_id == user_id
-    )
+    ).filter(
+        Category.category_name == category_name,
+        CompletedAssessment.user_id == user_id,
+        AssessmentTask.assessment_task_id == at_id,
+        RubricCategory.rubric_id == rubric_id
+    ).order_by(
+        ObservableCharacteristic.observable_characteristics_id
+    ).all()
 
-    results = main_query.all()
+    sfis = db.session.query(
+        SuggestionsForImprovement.suggestion_text
+    ).join(
+        Category,
+        SuggestionsForImprovement.category_id == Category.category_id
+    ).join(
+        RubricCategory,
+        RubricCategory.category_id == Category.category_id
+    ).join(
+        AssessmentTask,
+        AssessmentTask.rubric_id == RubricCategory.rubric_id
+    ).join(
+        CompletedAssessment,
+        CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
+    ).filter(
+        Category.category_name == category_name,
+        CompletedAssessment.user_id == user_id,
+        AssessmentTask.assessment_task_id == at_id,
+        RubricCategory.rubric_id == rubric_id
+    ).order_by(
+        SuggestionsForImprovement.suggestion_id
+    ).all()
 
-    return "sdfsd"
-    
+    return ocs,sfis

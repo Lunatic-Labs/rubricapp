@@ -152,12 +152,10 @@ def create_csv(at_id: int) -> str:
 
                 # This section deals with formating and outputting the data.
                 for category in individual[Csv_data.JSON.value]:
+  
                     if category == "done" or category == "comments": # Yes those two are "categories" at least from how the data is pulled.
-                        continue
-                
-                    sfi_oc_data = get_csv_categories(individual[Csv_data.RUBRIC_ID.value], individual[Csv_data.USER_ID.value], at_id, category)
-                    
-                    
+                        continue                  
+
                     ocs = individual[Csv_data.JSON.value][category]["observable_characteristics"]
                     sfis = individual[Csv_data.JSON.value][category]["suggestions"]
 
@@ -165,13 +163,22 @@ def create_csv(at_id: int) -> str:
                     ocs_queue = deque()
                     sfis_queue = deque()
 
+                    # Fetch related oc and sfi data then populate queues
+                    oc_sfi_data = get_csv_categories(individual[Csv_data.RUBRIC_ID.value], individual[Csv_data.USER_ID.value], at_id, category)
+
                     largest_Size = lambda x, y: max(len(x), len(y))
+
+                    #with open('output.txt', 'w') as f:
+                    #    with contextlib.redirect_stdout(f):
+                    #        print(oc_sfi_data[0][1][0])
+
+                    fixed_oc_sfi_retrive = lambda oc_or_sfi, location: oc_sfi_data[oc_or_sfi][location][0]
 
                     for i in range(0, largest_Size(ocs, sfis)):
                         if i < len(ocs) and ocs[i] == '1':
-                            ocs_queue.append("ocs")
+                            ocs_queue.append(fixed_oc_sfi_retrive(0, i))
                         if i < len(sfis) and sfis[i] == '1':
-                            sfis_queue.append("sfis")
+                            sfis_queue.append(fixed_oc_sfi_retrive(1, i))
 
                     write_out_oc = ""
                     write_out_sfi = ""
