@@ -1008,13 +1008,64 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     return pertinent_assessments
 
 
-def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
+# def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
+#     """
+#     Description:
+#     Returns the sfi and the oc data to fill out the csv file.
+    
+#     Parameters:
+#     rubric_id : int (The id of a rubric)
+
+#     Return: tuple two  Dict [Dict] [str] (All of the sfi and oc data)
+#     """
+
+#     """
+#     Note that a better choice would be to create a trigger, command, or virtual table
+#     for performance reasons later down the road. The decision depends on how the
+#     database evolves from now.
+#     """
+#     sfi_data = db.session.query(
+#         RubricCategory.rubric_id,
+#         SuggestionsForImprovement.suggestion_text
+#     ).join(
+#         Category,
+#         Category.category_id == RubricCategory.rubric_category_id
+#     ).outerjoin(
+#         SuggestionsForImprovement,
+#         Category.category_id == SuggestionsForImprovement.category_id
+#     ).filter(
+#         RubricCategory.rubric_id == rubric_id
+#     ).order_by(
+#         RubricCategory.rubric_id
+#     ).all()
+
+#     oc_data = db.session.query(
+#         RubricCategory.rubric_id,
+#         ObservableCharacteristic.observable_characteristic_text
+#     ).join(
+#         Category,
+#         Category.category_id == RubricCategory.rubric_category_id
+#     ).outerjoin(
+#         ObservableCharacteristic,
+#         Category.category_id == ObservableCharacteristic.category_id
+#     ).filter(
+#         RubricCategory.rubric_id == rubric_id
+#     ).order_by(
+#         RubricCategory.rubric_id
+#     ).all()
+
+#     return sfi_data,oc_data
+
+def get_csv_categories(rubric_id,user_id,at_id,category_name: int) -> tuple[dict[str],dict[str]]:
     """
     Description:
     Returns the sfi and the oc data to fill out the csv file.
     
     Parameters:
     rubric_id : int (The id of a rubric)
+    user_id : int (The id of the current logged student user)
+    at_id: int (The id of an assessment task)
+    category_name : int ()
 
     Return: tuple two  Dict [Dict] [str] (All of the sfi and oc data)
     """
@@ -1024,34 +1075,29 @@ def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
     for performance reasons later down the road. The decision depends on how the
     database evolves from now.
     """
-    sfi_data = db.session.query(
-        RubricCategory.rubric_id,
+
+    category_data = db.session.query(
+        ObservableCharacteristic.observable_characteristic_text,
         SuggestionsForImprovement.suggestion_text
-    ).join(
+    ).innerjoin(
         Category,
-        Category.category_id == RubricCategory.rubric_category_id
-    ).outerjoin(
-        SuggestionsForImprovement,
+        Category.category_id == ObservableCharacteristic.category_id,
         Category.category_id == SuggestionsForImprovement.category_id
+    ).innerjoin(
+        RubricCategory,
+        RubricCategory.category_id == Category.category_id
+    ).innerjoin(
+        AssessmentTask,
+        AssessmentTask.rubric_id == RubricCategory.rubric_id
+    ).innerjoin(
+        CompletedAssessment,
+        CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
     ).filter(
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        RubricCategory.rubric_id
+        Category.category_name == category_name,
+        CompletedAssessment.user_id == user_id,
+        Rubric.rubric_id == rubric_id,
+        AssessmentTask.assessment_task_id == at_id
     ).all()
 
-    oc_data = db.session.query(
-        RubricCategory.rubric_id,
-        ObservableCharacteristic.observable_characteristic_text
-    ).join(
-        Category,
-        Category.category_id == RubricCategory.rubric_category_id
-    ).outerjoin(
-        ObservableCharacteristic,
-        Category.category_id == ObservableCharacteristic.category_id
-    ).filter(
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        RubricCategory.rubric_id
-    ).all()
-
-    return sfi_data,oc_data
+    return category_data
+    
