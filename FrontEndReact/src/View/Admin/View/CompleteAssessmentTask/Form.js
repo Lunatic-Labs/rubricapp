@@ -450,7 +450,15 @@ class Form extends Component {
 
                                 [`& .MuiTabs-indicator`]: { 
                                     display: 'none' 
-                                }
+                                },
+
+                                '& .MuiTab-root': {
+                                    border: '2px solid',
+                                    '&.Mui-selected': {
+                                        backgroundColor: '#D9D9D9',
+                                        color: 'inherit',
+                                    }
+                                },
                             }}
                         >
                             {this.state.categoryList}
