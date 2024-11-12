@@ -76,21 +76,21 @@ def stream_checked_in_events():
         assessment_task_id = int(request.args.get("assessment_task_id"))
         
         def encode_message():
-            checkins = get_all_checkins_for_assessment(assessment_task_id)
-            checkins_json = json.dumps(checkins_schema.dump(checkins))
-            
-            return f"data: {checkins_json}\n\n"
+            with app.app_context():
+                checkins = get_all_checkins_for_assessment(assessment_task_id)
+                checkins_json = json.dumps(checkins_schema.dump(checkins))
+                
+                return f"data: {checkins_json}\n\n"
         
         def check_in_stream():
-            with app.app_context():
-                with red.pubsub() as pubsub:
-                    pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
-                    
-                    yield encode_message()
-                    
-                    for msg in pubsub.listen():
-                        if msg["type"] == "message" and str(msg["data"]) == str(assessment_task_id):
-                            yield encode_message()
+            with red.pubsub() as pubsub:
+                pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
+                
+                yield encode_message()
+                
+                for msg in pubsub.listen():
+                    if msg["type"] == "message" and str(msg["data"]) == str(assessment_task_id):
+                        yield encode_message()
 
         return flask.Response(check_in_stream(), mimetype="text/event-stream", status=200)
 
