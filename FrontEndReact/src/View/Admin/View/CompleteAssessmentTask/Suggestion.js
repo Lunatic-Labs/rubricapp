@@ -23,6 +23,8 @@ class Suggestion extends Component {
 
   render() {
     const handleChange = () => {
+      if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
+      
       this.setState((prevState) => ({
         checked: !prevState.checked,
       }));
@@ -50,7 +52,7 @@ class Suggestion extends Component {
 
         onClick={handleChange}
 
-        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
+        disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
       >
         <Checkbox
           sx={{
@@ -64,7 +66,7 @@ class Suggestion extends Component {
 
           checked={this.state.checked}
 
-          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
+          disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
         />
 
         <label>{this.props.suggestion}</label>
