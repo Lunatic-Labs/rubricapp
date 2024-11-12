@@ -220,7 +220,7 @@ class CompleteAssessmentTask extends Component {
 
         } 
         var role_name=roles["role_name"]
-        if (role_name === "Student" && !team){
+        if (role_name === "Student" && this.state.unitOfAssessment && !team){
             return (
                 <Loading />
             );
