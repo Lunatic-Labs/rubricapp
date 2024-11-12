@@ -147,7 +147,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
-                            //assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
+                            assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
 
                         return(

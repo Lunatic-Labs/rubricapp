@@ -241,11 +241,6 @@ class AdminAddAssessmentTask extends Component {
         }
     };
 
-    hasErrors = () => {
-        const { errors } = this.state;
-
-        return Object.values(errors).some((error) => !!error);
-    };
 
     render() {
         var navbar = this.props.navbar;
@@ -507,11 +502,19 @@ class AdminAddAssessmentTask extends Component {
 
                                                     <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
 
+                                                    <MenuItem value={"EDT"} aria-label="addAssessmentEstRadioOption" >EDT</MenuItem>
+
                                                     <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
+
+                                                    <MenuItem value={"CDT"} aria-label="addAssessmentCstRadioOption" >CDT</MenuItem>
 
                                                     <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
 
+                                                    <MenuItem value={"MDT"} aria-label="addAssessmentMstRadioOption" >MDT</MenuItem>
+
                                                     <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
+
+                                                    <MenuItem value={"PDT"} aria-label="addAssessmentPstRadioOption" >PDT</MenuItem>
                                                 </Select>
                                                 <FormHelperText>{errors.timeZone}</FormHelperText>
                                             </FormControl>

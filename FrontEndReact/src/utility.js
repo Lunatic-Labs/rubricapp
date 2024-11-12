@@ -242,11 +242,15 @@ export function validPasword(password) {
 // NOTE: This function is used to format the Date so that it doesn't have any timezone issues
 export function formatDueDate(dueDate, timeZone) {
     const timeZoneMap = {
-        "EST": "America/New_York",
-        "CST": "America/Chicago",
-        "MST": "America/Denver",
         "PST": "America/Los_Angeles",
-        "UTC": ""
+        "PDT": "America/Los_Angeles",
+        "MST": "America/Denver",
+        "MDT": "America/Denver",
+        "CST": "America/Chicago",
+        "CDT": "America/Chicago",
+        "EST": "America/New_York",
+        "EDT": "America/New_York",
+        "UTC": "UTC"
     };
 
     const timeZoneId = timeZoneMap[timeZone];
