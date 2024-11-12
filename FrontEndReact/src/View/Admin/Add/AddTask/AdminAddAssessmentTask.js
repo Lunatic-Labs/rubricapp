@@ -502,19 +502,19 @@ class AdminAddAssessmentTask extends Component {
 
                                                     <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
 
-                                                    <MenuItem value={"EDT"} aria-label="addAssessmentEstRadioOption" >EDT</MenuItem>
+                                                    <MenuItem value={"EDT"} aria-label="addAssessmentEdtRadioOption" >EDT</MenuItem>
 
                                                     <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
 
-                                                    <MenuItem value={"CDT"} aria-label="addAssessmentCstRadioOption" >CDT</MenuItem>
+                                                    <MenuItem value={"CDT"} aria-label="addAssessmentCdtRadioOption" >CDT</MenuItem>
 
                                                     <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
 
-                                                    <MenuItem value={"MDT"} aria-label="addAssessmentMstRadioOption" >MDT</MenuItem>
+                                                    <MenuItem value={"MDT"} aria-label="addAssessmentMdtRadioOption" >MDT</MenuItem>
 
                                                     <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
 
-                                                    <MenuItem value={"PDT"} aria-label="addAssessmentPstRadioOption" >PDT</MenuItem>
+                                                    <MenuItem value={"PDT"} aria-label="addAssessmentPdtRadioOption" >PDT</MenuItem>
                                                 </Select>
                                                 <FormHelperText>{errors.timeZone}</FormHelperText>
                                             </FormControl>
