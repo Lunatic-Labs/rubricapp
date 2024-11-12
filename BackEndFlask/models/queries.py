@@ -977,14 +977,15 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
         AssessmentTask.rubric_id,
         Rubric.rubric_name,
         Role.role_name,
+        Team.team_id,
         Team.team_name,
+        CompletedAssessment.user_id,
         User.first_name,
         User.last_name,
         CompletedAssessment.last_update,
         Feedback.feedback_time,
         AssessmentTask.notification_sent,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
-        CompletedAssessment.user_id
     ).join(
         Role,
         AssessmentTask.role_id == Role.role_id,
@@ -1008,11 +1009,13 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
         )
     ).filter(
         AssessmentTask.assessment_task_id == at_id
+    ).order_by(
+        User.user_id,
     ).all()
 
     return pertinent_assessments
 
-def get_csv_categories(rubric_id: int, user_id: int, at_id: int, category_name: str) -> tuple[dict[str],dict[str]]:
+def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, category_name: str) -> tuple[dict[str],dict[str]]:
     """
     Description:
     Returns the sfi and the oc data to fill out the csv file.
@@ -1020,6 +1023,7 @@ def get_csv_categories(rubric_id: int, user_id: int, at_id: int, category_name: 
     Parameters:
     rubric_id : int (The id of a rubric)
     user_id : int (The id of the current logged student user)
+    team_id: int (The id of a team)
     at_id: int (The id of an assessment task)
     category_name : str (The category that the ocs and sfis must relate to.)
 
@@ -1032,50 +1036,36 @@ def get_csv_categories(rubric_id: int, user_id: int, at_id: int, category_name: 
     database evolves from now.
     """
 
-    ocs = db.session.query(
-        ObservableCharacteristic.observable_characteristic_text
-    ).join(
-        Category,
-        ObservableCharacteristic.category_id == Category.category_id
-    ).join(
-        RubricCategory,
-        RubricCategory.category_id == Category.category_id
-    ).join(
-        AssessmentTask,
-        AssessmentTask.rubric_id == RubricCategory.rubric_id
-    ).join(
-        CompletedAssessment,
-        CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
-    ).filter(
-        Category.category_name == category_name,
-        CompletedAssessment.user_id == user_id,
-        AssessmentTask.assessment_task_id == at_id,
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        ObservableCharacteristic.observable_characteristics_id
-    ).all()
+    ocs_sfis_query = [None, None]
+    
+    for i in range(0, 2):
+        ocs_sfis_query[i] = db.session.query(
+            ObservableCharacteristic.observable_characteristic_text if i == 0 else SuggestionsForImprovement.suggestion_text
+        ).join(
+            Category,
+            (ObservableCharacteristic.category_id if i == 0 else SuggestionsForImprovement.category_id) == Category.category_id 
+        ).join(
+            RubricCategory,
+            RubricCategory.category_id == Category.category_id
+        ).join(
+            AssessmentTask,
+            AssessmentTask.rubric_id == RubricCategory.rubric_id
+        ).join(
+            CompletedAssessment,
+            CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
+        ).filter(
+            Category.category_name == category_name,
+            CompletedAssessment.user_id == user_id,
+            AssessmentTask.assessment_task_id == at_id,
+            RubricCategory.rubric_id == rubric_id,
+        ).order_by(
+            ObservableCharacteristic.observable_characteristics_id if i == 0 else SuggestionsForImprovement.suggestion_id
+        )
 
-    sfis = db.session.query(
-        SuggestionsForImprovement.suggestion_text
-    ).join(
-        Category,
-        SuggestionsForImprovement.category_id == Category.category_id
-    ).join(
-        RubricCategory,
-        RubricCategory.category_id == Category.category_id
-    ).join(
-        AssessmentTask,
-        AssessmentTask.rubric_id == RubricCategory.rubric_id
-    ).join(
-        CompletedAssessment,
-        CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
-    ).filter(
-        Category.category_name == category_name,
-        CompletedAssessment.user_id == user_id,
-        AssessmentTask.assessment_task_id == at_id,
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        SuggestionsForImprovement.suggestion_id
-    ).all()
+        if team_id is not None : ocs_sfis_query[i].filter(CompletedAssessment.team_id == team_id)
+    
+    # Executing the query
+    ocs = ocs_sfis_query[0].all()
+    sfis = ocs_sfis_query[1].all()
 
     return ocs,sfis

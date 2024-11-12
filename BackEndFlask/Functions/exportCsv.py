@@ -65,21 +65,23 @@ class Csv_data(Enum):
 
     AT_COMPLETER = 4
 
-    TEAM_NAME = 5
+    TEAM_ID = 5
 
-    FIRST_NAME = 6
+    TEAM_NAME = 6
 
-    LAST_NAME = 7
+    USER_ID = 7
 
-    COMP_DATE = 8
+    FIRST_NAME = 8
 
-    LAG_TIME = 9
+    LAST_NAME = 9
+
+    COMP_DATE = 10
+
+    LAG_TIME = 11
     
-    NOTIFICATION = 10
+    NOTIFICATION = 12
 
-    JSON = 11
-
-    USER_ID = 12
+    JSON = 13
 
 def create_csv(at_id: int) -> str:
     """
@@ -98,8 +100,7 @@ def create_csv(at_id: int) -> str:
     # Setting app context and initing the writer.
     with app.app_context():
         with io.StringIO() as csvFile:
-            writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
-
+            writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL, delimiter=' ')
             writer.writerow(
                 ["Assessment_task_name"] +
                 ["Completion_date"]+
@@ -164,13 +165,13 @@ def create_csv(at_id: int) -> str:
                     sfis_queue = deque()
 
                     # Fetch related oc and sfi data then populate queues
-                    oc_sfi_data = get_csv_categories(individual[Csv_data.RUBRIC_ID.value], individual[Csv_data.USER_ID.value], at_id, category)
+                    oc_sfi_data = get_csv_categories(individual[Csv_data.RUBRIC_ID.value], individual[Csv_data.USER_ID.value], individual[Csv_data.TEAM_ID.value], at_id, category)
+
+                    with open('output.txt', 'w') as f:
+                            with contextlib.redirect_stdout(f):
+                                print(oc_sfi_data)
 
                     largest_Size = lambda x, y: max(len(x), len(y))
-
-                    #with open('output.txt', 'w') as f:
-                    #    with contextlib.redirect_stdout(f):
-                    #        print(oc_sfi_data[0][1][0])
 
                     fixed_oc_sfi_retrive = lambda oc_or_sfi, location: oc_sfi_data[oc_or_sfi][location][0]
 
