@@ -25,21 +25,25 @@ class ViewAssessmentTasks extends Component {
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
-            genericResourceGET(
+            let promise = genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}`,
-                "csvCreation",
-                this
+                "csv_creation",
+                this,
+                {dest: "csvCreation"}
             );
 
-            var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
 
-            var newExportButtonJSON = this.state.exportButtonId;
-
-            newExportButtonJSON[assessmentName] = exportButtonId;
-
-            this.setState({
-                downloadedAssessment: assessmentName,
-                exportButtonId: newExportButtonJSON
+                    var newExportButtonJSON = this.state.exportButtonId;
+        
+                    newExportButtonJSON[assessmentName] = exportButtonId;
+        
+                    this.setState({
+                        downloadedAssessment: assessmentName,
+                        exportButtonId: newExportButtonJSON
+                    });                }
             });
         }
     }
@@ -72,17 +76,19 @@ class ViewAssessmentTasks extends Component {
 
     componentDidMount() {
         const courseId = this.props.navbar.state.chosenCourse.course_id;
-    
+
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
-            "assessmentTasks",
-            this
+            "assessment_tasks",
+            this,
+            {dest: "assessmentTasks"}
         );
         
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}&only_course=true`,
-            "completedAssessments",
-            this
+            "completed_assessments",
+            this,
+            {dest: "completedAssessments"}
         );
     }
 
@@ -91,7 +97,8 @@ class ViewAssessmentTasks extends Component {
         if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
             return <Loading />;
         }
-
+        const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
+        
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
@@ -146,7 +153,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
-                            //assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
+                            assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
 
                         return(
@@ -324,7 +331,7 @@ class ViewAssessmentTasks extends Component {
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
             
-                        if (isTeamAssessment && !teamsExist) {
+                        if (isTeamAssessment && (fixedTeams && !teamsExist)) {
                             return (
                                 <Tooltip title="No teams available for this team assessment">
                                     <span>

@@ -4,7 +4,7 @@ import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CustomButton from "./Components/CustomButton.js";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility.js";
+import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericResourceDELETE } from "../../../../utility.js";
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
@@ -17,11 +17,14 @@ class AddCustomRubric extends React.Component {
         super(props);
 
         this.state = {
-            selectedCategories: {},
+            categories: [],
             errorMessage: null,
             isLoaded: null,
             isHelpOpen: false,
-            addCustomRubric: null,
+            addCustomRubric: true,
+            defaultRubrics: this.props.rubrics,
+            allCategories: this.props.categories,
+            rubrics: null,
 
             errors: {
                 rubricName: '',
@@ -37,16 +40,17 @@ class AddCustomRubric extends React.Component {
         };
 
         this.handleCreateRubric = (pickedCategories) => {
+            var navbar = this.props.navbar;
+            var rubricId = navbar.rubricId;
             var categoryIds = [];
+            var rubricName = document.getElementById("rubricNameInput").value
+            var rubricDescription = document.getElementById("rubricDescriptionInput").value
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
-                categoryIds = [
-                    ...categoryIds,
-                    pickedCategories[categoryIndex]["category_id"],
-                ];
+                categoryIds.push(pickedCategories[categoryIndex]["category_id"]);
             }
 
-            if (document.getElementById("rubricNameInput").value === "") {
+            if (rubricName === "") {
                 this.setState({
                     errors: {
                         rubricName: "Missing New Rubric Name."
@@ -55,7 +59,7 @@ class AddCustomRubric extends React.Component {
                 return;
             } 
 
-            if (document.getElementById("rubricDescriptionInput").value === "") {
+            if (rubricDescription === "") {
                 this.setState({
                     errors: {
                         rubricDescription: "Missing New Rubric Description."
@@ -74,70 +78,84 @@ class AddCustomRubric extends React.Component {
                 return;
             } 
             var cookies = new Cookies();
+            let promise;
             if (this.state.addCustomRubric === false) {
-                genericResourcePUT(
-                    `/rubric?rubric_id=${this.state.rubric_id}`,
+                promise = genericResourcePUT(
+                    `/rubric?rubric_id=${rubricId}`,
                     this,
                     JSON.stringify({
                         rubric: {
-                            rubric_name: document.getElementById("rubricNameInput").value,
-                            rubric_description: document.getElementById(
-                                "rubricDescriptionInput",
-                            ).value,
+                            rubric_name: rubricName,
+                            rubric_description: rubricDescription,
                             owner: cookies.get("user")["user_id"],
                         },
                         categories: categoryIds,
                     }),
                 );
             } else {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     `/rubric`,
                     this,
                     JSON.stringify({
                         rubric: {
-                            rubric_name: document.getElementById("rubricNameInput").value,
-                            rubric_description: document.getElementById(
-                                "rubricDescriptionInput",
-                            ).value,
+                            rubric_name: rubricName,
+                            rubric_description: rubricDescription,
                             owner: cookies.get("user")["user_id"],
                         },
                         categories: categoryIds,
                     }),
                 );
             }
-            this.props.navbar.confirmCreateResource("MyCustomRubrics");
+            
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    this.props.navbar.confirmCreateResource("MyCustomRubrics");
+                }
+            });
+        };
+        
+        this.handleDeleteRubric = (rubricId) => {
+            var navbar = this.props.navbar;
+
+            genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
+
+            navbar.confirmCreateResource("MyCustomRubrics");
         };
     }
 
-
-
     handleCategorySelect = (categoryId, isSelected) => {
-        const selectedCategories = { ...this.state.selectedCategories };
+        var allCategories = this.state.allCategories;
+        var selectedCategories = this.state.categories;
 
-        if (isSelected)
-            selectedCategories[categoryId] = true;
-
-        else
-            delete selectedCategories[categoryId];
-
+        if (isSelected) {
+            const correctCategory = allCategories.find(category => category.category_id === categoryId)
+            selectedCategories.push(correctCategory);
+        } else {
+            selectedCategories = selectedCategories.filter(category => category.category_id !== categoryId);
+        }
         this.setState({
-            selectedCategories: selectedCategories
+            categories: selectedCategories
         });
     };
 
     componentDidMount() {
         var navbar = this.props.navbar;
-        this.setState({addCustomRubric: navbar.addCustomRubric});
+        var addCustomRubric = navbar.state.addCustomRubric;
+        
+        this.setState({
+            addCustomRubric: addCustomRubric
+        });
+
         var rubricId = navbar.rubricId;
-        if (this.state.addCustomRubric === false) {
+        if (addCustomRubric === false) {
             genericResourceGET(`/category?rubric_id=${rubricId}`, "categories", this);
+
+            genericResourceGET(`/rubric?rubric_id=${rubricId}`, "rubrics", this);
         }
     }
-
+    
     render() {
-        const { rubrics, categories, navbar } = this.props;
-
-        const { selectedCategories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric } = this.state;
+        const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics } = this.state;
 
         const categoryTableColumns = [
             {
@@ -180,7 +198,7 @@ class AddCustomRubric extends React.Component {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"rubrics"}
+                        fetchedResource={"Rubric or Category"}
                         errorMessage={errorMessage}
                     />
                 </div>
@@ -188,25 +206,22 @@ class AddCustomRubric extends React.Component {
         }
 
         else if (addCustomRubric===false) {
-            if (!isLoaded || !categories){
-            return (
-                <Loading />
-            )
+            if (!isLoaded || !allCategories || !categories || !rubrics){
+                return (
+                    <Loading />
+                )
             }
         }
 
         var pickedCategories = [];
-
-        Object.keys(selectedCategories).map((categoryId) => {
-            if (selectedCategories[categoryId]) {
-                for (var i = 0; i < categories.length; i++) {
-                    if (categories[i]["category_id"] === categoryId - "0") {
-                        pickedCategories = [...pickedCategories, categories[i]];
+        categories.forEach((category) => {
+            if (category) {
+                for (let i = 0; i < allCategories.length; i++) {
+                    if (allCategories[i]["category_id"] === category["category_id"]) {                        
+                        pickedCategories.push(allCategories[i]);
                     }
                 }
             }
-
-            return categoryId;
         });
 
         return (
@@ -227,19 +242,35 @@ class AddCustomRubric extends React.Component {
                                     bold: true,
                                 }}
                                 aria-label="addCustomizeYourRubricTitle"
-                            > {navbar.props.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
+                            > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
                             </h2>
                         </Grid>
 
-                        <Grid item xs={6} container justifyContent="flex-end">
-                            <CustomButton
-                                label={navbar.props.addCustomRubric ? "Create Rubric" : "Update Rubric"}
-                                isOutlined={false}
-                                aria-label="customizeYourRubricCreateRubricButton"
-                                onClick={() => {
-                                    this.handleCreateRubric(pickedCategories);
-                                }}
-                            />
+                        <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
+                            {!this.state.addCustomRubric && (
+                                <Grid item>
+                                    <CustomButton
+                                        label="Delete Rubric"
+                                        isOutlined={false}
+                                        aria-label="customizeYourRubricDeleteRubricButton"
+                                        onClick={() => {
+                                            this.handleDeleteRubric(rubrics.rubric_id);
+                                        }}
+                                        style={{ marginRight: "16px" }}
+                                    />
+                                </Grid>
+                            )}
+
+                            <Grid item>
+                                <CustomButton
+                                    label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
+                                    isOutlined={false}
+                                    aria-label="customizeYourRubricCreateRubricButton"
+                                    onClick={() => {
+                                        this.handleCreateRubric(pickedCategories);
+                                    }}
+                                />
+                            </Grid>
                         </Grid>
                     </Grid>
 
@@ -257,6 +288,7 @@ class AddCustomRubric extends React.Component {
                         <Grid style={{ width: "48.25%" }}>
                             <TextField
                                 required
+                                defaultValue={this.state.addCustomRubric ? "" : rubrics.rubric_name}
                                 id="rubricNameInput"
                                 label="Rubric Name"
                                 style={{ width: "100%" }}
@@ -269,6 +301,7 @@ class AddCustomRubric extends React.Component {
                         <Grid style={{ width: "48.5%" }}>
                             <TextField
                                 required
+                                defaultValue={this.state.addCustomRubric ? "" : rubrics.rubric_description}
                                 id="rubricDescriptionInput"
                                 label="Rubric Description"
                                 multiline
@@ -293,9 +326,10 @@ class AddCustomRubric extends React.Component {
 
                             <FormControl error={!!errors.rubricCategories} required fullWidth>
                                 <CollapsableRubricCategoryTable
-                                    categories={categories}
-                                    rubrics={rubrics}
+                                    categories={allCategories}
+                                    rubrics={defaultRubrics}
                                     onCategorySelect={this.handleCategorySelect}
+                                    selectedCategories={pickedCategories}
                                     aria-label="customizeYourRubricRubricCategoryTable"
                                     readOnly={false}
                             />

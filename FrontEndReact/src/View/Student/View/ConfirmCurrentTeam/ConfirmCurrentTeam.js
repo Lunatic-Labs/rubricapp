@@ -16,9 +16,11 @@ class ConfirmCurrentTeamTable extends Component {
 		var navbar = this.props.navbar;
 		var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 		
-		genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.props.teamId}`, this, {});
-
-		navbar.setNewTab("StudentDashboard");
+		genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.props.teamId}`, this, {}).then((result) => {
+			if (result !== undefined && result.errorMessage === null) {
+				navbar.setNewTab("StudentDashboard");
+			}
+		});
 	};
 
 	render() {

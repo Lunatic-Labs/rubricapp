@@ -63,7 +63,7 @@ class Rating extends Component {
           justifyContent:'center'
         }}
 
-        disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
+        disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
       >
         <Slider 
           id="slider"
@@ -101,7 +101,7 @@ class Rating extends Component {
           }}
 
           onChange={(event) => {
-            if(this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)) return;
+            if(this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
             setSliderValue(
               this.props.unitValue,
@@ -116,7 +116,7 @@ class Rating extends Component {
             this.props.autosave();
           }}
 
-          disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue)}
+          disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
         />
       </Box>
     )

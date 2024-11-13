@@ -94,7 +94,7 @@ class ViewCompletedAssessmentTasks extends Component {
                   <div>
                       <IconButton
                           onClick={() => {
-                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId, completedAssessments);
+                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId, completedAssessments, { readOnly: true });
                           }}
                           aria-label="completedAssessmentTasksViewIconButton"
                       >

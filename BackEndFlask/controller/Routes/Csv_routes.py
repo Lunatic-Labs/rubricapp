@@ -44,9 +44,7 @@ def get_completed_assessment_csv() -> dict:
 
         get_user(user_id)   # Trigger an error if not exist
 
-        csv_data = create_csv(
-            assessment_task_id
-        )
+        csv_data = create_csv(assessment_task_id)
         
         return create_good_response({ "csv_data": csv_data.strip() }, 200, "csv_creation")
 

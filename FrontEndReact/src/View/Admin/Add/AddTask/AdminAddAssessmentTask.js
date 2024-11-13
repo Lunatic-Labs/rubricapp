@@ -79,8 +79,9 @@ class AdminAddAssessmentTask extends Component {
         if (assessmentTask && !addAssessmentTask) {
             genericResourceGET(
             `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, 
-            "completedAssessments", 
-            this
+            "completed_assessments", 
+            this,
+            { dest: "completedAssessments" }
         );
 
             this.setState({
@@ -223,29 +224,30 @@ class AdminAddAssessmentTask extends Component {
                 "number_of_teams": numberOfTeams,
                 "max_team_size": maxTeamSize
             });
+
+            let promise;
             
             if (navbar.state.addAssessmentTask) {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     "/assessment_task",
                     this, body
                 );
 
             } else {
-                genericResourcePUT(
+                promise = genericResourcePUT(
                     `/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
                     this, body
                 );
             }
 
-            confirmCreateResource("AssessmentTask");
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("AssessmentTask");
+                }
+            });
         }
     };
 
-    hasErrors = () => {
-        const { errors } = this.state;
-
-        return Object.values(errors).some((error) => !!error);
-    };
 
     render() {
         var navbar = this.props.navbar;
@@ -507,11 +509,19 @@ class AdminAddAssessmentTask extends Component {
 
                                                     <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
 
+                                                    <MenuItem value={"EDT"} aria-label="addAssessmentEdtRadioOption" >EDT</MenuItem>
+
                                                     <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
+
+                                                    <MenuItem value={"CDT"} aria-label="addAssessmentCdtRadioOption" >CDT</MenuItem>
 
                                                     <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
 
+                                                    <MenuItem value={"MDT"} aria-label="addAssessmentMdtRadioOption" >MDT</MenuItem>
+
                                                     <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
+
+                                                    <MenuItem value={"PDT"} aria-label="addAssessmentPdtRadioOption" >PDT</MenuItem>
                                                 </Select>
                                                 <FormHelperText>{errors.timeZone}</FormHelperText>
                                             </FormControl>

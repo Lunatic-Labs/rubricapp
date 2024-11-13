@@ -65,7 +65,7 @@ export default function ViewAssessmentStatus(props) {
   var allRatings = [];
   var avg = 0;
   var stdev = 0;
-  var progress = 43;
+  var progress = props.completedAssessmentsPercentage;
 
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
@@ -111,7 +111,7 @@ export default function ViewAssessmentStatus(props) {
 
       characteristicsData['characteristics'][i]['percentage'] = percent + "%";
     }
-
+ 
     for (let i = 0; i < improvementsData['improvements'].length; i++) {
       let percent = improvementsData['improvements'][i]['number'] / (props.completedAssessments !== null ? props.completedAssessments.length : 1) * 100;
 
@@ -210,18 +210,25 @@ export default function ViewAssessmentStatus(props) {
                     <u>Assessment Tasks Completed:</u>
                   </h3>
                   <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px' }}>
-                    <div 
-                      className="progress-bar" 
-                      role="progressbar" 
+                    <div
+                      className="progress-bar"
+                      role="progressbar"
                       style={{ width: `${progress}%`, backgroundColor: '#2e8bef' }}
-                      aria-valuenow={progress} 
-                      aria-valuemin={0} 
+                      aria-valuenow={progress}
+                      aria-valuemin={0}
                       aria-valuemax={100}
                     >
-                      <h5>
-                        <b style={{ float: 'right', padding: '10px 10px 0 0' }}>{progress}%</b>
-                      </h5>
+                      {progress >= 20 && (
+                        <h5>
+                          <b style={{ float: 'right', padding: '10px 5px 0 0' }}>{progress}%</b>
+                        </h5>
+                      )}
                     </div>
+                    {progress < 20 && (
+                      <h5 style={{ padding: '0 0 0 5px', lineHeight:'30px'}}>
+                        <b style={{ color: '#2e8bef'}}>{progress}%</b>
+                      </h5>
+                    )}
                   </div>
                 </div>
               </div>

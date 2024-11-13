@@ -34,7 +34,7 @@ class AdminViewAssessmentTask extends Component {
 
         genericResourceGET(
             `/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 
-            "assessmentTasks", this);
+            "assessment_tasks", this, {dest: "assessmentTasks"});
 
         genericResourceGET(`/role?`,'roles', this);
 
