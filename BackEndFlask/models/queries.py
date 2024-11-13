@@ -1069,3 +1069,30 @@ def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, c
     sfis = ocs_sfis_query[1].all()
 
     return ocs,sfis
+
+def get_course_name_by_at_id(at_id:int) -> str :
+    """
+    Description:
+    Returns a string of the course name associated to the assessment_task_id.
+
+    Parameters:
+    at_id: int (The assessment_task_id that you want the course name of.)
+
+    Returns:
+    Course name as a string.
+
+    Exceptions:
+    None except the ones sqlalchemy + flask may raise. 
+    """
+
+    course_name = db.session.query(
+        Course.course_name
+    ).join(
+        AssessmentTask,
+        AssessmentTask.course_id == Course.course_id
+    ).filter(
+        AssessmentTask.assessment_task_id == at_id
+    ).limit(1).all()
+
+    return course_name[0][0]
+
