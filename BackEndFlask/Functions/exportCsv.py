@@ -83,162 +83,93 @@ class Csv_data(Enum):
 
     JSON = 13
 
-def create_csv(at_id: int) -> str:
+def create_ocs_sfis_csv(at_id: int) -> str:
     """
     Description:
-    Creates the csv file and dumps info into it.
-    File name follows the convention: [0-9]*.csv
+    Creates a string that has properly formated csv data for
+    Ocs and sfis according to client specifiications.
 
     Parameters:
-    at_id: int (The id of an assessment task)
+    at_id: <class 'int'> (assessment_task_id)
 
-    Return:
-    str
+    Returns:
+    <class 'str'>
+
+    Exceptions:
+    None
     """
-    # Assessment_task_name, Completion_date, Rubric_name, AT_type (Team/individual), AT_completer_role (Admin, TA/Instructor, Student), Notification_date    
 
-    # Setting app context and initing the writer.
     with app.app_context():
         with io.StringIO() as csvFile:
             writer = csv.writer(csvFile, delimiter='\t')
 
-            writer.writerow(["Course_Name"])
+            writer.writerow(["Course Name"])
             writer.writerow([get_course_name_by_at_id(at_id)])
+            writer.writerow([''])
 
-            writer.writerow(
-                ["Assessment_task_name"] +
-                ["Completion_date"]+
-                ["Rubric_name"]+
-                ["AT_type (Team/individual)"] +
-                ["AT_completer_role (Admin[TA/Instructor] / Student)"] +
-                ["Notification_data"]
-            )
+            checkmark = "✔"
+            crossmark = "✗"
 
            # List of dicts: Each list is another individual in the AT and the dict is there related data. 
             completed_assessment_data = get_csv_data_by_at_id(at_id)
+
             if len(completed_assessment_data) == 0:
                 return csvFile.getvalue()
-            
-            fixed_retrive = lambda location: completed_assessment_data[0][location]
-            
-            # Populates the next line in the csv file as per the last write.
-            # Use fixed_retrive since the first user will always exist by this point.
-            writer.writerow(
-                [fixed_retrive(Csv_data.AT_NAME.value)]      +
-                [fixed_retrive(Csv_data.COMP_DATE.value)]    + # Ask if client wants something more generic.
-                [fixed_retrive(Csv_data.RUBRIC_NAME.value)]  +
-                ["Team" if fixed_retrive(Csv_data.AT_TYPE.value) else "Individual"] +
-                [fixed_retrive(Csv_data.AT_COMPLETER.value)] +
-                [fixed_retrive(Csv_data.NOTIFICATION.value)]
-            )
 
-            writer.writerow(
-                ["Team name"]  +
-                ["First name"] +
-                ["last name"]  +
-                ["Category"]   +
-                ["Rating"]     +
-                ["Observable Characteristics"]  +
-                ["Suggestions for Improvement"] +
-                ["Feedback time lag"]
-            )
+            singular = completed_assessment_data[0]
 
-            # Going through each individuals information.
-            for individual in completed_assessment_data:
-                lag = ""
-                try:
-                    # Possible that a particular individual has not yet seen so its a Nonetype in the backend.
-                    lag = rounded_hours_difference(individual[Csv_data.COMP_DATE.value], individual[Csv_data.LAG_TIME.value])
-                except TypeError:
-                    pass
-                
-                #V2
-                #notedNames = False
+            is_teams = False if singular[Csv_data.TEAM_NAME.value] == None else True
 
-                # This section deals with formating and outputting the data.
-                for category in individual[Csv_data.JSON.value]:
-  
-                    if category == "done" or category == "comments": # Yes those two are "categories" at least from how the data is pulled.
-                        continue                  
+            # Writing out in category chuncks. 
+            for category in singular[Csv_data.JSON.value]:
+                if category == "done" or category == "comments": # Yes those two are "categories" at least from how the data is pulled.
+                        continue
 
-                    ocs = individual[Csv_data.JSON.value][category]["observable_characteristics"]
-                    sfis = individual[Csv_data.JSON.value][category]["suggestions"]
+                headers = ["First Name"] + ["Last Name"] if not is_teams else ["Team Name"]
 
-                    # Little queue buffer to help organize the final output.
-                    ocs_queue = deque()
-                    sfis_queue = deque()
+                oc_sfi_per_category = get_csv_categories(singular[Csv_data.RUBRIC_ID.value],
+                                        singular[Csv_data.USER_ID.value],
+                                        singular[Csv_data.TEAM_ID.value],
+                                        at_id, category)
 
-                    # Fetch related oc and sfi data then populate queues
-                    oc_sfi_data = get_csv_categories(individual[Csv_data.RUBRIC_ID.value], individual[Csv_data.USER_ID.value], individual[Csv_data.TEAM_ID.value], at_id, category)
+                headers += [i[0] for i in oc_sfi_per_category[0]] + [i[0] for i in oc_sfi_per_category[1]]                
 
-                    with open('output.txt', 'w') as f:
-                            with contextlib.redirect_stdout(f):
-                                print(oc_sfi_data)
+                writer.writerow([category])
+                writer.writerow(headers)
 
-                    largest_Size = lambda x, y: max(len(x), len(y))
+                # Writing the checkmarks or crossmarks of them out.
+                for individual in completed_assessment_data:
+                    respective_ocs_sfis = [individual[Csv_data.JSON.value][category]["observable_characteristics"], 
+                                           individual[Csv_data.JSON.value][category]["suggestions"]]
+                    
+                    row = None
+                    if not is_teams: row = [individual[Csv_data.FIRST_NAME.value]] + [individual[Csv_data.LAST_NAME.value]]
+                    else: row = [individual[Csv_data.TEAM_NAME.value]]
 
-                    fixed_oc_sfi_retrive = lambda oc_or_sfi, location: oc_sfi_data[oc_or_sfi][location][0]
-
-                    for i in range(0, largest_Size(ocs, sfis)):
-                        if i < len(ocs) and ocs[i] == '1':
-                            ocs_queue.append(fixed_oc_sfi_retrive(0, i))
-                        if i < len(sfis) and sfis[i] == '1':
-                            sfis_queue.append(fixed_oc_sfi_retrive(1, i))
-
-                    write_out_oc = ""
-                    write_out_sfi = ""
-
-                    # Write out is dependent on if there are any ocs or sfis to write.
-                    for i in range(0, largest_Size(ocs_queue, sfis_queue)):
-
-                        write_out_oc = "" if len(ocs_queue) == 0 else ocs_queue.popleft()
-                        write_out_sfi = "" if len(sfis_queue) == 0 else sfis_queue.popleft()
-                        
-                        #V1
-                        writer.writerow(
-                            [individual[Csv_data.TEAM_NAME.value]]  +
-                            [individual[Csv_data.FIRST_NAME.value]] +
-                            [individual[Csv_data.LAST_NAME.value]]  +
-                            [category] +
-                            [individual[Csv_data.JSON.value][category]["rating"]] +
-                            [write_out_oc] +
-                            [write_out_sfi] +
-                            [lag]
-                        )
-
-                        #V2
-                        #if(i == 0 and not notedNames):
-                        #    writer.writerow(
-                        #    [individual[Csv_data.TEAM_NAME.value]]  +
-                        #    [individual[Csv_data.FIRST_NAME.value]] +
-                        #    [individual[Csv_data.LAST_NAME.value]]  +
-                        #    [category] +
-                        #    [individual[Csv_data.JSON.value][category]["rating"]] +
-                        #    [write_out_oc] +
-                        #    [write_out_sfi] +
-                        #    [lag])
-                        #    notedNames = True
-                        #elif(i == 0 and notedNames):
-                        #    writer.writerow(
-                        #    ['']  +
-                        #    [''] +
-                        #    ['']  +
-                        #    [category] +
-                        #    [individual[Csv_data.JSON.value][category]["rating"]] +
-                        #    [write_out_oc] +
-                        #    [write_out_sfi] +
-                        #    [''])
-                        #else:
-                        #    writer.writerow(
-                        #        ['']+
-                        #        ['']+
-                        #        ['']+
-                        #        ['']+
-                        #        ['']+
-                        #        [write_out_oc]  +
-                        #        [write_out_sfi] +
-                        #        ['']
-                        #    )
+                    for bits in respective_ocs_sfis:
+                        row += [checkmark if i == "1" else crossmark for i in bits]
+                    
+                    writer.writerow(row)
+                writer.writerow([''])
 
             return csvFile.getvalue()
-        
+
+def create_ratings_csv(at_id: int) -> str:
+    """
+    Description:
+    Creates a string that has properly formated csv data for
+    assessment task ratings according to client specifiications. 
+    
+    Parameters:
+    at_id: <class 'int'> (assessment_task_id)
+
+    Returns:
+    <class 'str'>
+    
+    Excepitions:
+    None
+    """
+    with app.app_context():
+        with io.StringIO() as csvFile:
+            writer = csv.writer(csvFile, delimiter='\t')
+            return csvFile.getvalue()

@@ -957,20 +957,6 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     Return:
     list[dict][str]: (List of dicts: Each list is another individual in the AT and the dict is there related data.)
     """
-
-    """
-    Note that the current plan sqlite3 seems to execute is:
-        QUERY PLAN
-    |--SCAN CompletedAssessment
-    |--SEARCH AssessmentTask USING INTEGER PRIMARY KEY (rowid=?)
-    |--SEARCH Role USING INTEGER PRIMARY KEY (rowid=?)
-    |--SEARCH Team USING INTEGER PRIMARY KEY (rowid=?)
-    `--SEARCH User USING INTEGER PRIMARY KEY (rowid=?)
-    Untested but assume other tables are also runing a search instead of a scan
-    everywhere where there is no index to scan by.
-    The problem lies in the search the others are doing. Future speed optimications
-    can be reached by implementing composite indices.
-    """
     pertinent_assessments = db.session.query(
         AssessmentTask.assessment_task_name,
         AssessmentTask.unit_of_assessment,
