@@ -12,7 +12,7 @@ import {
 // result.content[resource] is undefined
 // genericResourceFetch@http://localhost:3000/static/js/bundle.js:22397:9
 class ViewTeams extends Component {
-  async deleteTeam(teamId) {
+  deleteTeam(teamId) {
     console.log("delete team should be called with team id:", teamId);
     try {
       console.log("testing here seeing if it prints");
@@ -21,13 +21,16 @@ class ViewTeams extends Component {
         `/assessment_task?team_id=${teamId}`,
         "assessmentTasks",
         this,
-        { dest: "assessmentTasks" }
+        { dest: "assessmentTasks" },
       ).then((result) => {
         if (result.length > 0) {
-          return {status: 400, message: "Can't delete team. There are associated assessment tasks."};
-        }
-        else {
-          return {status: 200, message: "No associated assessment tasks"};
+          return {
+            status: 400,
+            message:
+              "Can't delete team. There are associated assessment tasks.",
+          };
+        } else {
+          return { status: 200, message: "No associated assessment tasks" };
         }
       });
       console.log("assessment tasks should be accessed: ", assessmentTasks);
@@ -42,7 +45,9 @@ class ViewTeams extends Component {
 
       // If no associated tasks, proceed with deletion
       console.log("deleting team with id:", teamId);
-      genericResourceDELETE(`/team?team_id=${teamId}`, this, { dest: "teams" }).then((result) => {
+      genericResourceDELETE(`/team?team_id=${teamId}`, this, {
+        dest: "teams",
+      }).then((result) => {
         if (result.status === 200) {
           console.log("team deleted successfully");
         }
@@ -58,11 +63,6 @@ class ViewTeams extends Component {
         successMessage: "Team deleted successfully.",
         errorMessage: null,
       });
-      // this.props.navbar.setState({
-      //   successMessage: "Team deleted successfully.",
-      // });
-
-      // Clear success message after 3 seconds
       setTimeout(() => {
         this.setState({ successMessage: null });
       }, 3000);
@@ -82,8 +82,6 @@ class ViewTeams extends Component {
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
     var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
-
-
 
     const columns = [
       {
