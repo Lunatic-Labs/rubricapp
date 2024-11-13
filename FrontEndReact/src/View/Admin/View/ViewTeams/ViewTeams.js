@@ -9,17 +9,27 @@ import {
   genericResourceDELETE,
   genericResourceGET,
 } from "../../../../utility.js";
-
+// result.content[resource] is undefined
+// genericResourceFetch@http://localhost:3000/static/js/bundle.js:22397:9
 class ViewTeams extends Component {
   async deleteTeam(teamId) {
     console.log("delete team should be called with team id:", teamId);
     try {
+      console.log("testing here seeing if it prints");
       //First, check if there are any associated assessment tasks
-      const assessmentTasks = await genericResourceGET(
+      const assessmentTasks = genericResourceGET(
         `/assessment_task?team_id=${teamId}`,
         "assessmentTasks",
         this,
-      );
+        { dest: "assessmentTasks" }
+      ).then((result) => {
+        if (result.length > 0) {
+          return {status: 400, message: "Can't delete team. There are associated assessment tasks."};
+        }
+        else {
+          return {status: 200, message: "No associated assessment tasks"};
+        }
+      });
       console.log("assessment tasks should be accessed: ", assessmentTasks);
 
       if (assessmentTasks && assessmentTasks.length > 0) {
@@ -32,7 +42,11 @@ class ViewTeams extends Component {
 
       // If no associated tasks, proceed with deletion
       console.log("deleting team with id:", teamId);
-      await genericResourceDELETE(`/team?team_id=${teamId}`, this);
+      genericResourceDELETE(`/team?team_id=${teamId}`, this, { dest: "teams" }).then((result) => {
+        if (result.status === 200) {
+          console.log("team deleted successfully");
+        }
+      });
       console.log("team deleted successfully");
 
       // Update the teams list
