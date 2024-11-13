@@ -17,31 +17,33 @@ class ViewTeams extends Component {
     try {
       console.log("testing here seeing if it prints");
       //First, check if there are any associated assessment tasks
-      const assessmentTasks = genericResourceGET(
+      genericResourceGET(
         `/assessment_task?team_id=${teamId}`,
         "assessmentTasks",
         this,
         { dest: "assessmentTasks" },
       ).then((result) => {
-        if (result.length > 0) {
-          return {
-            status: 400,
-            message:
-              "Can't delete team. There are associated assessment tasks.",
-          };
-        } else {
-          return { status: 200, message: "No associated assessment tasks" };
+        if (
+          result &&
+          result.assessmentTasks &&
+          result.assessmentTasks.length > 0
+        ) {
+          this.setState({
+            errorMessage:
+              "Cannot delete team. There are associated assessment tasks.",
+          });
+          return;
         }
       });
-      console.log("assessment tasks should be accessed: ", assessmentTasks);
+      //console.log("assessment tasks should be accessed: ", assessmentTasks);
 
-      if (assessmentTasks && assessmentTasks.length > 0) {
-        this.props.navbar.setState({
-          errorMessage:
-            "Cannot delete team. There are associated assessment tasks.",
-        });
-        return;
-      }
+      // if (assessmentTasks && assessmentTasks.length > 0) {
+      //   this.props.navbar.setState({
+      //     errorMessage:
+      //       "Cannot delete team. There are associated assessment tasks.",
+      //   });
+      //   return;
+      // }
 
       // If no associated tasks, proceed with deletion
       console.log("deleting team with id:", teamId);
