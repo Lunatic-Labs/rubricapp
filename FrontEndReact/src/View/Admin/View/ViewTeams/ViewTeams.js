@@ -33,10 +33,9 @@ class ViewTeams extends Component {
         }, 3000);
       }
     } catch (error) {
-      this.setState({
-        errorMessage:
+      this.props.onError(
           "Cannot delete team. There are associated assessment tasks.",
-      });
+      );
     }
   }
 
