@@ -1092,7 +1092,7 @@ def get_course_name_by_at_id(at_id:int) -> str :
         AssessmentTask.course_id == Course.course_id
     ).filter(
         AssessmentTask.assessment_task_id == at_id
-    ).limit(1).all()
+    ).all()
 
     return course_name[0][0]
 

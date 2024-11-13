@@ -100,7 +100,7 @@ def create_csv(at_id: int) -> str:
     # Setting app context and initing the writer.
     with app.app_context():
         with io.StringIO() as csvFile:
-            writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL, delimiter=' ')
+            writer = csv.writer(csvFile, delimiter='\t')
 
             writer.writerow(["Course_Name"])
             writer.writerow([get_course_name_by_at_id(at_id)])
