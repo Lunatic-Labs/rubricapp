@@ -114,9 +114,8 @@ class ViewCompletedAssessmentTasks extends Component {
                       </IconButton>
                   </div>
               )
-              
           }
-      }
+        }
       },
     ];
 
