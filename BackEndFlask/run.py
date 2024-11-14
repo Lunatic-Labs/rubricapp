@@ -2,6 +2,7 @@ from core import app
 # this variable is expected by the wsgi server
 # application = app
 
+
 if __name__ == '__main__':
     #The app.run(debug = True) line is needed if we are working on our local machine
     # app.run(debug=True)
