@@ -126,9 +126,6 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
-                        let atIsLocked = assessmentTasks.find((at) => at["assessment_task_id"] === atId)?.locked ?? false;
-                        console.log('locked: ', atIsLocked);
-
                         return (
                             <Box
                                 style={{
@@ -173,7 +170,7 @@ class ViewAssessmentTasks extends Component {
                                     disabled={role["role_id"] === 5 ?
                                         ((this.props.checkin.indexOf(atId) === -1 &&
                                         (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) ||
-                                        this.isObjectFound(atId) === true) || atIsLocked
+                                        this.isObjectFound(atId) === true)
                                     :
                                         this.areAllATsComplete(atId) === true
                                     }
@@ -183,7 +180,7 @@ class ViewAssessmentTasks extends Component {
 
                                     aria-label="startAssessmentTasksButton"
                                 >
-                                    {atIsLocked ? <>LOCKED</> : <>START</>}
+                                    START
                                 </Button>
                             </Box>
                         )
