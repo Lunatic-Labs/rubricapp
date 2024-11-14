@@ -8,8 +8,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
-import LockIcon from '@mui/icons-material/Lock';
 
 class ViewAssessmentTasks extends Component {
     constructor(props) {
@@ -44,28 +42,6 @@ class ViewAssessmentTasks extends Component {
                 exportButtonId: newExportButtonJSON
             });
         }
-
-        // Function for toggling the lock icon. Also performs an API call
-        // to the DB.
-        this.toggleLockStatus = (assessmentTaskId) => {
-            this.setState((prevState) => {
-                const newLockStatus = { ...prevState.lockStatus };
-                newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
-                return { lockStatus: newLockStatus };
-            }, () => {
-                // wait until after it updates...
-                const lockStatus = this.state.lockStatus[assessmentTaskId];
-                const courseId = this.props.navbar.state.chosenCourse.course_id;
-
-                genericResourcePUT(
-                    `/assessment_task_toggle_lock?lockStatus=${lockStatus}&assessmentTaskId=${assessmentTaskId}`,
-                    this,
-                    JSON.stringify({
-                        locked: lockStatus,
-                    })
-                );
-            });
-        };
     }
 
     componentDidUpdate () {
@@ -315,7 +291,6 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
                             const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
-                            const isLocked = lockStatus[assessmentTaskId] ?? selectedTask?.locked;
 
                             if (selectedTask) {
                                 return (
@@ -328,11 +303,6 @@ class ViewAssessmentTasks extends Component {
                                             aria-label='viewCompletedAssessmentIconButton'
                                         >
                                         <VisibilityIcon sx={{color:"black"}} />
-                                        </IconButton>
-
-                                        {/* Toggle lock/unlock button */}
-                                        <IconButton onClick={() => this.toggleLockStatus(assessmentTaskId)}>
-                                            {isLocked ? <LockIcon sx={{ color: "black" }} /> : <LockOpenIcon sx={{ color: "black" }} />}
                                         </IconButton>
                                     </>
                                 );

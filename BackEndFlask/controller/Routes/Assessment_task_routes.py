@@ -98,8 +98,7 @@ def get_all_assessment_tasks():
                     user_course.course_id
                 )
 
-                for assessment_task in assessment_tasks:
-                    all_assessment_tasks.append(assessment_task)
+                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
 
             return create_good_response(
                 assessment_tasks_schema.dump(all_assessment_tasks),
@@ -331,7 +330,6 @@ class AssessmentTaskSchema(ma.Schema):
             "number_of_teams",
             "max_team_size",
             "notification_sent",
-            "locked",
         )
 
 
