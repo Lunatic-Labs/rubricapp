@@ -104,9 +104,6 @@ class Csv_Creation(ABC):
 
         Return:
         <class 'str'>
-
-        Note: Once called the memory is freed in the instance, so save it. Think of this as a singleton that
-        should preform a task and be deleted.
         """
 
         # Writting a common identifying data.
@@ -232,8 +229,11 @@ class Ocs_Sfis_Csv(Csv_Creation):
             self._writer.writerow([''])
         
 
-def create_ratings(at_id:int) ->str:
+def create_ratings(at_id:int, type_csv="oc_sfi") ->str:
     with app.app_context():
-        answer = Ocs_Sfis_Csv(at_id)
-        value = answer.return_csv_str()
-        return value
+        answer = None
+        if type_csv == "oc_sfi":
+            answer = Ocs_Sfis_Csv(at_id)
+        else:
+            answer = Ratings_Csv(at_id)
+        return answer.return_csv_str()
