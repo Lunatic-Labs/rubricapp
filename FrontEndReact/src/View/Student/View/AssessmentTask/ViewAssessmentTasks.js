@@ -84,6 +84,22 @@ class ViewAssessmentTasks extends Component {
                 }
             },
             {
+                name: "unit_of_assessment",
+                label: "Unit of Assessment",
+                options: {
+                    filter: true,
+                    setCellHeaderProps: () => { return { width:"270px"}},
+                    setCellProps: () => { return { width:"270px"} },
+                    customBodyRender: (isTeam) => {
+                        return (
+                            <p className='mt-3' variant="contained">
+                                {isTeam ? "Team" : "Individual"}
+                            </p>
+                        )
+                    }
+                },
+            },
+            {
                 name: "due_date",
                 label: "Due Date",
                 options: {
