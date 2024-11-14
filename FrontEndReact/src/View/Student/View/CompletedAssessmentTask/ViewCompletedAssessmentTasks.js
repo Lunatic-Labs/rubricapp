@@ -4,8 +4,8 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { getHumanReadableDueDate } from "../../../../utility";
-
-
+import Cookies from 'universal-cookie';
+import { genericResourcePOST } from '../../../../utility.js';
 
 class ViewCompletedAssessmentTasks extends Component {
   render() {
@@ -94,7 +94,12 @@ class ViewCompletedAssessmentTasks extends Component {
                   <div>
                       <IconButton
                           onClick={() => {
-                              navbar.setAssessmentTaskInstructions(assessmentTasks, atId, completedAssessments, { readOnly: true });
+                              navbar.setAssessmentTaskInstructions(
+                                  assessmentTasks,
+                                  atId,
+                                  completedAssessments,
+                                  { readOnly: true, skipInstructions: true }
+                              );
                           }}
                           aria-label="completedAssessmentTasksViewIconButton"
                       >
@@ -102,9 +107,8 @@ class ViewCompletedAssessmentTasks extends Component {
                       </IconButton>
                   </div>
               )
-              
           }
-      }
+        }
       },
     ];
 

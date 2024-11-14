@@ -47,7 +47,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
     } else if (!isLoaded || !rubrics) {
       return(
         <Loading />
-      ) 
+      )
 
     } else {
       return(

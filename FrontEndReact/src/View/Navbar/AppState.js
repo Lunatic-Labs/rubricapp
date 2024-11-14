@@ -130,7 +130,8 @@ class AppState extends Component {
         }
 
         this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
-            readOnly = false
+            readOnly = false,
+            skipInstructions = false
         }={}) => { // wip
             var completedAssessment = null;
 
@@ -138,13 +139,14 @@ class AppState extends Component {
                completedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId) ?? null;
             }
             const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
-            
+
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
                 unitOfAssessment: assessmentTask["unit_of_assessment"],
                 chosenCompleteAssessmentTaskIsReadOnly: readOnly,
+                skipInstructions: skipInstructions
             });
         }
 
