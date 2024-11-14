@@ -134,13 +134,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
   handleSendNotification = () => {
     var notes = this.state.notes;
 
-    var navbar = this.props.navbar;
+        var navbar = this.props.navbar;
 
-    var state = navbar.state;
+        var state = navbar.state;
 
-    var chosenAssessmentTask = state.chosenAssessmentTask;
+        var chosenAssessmentTask = state.chosenAssessmentTask;
 
-    var date = new Date();
+        var date = new Date();
 
     if (notes.trim() === '') {
         this.setState({
