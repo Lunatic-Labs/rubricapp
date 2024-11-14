@@ -8,29 +8,30 @@ import CustomDataTable from "../../../Components/CustomDataTable.js";
 import { genericResourceDELETE } from "../../../../utility.js";
 
 class ViewTeams extends Component {
-  deleteTeam(teamId) {
+  async deleteTeam(teamId) {
     console.log("delete team should be called with team id:", teamId);
     try {
       console.log("deleting team with id:", teamId);
-      const result = genericResourceDELETE(`/team?team_id=${teamId}`, this, {
+      const result = await genericResourceDELETE(`/team?team_id=${teamId}`, this, {
         dest: "teams",
       });
       console.log("team deleted successfully");
       if (result && result.status === 200) {
         // Update the teams list after successful deletion
-        const updatedTeams = this.state.teams.filter(
-          (team) => team.team_id !== teamId,
-        );
-
-        this.setState({
-          teams: updatedTeams,
-          successMessage: "Team deleted successfully.",
-          errorMessage: null,
-        });
+        // const updatedTeams = this.state.teams.filter(
+        //   (team) => team.team_id !== teamId,
+        // );
+        this.props.onSuccess("Team deleted successfully.");
+        // this.setState({
+        //   teams: updatedTeams,
+        //   successMessage: "Team deleted successfully.",
+        //   errorMessage: null,
+        // });
         // Clear success message after 3 seconds
         setTimeout(() => {
-          this.setState({ successMessage: null });
-        }, 3000);
+          this.props.refreshData();
+        }, 1000);
+        window.location.reload();
       }
     } catch (error) {
       this.props.onError(
