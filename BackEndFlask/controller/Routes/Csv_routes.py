@@ -14,7 +14,7 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
-from Functions.exportCsv import create_ocs_sfis_csv
+from Functions.exportCsv import create_ratings
 from models.assessment_task import get_assessment_task
 from models.user import get_user
 
@@ -44,7 +44,7 @@ def get_completed_assessment_csv() -> dict:
 
         get_user(user_id)   # Trigger an error if not exist
 
-        csv_data = create_ocs_sfis_csv(assessment_task_id)
+        csv_data = create_ratings(assessment_task_id)
         
         return create_good_response({ "csv_data": csv_data.strip() }, 200, "csv_creation")
 

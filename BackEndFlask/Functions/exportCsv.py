@@ -11,12 +11,12 @@
 #----------------------------------------------------------------------------------------------------
 import csv
 import io
-import contextlib
 from core import app
 from models.queries import *
 from enum import Enum
 from datetime import datetime
-from collections import deque
+from abc import ABC, abstractmethod
+
 
 def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     """
@@ -44,7 +44,6 @@ def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     hours_remainder = divmod( divmod( time_delta.total_seconds(), 60 )[0], 60)
 
     return int(hours_remainder[0]) if hours_remainder[1] < 30.0 else int(hours_remainder[0]) + 1
-
 
 class Csv_data(Enum):
     """
@@ -83,6 +82,64 @@ class Csv_data(Enum):
 
     JSON = 13
 
+
+
+"""
+
+
+
+
+
+"""
+
+def create_ratings(at_id:int) -> str:
+     with app.app_context():
+        with io.StringIO() as csvFile:
+            writer = csv.writer(csvFile, delimiter='\t')
+
+            writer.writerow(["Course Name"])
+            writer.writerow([get_course_name_by_at_id(at_id)])
+            writer.writerow([''])
+
+           # List of dicts: Each list is another individual in the AT and the dict is there related data. 
+            completed_assessment_data = get_csv_data_by_at_id(at_id)
+
+            if len(completed_assessment_data) == 0:
+                return csvFile.getvalue()
+
+            singular = completed_assessment_data[0]
+
+            is_teams = False if singular[Csv_data.TEAM_NAME.value] == None else True
+
+            column_name = ["First Name"] + ["Last Name"] if not is_teams else ["Team Name"]
+
+            column_name += [i for i in singular[Csv_data.JSON.value] if (i != "done" and i !="comments")]
+
+            column_name += ["Lag Time"]
+
+            writer.writerow(column_name)
+
+            row_info = None
+
+            for individual in completed_assessment_data:
+
+                row_info = [individual[Csv_data.FIRST_NAME.value]] + [individual[Csv_data.LAST_NAME.value]] if not is_teams else [individual[Csv_data.TEAM_NAME.value]]
+
+                row_info += [individual[Csv_data.JSON.value][category]["rating"] for category in individual[Csv_data.JSON.value] if (category != "done" and category !="comments")]
+                
+                lag = [" "]
+                try:
+                    # Possible that a particular individual has not yet seen so its a Nonetype in the backend.
+                    lag = [rounded_hours_difference(individual[Csv_data.COMP_DATE.value], individual[Csv_data.LAG_TIME.value])]
+                except TypeError:
+                    pass
+
+                row_info += lag
+                writer.writerow(row_info) 
+
+            return csvFile.getvalue()
+
+
 def create_ocs_sfis_csv(at_id: int) -> str:
     """
     Description:
@@ -108,7 +165,7 @@ def create_ocs_sfis_csv(at_id: int) -> str:
             writer.writerow([''])
 
             checkmark = "✔"
-            crossmark = "✗"
+            crossmark = " "
 
            # List of dicts: Each list is another individual in the AT and the dict is there related data. 
             completed_assessment_data = get_csv_data_by_at_id(at_id)
@@ -132,12 +189,12 @@ def create_ocs_sfis_csv(at_id: int) -> str:
                                         singular[Csv_data.TEAM_ID.value],
                                         at_id, category)
 
-                headers += [i[0] for i in oc_sfi_per_category[0]] + [i[0] for i in oc_sfi_per_category[1]]                
+                headers += ["OC:" + i[0] for i in oc_sfi_per_category[0]] + ["SFI:" + i[0] for i in oc_sfi_per_category[1]]                
 
                 writer.writerow([category])
                 writer.writerow(headers)
 
-                # Writing the checkmarks or crossmarks of them out.
+                # Writing the checkmarks.
                 for individual in completed_assessment_data:
                     respective_ocs_sfis = [individual[Csv_data.JSON.value][category]["observable_characteristics"], 
                                            individual[Csv_data.JSON.value][category]["suggestions"]]
@@ -152,24 +209,4 @@ def create_ocs_sfis_csv(at_id: int) -> str:
                     writer.writerow(row)
                 writer.writerow([''])
 
-            return csvFile.getvalue()
-
-def create_ratings_csv(at_id: int) -> str:
-    """
-    Description:
-    Creates a string that has properly formated csv data for
-    assessment task ratings according to client specifiications. 
-    
-    Parameters:
-    at_id: <class 'int'> (assessment_task_id)
-
-    Returns:
-    <class 'str'>
-    
-    Excepitions:
-    None
-    """
-    with app.app_context():
-        with io.StringIO() as csvFile:
-            writer = csv.writer(csvFile, delimiter='\t')
             return csvFile.getvalue()
