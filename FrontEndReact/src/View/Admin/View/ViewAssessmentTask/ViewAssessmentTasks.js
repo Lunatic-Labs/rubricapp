@@ -1,13 +1,16 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
-import { IconButton } from '@mui/material';
 import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
+import { IconButton } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+
 
 class ViewAssessmentTasks extends Component {
     constructor(props) {
@@ -311,6 +314,25 @@ class ViewAssessmentTasks extends Component {
                         return(
                             <>
                                 {"N/A"}
+                            </>
+                        )
+                    }
+                }
+            },
+            {
+                name: "assessment_task_id",
+                label: "Lock",
+                options: {
+                    filter: true,
+                    setCellHeaderProps: () => { return { width:"50px"}},
+                    setCellProps: () => { return { width:"50px"} },
+                    customBodyRender: (rubricId) => {
+                        return (
+                            <>
+                                <IconButton
+                                    onClick={() => {alert("todo")}}>
+                                    <LockIcon />
+                                </IconButton>
                             </>
                         )
                     }
