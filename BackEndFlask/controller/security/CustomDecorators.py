@@ -2,6 +2,7 @@ from flask import request, current_app
 from functools import wraps
 from .utility  import to_int
 from .blacklist import is_token_blacklisted
+from typing     import Callable 
 from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import (
     NoAuthorizationError,
@@ -59,3 +60,29 @@ def verify_token(refresh: bool):
     id = to_int(id, "user_id")
     if id == decoded_id : return
     raise NoAuthorizationError("No Authorization")
+
+def permissions_check(minimum_permissions_level:None) -> Callable:
+    """
+    Description: This wrapper will verify a minimum level of permission is meet.
+
+    Parameters:
+    minimum_permission_level: 
+    """
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            check_permission_level(minimum_permissions_level)
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
+
+def check_permission_level(minimum_permissions_level):
+    """
+    Description: Queries db to ensure the permissions are meet.
+    """
+    token = request.headers.get('Authorization').split()[1]
+    try:
+        user_id = int(decode_token(token)['sub']) 
+
+    except:
+        raise NoAuthorizationError("Authorization level too low or no authorization.")

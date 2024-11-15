@@ -1074,3 +1074,9 @@ def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> i
     ratio_rounded = round(ratio)
 
     return ratio_rounded
+
+def get_role_id_on_user_id(user_id: int) -> int:
+    """
+    Description:
+    Returns the role_id 
+    """
