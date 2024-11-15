@@ -83,6 +83,9 @@ class Csv_Data(Enum):
 class Csv_Creation(ABC):
     """
     Description: Abstract class that leads to the creation of a csv formated string.
+    Decided to do this pattern becasue the clients seem to want this same data in many
+    differing formated outputs. This way all that needs to get created with the same data is
+    the format rather than working on the query and repeating the same starter code.
     """
 
     def __init__(self, at_id) -> None:
@@ -248,11 +251,10 @@ def create_csv_strings(at_id:int, type_csv=CSV_Type.OCS_SFI_CSV.value) -> str:
 
     Exceptions: None except the chance the database or IO calls raise one.
     """
-    with app.app_context():
-        match type_csv:
-            case CSV_Type.RATING_CSV.value:
-                return Ratings_Csv(at_id).return_csv_str()
-            case CSV_Type.OCS_SFI_CSV.value:
-                return Ocs_Sfis_Csv(at_id).return_csv_str()
-            case _:
-                return "No current class meets the deisred csv format. Error in create_csv_strings()."
+    match type_csv:
+        case CSV_Type.RATING_CSV.value:
+            return Ratings_Csv(at_id).return_csv_str()
+        case CSV_Type.OCS_SFI_CSV.value:
+            return Ocs_Sfis_Csv(at_id).return_csv_str()
+        case _:
+            return "No current class meets the deisred csv format. Error in create_csv_strings()."
