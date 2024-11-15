@@ -26,7 +26,7 @@ class ViewAssessmentTasks extends Component {
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
             let promise = genericResourceGET(
-                `/csv_assessment_export?assessment_task_id=${atId}`,
+                `/csv_assessment_export?assessment_task_id=${atId}&format=1`,
                 "csv_creation",
                 this,
                 {dest: "csvCreation"}

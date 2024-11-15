@@ -228,12 +228,31 @@ class Ocs_Sfis_Csv(Csv_Creation):
                 self._writer.writerow(row)
             self._writer.writerow([''])
         
+class CSV_Type(Enum):
+    """
+    Description: This is the enum for the different types of csv file formats the clients have requested.
+    """
+    RATING_CSV = 0
+    OCS_SFI_CSV = 1
 
-def create_ratings(at_id:int, type_csv="oc_sfi") ->str:
+def create_csv_strings(at_id:int, type_csv=CSV_Type.OCS_SFI_CSV.value) -> str:
+    """
+    Description: Creates a csv file with the data in the format specified by type_csv.
+
+    Parameters:
+    at_id: <class 'int'> (Desired assessment task)
+    type_csv: <class 'int'> (Desired format)
+    
+    Returns:
+    <class 'str'>
+
+    Exceptions: None except the chance the database or IO calls raise one.
+    """
     with app.app_context():
-        answer = None
-        if type_csv == "oc_sfi":
-            answer = Ocs_Sfis_Csv(at_id)
-        else:
-            answer = Ratings_Csv(at_id)
-        return answer.return_csv_str()
+        match type_csv:
+            case CSV_Type.RATING_CSV.value:
+                return Ratings_Csv(at_id).return_csv_str()
+            case CSV_Type.OCS_SFI_CSV.value:
+                return Ocs_Sfis_Csv(at_id).return_csv_str()
+            case _:
+                return "No current class meets the deisred csv format. Error in create_csv_strings()."
