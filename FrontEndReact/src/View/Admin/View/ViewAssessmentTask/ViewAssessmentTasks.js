@@ -54,13 +54,13 @@ class ViewAssessmentTasks extends Component {
 
             const blob = new Blob([fileData], { type: 'csv' });
             const url = URL.createObjectURL(blob);
-            
+
             const link = document.createElement("a");
             link.download = this.state.downloadedAssessment + ".csv";
             link.href = url;
             link.setAttribute('download', 'export.csv');
             link.click();
-            
+
             var assessmentName = this.state.downloadedAssessment;
             
             const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
