@@ -156,6 +156,7 @@ class Ratings_Csv(Csv_Creation):
         """
         column_name = ["First Name"] + ["Last Name"] if not self._is_teams else ["Team Name"]
 
+        # Adding the column name. Noitice that done and comments is skipped since they are categories but are not important.
         column_name += [i for i in self._singular[Csv_Data.JSON.value] if (i != "done" and i !="comments")]
 
         column_name += ["Lag Time"]
@@ -210,7 +211,8 @@ class Ocs_Sfis_Csv(Csv_Creation):
                                                     self._singular[Csv_Data.USER_ID.value],
                                                     self._singular[Csv_Data.TEAM_ID.value],
                                                     self._at_id, category)
-
+            
+            # Adding the other column names which are the ocs and sfi text.
             headers += ["OC:" + i[0] for i in oc_sfi_per_category[0]] + ["SFI:" + i[0] for i in oc_sfi_per_category[1]]                
 
             self._writer.writerow([category])
