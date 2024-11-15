@@ -54,6 +54,7 @@ class ViewAssessmentTasks extends Component {
 
             const blob = new Blob([fileData], { type: 'csv' });
             const url = URL.createObjectURL(blob);
+            const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
 
             const link = document.createElement("a");
             link.download = this.state.downloadedAssessment + ".csv";
@@ -62,9 +63,11 @@ class ViewAssessmentTasks extends Component {
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
-
+            
             setTimeout(() => {
-                document.getElementById(this.state.exportButtonId[assessmentName]).removeAttribute("disabled");
+                if(exportAssessmentTask) {
+                    exportAssessmentTask.removeAttribute("disabled");
+                }
             }, 10000);
 
             this.setState({
