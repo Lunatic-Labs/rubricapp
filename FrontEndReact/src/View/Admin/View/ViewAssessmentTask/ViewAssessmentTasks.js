@@ -52,7 +52,7 @@ class ViewAssessmentTasks extends Component {
         if(this.state.isLoaded && this.state.csvCreation) {
             const fileData = this.state.csvCreation["csv_data"];
 
-            const blob = new Blob([fileData], { type: 'csv' });
+            const blob = new Blob([fileData], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
 
             const link = document.createElement("a");

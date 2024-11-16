@@ -110,6 +110,7 @@ class Csv_Creation(ABC):
         """
 
         # Writting a common identifying data.
+        self._writer.writerow(['\ufeff']) # A dom that helps excel auto use utf-8. Downside is that it uses up a line.
         self._writer.writerow(["Course Name"])
         self._writer.writerow([get_course_name_by_at_id(self._at_id)])
         self._writer.writerow([' '])
@@ -192,7 +193,7 @@ class Ocs_Sfis_Csv(Csv_Creation):
         at_id: <class 'int'> 
         """
         super().__init__(at_id)
-        self.__checkmark = "✔"
+        self.__checkmark = '\u2713'
         self.__crossmark = " "
 
     def _format(self) -> None:
