@@ -31,7 +31,6 @@ class ViewTeams extends Component {
         setTimeout(() => {
           this.props.refreshData();
         }, 1000);
-        window.location.reload();
       }
     } catch (error) {
       this.props.onError(
