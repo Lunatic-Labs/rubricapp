@@ -42,21 +42,6 @@ class AdminViewTeams extends Component {
   };
 
   componentDidMount() {
-    // var navbar = this.props.navbar;
-    // var state = navbar.state;
-    // var chosenCourse = state.chosenCourse;
-
-    // genericResourceGET(
-    //   `/team?course_id=${chosenCourse["course_id"]}`,
-    //   "teams",
-    //   this,
-    // );
-
-    // var url = chosenCourse["use_tas"]
-    //   ? `/user?course_id=${chosenCourse["course_id"]}&role_id=4`
-    //   : `/user?uid=${chosenCourse["admin_id"]}`;
-
-    // genericResourceGET(url, "users", this);
     this.fetchData();
   }
 

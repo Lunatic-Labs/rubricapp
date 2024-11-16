@@ -9,35 +9,34 @@ import { genericResourceDELETE } from "../../../../utility.js";
 
 class ViewTeams extends Component {
   async deleteTeam(teamId) {
-    console.log("delete team should be called with team id:", teamId);
+    console.log("=== DELETE TEAM DEBUG ===");
+    console.log("method entering with team id:", teamId);
     try {
-      console.log("deleting team with id:", teamId);
+      console.log("Entering try block");
+      console.log("attempting to delete team with id:", teamId);
       const result = await genericResourceDELETE(`/team?team_id=${teamId}`, this, {
         dest: "teams",
       });
-      console.log("team deleted successfully");
-      if (result && result.status === 200) {
-        // Update the teams list after successful deletion
-        // const updatedTeams = this.state.teams.filter(
-        //   (team) => team.team_id !== teamId,
-        // );
-        this.props.onSuccess("Team deleted successfully.");
-        // this.setState({
-        //   teams: updatedTeams,
-        //   successMessage: "Team deleted successfully.",
-        //   errorMessage: null,
-        // });
-        // Clear success message after 3 seconds
-        setTimeout(() => {
-          this.props.refreshData();
-        }, 1000);
+      console.log("delete response received:", result);
+      if (result.errorMessage) {
+        throw new Error(result.errorMessage);
       }
+      this.props.onSuccess("Team deleted successfully");
+      setTimeout(() => {
+        this.props.refreshData();
+      }, 1000);
     } catch (error) {
-      this.props.onError(
-          "Cannot delete team. There are associated assessment tasks.",
-      );
+      console.log("=== ERROR DELETING TEAM ===");
+      console.log(error);
+      const errorMessage = error.message || "Cannot delete team. There are assessment task associated with this team.";
+      window.alert(errorMessage);
+      this.props.onError(errorMessage);
+      setTimeout(() => {
+        this.props.refreshData();
+      }, 1000);
     }
   }
+    
 
   render() {
     var navbar = this.props.navbar;
