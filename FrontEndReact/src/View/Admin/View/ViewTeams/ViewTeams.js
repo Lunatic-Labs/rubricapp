@@ -9,15 +9,15 @@ import { genericResourceDELETE } from "../../../../utility.js";
 
 class ViewTeams extends Component {
   async deleteTeam(teamId) {
-    console.log("=== DELETE TEAM DEBUG ===");
-    console.log("method entering with team id:", teamId);
+    //console.log("=== DELETE TEAM DEBUG ===");
+    //console.log("method entering with team id:", teamId);
     try {
-      console.log("Entering try block");
-      console.log("attempting to delete team with id:", teamId);
+      //console.log("Entering try block");
+      //console.log("attempting to delete team with id:", teamId);
       const result = await genericResourceDELETE(`/team?team_id=${teamId}`, this, {
         dest: "teams",
       });
-      console.log("delete response received:", result);
+      //console.log("delete response received:", result);
       if (result.errorMessage) {
         throw new Error(result.errorMessage);
       }
@@ -26,8 +26,8 @@ class ViewTeams extends Component {
         this.props.refreshData();
       }, 1000);
     } catch (error) {
-      console.log("=== ERROR DELETING TEAM ===");
-      console.log(error);
+      //console.log("=== ERROR DELETING TEAM ===");
+      //console.log(error);
       const errorMessage = error.message || "Cannot delete team. There are assessment task associated with this team.";
       window.alert(errorMessage);
       this.props.onError(errorMessage);
@@ -37,7 +37,6 @@ class ViewTeams extends Component {
     }
   }
     
-
   render() {
     var navbar = this.props.navbar;
     var adminViewTeams = navbar.adminViewTeams;

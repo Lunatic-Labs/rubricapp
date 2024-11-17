@@ -97,14 +97,14 @@ def get_nonfull_adhoc_teams():
     try:
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
-            
-            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]   
-            
-            return create_good_response(valid_teams, 200, "teams")      
-            
+
+            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]
+
+            return create_good_response(valid_teams, 200, "teams")
+
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
-        
+
 
 @bp.route('/team', methods = ['POST'])
 @jwt_required()
@@ -178,21 +178,21 @@ def delete_selected_teams():
     try:
         if request.args and request.args.get("team_id"):
             team_id = int(request.args.get("team_id"))
-            print("line 177", flush=True)
+            #print("line 177", flush=True)
             team = get_team(team_id)
-            print(team, flush=True)
+            #print(team, flush=True)
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
-            
+
             associated_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
             if associated_tasks is None:
                 associated_tasks = []
-            print(associated_tasks, flush=True)
+            #print(associated_tasks, flush=True)
             if len(associated_tasks) > 0:
                 refetched_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
-                print(refetched_tasks, flush=True)
+                #print(refetched_tasks, flush=True)
                 if not refetched_tasks:
-                    print(refetched_tasks, flush=True)
+                    #print(refetched_tasks, flush=True)
                     delete_team(team_id)
                     return create_good_response([], 200, "teams")
                 else:
@@ -200,7 +200,7 @@ def delete_selected_teams():
             else:
                 delete_team(team_id)
                 return create_good_response([], 200, "teams")
-        
+
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
 
