@@ -278,6 +278,10 @@ def get_students_by_team_id(course_id: int, team_id: int):
 
 
 @error_log
+def get_teams_and_users_of_team(course_id: int, team_id: int, user_id: int):
+    pass
+
+@error_log
 def get_active_students_not_in_a_team(course_id: int, team_id: int):
     """
     Description:

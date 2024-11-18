@@ -22,7 +22,8 @@ from controller.security.CustomDecorators import(
 
 from models.queries import (
     get_team_by_course_id_and_user_id,
-    get_all_nonfull_adhoc_teams
+    get_all_nonfull_adhoc_teams,
+    get_students_by_team_id,
 )
 
 @bp.route('/team', methods = ['GET'])
@@ -206,6 +207,21 @@ def delete_selected_teams():
 
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
+
+@bp.route('/get_all_team_users', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_all_team_users():
+    try:
+        course_id = request.args.get("course_id")
+        team_id = request.args.get("team_id")
+        users = get_students_by_team_id(course_id, team_id)
+        users_json = [{"name": user[1]} for user in users]
+        return create_good_response(users_json, 200, "teams")
+    except Exception as e:
+        return create_bad_response(f"An error occurred getting team users: {e}", "teams", 400)
+
 
 class TeamSchema(ma.Schema):
     class Meta:
