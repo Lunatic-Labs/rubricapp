@@ -791,6 +791,7 @@ def get_completed_assessment_with_team_name(assessment_task_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         Team.team_name
     ).join(
         Team, Team.team_id == CompletedAssessment.team_id
@@ -820,6 +821,7 @@ def get_completed_assessment_with_user_name(assessment_task_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         User.first_name,
         User.last_name
     ).join(
@@ -875,6 +877,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
         AssessmentTask.unit_of_assessment
@@ -898,6 +901,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
         AssessmentTask.unit_of_assessment
@@ -933,6 +937,7 @@ def get_completed_assessment_by_ta_user_id(course_id, user_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
         AssessmentTask.unit_of_assessment

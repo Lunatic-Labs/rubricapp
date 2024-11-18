@@ -153,6 +153,7 @@ class CompletedAssessment(db.Model):
     last_update = db.Column(db.DateTime(timezone=True), nullable=True)
     rating_observable_characteristics_suggestions_data = db.Column(db.JSON, nullable=True)
     done = db.Column(db.Boolean, nullable=False)
+    locked = db.Column(db.Boolean, nullable=False)
 
 class Feedback(db.Model):
     __tablename__ = "Feedback"
