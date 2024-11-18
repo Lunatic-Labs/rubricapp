@@ -1075,8 +1075,26 @@ def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> i
 
     return ratio_rounded
 
-def get_role_id_on_user_id(user_id: int) -> int:
+def is_admin_by_user_id(user_id: int) -> bool:
     """
     Description:
-    Returns the role_id 
+    Returns whether a certain user_id is a admin.
+
+    Parameters:
+    user_id: int (User id)
+    
+    Returns:
+    <class 'bool'> (if the user_id is an admin)
+
+    Exceptions: None other than what the db may raise.
     """
+
+    is_admin = db.session.query(
+        User.is_admin
+    ).filter(
+        User.user_id == user_id
+    ).all
+
+    if is_admin:
+        return True
+    return False
