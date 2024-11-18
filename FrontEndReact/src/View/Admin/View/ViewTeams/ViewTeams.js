@@ -21,6 +21,7 @@ class ViewTeams extends Component {
       if (result.errorMessage) {
         throw new Error(result.errorMessage);
       }
+      window.alert("Team can be deleted")
       this.props.onSuccess("Team deleted successfully");
       setTimeout(() => {
         this.props.refreshData();

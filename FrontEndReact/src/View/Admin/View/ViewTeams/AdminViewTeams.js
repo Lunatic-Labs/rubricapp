@@ -7,7 +7,7 @@ import { genericResourceGET,
 import { Box, Button, Typography } from "@mui/material";
 import Loading from "../../../Loading/Loading.js";
 import SuccessMessage from "../../../Success/SuccessMessage.js";
-//navbar.state.successMessage !== null
+
 class AdminViewTeams extends Component {
   constructor(props) {
     super(props);
