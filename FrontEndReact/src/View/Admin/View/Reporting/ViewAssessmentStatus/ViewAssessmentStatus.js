@@ -194,7 +194,6 @@ export default function ViewAssessmentStatus(props) {
                         categories={categoryList}
                         chosenCategoryId={chosenCategoryId}
                         setChosenCategoryId={handleChosenCategoryIdChange}
-
                       />
                     </Grid>
                   </Grid>
