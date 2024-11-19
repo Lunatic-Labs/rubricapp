@@ -3,7 +3,10 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 from models.completed_assessment import (
     get_completed_assessments,
