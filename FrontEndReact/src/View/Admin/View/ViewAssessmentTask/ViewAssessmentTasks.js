@@ -26,7 +26,7 @@ class ViewAssessmentTasks extends Component {
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
             let promise = genericResourceGET(
-                `/csv_assessment_export?assessment_task_id=${atId}`,
+                `/csv_assessment_export?assessment_task_id=${atId}&format=1`,
                 "csv_creation",
                 this,
                 {dest: "csvCreation"}
@@ -52,13 +52,13 @@ class ViewAssessmentTasks extends Component {
         if(this.state.isLoaded && this.state.csvCreation) {
             const fileData = this.state.csvCreation["csv_data"];
 
-            const blob = new Blob([fileData], { type: 'csv' });
+            const blob = new Blob([fileData], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
 
             const link = document.createElement("a");
             link.download = this.state.downloadedAssessment + ".csv";
             link.href = url;
-            link.setAttribute('download', 'export.csv');
+            link.setAttribute('download', this.props.navbar.state.chosenCourse['course_name']+'.csv');
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
