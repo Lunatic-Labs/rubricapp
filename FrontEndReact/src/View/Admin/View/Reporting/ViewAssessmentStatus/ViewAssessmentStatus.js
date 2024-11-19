@@ -194,8 +194,6 @@ export default function ViewAssessmentStatus(props) {
                         categories={categoryList}
                         chosenCategoryId={chosenCategoryId}
                         setChosenCategoryId={handleChosenCategoryIdChange}
-                        /*dont merge yet*/
-                        disabled={props.completedAssessments !== null && props.completedAssessments.length === 0}
                       />
                     </Grid>
                   </Grid>
