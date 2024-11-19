@@ -10,6 +10,7 @@ from Functions import teamBulkUpload
 from Functions import customExceptions
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
+
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
     admin_check
