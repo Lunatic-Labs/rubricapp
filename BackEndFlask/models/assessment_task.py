@@ -63,7 +63,7 @@ def get_assessment_tasks_by_role_id(role_id):
 
 @error_log
 def get_assessment_tasks_by_team_id(team_id):
-    return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+    db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
             Team.team_id == team_id
             and
             (
@@ -72,7 +72,6 @@ def get_assessment_tasks_by_team_id(team_id):
                 (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
             )
         ).all()
-
 @error_log
 def get_assessment_task(assessment_task_id):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
