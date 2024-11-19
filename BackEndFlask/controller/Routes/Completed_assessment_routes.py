@@ -132,7 +132,6 @@ def get_all_completed_assessments():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-@admin_check()
 def add_completed_assessment():
     try:
         assessment_data = request.json
