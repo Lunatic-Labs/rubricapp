@@ -8,12 +8,16 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 import Functions.studentImport as studentImport
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 @bp.route('/studentbulkuploadcsv', methods = ['POST'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def student_bulk_upload_csv():
     try:
         file = request.files['csv_file']

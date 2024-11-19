@@ -13,16 +13,20 @@ from flask import request
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from Functions.exportCsv import create_csv
 from models.assessment_task import get_assessment_task
 from models.user import get_user
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check, 
+    admin_check
+)
 
 
 @bp.route('/csv_assessment_export', methods = ['GET'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def get_completed_assessment_csv() -> dict:
     """
     Description:
