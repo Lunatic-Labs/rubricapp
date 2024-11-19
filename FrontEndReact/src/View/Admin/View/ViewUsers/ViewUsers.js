@@ -2,12 +2,36 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
+import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import Cookies from 'universal-cookie';
-
+import { genericResourceDELETE } from "../../../../utility.js";
 
 
 class ViewUsers extends Component{
+  async deleteUser(userId) {
+    try {
+      const result = await genericResourceDELETE(`/user?user_id=${userId}`, this, {
+        dest: "users",
+      });
+      if (result.errorMessage) {
+        throw new Error(result.errorMessage);
+      }
+      //window.alert("User can be deleted")
+      this.setState("User deleted successfully");
+      setTimeout(() => {
+        this.props.refreshData();
+      }, 1000);
+    } catch (error) {
+      const errorMessage = error.message || "Cannot delete user. There are assessment task associated with this user.";
+      window.alert(errorMessage);
+      this.setState(errorMessage);
+      setTimeout(() => {
+        this.props.refreshData();
+      }, 1000);
+    }
+  }
+    
   render() {
     var navbar = this.props.navbar;
     var adminViewUsers = navbar.adminViewUsers;
@@ -99,7 +123,31 @@ class ViewUsers extends Component{
             </IconButton>
           )
         },
-      }
+      },
+    });
+    columns.push({
+      name: "user_id",
+      label: "Delete",
+      options: {
+        filter: false,
+        sort: false,
+        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        customBodyRender: (userId) => {
+          return (
+            <IconButton id={"viewUsersDeleteButton"+userId}
+              align="center"
+              size="small"
+              onClick={() => {
+                this.deleteUser(userId);
+              }}
+              aria-label="deleteUserButton"
+            >
+              <DeleteIcon sx={{color:"black"}}/>
+            </IconButton>
+          )
+        },        
+      },
     });
     
     const options = {

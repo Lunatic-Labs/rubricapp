@@ -18,11 +18,13 @@ class AdminViewUsers extends Component {
             errorMessage: null,
             isLoaded: false,
             users: null,
-            roles: null
+            roles: null,
+            prevUsersLength: 0,
+            successMessage: null
         }
     }
-    
-    componentDidMount() {
+
+    fetchData = () => {
         var navbar = this.props.navbar;
 
         if(navbar.props.isSuperAdmin) {
@@ -36,9 +38,19 @@ class AdminViewUsers extends Component {
         }
 
         genericResourceGET(
-            "/role?", "roles", this);
+            "/role?", "roles", this); 
+    }
+    
+    componentDidMount() {
+        this.fetchData();
     }
 
+  componentDidUpdate(){
+    if (this.state.users && this.state.users.length !== this.state.prevUsersLength) {
+      this.setState({ prevUsersLength: this.state.users.length });
+      this.fetchData();
+    }
+  }
     render() {
         const {
             errorMessage,
