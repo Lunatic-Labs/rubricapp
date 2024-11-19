@@ -127,6 +127,26 @@ def get_all_completed_assessments():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
 
+@bp.route('/completed_assessment', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_completed_assessment_by_team_or_user_id():
+    try:
+        completed_assessment_id = request.args.get("completed_assessment_id")
+        unit = request.args.get("unit")
+        if not completed_assessment_id:
+            return create_bad_response("No completed_assessment_id provided", "completed_assessments", 400)
+
+        if unit == "team":
+            one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_id)
+        elif unit == "user":
+            one_completed_assessment = get_completed_assessment_with_user_name(completed_assessment_id)
+        else:
+            create_bad_response("Invalid unit provided", "completed_assessments", 400)
+        return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
+    except Exception as e:
+        return create_bad_response(f"An error occurred fetching a completed assessment: {e}", "completed_assessments", 400)
 
 @bp.route('/completed_assessment', methods = ['POST'])
 @jwt_required()

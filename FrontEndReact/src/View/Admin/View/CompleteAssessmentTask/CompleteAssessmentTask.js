@@ -59,12 +59,16 @@ class CompleteAssessmentTask extends Component {
 
         this.handleDone = () => {
             var navbar = this.props.navbar;
-            let chosenAssessmentTask;
+            let chosenAssessmentTask = null;
             
-            if (navbar.state.chosenCompleteAssessmentTask !== null) {   
+            if (navbar.state.chosenCompleteAssessmentTask && navbar.state.chosenCompleteAssessmentTask.assessment_task_id) {   
                 chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-            } else {
+            } else if(navbar.state.chosenAssessmentTask && navbar.state.chosenAssessmentTask.assessment_task_id) {
                 chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+            }
+            
+            if(!chosenAssessmentTask) {
+                return;
             }
             
             genericResourceGET(
