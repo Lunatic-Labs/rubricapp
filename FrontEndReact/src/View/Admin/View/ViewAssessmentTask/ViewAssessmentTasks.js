@@ -62,9 +62,13 @@ class ViewAssessmentTasks extends Component {
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
-
+            
+            const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
+            
             setTimeout(() => {
-                document.getElementById(this.state.exportButtonId[assessmentName]).removeAttribute("disabled");
+                if(exportAssessmentTask) {
+                    exportAssessmentTask.removeAttribute("disabled");
+                }
             }, 10000);
 
             this.setState({
