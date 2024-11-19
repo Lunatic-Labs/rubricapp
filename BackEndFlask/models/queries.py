@@ -1093,8 +1093,8 @@ def is_admin_by_user_id(user_id: int) -> bool:
         User.is_admin
     ).filter(
         User.user_id == user_id
-    ).all
+    ).all()
 
-    if is_admin:
+    if is_admin[0][0]:
         return True
     return False

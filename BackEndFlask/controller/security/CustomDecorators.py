@@ -90,7 +90,7 @@ def verify_admin(refresh: bool) -> None:
         # Assumes authcheck() has already concluded token_user_id == user_id from parameters.
         token = request.headers.get('Authorization').split()[1]
         decoded_id = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
-        if not is_admin_by_user_id(decoded_id):
+        if is_admin_by_user_id(decoded_id) == False:
             raise NoAuthorizationError("No Authorization")
     except:
         raise NoAuthorizationError("No Authorization")
