@@ -36,7 +36,8 @@ from models.user import(
     get_user_password,
     replace_user,
     make_admin,
-    unmake_admin
+    unmake_admin,
+    delete_user_by_user_id
 )
 
 from models.queries import (
@@ -45,7 +46,7 @@ from models.queries import (
     get_users_by_course_id,
     get_users_by_course_id_and_role_id,
     get_students_by_team_id,
-    get_students_not_in_a_team,
+    get_active_students_not_in_a_team,
     add_user_to_team,
     remove_user_from_team
 )
@@ -88,7 +89,7 @@ def get_all_users():
             
             # We are going to add students by default!
             # Return students that are not in the team!
-            all_users = get_students_not_in_a_team(course_id, team_id)
+            all_users = get_active_students_not_in_a_team(course_id, team_id)
 
             if request.args.get("assign") == 'true':
                 # We are going to remove students!
@@ -299,6 +300,23 @@ def update_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
+    
+@bp.route('/user', methods = ['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def delete_user():
+    try:
+        if request.args and request.args.get("uid"):
+            user_id = request.args.get("uid")
+
+            delete_user_by_user_id(user_id)
+
+            return create_good_response([], 200, "")
+        
+    except Exception as e:
+        return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
+    
 
 
 class UserSchema(ma.Schema):
@@ -315,7 +333,6 @@ class UserSchema(ma.Schema):
             'owner_id',
             'active',
             'has_set_password',
-            'reset_code',
             'is_admin',
             'role_id'
         )

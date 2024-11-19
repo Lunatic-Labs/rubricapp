@@ -36,7 +36,6 @@ from sqlalchemy import (
 import sqlalchemy
 
 
-
 @error_log
 def get_courses_by_user_courses_by_user_id(user_id):
     """
@@ -274,7 +273,7 @@ def get_students_by_team_id(course_id: int, team_id: int):
 
 
 @error_log
-def get_students_not_in_a_team(course_id: int, team_id: int):
+def get_active_students_not_in_a_team(course_id: int, team_id: int):
     """
     Description:
     Gets all of the students not assigned to a team.
@@ -296,6 +295,7 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
         and_(
             UserCourse.course_id == course_id,
             UserCourse.role_id == 5,
+            UserCourse.active == True,
             UserCourse.user_id.notin_(
                 db.session.query(
                     TeamUser.user_id
@@ -717,6 +717,50 @@ def get_all_checkins_for_assessment(assessment_task_id):
 
     return checkins
 
+# This query was written by ChatGPT
+@error_log
+def get_all_nonfull_adhoc_teams(assessment_task_id):
+    """
+    Description:
+    Gets all team numbers where the number of users checked into a team
+    does not exceed the max_team_size for the given assessment task
+    and returns only the team numbers up to number_of_teams.
+
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
+    """
+    # Get the max_team_size and number_of_teams for the given assessment_task_id
+    assessment_task = db.session.query(
+        AssessmentTask
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id
+    ).first()
+
+    if not assessment_task:
+        return []  # No assessment task found
+
+    max_team_size = assessment_task.max_team_size
+    number_of_teams = assessment_task.number_of_teams
+
+    # Query to get all team_numbers where the team size is less than max_team_size
+    teams_above_max_size = db.session.query(
+        Checkin.team_number
+    ).filter(
+        Checkin.assessment_task_id == assessment_task_id
+    ).group_by(
+        Checkin.team_number
+    ).having(
+        db.func.count(Checkin.user_id) >= max_team_size
+    ).all()
+
+    # Extracting team numbers from the result tuples
+    invalid_team_numbers = {team[0] for team in teams_above_max_size}
+
+    # Generate a list of all team numbers up to number_of_teams
+    all_team_numbers = set(range(1, number_of_teams + 1))
+
+    # Return only those team numbers that are not invalid
+    return list(all_team_numbers - invalid_team_numbers)
 
 @error_log
 def get_completed_assessment_with_team_name(assessment_task_id):
@@ -1010,3 +1054,23 @@ def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
     ).all()
 
     return sfi_data,oc_data
+
+
+def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> int:
+    """
+    Description:
+    Returns the ratio of users who have completed an assessment task
+    
+    Parameters:
+    course_id : int (The id of a course)
+    assessment_task_id : int (The id of an assessment task)
+
+    Return: int (Ratio of users who have completed an assessment task rounded to the nearest whole number)
+    """
+    all_usernames_for_completed_task = get_completed_assessment_with_user_name(assessment_task_id)
+    all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
+    ratio = (len(all_usernames_for_completed_task) / len(all_students_in_course)) * 100
+
+    ratio_rounded = round(ratio)
+
+    return ratio_rounded

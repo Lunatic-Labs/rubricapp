@@ -51,6 +51,7 @@ class AppState extends Component {
             chosenAssessmentTask: null,
             chosenCompleteAssessmentTask: null,
             unitOfAssessment: null,
+            chosenCompleteAssessmentTaskIsReadOnly: false,
 
             team: null,
             addTeam: true,
@@ -65,6 +66,11 @@ class AppState extends Component {
             userConsent: null,
 
             addTeamAction: null,
+            
+            successMessage: null,
+            successMessageTimeout: undefined,
+
+            addCustomRubric: null,
         }
 
         this.setNewTab = (newTab) => {
@@ -123,7 +129,9 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null) => { // wip
+        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
+            readOnly = false
+        }={}) => { // wip
             var completedAssessment = null;
 
             if (completedAssessments) {
@@ -135,7 +143,8 @@ class AppState extends Component {
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
+                unitOfAssessment: assessmentTask["unit_of_assessment"],
+                chosenCompleteAssessmentTaskIsReadOnly: readOnly,
             });
         }
 
@@ -246,7 +255,8 @@ class AppState extends Component {
                     activeTab: "CompleteAssessment",
                     chosenAssessmentTask: null,
                     unitOfAssessment: null,
-                    chosenCompleteAssessmentTask: null
+                    chosenCompleteAssessmentTask: null,
+                    chosenCompleteAssessmentTaskIsReadOnly: false,
                 });
 
             } else {
@@ -260,6 +270,7 @@ class AppState extends Component {
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
+                    chosenCompleteAssessmentTaskIsReadOnly: false,
                     chosenAssessmentTask: chosenAssessmentTask,
                     unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
                 });
@@ -312,16 +323,27 @@ class AppState extends Component {
             });
         }
 
-        this.confirmCreateResource = (resource) => {
+        this.setAddCustomRubric = (addCustomRubric) => {
+
+            this.setState({
+                activeTab: "AddCustomRubric",
+                addCustomRubric: addCustomRubric
+            });
+        }
+
+        this.confirmCreateResource = (resource, delay = 1000) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
                     if (resource === "User" || resource === "UserBulkUpload") {
                         this.setState({
-                            successMessage: resource === "UserBulkUpload" ? "The user bulk upload was successful!" : null,
                             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Users",
                             user: null,
                             addUser: null
                         });
+                        
+                        if (resource === "UserBulkUpload") {
+                            this.setSuccessMessage("The user bulk upload was successful!");
+                        }
 
                     } else if (resource === "Course") {
                         this.setState({
@@ -344,11 +366,14 @@ class AppState extends Component {
 
                     } else if (resource === "Team" || resource === "TeamBulkUpload") {
                         this.setState({
-                            successMessage: resource === "TeamBulkUpload" ? "The team bulk upload was successful!" : null,
                             activeTab: "Teams",
                             team: null,
                             addTeam: true
                         });
+                        
+                        if (resource === "TeamBulkUpload") {
+                            this.setSuccessMessage("The team bulk upload was successful!");
+                        }
 
                     } else if (resource==="TeamMembers") {
                         this.setState({
@@ -378,7 +403,7 @@ class AppState extends Component {
                         });
                     }
                 }
-            }, 1000);
+            }, delay);
         }
 
         this.Reset = (listOfElements) => {
@@ -390,6 +415,22 @@ class AppState extends Component {
                 }
             }
         }
+        
+        this.setSuccessMessage = (newSuccessMessage) => {
+            clearTimeout(this.state.successMessageTimeout);
+            
+            const timeoutId = setTimeout(() => {
+                this.setState({
+                    successMessage: null,
+                    successMessageTimeout: undefined,
+                });
+            }, 3000);
+            
+            this.setState({
+                successMessage: newSuccessMessage,
+                successMessageTimeout: timeoutId,
+            });
+        };
     }
 
     // The commented out code below saves the state of the Navbar,

@@ -9,8 +9,13 @@ from io import StringIO, BytesIO
 import os
 import shutil
 from controller.Route_response import create_bad_response, create_good_response
+from flask_jwt_extended import jwt_required
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 @bp.route('/bulk_upload', methods = ['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def upload_CSV():
     try:
         file = request.files['csv_file']

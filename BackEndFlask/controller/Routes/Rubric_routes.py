@@ -3,7 +3,7 @@ from controller import bp
 from models.rubric_categories import *
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from models.rubric   import get_rubric, get_rubrics, create_rubric
+from models.rubric   import get_rubric, get_rubrics, create_rubric, delete_rubric_by_id
 from models.category import get_categories_per_rubric, get_categories, get_ratings_by_category
 from models.suggestions import get_suggestions_per_category
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
@@ -156,6 +156,58 @@ def get_all_categories():
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all categories: {e}", "categories", 400)
+
+@bp.route('/rubric', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def edit_rubric():
+    try: 
+        if request.args and request.args.get("rubric_id"):
+            rubric_id = request.args.get("rubric_id")
+
+            data = request.json
+            rubric = get_rubric(rubric_id)
+
+            rubric.rubric_name = data["rubric"].get('rubric_name', rubric.rubric_name)
+            rubric.rubric_description = data["rubric"].get('rubric_description', rubric.rubric_description)
+
+            if 'categories' in data:
+                
+                delete_rubric_categories_by_rubric_id(rubric_id)
+                
+                rc = {}
+                rc["rubric_id"] = rubric_id
+                                
+                category_ids = data.get('categories')
+                for category_id in category_ids:
+                    rc["category_id"] = category_id
+
+                    create_rubric_category(rc)
+
+            db.session.commit()
+            return create_good_response(rubric_schema.dump(rubric), 200, "rubrics")
+    
+    except Exception as e:
+        db.session.rollback()
+        return create_bad_response(f"An error occurred editing a rubric: {e}", "rubrics", 400)
+
+
+@bp.route('/rubric', methods=['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def delete_rubric():
+    try:
+        if request.args and request.args.get("rubric_id"):
+            rubric_id = request.args.get("rubric_id")
+            
+            delete_rubric_by_id(rubric_id)
+            return create_good_response([], 200, "rubric deleted successfully")
+    except Exception as e:
+        db.session.rollback()
+        return create_bad_response(f"An error occurred deleting a rubric: {e}", "rubrics", 400)
+
 
 class RatingsSchema(ma.Schema):
     class Meta:

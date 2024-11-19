@@ -2,6 +2,7 @@ from core import db
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
 from models.utility import error_log
+from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 
 """
 Something to consider may be the due_date as the default
@@ -22,6 +23,13 @@ class InvalidNumberOfTeams(Exception):
 
     def __str__(self):
         return self.message
+    
+class InvalidMaxTeamSize(Exception):
+    def __init__(self):
+        self.message = "Number of people on a team must be greater than 0."
+        
+    def __str__(self):
+        return self.message
 
 def validate_number_of_teams(number_of_teams):
     if number_of_teams is not None:
@@ -31,6 +39,15 @@ def validate_number_of_teams(number_of_teams):
                 raise InvalidNumberOfTeams()
         except ValueError:
                 raise InvalidNumberOfTeams()
+            
+def validate_max_team_size(max_team_size):
+    if max_team_size is not None:
+        try:
+            number = int(max_team_size)
+            if number <= 0:
+                raise InvalidMaxTeamSize()
+        except ValueError:
+            raise InvalidMaxTeamSize()
 
 @error_log
 def get_assessment_tasks():
@@ -38,7 +55,7 @@ def get_assessment_tasks():
 
 @error_log
 def get_assessment_tasks_by_course_id(course_id):
-    return AssessmentTask.query.filter_by(course_id=course_id).all()
+    return AssessmentTask.query.filter_by(course_id=course_id).all() # query completed assesment tasks
 
 @error_log
 def get_assessment_tasks_by_role_id(role_id):
@@ -74,6 +91,7 @@ def create_assessment_task(assessment_task):
         assessment_task["due_date"] = assessment_task["due_date"] + "Z"
 
     validate_number_of_teams(assessment_task["number_of_teams"])
+    validate_max_team_size(assessment_task["max_team_size"])
 
     new_assessment_task = AssessmentTask(
         assessment_task_name=assessment_task["assessment_task_name"],
@@ -88,6 +106,7 @@ def create_assessment_task(assessment_task):
         create_team_password=assessment_task["create_team_password"],
         comment=assessment_task["comment"],
         number_of_teams=assessment_task["number_of_teams"],
+        max_team_size=assessment_task["max_team_size"],
         notification_sent=None
     )
 
@@ -104,6 +123,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "at_cta",
             "due_date": "2023-04-24T08:30:00",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 1,
             "show_ratings": True,
@@ -117,6 +137,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "at_fca",
             "due_date": "2023-03-03T13:00:00",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 2,
             "show_ratings": True,
@@ -130,6 +151,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "at_ipa",
             "due_date": "2023-02-14T08:00:00",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 5,
             "rubric_id": 3,
             "show_ratings": False,
@@ -143,6 +165,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "at_ic",
             "due_date": "2023-03-05T09:30:00",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 5,
             "rubric_id": 4,
             "show_ratings": False,
@@ -156,6 +179,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "at_ma",
             "due_date": "2023-05-29T13:20:00",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 5,
             "show_ratings": True,
@@ -169,6 +193,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "at_psa",
             "due_date": "2023-02-13T10:00:00",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 5,
             "rubric_id": 6,
             "show_ratings": False,
@@ -182,6 +207,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "at_ta",
             "due_date": "2023-01-09T09:30:00",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 5,
             "rubric_id": 1,
             "show_ratings": False,
@@ -195,6 +221,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-01-30T21:00:24",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 1,
             "show_ratings": True,
@@ -208,6 +235,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-01-28T21:25:20.216000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 2,
             "show_ratings": True,
@@ -221,6 +249,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-01-30T15:10:18.708000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 2,
             "show_ratings": True,
@@ -234,6 +263,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-01-30T15:12:16.247000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 7,
             "show_ratings": True,
@@ -247,6 +277,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-02-05T17:01:10.164000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 5,
             "rubric_id": 6,
             "show_ratings": True,
@@ -260,6 +291,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-02-05T17:06:49.746000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 5,
             "rubric_id": 6,
             "show_ratings": True,
@@ -273,6 +305,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-02-05T17:09:44.900000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 3,
             "show_ratings": True,
@@ -286,6 +319,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "asdf",
             "due_date": "2024-02-05T17:10:06.960000",
             "number_of_teams": 7,
+            "max_team_size": 4,
             "role_id": 4,
             "rubric_id": 4,
             "show_ratings": True,
@@ -299,6 +333,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-02-05T17:10:48.660000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 1,
             "show_ratings": True,
@@ -312,6 +347,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-02-05T17:11:05.896000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 2,
             "show_ratings": True,
@@ -325,6 +361,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-02-05T17:11:26.842000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 5,
             "show_ratings": True,
@@ -338,6 +375,7 @@ def load_demo_admin_assessment_task():
             "create_team_password": "",
             "due_date": "2024-02-05T17:11:44.486000",
             "number_of_teams": None,
+            "max_team_size": None,
             "role_id": 4,
             "rubric_id": 3,
             "show_ratings": True,
@@ -360,7 +398,8 @@ def load_demo_admin_assessment_task():
             "unit_of_assessment": assessment["unit_of_assessment"],
             "create_team_password": assessment["create_team_password"],
             "comment": assessment["comment"],
-            "number_of_teams": assessment["number_of_teams"]
+            "number_of_teams": assessment["number_of_teams"],
+            "max_team_size": assessment["max_team_size"]
         })
 
 @error_log
@@ -372,11 +411,20 @@ def replace_assessment_task(assessment_task, assessment_task_id):
         assessment_task["due_date"] = assessment_task["due_date"] + "Z"
 
     validate_number_of_teams(assessment_task["number_of_teams"])
+    validate_max_team_size(assessment_task["max_team_size"])
 
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
 
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
+
+    # Kick all members from ad hoc teams beyond new team count if there are now fewer teams
+    if assessment_task["number_of_teams"] is not None and one_assessment_task.number_of_teams > int(assessment_task["number_of_teams"]):
+        delete_checkins_over_team_count(assessment_task_id, int(assessment_task["number_of_teams"]))
+    
+    # Kick all members from ad hoc teams with too many members if there is now a smaller capacity
+    if assessment_task["max_team_size"] is not None and one_assessment_task.max_team_size > int(assessment_task["max_team_size"]):
+        delete_latest_checkins_over_team_size(assessment_task_id, int(assessment_task["max_team_size"]))
 
     one_assessment_task.assessment_task_name = assessment_task["assessment_task_name"]
     one_assessment_task.course_id = assessment_task["course_id"]
@@ -389,7 +437,9 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     one_assessment_task.unit_of_assessment = assessment_task["unit_of_assessment"]
     one_assessment_task.create_team_password = assessment_task["create_team_password"]
     one_assessment_task.comment = assessment_task["comment"]
-
+    one_assessment_task.number_of_teams = assessment_task["number_of_teams"]
+    one_assessment_task.max_team_size = assessment_task["max_team_size"]
+    
     db.session.commit()
 
     return one_assessment_task

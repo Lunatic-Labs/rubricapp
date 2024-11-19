@@ -86,7 +86,7 @@ class Course(db.Model):
     year = db.Column(db.Integer, nullable=False)
     term = db.Column(db.Text, nullable=False)
     active = db.Column(db.Boolean, nullable=False)
-    admin_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    admin_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
     use_fixed_teams = db.Column(db.Boolean, nullable=False)
 
@@ -104,7 +104,7 @@ class Team(db.Model): # keeps track of default teams for a fixed team scenario
     team_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     team_name = db.Column(db.Text, nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-    observer_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
 
@@ -129,6 +129,7 @@ class AssessmentTask(db.Model):
     comment = db.Column(db.Text, nullable=True) 
     create_team_password = db.Column(db.Text, nullable=True)
     number_of_teams = db.Column(db.Integer, nullable=True)
+    max_team_size = db.Column(db.Integer, nullable=True)
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT

@@ -2,7 +2,7 @@ import { Component } from "react";
 import { genericResourceGET } from "../../../../utility";
 import CollapsableRubricCategoryTable from "../../Add/AddCustomRubric/CollapsableRubricCategoryTable";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import {  Grid } from "@mui/material";
+import { Grid } from "@mui/material";
 import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton.js";
 import Loading from "../../../Loading/Loading.js";
 
@@ -17,6 +17,7 @@ class AdminViewCustomRubrics extends Component {
             errorMessage: null,
             rubrics: null,
             categories: null,
+            navbar: props.navbar,
         };
     }
 
@@ -31,8 +32,9 @@ class AdminViewCustomRubrics extends Component {
             isLoaded,
             errorMessage,
             rubrics,
-            categories
+            categories,
         } = this.state;
+
 
         if (!isLoaded || !rubrics || !categories) {
             return(
@@ -65,8 +67,10 @@ class AdminViewCustomRubrics extends Component {
                     <CollapsableRubricCategoryTable
                         categories={categories}
                         rubrics={rubrics}
-                        onCategorySelect={null}
                         readOnly={true}
+                        showEditButton={true}
+                        showDeleteButton={true}
+                        navbar={this.state.navbar}
                     />
                 </Grid>
 
@@ -75,7 +79,7 @@ class AdminViewCustomRubrics extends Component {
                         label="Add Custom Rubric"
                         isOutlined={false}
                         onClick={() => {
-                            this.props.navbar.setNewTab("AddCustomRubric");
+                            this.props.navbar.setAddCustomRubric(true);
                         }}
                         aria-label="myCustomRubricsAddCustomRubricButton"
                     />

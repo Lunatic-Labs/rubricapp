@@ -2,16 +2,21 @@ from models.feedback import *
 from controller import bp
 from controller.Route_response import *
 from datetime import datetime
+from flask_jwt_extended import jwt_required
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 
 @bp.route("/feedback", methods=["POST"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def create_new_feedback():
     try:
         feedback_data = request.json
 
         feedback_data["lag_time"] = None
 
-        feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S')
+        feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
 
         feedback = create_feedback(request.json)
 

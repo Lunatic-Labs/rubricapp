@@ -30,14 +30,16 @@ class AdminViewCompleteAssessmentTasks extends Component {
         if (chosenAssessmentTask["unit_of_assessment"]) {
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=team`,
-                "completedAssessments",
-                this
+                "completed_assessments",
+                this,
+                {dest: "completedAssessments"}
             );
         } else {
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=individual`,
-                "completedAssessments",
-                this
+                "completed_assessments",
+                this,
+                {dest: "completedAssessments"}
             );
 
         }

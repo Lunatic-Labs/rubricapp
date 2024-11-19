@@ -31,18 +31,18 @@ class StudentCompletedAssessmentTasks extends Component {
 
         genericResourceGET(
             `/assessment_task?course_id=${chosenCourseID}`,
-            "assessmentTasks", this
+            "assessment_tasks", this, {dest: "assessmentTasks"}
         );
 
         if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourseID}`,
-                "completedAssessments", this
+                "completed_assessments", this, {dest: "completedAssessments"}
             );
         } else {            // If the user is a TA, this returns assessments completed by the TA
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
-                "completedAssessments", this);
+                "completed_assessments", this, {dest: "completedAssessments"});
         }
     }
 

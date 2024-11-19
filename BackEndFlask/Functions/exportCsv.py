@@ -16,9 +16,6 @@ from models.queries import *
 from enum import Enum
 from datetime import datetime
 
-
-
-
 def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     """
     Description:
@@ -33,6 +30,10 @@ def rounded_hours_difference(completed: datetime, seen: datetime) -> int:
     Return:
     Result: int (The lag_time between completed and seen)
     """
+
+    if seen is None:
+        return "" # If the feedback hasnt been viewed return an empty string for proper calculation
+        
     time_delta = seen - completed
 
     hours_remainder = divmod( divmod( time_delta.total_seconds(), 60 )[0], 60)
@@ -91,6 +92,8 @@ def create_csv(at_id: int) -> str:
         with io.StringIO() as csvFile:
             writer = csv.writer(csvFile, quoting=csv.QUOTE_MINIMAL)
 
+            completed_assessment_data = get_csv_data_by_at_id(at_id)
+
             # Next line is the header line and its values.
             writer.writerow(
                 ["Assessment_task_name"] +
@@ -100,6 +103,9 @@ def create_csv(at_id: int) -> str:
                 ["AT_completer_role (Admin[TA/Instructor] / Student)"] +
                 ["Notification_data"]
             )
+
+            if len(completed_assessment_data) == 0:
+                return csvFile.getvalue()
 
             completed_assessment_data = get_csv_data_by_at_id(at_id)
 
@@ -114,6 +120,26 @@ def create_csv(at_id: int) -> str:
                 [completed_assessment_data[0][Csv_data.AT_COMPLETER.value]] +
                 [completed_assessment_data[0][Csv_data.NOTIFICATION.value]]
             )
+
+            for entry in completed_assessment_data:
+                sfi_oc_data = get_csv_categories(entry[Csv_data.RUBRIC_ID.value])
+
+                lag = ""
+
+                try:
+                    lag = rounded_hours_difference(entry[Csv_data.COMP_DATE.value], entry[Csv_data.LAG_TIME.value])
+                except:
+                    pass
+
+                for i in entry[Csv_data.JSON.value]:
+                    if i == "comments" or i == "done":
+                        continue
+
+                    oc = entry[Csv_data.JSON.value][i]["observable_characteristics"]
+
+                    for j in range(0, len(oc)):
+                        if(oc[j] == '0'):
+                            continue
 
             # The block generates data lines.
             writer.writerow(

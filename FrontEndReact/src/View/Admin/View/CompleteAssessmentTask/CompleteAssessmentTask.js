@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
-import { genericResourceGET } from '../../../../utility.js';
+import { genericResourceGET, createEventSource } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
@@ -24,7 +24,8 @@ class CompleteAssessmentTask extends Component {
             roles: null,
             completedAssessments: null,
             checkin: null,
-            userId: null
+            userId: null,
+            checkinEventSource: null,
         }
             this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
@@ -68,18 +69,7 @@ class CompleteAssessmentTask extends Component {
             
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-                "completedAssessments", this
-            );
-        }
-
-        this.refreshUnits = () => {
-            var navbar = this.props.navbar;
-
-            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-
-            genericResourceGET(
-                `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-                 "checkin", this
+                "completed_assessments", this, {dest: "completedAssessments"}
             );
         }
     }
@@ -138,14 +128,9 @@ class CompleteAssessmentTask extends Component {
         if (chosenAssessmentTask["role_id"] === 5) {
             genericResourceGET(
                 `/team_by_user?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
-                "team", this
+                "teams", this, {dest: "team"}
             );
         }
-
-        genericResourceGET( 
-            `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-             "checkin", this
-        );
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
@@ -168,9 +153,25 @@ class CompleteAssessmentTask extends Component {
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-            "completedAssessments", this
+            "completed_assessments", this, {dest: "completedAssessments"}
         );
-
+        
+        const checkinEventSource = createEventSource(
+            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            ({data}) => {
+                this.setState({
+                    checkin: JSON.parse(data),
+                });
+            }
+        );
+        
+        this.setState({
+            checkinEventSource: checkinEventSource,
+        });
+    }
+    
+    componentWillUnmount() {
+        this.state.checkinEventSource?.close();
     }
 
     render() {
@@ -190,6 +191,8 @@ class CompleteAssessmentTask extends Component {
 
         var navbar = this.props.navbar;
 
+        const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
+
         var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
         if (errorMessage) {
@@ -205,18 +208,23 @@ class CompleteAssessmentTask extends Component {
                 <Loading />
             );
 
-        } else if (chosenAssessmentTask["unit_of_assessment"] && teams.length === 0) {
+        } else if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) {
             return (
-                <h1>Please create a team to complete this assessment for.</h1>
+                <h1>Please create a team to complete this assessment.</h1>
             )
 
         } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
-                <h1>Please add students to the roster to complete this assessment for.</h1>
+                <h1>Please add students to the roster to complete this assessment.</h1>
             )
 
         } 
         var role_name=roles["role_name"]
+        if (role_name === "Student" && this.state.unitOfAssessment && !team){
+            return (
+                <Loading />
+            );
+        }
         if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
             return (
                 <Loading />
@@ -344,8 +352,6 @@ class CompleteAssessmentTask extends Component {
                         formReference={this}
 
                         handleDone={this.handleDone}
-
-                        refreshUnits={this.refreshUnits}
 
                         completedAssessments={completedAssessments}
                     />

@@ -1,24 +1,37 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
 import { zonedTimeToUtc, format } from "date-fns-tz";
+import * as eventsource from "eventsource-client";
 
-export async function genericResourceGET(fetchURL, resource, component) {    
-    return await genericResourceFetch(fetchURL, resource, component, "GET", null);
+export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
+    return await genericResourceFetch(fetchURL, resource, component, "GET", null, options);
 }
 
-export async function genericResourcePOST(fetchURL, component, body) {    
-    return await genericResourceFetch(fetchURL, null, component, "POST", body);
+export async function genericResourcePOST(fetchURL, component, body, options = {}) {    
+    return await genericResourceFetch(fetchURL, null, component, "POST", body, options);
 }
 
-export async function genericResourcePUT(fetchURL, component, body) {    
-    return await genericResourceFetch(fetchURL, null, component, "PUT", body);
+export async function genericResourcePUT(fetchURL, component, body, options = {}) {    
+    return await genericResourceFetch(fetchURL, null, component, "PUT", body, options);
 }
 
-async function genericResourceFetch(fetchURL, resource, component, type, body) {
+export async function genericResourceDELETE(fetchURL, component, options = {}) {
+    return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options)
+}
+
+function createApiRequestUrl(fetchURL, cookies) {
+    return fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+}
+
+async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
+    const {
+        dest = resource
+    } = options;
+
     const cookies = new Cookies();
 
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
-        let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+        let url = createApiRequestUrl(fetchURL, cookies);
 
         var headers = {
             "Authorization": "Bearer " + cookies.get('access_token')
@@ -49,7 +62,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         }
 
         const result = await response.json();
-   
+
         if(result['success']) {
             let state = {};
 
@@ -57,24 +70,8 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
             state['errorMessage'] = null;
 
-            if(resource != null) {
-                var getResource = resource;
-    
-                getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
-
-                getResource = (getResource === "completedAssessments") ? "completed_assessments": getResource;
-
-                getResource = (getResource === "csvCreation") ? "csv_creation": getResource;
-
-                getResource = (getResource === "teamMembers") ? "team_members": getResource;
-
-                getResource = (getResource === "indiv_users") ? "users": getResource;
-                
-                getResource = (getResource === "counts") ? "course_count": getResource;
-                
-                getResource = (getResource === "team") ? "teams": getResource;
-                               
-                state[resource] = result['content'][getResource][0];
+            if(resource) {
+                state[dest] = result['content'][resource][0];
             }
 
             component.setState(state);
@@ -107,6 +104,24 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             
             return state;
         }
+    }
+}
+
+export function createEventSource(fetchURL, onMessage) {
+    const cookies = new Cookies();
+
+    if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+        const url = createApiRequestUrl(fetchURL, cookies);
+        
+        const headers = {
+            "Authorization": "Bearer " + cookies.get('access_token')
+        };
+        
+        return eventsource.createEventSource({
+            url,
+            headers,
+            onMessage,
+        });
     }
 }
 
@@ -215,11 +230,15 @@ export function validPasword(password) {
 // NOTE: This function is used to format the Date so that it doesn't have any timezone issues
 export function formatDueDate(dueDate, timeZone) {
     const timeZoneMap = {
-        "EST": "America/New_York",
-        "CST": "America/Chicago",
-        "MST": "America/Denver",
         "PST": "America/Los_Angeles",
-        "UTC": ""
+        "PDT": "America/Los_Angeles",
+        "MST": "America/Denver",
+        "MDT": "America/Denver",
+        "CST": "America/Chicago",
+        "CDT": "America/Chicago",
+        "EST": "America/New_York",
+        "EDT": "America/New_York",
+        "UTC": "UTC"
     };
 
     const timeZoneId = timeZoneMap[timeZone];

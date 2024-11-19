@@ -55,11 +55,12 @@ class Login extends Component {
         };
 
         this.login = () => {
-            const {
+            var {
                 email,
                 password,
             } = this.state;
 
+            email = email.toLowerCase();
             if (email.trim() === '' || password.trim() === '') {
                 this.setState({
                     errors: {
@@ -70,9 +71,16 @@ class Login extends Component {
 
             } else {
                 fetch(
-                    apiUrl + `/login?email=${encodeURIComponent(email)}&password=${encodeURIComponent(password)}`,
+                    apiUrl + "/login",
                     {
-                        method: "POST"
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            email: email,
+                            password: password,
+                        }),
                     }
                 )
                 .then(res => res.json())
@@ -138,7 +146,6 @@ class Login extends Component {
                 (result) => {
 
                     if(result["success"]) {
-                        console.log("results: ",result);
                         cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
 
                         this.setState({
