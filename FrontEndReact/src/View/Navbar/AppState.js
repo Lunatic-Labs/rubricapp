@@ -30,6 +30,7 @@ import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
 import UserAccount from './UserAccount.js'
+import SendMessageModal from '../Components/SendMessageModal.js';
 
 
 class AppState extends Component {
@@ -465,7 +466,7 @@ class AppState extends Component {
 
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
-                        <div className="d-flex justify-content-between align-items-center">
+                        <div className="d-flex justify-content-between align-items-center gap-1">
                             <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
@@ -482,6 +483,18 @@ class AppState extends Component {
                                 }}
                             >
                                 Add User
+                            </Button>
+                            <Button 
+                                className="primary-color"
+                                variant='contained'
+                                onClick={() => {
+                                    this.setState({
+                                        activeTab: "SendMessageModal",
+                                        isSuperAdmin: true
+                                    });
+                                }}
+                            >
+                                Send Message
                             </Button>
                         </div>
 
@@ -832,6 +845,16 @@ class AppState extends Component {
 
                         <UserAccount
                             navbar={this}
+                        />
+                    </Box>
+                }
+
+                {this.state.activeTab==="SendMessageModal" &&
+                    <Box className="page-spacing">
+                        <SendMessageModal
+                            navbar={this}
+                            tabSelected={"SendMessageModal"}
+                            aria-label="SendMessageModal"
                         />
                     </Box>
                 }
