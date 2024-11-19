@@ -30,10 +30,10 @@ export default function SendMessageModal ( props ) {
                         id="emailSubject"
                         name="emailSubject"
                         variant='outlined'
-                        label="Subject"
-                        value={props.subject}
-                        error={!!props.error.subject}
-                        helperText={props.error.subject}
+                        label="Add Subject"
+                        value={props.emailSubject}
+                        error={!!props.error.emailSubject}
+                        helperText={props.error.emailSubject}
                         onChange={props.handleChange}
                         required
                         fullWidth
@@ -47,10 +47,10 @@ export default function SendMessageModal ( props ) {
                         id="emailMessage"
                         name="emailMessage"
                         variant='outlined'
-                        label="Message"
-                        value={props.message}
-                        error={!!props.error.message}
-                        helperText={props.error.message}
+                        label="Add Message"
+                        value={props.emailMessage}
+                        error={!!props.error.emailMessage}
+                        helperText={props.error.emailMessage}
                         onChange={props.handleChange}
                         required
                         multiline
