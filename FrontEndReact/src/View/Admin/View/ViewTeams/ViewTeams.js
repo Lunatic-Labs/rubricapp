@@ -174,7 +174,6 @@ class ViewTeams extends Component {
                     window.confirm("Are you sure you want to delete this team?")
                   ) {
                     this.deleteTeam(teamId);
-                    console.log("Delete Team should be called ", teamId);
                   }
                 }}
                 aria-label="deleteTeamIconButton"
