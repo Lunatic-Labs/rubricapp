@@ -10,12 +10,17 @@ from Functions import teamBulkUpload
 from Functions import customExceptions
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 @bp.route('/team_bulk_upload', methods=['POST'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def upload_team_csv():
     try:
         file = request.files['csv_file']

@@ -2,7 +2,11 @@ from flask import request
 from controller  import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
+from controller.security.CustomDecorators import( 
+    AuthCheck, bad_token_check, 
+    admin_check
+)
 
 from models.role import (
     get_role
@@ -188,6 +192,7 @@ def get_all_team_members():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def add_user():
     try:
         if(request.args and request.args.get("team_id")):
@@ -249,6 +254,7 @@ def add_user():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def update_user():
     try:
         if(request.args and request.args.get("uid") and request.args.get("course_id")):
@@ -323,7 +329,8 @@ def update_user():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def delete_selected_user():
+@admin_check()
+def delete_user():
     try:
         if request.args and request.args.get("user_id"):
             user_id = int(request.args.get("user_id"))

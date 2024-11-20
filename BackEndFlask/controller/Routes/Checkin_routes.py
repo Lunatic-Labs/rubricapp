@@ -67,7 +67,7 @@ def get_checked_in():
     except Exception as e:
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
-@bp.route('/checkin_events', methods = ['GET'])
+@bp.route('/checkin_events', methods = ['GET']) 
 @jwt_required()
 @bad_token_check()
 @AuthCheck()

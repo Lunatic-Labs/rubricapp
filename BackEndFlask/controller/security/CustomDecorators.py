@@ -2,6 +2,8 @@ from flask import request, current_app
 from functools import wraps
 from .utility  import to_int
 from .blacklist import is_token_blacklisted
+from typing     import Callable 
+from models.queries import is_admin_by_user_id
 from flask_jwt_extended import decode_token
 from flask_jwt_extended.exceptions import (
     NoAuthorizationError,
@@ -59,3 +61,36 @@ def verify_token(refresh: bool):
     id = to_int(id, "user_id")
     if id == decoded_id : return
     raise NoAuthorizationError("No Authorization")
+
+def admin_check(refresh: bool = False) -> Callable:
+    """
+    Description:
+    This is a decorator that checks to make sure that the route was called by an admin permisions.
+    I think it is best to use the decorator as the last decorator since it hits the db.
+    """
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            verify_admin(refresh)
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
+
+def verify_admin(refresh: bool) -> None:
+    """
+    Description:
+    Uses token user_id to check user permisions.
+
+    Exceptions: 
+    Raises NoAuthorizationError if at any instance it can not be reliably determined if
+    the individual that called the route has admin level permissions.
+    """
+    try:
+        # Figuring out the user_id from token.
+        # Assumes authcheck() has already concluded token_user_id == user_id from parameters.
+        token = request.headers.get('Authorization').split()[1]
+        decoded_id = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+        if is_admin_by_user_id(decoded_id) == False:
+            raise NoAuthorizationError("No Authorization")
+    except:
+        raise NoAuthorizationError("No Authorization")
