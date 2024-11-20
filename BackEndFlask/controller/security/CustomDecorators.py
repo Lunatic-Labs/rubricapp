@@ -55,7 +55,7 @@ def verify_token(refresh: bool):
     if not id: raise InvalidQueryParamError("Missing user_id")
     token = request.headers.get('Authorization').split()[1]
     try:
-        decoded_id = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+        decoded_id = int(decode_token(token)['sub'])
     except:
         raise NoAuthorizationError("No Authorization")
     id = to_int(id, "user_id")
