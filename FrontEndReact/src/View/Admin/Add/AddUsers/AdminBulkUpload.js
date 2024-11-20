@@ -117,7 +117,7 @@ class AdminBulkUpload extends Component {
                     errorMessage: null,
                     isLoaded: false
                 });
-            }, 2000);
+            }, 5000);
         }
     }
 
