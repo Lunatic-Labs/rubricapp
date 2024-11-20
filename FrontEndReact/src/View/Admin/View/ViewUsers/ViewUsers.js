@@ -18,14 +18,14 @@ class ViewUsers extends Component{
         throw new Error(result.errorMessage);
       }
       //window.alert("User can be deleted")
-      this.setState("User deleted successfully");
+      this.props.onSuccess("User deleted successfully");
       setTimeout(() => {
         this.props.refreshData();
       }, 1000);
     } catch (error) {
       const errorMessage = error.message || "Cannot delete user. There are assessment task associated with this user.";
       window.alert(errorMessage);
-      this.setState(errorMessage);
+      this.props.onError(errorMessage);
       setTimeout(() => {
         this.props.refreshData();
       }, 1000);

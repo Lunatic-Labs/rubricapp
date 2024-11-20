@@ -303,21 +303,21 @@ def update_user():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
     
-@bp.route('/user', methods = ['DELETE'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-def delete_user():
-    try:
-        if request.args and request.args.get("uid"):
-            user_id = request.args.get("uid")
+# @bp.route('/user', methods = ['DELETE'])
+# @jwt_required()
+# @bad_token_check()
+# @AuthCheck()
+# def delete_user():
+#     try:
+#         if request.args and request.args.get("uid"):
+#             user_id = request.args.get("uid")
 
-            delete_user_by_user_id(user_id)
+#             delete_user_by_user_id(user_id)
 
-            return create_good_response([], 200, "")
+#             return create_good_response([], 200, "")
         
-    except Exception as e:
-        return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
+#     except Exception as e:
+#         return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
     
 @bp.route('/user', methods = ['DELETE'])
 @jwt_required()
@@ -325,8 +325,8 @@ def delete_user():
 @AuthCheck()
 def delete_selected_user():
     try:
-        if request.args and request.args.get("uid"):
-            user_id = int(request.args.get("uid"))
+        if request.args and request.args.get("user_id"):
+            user_id = int(request.args.get("user_id"))
             user = get_user(user_id)
             if not user:
                 return create_bad_response("Team does not exist", "users", 400)
@@ -337,12 +337,12 @@ def delete_selected_user():
             if len(associated_tasks) > 0:
                 refetched_tasks = completed_assessment_team_or_user_exists( user_id, team_id=None)
                 if not refetched_tasks:
-                    delete_user(user_id)
+                    delete_user_by_user_id(user_id)
                     return create_good_response([], 200, "users")
                 else:
                     return create_bad_response("Cannot delete user with associated tasks", "users", 400)
             else:
-                delete_user(user_id)
+                delete_user_by_user_id(user_id)
                 return create_good_response([], 200, "users")
 
     except Exception as e:

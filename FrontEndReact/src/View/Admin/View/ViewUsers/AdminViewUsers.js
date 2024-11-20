@@ -51,12 +51,27 @@ class AdminViewUsers extends Component {
       this.fetchData();
     }
   }
+
+  setErrorMessage = (errorMessage) => {
+    this.setState({errorMessage: errorMessage});
+    setTimeout(() => {
+        this.setState({errorMessage: null,});
+    }, 3000);
+  }
+
+  setSuccessMessage = (successMessage) => {
+    this.setState({successMessage: successMessage});
+    setTimeout(() => {
+        this.setState({successMessage: null,});
+    }, 3000);
+  }
     render() {
         const {
             errorMessage,
             isLoaded,
             users,
-            roles
+            roles,
+            successMessage
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -87,16 +102,19 @@ class AdminViewUsers extends Component {
 
             return(
                 <Box>
-                    {state.successMessage !== null && 
+                    {successMessage !== null && 
                         <div className='container'>
                           <SuccessMessage 
-                            successMessage={state.successMessage}
+                            successMessage={successMessage}
                             aria-label="adminViewUsersSuccessMessage"
                           />
                         </div>
                     }
                     <ViewUsers
                         navbar={navbar}
+                        onError={this.setErrorMessage}
+                        onSuccess={this.setSuccessMessage}
+                        refreshData={this.fetchData}
                     />
                 </Box>
             )
