@@ -168,14 +168,20 @@ class AdminAddCourse extends Component {
             "use_fixed_teams": useFixedTeams
         })
 
+        let promise;
+
         if (navbar.state.addCourse) {
-            genericResourcePOST("/course", this, body);
+            promise = genericResourcePOST("/course", this, body);
 
         } else {
-            genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
+            promise = genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
         }
 
-        confirmCreateResource("Course");
+        promise.then(result => {
+            if (result !== undefined && result.errorMessage === null) {
+                confirmCreateResource("Course");
+			}
+		});
     };
 
     hasErrors = () => {

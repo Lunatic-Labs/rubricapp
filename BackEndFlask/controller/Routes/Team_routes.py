@@ -8,8 +8,11 @@ from models.team import (
     get_team_by_course_id,
     create_team,
     get_teams_by_observer_id,
-    replace_team
+    replace_team,
+    delete_team
 )
+from models.assessment_task import get_assessment_tasks_by_team_id
+from models.completed_assessment import completed_assessment_team_or_user_exists
 from models.team_user import *
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.queries import (
@@ -86,19 +89,22 @@ def get_one_team():
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
 
 @bp.route('/team/nonfull-adhoc', methods = ["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
 def get_nonfull_adhoc_teams():
     # given an assessment task id, return list of team ids that have not reached the max team size
     try:
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
-            
-            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]   
-            
-            return create_good_response(valid_teams, 200, "teams")      
-            
+
+            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]
+
+            return create_good_response(valid_teams, 200, "teams")
+
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
-        
+
 
 @bp.route('/team', methods = ['POST'])
 @jwt_required()
@@ -164,6 +170,34 @@ def update_team_user_by_edit():
     except Exception as e:
         return create_bad_response(f"An error occurred updating a team: {e}", "teams", 400)
 
+@bp.route('/team', methods = ['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def delete_selected_teams():
+    try:
+        if request.args and request.args.get("team_id"):
+            team_id = int(request.args.get("team_id"))
+            team = get_team(team_id)
+            if not team:
+                return create_bad_response("Team does not exist", "teams", 400)
+
+            associated_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
+            if associated_tasks is None:
+                associated_tasks = []
+            if len(associated_tasks) > 0:
+                refetched_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
+                if not refetched_tasks:
+                    delete_team(team_id)
+                    return create_good_response([], 200, "teams")
+                else:
+                    return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
+            else:
+                delete_team(team_id)
+                return create_good_response([], 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)
 
 class TeamSchema(ma.Schema):
     class Meta:

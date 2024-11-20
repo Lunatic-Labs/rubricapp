@@ -4,7 +4,6 @@ import '../../../../SBStyles.css';
 import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
@@ -52,12 +51,10 @@ class Form extends Component {
 //TODO:  fix in the case that chosenCompleteAssessmentTask is null
             this.generateCategoriesAndSection
             );
-            console.log("handleUnitTabChange chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
 
         };
 
         this.handleChange = (event, newValue) => {
-            console.log("newValue", newValue)
             this.setState({
                     value: newValue,
                 },
@@ -275,7 +272,7 @@ class Form extends Component {
         var navbar = this.props.navbar;
 
         var state = navbar.state;
-console.log("state", state)
+
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
         var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
@@ -285,14 +282,12 @@ console.log("state", state)
         var selected = this.state.unitData[currentUnitTab];
 
         var date = new Date();
-console.log("before the if chosenCompleteAssessmentTask", chosenCompleteAssessmentTask)
         if(chosenCompleteAssessmentTask) {
             chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
 
             chosenCompleteAssessmentTask["last_update"] = date;
 
             chosenCompleteAssessmentTask["done"] = done;
-console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
             genericResourcePUT(
                 `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
                 this,
@@ -339,13 +334,10 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                     done: done,
                 };
             }  
- console.log("chosenCompleteAssessmentTask", chosenCompleteAssessmentTask, "userRole", this.props.userRole)
             if (chosenCompleteAssessmentTask && this.props.userRole) {
-                console.log("PUT")
                 genericResourcePUT(route, this, JSON.stringify(assessmentData));
 
             } else {
-                console.log("POST")
                 genericResourcePOST(route, this, JSON.stringify(assessmentData));
             }
         }
@@ -401,34 +393,22 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                         <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
                     }
 
-                     <Button
-                        variant="text"
-                        color="primary"
-                        startIcon={<RefreshIcon />}
-                        arialabel="refreshButton"
+                    { !this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly &&
+                        <Button
+                            id="formSubmitButton"
+                            variant="contained"
+                            color="primary"
+                            aria-label="saveButton"
 
-                        onClick={() => {
-                            this.props.refreshUnits();
-                        }}
-                        aria-label="refreshButton"
-                    >
-                        Refresh
-                    </Button>
+                            onClick={() => {
+                                this.handleSubmit(this.areAllCategoriesCompleted());
+                            }}
 
-                    <Button
-                        id="formSubmitButton"
-                        variant="contained"
-                        color="primary"
-                        aria-label="saveButton"
-
-                        onClick={() => {
-                            this.handleSubmit(this.areAllCategoriesCompleted());
-                        }}
-
-                        disabled={!this.areAllCategoriesCompleted()}
-                    >
-                        Done
-                    </Button>
+                            disabled={!this.areAllCategoriesCompleted()}
+                        >
+                            Done
+                        </Button>
+                    }
                 </Box>
 
                 <Box>
@@ -470,7 +450,15 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
 
                                 [`& .MuiTabs-indicator`]: { 
                                     display: 'none' 
-                                }
+                                },
+
+                                '& .MuiTab-root': {
+                                    border: '2px solid',
+                                    '&.Mui-selected': {
+                                        backgroundColor: '#D9D9D9',
+                                        color: 'inherit',
+                                    }
+                                },
                             }}
                         >
                             {this.state.categoryList}

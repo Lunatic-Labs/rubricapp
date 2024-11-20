@@ -213,7 +213,6 @@ class UserAccount extends Component {
     componentDidMount() {
         const cookies = new Cookies();
         const user = cookies.get('user');
-        console.log(user)
 
         if (user) {
             this.setState({

@@ -55,16 +55,20 @@ class AdminEditTeamMembers extends Component {
             var team = state.team;
 
             var url = `/user?team_id=${team["team_id"]}&user_ids=${users}`;
+            
+            let promise;
 
             if (this.props.addTeamAction === "Add") {
-                genericResourcePOST(url, this, users);
+                promise = genericResourcePOST(url, this, users);
             } else {
-                genericResourcePUT(url, this, users);
+                promise = genericResourcePUT(url, this, users);
             }
 
-            setTimeout(() => {
-                confirmCreateResource("TeamMembers");
-            }, 1000);
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("TeamMembers");
+                }
+            });
         };
     }
 

@@ -8,33 +8,51 @@ import sys
 import os
 import subprocess
 import re
+import redis
 
 def setup_cron_jobs():
-    # Set up cron jobs
-    pull_cron_jobs = subprocess.run(
-        ["crontab", "-l"],
-        stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
-    )
+    # Check if we've already set up cron
+    flag_file = os.path.join(os.path.dirname(__file__), '.cron_setup_complete')
+    
+    # If we've already set up cron, skip
+    if os.path.exists(flag_file):
+        return
+        
+    try:
+        # Set up cron jobs
+        pull_cron_jobs = subprocess.run(
+            ["crontab", "-l"],
+            stdout=subprocess.PIPE, stderr=subprocess.PIPE, text=True
+        )
 
-    # Check if crontab exists
-    if pull_cron_jobs.returncode != 0 and "no crontab for" in pull_cron_jobs.stderr:
-        current_cron = ""
-    else:
-        current_cron = pull_cron_jobs.stdout
+        # Check if crontab exists
+        if pull_cron_jobs.returncode != 0 and "no crontab for" in pull_cron_jobs.stderr:
+            current_cron = ""
+        else:
+            current_cron = pull_cron_jobs.stdout
 
-    find_job = re.search(
-        r".*rm -f.*tempCsv/\*.*",
-        current_cron
-    )
+        find_job = re.search(
+            r".*rm -f.*tempCsv/\*.*",
+            current_cron
+        )
 
-    if not find_job:
-        cron_path = os.path.abspath(".") + "/cronJobs"
-        with open(cron_path, "w") as f:
-            f.write(current_cron)
-            f.write("0 3 * * * rm -f " + os.path.abspath(".") + "/tempCsv/*\n")
+        if not find_job:
+            cron_path = os.path.abspath(".") + "/cronJobs"
+            with open(cron_path, "w") as f:
+                f.write(current_cron)
+                # Fixed the crontab syntax to include all 5 time fields
+                f.write("0 3 * * * rm -f " + os.path.abspath(".") + "/tempCsv/*\n")
 
-        subprocess.run(["crontab", cron_path])
-        os.remove(cron_path)
+            subprocess.run(["crontab", cron_path])
+            os.remove(cron_path)
+
+        # Create flag file after successful setup
+        with open(flag_file, 'w') as f:
+            f.write(f'Cron setup completed at: {subprocess.check_output(["date"]).decode().strip()}\n')
+            
+    except Exception as e:
+        # Log any errors but don't prevent app from starting
+        print(f"Warning: Cron setup failed: {str(e)}")
 
 # Check if we should skip crontab setup
 SKIP_CRONTAB_SETUP = os.getenv('SKIP_CRONTAB_SETUP', 'false').lower() == 'true'
@@ -70,6 +88,10 @@ else:
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+
+redis_host = os.environ.get('REDIS_HOST', 'localhost')
+
+red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 
 # Register blueprints
 from controller import bp

@@ -333,7 +333,6 @@ class UserSchema(ma.Schema):
             'owner_id',
             'active',
             'has_set_password',
-            'reset_code',
             'is_admin',
             'role_id'
         )

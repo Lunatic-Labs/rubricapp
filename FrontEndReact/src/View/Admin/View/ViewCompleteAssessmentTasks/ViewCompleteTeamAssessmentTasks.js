@@ -75,12 +75,14 @@ class ViewCompleteTeamAssessmentTasks extends Component {
         "notification_date": date,
         "notification_message": notes
       })
-    );
-
-    this.setState({
-      showDialog: false,
-      notificationSent: date,
-    });
+    ).then((result) => {
+			if (result !== undefined && result.errorMessage === null) {
+        this.setState({
+          showDialog: false,
+          notificationSent: date,
+        });
+			}
+		});
   };
 
   render() {

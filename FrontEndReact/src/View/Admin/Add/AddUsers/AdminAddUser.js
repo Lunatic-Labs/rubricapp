@@ -47,9 +47,11 @@ class AdminAddUser extends Component {
                     userId: navbar.state.user["user_id"],
                     courseId: navbar.state.chosenCourse["course_id"]
                 }
-            );
-
-            navbar.confirmCreateResource("User");
+            ).then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                navbar.confirmCreateResource("User");
+                }
+            });
         }
 
         this.deleteUser = () => {
@@ -192,25 +194,31 @@ class AdminAddUser extends Component {
             "role_id": navbar.props.isSuperAdmin ? 3 : role
         });
 
+        let promise;
+
         if(user === null && addUser === false) {
             if(navbar.props.isSuperAdmin) {
-                genericResourcePOST(`/user`, this, body);
+                promise = genericResourcePOST(`/user`, this, body);
 
             } else {
-                genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
+                promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
             }
 
         } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
-            genericResourcePOST(`/user`, this, body);
+            promise = genericResourcePOST(`/user`, this, body);
 
         } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
-            genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
+            promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
         
         } else {
-            genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
+            promise = genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
-        confirmCreateResource("User");
+        promise.then(result => {
+            if (result !== undefined && result.errorMessage === null) {
+                confirmCreateResource("User");
+            }
+        });
     }
 
     hasErrors = () => {
@@ -287,7 +295,7 @@ class AdminAddUser extends Component {
 
                                     { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                         <Box>
-                                            <Button id="dropUserButton" onClick={ this.handleDrop }>
+                                            <Button id="dropUserButton" onClick={ this.handleDrop } aria-label="dropUserButton">
                                                 Drop User
                                             </Button>
                                         </Box>
