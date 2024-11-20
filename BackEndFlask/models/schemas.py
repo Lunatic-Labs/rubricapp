@@ -15,7 +15,7 @@ from sqlalchemy import ForeignKey, func, DateTime, Interval
     UserCourse(user_course_id, user_id, course_id, role_id)
     Team(team_id, team_name, course_id, observer_id, date_created, active_until)
     TeamUser(team_user_id, team_id, user_id)
-    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment, number_of_teams)
+    AssessmentTask(assessment_task_id, assessment_task_name, course_id, rubric_id, role_id, due_date, time_zone, show_suggestions, show_ratings, unit_of_assessment, comment, number_of_teams, locked)
     Completed_Assessment(completed_assessment_id, assessment_task_id, by_role, team_id, user_id, initial_time, last_update, rating_observable_characteristics_suggestions_data)
     Blacklist(id, token)
 """
@@ -135,6 +135,7 @@ class AssessmentTask(db.Model):
     number_of_teams = db.Column(db.Integer, nullable=True)
     max_team_size = db.Column(db.Integer, nullable=True)
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
+    locked = db.Column(db.Boolean, nullable=False)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"
