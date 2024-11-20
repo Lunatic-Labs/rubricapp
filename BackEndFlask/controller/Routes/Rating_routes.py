@@ -61,8 +61,10 @@ def student_view_feedback():
         used to calculate lag time. 
     """
     try: 
-        user_id = request.json["user_id"]
-        completed_assessment_id = request.json["completed_assessment_id"]
+        with open("zfile.txt", 'w') as out:
+            print(request.json, file=out)
+        user_id = request.json.get("user_id")
+        completed_assessment_id = request.json.get("completed_assessment_id")
 
         exists = check_feedback_exists(user_id, completed_assessment_id)
         if exists: 
