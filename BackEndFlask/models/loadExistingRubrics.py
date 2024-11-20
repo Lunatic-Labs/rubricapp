@@ -175,7 +175,7 @@ def load_existing_observable_characteristics():
         [19, "Patiently listened without interrupting the speaker"],
         [19, "Referenced others' ideas to indicate listening and understanding"],
         [19, "Presented nonverbal cues to indicate attentiveness"],
-        [19, "Avoided engagine in activities that diverted attention"],
+        [19, "Avoided engaging in activities that diverted attention"],
         # Responding Observable Characteristics 1-4
         [20, "Acknowledged other members for their ideas or contributions"],
         [20, "Rephrased or referred to what other group members have said"],
