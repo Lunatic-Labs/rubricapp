@@ -856,6 +856,10 @@ class AppState extends Component {
                             tabSelected={"SendMessageModal"}
                             aria-label="SendMessageModal"
                         />
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"SuperAdminUsers"}
+                        />
                     </Box>
                 }
             </Box>
