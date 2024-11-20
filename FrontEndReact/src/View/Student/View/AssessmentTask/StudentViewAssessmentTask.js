@@ -31,33 +31,33 @@ class StudentViewAssessmentTask extends Component {
         var userRole = this.props.role["role_id"];
 
         if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student
- 
+
             genericResourceGET(
-                `/assessment_task?course_id=${chosenCourseID}`, 
+                `/assessment_task?course_id=${chosenCourseID}`,
                 "assessmentTasks", this);
 
             genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourseID}`, 
+                `/completed_assessment?course_id=${chosenCourseID}`,
                 "completedAssessments", this);
         } else {            // If the user is a TA, this returns assessments completed by the TA
             genericResourceGET(
-                `/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                `/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`,
                 "assessmentTasks", this);
 
                 genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`,
                 "completedAssessments", this);
         }
 
         genericResourceGET(
-            `/checkin?course_id=${chosenCourseID}`, 
+            `/checkin?course_id=${chosenCourseID}`,
             "checkin", this);
 
         genericResourceGET(
             `/rubric?all=${true}`, "rubrics", this);
 
         genericResourceGET(
-            `/course?course_id=${chosenCourseID}`, 
+            `/course?course_id=${chosenCourseID}`,
             "counts", this);
         }
 
@@ -92,16 +92,24 @@ class StudentViewAssessmentTask extends Component {
             )
 
         } else {
-            // SKIL-503 bugfix:
-            //   For the assessments tasks, we only want to display the ones
-            //   that have not been completed. This compares all the assessment
-            //   tasks to the completed ones and filters all the ones that are also
-            //   in the completed assessments.
             let uncompletedAssessments = assessmentTasks.filter(task =>
                 !completedAssessments.some(completed =>
                     completed.assessment_task_id === task.assessment_task_id
                 )
             );
+
+            for (let i = 0; i < uncompletedAssessments.length; i++) {
+                console.log("AT: ", uncompletedAssessments[i]);
+
+                const dueDate = new Date(uncompletedAssessments[i].due_date);
+                const currentDate = new Date();
+
+                if (dueDate < currentDate) {
+                    completedAssessments.push(uncompletedAssessments[i]);
+                    uncompletedAssessments.splice(i, 1);
+                    i--;
+                }
+            }
 
             return(
                 <div className='container'>
