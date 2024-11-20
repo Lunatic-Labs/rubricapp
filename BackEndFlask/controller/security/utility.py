@@ -1,4 +1,5 @@
 import traceback
+import datetime
 from flask import request
 from core  import app
 from jwt   import ExpiredSignatureError
@@ -19,7 +20,7 @@ from flask_jwt_extended import (
 # jwt expires in 15mins; refresh token expires in 30days
 def create_tokens(user_i_d: any) -> 'tuple[str, str]':
     with app.app_context():
-        jwt = create_access_token(str(user_i_d))
+        jwt = create_access_token(str(user_i_d), fresh=datetime.timedelta(minutes=60))
         refresh = request.args.get('refresh_token')
         if not refresh:
             refresh = create_refresh_token(str(user_i_d))
