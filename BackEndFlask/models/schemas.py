@@ -131,6 +131,7 @@ class AssessmentTask(db.Model):
     number_of_teams = db.Column(db.Integer, nullable=True)
     max_team_size = db.Column(db.Integer, nullable=True)
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
+    locked = db.Column(db.Boolean, nullable=False)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"

@@ -337,6 +337,7 @@ class AssessmentTaskSchema(ma.Schema):
             "number_of_teams",
             "max_team_size",
             "notification_sent",
+            "locked",
         )
 
 
