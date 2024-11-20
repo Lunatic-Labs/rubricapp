@@ -6,12 +6,17 @@ from controller.Route_response import *
 from models.completed_assessment import *
 from models.queries import get_individual_ratings
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 @bp.route("/rating", methods=["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def get_student_individual_ratings():
     """
         Description:
@@ -53,6 +58,7 @@ def get_student_individual_ratings():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def student_view_feedback(): 
     """
         Description:
