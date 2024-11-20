@@ -313,6 +313,7 @@ def update_user():
 # @jwt_required()
 # @bad_token_check()
 # @AuthCheck()
+#@admin_check()
 # def delete_user():
 #     try:
 #         if request.args and request.args.get("uid"):
@@ -330,7 +331,7 @@ def update_user():
 @bad_token_check()
 @AuthCheck()
 @admin_check()
-def delete_user():
+def delete_selected_user():
     try:
         if request.args and request.args.get("user_id"):
             user_id = int(request.args.get("user_id"))
