@@ -53,6 +53,14 @@ def completed_assessment_exists(team_id, assessment_task_id, user_id):
     else:   
         return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
 
+@error_log
+def completed_assessment_team_or_user_exists(team_id, user_id):
+    if team_id is not None:
+        return CompletedAssessment.query.filter_by(team_id=team_id).all()
+    elif user_id is not None:
+        return CompletedAssessment.query.filter_by(user_id=user_id).all()
+    else:
+        return []
 
 @error_log
 def create_completed_assessment(completed_assessment_data):

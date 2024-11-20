@@ -217,7 +217,6 @@ class AppState extends Component {
                 });
             }
         }
-
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
             var newTeam = null;
 
