@@ -1051,8 +1051,8 @@ def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, c
         if team_id is not None : ocs_sfis_query[i].filter(CompletedAssessment.team_id == team_id)
     
     # Executing the query
-    ocs = ocs_sfis_query[0].all()
-    sfis = ocs_sfis_query[1].all()
+    ocs = ocs_sfis_query[0].distinct(ObservableCharacteristic.observable_characteristics_id).all()
+    sfis = ocs_sfis_query[1].distinct(SuggestionsForImprovement.suggestion_id).all()
 
     return ocs,sfis
 
