@@ -1,9 +1,12 @@
 from core import db
-from sqlalchemy import and_
+from sqlalchemy import and_, func
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
 from datetime import datetime
 from models.utility import error_log
+
+# new function to read number of records for a particular assessment task id, if 0 disable the export button, ask how many get_completed_assessment_by_course
+# get total assessments by course id and return it to assessment taks cancatenate that to the 
 
 class InvalidCRID(Exception):
     def __init__(self, id):
@@ -39,6 +42,9 @@ def get_completed_assessment_by_course_id(course_id):
             AssessmentTask.course_id == course_id
         ).all()
 
+@error_log
+def get_completed_assessment_count(assessment_task_id):
+    return db.session.query(func.count(CompletedAssessment.completed_assessment_id)).filter_by(assessment_task_id=assessment_task_id).scalar()
 
 @error_log
 def completed_assessment_exists(team_id, assessment_task_id, user_id):
@@ -47,6 +53,14 @@ def completed_assessment_exists(team_id, assessment_task_id, user_id):
     else:   
         return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
 
+@error_log
+def completed_assessment_team_or_user_exists(team_id, user_id):
+    if team_id is not None:
+        return CompletedAssessment.query.filter_by(team_id=team_id).all()
+    elif user_id is not None:
+        return CompletedAssessment.query.filter_by(user_id=user_id).all()
+    else:
+        return []
 
 @error_log
 def create_completed_assessment(completed_assessment_data):

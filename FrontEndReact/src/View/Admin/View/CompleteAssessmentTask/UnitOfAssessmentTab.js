@@ -95,20 +95,33 @@ class UnitOfAssessmentTab extends Component {
             <React.Fragment> 
                 <Tabs
                     value={this.props.unitValue}
+
                     onChange={(event, newValue) => {
                         this.props.handleUnitChange(event, newValue);
                         this.props.handleUnitTabChange(newValue);
                     }}
+
                     variant="scrollable"
                     scrollButtons
                     aria-label="visible arrows tabs example"
+                    
                     sx={{
                         width: "100%",
+
                         [`& .${tabsClasses.scrollButtons}`]: {
                             '&.Mui-disabled': { opacity: 0.3 },
                         }, 
+
                         [`& .MuiTabs-indicator`]: { 
                             display: 'none' 
+                        },
+
+                        '& .MuiTab-root': {
+                            border: '2px solid',
+                            '&.Mui-selected': {
+                                backgroundColor: '#D9D9D9',
+                                color: 'inherit',
+                            }
                         },
                     }}
                 >

@@ -7,7 +7,7 @@ import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
-
+import Loading from '../../../Loading/Loading.js';
 
 
 class ViewAssessmentTasks extends Component {
@@ -19,49 +19,56 @@ class ViewAssessmentTasks extends Component {
             errorMessage: null,
             csvCreation: null,
             downloadedAssessment: null,
-            exportButtonId: {}
+            exportButtonId: {},
+            completedAssessments: null,
+            assessmentTasks: null  
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
-            genericResourceGET(
-                `/csv_assessment_export?assessment_task_id=${atId}`,
-                "csvCreation",
-                this
+            let promise = genericResourceGET(
+                `/csv_assessment_export?assessment_task_id=${atId}&format=1`,
+                "csv_creation",
+                this,
+                {dest: "csvCreation"}
             );
 
-            var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
 
-            var newExportButtonJSON = this.state.exportButtonId;
-
-            newExportButtonJSON[assessmentName] = exportButtonId;
-
-            this.setState({
-                downloadedAssessment: assessmentName,
-                exportButtonId: newExportButtonJSON
+                    var newExportButtonJSON = this.state.exportButtonId;
+        
+                    newExportButtonJSON[assessmentName] = exportButtonId;
+        
+                    this.setState({
+                        downloadedAssessment: assessmentName,
+                        exportButtonId: newExportButtonJSON
+                    });                }
             });
         }
     }
 
-    componentDidUpdate() {
+    componentDidUpdate () {
         if(this.state.isLoaded && this.state.csvCreation) {
             const fileData = this.state.csvCreation["csv_data"];
 
-            const blob = new Blob([fileData], { type: 'csv' });
-
+            const blob = new Blob([fileData], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
 
             const link = document.createElement("a");
-
             link.download = this.state.downloadedAssessment + ".csv";
-            
             link.href = url;
-
+            link.setAttribute('download', this.props.navbar.state.chosenCourse['course_name']+'.csv');
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
-
+            
+            const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
+            
             setTimeout(() => {
-                document.getElementById(this.state.exportButtonId[assessmentName]).removeAttribute("disabled");
+                if(exportAssessmentTask) {
+                    exportAssessmentTask.removeAttribute("disabled");
+                }
             }, 10000);
 
             this.setState({
@@ -71,7 +78,31 @@ class ViewAssessmentTasks extends Component {
         }
     }
 
+    componentDidMount() {
+        const courseId = this.props.navbar.state.chosenCourse.course_id;
+
+        genericResourceGET(
+            `/assessment_task?course_id=${courseId}`,
+            "assessment_tasks",
+            this,
+            {dest: "assessmentTasks"}
+        );
+        
+        genericResourceGET(
+            `/completed_assessment?course_id=${courseId}&only_course=true`,
+            "completed_assessments",
+            this,
+            {dest: "completedAssessments"}
+        );
+    }
+
     render() {
+
+        if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
+            return <Loading />;
+        }
+        const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
+        
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
@@ -126,7 +157,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
-                            //assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
+                            assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
 
                         return(
@@ -304,7 +335,7 @@ class ViewAssessmentTasks extends Component {
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
             
-                        if (isTeamAssessment && !teamsExist) {
+                        if (isTeamAssessment && (fixedTeams && !teamsExist)) {
                             return (
                                 <Tooltip title="No teams available for this team assessment">
                                     <span>
@@ -345,6 +376,26 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
+                        const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === atId);
+                        const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
+
+                        if (completedCount === 0) {
+                            return (
+                                <Tooltip title="No completed assessments to export">
+                                    <span>
+                                        <Button
+                                            id={"assessment_export_" + atId}
+                                            className='primary-color'
+                                            variant='contained'
+                                            disabled
+                                            aria-label='exportAssessmentTaskButton'
+                                            >
+                                            EXPORT
+                                        </Button>
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
                         return (
                                 <Button
                                     id={"assessment_export_" + atId}
@@ -379,7 +430,7 @@ class ViewAssessmentTasks extends Component {
         return(
             <>
                 <CustomDataTable
-                    data={assessmentTasks ? assessmentTasks : []}
+                    data={assessmentTasks}
                     columns={columns}
                     options={options}
                 />

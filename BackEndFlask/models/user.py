@@ -1,15 +1,10 @@
 from core import db
-
 from werkzeug.security import generate_password_hash, check_password_hash
-
 from models.schemas import User, UserCourse
-
 from sqlalchemy import (
     and_
 )
-
 from models.utility import generate_random_password, send_new_user_email
-
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -186,7 +181,7 @@ def create_user(user_data):
     user_data = User(
         first_name=user_data["first_name"],
         last_name=user_data["last_name"],
-        email=user_data["email"],
+        email=user_data["email"].lower().strip(),
         password=password_hash,
         lms_id=user_data["lms_id"],
         consent=user_data["consent"],
@@ -379,6 +374,16 @@ def replace_user(user_data, user_id):
 def delete_user(user_id):
     User.query.filter_by(user_id=user_id).delete()
 
+    db.session.commit()
+
+    return True
+
+
+@error_log
+def delete_user_by_user_id(user_id: int) -> bool:
+    user = User.query.filter_by(user_id=user_id).first()
+    
+    db.session.delete(user)
     db.session.commit()
 
     return True

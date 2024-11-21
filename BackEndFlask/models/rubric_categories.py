@@ -13,3 +13,12 @@ def create_rubric_category(rubric_category):
     db.session.commit()
 
     return new_category
+
+@error_log
+def delete_rubric_categories_by_rubric_id(rubric_id):
+    categories_to_delete = RubricCategory.query.filter_by(rubric_id=rubric_id).all()
+    
+    for category in categories_to_delete:
+        db.session.delete(category)
+        
+    db.session.commit()

@@ -19,10 +19,11 @@ class BuildTeamTable extends Component {
     };
   }
 
-  handleConfirmTeamClick = () => {
+  // TO DO
+  // handleConfirmTeamClick = () => {
     // Add your confirm team functionality here
-    console.log('Confirm Team Button Clicked');
-  };
+    // console.log('Confirm Team Button Clicked');
+  // };
 
   handleChange = (userId) => (event) => {
     const { selected, unselected } = this.state;
@@ -197,12 +198,12 @@ class BuildTeamTable extends Component {
                           backgroundColor: "#2196F3",
                           marginTop: "30px"
                       }}
-
-                      onClick={
-                        () => {
-                          console.log("Confirm Team");
-                        }
-                      }
+                      // TO DO 
+                      // onClick={
+                      //   () => {
+                          // console.log("Confirm Team");
+                        // }
+                      // }
                   >
                       Confirm Team
                   </Button>

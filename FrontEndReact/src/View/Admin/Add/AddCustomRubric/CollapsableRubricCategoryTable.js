@@ -2,7 +2,7 @@ import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Check
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React, { useState } from "react";
-
+import  Button from "@mui/material/Button";
 
 
 // NOTE: Custom Theme for the Collapsible table
@@ -39,7 +39,7 @@ const customTheme = createTheme({
   },
 });
 
-const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly }) => {
+const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect, readOnly, showEditButton, selectedCategories, navbar }) => {
 
   // NOTE: Manage whether the rubric was clicked or not
   const [openRubric, setOpenRubric] = useState(null);
@@ -47,9 +47,12 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
   const handleRubricClick = (rubricId) => {
     setOpenRubric(openRubric === rubricId ? null : rubricId);
   };
-
+  
   // NOTE: Manage whether the category was clicked or not
-  const [checkedCategories, setCheckedCategories] = useState([]);
+  const [checkedCategories, setCheckedCategories] = useState(
+    readOnly ? [] : selectedCategories.map(category => category.category_id)
+  );
+
 
   const handleCheckboxChange = (categoryId) => {
     const isChecked = checkedCategories.includes(categoryId);
@@ -94,6 +97,24 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                         <KeyboardArrowUp />
                       ) : (
                           <KeyboardArrowDown />
+                        )}
+                        {showEditButton && (
+                          <Button
+                            variant="contained"
+                            label="Edit Custom Rubric"
+                            isOutlined={false}
+                            onClick={() => {
+                              navbar.rubricId = rubric["rubric_id"];
+                              navbar.setAddCustomRubric(false)
+                            }}
+                            style={{
+                              marginLeft: '380px',
+                              fontSize: '14px',       
+                              minWidth: '70px',
+                              spacing: '80px'
+                            }}
+                            aria-label="myCustomRubricsEditCustomRubricButton"
+                          >Edit</Button>
                         )}
                     </TableCell>
                   </TableRow>

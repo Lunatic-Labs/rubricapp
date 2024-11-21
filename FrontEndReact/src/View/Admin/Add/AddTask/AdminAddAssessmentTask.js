@@ -30,6 +30,7 @@ class AdminAddAssessmentTask extends Component {
             password: '',
             notes: '',
             numberOfTeams: null,
+            maxTeamSize: null,
             suggestions: true,
             ratings: true,
             usingTeams: false,
@@ -40,6 +41,7 @@ class AdminAddAssessmentTask extends Component {
                 taskName: '',
                 timeZone: '',
                 numberOfTeams: '',
+                maxTeamSize: '',
                 roleId: '',
                 rubricId: '',
                 password: '',
@@ -68,6 +70,7 @@ class AdminAddAssessmentTask extends Component {
     }
 
     componentDidMount() {
+        
         var navbar = this.props.navbar;
         var state = navbar.state;
         var assessmentTask = state.assessmentTask;
@@ -76,7 +79,10 @@ class AdminAddAssessmentTask extends Component {
         if (assessmentTask && !addAssessmentTask) {
             genericResourceGET(
             `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, 
-            "completedAssessments", this);
+            "completed_assessments", 
+            this,
+            { dest: "completedAssessments" }
+        );
 
             this.setState({
                 taskName: assessmentTask["assessment_task_name"],
@@ -90,22 +96,35 @@ class AdminAddAssessmentTask extends Component {
                 usingTeams: assessmentTask["unit_of_assessment"],
                 dueDate: new Date(assessmentTask["due_date"]),
                 editAssessmentTask: true,
-                numberOfTeams: assessmentTask["number_of_teams"]
+                numberOfTeams: assessmentTask["number_of_teams"],
+                maxTeamSize: assessmentTask["max_team_size"]
             });
         }
     }
 
     handleChange = (e) => {
         const { id, value } = e.target;
+        const regex = /^[1-9]\d*$/; // Positive digits
 
         if (id === 'numberOfTeams') {
-            const regex = /^[1-9]\d*$/;
             if (value !== '' && !regex.test(value)) {
                 this.setState({
                     errors: {
                         ...this.state.errors,
                         [id]: 'Number of teams must be greater than zero',
-                    },
+                    }
+                });
+            return;
+            }
+        }
+
+        if (id === 'maxTeamSize') {
+            if (value !== '' && !regex.test(value)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        [id]: 'Number of members on a team must be greater than zero',
+                    }
                 });
                 return;
             }
@@ -146,7 +165,8 @@ class AdminAddAssessmentTask extends Component {
             suggestions,
             ratings,
             usingTeams,
-            numberOfTeams
+            numberOfTeams,
+            maxTeamSize
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -166,6 +186,15 @@ class AdminAddAssessmentTask extends Component {
                 return;
             }
             
+            if (!maxTeamSize || !/^[1-9]\d*$/.test(maxTeamSize)) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        maxTeamSize: 'Number of members on a team must be greater than zero'
+                    }
+                });
+                return;
+            }
         }
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || notes === '') {
             this.setState({
@@ -192,31 +221,33 @@ class AdminAddAssessmentTask extends Component {
                 "unit_of_assessment": usingTeams,
                 "create_team_password": password,
                 "comment": notes,
-                "number_of_teams": numberOfTeams
+                "number_of_teams": numberOfTeams,
+                "max_team_size": maxTeamSize
             });
+
+            let promise;
             
             if (navbar.state.addAssessmentTask) {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     "/assessment_task",
                     this, body
                 );
 
             } else {
-                genericResourcePUT(
+                promise = genericResourcePUT(
                     `/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
                     this, body
                 );
             }
 
-            confirmCreateResource("AssessmentTask");
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("AssessmentTask");
+                }
+            });
         }
     };
 
-    hasErrors = () => {
-        const { errors } = this.state;
-
-        return Object.values(errors).some((error) => !!error);
-    };
 
     render() {
         var navbar = this.props.navbar;
@@ -370,6 +401,26 @@ class AdminAddAssessmentTask extends Component {
                                         />
                                     }
 
+                                    {usingTeams && !chosenCourse["use_fixed_teams"] &&
+                                        <TextField 
+                                            id="maxTeamSize"
+                                            name="setTeamSize"
+                                            variant='outlined'
+                                            label="Max team size"
+                                            value={this.state.maxTeamSize}
+                                            error={!!errors.maxTeamSize}
+                                            helperText={errors.maxTeamSize}
+                                            onChange={this.handleChange}
+                                            required
+                                            type={"text"}
+                                            inputProps={{
+                                                pattern: "[1-9][0-9]*",
+                                                inputMode: "numeric"
+                                            }}
+                                            sx={{ mb: 2 }}
+                                        />
+                                    }
+
                                     <FormControl>
                                         <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
 
@@ -458,11 +509,19 @@ class AdminAddAssessmentTask extends Component {
 
                                                     <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
 
+                                                    <MenuItem value={"EDT"} aria-label="addAssessmentEdtRadioOption" >EDT</MenuItem>
+
                                                     <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
+
+                                                    <MenuItem value={"CDT"} aria-label="addAssessmentCdtRadioOption" >CDT</MenuItem>
 
                                                     <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
 
+                                                    <MenuItem value={"MDT"} aria-label="addAssessmentMdtRadioOption" >MDT</MenuItem>
+
                                                     <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
+
+                                                    <MenuItem value={"PDT"} aria-label="addAssessmentPdtRadioOption" >PDT</MenuItem>
                                                 </Select>
                                                 <FormHelperText>{errors.timeZone}</FormHelperText>
                                             </FormControl>

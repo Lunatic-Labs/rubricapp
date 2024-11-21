@@ -8,8 +8,12 @@ from models.team   import get_team
 from models.role   import get_role
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
+
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 from models.assessment_task import (
     get_assessment_tasks_by_course_id,
@@ -173,6 +177,7 @@ def get_one_assessment_task():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def add_assessment_task():
     try:
         new_assessment_task = create_assessment_task(request.json)
@@ -192,6 +197,7 @@ def add_assessment_task():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def update_assessment_task():
     try:
         if request.args and request.args.get("notification"):
@@ -256,6 +262,7 @@ def update_assessment_task():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def copy_course_assessments():
     try:
         source_course_id = request.args.get('source_course_id')
@@ -307,6 +314,7 @@ class AssessmentTaskSchema(ma.Schema):
             "create_team_password",
             "comment",
             "number_of_teams",
+            "max_team_size",
             "notification_sent"
         )
 

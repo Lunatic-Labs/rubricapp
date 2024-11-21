@@ -1,6 +1,8 @@
 from core import db
 from models.utility import error_log
 from models.schemas import *
+from sqlalchemy.sql import text
+from sqlalchemy import func
 
 from models.team_user import (
     create_team_user,
@@ -30,11 +32,13 @@ from models.team import (
 from sqlalchemy import (
     and_,
     or_,
-    union
+    union,
+    select,
+    case,
+    literal_column
 )
 
 import sqlalchemy
-
 
 
 @error_log
@@ -274,7 +278,7 @@ def get_students_by_team_id(course_id: int, team_id: int):
 
 
 @error_log
-def get_students_not_in_a_team(course_id: int, team_id: int):
+def get_active_students_not_in_a_team(course_id: int, team_id: int):
     """
     Description:
     Gets all of the students not assigned to a team.
@@ -296,6 +300,7 @@ def get_students_not_in_a_team(course_id: int, team_id: int):
         and_(
             UserCourse.course_id == course_id,
             UserCourse.role_id == 5,
+            UserCourse.active == True,
             UserCourse.user_id.notin_(
                 db.session.query(
                     TeamUser.user_id
@@ -717,6 +722,50 @@ def get_all_checkins_for_assessment(assessment_task_id):
 
     return checkins
 
+# This query was written by ChatGPT
+@error_log
+def get_all_nonfull_adhoc_teams(assessment_task_id):
+    """
+    Description:
+    Gets all team numbers where the number of users checked into a team
+    does not exceed the max_team_size for the given assessment task
+    and returns only the team numbers up to number_of_teams.
+
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
+    """
+    # Get the max_team_size and number_of_teams for the given assessment_task_id
+    assessment_task = db.session.query(
+        AssessmentTask
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id
+    ).first()
+
+    if not assessment_task:
+        return []  # No assessment task found
+
+    max_team_size = assessment_task.max_team_size
+    number_of_teams = assessment_task.number_of_teams
+
+    # Query to get all team_numbers where the team size is less than max_team_size
+    teams_above_max_size = db.session.query(
+        Checkin.team_number
+    ).filter(
+        Checkin.assessment_task_id == assessment_task_id
+    ).group_by(
+        Checkin.team_number
+    ).having(
+        db.func.count(Checkin.user_id) >= max_team_size
+    ).all()
+
+    # Extracting team numbers from the result tuples
+    invalid_team_numbers = {team[0] for team in teams_above_max_size}
+
+    # Generate a list of all team numbers up to number_of_teams
+    all_team_numbers = set(range(1, number_of_teams + 1))
+
+    # Return only those team numbers that are not invalid
+    return list(all_team_numbers - invalid_team_numbers)
 
 @error_log
 def get_completed_assessment_with_team_name(assessment_task_id):
@@ -906,21 +955,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     at_id: int (The id of an assessment task)
 
     Return:
-    list[dict][str]
-    """
-
-    """
-    Note that the current plan sqlite3 seems to execute is:
-        QUERY PLAN
-    |--SCAN CompletedAssessment
-    |--SEARCH AssessmentTask USING INTEGER PRIMARY KEY (rowid=?)
-    |--SEARCH Role USING INTEGER PRIMARY KEY (rowid=?)
-    |--SEARCH Team USING INTEGER PRIMARY KEY (rowid=?)
-    `--SEARCH User USING INTEGER PRIMARY KEY (rowid=?)
-    Untested but assume other tables are also runing a search instead of a scan
-    everywhere where there is no index to scan by.
-    The problem lies in the search the others are doing. Future speed optimications
-    can be reached by implementing composite indices.
+    list[dict][str]: (List of dicts: Each list is another individual in the AT and the dict is there related data.)
     """
     pertinent_assessments = db.session.query(
         AssessmentTask.assessment_task_name,
@@ -928,13 +963,15 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
         AssessmentTask.rubric_id,
         Rubric.rubric_name,
         Role.role_name,
+        Team.team_id,
         Team.team_name,
+        CompletedAssessment.user_id,
         User.first_name,
         User.last_name,
         CompletedAssessment.last_update,
         Feedback.feedback_time,
         AssessmentTask.notification_sent,
-        CompletedAssessment.rating_observable_characteristics_suggestions_data
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
     ).join(
         Role,
         AssessmentTask.role_id == Role.role_id,
@@ -944,7 +981,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     ).outerjoin(
         Team,
         CompletedAssessment.team_id == Team.team_id
-    ).join(
+    ).outerjoin(
         User,
         CompletedAssessment.user_id == User.user_id
     ).join(
@@ -958,18 +995,23 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
         )
     ).filter(
         AssessmentTask.assessment_task_id == at_id
+    ).order_by(
+        User.user_id,
     ).all()
 
     return pertinent_assessments
 
-
-def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
+def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, category_name: str) -> tuple[dict[str],dict[str]]:
     """
     Description:
     Returns the sfi and the oc data to fill out the csv file.
     
     Parameters:
     rubric_id : int (The id of a rubric)
+    user_id : int (The id of the current logged student user)
+    team_id: int (The id of a team)
+    at_id: int (The id of an assessment task)
+    category_name : str (The category that the ocs and sfis must relate to.)
 
     Return: tuple two  Dict [Dict] [str] (All of the sfi and oc data)
     """
@@ -979,34 +1021,109 @@ def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
     for performance reasons later down the road. The decision depends on how the
     database evolves from now.
     """
-    sfi_data = db.session.query(
-        RubricCategory.rubric_id,
-        SuggestionsForImprovement.suggestion_text
+
+    ocs_sfis_query = [None, None]
+    
+    for i in range(0, 2):
+        ocs_sfis_query[i] = db.session.query(
+            ObservableCharacteristic.observable_characteristic_text if i == 0 else SuggestionsForImprovement.suggestion_text
+        ).join(
+            Category,
+            (ObservableCharacteristic.category_id if i == 0 else SuggestionsForImprovement.category_id) == Category.category_id 
+        ).join(
+            RubricCategory,
+            RubricCategory.category_id == Category.category_id
+        ).join(
+            AssessmentTask,
+            AssessmentTask.rubric_id == RubricCategory.rubric_id
+        ).join(
+            CompletedAssessment,
+            CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
+        ).filter(
+            Category.category_name == category_name,
+            CompletedAssessment.user_id == user_id,
+            AssessmentTask.assessment_task_id == at_id,
+            RubricCategory.rubric_id == rubric_id,
+        ).order_by(
+            ObservableCharacteristic.observable_characteristics_id if i == 0 else SuggestionsForImprovement.suggestion_id
+        )
+
+        if team_id is not None : ocs_sfis_query[i].filter(CompletedAssessment.team_id == team_id)
+    
+    # Executing the query
+    ocs = ocs_sfis_query[0].all()
+    sfis = ocs_sfis_query[1].all()
+
+    return ocs,sfis
+
+def get_course_name_by_at_id(at_id:int) -> str :
+    """
+    Description:
+    Returns a string of the course name associated to the assessment_task_id.
+
+    Parameters:
+    at_id: int (The assessment_task_id that you want the course name of.)
+
+    Returns:
+    Course name as a string.
+
+    Exceptions:
+    None except the ones sqlalchemy + flask may raise. 
+    """
+
+    course_name = db.session.query(
+        Course.course_name
     ).join(
-        Category,
-        Category.category_id == RubricCategory.rubric_category_id
-    ).outerjoin(
-        SuggestionsForImprovement,
-        Category.category_id == SuggestionsForImprovement.category_id
+        AssessmentTask,
+        AssessmentTask.course_id == Course.course_id
     ).filter(
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        RubricCategory.rubric_id
+        AssessmentTask.assessment_task_id == at_id
     ).all()
 
-    oc_data = db.session.query(
-        RubricCategory.rubric_id,
-        ObservableCharacteristic.observable_characteristic_text
-    ).join(
-        Category,
-        Category.category_id == RubricCategory.rubric_category_id
-    ).outerjoin(
-        ObservableCharacteristic,
-        Category.category_id == ObservableCharacteristic.category_id
+    return course_name[0][0]
+
+
+
+
+def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> int:
+    """
+    Description:
+    Returns the ratio of users who have completed an assessment task
+    
+    Parameters:
+    course_id : int (The id of a course)
+    assessment_task_id : int (The id of an assessment task)
+
+    Return: int (Ratio of users who have completed an assessment task rounded to the nearest whole number)
+    """
+    all_usernames_for_completed_task = get_completed_assessment_with_user_name(assessment_task_id)
+    all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
+    ratio = (len(all_usernames_for_completed_task) / len(all_students_in_course)) * 100
+
+    ratio_rounded = round(ratio)
+
+    return ratio_rounded
+
+def is_admin_by_user_id(user_id: int) -> bool:
+    """
+    Description:
+    Returns whether a certain user_id is a admin.
+
+    Parameters:
+    user_id: int (User id)
+    
+    Returns:
+    <class 'bool'> (if the user_id is an admin)
+
+    Exceptions: None other than what the db may raise.
+    """
+
+    is_admin = db.session.query(
+        User.is_admin
     ).filter(
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        RubricCategory.rubric_id
+        User.user_id == user_id
     ).all()
 
-    return sfi_data,oc_data
+    if is_admin[0][0]:
+        return True
+    return False

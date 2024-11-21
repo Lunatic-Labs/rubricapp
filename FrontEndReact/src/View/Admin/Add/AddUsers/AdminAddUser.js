@@ -2,8 +2,9 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import validator from "validator";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
-import ResponsiveDialog from '../../../Components/DropConfirmation.js';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import DropConfirmation from '../../../Components/DropConfirmation.js';
+import DeleteConfirmation from '../../../Components/DeleteConfirmation.js';
+import { genericResourceDELETE, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -19,6 +20,7 @@ class AdminAddUser extends Component {
             validMessage: "",
             editUser: false,
             showDialog: false,
+            mode: "",
 
             firstName: '',
             lastName: '',
@@ -45,6 +47,19 @@ class AdminAddUser extends Component {
                     userId: navbar.state.user["user_id"],
                     courseId: navbar.state.chosenCourse["course_id"]
                 }
+            ).then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                navbar.confirmCreateResource("User");
+                }
+            });
+        }
+
+        this.deleteUser = () => {
+            var navbar = this.props.navbar;
+
+            genericResourceDELETE(
+                `/user?uid=${navbar.state.user["user_id"]}`,
+                this
             );
 
             navbar.confirmCreateResource("User");
@@ -69,10 +84,25 @@ class AdminAddUser extends Component {
         }
     }
 
-
     handleDialog = () => {
         this.setState({
+            mode : "",
             showDialog: this.state.showDialog === false ? true : false,
+        })
+        
+    }
+
+    handleDrop = () => {
+        this.handleDialog();
+        this.setState({
+            mode: "drop",
+        })
+    }
+
+    handleDelete = () => {
+        this.handleDialog();
+        this.setState({
+            mode: "delete",
         })
     }
 
@@ -164,25 +194,31 @@ class AdminAddUser extends Component {
             "role_id": navbar.props.isSuperAdmin ? 3 : role
         });
 
+        let promise;
+
         if(user === null && addUser === false) {
             if(navbar.props.isSuperAdmin) {
-                genericResourcePOST(`/user`, this, body);
+                promise = genericResourcePOST(`/user`, this, body);
 
             } else {
-                genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
+                promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
             }
 
         } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
-            genericResourcePOST(`/user`, this, body);
+            promise = genericResourcePOST(`/user`, this, body);
 
         } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
-            genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
+            promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
         
         } else {
-            genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
+            promise = genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
-        confirmCreateResource("User");
+        promise.then(result => {
+            if (result !== undefined && result.errorMessage === null) {
+                confirmCreateResource("User");
+            }
+        });
     }
 
     hasErrors = () => {
@@ -227,8 +263,8 @@ class AdminAddUser extends Component {
                 }
 
                 <Box className="card-spacing">
-                    <ResponsiveDialog
-                        show={this.state.showDialog}
+                    <DropConfirmation
+                        show={this.state.mode === "drop" ? true : false}
 
                         handleDialog={this.handleDialog}
 
@@ -237,6 +273,17 @@ class AdminAddUser extends Component {
                         userLastName={this.state.lastName}
 
                         dropUser={this.unenrollUser}
+                    />
+                    <DeleteConfirmation
+                        show={this.state.mode === "delete" ? true : false}
+
+                        handleDialog={this.handleDialog}
+
+                        userFirstName={this.state.firstName}
+
+                        userLastName={this.state.lastName}
+
+                        deleteUser={this.deleteUser}
                     />
 
                     <Box className="form-position">
@@ -248,8 +295,15 @@ class AdminAddUser extends Component {
 
                                     { !navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
                                         <Box>
-                                            <Button id="dropUserButton" onClick={ this.handleDialog }>
+                                            <Button id="dropUserButton" onClick={ this.handleDrop } aria-label="dropUserButton">
                                                 Drop User
+                                            </Button>
+                                        </Box>
+                                    }
+                                    { navbar.props.isSuperAdmin && state.user !== null && state.addUser === false &&
+                                        <Box>
+                                            <Button id="deleteUserButton" onClick={ this.handleDelete }>
+                                                Delete User
                                             </Button>
                                         </Box>
                                     }

@@ -34,38 +34,34 @@ class SelectTeam extends Component {
                 });
                 return;
             }
-
-	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {});
-
-            navbar.setNewTab("StudentDashboard");
-        }
-    };
+            
+	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {}).then((result) => {
+                if (result !== undefined && result.errorMessage === null) {
+                    navbar.setNewTab("StudentDashboard");
+                }
+            });
+        };
+};
 
     componentDidMount() {
         let course = this.props.navbar.state.chosenCourse;
         
         if (course["use_fixed_teams"]) {
-            let courseID = this.props.navbar.state.chosenCourse["course_id"];
-
+            
+            let courseID = course["course_id"];
             genericResourceGET(
                 `/team?course_id=${courseID}`, 
                 "teams", this);
         }
         else {
-        // using Ad Hoc teams
-            let teams = [];
-            let numTeams = this.props.navbar.state.chosenAssessmentTask["number_of_teams"];
+            // using Ad Hoc teams
+            let navbar = this.props.navbar; 
+            let atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 
-            for(let i = 1; i <= numTeams; i++) {
-                teams.push({
-                    "team_id": i,
-                    "team_name": `Team ${i}`
-                });
-            }
-
-            this.setState({
-                teams: teams
-            });
+            genericResourceGET(
+                `/team/nonfull-adhoc?assessment_task_id=${atId}`,
+                "teams", this
+            )
         }
     }
 
