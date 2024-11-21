@@ -1051,8 +1051,8 @@ def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, c
         if team_id is not None : ocs_sfis_query[i].filter(CompletedAssessment.team_id == team_id)
     
     # Executing the query
-    ocs = ocs_sfis_query[0].all()
-    sfis = ocs_sfis_query[1].all()
+    ocs = ocs_sfis_query[0].distinct(ObservableCharacteristic.observable_characteristics_id).all()
+    sfis = ocs_sfis_query[1].distinct(SuggestionsForImprovement.suggestion_id).all()
 
     return ocs,sfis
 
@@ -1103,3 +1103,27 @@ def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> i
     ratio_rounded = round(ratio)
 
     return ratio_rounded
+
+def is_admin_by_user_id(user_id: int) -> bool:
+    """
+    Description:
+    Returns whether a certain user_id is a admin.
+
+    Parameters:
+    user_id: int (User id)
+    
+    Returns:
+    <class 'bool'> (if the user_id is an admin)
+
+    Exceptions: None other than what the db may raise.
+    """
+
+    is_admin = db.session.query(
+        User.is_admin
+    ).filter(
+        User.user_id == user_id
+    ).all()
+
+    if is_admin[0][0]:
+        return True
+    return False

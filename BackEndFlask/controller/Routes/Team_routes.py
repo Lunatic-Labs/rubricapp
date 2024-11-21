@@ -14,7 +14,12 @@ from models.team import (
 from models.assessment_task import get_assessment_tasks_by_team_id
 from models.completed_assessment import completed_assessment_team_or_user_exists
 from models.team_user import *
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
+from controller.security.CustomDecorators import(
+    AuthCheck, bad_token_check,
+    admin_check
+)
+
 from models.queries import (
     get_team_by_course_id_and_user_id,
     get_all_nonfull_adhoc_teams
@@ -110,6 +115,7 @@ def get_nonfull_adhoc_teams():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def add_team():
     try:
         new_team = create_team(request.json)
@@ -124,6 +130,7 @@ def add_team():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def update_team():
     try:
         team_id = request.args.get("team_id")
@@ -139,6 +146,7 @@ def update_team():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def update_team_user_by_edit():
     try:
         data = request.get_json()
