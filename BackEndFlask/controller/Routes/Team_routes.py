@@ -190,11 +190,11 @@ def delete_selected_teams():
             if not team:
                 return create_bad_response("Team does not exist", "teams", 400)
 
-            associated_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
+            associated_tasks = completed_assessment_team_or_user_exists(team_id, role_id=None)
             if associated_tasks is None:
                 associated_tasks = []
             if len(associated_tasks) > 0:
-                refetched_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
+                refetched_tasks = completed_assessment_team_or_user_exists(team_id, role_id=None)
                 if not refetched_tasks:
                     delete_team(team_id)
                     return create_good_response([], 200, "teams")

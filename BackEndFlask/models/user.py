@@ -387,3 +387,11 @@ def delete_user_by_user_id(user_id: int) -> bool:
     db.session.commit()
 
     return True
+
+def delete_user_by_role_id(role_id: int) -> bool:
+    user = User.query.filter_by(role_id=role_id).first()
+    
+    db.session.delete(user)
+    db.session.commit()
+
+    return True
