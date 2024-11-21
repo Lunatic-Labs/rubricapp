@@ -1111,7 +1111,6 @@ def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> i
 
     return ratio_rounded
 
-
 def is_admin_by_user_id(user_id: int) -> bool:
     """
     Description:
