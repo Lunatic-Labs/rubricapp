@@ -71,8 +71,8 @@ def student_view_feedback():
             return create_bad_response(f"Feedback already exists", "feedbacks", 409)    
 
         feedback_data = request.json
-        feedback_time = datetime.now()
-        feedback_data["feedback_time"] = feedback_time.strftime('%Y-%m-%dT%H:%M:%S')
+        string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
+        feedback_data["feedback_time"] = datetime.now().strftime(string_format)
         
         feedback = create_feedback(feedback_data)
         

@@ -95,12 +95,16 @@ class ViewCompletedAssessmentTasks extends Component {
                       <IconButton
                           onClick={() => {
                               navbar.setAssessmentTaskInstructions(assessmentTasks, atId, completedAssessments, { readOnly: true });
+                              var singluarCompletedAssessment = null;
+                              if (completedAssessments) {
+                                singluarCompletedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === atId) ?? null;
+                              }
                               genericResourcePOST(
                                 `/rating`,
                                 this,
                                 JSON.stringify({
-                                    "user_id" : this.userId,
-                                    "completed_assessment_id": 1,
+                                    "user_id" : singluarCompletedAssessment.user_id,
+                                    "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
                                 }),
                             );
                             }}
