@@ -209,6 +209,7 @@ def update_assessment_task():
 
             one_assessment_task = get_assessment_task(assessment_task_id)   # Trigger an error if not exists
 
+
             if one_assessment_task.notification_sent == None:
                 list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
 
@@ -230,11 +231,11 @@ def update_assessment_task():
                     notification_date
                 )
 
-            return create_good_response(
-                assessment_task_schema.dump(one_assessment_task),
-                201,
-                "assessment_tasks"
-            )
+                return create_good_response(
+                    assessment_task_schema.dump(one_assessment_task),
+                    201,
+                    "assessment_tasks"
+                )
 
         assessment_task_id = request.args.get("assessment_task_id")
 
