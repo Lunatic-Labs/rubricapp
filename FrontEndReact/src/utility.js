@@ -1,6 +1,6 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
-import { zonedTimeToUtc, format } from "date-fns-tz";
+import { fromZonedTime, format } from "date-fns-tz";
 import * as eventsource from "eventsource-client";
 
 export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
@@ -243,7 +243,7 @@ export function formatDueDate(dueDate, timeZone) {
 
     const timeZoneId = timeZoneMap[timeZone];
 
-    const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+    const zonedDueDate = fromZonedTime(dueDate, timeZoneId);
 
     const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
 
