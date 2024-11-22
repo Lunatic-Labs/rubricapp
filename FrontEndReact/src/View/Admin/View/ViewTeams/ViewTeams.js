@@ -30,7 +30,7 @@ class ViewTeams extends Component {
       }, 1000);
     }
   }
-    
+
   render() {
     var navbar = this.props.navbar;
     var adminViewTeams = navbar.adminViewTeams;

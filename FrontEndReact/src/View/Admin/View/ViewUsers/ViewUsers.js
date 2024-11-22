@@ -8,7 +8,7 @@ import Cookies from 'universal-cookie';
 import { genericResourceDELETE } from "../../../../utility.js";
 
 
-class ViewUsers extends Component{
+class ViewUsers extends Component {
   async deleteUser(userId) {
     try {
       const result = await genericResourceDELETE(`/user?user_id=${userId}`, this, {
@@ -33,7 +33,7 @@ class ViewUsers extends Component{
       }, 1000);
     }
   }
-    
+
   render() {
     var navbar = this.props.navbar;
     var adminViewUsers = navbar.adminViewUsers;
@@ -47,8 +47,8 @@ class ViewUsers extends Component{
         label: "First Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"20%"}},
-          setCellProps: () => { return { width:"20%"} },
+          setCellHeaderProps: () => { return { width: "20%" } },
+          setCellProps: () => { return { width: "20%" } },
         }
       },
       {
@@ -56,50 +56,50 @@ class ViewUsers extends Component{
         label: "Last Name",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"20%"}},
-          setCellProps: () => { return { width:"20%"} },
+          setCellHeaderProps: () => { return { width: "20%" } },
+          setCellProps: () => { return { width: "20%" } },
         }
-      },  
+      },
       {
         name: "email",
         label: "Email",
         options: {
           filter: true,
-          setCellHeaderProps: () => { return { width:"40%"}},
-          setCellProps: () => { return { width:"40%" } },
+          setCellHeaderProps: () => { return { width: "40%" } },
+          setCellProps: () => { return { width: "40%" } },
         }
       }];
 
-      if(!navbar.props.isSuperAdmin) {
-        columns.push(
-          {
-            name: "role_id",
-            label: "Role",
-            options: {
-              filter: true,
-              setCellHeaderProps: () => { return { width:"10%"}},
-              setCellProps: () => { return { width:"10%" } },
-              customBodyRender: (roleId) => {
-                return (
-                  <p>{ roleNames[roleId] }</p>
-                )
-              }
+    if (!navbar.props.isSuperAdmin) {
+      columns.push(
+        {
+          name: "role_id",
+          label: "Role",
+          options: {
+            filter: true,
+            setCellHeaderProps: () => { return { width: "10%" } },
+            setCellProps: () => { return { width: "10%" } },
+            customBodyRender: (roleId) => {
+              return (
+                <p>{roleNames[roleId]}</p>
+              )
             }
           }
-        );
-      }
+        }
+      );
+    }
 
-      if(navbar.props.isSuperAdmin) {
-        columns.push(
-          {
-            name: "lms_id",
-            label: "LMS ID",
-            options: {
-              filter: true
-            }
+    if (navbar.props.isSuperAdmin) {
+      columns.push(
+        {
+          name: "lms_id",
+          label: "LMS ID",
+          options: {
+            filter: true
           }
-        );
-      }
+        }
+      );
+    }
 
     columns.push({
       name: "user_id",
@@ -107,12 +107,12 @@ class ViewUsers extends Component{
       options: {
         filter: false,
         sort: false,
-        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         customBodyRender: (userId) => {
           var cookies = new Cookies();
           return (
-            <IconButton id={"viewUsersEditButton"+userId}
+            <IconButton id={"viewUsersEditButton" + userId}
               align="center"
               size="small"
               hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
@@ -121,7 +121,7 @@ class ViewUsers extends Component{
               }}
               aria-label="editUserButton"
             >
-              <EditIcon sx={{color:"black"}}/>
+              <EditIcon sx={{ color: "black" }} />
             </IconButton>
           )
         },
@@ -133,27 +133,31 @@ class ViewUsers extends Component{
       options: {
         filter: false,
         sort: false,
-        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         customBodyRender: (userId) => {
           var cookies = new Cookies();
           return (
-            <IconButton id={"viewUsersDeleteButton"+userId}
+            <IconButton id={"viewUsersDeleteButton" + userId}
               align="center"
               size="small"
               hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
               onClick={() => {
-                this.deleteUser(userId);
+                if (
+                  window.confirm("Are you sure you want to delete this user?")
+                ) {
+                  this.deleteUser(userId)
+                }
               }}
               aria-label="deleteUserButton"
             >
-              <DeleteIcon sx={{color:"black"}}/>
+              <DeleteIcon sx={{ color: "black" }} />
             </IconButton>
           )
-        },        
+        },
       },
     });
-    
+
     const options = {
       onRowsDelete: false,
       download: false,
@@ -167,7 +171,7 @@ class ViewUsers extends Component{
     };
 
     return (
-      <CustomDataTable 
+      <CustomDataTable
         data={users ? users : []}
         columns={columns}
         options={options}
