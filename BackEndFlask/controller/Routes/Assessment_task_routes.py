@@ -231,11 +231,11 @@ def update_assessment_task():
                     notification_date
                 )
 
-                return create_good_response(
-                    assessment_task_schema.dump(one_assessment_task),
-                    201,
-                    "assessment_tasks"
-                )
+            return create_good_response(
+                assessment_task_schema.dump(one_assessment_task),
+                201,
+                "assessment_tasks"
+            )
 
         assessment_task_id = request.args.get("assessment_task_id")
 
