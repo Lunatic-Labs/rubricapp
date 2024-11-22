@@ -109,6 +109,10 @@ def get_all_completed_assessments():
             
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
+
+            if not completed_assessments:
+                completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
+            
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}

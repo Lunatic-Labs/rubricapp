@@ -1082,9 +1082,6 @@ def get_course_name_by_at_id(at_id:int) -> str :
 
     return course_name[0][0]
 
-
-
-
 def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> int:
     """
     Description:
@@ -1096,9 +1093,19 @@ def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> i
 
     Return: int (Ratio of users who have completed an assessment task rounded to the nearest whole number)
     """
+    ratio = 0
+
     all_usernames_for_completed_task = get_completed_assessment_with_user_name(assessment_task_id)
-    all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
-    ratio = (len(all_usernames_for_completed_task) / len(all_students_in_course)) * 100
+
+    if all_usernames_for_completed_task:
+        all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
+
+        ratio = len(all_usernames_for_completed_task) / len(all_students_in_course) * 100
+    else:
+        all_teams_in_course = get_team_members_in_course(course_id)
+        all_teams_for_completed_task = get_completed_assessment_with_team_name(assessment_task_id)
+        
+        ratio = len(all_teams_for_completed_task) / len(all_teams_in_course) * 100
 
     ratio_rounded = round(ratio)
 
