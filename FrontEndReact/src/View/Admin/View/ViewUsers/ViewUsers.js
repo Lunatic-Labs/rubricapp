@@ -14,9 +14,11 @@ class ViewUsers extends Component{
       const result = await genericResourceDELETE(`/user?user_id=${userId}`, this, {
         dest: "users",
       });
+      console.log(result);
       if (result.errorMessage) {
         throw new Error(result.errorMessage);
       }
+      console.log(result.errorMessage)
       //window.alert("User can be deleted")
       this.props.onSuccess("User deleted successfully");
       setTimeout(() => {
@@ -134,10 +136,12 @@ class ViewUsers extends Component{
         setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
         setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
         customBodyRender: (userId) => {
+          var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersDeleteButton"+userId}
               align="center"
               size="small"
+              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
               onClick={() => {
                 this.deleteUser(userId);
               }}

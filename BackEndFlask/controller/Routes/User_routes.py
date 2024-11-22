@@ -42,7 +42,7 @@ from models.user import(
     make_admin,
     unmake_admin,
     delete_user_by_user_id,
-    delete_user_by_role_id,
+    get_user_by_role_id
     
 )
 
@@ -334,28 +334,32 @@ def delete_user():
 @admin_check()
 def delete_selected_user():
     try:
-        if request.args and request.args.get("role_id"):
+        if request.args and request.args.get("user_id"):
+            user_id = int(request.args.get("user_id"))
             role_id = int(request.args.get("role_id"))
             print(role_id, flush=True)
-            user = get_user(role_id)
+            print(user_id, flush=True)
+            if role_id == 5:
+                user = get_user_by_role_id(role_id)
+                return user
             print(user, flush=True)
             if not user:
                 return create_bad_response("User does not exist", "users", 400)
 
-            associated_tasks = completed_assessment_team_or_user_exists(team_id = None, role_id=5)
+            associated_tasks = completed_assessment_team_or_user_exists(team_id = None, user_id=user_id)
             print(associated_tasks, flush=True)
             if associated_tasks is None:
                 associated_tasks = []
             if len(associated_tasks) > 0:
-                refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, role_id=5)
+                refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, user_id=user_id)
                 print(refetched_tasks, flush=True)
                 if not refetched_tasks:
-                    delete_user_by_role_id(role_id)
+                    delete_user_by_user_id(user_id)
                     return create_good_response([], 200, "users")
                 else:
                     return create_bad_response("Cannot delete user with associated tasks", "users", 400)
             else:
-                delete_user_by_role_id(role_id)
+                delete_user_by_user_id(user_id)
                 return create_good_response([], 200, "users")
 
     except Exception as e:

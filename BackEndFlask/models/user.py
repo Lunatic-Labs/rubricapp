@@ -39,6 +39,11 @@ def get_users():
 def get_users_by_role_id(role_id):
     return User.query.filter_by(role_id=role_id).all()
 
+def get_user_by_role_id(role_id):
+    one_user = User.query.filter_by(role_id=role_id).first()
+    if one_user is None:
+        raise InvalidUserID(role_id)
+    return one_user
 
 @error_log
 def get_users_by_owner_id(owner_id):
@@ -388,10 +393,3 @@ def delete_user_by_user_id(user_id: int) -> bool:
 
     return True
 
-def delete_user_by_role_id(role_id: int) -> bool:
-    user = User.query.filter_by(role_id=role_id).first()
-    
-    db.session.delete(user)
-    db.session.commit()
-
-    return True
