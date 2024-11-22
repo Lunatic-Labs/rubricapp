@@ -70,9 +70,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     }
 
     genericResourcePUT(
-      `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification=${true}`,
+      `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
       this, JSON.stringify({
-        "notification_date": date,
         "notification_message": notes
       })
     ).then((result) => {
