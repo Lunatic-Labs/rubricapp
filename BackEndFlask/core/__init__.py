@@ -90,7 +90,7 @@ MYSQL_PASSWORD=os.getenv('MYSQL_PASSWORD')
 
 MYSQL_DATABASE=os.getenv('MYSQL_DATABASE')
 
-db_uri = (f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}")
+db_uri = (f"mysql+pymysql://{MYSQL_USER}:${MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
