@@ -1,6 +1,6 @@
 import sys
 import yagmail 
-import random, string
+import string, secrets
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
@@ -58,7 +58,7 @@ def send_email(address: str, subject: str,  content: str):
 def generate_random_password(length: int): 
     letters = string.ascii_letters + string.digits
 
-    return ''.join(random.choice(letters) for i in range(length))
+    return ''.join(secrets.choice(letters) for i in range(length))
 
 def error_log(f):
     ''' 
