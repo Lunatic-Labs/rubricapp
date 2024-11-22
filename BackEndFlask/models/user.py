@@ -247,7 +247,7 @@ def load_SuperAdminUser():
         "password": str(os.environ.get('SUPER_ADMIN_PASSWORD')),
         "lms_id": 0,
         "consent": None,
-        "owner_id": 0,
+        "owner_id": None,
         "role_id": None
     })
 
