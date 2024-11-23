@@ -14,15 +14,12 @@
 from flask import request
 from flask_sqlalchemy import *
 from controller import bp
-from models.assessment_task import *
-from models.course import get_course
-from models.user   import get_user
-from models.team   import get_team
-from models.role   import get_role
+from models.assessment_task import get_assessment_task
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
-
 from flask_jwt_extended import jwt_required
+import datetime
+
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
     admin_check
@@ -41,9 +38,9 @@ def mass_notify_new_ca_users():
     use.
 
     Parameters(from the json):
-    assessment_task_id: str (AT)
-    team: bool (is the at team based)
-    notification_message: str (message to send over in the email)
+    assessment_task_id: <class 'str'>r (AT)
+    team: <class 'bool'> (is the at team based)
+    notification_message: <class 'str'> (message to send over in the email)
 
     Exceptions:
     None all should be caught and handled
@@ -51,17 +48,23 @@ def mass_notify_new_ca_users():
     try:
         at_id = int(request.args.get('assessment_task_id'))
         is_teams = bool(request.args.get('team'))
-
         msg_to_students = request.json["notification_message"]
 
-        one_assessment_task = get_assessment_task(at_id)   # Trigger an error if not exists
+        # Raises InvalidAssessmentTaskID if non-existant AT.
+        at_time = get_assessment_task(at_id).notification_sent
+
+        # Lowest possible time for easier comparisons.
+        if at_time == None : at_time = datetime.datetime(1,1,1,0,0,0,0)
+
+        with open("ap.txt", 'w') as out:
+            print(at_time, file=out)
 
         return create_good_response(
             "Message Sent",
             201,
-            "Mass notified"
+            "Mass_notified"
         )
     except Exception as e:
         return create_bad_response(
-            f"An error occurred emailing users: {e}", "mass notified", 400
+            f"An error occurred emailing users: {e}", "mass_not_notified", 400
         )
