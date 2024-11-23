@@ -19,11 +19,7 @@ class Form extends Component {
             value: 0,
             tabCurrentlySelected: 0,
             unitOfAssessment: this.props.unitOfAssessment,
-            unitValue: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
-                                                     this.props.form.units[0]["user_id"], 
-            currentUnitTab: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
-                                                          this.props.form.units[0]["user_id"], 
-            unitData: this.props.form.unitInfo,
+            units: this.props.form.units,
             categoryList: null,
             section: null,
             displaySavedNotification: false
