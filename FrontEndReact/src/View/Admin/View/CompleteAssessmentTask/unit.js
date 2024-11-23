@@ -73,6 +73,10 @@ class IndividualUnit extends ATUnit {
 	get displayName() {
 		return this.user["first_name"] + " " + this.user["last_name"];
 	}
+
+	get userId() {
+		return this.team["user_id"]
+	}
 }
 
 class FixedTeamUnit extends ATUnit {
@@ -101,6 +105,10 @@ class FixedTeamUnit extends ATUnit {
 	
 	get displayName() {
 		return this.team["team_name"];
+	}
+
+	get teamId() {
+		return this.team["team_id"]
 	}
 	
 	get checkedInNames() {

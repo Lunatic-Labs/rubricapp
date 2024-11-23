@@ -13,7 +13,6 @@ import StatusIndicator from './StatusIndicator.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
-
         var units = this.props.form.units;
 
         var unitList = []
@@ -24,30 +23,22 @@ class UnitOfAssessmentTab extends Component {
             var checkin = this.props.checkin;
             var unitNames = [];
             var ci=0;
-            if (this.props.unitOfAssessment) {
-                var unitName = currentUnit["team_name"];
-                var unitId = currentUnit["team_id"];
-                var unitMembers = this.props.form.teams_users[unitId];
+            if (this.props.unitOfAssessment && this.props.navbar.state.chosenCourse.use_fixed_teams) {
+                var unitName = currentUnit.displayName();
+                var unitId = currentUnit.teamId();
+                unitNames = currentUnit.checkedInNames();
 
-                for(var index = 0; index < unitMembers.length; index++){
-                    for (ci = 0; ci < checkin.length; ci++) {
-                        const currentObject = checkin[ci];
-                        
-                        if ('user_id' in currentObject && currentObject.user_id === unitMembers[index]["user_id"]) {
-                            var firstName = unitMembers[index]["first_name"];
-                            var lastName = unitMembers[index]["last_name"];
-                            var fullName = firstName + " " + lastName;
-                            unitNames = [...unitNames, <Box key={index}> {fullName} </Box>];
-                        }
-                    }
+                if (unitNames.length !== 0) {
+                    unitNames = unitNames.map((fullName, index) => <Box key={index}> {fullName} </Box>);
+                } else {
+                    unitNames = [<Box key={0}> No Team Members Checked In</Box>];
                 }
 
-                unitNames = unitNames.length === 0
-                ? [<Box key={0}> No Team Members Checked In</Box>]
-                : unitNames;
+            } else if (this.props.unitOfAssessment && !this.props.navbar.state.chosenCourse.use_fixed_teams) {
+                // TODO: Implment Ad hoc unit
             } else {
-                unitName = currentUnit["first_name"] + " " + currentUnit["last_name"];
-                unitId = currentUnit["user_id"];
+                unitName = [currentUnit.displayName()];
+                unitId = currentUnit.userId();
                 for (ci = 0; ci < checkin.length; ci++) {
                     if (checkin[ci].user_id === unitId)
                     {
