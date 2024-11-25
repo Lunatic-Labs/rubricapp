@@ -11,7 +11,7 @@ import { genericResourceDELETE } from "../../../../utility.js";
 class ViewUsers extends Component {
   async deleteUser(userId) {
     try {
-      const result = await genericResourceDELETE(`/user?user_id=${userId}`, this, {
+      const result = await genericResourceDELETE(`/user?uid=${userId}&role_id=5`, this, {
         dest: "users",
       });
       console.log(result);

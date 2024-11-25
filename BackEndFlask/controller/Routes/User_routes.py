@@ -334,7 +334,7 @@ def delete_user():
 @admin_check()
 def delete_selected_user():
     try:
-        if request.args and request.args.get("user_id"):
+        if request.args and request.args.get("user_id") and request.args.get("role_id"):
             user_id = int(request.args.get("user_id"))
             role_id = int(request.args.get("role_id"))
             print(role_id, flush=True)
