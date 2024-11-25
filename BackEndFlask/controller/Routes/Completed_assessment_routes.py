@@ -92,7 +92,7 @@ def get_all_completed_assessments():
                 completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
             else:
                 completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
-            
+
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
@@ -102,7 +102,7 @@ def get_all_completed_assessments():
 
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
-            
+
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
             completed_count = get_completed_assessment_count(assessment_task_id)
@@ -111,7 +111,7 @@ def get_all_completed_assessments():
                 for assessment in completed_assessments
             ]
             return create_good_response(result, 200, "completed_assessments")
-        
+
         if request.args and request.args.get("completed_assessment_task_id"):
             completed_assessment_task_id = int(request.args.get("completed_assessment_task_id"))
             one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_task_id)
@@ -135,7 +135,7 @@ def add_completed_assessment():
         team_id = int(assessment_data["team_id"])
         assessment_task_id = int(request.args.get("assessment_task_id"))
         user_id = int(assessment_data["user_id"])
-  
+
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:

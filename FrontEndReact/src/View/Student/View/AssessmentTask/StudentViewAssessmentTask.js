@@ -5,8 +5,6 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 
-
-
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -92,19 +90,29 @@ class StudentViewAssessmentTask extends Component {
             )
 
         } else {
+            // All AT.id === CAT.id means it is completed, do not
+            // display it in the TODO ATs.
             let uncompletedAssessments = assessmentTasks.filter(task =>
                 !completedAssessments.some(completed =>
                     completed.assessment_task_id === task.assessment_task_id
                 )
             );
 
+            // All ATs that are past due needs to be not shown
+            // in the TODO ATs.
             for (let i = 0; i < uncompletedAssessments.length; i++) {
-                console.log("AT: ", uncompletedAssessments[i]);
-
                 const dueDate = new Date(uncompletedAssessments[i].due_date);
                 const currentDate = new Date();
 
                 if (dueDate < currentDate) {
+                    completedAssessments.push(uncompletedAssessments[i]);
+                    uncompletedAssessments.splice(i, 1);
+                    i--;
+                }
+            }
+
+            for (let i = 0; i < uncompletedAssessments.length; i++) {
+                if (uncompletedAssessments[i].locked) {
                     completedAssessments.push(uncompletedAssessments[i]);
                     uncompletedAssessments.splice(i, 1);
                     i--;

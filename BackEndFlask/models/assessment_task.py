@@ -166,7 +166,7 @@ def load_demo_admin_assessment_task():
             "assessment_task_name": "Interpersonal Communication",
             "comment": None,
             "create_team_password": "at_ic",
-            "due_date": "2023-03-05T09:30:00",
+            "due_date": "2025-03-05T09:30:00",
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 5,
@@ -175,7 +175,7 @@ def load_demo_admin_assessment_task():
             "show_suggestions": False,
             "time_zone": "EST",
             "unit_of_assessment": False,
-            "locked": False,
+            "locked": True,
         },
         {   # Assessment Task 5
             "assessment_task_name": "Management Assessment",

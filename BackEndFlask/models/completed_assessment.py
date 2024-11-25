@@ -50,8 +50,8 @@ def get_completed_assessment_count(assessment_task_id):
 def completed_assessment_exists(team_id, assessment_task_id, user_id):
     if (user_id == -1):   # Team assessment, otherwise individual assessment
         return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
-    else:   
-        return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
+    else:
+        return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()
 
 
 @error_log

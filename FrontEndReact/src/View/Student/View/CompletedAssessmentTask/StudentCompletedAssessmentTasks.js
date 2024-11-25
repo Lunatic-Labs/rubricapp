@@ -41,7 +41,7 @@ class StudentCompletedAssessmentTasks extends Component {
             );
         } else {            // If the user is a TA, this returns assessments completed by the TA
             genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
+                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`,
                 "completedAssessments", this);
         }
     }
