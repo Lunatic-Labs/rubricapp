@@ -339,6 +339,7 @@ def delete_selected_user():
             role_id = int(request.args.get("role_id"))
             print(role_id, flush=True)
             print(user_id, flush=True)
+            user = None
             if role_id == 5:
                 user = get_user_by_role_id(role_id)
                 return user
