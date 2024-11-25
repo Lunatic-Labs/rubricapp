@@ -1168,4 +1168,4 @@ def get_students_for_emailing(at_id: int, is_teams: bool) -> tuple[dict[str],dic
         CompletedAssessment.assessment_task_id == at_id
     )
 
-    return student_info.all()
+    return student_info.all() 
