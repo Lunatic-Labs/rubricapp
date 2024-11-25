@@ -61,11 +61,34 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.users = null;
 
         var role = this.state.roles;
-        var assessmentTasks = this.state.assessmentTasks;
-        var completedAssessments = this.state.completedAssessments;
 
+        let assessmentTasks = this.state.assessmentTasks;
+        let completedAssessments = this.state.completedAssessments;
+
+        // Wait for information to be retrieved from DB.
         if (!role || !assessmentTasks || !completedAssessments) {
             return <Loading />
+        }
+
+        // Remove ATs where the ID matches one of the IDs
+        // in the CATs (that AT is completed, no need to display it).
+        assessmentTasks = assessmentTasks.filter(task =>
+            !completedAssessments.some(completed =>
+                completed.assessment_task_id === task.assessment_task_id
+            )
+        );
+
+        // Move the remaining (past due) ATs into the CATs
+        // as well as any ATs that have been manually locked
+        // by an admin.
+        const currentDate = new Date();
+        for (let i = 0; i < assessmentTasks.length; ++i) {
+            const dueDate = new Date(assessmentTasks[i].due_date);
+            if (dueDate < currentDate || assessmentTasks[i].locked) {
+                completedAssessments.push(assessmentTasks[i]);
+                assessmentTasks.splice(i, 1);
+                --i;
+            }
         }
 
         return (
@@ -88,6 +111,8 @@ class StudentDashboard extends Component {
                         <StudentViewAssessmentTask
                             navbar={navbar}
                             role={role}
+                            filteredAssessments={assessmentTasks}
+                            filteredCompleteAssessments={completedAssessments}
                         />
                     </Box>
                 </Box>
@@ -111,12 +136,16 @@ class StudentDashboard extends Component {
                          <StudentCompletedAssessmentTasks
                              navbar={navbar}
                              role={role}
+                             filteredAssessments={assessmentTasks}
+                             filteredCompleteAssessments={completedAssessments}
                          />
                         }
                         {role["role_id"] === 4 &&
                          <StudentCompletedAssessmentTasks
                              navbar={navbar}
                              role={role}
+                             filteredAssessments={assessmentTasks}
+                             filteredCompleteAssessments={completedAssessments}
                          />
                         }
                     </Box>
