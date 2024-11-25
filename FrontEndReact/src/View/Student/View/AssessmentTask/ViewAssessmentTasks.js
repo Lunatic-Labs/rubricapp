@@ -71,7 +71,17 @@ class ViewAssessmentTasks extends Component {
         if (role["role_id"] === 5) {
             chosenCAT = this.props.completedAssessments;
         }
+
         var assessmentTasks = this.props.assessmentTasks;
+        var completedAssessmentTasks = this.props.completedAssessments;
+
+        // assessmentTasks = assessmentTasks.filter(task =>
+        //     !complatedAssessmentTasks.some(completed =>
+        //         completed.assessment_task_id === task.assessment_task_id
+        //     )
+        // );
+
+        // assessmentTasks = assessmentTasks.filter((at) => at.locked);
 
         const columns = [
             {

@@ -8,11 +8,11 @@ import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utilit
 
 
 class ViewCompletedAssessmentTasks extends Component {
-  render() {
-    var navbar = this.props.navbar;
+    render() {
+        var navbar = this.props.navbar;
 
-    var completedAssessments = this.props.completedAssessments;
-    var assessmentTasks = this.props.assessmentTasks;
+        var completedAssessments = this.props.completedAssessments;
+        var assessmentTasks = this.props.assessmentTasks;
 
     const columns = [
       {
@@ -119,25 +119,25 @@ class ViewCompletedAssessmentTasks extends Component {
       },
     ];
 
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "21rem"
-    };
+        const options = {
+            onRowsDelete: false,
+            download: false,
+            print: false,
+            viewColumns: false,
+            selectableRows: "none",
+            selectableRowsHeader: false,
+            responsive: "vertical",
+            tableBodyMaxHeight: "21rem"
+        };
 
-    return (
-      <CustomDataTable
-        data={completedAssessments ? completedAssessments : []}
-        columns={columns}
-        options={options}
-      />
-    )
-  }
+        return (
+            <CustomDataTable
+                data={completedAssessments ? completedAssessments : []}
+                columns={columns}
+                options={options}
+            />
+        )
+    }
 }
 
 export default ViewCompletedAssessmentTasks;
