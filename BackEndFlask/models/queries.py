@@ -1083,8 +1083,6 @@ def get_course_name_by_at_id(at_id:int) -> str :
     return course_name[0][0]
 
 
-
-
 def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> int:
     """
     Description:
@@ -1127,3 +1125,33 @@ def is_admin_by_user_id(user_id: int) -> bool:
     if is_admin[0][0]:
         return True
     return False
+
+def get_students_for_emailing(at_id: int) -> tuple[dict[str],dict[str]]:
+    """
+    Description:
+    Returns the needed data for emailing students who should be reciving the notification from
+    their professors.
+
+    Parameters:
+    at_id: <class 'int'> (AT id)
+
+    Returns:
+    tuple[dict[str],dict[str]] (The students information such as first_name, last_name, last_update, and email)
+
+    Exceptions:
+    None raise by me except the database my raise some.
+    """
+    # Note a similar function exists but its a select * query which hinders prefomance.
+    student_info = db.session.query(
+        CompletedAssessment.last_update,
+        User.first_name,
+        User.last_name,
+        User.email
+    ).join(
+        User,
+        User.user_id == CompletedAssessment.user_id
+    ).filter(
+        CompletedAssessment.assessment_task_id == at_id
+    ).all()
+
+    return student_info

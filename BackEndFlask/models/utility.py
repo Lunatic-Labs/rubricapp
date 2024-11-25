@@ -48,11 +48,13 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
         send_email(student.email, subject, message)
 
+##############################################################Rest the excepttion before commiting 
 def send_email(address: str, subject: str,  content: str): 
     try: 
         yag = yagmail.SMTP("skillbuilder02", PASSWORD)
         yag.send(address, subject, content) 
     except:
+        return
         raise EmailFailureException
 
 def generate_random_password(length: int): 
