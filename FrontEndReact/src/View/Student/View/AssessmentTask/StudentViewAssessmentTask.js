@@ -74,6 +74,9 @@ class StudentViewAssessmentTask extends Component {
 
         var role = this.props.role;
 
+        const filteredATs = this.props.filteredAssessments;
+        const filteredCATs = this.props.filteredCompleteAssessments; // Currently unused, but may be in the future.
+
         if (errorMessage) {
             return(
                 <div className='container'>
@@ -90,41 +93,12 @@ class StudentViewAssessmentTask extends Component {
             )
 
         } else {
-            // All AT.id === CAT.id means it is completed, do not
-            // display it in the TODO ATs.
-            let uncompletedAssessments = assessmentTasks.filter(task =>
-                !completedAssessments.some(completed =>
-                    completed.assessment_task_id === task.assessment_task_id
-                )
-            );
-
-            // All ATs that are past due needs to be not shown
-            // in the TODO ATs.
-            for (let i = 0; i < uncompletedAssessments.length; i++) {
-                const dueDate = new Date(uncompletedAssessments[i].due_date);
-                const currentDate = new Date();
-
-                if (dueDate < currentDate) {
-                    completedAssessments.push(uncompletedAssessments[i]);
-                    uncompletedAssessments.splice(i, 1);
-                    i--;
-                }
-            }
-
-            for (let i = 0; i < uncompletedAssessments.length; i++) {
-                if (uncompletedAssessments[i].locked) {
-                    completedAssessments.push(uncompletedAssessments[i]);
-                    uncompletedAssessments.splice(i, 1);
-                    i--;
-                }
-            }
-
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
                         role={role}
-                        assessmentTasks={uncompletedAssessments}
+                        assessmentTasks={filteredATs}
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
