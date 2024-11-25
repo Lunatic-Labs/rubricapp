@@ -48,7 +48,7 @@ def mass_notify_new_ca_users():
     """
     try:
         at_id = int(request.args.get('assessment_task_id'))
-        is_teams = bool(request.args.get('team'))
+        is_teams = request.args.get('team') == "true"
         msg_to_students = request.json["notification_message"]
         date = request.json["date"]
 
@@ -58,17 +58,14 @@ def mass_notify_new_ca_users():
         # Lowest possible time for easier comparisons.
         if at_time == None : at_time = datetime.datetime(1,1,1,0,0,0,0)
 
-        students = get_students_for_emailing(at_id)
+        collection = get_students_for_emailing(at_id, is_teams)
 
-        left_to_notifiy = [singular_student for singular_student in students if singular_student.last_update > at_time]
+        left_to_notifiy = [singular_student for singular_student in collection if singular_student.last_update > at_time]
 
         email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
 
-        #update the at noti time
+        # Updating AT notification time
         toggle_notification_sent_to_true(at_id, date)
-
-        with open("ap.txt", 'w') as out:
-            print(left_to_notifiy, file=out)
 
         return create_good_response(
             "Message Sent",

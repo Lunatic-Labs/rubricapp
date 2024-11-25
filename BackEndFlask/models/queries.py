@@ -1126,7 +1126,7 @@ def is_admin_by_user_id(user_id: int) -> bool:
         return True
     return False
 
-def get_students_for_emailing(at_id: int) -> tuple[dict[str],dict[str]]:
+def get_students_for_emailing(at_id: int, is_teams: bool) -> tuple[dict[str],dict[str]]:
     """
     Description:
     Returns the needed data for emailing students who should be reciving the notification from
@@ -1134,6 +1134,7 @@ def get_students_for_emailing(at_id: int) -> tuple[dict[str],dict[str]]:
 
     Parameters:
     at_id: <class 'int'> (AT id)
+    is_teams: <class 'bool'> (are we looking for students associated to a team?)
 
     Returns:
     tuple[dict[str],dict[str]] (The students information such as first_name, last_name, last_update, and email)
@@ -1147,11 +1148,24 @@ def get_students_for_emailing(at_id: int) -> tuple[dict[str],dict[str]]:
         User.first_name,
         User.last_name,
         User.email
-    ).join(
-        User,
-        User.user_id == CompletedAssessment.user_id
-    ).filter(
-        CompletedAssessment.assessment_task_id == at_id
-    ).all()
+    )
 
-    return student_info
+    if is_teams:
+        student_info = student_info.join(
+            TeamUser,
+            TeamUser.team_id == CompletedAssessment.team_id
+        ).join(
+            User,
+            User.user_id == TeamUser.user_id
+        )
+    else:
+        student_info = student_info.join(
+            User,
+            User.user_id == CompletedAssessment.user_id
+        )
+
+    student_info = student_info.filter(
+        CompletedAssessment.assessment_task_id == at_id
+    )
+
+    return student_info.all()
