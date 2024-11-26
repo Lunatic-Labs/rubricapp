@@ -42,6 +42,7 @@ def mass_notify_new_ca_users():
     assessment_task_id: <class 'str'>r (AT)
     team: <class 'bool'> (is the at team based)
     notification_message: <class 'str'> (message to send over in the email)
+    date: <class 'str'> (date to record things)
 
     Exceptions:
     None all should be caught and handled
@@ -76,3 +77,14 @@ def mass_notify_new_ca_users():
         return create_bad_response(
             f"An error occurred emailing users: {e}", "mass_not_notified", 400
         )
+    
+
+@bp.route('/send_single_email', methods = ['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def send_single_email():
+    """
+    """
+    return
