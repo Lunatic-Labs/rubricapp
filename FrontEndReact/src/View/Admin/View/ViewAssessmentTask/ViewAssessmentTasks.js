@@ -423,25 +423,6 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
-                label: "Lock",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"50px"}},
-                    setCellProps: () => { return { width:"50px"} },
-                    customBodyRender: (rubricId) => {
-                        return (
-                            <>
-                                <IconButton
-                                    onClick={() => {alert("todo")}}>
-                                    <LockIcon />
-                                </IconButton>
-                            </>
-                        )
-                    }
-                }
-            },
-            {
-                name: "assessment_task_id",
                 label: "To Do",
                 options: {
                     filter: false,
