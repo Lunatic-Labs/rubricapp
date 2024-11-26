@@ -248,7 +248,8 @@ def load_SuperAdminUser():
         "lms_id": 0,
         "consent": None,
         "owner_id": None,
-        "role_id": None
+        "role_id": None,
+        "is_admin": True
     })
 
 # user_id = 2
