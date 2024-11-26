@@ -3,14 +3,10 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 import { getHumanReadableDueDate } from "../../../utility";
 
-
-
 class ViewTeams extends Component{
     render() {
         var teams = this.props.teams;
-
         var users = this.props.users;
-
         var navbar = this.props.navbar;
 
         const columns = [
@@ -36,6 +32,20 @@ class ViewTeams extends Component{
                         )
                     }
                 }
+            },
+            {
+                name: "team_users",
+                label: "Members",
+                options: {
+                    filter: true,
+                    setCellHeaderProps: () => { return { width:"230px" } },
+                    setCellProps: () => { return { width:"230px" } },
+                    customBodyRender: (user) => {
+                        return(
+                            <>{user + " "}</>
+                        );
+                    }
+                },
             },
             {
                 name: "date_created",
