@@ -75,14 +75,6 @@ class ViewAssessmentTasks extends Component {
         var assessmentTasks = this.props.assessmentTasks;
         var completedAssessmentTasks = this.props.completedAssessments;
 
-        // assessmentTasks = assessmentTasks.filter(task =>
-        //     !complatedAssessmentTasks.some(completed =>
-        //         completed.assessment_task_id === task.assessment_task_id
-        //     )
-        // );
-
-        // assessmentTasks = assessmentTasks.filter((at) => at.locked);
-
         const columns = [
             {
                 name: "assessment_task_name",
@@ -152,6 +144,10 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
+                        let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
+
+                        console.log(at);
+
                         return (
                             <Box
                                 style={{

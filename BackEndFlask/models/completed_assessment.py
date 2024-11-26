@@ -77,13 +77,49 @@ def create_completed_assessment(completed_assessment_data):
         last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ'),
         rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"],
         done=completed_assessment_data["done"],
-        locked=completed_assessment_data["locked"],
+        locked=False,
     )
 
     db.session.add(completed_assessment_data)
     db.session.commit()
 
     return completed_assessment_data
+
+@error_log
+def toggle_lock_status(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = not one_completed_assessment.locked
+    db.session.commit()
+
+    return one_completed_assessment
+
+@error_log
+def make_complete_assessment_locked(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = True
+    db.session.commit()
+
+    return one_completed_assessment
+
+@error_log
+def make_complete_assessment_unlocked(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = False
+    db.session.commit()
+
+    return one_completed_assessment
 
 def load_demo_completed_assessment():
     list_of_completed_assessments = [

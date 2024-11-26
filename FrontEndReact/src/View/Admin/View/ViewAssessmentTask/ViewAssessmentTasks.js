@@ -8,8 +8,6 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 import { IconButton } from '@mui/material';
-import LockIcon from '@mui/icons-material/Lock';
-import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 
 class ViewAssessmentTasks extends Component {
@@ -314,25 +312,6 @@ class ViewAssessmentTasks extends Component {
                         return(
                             <>
                                 {"N/A"}
-                            </>
-                        )
-                    }
-                }
-            },
-            {
-                name: "assessment_task_id",
-                label: "Lock",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"50px"}},
-                    setCellProps: () => { return { width:"50px"} },
-                    customBodyRender: (rubricId) => {
-                        return (
-                            <>
-                                <IconButton
-                                    onClick={() => {alert("todo")}}>
-                                    <LockIcon />
-                                </IconButton>
                             </>
                         )
                     }
