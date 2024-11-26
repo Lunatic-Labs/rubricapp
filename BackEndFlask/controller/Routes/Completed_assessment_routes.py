@@ -15,7 +15,10 @@ from models.completed_assessment import (
     create_completed_assessment,
     replace_completed_assessment,
     completed_assessment_exists,
-    get_completed_assessment_count
+    get_completed_assessment_count,
+    toggle_lock_status,
+    make_complete_assessment_locked,
+    make_complete_assessment_unlocked,
 )
 
 from models.queries import (
@@ -28,6 +31,51 @@ from models.queries import (
 
 from models.assessment_task import get_assessment_tasks_by_course_id
 
+
+@bp.route('/completed_assessment_toggle_lock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def toggle_complete_assessment_lock_status():
+    try:
+        assessmentTaskId = request.args.get('assessment_task_id')
+        toggle_lock_status(assessmentTaskId)
+        return create_good_response(None, 201, "completed_assessments")
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred toggling CAT lock: {e}", "completed_assessments", 400
+        )
+
+@bp.route('/completed_assessment_lock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def lock_complete_assessment():
+    try:
+        assessmentTaskId = request.args.get('assessment_task_id')
+        make_complete_assessment_locked(assessmentTaskId)
+        return create_good_response(None, 201, "completed_assessments")
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred locking a CAT: {e}", "completed_assessments", 400
+        )
+
+@bp.route('/completed_assessment_unlock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def unlock_complete_assessment():
+    try:
+        assessmentTaskId = request.args.get('assessment_task_id')
+        make_complete_assessment_unlocked(assessmentTaskId)
+        return create_good_response(None, 201, "completed_assessments")
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred unlocking a CAT: {e}", "completed_assessments", 400
+        )
 
 @bp.route('/completed_assessment', methods=['GET'])
 @jwt_required()

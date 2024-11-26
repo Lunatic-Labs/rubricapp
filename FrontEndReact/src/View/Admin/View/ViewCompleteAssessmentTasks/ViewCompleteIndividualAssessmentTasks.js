@@ -12,7 +12,6 @@ import CourseInfo from "../../../Components/CourseInfo";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 
-
 class ViewCompleteIndividualAssessmentTasks extends Component {
     constructor(props) {
         super(props);
@@ -25,12 +24,81 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       notificationSent: false,
       isSingleMsg: false,
       compATId: null,
+        this.state = {
+            errorMessage: null,
+            isLoaded: null,
+            showDialog: false,
+            notes: '',
+            notificationSent: false,
+            lockStatus: {},
 
             errors: {
                 notes:''
             }
         };
     }
+
+    componentDidMount() {
+        const completedAssessmentTasks = this.props.navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+        const initialLockStatus = {};
+
+        completedAssessmentTasks.forEach((task) => {
+            initialLockStatus[task.assessment_task_id] = task.locked;
+        });
+
+        this.setState({ lockStatus: initialLockStatus });
+    }
+
+    handleLockToggle = (assessmentTaskId, task) => {
+        this.setState((prevState) => {
+            const newLockStatus = { ...prevState.lockStatus };
+            newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
+            return { lockStatus: newLockStatus };
+        }, () => {
+            const lockStatus = this.state.lockStatus[assessmentTaskId];
+
+            genericResourcePUT(
+                `/completed_assessment_toggle_lock?assessment_task_id=${assessmentTaskId}&locked=${lockStatus}`,
+                this,
+                JSON.stringify({ locked: lockStatus })
+            );
+        });
+    };
+
+    handleUnlockAllCats = (assessmentTaskIds) => {
+        assessmentTaskIds.forEach((assessmentTaskId) => {
+            this.setState((prevState) => {
+                const newLockStatus = { ...prevState.lockStatus };
+                newLockStatus[assessmentTaskId] = false;
+                return { lockStatus: newLockStatus };
+            }, () => {
+                const lockStatus = this.state.lockStatus[assessmentTaskId];
+                genericResourcePUT(
+                    `/completed_assessment_unlock?assessment_task_id=${assessmentTaskId}`,
+                    this,
+                    JSON.stringify({ locked: lockStatus })
+                );
+            });
+        });
+    };
+
+    handleLockAllCats = (assessmentTaskIds) => {
+        assessmentTaskIds.forEach((assessmentTaskId) => {
+            this.setState((prevState) => {
+                const newLockStatus = { ...prevState.lockStatus };
+                newLockStatus[assessmentTaskId] = true;
+                return { lockStatus: newLockStatus };
+            }, () => {
+                const lockStatus = this.state.lockStatus[assessmentTaskId];
+
+                genericResourcePUT(
+                    `/completed_assessment_lock?assessment_task_id=${assessmentTaskId}`,
+                    this,
+                    JSON.stringify({ locked: lockStatus })
+                );
+            });
+        });
+    };
 
     handleChange = (e) => {
         const { id, value } = e.target;
@@ -269,6 +337,59 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                   <VisibilityIcon sx={{color:"black"}}/>
                 </IconButton>
               )
+                        return(
+                            <p  variant='contained' align='left' >
+                                {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
+                            </p>
+                        )
+                    }
+                }
+            },
+            {
+                name: "assessment_task_id",
+                label: "Lock",
+                options: {
+                    filter: true,
+                    customBodyRender: (catId) => {
+                        const task = completedAssessmentTasks.find((task) => task["assessment_task_id"] === catId);
+                        const isLocked = this.state.lockStatus[catId] !== undefined ? this.state.lockStatus[catId] : (task ? task.locked : false);
+
+                        return (
+                            <IconButton
+                                aria-label={isLocked ? "unlock" : "lock"}
+                                onClick={() => this.handleLockToggle(catId, task)}
+                            >
+                                {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                            </IconButton>
+                        );
+                    },
+                }
+            },
+            {
+                name: "completed_assessment_id",
+                label: "See More Details",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
+                    customBodyRender: (completedAssessmentId) => {
+                        if (completedAssessmentId) {
+                            return (
+                                <IconButton
+                                    align="center"
+                                    onClick={() => {
+                                        navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                            completedAssessmentTasks,
+                                            completedAssessmentId,
+                                            chosenAssessmentTask
+                                        );
+                                    }}
+                                    aria-label="See more details"
+                                >
+                                    <VisibilityIcon sx={{color:"black"}}/>
+                                </IconButton>
+                            )
 
             } else {
               return(
