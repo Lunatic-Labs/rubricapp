@@ -188,7 +188,7 @@ class AdminAddUser extends Component {
             "first_name": firstName,
             "last_name": lastName,
             "email": email,
-            "lms_id": lmsId,
+            "lms_id": lmsId != "" ? lmsId : null,
             "consent": null,
             "owner_id": cookies.get('user')['user_id'],
             "role_id": navbar.props.isSuperAdmin ? 3 : role
