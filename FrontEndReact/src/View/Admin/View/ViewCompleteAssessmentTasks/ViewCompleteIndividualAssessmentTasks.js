@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
-import { genericResourcePUT } from "../../../../utility";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
 
@@ -23,6 +23,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       showDialog: false,
       notes: '',
       notificationSent: false,
+      singleMessage: false,
 
       errors: {
         notes:''
@@ -42,9 +43,10 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     });
   };
 
-  handleDialog = () => {
+  handleDialog = (isSingleMessage) => {
     this.setState({
         showDialog: this.state.showDialog === false ? true : false,
+        singleMessage: isSingleMessage,
     })
   }
 
@@ -68,21 +70,39 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
       return;
     }
-
-    genericResourcePUT(
-      `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
-      this, JSON.stringify({
-        "notification_message": notes, 
-        "date" : date
-      })
-    ).then((result) => {
-			if (result !== undefined && result.errorMessage === null) {
-        this.setState({
-          showDialog: false,
-          notificationSent: date,
+    if(this.state.singleMessage) {
+      this.setState({singleMessage: false}, () => {
+        genericResourcePOST(
+          `/send_single_email?team=${false}&completed_assessment_id=${1}`, 
+          this, JSON.stringify({ 
+            "notification_message": notes,
+          }) 
+        ).then((result) => {
+          if(result !== undefined && result.errorMessage === null){
+            this.setState({ 
+              showDialog: false, 
+              notificationSent: date, 
+            });
+          }
         });
-			}
-		});
+      });
+    } else {
+      genericResourcePUT(
+        `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
+        this, JSON.stringify({
+          "notification_message": notes, 
+          "date" : date
+        })
+      ).then((result) => {
+        if (result !== undefined && result.errorMessage === null) {
+          this.setState({
+            showDialog: false,
+            notificationSent: date,
+          });
+        }
+      });
+    }
+
   };
 
   render() {
@@ -258,7 +278,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       },
       {
         name: "Student/Team Id",
-        label: " ",
+        label: "Message",
         options: {
           filter: false,
           sort: false,
@@ -267,6 +287,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           customBodyRender: (completedAssessmentId) => {
             return (
               <CustomButton
+              onClick={() => this.handleDialog(true)}
               label="Message"
               align="center"
               isOutlined={true}
@@ -315,7 +336,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
             <CustomButton
               label="Send Notification"
-              onClick={this.handleDialog}
+              onClick={() => this.handleDialog(false)}
               isOutlined={false}
               disabled={notificationSent}
               aria-label="viewCompletedAssessmentSendNotificationButton"

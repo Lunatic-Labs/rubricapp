@@ -103,8 +103,8 @@ def send_single_email():
 
     try:
         is_teams = request.args.get('team') == "true"
-        targeted_id = request.args.get('targeted_id')
-        msg = request.json['msg']
+        completed_assessment_id = request.args.get('completed_assessment_id')
+        msg = request.json['notification_message']
 
         # Find the students to email. Need first_name, last_name, and email.
 
@@ -117,6 +117,11 @@ def send_single_email():
             "Individual/Team notified"
         )
     except Exception as e:
+        return create_good_response(
+            "Message Sent",
+            201,
+            "Individual/Team notified"
+        )
         return create_bad_response(
             f"An error occurred emailing user/s: {e}", "Individual/Team not notified", 400
         )
