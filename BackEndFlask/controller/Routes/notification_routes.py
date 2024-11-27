@@ -43,6 +43,7 @@ def mass_notify_new_ca_users():
     team: <class 'bool'> (is the at team based)
     notification_message: <class 'str'> (message to send over in the email)
     date: <class 'str'> (date to record things)
+    user_id: <class 'int'> (who is requested the route[The decorators need it])
 
     Exceptions:
     None all should be caught and handled
@@ -86,5 +87,36 @@ def mass_notify_new_ca_users():
 @admin_check()
 def send_single_email():
     """
+    Description:
+    Parameters:
+    user_id: <class 'int'> (who requested the route {decorators uses it})
+    is_team: <class 'bool'> (is this a team or individual msg)
+    targeted_id: <class 'int'> (intended student/team for the message)
+    msg: <class 'str'> (The message the team or individual should recive)
+
+    Returns:
+    Good or bad Response
+
+    Exceptions:
+    None
     """
-    return
+
+    try:
+        is_teams = request.args.get('team') == "true"
+        targeted_id = request.args.get('targeted_id')
+        msg = request.json['msg']
+
+        # Find the students to email. Need first_name, last_name, and email.
+
+        # Put into a compreshion list and call emailing funciton(same func at above)
+
+
+        return create_good_response(
+            "Message Sent",
+            201,
+            "Individual/Team notified"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred emailing user/s: {e}", "Individual/Team not notified", 400
+        )

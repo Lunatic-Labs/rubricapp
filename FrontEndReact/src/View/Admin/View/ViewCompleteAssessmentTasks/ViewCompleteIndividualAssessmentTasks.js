@@ -255,6 +255,27 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             }
           }
         }
+      },
+      {
+        name: "Student/Team Id",
+        label: " ",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
+          customBodyRender: (completedAssessmentId) => {
+            return (
+              <CustomButton
+              label="Message"
+              align="center"
+              isOutlined={true}
+              disabled={notificationSent}
+              aria-label="viewCompletedAssessmentSendNotificationButton"
+              />
+            )
+          }
+        }
       }
     ];
 
