@@ -23,7 +23,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       showDialog: false,
       notes: '',
       notificationSent: false,
-      singleMessage: false,
+      isSingleMsg: false,
+      compATId: null,
 
       errors: {
         notes:''
@@ -43,15 +44,17 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     });
   };
 
-  handleDialog = (isSingleMessage) => {
+  handleDialog = (isSingleMessage, singleCompletedAT) => {
+    console.log(singleCompletedAT);
     this.setState({
         showDialog: this.state.showDialog === false ? true : false,
-        singleMessage: isSingleMessage,
-    })
+        isSingleMsg: isSingleMessage,
+        compATId: singleCompletedAT,
+    });
   }
 
   handleSendNotification = () => {
-    var notes =  this.state.notes;
+    var notes = this.state.notes;
 
     var navbar = this.props.navbar;
 
@@ -70,10 +73,10 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
       return;
     }
-    if(this.state.singleMessage) {
-      this.setState({singleMessage: false}, () => {
+    if(this.state.isSingleMsg) {
+      this.setState({isSingleMsg: false}, () => {
         genericResourcePOST(
-          `/send_single_email?team=${false}&completed_assessment_id=${1}`, 
+          `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
           this, JSON.stringify({ 
             "notification_message": notes,
           }) 
@@ -279,25 +282,32 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       {
         name: "Student/Team Id",
         label: "Message",
+        at: this.state.compATId,
         options: {
           filter: false,
           sort: false,
           setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId) => {
-            return (
-              <CustomButton
-              onClick={() => this.handleDialog(true)}
-              label="Message"
-              align="center"
-              isOutlined={true}
-              disabled={notificationSent}
-              aria-label="viewCompletedAssessmentSendNotificationButton"
-              />
-            )
+            if (completedAssessmentId) {
+              return (
+                <CustomButton
+                onClick={() => this.handleDialog(true, completedAssessmentId)}
+                label="Message"
+                align="center"
+                isOutlined={true}
+                disabled={notificationSent}
+                aria-label="Send individual messages"
+                />
+              )
+            }else{
+              return(
+                <p variant='contained' align='center' > {''} </p>
+              )
+            }
           }
         }
-      }
+      },
     ];
 
     const options = {
