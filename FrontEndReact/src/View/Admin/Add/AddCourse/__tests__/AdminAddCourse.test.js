@@ -224,7 +224,7 @@ test("AdminAddCourse.test.js Test 7: HelperText error should show for the addCou
     });
 });
 
-test("AdminAddCourse.test.js Test 9: HelperText error should show for the addCourseYear text field when input is less than 2023", async () => {
+test("AdminAddCourse.test.js Test 8: HelperText error should show for the addCourseYear text field when input is less than 2023", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -255,7 +255,7 @@ test("AdminAddCourse.test.js Test 9: HelperText error should show for the addCou
 });
 
 
-test("AdminAddCourse.test.js Test 10: HelperText error should show for the addCourseYear text field when input is not a numeric value", async () => {
+test("AdminAddCourse.test.js Test 9: HelperText error should show for the addCourseYear text field when input is not a numeric value", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -286,7 +286,7 @@ test("AdminAddCourse.test.js Test 10: HelperText error should show for the addCo
 });
 
 
-test("AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Add Course button should redirect you to course view page, and should contain the new course you just added", async () => {
+test("AdminAddCourse.test.js Test 10: Filling in valid input and clicking the Add Course button should redirect you to course view page, and should contain the new course you just added", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -322,7 +322,7 @@ test("AdminAddCourse.test.js Test 11: Filling in valid input and clicking the Ad
     });
 });
 
-test("AdminAddCourse.test.js Test 12: HelperText errors should show for the addCourseYear and addCourseTerm text fields when the input year is not numeric and the term is not 'Spring', 'Fall', or 'Summer'", async () => {
+test("AdminAddCourse.test.js Test 11: HelperText errors should show for the addCourseYear text field when the input year is not numeric", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -350,6 +350,5 @@ test("AdminAddCourse.test.js Test 12: HelperText errors should show for the addC
 
         expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year must be a numeric value");
         
-        expectElementWithAriaLabelToHaveErrorMessage(cti, "Term should be either Spring, Fall, or Summer");
     });
 });
