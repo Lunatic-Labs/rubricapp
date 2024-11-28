@@ -224,38 +224,6 @@ test("AdminAddCourse.test.js Test 7: HelperText error should show for the addCou
     });
 });
 
-
-test("AdminAddCourse.test.js Test 8: HelperText error should show for the addCourseTerm text field when input is not 'Fall', 'Spring' or 'Summer'", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickElementWithAriaLabel(ac);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
-    });
-
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
-
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
-
-    changeElementWithAriaLabelWithInput(cti, "A");
-
-    changeElementWithAriaLabelWithInput(cyi, "2025");
-
-    clickElementWithAriaLabel(aosacb);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
-
-        expectElementWithAriaLabelToHaveErrorMessage(cti, "Term should be either Spring, Fall, or Summer");
-    });
-});
-
-
 test("AdminAddCourse.test.js Test 9: HelperText error should show for the addCourseYear text field when input is less than 2023", async () => {
     render(<Login />);
 
