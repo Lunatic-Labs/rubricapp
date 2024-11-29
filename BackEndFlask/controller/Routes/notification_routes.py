@@ -60,7 +60,7 @@ def mass_notify_new_ca_users():
         # Lowest possible time for easier comparisons.
         if at_time == None : at_time = datetime.datetime(1,1,1,0,0,0,0)
 
-        collection = get_students_for_emailing(at_id, is_teams)
+        collection = get_students_for_emailing(is_teams, at_id=at_id)
 
         left_to_notifiy = [singular_student for singular_student in collection if singular_student.last_update > at_time]
 
