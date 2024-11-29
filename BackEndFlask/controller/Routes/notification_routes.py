@@ -106,10 +106,12 @@ def send_single_email():
         completed_assessment_id = request.args.get('completed_assessment_id')
         msg = request.json['notification_message']
 
-        # Find the students to email. Need first_name, last_name, and email.
+        collection = get_students_for_emailing(is_teams, completed_at_id= completed_assessment_id)
 
-        # Put into a compreshion list and call emailing funciton(same func at above)
+        # Putting into a list as thats what the function wants.
+        left_to_notifiy = [singular_student for singular_student in collection]
 
+        email_students_feedback_is_ready_to_view(left_to_notifiy, msg)
 
         return create_good_response(
             "Message Sent",
@@ -117,11 +119,6 @@ def send_single_email():
             "Individual/Team notified"
         )
     except Exception as e:
-        return create_good_response(
-            "Message Sent",
-            201,
-            "Individual/Team notified"
-        )
         return create_bad_response(
             f"An error occurred emailing user/s: {e}", "Individual/Team not notified", 400
         )
