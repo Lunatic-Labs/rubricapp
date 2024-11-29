@@ -45,7 +45,6 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
   };
 
   handleDialog = (isSingleMessage, singleCompletedAT) => {
-    console.log(singleCompletedAT);
     this.setState({
         showDialog: this.state.showDialog === false ? true : false,
         isSingleMsg: isSingleMessage,
@@ -282,14 +281,16 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       {
         name: "Student/Team Id",
         label: "Message",
-        at: this.state.compATId,
         options: {
           filter: false,
           sort: false,
           setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId) => {
-            if (completedAssessmentId) {
+          customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+            const rowIndex = completeAssessmentTasks.rowIndex;
+            const completedATIndex = 5;
+            completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
+            if (completedAssessmentId !== null) {
               return (
                 <CustomButton
                 onClick={() => this.handleDialog(true, completedAssessmentId)}
@@ -355,13 +356,12 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         </Box>
 
         <Box className="table-spacing">
-          <CustomDataTable
-            data={completedAssessmentTasks ? completedAssessmentTasks : []}
-            columns={columns}
-            options={options}
-          />
+        <CustomDataTable
+          data={completedAssessmentTasks ? completedAssessmentTasks : []}
+          columns={columns}
+          options={options}
+        />
         </Box>
-        
       </Box>
     );
   }
