@@ -45,6 +45,9 @@ def mass_notify_new_ca_users():
     date: <class 'str'> (date to record things)
     user_id: <class 'int'> (who is requested the route[The decorators need it])
 
+    Returns:
+    Bad or good response.
+
     Exceptions:
     None all should be caught and handled
     """
@@ -88,6 +91,9 @@ def mass_notify_new_ca_users():
 def send_single_email():
     """
     Description:
+    This function sends emails to select single students or teams based on a completed_assessment_id.
+    The function was teased out from the above function to allow the addition of new features.
+
     Parameters:
     user_id: <class 'int'> (who requested the route {decorators uses it})
     is_team: <class 'bool'> (is this a team or individual msg)
