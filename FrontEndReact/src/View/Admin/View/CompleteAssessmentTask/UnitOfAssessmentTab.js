@@ -20,32 +20,12 @@ class UnitOfAssessmentTab extends Component {
         for(var i = 0; i < units.length; i++) {        
 
             var currentUnit = units[i];
-            var checkin = this.props.checkin;
-            var unitNames = [];
-            var ci=0;
-            if (this.props.unitOfAssessment && this.props.navbar.state.chosenCourse.use_fixed_teams) {
-                var unitName = currentUnit.displayName();
-                var unitId = currentUnit.teamId();
-                unitNames = currentUnit.checkedInNames();
+            
+            var unitName = currentUnit.displayName();
+            var unitId = currentUnit.id();
+            var unitNames = currentUnit.checkedInNames();
+            var isDone = currentUnit.isDone();
 
-                if (unitNames.length !== 0) {
-                    unitNames = unitNames.map((fullName, index) => <Box key={index}> {fullName} </Box>);
-                } else {
-                    unitNames = [<Box key={0}> No Team Members Checked In</Box>];
-                }
-
-            } else if (this.props.unitOfAssessment && !this.props.navbar.state.chosenCourse.use_fixed_teams) {
-                // TODO: Implment Ad hoc unit
-            } else {
-                unitName = [currentUnit.displayName()];
-                unitId = currentUnit.userId();
-                for (ci = 0; ci < checkin.length; ci++) {
-                    if (checkin[ci].user_id === unitId)
-                    {
-                        unitNames = [ <Box key={0}> Checked In </Box>];
-                    }  
-                } 
-            }
             unitList.push(
                 <Tab
                     label={
@@ -59,7 +39,7 @@ class UnitOfAssessmentTab extends Component {
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={this.props.form.unitInfo[unitId].done}
+                                status={isDone}
                             />
                         </Box>
                     }

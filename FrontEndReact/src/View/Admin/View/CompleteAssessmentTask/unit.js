@@ -38,7 +38,23 @@ class ATUnit {
 	get displayName() {
 		throw "Not implemented"
 	}
+
+	/**
+	 * @abstract
+	 * @returns {integer} The integer id of this unit's unit tab.
+	 */
+		get id() {
+			throw "Not implemented"
+		}
 	
+	/**
+	 * @abstract
+	 * @returns {string[]} A list of the student's names checked into the unit. Null for individual units.
+	 */
+	get checkedInNames() {
+		throw "Not implemented"
+	}
+
 	/**
 	 * @returns {boolean} If this unit has been marked as done.
 	 */
@@ -46,12 +62,7 @@ class ATUnit {
 		return this.rocsData["done"];
 	}
 	
-	/**
-	 * @returns {string[]|null} A list of the student's names checked into the unit. Null for individual units.
-	 */
-	get checkedInNames() {
-		return null;
-	}
+	
 }
 
 class IndividualUnit extends ATUnit {
@@ -60,22 +71,37 @@ class IndividualUnit extends ATUnit {
 	 * @type {object}
 	 */
 	user;
+
+	/**
+	 * If this unit has checked into the assessment task.
+	 * @type {boolean}
+	 */
+	isCheckedIn
 	
 	/**
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} user User object.
 	 */
-	constructor(cat, user) {
+	constructor(cat, user, isCheckedIn) {
 		super(cat, UnitType.INDIVIDUAL);
 		this.user = user;
+		this.isCheckedIn = isCheckedIn;
 	}
 	
 	get displayName() {
 		return this.user["first_name"] + " " + this.user["last_name"];
 	}
 
-	get userId() {
+	get id() {
 		return this.team["user_id"]
+	}
+
+	get checkedInNames() {
+		if (this.isCheckedIn) {
+			return [ <Box key={0}> Checked In </Box>];
+		} else {
+			return [];
+		}
 	}
 }
 
@@ -107,11 +133,15 @@ class FixedTeamUnit extends ATUnit {
 		return this.team["team_name"];
 	}
 
-	get teamId() {
+	get id() {
 		return this.team["team_id"]
 	}
 	
 	get checkedInNames() {
-		return this.checkedInUsers.map(user => user["first_name"] + " " + user["last_name"]);
+		if (this.checkedInUsers.length !== 0) {
+			return this.checkedInUsers.map(user => user["first_name"] + " " + user["last_name"]);
+		} else {
+			return [<Box key={0}> No Team Members Checked In</Box>];
+		}
 	}
 }
