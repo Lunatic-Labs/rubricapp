@@ -255,9 +255,6 @@ class Comments_Csv(Csv_Creation):
         # Adding the column name. Noitice that done and comments is skipped since they are categories but are not important.
         column_name += [i for i in self._singular[Csv_Data.JSON.value] if (i != "done" and i !="comments")]
 
-        with open("ap.txt", 'w') as out:
-            print(self._singular, file=out)
-
         self._writer.writerow(column_name)
 
         row_info = None
@@ -276,8 +273,8 @@ class CSV_Type(Enum):
     Description: This is the enum for the different types of csv file formats the clients have requested.
     """
     RATING_CSV = 0
-    OCS_SFI_CSV = 2
-    COMMENTS_CSV = 1
+    OCS_SFI_CSV = 1
+    COMMENTS_CSV = 2
 
 def create_csv_strings(at_id:int, type_csv:int=1) -> str:
     """
