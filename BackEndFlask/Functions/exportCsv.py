@@ -289,7 +289,10 @@ def create_csv_strings(at_id:int, type_csv:int=1) -> str:
 
     Exceptions: None except the chance the database or IO calls raise one.
     """
-    type_csv = CSV_Type(type_csv)
+    try:
+        type_csv = CSV_Type(type_csv)
+    except:
+        raise ValueError("No type of csv is associated for the value passed.")
     match type_csv:
         case CSV_Type.RATING_CSV:
             return Ratings_Csv(at_id).return_csv_str()
@@ -298,4 +301,4 @@ def create_csv_strings(at_id:int, type_csv:int=1) -> str:
         case CSV_Type.COMMENTS_CSV:
             return Comments_Csv(at_id).return_csv_str()
         case _:
-            return "No current class meets the deisred csv format. Error in create_csv_strings()."
+            return "Error in create_csv_strings()."
