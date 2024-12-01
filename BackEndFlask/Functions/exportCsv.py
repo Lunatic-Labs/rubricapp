@@ -212,7 +212,7 @@ class Ocs_Sfis_Csv(Csv_Creation):
                                                     self._singular[Csv_Data.USER_ID.value],
                                                     self._singular[Csv_Data.TEAM_ID.value],
                                                     self._at_id, category)
-            
+
             # Adding the other column names which are the ocs and sfi text.
             headers += ["OC:" + i[0] for i in oc_sfi_per_category[0]] + ["SFI:" + i[0] for i in oc_sfi_per_category[1]]                
 
@@ -234,14 +234,32 @@ class Ocs_Sfis_Csv(Csv_Creation):
                 self._writer.writerow(row)
             self._writer.writerow([''])
         
+class Comments_Csv(Csv_Creation):
+    """
+    Description: Singleton that creates a csv string of comments per category per student.
+    """
+    def __init__(self, at_id: int) -> None:
+        """
+        Parameters:
+        at_id: <class 'int'> 
+        """
+        super().__init__(at_id)
+
+    def _format(self) -> None:
+        """
+        Description: Formats the data in the csv string.
+        Exceptions: None except what IO can rise.
+        """
+
 class CSV_Type(Enum):
     """
     Description: This is the enum for the different types of csv file formats the clients have requested.
     """
     RATING_CSV = 0
     OCS_SFI_CSV = 1
+    COMMENTS_CSV = 2
 
-def create_csv_strings(at_id:int, type_csv=CSV_Type.OCS_SFI_CSV.value) -> str:
+def create_csv_strings(at_id:int, type_csv:int=1) -> str:
     """
     Description: Creates a csv file with the data in the format specified by type_csv.
 
@@ -254,10 +272,13 @@ def create_csv_strings(at_id:int, type_csv=CSV_Type.OCS_SFI_CSV.value) -> str:
 
     Exceptions: None except the chance the database or IO calls raise one.
     """
+    type_csv = CSV_Type(type_csv)
     match type_csv:
-        case CSV_Type.RATING_CSV.value:
+        case CSV_Type.RATING_CSV:
             return Ratings_Csv(at_id).return_csv_str()
-        case CSV_Type.OCS_SFI_CSV.value:
+        case CSV_Type.OCS_SFI_CSV:
             return Ocs_Sfis_Csv(at_id).return_csv_str()
+        case CSV_Type.COMMENTS_CSV:
+            return Comments_Csv(at_id).return_csv_str()
         case _:
             return "No current class meets the deisred csv format. Error in create_csv_strings()."
