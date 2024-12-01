@@ -250,14 +250,34 @@ class Comments_Csv(Csv_Creation):
         Description: Formats the data in the csv string.
         Exceptions: None except what IO can rise.
         """
+        column_name = ["First Name"] + ["Last Name"] if not self._is_teams else ["Team Name"]
+
+        # Adding the column name. Noitice that done and comments is skipped since they are categories but are not important.
+        column_name += [i for i in self._singular[Csv_Data.JSON.value] if (i != "done" and i !="comments")]
+
+        with open("ap.txt", 'w') as out:
+            print(self._singular, file=out)
+
+        self._writer.writerow(column_name)
+
+        row_info = None
+
+        # Notice that in the list comphrehensions done and comments are skiped since they are categories but dont hold relavent data.
+        for individual in self._completed_assessment_data:
+
+            row_info = [individual[Csv_Data.FIRST_NAME.value]] + [individual[Csv_Data.LAST_NAME.value]] if not self._is_teams else [individual[Csv_Data.TEAM_NAME.value]]
+
+            row_info += [individual[Csv_Data.JSON.value][category]["comments"] for category in individual[Csv_Data.JSON.value] if (category != "done" and category !="comments")]
+            
+            self._writer.writerow(row_info) 
 
 class CSV_Type(Enum):
     """
     Description: This is the enum for the different types of csv file formats the clients have requested.
     """
     RATING_CSV = 0
-    OCS_SFI_CSV = 1
-    COMMENTS_CSV = 2
+    OCS_SFI_CSV = 2
+    COMMENTS_CSV = 1
 
 def create_csv_strings(at_id:int, type_csv:int=1) -> str:
     """
