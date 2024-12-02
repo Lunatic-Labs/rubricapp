@@ -63,6 +63,9 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
                         const assessmentTask = assessmentTasks.find(at => at.assessment_task_id === atId);
+                        if (assessmentTask === undefined) {
+                            return <>UNDEFINED</>
+                        }
                         return <>{assessmentTask.unit_of_assessment ? "Team" : "Individual"}</>;
                     }
                 }
