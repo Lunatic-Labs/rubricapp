@@ -150,11 +150,11 @@ class Form extends Component {
             );
         }
 
-        this.isCategoryComplete = (unitValue, categoryName) => {
-            var unit = this.state.unitData[unitValue];
+        this.isCategoryComplete = (unitIndex, categoryName) => {
+            var unit = this.state.units[unitIndex];
 
-            var category = unit[categoryName];
-
+            var rocsData = unit.rocsData();
+            var category = rocsData[categoryName];
             var observableCharacteristic = category["observable_characteristics"].includes("1");
 
             const showSuggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
@@ -172,9 +172,9 @@ class Form extends Component {
             return status;
         }
 
-        this.isUnitCompleteAssessmentComplete = (unitValue) => {
+        this.isUnitCompleteAssessmentComplete = (unitIndex) => {
 
-            return this.state.unitData[unitValue]["done"];
+            return this.state.units[unitIndex].isDone();
         }
 
         this.findCompletedAssessmentTask = (chosenAssessmentTask, currentUnitTab, completedAssessments) => {
