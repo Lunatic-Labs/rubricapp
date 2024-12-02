@@ -7,7 +7,6 @@ import { genericResourcePUT } from "../../../../utility.js";
 import SendMessageModal from '../../../Components/SendMessageModal.js';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 
-
 class ViewNotification extends Component {
   constructor(props) {
     super(props);
@@ -48,17 +47,15 @@ class ViewNotification extends Component {
   }
 
   handleSendNotification = () => {
-    // var notes =  this.state.notes;
-
     var emailSubject = this.state.emailSubject;
 
     var emailMessage = this.state.emailMessage;
 
-    // var navbar = this.props.navbar;
+    var navbar = this.props.navbar;
 
-    // var state = navbar.state;
+    var state = navbar.state;
 
-    // var chosenAssessmentTask = state.chosenAssessmentTask;
+    var chosenAssessmentTask = state.chosenAssessmentTask;
 
     var date = new Date();
 
@@ -94,20 +91,20 @@ class ViewNotification extends Component {
       return;
     }
 
-    genericResourcePUT(
-    //   `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification=${true}`,
-      this, JSON.stringify({
-        "notification_date": date,
-        "notification_message": emailMessage
-      })
-    ).then((result) => {
-			if (result !== undefined && result.errorMessage === null) {
-        this.setState({
-          showDialog: false,
-          notificationSent: date,
-        });
-			}
-		});
+    // genericResourcePUT(
+    //   this, JSON.stringify({
+    //     "notification_date": date,
+    //     "notification_subject": emailSubject, 
+    //     "notification_message": emailMessage     
+    //   })
+    // ).then((result) => {
+		// 	if (result !== undefined && result.errorMessage === null) {
+    //     this.setState({
+    //       showDialog: false,
+    //       notificationSent: date,
+    //     });
+		// 	}
+		// });
   };
 
   render() {
