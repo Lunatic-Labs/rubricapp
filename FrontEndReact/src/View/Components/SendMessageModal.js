@@ -16,7 +16,7 @@ export default function SendMessageModal ( props ) {
                 aria-labelledby="responsive-dialog-title"
             >
                 <DialogTitle id="responsive-dialog-title">
-                    {"Send Notification to Admins"}
+                    {"Send Message to Admins"}
                 </DialogTitle>
 
                 <DialogContent>
@@ -31,9 +31,9 @@ export default function SendMessageModal ( props ) {
                         name="emailSubject"
                         variant='outlined'
                         label="Add Subject"
-                        value={props.emailSubject || ''}
-                        error={!!(props.error && props.error.emailSubject)}
-                        helperText={props.error?.emailSubject || ''}
+                        value={props.emailSubject}
+                        error={!!props.error.emailSubject}
+                        helperText={props.error.emailSubject}
                         onChange={props.handleChange}
                         required
                         fullWidth
@@ -48,9 +48,9 @@ export default function SendMessageModal ( props ) {
                         name="emailMessage"
                         variant='outlined'
                         label="Add Message"
-                        value={props.emailMessage || ''}
-                        error={!!(props.error && props.error.emailMessage)}
-                        helperText={props.error?.emailMessage || ''}
+                        value={props.emailMessage}
+                        error={!!props.error.emailMessage}
+                        helperText={props.error.emailMessage}
                         onChange={props.handleChange}
                         required
                         multiline
@@ -63,18 +63,11 @@ export default function SendMessageModal ( props ) {
                 </DialogContent>
 
                 <DialogActions>
-                    <Button
-                        onClick={props.handleDialog}
-                        aria-label="sendNotificationCancelButton"
-                    >
+                    <Button autoFocus onClick={props.handleDialog} aria-label="addMessagePromptCancelButton">
                         Cancel
                     </Button>
-                    <Button
-                        variant="contained"
-                        onClick={props.sendNotification}
-                        aria-label="sendNotificationSendButton"
-                    >
-                        Send Notification
+                    <Button variant="contained" autoFocus onClick={props.sendNotification} aria-label="addMessagePromptSendNotificationButton">
+                        Send Message
                     </Button>
                 </DialogActions>
             </Dialog>

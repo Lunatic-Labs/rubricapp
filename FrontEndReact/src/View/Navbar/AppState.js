@@ -29,8 +29,8 @@ import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
-import UserAccount from './UserAccount.js'
-import SendMessageModal from '../Components/SendMessageModal.js';
+import UserAccount from './UserAccount.js';
+import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 
 
 class AppState extends Component {
@@ -465,38 +465,41 @@ class AppState extends Component {
 
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
-                        <div className="d-flex justify-content-between align-items-center gap-1">
+                        <div className="d-flex justify-content-between align-items-center">
                             <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
-
-                            <Button
-                                className="primary-color"
-                                variant='contained'
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "AddUser",
-                                        user: null,
-                                        addUser: true
-                                    });
-                                }}
-                            >
-                                Add User
-                            </Button>
-                            <Button 
-                                className="primary-color"
-                                variant='contained'
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "SendMessageModal",
-                                        isSuperAdmin: true
-                                    });
-                                }}
-                            >
-                                Send Message
-                            </Button>
+                            <Box>
+                                <div style={{display:"flex", gap:"20px"}}>
+                                    <Button
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "AddUser",
+                                                user: null,
+                                                addUser: true
+                                            });
+                                        }}
+                                    >
+                                        Add User
+                                    </Button>
+                                    <Button 
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "ViewNotification",
+                                                user: null,
+                                                addUser: true
+                                            });
+                                        }}
+                                    >
+                                        View Notifications
+                                    </Button>
+                                </div>
+                            </Box>
                         </div>
-
                         <AdminViewUsers
                             navbar={this}
                         />
@@ -847,17 +850,14 @@ class AppState extends Component {
                         />
                     </Box>
                 }
-
-                {this.state.activeTab==="SendMessageModal" &&
+                {this.state.activeTab==="ViewNotification" &&
                     <Box className="page-spacing">
-                        <SendMessageModal
-                            navbar={this}
-                            tabSelected={"SendMessageModal"}
-                            aria-label="SendMessageModal"
-                        />
                         <BackButtonResource
                             navbar={this}
-                            tabSelected={"SuperAdminUsers"}
+                            tabSelected={"User"}
+                        />
+                        <ViewNotification
+                            navbar={this}
                         />
                     </Box>
                 }
