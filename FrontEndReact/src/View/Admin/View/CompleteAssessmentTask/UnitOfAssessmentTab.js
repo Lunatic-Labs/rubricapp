@@ -67,9 +67,8 @@ class UnitOfAssessmentTab extends Component {
                 <Tabs
                     value={this.props.unitValue}
 
-                    onChange={(event, newValue) => {
-                        this.props.handleUnitChange(event, newValue);
-                        this.props.handleUnitTabChange(newValue);
+                    onChange={(event, newUnitTabIndex) => {
+                        this.props.handleUnitTabChange(newUnitTabIndex);
                     }}
 
                     variant="scrollable"

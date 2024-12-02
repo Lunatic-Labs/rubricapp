@@ -15,33 +15,34 @@ class Form extends Component {
     constructor(props) {
         super(props);
 
+        /**
+         * tabCurrentlySelected: index of rubric `categoryList` that is currently selected
+         * unitOfAssessment: boolean of whether teams are being used for this form
+         * currentUnitTab: index of ATUnit from `units` that is currently selected 
+         * units: array of `ATUnit` class objects
+         * unitId: the id of the `ATUnit` object in `units` at index `currentUnitTab`
+         * categoryList: array of `Category` objects using the current rubric
+         * section: Section object of category `tabCurrentlySelected` from `categoryList`
+         * displaySavedNotification:
+         */
+
         this.state = {
-            value: 0,
             tabCurrentlySelected: 0,
             unitOfAssessment: this.props.unitOfAssessment,
+            currentUnitTab: 0,
             units: this.props.form.units,
+            unitId: this.props.form.units[currentUnitTab].id,
             categoryList: null,
             section: null,
             displaySavedNotification: false
         }
 
-        this.handleUnitChange = (event, newValue) => {
+        this.handleUnitTabChange = (newUnitTabIndex) => {
+            var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], newUnitTabIndex, this.props.completedAssessments);
             this.setState({
-                    unitValue: newValue,
-                    value: 0,
-                    tabCurrentlySelected: 0
-                },
-
-                this.generateCategoriesAndSection
-            );
-        };
-
-        this.handleUnitTabChange = (id) => {
-            var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], id, this.props.completedAssessments);
-            this.setState({
-                    currentUnitTab: id,
-                    value: 0,
+                    currentUnitTab: newUnitTabIndex,
                     tabCurrentlySelected: 0,
+                    unitId: units[newUnitTabIndex],
                     chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
                 },
 //TODO:  fix in the case that chosenCompleteAssessmentTask is null
@@ -50,19 +51,10 @@ class Form extends Component {
 
         };
 
-        this.handleChange = (event, newValue) => {
-            this.setState({
-                    value: newValue,
-                },
-
-                this.generateCategoriesAndSection
-            );
-        };
-
-        this.handleCategoryChange = (id) => {
-            if (this.state.tabCurrentlySelected !== id) {
+        this.handleCategoryChange = (newTabIndex) => {
+            if (this.state.tabCurrentlySelected !== newTabIndex) {
                 this.setState({
-                        tabCurrentlySelected: id
+                        tabCurrentlySelected: newTabIndex
                     },
 
                     this.generateCategoriesAndSection
@@ -415,22 +407,18 @@ class Form extends Component {
                                 currentUnitTab={this.state.currentUnitTab}
                                 unitValue={this.state.unitValue}
                                 unitOfAssessment={this.state.unitOfAssessment}
-                                checkin={this.props.checkin}
                                 form={this.props.form}
-                                handleUnitChange={this.handleUnitChange}
                                 handleUnitTabChange={this.handleUnitTabChange}
-                                isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
                             />
                         </Box>
                     }
 
                     <Box sx={{mt: 1}}>
                         <Tabs
-                            value={this.state.value} 
+                            value={this.state.tabCurrentlySelected} 
                         
-                            onChange={(event, newValue) => {
-                                this.handleChange(event, newValue);
-                                this.handleCategoryChange(newValue);
+                            onChange={(event, newTabIndex) => {
+                                this.handleCategoryChange(newTabIndex);
                             }}
 
                             variant="scrollable"

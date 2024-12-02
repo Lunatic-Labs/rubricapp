@@ -49,7 +49,7 @@ class ATUnit {
 	
 	/**
 	 * @abstract
-	 * @returns {string[]} A list of the student's names checked into the unit. Null for individual units.
+	 * @returns {string[]} A list of the student's names checked into the unit.
 	 */
 	get checkedInNames() {
 		throw "Not implemented"
@@ -61,8 +61,6 @@ class ATUnit {
 	get isDone() {
 		return this.rocsData["done"];
 	}
-	
-	
 }
 
 class IndividualUnit extends ATUnit {
