@@ -145,8 +145,8 @@ class ViewAssessmentTasks extends Component {
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
                         let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
-
-                        console.log(at);
+                        // let filledByStudent = at.completed_by_role_id === 5;
+                        let filledByStudent = true;
 
                         return (
                             <Box
@@ -192,7 +192,7 @@ class ViewAssessmentTasks extends Component {
                                     disabled={role["role_id"] === 5 ?
                                         ((this.props.checkin.indexOf(atId) === -1 &&
                                         (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) ||
-                                        this.isObjectFound(atId) === true)
+                                        this.isObjectFound(atId) === true || !filledByStudent)
                                     :
                                         this.areAllATsComplete(atId) === true
                                     }
