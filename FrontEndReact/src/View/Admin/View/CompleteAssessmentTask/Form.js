@@ -37,6 +37,17 @@ class Form extends Component {
     constructor(props) {
         super(props);
 
+        /**
+         * tabCurrentlySelected: index of rubric `categoryList` that is currently selected
+         * unitOfAssessment: boolean of whether teams are being used for this form
+         * currentUnitTab: index of ATUnit from `units` that is currently selected 
+         * units: array of `ATUnit` class objects
+         * unitId: the id of the `ATUnit` object in `units` at index `currentUnitTab`
+         * categoryList: array of `Category` objects using the current rubric
+         * section: Section object of category `tabCurrentlySelected` from `categoryList`
+         * displaySavedNotification:
+         */
+
         this.state = {
             units: this.props.units,
 >>>>>>> master
