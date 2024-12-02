@@ -1,34 +1,181 @@
-const UnitType = Object.freeze({
+export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
 	FIXED_TEAM: "fixed_team",
 });
 
-class ATUnit {
+// Terminology:
+// ROCS Data - An object that stores information about how an assessment task has been completed.
+//  This includes things like what checkboxes have been clicked and comments. This object
+//  also includes information about the rubric it's based on.
+//
+// Completed Assessment Task (CAT) - An object fetched by the completedAssessments route that
+//  associates ROCS data and whether the AT is done or not with a user/team.
+
+/**
+ * @param {object} args
+ * @param {string} args.roleName The user's role name.
+ * @param {string} args.userId The user's user id.
+ * @param {object|null} args.chosenCompleteAssessmentTask The currently chosen CAT or null
+ *  if this AT hasn't been completed before.
+ * @param {UnitType[keyof UnitType]} args.unitType The type of unit this AT uses.
+ * @param {object} args.rubric This AT's rubric.
+ * @param {object[]} args.completedAssessments The list of all CATs.
+ * @param {object[]} args.users The list of all users.
+ * @param {object[]|null} args.fixedTeams The list of all fixed teams or null
+ *  if this isn't a fixed team AT.
+ * @param {object|null} args.fixedTeamMembers A mapping from fixed team id to team members or null
+ *  if this isn't a fixed team AT.
+ * @param {object|null} args.userFixedTeam The fixed team that this user belongs to or null
+ *  if this isn't a fixed team AT.
+ * @param {object[]} args.checkin 
+ * @returns {ATUnit[]}
+ */
+export function generateUnitList(args) {
+	const checkinsByUserId = makeCheckinsByUserIdMap(args.checkin);
+	
+	const unitList = [];
+	
+	if (args.roleName === "Student") {
+		// If we are a student
+		
+		if (args.chosenCompleteAssessmentTask && Object.keys(args.chosenCompleteAssessmentTask).length > 0) {
+			// The unit already has a complete AT entry (it has been completed before)
+			
+			const rocsData = args.chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
+			const isDone = args.chosenCompleteAssessmentTask["done"];
+			
+			if (args.unitType === UnitType.INDIVIDUAL) {
+				const userId = args.chosenCompleteAssessmentTask["user_id"];
+				const user = findUser(args.users, userId);
+				
+				unitList.push(new IndividualUnit(
+					args.chosenCompleteAssessmentTask,
+					rocsData,
+					isDone,
+					user,
+					checkinsByUserId.has(userId),
+				));
+			} else if (args.unitType === UnitType.FIXED_TEAM) {
+				const teamId = args.chosenCompleteAssessmentTask["team_id"];
+				const team = findTeam(args.fixedTeams, teamId);
+				const checkedInUsers = getFixedTeamCheckedInUsers(teamId, args.fixedTeamMembers[teamId], checkinsByUserId);
+				
+				unitList.push(new FixedTeamUnit(
+					args.chosenCompleteAssessmentTask,
+					rocsData,
+					isDone,
+					team,
+					checkedInUsers,
+				));
+			}
+		} else {
+			// Otherwise this is a new CAT
+			
+			// Create new ROCS data from rubric
+			const rocsData = structuredClone(args.rubric["category_rating_observable_characteristics_suggestions_json"]);
+			const isDone = false;
+			
+			if (args.unitType === UnitType.INDIVIDUAL) {
+				const user = findUser(args.users, args.userId);
+				
+				unitList.push(new IndividualUnit(
+					args.chosenCompleteAssessmentTask,
+					rocsData,
+					isDone,
+					user,
+					checkinsByUserId.has(args.userId),
+				));
+			} else if (args.unitType === UnitType.FIXED_TEAM) {
+				const teamId = args.userFixedTeam["team_id"];
+				const team = args.userFixedTeam;
+				const checkedInUsers = getFixedTeamCheckedInUsers(teamId, args.fixedTeamMembers[teamId], checkinsByUserId);
+				
+				unitList.push(new FixedTeamUnit(
+					args.chosenCompleteAssessmentTask,
+					rocsData,
+					isDone,
+					team,
+					checkedInUsers,
+				));
+			}
+		}
+	} else {
+		// Otherwise we must be an admin or TA
+		
+		
+	}
+	
+	return unitList;
+}
+
+// Finds a team with a certain ID from a list
+function findTeam(teams, teamId) {
+	return teams.find(team => team["team_id"] === teamId);
+}
+
+// Finds a user with a certain ID from a list
+function findUser(users, userId) {
+	return users.find(user => user["user_id"] === userId);
+}
+
+function makeCheckinsByUserIdMap() {
+	const checkinsByUserId = new Map();
+	
+	checkins.forEach(checkin => {
+		if ("user_id" in checkin) {
+			checkinsByUserId[checkin["user_id"]] = checkin;
+		}
+	});
+	
+	return checkinsByUserId;
+}
+
+// Gets a list of all the team members of a fixed team that are checked in
+function getFixedTeamCheckedInUsers(teamId, teamMembers, checkinsByUserId) {
+	return teamMembers.fitler(user => {
+		const checkin = checkinsByUserId.get(user["user_id"]);
+		
+		return checkin !== undefined && checkin["team_number"] === teamId;
+	});
+}
+
+export class ATUnit {
 	/** 
-	 * The completed AT object associated with this unit.
-	 * @type {object} 
+	 * The completed AT object associated with this unit, if it exists.
+	 * If the unit hasn't been completed before, then this will be null.
+	 * @type {object|null} 
 	 */
-	completedAssessmentTask;
+	#completedAssessmentTask;
+	
+	/** 
+	 * The rating_observable_characteristics_suggestions_data for this unit. 
+	 * @type {object}
+	 */
+	#rocs;
+	
+	/** 
+	 * Is the unit done.
+	 * @type {boolean}
+	 */
+	#done;
 	
 	/** 
 	 * @type {UnitType[keyof UnitType]}
 	 */
 	unitType;
 	
-	/**
-	 * @param {object} cat Complete assessment task object.
-	 * @param {UnitType[keyof UnitType]} unitType Unit type.
-	 */
-	constructor(cat, unitType) {
-		this.completedAssessmentTask = cat;
+	constructor(unitType, cat, rocs, done) {
 		this.unitType = unitType;
+		this.#completedAssessmentTask = cat;
+		this.#rocs = rocs;
+		this.#done = done;
 	}
 	
 	/**
-	 * @returns {object} The rating_observable_characteristics_suggestions_data of the completed assessment task for this unit.
+	 * @returns {object} The rating_observable_characteristics_suggestions_data for this unit.
 	 */
 	get rocsData() {
-		return this.completedAssessmentTask["rating_observable_characteristics_suggestions_data"];
+		return this.#rocs;
 	}
 	
 	/**
@@ -36,16 +183,16 @@ class ATUnit {
 	 * @returns {string} The display name for this unit's unit tab.
 	 */
 	get displayName() {
-		throw "Not implemented"
+		throw new Error("Not implemented");
 	}
 
 	/**
 	 * @abstract
 	 * @returns {integer} The integer id of this unit's unit tab.
 	 */
-		get id() {
-			throw "Not implemented"
-		}
+	get id() {
+		throw "Not implemented"
+	}
 	
 	/**
 	 * @abstract
@@ -59,11 +206,11 @@ class ATUnit {
 	 * @returns {boolean} If this unit has been marked as done.
 	 */
 	get isDone() {
-		return this.rocsData["done"];
+		return this.#done;
 	}
 }
 
-class IndividualUnit extends ATUnit {
+export class IndividualUnit extends ATUnit {
 	/** 
 	 * The user object associated with this unit.
 	 * @type {object}
@@ -74,14 +221,14 @@ class IndividualUnit extends ATUnit {
 	 * If this unit has checked into the assessment task.
 	 * @type {boolean}
 	 */
-	isCheckedIn
+	isCheckedIn;
 	
 	/**
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} user User object.
 	 */
-	constructor(cat, user, isCheckedIn) {
-		super(cat, UnitType.INDIVIDUAL);
+	constructor(cat, rocs, done, user, isCheckedIn) {
+		super(UnitType.INDIVIDUAL, cat, rocs, done);
 		this.user = user;
 		this.isCheckedIn = isCheckedIn;
 	}
@@ -103,7 +250,7 @@ class IndividualUnit extends ATUnit {
 	}
 }
 
-class FixedTeamUnit extends ATUnit {
+export class FixedTeamUnit extends ATUnit {
 	/** 
 	 * The team object associated with this unit.
 	 * @type {object}
@@ -121,8 +268,8 @@ class FixedTeamUnit extends ATUnit {
 	 * @param {object} team Team object.
 	 * @param {object[]} checkedInUsers List of user objects that are checked into this fixed team.
 	 */
-	constructor(cat, team, checkedInUsers) {
-		super(cat, UnitType.FIXED_TEAM);
+	constructor(cat, rocs, done, team, checkedInUsers) {
+		super(UnitType.FIXED_TEAM, cat, rocs, done);
 		this.team = team;
 		this.checkedInUsers = checkedInUsers;
 	}

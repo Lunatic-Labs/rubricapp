@@ -6,6 +6,7 @@ import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
 import Loading from '../../../Loading/Loading.js';
+import { generateUnitList, UnitType } from './unit.js';
 
 
 
@@ -26,6 +27,7 @@ class CompleteAssessmentTask extends Component {
             checkin: null,
             userId: null,
             checkinEventSource: null,
+            unitList: null, // List of ATUnit objects
         }
             this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
             var newCompletedCategories = Object.keys(newCompleted).sort();
@@ -234,97 +236,119 @@ class CompleteAssessmentTask extends Component {
                 <Loading />
             );  
         } else {
-            var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-            var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
+            // var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
+            // var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
-            json["done"] = false;
+            // json["done"] = false;
 
-            json["comments"] = "";
+            // json["comments"] = "";
 
-            if (role_name === "Student") {  
-                // If the user is a student, this prepares assessments for the student or their team
-                var singleUnitData = {};
+            // if (role_name === "Student") {  
+            //     // If the user is a student, this prepares assessments for the student or their team
+            //     var singleUnitData = {};
 
-                var singleTeam = [];
+            //     var singleTeam = [];
     
-                var singleUser = [];
+            //     var singleUser = [];
 
-                var data = json;
-                // There is an existing assessment for this student
-                if (chosenCompleteAssessmentTask && Object.keys(chosenCompleteAssessmentTask).length > 0) {
-                    // chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
-                    data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
+            //     var data = json;
+            //     // There is an existing assessment for this student
+            //     if (chosenCompleteAssessmentTask && Object.keys(chosenCompleteAssessmentTask).length > 0) {
+            //         // chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
+            //         data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
     
-                    if (data && this.doRubricsForCompletedMatch(json, data)) {
-                        data["done"] = chosenCompleteAssessmentTask["done"];
-                    } 
+            //         if (data && this.doRubricsForCompletedMatch(json, data)) {
+            //             data["done"] = chosenCompleteAssessmentTask["done"];
+            //         } 
   
-                    if (this.state.unitOfAssessment)  { 
+            //         if (this.state.unitOfAssessment)  { 
 
-                        var teamId = chosenCompleteAssessmentTask["team_id"];
-                        singleUnitData[teamId] = data; 
-                        singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);
-                    } else {
-                        var CATuserId = chosenCompleteAssessmentTask["user_id"];
-                        singleUnitData[CATuserId] = data;  
-                        singleUser.push(users.filter(user => user["user_id"] === CATuserId)[0]);
-                    } 
-                } else {
-                    // new student assessment
-                    if (this.state.unitOfAssessment)  { 
-                        const teamId = team[0]["team_id"];
-                        singleUnitData[teamId] = data;
-                        singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);   
-                    }  else {
-                        singleUnitData[this.userId] = data; 
-                        singleUser.push(users.filter(user => user["user_id"] === this.userId)[0]);
-                    }
-                }
-            } else {
-                // If the user is a TA or Admin, this returns assessments completed by the TA
-                var initialUnitData = {};
-                if (this.state.unitOfAssessment) { 
+            //             var teamId = chosenCompleteAssessmentTask["team_id"];
+            //             singleUnitData[teamId] = data; 
+            //             singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);
+            //         } else {
+            //             var CATuserId = chosenCompleteAssessmentTask["user_id"];
+            //             singleUnitData[CATuserId] = data;  
+            //             singleUser.push(users.filter(user => user["user_id"] === CATuserId)[0]);
+            //         } 
+            //     } else {
+            //         // new student assessment
+            //         if (this.state.unitOfAssessment)  { 
+            //             const teamId = team[0]["team_id"];
+            //             singleUnitData[teamId] = data;
+            //             singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);   
+            //         }  else {
+            //             singleUnitData[this.userId] = data; 
+            //             singleUser.push(users.filter(user => user["user_id"] === this.userId)[0]);
+            //         }
+            //     }
+            // } else {
+            //     // If the user is a TA or Admin, this returns assessments completed by the TA
+            //     var initialUnitData = {};
+            //     if (this.state.unitOfAssessment) { 
 
-                    Object.keys(teams).forEach((teamId) => {
-                        var t_id = teams[teamId].team_id;
-                        var complete = this.getCompleteTeam(t_id);
-                        if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
-                                                this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                            complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
+            //         Object.keys(teams).forEach((teamId) => {
+            //             var t_id = teams[teamId].team_id;
+            //             var complete = this.getCompleteTeam(t_id);
+            //             if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
+            //                                     this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+            //                 complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
 
-                            initialUnitData[t_id] = complete["rating_observable_characteristics_suggestions_data"];
+            //                 initialUnitData[t_id] = complete["rating_observable_characteristics_suggestions_data"];
 
-                        } else {
-                            initialUnitData[t_id] = json;
-                        }
-                        //return initialUnitData;
-                    });
-                } else {
-                    if (users === null || users.length === 0) {
-                        return (
-                            <ErrorMessage
-                                fetchedResource={"Student users for this course"}
-                                errorMessage={"No users found for this course."}
-                            />
-                        );
-                    } else {
-                        users.forEach((user) => {
+            //             } else {
+            //                 initialUnitData[t_id] = json;
+            //             }
+            //             //return initialUnitData;
+            //         });
+            //     } else {
+            //         if (users === null || users.length === 0) {
+            //             return (
+            //                 <ErrorMessage
+            //                     fetchedResource={"Student users for this course"}
+            //                     errorMessage={"No users found for this course."}
+            //                 />
+            //             );
+            //         } else {
+            //             users.forEach((user) => {
                 
-                            var complete = this.getCompleteIndividual(user["user_id"]);
-                            if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
-                                                    this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                                complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
+            //                 var complete = this.getCompleteIndividual(user["user_id"]);
+            //                 if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
+            //                                         this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
+            //                     complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
 
-                                initialUnitData[user["user_id"]] = complete["rating_observable_characteristics_suggestions_data"];
+            //                     initialUnitData[user["user_id"]] = complete["rating_observable_characteristics_suggestions_data"];
 
-                            } else {
-                                initialUnitData[user["user_id"]] = json;
-                            }
-                            //return initialUnitData;
-                        });
-                    }
-                }
-            }            
+            //                 } else {
+            //                     initialUnitData[user["user_id"]] = json;
+            //                 }
+            //                 //return initialUnitData;
+            //             });
+            //         }
+            //     }
+            // }            
+            
+            let unitList = this.state.unitList;
+            
+            if (unitList === null) {
+                unitList = generateUnitList({
+                    roleName: role_name,
+                    userId: this.userId,
+                    chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
+                    unitType: this.state.unitOfAssessment ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    rubric: rubrics,
+                    completedAssessments,
+                    users,
+                    fixedTeams: teams,
+                    fixedTeamMembers: teams_users,
+                    userFixedTeam: team[0],
+                    checkin,
+                });
+                
+                this.setState({
+                    unitList,
+                });
+            }
 
             return (
                 <Box>
@@ -347,10 +371,11 @@ class CompleteAssessmentTask extends Component {
 
                         form={{
                             "rubric": rubrics,
-                            "units": (unitOfAssessment ? (role_name === "Student" ? singleTeam : teams) : 
-                                                         (role_name === "Student" ? singleUser : users)),
-                            "teams_users": teams_users,
-                            "unitInfo": role_name === "Student" ? singleUnitData : initialUnitData,
+                            unitList,
+                            // "units": (unitOfAssessment ? (role_name === "Student" ? singleTeam : teams) : 
+                            //                              (role_name === "Student" ? singleUser : users)),
+                            // "teams_users": teams_users,
+                            // "unitInfo": role_name === "Student" ? singleUnitData : initialUnitData,
                         }}
 
                         formReference={this}
