@@ -8,6 +8,8 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { formatDueDate, genericResourceGET, genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 import { IconButton } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 
 class ViewAssessmentTasks extends Component {
@@ -43,6 +45,22 @@ class ViewAssessmentTasks extends Component {
                 exportButtonId: newExportButtonJSON
             });
         }
+
+        this.handleLockToggle = (assessmentTaskId, task) => {
+          this.setState((prevState) => {
+              const newLockStatus = { ...prevState.lockStatus };
+              newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
+              return { lockStatus: newLockStatus };
+          }, () => {
+              const lockStatus = this.state.lockStatus[assessmentTaskId];
+
+              genericResourcePUT(
+                  `/assessment_task_toggle_lock?assessmentTaskId=${assessmentTaskId}`,
+                  this,
+                  JSON.stringify({ locked: lockStatus })
+              );
+          });
+        };
     }
 
     componentDidUpdate () {
@@ -85,6 +103,15 @@ class ViewAssessmentTasks extends Component {
             "completedAssessments",
             this
         );
+
+        const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
+        const initialLockStatus = {};
+
+        assessmentTasks.forEach((task) => {
+            initialLockStatus[task.assessment_task_id] = task.locked;
+        });
+
+        this.setState({ lockStatus: initialLockStatus });
     }
 
     render() {
@@ -240,6 +267,29 @@ class ViewAssessmentTasks extends Component {
                                 {unitOfAssessment ? "Yes" : "No"}
                             </>
                         )
+                    }
+                }
+            },
+            {
+                name: "assessment_task_id",
+                label: "Lock",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    customBodyRender: (atId) => {
+                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                        const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
+
+                        return (
+                            <IconButton
+                            aria-label={isLocked ? "unlock" : "lock"}
+                            onClick={() => this.handleLockToggle(atId, task)}
+                            >
+                            {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                            </IconButton>
+                        );
                     }
                 }
             },

@@ -41,13 +41,18 @@ for analysis.
   no output:
 
       lsof -i :3000,5050,6379
-  
+
   If output, there is a chance you still have processes
   running and you need to use the following command to
   kill them off:
 
       kill <pid>
-  
+
+  or optionally, send with a forced kill (not recommended as it does
+  not allow the process to shut down gracefully).
+
+      sudo kill -9 <pid>
+
   There is a chance that your OS has an important process
   running on one of these ports that should not be terminated.
   In that case, change the port for conflicting processes in the
@@ -72,7 +77,7 @@ for analysis.
   Run the following command to build the images:
 
       docker compose build
-  
+
   NOTE: To rebuild with new changes applied and ignore cached
   build run the following:
 
@@ -89,8 +94,8 @@ for analysis.
       docker compose up
 
   Step 6:
-  Open a browser with the link http://localhost:3000 to see the frontend.
-
+  Open a browser with the link http://localhost:3000 to see the frontend and log in
+  with one of the demo students/TAs/admins.
 
 
 ## REQUIREMENTS: ##
