@@ -81,34 +81,6 @@ class CompleteAssessmentTask extends Component {
         }
     }
 
-    componentDidUpdate() {
-        var navbar = this.props.navbar;
-
-        var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-
-        var unitOfAssessment = chosenAssessmentTask["unit_of_assessment"];
-
-        if (unitOfAssessment && this.state.rubrics && this.state.teams && this.state.users === null) {
-            // The Chosen Assessment will be completed for teams!
-            // Thus do the logic to get all of the students on those teams!
-            var teamIds = [];
-
-            for (var index = 0; index < this.state.teams.length; index++) {
-                teamIds = [...teamIds, this.state.teams[index]["team_id"]];
-
-                genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
-                    "users", this
-                );
-            }
-
-            if (this.state.teams.length === 0)
-                this.setState({
-                    "users": []
-                });
-        }
-    }
-
     componentDidMount() {
         var navbar = this.props.navbar;
 
