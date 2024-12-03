@@ -104,7 +104,7 @@ class Rating extends Component {
             if(this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
             setSliderValue(
-              this.props.unitValue,
+              this.props.currentUnitTabIndex,
               categoryName,
               event.target.value/20
             );
