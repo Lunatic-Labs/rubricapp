@@ -1,3 +1,5 @@
+import { Box } from '@mui/material';
+
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
 	FIXED_TEAM: "fixed_team",
@@ -36,7 +38,6 @@ export function generateUnitList(args) {
 	let unitList = [];
 	
 	if (args.roleName === "Student") {
-		// If we are a student
 		
 		if (args.unitType === UnitType.INDIVIDUAL) {
 			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.userId;
@@ -266,7 +267,7 @@ export class IndividualUnit extends ATUnit {
 	}
 
 	get id() {
-		return this.team["user_id"]
+		return this.user["user_id"]
 	}
 
 	get checkedInNames() {

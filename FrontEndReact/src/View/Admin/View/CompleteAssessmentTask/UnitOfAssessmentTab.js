@@ -21,10 +21,10 @@ class UnitOfAssessmentTab extends Component {
 
             var currentUnit = units[i];
             
-            var unitName = currentUnit.displayName();
-            var unitId = currentUnit.id();
-            var unitNames = currentUnit.checkedInNames();
-            var isDone = currentUnit.isDone();
+            var unitName = currentUnit.displayName;
+            var unitId = currentUnit.id;
+            var unitNames = currentUnit.checkedInNames;
+            var isDone = currentUnit.isDone;
 
             unitList.push(
                 <Tab
@@ -43,7 +43,7 @@ class UnitOfAssessmentTab extends Component {
                             />
                         </Box>
                     }
-                    value={unitId}
+                    value={i}
                     key={unitId}
                     sx={{
                         maxWidth: 250,
@@ -65,7 +65,7 @@ class UnitOfAssessmentTab extends Component {
         return (
             <React.Fragment> 
                 <Tabs
-                    value={this.props.unitValue}
+                    value={this.props.currentUnitTab}
 
                     onChange={(event, newUnitTabIndex) => {
                         this.props.handleUnitTabChange(newUnitTabIndex);

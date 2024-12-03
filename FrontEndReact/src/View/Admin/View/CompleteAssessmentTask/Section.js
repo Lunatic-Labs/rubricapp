@@ -62,7 +62,6 @@ class Section extends Component {
                     observableCharacteristics={currentData[category]["observable_characteristics"]}
                     id={index}
                     key={index}
-                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                     autosave={this.autosave}
                 />
             );
@@ -83,7 +82,6 @@ class Section extends Component {
                     categoryName={category}
                     id={index}
                     key={index}
-                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                     autosave={this.autosave}
                 />
             );
@@ -124,7 +122,6 @@ class Section extends Component {
                                     setSliderValue={this.props.setSliderValue}
                                     unitValue={this.props.unitValue}
                                     rating={rating}
-                                    isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                                     autosave={this.autosave}
                                 />
                             </Box>
@@ -157,7 +154,6 @@ class Section extends Component {
                                 setComments={this.props.setComments}
                                 currentData={currentData}
                                 categoryName={category}
-                                isUnitCompleteAssessmentComplete={this.props.isUnitCompleteAssessmentComplete}
                                 autosave={this.autosave}
                             />
                         </Box>
