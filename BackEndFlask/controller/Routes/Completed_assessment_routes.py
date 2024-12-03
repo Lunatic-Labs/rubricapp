@@ -3,7 +3,11 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 from models.completed_assessment import (
     get_completed_assessments,
@@ -105,6 +109,10 @@ def get_all_completed_assessments():
             
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
+
+            if not completed_assessments:
+                completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
+            
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
@@ -173,6 +181,7 @@ def add_completed_assessment():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def update_completed_assessment():
     try:
         completed_assessment_id = request.args.get("completed_assessment_id")
