@@ -3,7 +3,6 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton.js";
-import { genericResourcePUT } from "../../../../utility.js";
 import SendMessageModal from '../../../Components/SendMessageModal.js';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 
@@ -15,13 +14,11 @@ class ViewNotification extends Component {
       errorMessage: null,
       isLoaded: null,
       showDialog: false,
-      // notes: '',
       emailSubject: '',
       emailMessage: '',
       notificationSent: false,
 
       errors: {
-        // notes:''
         emailSubject: '',
         emailMessage: '',
       }
@@ -50,14 +47,6 @@ class ViewNotification extends Component {
     var emailSubject = this.state.emailSubject;
 
     var emailMessage = this.state.emailMessage;
-
-    var navbar = this.props.navbar;
-
-    var state = navbar.state;
-
-    var chosenAssessmentTask = state.chosenAssessmentTask;
-
-    var date = new Date();
 
     if (emailSubject.trim() === '' && emailMessage.trim() === '') {
       this.setState({
@@ -91,20 +80,6 @@ class ViewNotification extends Component {
       return;
     }
 
-    // genericResourcePUT(
-    //   this, JSON.stringify({
-    //     "notification_date": date,
-    //     "notification_subject": emailSubject, 
-    //     "notification_message": emailMessage     
-    //   })
-    // ).then((result) => {
-		// 	if (result !== undefined && result.errorMessage === null) {
-    //     this.setState({
-    //       showDialog: false,
-    //       notificationSent: date,
-    //     });
-		// 	}
-		// });
   };
 
   render() {
@@ -140,8 +115,6 @@ class ViewNotification extends Component {
         </Box>
         <Box className="table-spacing">
           <CustomDataTable
-            // columns={columns}
-            // options={options}
           />
         </Box>
       </Box>
