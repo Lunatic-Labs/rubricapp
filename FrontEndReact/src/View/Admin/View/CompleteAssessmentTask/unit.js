@@ -33,7 +33,7 @@ export const UnitType = Object.freeze({
 export function generateUnitList(args) {
 	const checkinsByUserId = makeCheckinsByUserIdMap(args.checkin);
 	
-	const unitList = [];
+	let unitList = [];
 	
 	if (args.roleName === "Student") {
 		// If we are a student
@@ -67,14 +67,14 @@ export function generateUnitList(args) {
 		if (args.unitType === UnitType.INDIVIDUAL) {
 			unitList = args.users.map(user => {
 				const userId = user["user_id"];
-				const cat = args.completedAssessments.find(cat => cat["user_id"] == userId);
+				const cat = args.completedAssessments.find(cat => cat["user_id"] === userId);
 				
 				return createIndividualUnit(user, cat, args.rubric, checkinsByUserId);
 			});
 		} else if (args.unitType === UnitType.FIXED_TEAM) {
 			unitList = args.fixedTeams.map(team => {
 				const teamId = team["team_id"];
-				const cat = args.completedAssessments.find(cat => cat["team_id"] == teamId);
+				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
 				
 				return createFixedTeamUnit(team, cat, args.rubric, args.fixedTeamMembers, checkinsByUserId);
 			});
@@ -94,7 +94,7 @@ function findUser(users, userId) {
 	return users.find(user => user["user_id"] === userId);
 }
 
-function makeCheckinsByUserIdMap() {
+function makeCheckinsByUserIdMap(checkins) {
 	const checkinsByUserId = new Map();
 	
 	checkins.forEach(checkin => {
@@ -219,7 +219,7 @@ export class ATUnit {
 	 * @returns {integer} The integer id of this unit's unit tab.
 	 */
 	get id() {
-		throw "Not implemented"
+		throw new Error("Not implemented");
 	}
 	
 	/**
@@ -227,7 +227,7 @@ export class ATUnit {
 	 * @returns {string[]} A list of the student's names checked into the unit.
 	 */
 	get checkedInNames() {
-		throw "Not implemented"
+		throw new Error("Not implemented");
 	}
 
 	/**
