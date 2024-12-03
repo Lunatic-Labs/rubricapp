@@ -79,6 +79,13 @@ class Form extends Component {
             }
         }
         
+        /**
+         * Modifies a unit's category information (part of the ROCS data).
+         * 
+         * @param {number} unitIndex The index of the unit to modify.
+         * @param {string} categoryName The name of the category to modify.
+         * @param {function(object)} modifier Callback that modifies the category data.
+         */
         this.modifyUnitCategoryInformation = (unitIndex, categoryName, modifier) => {
             if (this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
             
@@ -98,64 +105,28 @@ class Form extends Component {
             );
         };
 
-        this.setSliderValue = (unitValue, categoryName, rating) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["rating"] = rating;
-
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
+        this.setSliderValue = (unitIndex, categoryName, rating) => {
+            this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
+                category["rating"] = rating;
+            });
         };
 
-        this.setObservableCharacteristics = (unitValue, categoryName, observableCharacteristics) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["observable_characteristics"] = observableCharacteristics;
-                
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
+        this.setObservableCharacteristics = (unitIndex, categoryName, observableCharacteristics) => {
+            this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
+                category["observable_characteristics"] = observableCharacteristics;
+            });
         }
 
-        this.setSuggestions = (unitValue, categoryName, suggestions) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["suggestions"] = suggestions;
-
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
+        this.setSuggestions = (unitIndex, categoryName, suggestions) => {
+            this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
+                category["suggestions"] = suggestions;
+            });
         }
 
-        this.setComments = (unitValue, categoryName, comments) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["comments"] = comments;
-
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
+        this.setComments = (unitIndex, categoryName, comments) => {
+            this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
+                category["comments"] = comments;
+            });
         }
 
         this.isCategoryComplete = (unitId, categoryName) => {
