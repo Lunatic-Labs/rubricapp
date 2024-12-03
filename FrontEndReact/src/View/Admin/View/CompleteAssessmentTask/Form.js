@@ -42,8 +42,8 @@ class Form extends Component {
          * units: array of `ATUnit` class objects
          * currentUnitTabIndex: index of ATUnit from `units` that is currently selected 
          * categoryList: array of `Category` objects using the current rubric
-         * currentCategoryIndex: index of rubric `categoryList` that is currently selected
-         * section: Section object of category `currentCategoryIndex` from `categoryList`
+         * currentCategoryTabIndex: index of rubric `categoryList` that is currently selected
+         * section: Section object of category `currentCategoryTabIndex` from `categoryList`
          * displaySavedNotification:
          */
 
