@@ -161,7 +161,7 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers, checkinsByUser
 
 // Gets a list of all the team members of a fixed team that are checked in
 function getFixedTeamCheckedInUsers(teamId, teamMembers, checkinsByUserId) {
-	return teamMembers.fileer(user => {
+	return teamMembers.filter(user => {
 		const checkin = checkinsByUserId.get(user["user_id"]);
 		
 		return checkin !== undefined && checkin["team_number"] === teamId;
