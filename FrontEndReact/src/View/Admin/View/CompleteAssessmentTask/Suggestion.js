@@ -36,7 +36,7 @@ class Suggestion extends Component {
       }
 
       this.props.setSuggestions(
-        this.props.unitValue,
+        this.props.currentUnitTabIndex,
         this.props.categoryName,
         newData
       );
