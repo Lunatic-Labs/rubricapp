@@ -251,15 +251,15 @@ class Form extends Component {
 
         var currentUnitTabIndex = this.state.currentUnitTabIndex;
 
-        var selected = this.state.unitData[currentUnitTabIndex];
+        var selected = this.state.units[currentUnitTabIndex];
 
         var date = new Date();
         if(chosenCompleteAssessmentTask) {
-            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
+            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected.rocsData;
 
             chosenCompleteAssessmentTask["last_update"] = date;
 
-            chosenCompleteAssessmentTask["done"] = done;
+            chosenCompleteAssessmentTask["done"] = selected.isdone;
             genericResourcePUT(
                 `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
                 this,
@@ -277,18 +277,18 @@ class Form extends Component {
                 route = `/completed_assessment${completedAssessmentId}`
             } else {
                 if (this.state.unitOfAssessment) {
-                    route = `/completed_assessment?team_id=${currentUnitTabIndex}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?team_id=${selected.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 } else {
-                    route = `/completed_assessment?uid=${currentUnitTabIndex}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?uid=${selected.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 }
             }
             var assessmentData = {};
             if (this.state.unitOfAssessment) { 
                 assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selected,
+                    "rating_observable_characteristics_suggestions_data": selected.rocsData,
                     "completed_by": cookies.get("user")["user_id"],
-                    "team_id": currentUnitTabIndex,
+                    "team_id": selected.id,
                     "user_id": -1,        // team assessment has no user.
                     "initial_time": date,
                     "last_update": date,
@@ -297,10 +297,10 @@ class Form extends Component {
             } else { 
                 assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selected,
+                    "rating_observable_characteristics_suggestions_data": selected.rocsData,
                     "completed_by": cookies.get("user")["user_id"],
                     "team_id": -1,          // individual assessment has no team.
-                    "user_id": currentUnitTabIndex,
+                    "user_id": selected.id,
                     "initial_time": date,
                     "last_update": date,
                     done: done,
