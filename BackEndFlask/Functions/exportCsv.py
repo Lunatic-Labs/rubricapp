@@ -212,7 +212,7 @@ class Ocs_Sfis_Csv(Csv_Creation):
                                                     self._singular[Csv_Data.USER_ID.value],
                                                     self._singular[Csv_Data.TEAM_ID.value],
                                                     self._at_id, category)
-            
+
             # Adding the other column names which are the ocs and sfi text.
             headers += ["OC:" + i[0] for i in oc_sfi_per_category[0]] + ["SFI:" + i[0] for i in oc_sfi_per_category[1]]                
 
@@ -234,14 +234,49 @@ class Ocs_Sfis_Csv(Csv_Creation):
                 self._writer.writerow(row)
             self._writer.writerow([''])
         
+class Comments_Csv(Csv_Creation):
+    """
+    Description: Singleton that creates a csv string of comments per category per student.
+    """
+    def __init__(self, at_id: int) -> None:
+        """
+        Parameters:
+        at_id: <class 'int'> 
+        """
+        super().__init__(at_id)
+
+    def _format(self) -> None:
+        """
+        Description: Formats the data in the csv string.
+        Exceptions: None except what IO can rise.
+        """
+        column_name = ["First Name"] + ["Last Name"] if not self._is_teams else ["Team Name"]
+
+        # Adding the column name. Noitice that done and comments is skipped since they are categories but are not important.
+        column_name += [i for i in self._singular[Csv_Data.JSON.value] if (i != "done" and i !="comments")]
+
+        self._writer.writerow(column_name)
+
+        row_info = None
+
+        # Notice that in the list comphrehensions done and comments are skiped since they are categories but dont hold relavent data.
+        for individual in self._completed_assessment_data:
+
+            row_info = [individual[Csv_Data.FIRST_NAME.value]] + [individual[Csv_Data.LAST_NAME.value]] if not self._is_teams else [individual[Csv_Data.TEAM_NAME.value]]
+
+            row_info += [individual[Csv_Data.JSON.value][category]["comments"] for category in individual[Csv_Data.JSON.value] if (category != "done" and category !="comments")]
+            
+            self._writer.writerow(row_info) 
+
 class CSV_Type(Enum):
     """
     Description: This is the enum for the different types of csv file formats the clients have requested.
     """
     RATING_CSV = 0
     OCS_SFI_CSV = 1
+    COMMENTS_CSV = 2
 
-def create_csv_strings(at_id:int, type_csv=CSV_Type.OCS_SFI_CSV.value) -> str:
+def create_csv_strings(at_id:int, type_csv:int=1) -> str:
     """
     Description: Creates a csv file with the data in the format specified by type_csv.
 
@@ -254,10 +289,16 @@ def create_csv_strings(at_id:int, type_csv=CSV_Type.OCS_SFI_CSV.value) -> str:
 
     Exceptions: None except the chance the database or IO calls raise one.
     """
+    try:
+        type_csv = CSV_Type(type_csv)
+    except:
+        raise ValueError("No type of csv is associated for the value passed.")
     match type_csv:
-        case CSV_Type.RATING_CSV.value:
+        case CSV_Type.RATING_CSV:
             return Ratings_Csv(at_id).return_csv_str()
-        case CSV_Type.OCS_SFI_CSV.value:
+        case CSV_Type.OCS_SFI_CSV:
             return Ocs_Sfis_Csv(at_id).return_csv_str()
+        case CSV_Type.COMMENTS_CSV:
+            return Comments_Csv(at_id).return_csv_str()
         case _:
-            return "No current class meets the deisred csv format. Error in create_csv_strings()."
+            return "Error in create_csv_strings()."

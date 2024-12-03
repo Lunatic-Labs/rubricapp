@@ -1026,7 +1026,8 @@ def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, c
     
     for i in range(0, 2):
         ocs_sfis_query[i] = db.session.query(
-            ObservableCharacteristic.observable_characteristic_text if i == 0 else SuggestionsForImprovement.suggestion_text
+            ObservableCharacteristic.observable_characteristic_text if i == 0 else SuggestionsForImprovement.suggestion_text,
+            ObservableCharacteristic.observable_characteristics_id if i == 0 else SuggestionsForImprovement.suggestion_id,
         ).join(
             Category,
             (ObservableCharacteristic.category_id if i == 0 else SuggestionsForImprovement.category_id) == Category.category_id 
