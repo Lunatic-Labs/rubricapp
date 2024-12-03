@@ -38,71 +38,47 @@ export function generateUnitList(args) {
 	if (args.roleName === "Student") {
 		// If we are a student
 		
-		if (args.chosenCompleteAssessmentTask && Object.keys(args.chosenCompleteAssessmentTask).length > 0) {
-			// The unit already has a complete AT entry (it has been completed before)
+		if (args.unitType === UnitType.INDIVIDUAL) {
+			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.userId;
+			const user = findUser(args.users, userId);
 			
-			const rocsData = args.chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
-			const isDone = args.chosenCompleteAssessmentTask["done"];
+			unitList.push(createIndividualUnit(
+				args.chosenCompleteAssessmentTask, user,
+				args.rubric, checkinsByUserId,
+			));
+		} else if (args.unitType === UnitType.FIXED_TEAM) {
+			let team;
 			
-			if (args.unitType === UnitType.INDIVIDUAL) {
-				const userId = args.chosenCompleteAssessmentTask["user_id"];
-				const user = findUser(args.users, userId);
-				
-				unitList.push(new IndividualUnit(
-					args.chosenCompleteAssessmentTask,
-					rocsData,
-					isDone,
-					user,
-					checkinsByUserId.has(userId),
-				));
-			} else if (args.unitType === UnitType.FIXED_TEAM) {
+			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
-				const team = findTeam(args.fixedTeams, teamId);
-				const checkedInUsers = getFixedTeamCheckedInUsers(teamId, args.fixedTeamMembers[teamId], checkinsByUserId);
-				
-				unitList.push(new FixedTeamUnit(
-					args.chosenCompleteAssessmentTask,
-					rocsData,
-					isDone,
-					team,
-					checkedInUsers,
-				));
+				team = findTeam(args.fixedTeams, teamId);
+			} else {
+				team = args.userFixedTeam;
 			}
-		} else {
-			// Otherwise this is a new CAT
 			
-			// Create new ROCS data from rubric
-			const rocsData = structuredClone(args.rubric["category_rating_observable_characteristics_suggestions_json"]);
-			const isDone = false;
-			
-			if (args.unitType === UnitType.INDIVIDUAL) {
-				const user = findUser(args.users, args.userId);
-				
-				unitList.push(new IndividualUnit(
-					args.chosenCompleteAssessmentTask,
-					rocsData,
-					isDone,
-					user,
-					checkinsByUserId.has(args.userId),
-				));
-			} else if (args.unitType === UnitType.FIXED_TEAM) {
-				const teamId = args.userFixedTeam["team_id"];
-				const team = args.userFixedTeam;
-				const checkedInUsers = getFixedTeamCheckedInUsers(teamId, args.fixedTeamMembers[teamId], checkinsByUserId);
-				
-				unitList.push(new FixedTeamUnit(
-					args.chosenCompleteAssessmentTask,
-					rocsData,
-					isDone,
-					team,
-					checkedInUsers,
-				));
-			}
+			unitList.push(createFixedTeamUnit(
+				args.chosenCompleteAssessmentTask, team,
+				args.rubric, checkinsByUserId,
+			));
 		}
 	} else {
 		// Otherwise we must be an admin or TA
 		
-		
+		if (args.unitType === UnitType.INDIVIDUAL) {
+			unitList = args.users.map(user => {
+				const userId = user["user_id"];
+				const cat = args.completedAssessments.find(cat => cat["user_id"] == userId);
+				
+				return createIndividualUnit(user, cat, args.rubric, checkinsByUserId);
+			});
+		} else if (args.unitType === UnitType.FIXED_TEAM) {
+			unitList = args.fixedTeams.map(team => {
+				const teamId = team["team_id"];
+				const cat = args.completedAssessments.find(cat => cat["team_id"] == teamId);
+				
+				return createFixedTeamUnit(team, cat, args.rubric, args.fixedTeamMembers, checkinsByUserId);
+			});
+		}
 	}
 	
 	return unitList;
@@ -128,6 +104,58 @@ function makeCheckinsByUserIdMap() {
 	});
 	
 	return checkinsByUserId;
+}
+
+function createIndividualUnit(user, cat, rubric, checkinsByUserId) {
+	const userId = user["user_id"];
+	
+	let rocsData;
+	let isDone;
+	
+	if (cat && Object.keys(cat).length > 0) {
+		// The unit already has a complete AT entry (it has been completed before)
+		
+		rocsData = cat["rating_observable_characteristics_suggestions_data"];
+		isDone = cat["done"];
+	} else {
+		// Otherwise this is a new CAT
+		
+		// Create new ROCS data from rubric
+		rocsData = structuredClone(rubric["category_rating_observable_characteristics_suggestions_json"]);
+		isDone = false;
+	}
+	
+	return new IndividualUnit(
+		cat ?? null, rocsData, isDone,
+		user, checkinsByUserId.has(userId),
+	);
+}
+
+function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers, checkinsByUserId) {
+	const teamId = team["team_id"];
+	
+	let rocsData;
+	let isDone;
+	
+	if (cat && Object.keys(cat).length > 0) {
+		// The unit already has a complete AT entry (it has been completed before)
+		
+		rocsData = cat["rating_observable_characteristics_suggestions_data"];
+		isDone = cat["done"];
+	} else {
+		// Otherwise this is a new CAT
+		
+		// Create new ROCS data from rubric
+		rocsData = structuredClone(rubric["category_rating_observable_characteristics_suggestions_json"]);
+		isDone = false;
+	}
+	
+	const checkedInUsers = getFixedTeamCheckedInUsers(teamId, fixedTeamMembers[teamId], checkinsByUserId);
+	
+	return new FixedTeamUnit(
+		cat ?? null, rocsData, isDone,
+		team, checkedInUsers,
+	);
 }
 
 // Gets a list of all the team members of a fixed team that are checked in
