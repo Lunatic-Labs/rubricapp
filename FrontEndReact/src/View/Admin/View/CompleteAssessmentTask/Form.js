@@ -87,7 +87,7 @@ class Form extends Component {
          * @param {function(object)} modifier Callback that modifies the category data.
          */
         this.modifyUnitCategoryInformation = (unitIndex, categoryName, modifier) => {
-            if (this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
+            if (this.isUnitCompleteAssessmentComplete(unitIndex) && !this.props.navbar.props.isAdmin) return;
             
             this.setState(
                 prevState => {
