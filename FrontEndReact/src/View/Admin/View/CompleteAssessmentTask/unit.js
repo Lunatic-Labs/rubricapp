@@ -174,37 +174,30 @@ export class ATUnit {
 	 * If the unit hasn't been completed before, then this will be null.
 	 * @type {object|null} 
 	 */
-	#completedAssessmentTask;
+	completedAssessmentTask;
 	
 	/** 
 	 * The rating_observable_characteristics_suggestions_data for this unit. 
 	 * @type {object}
 	 */
-	#rocs;
+	rocsData;
 	
 	/** 
-	 * Is the unit done.
+	 * If this unit has been marked as done.
 	 * @type {boolean}
 	 */
-	#done;
+	isDone;
 	
 	/** 
 	 * @type {UnitType[keyof UnitType]}
 	 */
 	unitType;
 	
-	constructor(unitType, cat, rocs, done) {
+	constructor(unitType, cat, rocsData, isDone) {
 		this.unitType = unitType;
-		this.#completedAssessmentTask = cat;
-		this.#rocs = rocs;
-		this.#done = done;
-	}
-	
-	/**
-	 * @returns {object} The rating_observable_characteristics_suggestions_data for this unit.
-	 */
-	get rocsData() {
-		return this.#rocs;
+		this.completedAssessmentTask = cat;
+		this.rocsData = rocsData;
+		this.isDone = isDone;
 	}
 	
 	/**
@@ -230,12 +223,13 @@ export class ATUnit {
 	get checkedInNames() {
 		throw new Error("Not implemented");
 	}
-
+	
 	/**
-	 * @returns {boolean} If this unit has been marked as done.
+	 * @abstract
+	 * @returns {ATUnit}
 	 */
-	get isDone() {
-		return this.#done;
+	clone() {
+		throw new Error("Not implemented");
 	}
 }
 
@@ -277,6 +271,13 @@ export class IndividualUnit extends ATUnit {
 			return [];
 		}
 	}
+	
+	clone() {
+		return new IndividualUnit(
+			this.completedAssessmentTask, structuredClone(this.rocsData), this.isDone,
+			this.user, this.isCheckedIn
+		);
+	}
 }
 
 export class FixedTeamUnit extends ATUnit {
@@ -317,5 +318,12 @@ export class FixedTeamUnit extends ATUnit {
 		} else {
 			return [<Box key={0}> No Team Members Checked In</Box>];
 		}
+	}
+	
+	clone() {
+		return new FixedTeamUnit(
+			this.completedAssessmentTask, structuredClone(this.rocsData), this.isDone,
+			this.team, this.checkedInUsers
+		);
 	}
 }
