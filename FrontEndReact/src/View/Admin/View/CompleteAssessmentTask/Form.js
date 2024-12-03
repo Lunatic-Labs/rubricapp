@@ -20,8 +20,8 @@ class Form extends Component {
          * units: array of `ATUnit` class objects
          * currentUnitTabIndex: index of ATUnit from `units` that is currently selected 
          * categoryList: array of `Category` objects using the current rubric
-         * currentCategoryIndex: index of rubric `categoryList` that is currently selected
-         * section: Section object of category `currentCategoryIndex` from `categoryList`
+         * currentCategoryTabIndex: index of rubric `categoryList` that is currently selected
+         * section: Section object of category `currentCategoryTabIndex` from `categoryList`
          * displaySavedNotification:
          */
 
@@ -30,7 +30,7 @@ class Form extends Component {
             units: this.props.form.units,
             currentUnitTabIndex: 0,
             categoryList: null,
-            currentCategoryIndex: 0,
+            currentCategoryTabIndex: 0,
             section: null,
             displaySavedNotification: false
         }
@@ -39,7 +39,7 @@ class Form extends Component {
             var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], newUnitTabIndex, this.props.completedAssessments);
             this.setState({
                     currentUnitTabIndex: newUnitTabIndex,
-                    currentCategoryIndex: 0,
+                    currentCategoryTabIndex: 0,
                     chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
                 },
 //TODO:  fix in the case that chosenCompleteAssessmentTask is null
@@ -48,10 +48,10 @@ class Form extends Component {
 
         };
 
-        this.handleCategoryChange = (newTabIndex) => {
-            if (this.state.currentCategoryIndex !== newTabIndex) {
+        this.handleCategoryChange = (newCategoryTabIndex) => {
+            if (this.state.currentCategoryTabIndex !== newCategoryTabIndex) {
                 this.setState({
-                        currentCategoryIndex: newTabIndex
+                        currentCategoryTabIndex: newCategoryTabIndex
                     },
 
                     this.generateCategoriesAndSection
@@ -80,7 +80,6 @@ class Form extends Component {
         }
 
         this.setSliderValue = (unitValue, categoryName, rating) => {
-            console.log(unitValue)
             if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
@@ -209,28 +208,27 @@ class Form extends Component {
                             padding: "",
                             borderRadius: "10px",
                             margin : "0 0px 0 10px",
-                            border: this.state.currentCategoryIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
+                            border: this.state.currentCategoryTabIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
                             '&.Mui-selected': { color: '#2E8BEF ' }
                         }}/>
                     );
 
-                    if(this.state.currentCategoryIndex === index) {
+                    if(this.state.currentCategoryTabIndex === index) {
                         section.push(
                             <Section
                                 navbar={this.props.navbar}
                                 isDone={this.state.units[this.state.currentUnitTabIndex].isDone}
                                 category={category}
                                 rubric={this.props.form.rubric}
-                                unitValue={this.state.currentUnitTabIndex}
+                                currentUnitTabIndex={this.state.currentUnitTabIndex}
                                 currentData={this.state.units[this.state.currentUnitTabIndex].rocsData}
-                                active={this.state.currentCategoryIndex===index}
+                                active={this.state.currentCategoryTabIndex===index}
                                 key={index}
                                 setSliderValue={this.setSliderValue}
                                 setObservableCharacteristics={this.setObservableCharacteristics}
                                 setSuggestions={this.setSuggestions}
                                 setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
                                 setComments={this.setComments}
-                                handleSaveForLater={this.handleSaveForLater}
                                 handleSubmit={this.handleSubmit}
                             />
                         );
@@ -401,8 +399,6 @@ class Form extends Component {
                             <UnitOfAssessmentTab
                                 navbar={this.props.navbar}
                                 currentUnitTabIndex={this.state.currentUnitTabIndex}
-                                unitValue={this.state.unitValue}
-                                unitOfAssessment={this.state.unitOfAssessment}
                                 form={this.props.form}
                                 handleUnitTabChange={this.handleUnitTabChange}
                             />
@@ -411,10 +407,10 @@ class Form extends Component {
 
                     <Box sx={{mt: 1}}>
                         <Tabs
-                            value={this.state.currentCategoryIndex} 
+                            value={this.state.currentCategoryTabIndex} 
                         
-                            onChange={(event, newTabIndex) => {
-                                this.handleCategoryChange(newTabIndex);
+                            onChange={(event, newCategoryTabIndex) => {
+                                this.handleCategoryChange(newCategoryTabIndex);
                             }}
 
                             variant="scrollable"

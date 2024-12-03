@@ -55,7 +55,7 @@ class Section extends Component {
             observableCharacteristicList.push(
                 <ObservableCharacteristic
                     navbar={this.props.navbar}
-                    unitValue={this.props.unitValue}
+                    currentUnitTabIndex={this.props.currentUnitTabIndex}
                     observableCharacteristic={observableCharacteristics[index]}
                     categoryName={category}
                     setObservableCharacteristics={this.props.setObservableCharacteristics}
@@ -75,7 +75,7 @@ class Section extends Component {
             suggestionList.push(
                 <Suggestion
                     navbar={this.props.navbar}
-                    unitValue={this.props.unitValue}
+                    currentUnitTabIndex={this.props.currentUnitTabIndex}
                     suggestion={suggestions[index]}
                     suggestions={currentData[category]["suggestions"]}
                     setSuggestions={this.props.setSuggestions}
@@ -120,7 +120,7 @@ class Section extends Component {
                                 <Rating
                                     navbar={this.props.navbar}
                                     setSliderValue={this.props.setSliderValue}
-                                    unitValue={this.props.unitValue}
+                                    currentUnitTabIndex={this.props.currentUnitTabIndex}
                                     rating={rating}
                                     autosave={this.autosave}
                                 />
@@ -150,7 +150,7 @@ class Section extends Component {
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
-                                unitValue={this.props.unitValue}
+                                currentUnitTabIndex={this.props.currentUnitTabIndex}
                                 setComments={this.props.setComments}
                                 currentData={currentData}
                                 categoryName={category}

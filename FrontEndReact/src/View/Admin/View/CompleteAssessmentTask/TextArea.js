@@ -16,13 +16,13 @@ class TextArea extends Component {
   handleTextareaChange = (event) => {
     if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
-    const { unitValue, categoryName, setComments } = this.props;
+    const { currentUnitTabIndex, categoryName, setComments } = this.props;
 
     const textareaValue = event.target.value;
 
     this.setState({ textareaValue });
 
-    setComments(unitValue, categoryName, textareaValue);
+    setComments(currentUnitTabIndex, categoryName, textareaValue);
     
     this.props.autosave();
   };
