@@ -228,8 +228,23 @@ export class ATUnit {
 	 * @abstract
 	 * @returns {ATUnit}
 	 */
-	clone() {
+	shallowClone() {
 		throw new Error("Not implemented");
+	}
+	
+	/**
+	 * Creates a copy of this unit with ROCS data modified by modifier
+	 * @param modifier
+	 * @returns {ATUnit}
+	 */
+	withNewRocsData(modifier) {
+		const newRocs = structuredClone(this.rocsData);
+		modifier(newRocs);
+		
+		const newUnit = this.shallowClone();
+		newUnit.rocsData = newRocs;
+		
+		return newUnit;
 	}
 }
 
@@ -272,9 +287,9 @@ export class IndividualUnit extends ATUnit {
 		}
 	}
 	
-	clone() {
+	shallowClone() {
 		return new IndividualUnit(
-			this.completedAssessmentTask, structuredClone(this.rocsData), this.isDone,
+			this.completedAssessmentTask, this.rocsData, this.isDone,
 			this.user, this.isCheckedIn
 		);
 	}
@@ -320,9 +335,9 @@ export class FixedTeamUnit extends ATUnit {
 		}
 	}
 	
-	clone() {
+	shallowClone() {
 		return new FixedTeamUnit(
-			this.completedAssessmentTask, structuredClone(this.rocsData), this.isDone,
+			this.completedAssessmentTask, this.rocsData, this.isDone,
 			this.team, this.checkedInUsers
 		);
 	}

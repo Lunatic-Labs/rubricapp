@@ -78,6 +78,25 @@ class Form extends Component {
                 return obj;
             }
         }
+        
+        this.modifyUnitCategoryInformation = (unitIndex, categoryName, modifier) => {
+            if (this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
+            
+            this.setState(
+                prevState => {
+                    const updatedUnits = [...prevState.units];
+                    
+                    updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewRocsData(rocs => {
+                        modifier(rocs[categoryName]);
+                    });
+                    
+                    return { units: updatedUnits };
+                },
+                () => {
+                    this.generateCategoriesAndSection();
+                }
+            );
+        };
 
         this.setSliderValue = (unitValue, categoryName, rating) => {
             console.log(unitValue)
