@@ -65,7 +65,7 @@ class UnitOfAssessmentTab extends Component {
         return (
             <React.Fragment> 
                 <Tabs
-                    value={this.props.currentUnitTab}
+                    value={this.props.currentUnitTabIndex}
 
                     onChange={(event, newUnitTabIndex) => {
                         this.props.handleUnitTabChange(newUnitTabIndex);

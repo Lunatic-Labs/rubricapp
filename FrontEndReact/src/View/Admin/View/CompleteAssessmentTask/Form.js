@@ -16,20 +16,21 @@ class Form extends Component {
         super(props);
 
         /**
-         * currentCategoryIndex: index of rubric `categoryList` that is currently selected
          * unitOfAssessment: boolean of whether teams are being used for this form
-         * currentUnitTabIndex: index of ATUnit from `units` that is currently selected 
          * units: array of `ATUnit` class objects
+         * currentUnitTabIndex: index of ATUnit from `units` that is currently selected 
          * categoryList: array of `Category` objects using the current rubric
+         * currentCategoryIndex: index of rubric `categoryList` that is currently selected
          * section: Section object of category `currentCategoryIndex` from `categoryList`
          * displaySavedNotification:
          */
 
         this.state = {
             unitOfAssessment: this.props.unitOfAssessment,
-            currentUnitTabIndex: 0,
             units: this.props.form.units,
+            currentUnitTabIndex: 0,
             categoryList: null,
+            currentCategoryIndex: 0,
             section: null,
             displaySavedNotification: false
         }
