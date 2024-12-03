@@ -38,13 +38,12 @@ class Form extends Component {
         super(props);
 
         /**
-         * tabCurrentlySelected: index of rubric `categoryList` that is currently selected
+         * currentCategoryIndex: index of rubric `categoryList` that is currently selected
          * unitOfAssessment: boolean of whether teams are being used for this form
-         * currentUnitTab: index of ATUnit from `units` that is currently selected 
+         * currentUnitTabIndex: index of ATUnit from `units` that is currently selected 
          * units: array of `ATUnit` class objects
-         * unitId: the id of the `ATUnit` object in `units` at index `currentUnitTab`
          * categoryList: array of `Category` objects using the current rubric
-         * section: Section object of category `tabCurrentlySelected` from `categoryList`
+         * section: Section object of category `currentCategoryIndex` from `categoryList`
          * displaySavedNotification:
          */
 
