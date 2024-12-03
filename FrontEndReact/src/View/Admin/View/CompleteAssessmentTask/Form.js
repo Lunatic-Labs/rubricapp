@@ -16,22 +16,19 @@ class Form extends Component {
         super(props);
 
         /**
-         * tabCurrentlySelected: index of rubric `categoryList` that is currently selected
+         * currentCategoryIndex: index of rubric `categoryList` that is currently selected
          * unitOfAssessment: boolean of whether teams are being used for this form
-         * currentUnitTab: index of ATUnit from `units` that is currently selected 
+         * currentUnitTabIndex: index of ATUnit from `units` that is currently selected 
          * units: array of `ATUnit` class objects
-         * unitId: the id of the `ATUnit` object in `units` at index `currentUnitTab`
          * categoryList: array of `Category` objects using the current rubric
-         * section: Section object of category `tabCurrentlySelected` from `categoryList`
+         * section: Section object of category `currentCategoryIndex` from `categoryList`
          * displaySavedNotification:
          */
 
         this.state = {
-            tabCurrentlySelected: 0,
             unitOfAssessment: this.props.unitOfAssessment,
-            currentUnitTab: 0,
+            currentUnitTabIndex: 0,
             units: this.props.form.units,
-            unitId: this.props.form.units[currentUnitTab].id,
             categoryList: null,
             section: null,
             displaySavedNotification: false
@@ -40,9 +37,8 @@ class Form extends Component {
         this.handleUnitTabChange = (newUnitTabIndex) => {
             var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], newUnitTabIndex, this.props.completedAssessments);
             this.setState({
-                    currentUnitTab: newUnitTabIndex,
-                    tabCurrentlySelected: 0,
-                    unitId: units[newUnitTabIndex],
+                    currentUnitTabIndex: newUnitTabIndex,
+                    currentCategoryIndex: 0,
                     chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
                 },
 //TODO:  fix in the case that chosenCompleteAssessmentTask is null
@@ -52,9 +48,9 @@ class Form extends Component {
         };
 
         this.handleCategoryChange = (newTabIndex) => {
-            if (this.state.tabCurrentlySelected !== newTabIndex) {
+            if (this.state.currentCategoryIndex !== newTabIndex) {
                 this.setState({
-                        tabCurrentlySelected: newTabIndex
+                        currentCategoryIndex: newTabIndex
                     },
 
                     this.generateCategoriesAndSection
@@ -83,6 +79,7 @@ class Form extends Component {
         }
 
         this.setSliderValue = (unitValue, categoryName, rating) => {
+            console.log(unitValue)
             if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
 
             this.setState(prevState => {
@@ -142,10 +139,10 @@ class Form extends Component {
             );
         }
 
-        this.isCategoryComplete = (unitIndex, categoryName) => {
-            var unit = this.state.units[unitIndex];
+        this.isCategoryComplete = (unitId, categoryName) => {
+            var unit = this.state.units[unitId];
 
-            var rocsData = unit.rocsData();
+            var rocsData = unit.rocsData;
             var category = rocsData[categoryName];
             var observableCharacteristic = category["observable_characteristics"].includes("1");
 
@@ -165,15 +162,14 @@ class Form extends Component {
         }
 
         this.isUnitCompleteAssessmentComplete = (unitIndex) => {
-
-            return this.state.units[unitIndex].isDone();
+            return this.state.units[unitIndex].isDone;
         }
 
-        this.findCompletedAssessmentTask = (chosenAssessmentTask, currentUnitTab, completedAssessments) => {
+        this.findCompletedAssessmentTask = (chosenAssessmentTask, currentUnitTabIndex, completedAssessments) => {
             let foundItem = null;
 
             completedAssessments.forEach(obj => {
-                if (obj["assessment_task_id"] === chosenAssessmentTask && obj["team_id"] === currentUnitTab) {
+                if (obj["assessment_task_id"] === chosenAssessmentTask && obj["team_id"] === currentUnitTabIndex) {
                     foundItem = obj;
                 }
             });
@@ -200,7 +196,7 @@ class Form extends Component {
                                 <span>{category}</span>
 
                                 <StatusIndicator
-                                    status={this.isCategoryComplete(this.state.currentUnitTab, category)}
+                                    status={this.isCategoryComplete(this.state.currentUnitTabIndex, category)}
                                 />
                             </Box>
                         }
@@ -212,21 +208,21 @@ class Form extends Component {
                             padding: "",
                             borderRadius: "10px",
                             margin : "0 0px 0 10px",
-                            border: this.state.tabCurrentlySelected === index ? '2px solid #2E8BEF ' : '2px solid gray',
+                            border: this.state.currentCategoryIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
                             '&.Mui-selected': { color: '#2E8BEF ' }
                         }}/>
                     );
 
-                    if(this.state.tabCurrentlySelected === index) {
+                    if(this.state.currentCategoryIndex === index) {
                         section.push(
                             <Section
                                 navbar={this.props.navbar}
-                                isDone={this.isUnitCompleteAssessmentComplete(this.state.unitValue)}
+                                isDone={this.state.units[this.state.currentUnitTabIndex].isDone}
                                 category={category}
                                 rubric={this.props.form.rubric}
-                                unitValue={this.state.unitValue}
-                                currentData={this.state.unitData[this.state.unitValue]}
-                                active={this.state.tabCurrentlySelected===index}
+                                unitValue={this.state.currentUnitTabIndex}
+                                currentData={this.state.units[this.state.currentUnitTabIndex].rocsData}
+                                active={this.state.currentCategoryIndex===index}
                                 key={index}
                                 setSliderValue={this.setSliderValue}
                                 setObservableCharacteristics={this.setObservableCharacteristics}
@@ -235,7 +231,6 @@ class Form extends Component {
                                 setComments={this.setComments}
                                 handleSaveForLater={this.handleSaveForLater}
                                 handleSubmit={this.handleSubmit}
-                                isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
                             />
                         );
                     }
@@ -252,7 +247,7 @@ class Form extends Component {
         this.areAllCategoriesCompleted = () => {
             const categories = Object.keys(this.props.form.rubric["category_json"]);
             
-            return categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category));
+            return categories.every(category => this.isCategoryComplete(this.state.currentUnitTabIndex, category));
         };
     }
 
@@ -265,9 +260,9 @@ class Form extends Component {
 
         var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
 
-        var currentUnitTab = this.state.currentUnitTab;
+        var currentUnitTabIndex = this.state.currentUnitTabIndex;
 
-        var selected = this.state.unitData[currentUnitTab];
+        var selected = this.state.unitData[currentUnitTabIndex];
 
         var date = new Date();
         if(chosenCompleteAssessmentTask) {
@@ -286,16 +281,16 @@ class Form extends Component {
             var cookies = new Cookies();
             var route="";
             if(chosenCompleteAssessmentTask && this.props.userRole) {
-                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTab, this.props.completedAssessments);
+                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTabIndex, this.props.completedAssessments);
 
                 var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
                 
                 route = `/completed_assessment${completedAssessmentId}`
             } else {
                 if (this.state.unitOfAssessment) {
-                    route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?team_id=${currentUnitTabIndex}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 } else {
-                    route = `/completed_assessment?uid=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?uid=${currentUnitTabIndex}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 }
             }
             var assessmentData = {};
@@ -304,7 +299,7 @@ class Form extends Component {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
                     "rating_observable_characteristics_suggestions_data": selected,
                     "completed_by": cookies.get("user")["user_id"],
-                    "team_id": currentUnitTab,
+                    "team_id": currentUnitTabIndex,
                     "user_id": -1,        // team assessment has no user.
                     "initial_time": date,
                     "last_update": date,
@@ -316,7 +311,7 @@ class Form extends Component {
                     "rating_observable_characteristics_suggestions_data": selected,
                     "completed_by": cookies.get("user")["user_id"],
                     "team_id": -1,          // individual assessment has no team.
-                    "user_id": currentUnitTab,
+                    "user_id": currentUnitTabIndex,
                     "initial_time": date,
                     "last_update": date,
                     done: done,
@@ -352,12 +347,12 @@ class Form extends Component {
     componentDidUpdate() {
         var rerender = false;
 
-        Object.keys(this.props.form.unitInfo).map((unitValue) => {
-            if(this.props.form.unitInfo[unitValue]["done"] !== this.state.unitData[unitValue]["done"]) {
+        Object.keys(this.props.form.units).map((unitIndex) => {
+            if(this.props.form.units[unitIndex].isDone !== this.state.units[unitIndex].isDone) {
                 rerender = true;
             }
 
-            return unitValue;
+            return unitIndex;
         });
 
         if(rerender) {
@@ -404,7 +399,7 @@ class Form extends Component {
                         <Box sx={{pb: 1}} className="content-spacing">
                             <UnitOfAssessmentTab
                                 navbar={this.props.navbar}
-                                currentUnitTab={this.state.currentUnitTab}
+                                currentUnitTabIndex={this.state.currentUnitTabIndex}
                                 unitValue={this.state.unitValue}
                                 unitOfAssessment={this.state.unitOfAssessment}
                                 form={this.props.form}
@@ -415,7 +410,7 @@ class Form extends Component {
 
                     <Box sx={{mt: 1}}>
                         <Tabs
-                            value={this.state.tabCurrentlySelected} 
+                            value={this.state.currentCategoryIndex} 
                         
                             onChange={(event, newTabIndex) => {
                                 this.handleCategoryChange(newTabIndex);
