@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
-import { genericResourcePUT } from "../../../../utility";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
 
@@ -23,6 +23,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       showDialog: false,
       notes: '',
       notificationSent: false,
+      isSingleMsg: false,
+      compATId: null,
 
       errors: {
         notes:''
@@ -42,14 +44,16 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     });
   };
 
-  handleDialog = () => {
+  handleDialog = (isSingleMessage, singleCompletedAT) => {
     this.setState({
         showDialog: this.state.showDialog === false ? true : false,
-    })
+        isSingleMsg: isSingleMessage,
+        compATId: singleCompletedAT,
+    });
   }
 
   handleSendNotification = () => {
-    var notes =  this.state.notes;
+    var notes = this.state.notes;
 
     var navbar = this.props.navbar;
 
@@ -68,21 +72,39 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
       return;
     }
-
-    genericResourcePUT(
-      `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification=${true}`,
-      this, JSON.stringify({
-        "notification_date": date,
-        "notification_message": notes
-      })
-    ).then((result) => {
-			if (result !== undefined && result.errorMessage === null) {
-        this.setState({
-          showDialog: false,
-          notificationSent: date,
+    if(this.state.isSingleMsg) {
+      this.setState({isSingleMsg: false}, () => {
+        genericResourcePOST(
+          `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
+          this, JSON.stringify({ 
+            "notification_message": notes,
+          }) 
+        ).then((result) => {
+          if(result !== undefined && result.errorMessage === null){
+            this.setState({ 
+              showDialog: false, 
+              notificationSent: date, 
+            });
+          }
         });
-			}
-		});
+      });
+    } else {
+      genericResourcePUT(
+        `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
+        this, JSON.stringify({
+          "notification_message": notes, 
+          "date" : date
+        })
+      ).then((result) => {
+        if (result !== undefined && result.errorMessage === null) {
+          this.setState({
+            showDialog: false,
+            notificationSent: date,
+          });
+        }
+      });
+    }
+
   };
 
   render() {
@@ -255,7 +277,38 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             }
           }
         }
-      }
+      },
+      {
+        name: "Student/Team Id",
+        label: "Message",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
+          customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+            const rowIndex = completeAssessmentTasks.rowIndex;
+            const completedATIndex = 5;
+            completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
+            if (completedAssessmentId !== null) {
+              return (
+                <CustomButton
+                onClick={() => this.handleDialog(true, completedAssessmentId)}
+                label="Message"
+                align="center"
+                isOutlined={true}
+                disabled={notificationSent}
+                aria-label="Send individual messages"
+                />
+              )
+            }else{
+              return(
+                <p variant='contained' align='center' > {''} </p>
+              )
+            }
+          }
+        }
+      },
     ];
 
     const options = {
@@ -294,7 +347,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
             <CustomButton
               label="Send Notification"
-              onClick={this.handleDialog}
+              onClick={() => this.handleDialog(false)}
               isOutlined={false}
               disabled={notificationSent}
               aria-label="viewCompletedAssessmentSendNotificationButton"
@@ -303,13 +356,12 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         </Box>
 
         <Box className="table-spacing">
-          <CustomDataTable
-            data={completedAssessmentTasks ? completedAssessmentTasks : []}
-            columns={columns}
-            options={options}
-          />
+        <CustomDataTable
+          data={completedAssessmentTasks ? completedAssessmentTasks : []}
+          columns={columns}
+          options={options}
+        />
         </Box>
-        
       </Box>
     );
   }
