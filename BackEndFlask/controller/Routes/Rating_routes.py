@@ -67,16 +67,16 @@ def student_view_feedback():
         used to calculate lag time. 
     """
     try: 
-        user_id = request.json["user_id"]
-        completed_assessment_id = request.json["completed_assessment_id"]
+        user_id = request.json.get("user_id")
+        completed_assessment_id = request.json.get("completed_assessment_id")
 
         exists = check_feedback_exists(user_id, completed_assessment_id)
         if exists: 
             return create_bad_response(f"Feedback already exists", "feedbacks", 409)    
 
         feedback_data = request.json
-        feedback_time = datetime.now()
-        feedback_data["feedback_time"] = feedback_time.strftime('%Y-%m-%dT%H:%M:%S')
+        string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
+        feedback_data["feedback_time"] = datetime.now().strftime(string_format)
         
         feedback = create_feedback(feedback_data)
         

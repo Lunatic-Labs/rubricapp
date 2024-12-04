@@ -1026,7 +1026,8 @@ def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, c
     
     for i in range(0, 2):
         ocs_sfis_query[i] = db.session.query(
-            ObservableCharacteristic.observable_characteristic_text if i == 0 else SuggestionsForImprovement.suggestion_text
+            ObservableCharacteristic.observable_characteristic_text if i == 0 else SuggestionsForImprovement.suggestion_text,
+            ObservableCharacteristic.observable_characteristics_id if i == 0 else SuggestionsForImprovement.suggestion_id,
         ).join(
             Category,
             (ObservableCharacteristic.category_id if i == 0 else SuggestionsForImprovement.category_id) == Category.category_id 
@@ -1134,3 +1135,57 @@ def is_admin_by_user_id(user_id: int) -> bool:
     if is_admin[0][0]:
         return True
     return False
+
+def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id: int = None) -> tuple[dict[str],dict[str]]:
+    """
+    Description:
+    Returns the needed data for emailing students who should be reciving the notification from
+    their professors. Note that it can also work for it you have a at_id or completed_at_id.
+
+    Parameters:
+    is_teams: <class 'bool'> (are we looking for students associated to a team?)
+    at_id: <class 'int'> (assessment Id)
+    completed_at_id: <class 'int'> (Completed assessment Id)
+    
+    Returns:
+    tuple[dict[str],dict[str]] (The students information such as first_name, last_name, last_update, and email)
+
+    Exceptions:
+    TypeError if completed_id and at_id are None.
+    """
+    # Note a similar function exists but its a select * query which hinders prefomance.
+
+    if at_id is None and completed_at_id is None:
+        raise TypeError("Both at_id and completed_at_id can not be <class 'NoneType'>.")
+
+    student_info = db.session.query(
+        CompletedAssessment.last_update,
+        User.first_name,
+        User.last_name,
+        User.email
+    )
+
+    if is_teams:
+        student_info = student_info.join(
+            TeamUser,
+            TeamUser.team_id == CompletedAssessment.team_id
+        ).join(
+            User,
+            User.user_id == TeamUser.user_id
+        )
+    else:
+        student_info = student_info.join(
+            User,
+            User.user_id == CompletedAssessment.user_id
+        )
+
+    if at_id is not None:
+        student_info = student_info.filter(
+            CompletedAssessment.assessment_task_id == at_id
+        )
+    else:
+        student_info = student_info.filter(
+            CompletedAssessment.completed_assessment_id == completed_at_id
+        )
+
+    return student_info.all() 

@@ -1,6 +1,6 @@
 import sys
 import yagmail 
-import random, string
+import string, secrets
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
@@ -13,10 +13,15 @@ except:
 
 def send_new_user_email(address: str, password: str):
     subject = "Welcome to Skillbuilder!"
-    message = f'''Your password is <b>{password}</b>. You will need to choose a new password after logging in for the first time.
-                
-                Cheers,
-                The Skillbuilder Team'''
+    message = f'''Welcome to SkillBuilder, a tool to enhance your learning experience this semester! This app will be our hub for assessing and providing feedback on transferable skills (these are also referred to as process skills, professional skills, durable skills).
+
+                Access the app at this link: skill-builder.net
+
+                Login Information: Your Username is {address}
+
+                Temporary Password: {password}
+
+                Please change your password after your first login to keep your account secure.'''
 
     send_email(address, subject, message)
 
@@ -58,7 +63,7 @@ def send_email(address: str, subject: str,  content: str):
 def generate_random_password(length: int): 
     letters = string.ascii_letters + string.digits
 
-    return ''.join(random.choice(letters) for i in range(length))
+    return ''.join(secrets.choice(letters) for i in range(length))
 
 def error_log(f):
     ''' 
