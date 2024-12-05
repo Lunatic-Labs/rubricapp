@@ -64,6 +64,20 @@ class AdminViewRatings extends Component {
     }
   }
 
+  handleRatingsExport(){
+    genericResourceGET(
+      `/csv_assessment_export?assessment_task_id=${this.props.chosenAssessmentId}&format=0`,
+      this,
+    );
+  }
+
+  handleCommentsExport(){
+    genericResourceGET(
+      `/csv_assessment_export?assessment_task_id=${this.props.chosenAssessmentId}&format=2`,
+      this,
+    )
+  }
+
   render() {
     const {
         errorMessage,
@@ -95,9 +109,11 @@ class AdminViewRatings extends Component {
               assessmentTasks={this.props.assessmentTasks}
               chosenAssessmentId={this.props.chosenAssessmentId}
               setChosenAssessmentId={this.props.setChosenAssessmentId}
+              onExportRatingsClick={this.props.handleRatingsExport}
+              onExportCommnetsClick={this.props.handleCommentsExport}
             />
           </Box>
-
+          
           <Box>
             <ViewRatingsTable
               ratings={ratings ? ratings : []}
