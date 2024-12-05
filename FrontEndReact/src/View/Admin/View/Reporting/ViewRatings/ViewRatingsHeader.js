@@ -1,13 +1,12 @@
 import * as React from 'react';
 import { Box, Typography, Button } from '@mui/material';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
-import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
+import { parseAssessmentIndividualOrTeam, genericResourceGET } from '../../../../../utility';
 
 
 
 export default function ViewRatingsHeader(props) {
   var assessmentIsTeam = parseAssessmentIndividualOrTeam(props.assessmentTasks);
-
   return (
     <Box>
       <Box style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
@@ -23,20 +22,6 @@ export default function ViewRatingsHeader(props) {
               { assessmentIsTeam[props.chosenAssessmentId] ? "Team Assignment" : "Individual Assignment" }
             </Typography>
           }
-
-          <Box sx={{ display: "flex", justifyContent: "flex-end", flexGrow:"1", gap:"2%"}}>
-            <Button
-              variant='contained'
-            >
-              Export Ratings
-            </Button>
-
-            <Button
-              variant='contained'
-            >
-              Export Comments
-            </Button>
-          </Box>
 
         </Box>
       </Box>

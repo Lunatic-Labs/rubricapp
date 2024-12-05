@@ -4,7 +4,7 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../../utility';
 import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
-import { Box } from '@mui/material';
+import { Box, Button } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
 
 
@@ -19,6 +19,7 @@ class AdminViewRatings extends Component {
         loadedAssessmentId: this.props.chosenAssessmentId,
         ratings: null,
         categories: null,
+        csvCreation: null,
     }
 
     this.fetchData = () => {
@@ -64,26 +65,13 @@ class AdminViewRatings extends Component {
     }
   }
 
-  handleRatingsExport(){
-    genericResourceGET(
-      `/csv_assessment_export?assessment_task_id=${this.props.chosenAssessmentId}&format=0`,
-      this,
-    );
-  }
-
-  handleCommentsExport(){
-    genericResourceGET(
-      `/csv_assessment_export?assessment_task_id=${this.props.chosenAssessmentId}&format=2`,
-      this,
-    )
-  }
-
   render() {
     const {
         errorMessage,
         isLoaded,
         ratings,
         categories,
+        csvCreation,
     } = this.state;
 
     if(errorMessage) {
@@ -105,13 +93,30 @@ class AdminViewRatings extends Component {
       return(
         <>
           <Box aria-label="adminViewRatingsBox">
-            <ViewRatingsHeader
-              assessmentTasks={this.props.assessmentTasks}
-              chosenAssessmentId={this.props.chosenAssessmentId}
-              setChosenAssessmentId={this.props.setChosenAssessmentId}
-              onExportRatingsClick={this.props.handleRatingsExport}
-              onExportCommnetsClick={this.props.handleCommentsExport}
-            />
+            <Box display="flex" alignItems="center" justifyContent="space-between">
+              <ViewRatingsHeader
+                assessmentTasks={this.props.assessmentTasks}
+                chosenAssessmentId={this.props.chosenAssessmentId}
+                setChosenAssessmentId={this.props.setChosenAssessmentId}
+                csvCreation={csvCreation}     
+                userData = {this}    
+              />
+              <Box display="flex" justifyContent="flex-end" gap="10px">
+                <Button
+                  variant='contained'
+                >
+                  Export Ratings
+                </Button>
+
+                <Button
+                  variant='contained'
+                >
+                  Export Comments
+                </Button>
+              </Box>
+
+            </Box>
+        
           </Box>
           
           <Box>

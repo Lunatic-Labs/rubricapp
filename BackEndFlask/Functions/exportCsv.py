@@ -272,11 +272,11 @@ class CSV_Type(Enum):
     """
     Description: This is the enum for the different types of csv file formats the clients have requested.
     """
-    RATING_CSV = 0
-    OCS_SFI_CSV = 1
+    OCS_SFI_CSV = 0
+    RATING_CSV = 1
     COMMENTS_CSV = 2
 
-def create_csv_strings(at_id:int, type_csv:int=1) -> str:
+def create_csv_strings(at_id:int, type_csv:int=0) -> str:
     """
     Description: Creates a csv file with the data in the format specified by type_csv.
 
