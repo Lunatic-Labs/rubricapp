@@ -159,8 +159,6 @@ class ViewAssessmentTasks extends Component {
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
 
-        const lockStatus = this.state.lockStatus;
-
         let assessmentTasksToDueDates = {};
 
         for(let index = 0; index < assessmentTasks.length; index++) {
