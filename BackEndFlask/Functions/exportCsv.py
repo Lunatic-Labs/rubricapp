@@ -160,7 +160,7 @@ class Ratings_Csv(Csv_Creation):
         # Adding the column name. Noitice that done and comments is skipped since they are categories but are not important.
         column_name += [i for i in self._singular[Csv_Data.JSON.value] if (i != "done" and i !="comments")]
 
-        column_name += ["Lag Time"]
+        column_name += ["Lag Time (Hours)"]
 
         self._writer.writerow(column_name)
 
