@@ -101,6 +101,7 @@ def create_assessment_task(assessment_task):
         time_zone=assessment_task["time_zone"],
         show_suggestions=assessment_task["show_suggestions"],
         locked=assessment_task["locked"],
+        published=assessment_task["published"],
         show_ratings=assessment_task["show_ratings"],
         unit_of_assessment=assessment_task["unit_of_assessment"],
         create_team_password=assessment_task["create_team_password"],
@@ -131,6 +132,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {    # Assessment Task 2
             "assessment_task_name": "Formal Communication Assessment",
@@ -146,6 +148,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {      # Assessment Task 3
             "assessment_task_name": "Information Processing Assessment",
@@ -161,6 +164,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 4
             "assessment_task_name": "Interpersonal Communication",
@@ -176,6 +180,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False,
             "locked": True,
+            "published": True,
         },
         {   # Assessment Task 5
             "assessment_task_name": "Management Assessment",
@@ -191,6 +196,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": True,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 6
             "assessment_task_name": "Problem Solving Assessment",
@@ -206,6 +212,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 7
             "assessment_task_name": "Teamwork Assessment",
@@ -221,6 +228,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": True,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 8
             "assessment_task_name": "Critical Thinking Assessment 2",
@@ -236,6 +244,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "CST",
             "unit_of_assessment": True,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 9
             "assessment_task_name": "AAAAAAAAAAAA",
@@ -251,6 +260,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": True,
             "locked": False,
+            "published": True,
         },
         {  # Assessment Task 10
             "assessment_task_name": "CCCCCCCCCCCCC",
@@ -266,6 +276,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": True,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 11
             "assessment_task_name": "DDDDDDDDDDDDDD",
@@ -281,6 +292,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": True,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 12
             "assessment_task_name": "Student 1",
@@ -296,6 +308,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "EST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 13
             "assessment_task_name": "Student 2 Individ",
@@ -311,6 +324,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 14
             "assessment_task_name": "UI 1",
@@ -326,6 +340,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 15
             "assessment_task_name": "UI 2",
@@ -341,6 +356,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 16
             "assessment_task_name": "Calc 1",
@@ -356,6 +372,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 17
             "assessment_task_name": "Calc 2",
@@ -371,6 +388,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "PST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 18
             "assessment_task_name": "Phys 1",
@@ -386,6 +404,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "MST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
         {   # Assessment Task 19
             "assessment_task_name": "Phys 2",
@@ -401,6 +420,7 @@ def load_demo_admin_assessment_task():
             "time_zone": "MST",
             "unit_of_assessment": False,
             "locked": False,
+            "published": True,
         },
     ]
 
@@ -414,6 +434,7 @@ def load_demo_admin_assessment_task():
             "role_id": assessment["role_id"],
             "show_suggestions": assessment["show_suggestions"],
             "locked": assessment["locked"],
+            "published": assessment["published"],
             "show_ratings": assessment["show_ratings"],
             "unit_of_assessment": assessment["unit_of_assessment"],
             "create_team_password": assessment["create_team_password"],
@@ -478,5 +499,12 @@ def toggle_notification_sent_to_true(assessment_task_id, date):
 def toggle_lock_status(assessment_task_id):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
     one_assessment_task.locked = not one_assessment_task.locked
+    db.session.commit()
+    return one_assessment_task
+
+@error_log
+def toggle_published_status(assessment_task_id):
+    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task.published = not one_assessment_task.published
     db.session.commit()
     return one_assessment_task

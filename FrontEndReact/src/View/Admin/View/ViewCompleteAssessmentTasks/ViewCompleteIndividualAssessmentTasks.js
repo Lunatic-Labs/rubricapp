@@ -17,18 +17,19 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         super(props);
 
     this.state = {
-      errorMessage: null,
-      isLoaded: null,
-      showDialog: false,
-      notes: '',
-      notificationSent: false,
-      isSingleMsg: false,
-      compATId: null,
+        errorMessage: null,
+        isLoaded: null,
+        showDialog: false,
+        notes: '',
+        notificationSent: false,
+        isSingleMsg: false,
+        compATId: null,
+        lockStatus: {},
 
-            errors: {
-                notes:''
-            }
-        };
+        errors: {
+            notes:''
+        }
+      };
     }
 
     componentDidMount() {
