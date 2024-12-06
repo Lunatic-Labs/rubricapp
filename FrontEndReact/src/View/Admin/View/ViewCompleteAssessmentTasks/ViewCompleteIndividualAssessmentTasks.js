@@ -25,6 +25,14 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         isSingleMsg: false,
         compATId: null,
         lockStatus: {},
+        errorMessage: null,
+        isLoaded: null,
+        showDialog: false,
+        notes: '',
+        notificationSent: false,
+        isSingleMsg: false,
+        compATId: null,
+        lockStatus: {},
 <<<<<<< HEAD
       errorMessage: null,
       isLoaded: null,
@@ -43,6 +51,10 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 =======
 >>>>>>> master
 
+        errors: {
+            notes:''
+        }
+      };
         errors: {
             notes:''
         }
