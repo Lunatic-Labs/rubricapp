@@ -36,7 +36,8 @@ export default function CharacteristicsAndImprovements({
 
   const processedData = data.map(item => ({
     ...item,
-    truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement'])
+    truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
+    // percentage: +item.toFixed(2)
   }));
 
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
@@ -66,7 +67,8 @@ export default function CharacteristicsAndImprovements({
                     >
                       <XAxis
                         type="number"
-                        domain={[0, 1]}
+                        domain={[0, 100]}
+                        tickFormatter={(tick) => `${tick}%`}
                         style={{ fontSize: '12px' }}
                       />
                       <YAxis
@@ -89,7 +91,7 @@ export default function CharacteristicsAndImprovements({
                           dataKey="percentage" 
                           fill="#ffffff" 
                           position="inside"
-                          formatter={value => `${value}`}
+                          formatter={value => `${value}%`}
                         />
                       </Bar>
                     </BarChart>
