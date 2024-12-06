@@ -103,7 +103,7 @@ class AdminViewRatings extends Component {
       const link = document.createElement("a");
       link.download = this.state.downloadedAssessment + ".csv";
       link.href = url;
-      link.setAttribute('download', fileName);//This and next line is what triggers the file download.
+      link.setAttribute('download', fileName);//This and next line is what triggers the file download.J
       link.click();
 
       var assessmentName = this.state.downloadedAssessment;
