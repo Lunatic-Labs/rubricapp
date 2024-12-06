@@ -13,6 +13,19 @@ class AdminViewRatings extends Component {
   constructor(props) {
     super(props);
 
+    /**
+     * Ratings and Feedback admin view.
+     * @property {str} errorMessage: Captured error msgs.  
+     * @property {bool} isLoaded: State of the view.
+     * @property {number} loadedAssessmentId: Current assessment id.
+     * @property {object} ratings: Ratings information is stored here.
+     * @property {object} categories: Categories Information stored here. 
+     * @property {object} csvCreation: CSV response from the api stored here.
+     * @property {object} exportButtonId: Button ID and parsing of downloadable data.
+     * @property {object} downloadedAssessment: Set to trigger a browser download. 
+     * @property {number} lastSeenCsvType: Int representing the clicked button.
+     */
+
     this.state = {
         errorMessage: null,
         isLoaded: null,
@@ -66,6 +79,10 @@ class AdminViewRatings extends Component {
     if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
         this.fetchData();
     }
+
+    /**
+     * This next check deals with preparing and triggering a download on the users pc.
+     */
     if(this.state.isLoaded && this.state.csvCreation) {
       const suffix = ["-sfis_ocs", "-ratings", "-comments"];
       let fileName = this.props.navbar.state.chosenCourse['course_name'];
@@ -86,7 +103,7 @@ class AdminViewRatings extends Component {
       const link = document.createElement("a");
       link.download = this.state.downloadedAssessment + ".csv";
       link.href = url;
-      link.setAttribute('download', fileName);
+      link.setAttribute('download', fileName);//This and next line is what triggers the file download.
       link.click();
 
       var assessmentName = this.state.downloadedAssessment;
@@ -105,8 +122,13 @@ class AdminViewRatings extends Component {
   }
   }
 
-  // Note that type should be an int. Look at rubricapp/BackEndFlask/Functions/exportCsv.py for other formats.
+  /**
+   * Calls api to recive csv data and stores it.
+   * @param {int} type: INT that informs what csv is to be retived; sif/ocs,ratings,comments are respecitvley 1,2,3.
+   */
   handleCsvDownloads(type){
+    console.log(typeof this.state.downloadedAssessment);
+
     let promise = genericResourceGET(
       `/csv_assessment_export?assessment_task_id=${this.state.loadedAssessmentId}&format=${type}`,
       "csv_creation",
@@ -114,6 +136,9 @@ class AdminViewRatings extends Component {
       {dest: "csvCreation"}
     );
 
+    /**
+     * Storing csv and catching potential errors.
+     */
     promise.then(result => {
       if(result !== undefined && result.errorMessage === null){
         var assessmentName = "test";
