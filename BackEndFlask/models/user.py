@@ -186,7 +186,7 @@ def create_user(user_data):
         lms_id=user_data["lms_id"],
         consent=user_data["consent"],
         owner_id=user_data["owner_id"],
-        is_admin="role_id" in user_data.keys() and user_data["role_id"]==3,
+        is_admin="role_id" in user_data.keys() and user_data["role_id"] in [1,2,3],
         has_set_password=has_set_password,
         reset_code=None
     )
@@ -242,8 +242,9 @@ def load_SuperAdminUser():
         "password": str(os.environ.get('SUPER_ADMIN_PASSWORD')),
         "lms_id": 0,
         "consent": None,
-        "owner_id": 0,
-        "role_id": None
+        "owner_id": None,
+        "role_id": 2,
+        "is_admin": True
     })
 
 # user_id = 2

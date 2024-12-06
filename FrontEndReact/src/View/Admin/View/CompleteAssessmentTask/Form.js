@@ -4,7 +4,6 @@ import '../../../../SBStyles.css';
 import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
 import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
@@ -394,22 +393,6 @@ class Form extends Component {
                         <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
                     }
 
-                    {this.props.role_name !== "Student" &&
-                        <Button
-                            variant="text"
-                            color="primary"
-                            startIcon={<RefreshIcon />}
-                            arialabel="refreshButton"
-
-                            onClick={() => {
-                                this.props.refreshUnits();
-                            }}
-                            aria-label="refreshButton"
-                        >
-                            Refresh
-                        </Button>
-                    }
-
                     { !this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly &&
                         <Button
                             id="formSubmitButton"
@@ -467,7 +450,15 @@ class Form extends Component {
 
                                 [`& .MuiTabs-indicator`]: { 
                                     display: 'none' 
-                                }
+                                },
+
+                                '& .MuiTab-root': {
+                                    border: '2px solid',
+                                    '&.Mui-selected': {
+                                        backgroundColor: '#D9D9D9',
+                                        color: 'inherit',
+                                    }
+                                },
                             }}
                         >
                             {this.state.categoryList}

@@ -78,8 +78,9 @@ class AddCustomRubric extends React.Component {
                 return;
             } 
             var cookies = new Cookies();
+            let promise;
             if (this.state.addCustomRubric === false) {
-                genericResourcePUT(
+                promise = genericResourcePUT(
                     `/rubric?rubric_id=${rubricId}`,
                     this,
                     JSON.stringify({
@@ -92,7 +93,7 @@ class AddCustomRubric extends React.Component {
                     }),
                 );
             } else {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     `/rubric`,
                     this,
                     JSON.stringify({
@@ -105,7 +106,12 @@ class AddCustomRubric extends React.Component {
                     }),
                 );
             }
-            this.props.navbar.confirmCreateResource("MyCustomRubrics");
+            
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    this.props.navbar.confirmCreateResource("MyCustomRubrics");
+                }
+            });
         };
         
         this.handleDeleteRubric = (rubricId) => {

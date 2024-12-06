@@ -29,7 +29,8 @@ import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
-import UserAccount from './UserAccount.js'
+import UserAccount from './UserAccount.js';
+import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 
 
 class AppState extends Component {
@@ -219,7 +220,6 @@ class AppState extends Component {
                 });
             }
         }
-
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
             var newTeam = null;
 
@@ -471,22 +471,37 @@ class AppState extends Component {
                             <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
-
-                            <Button
-                                className="primary-color"
-                                variant='contained'
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "AddUser",
-                                        user: null,
-                                        addUser: true
-                                    });
-                                }}
-                            >
-                                Add User
-                            </Button>
+                            <Box>
+                                <div style={{display:"flex", gap:"20px"}}>
+                                    <Button
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "AddUser",
+                                                user: null,
+                                                addUser: true
+                                            });
+                                        }}
+                                    >
+                                        Add User
+                                    </Button>
+                                    <Button 
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "ViewNotification",
+                                                user: null,
+                                                addUser: true
+                                            });
+                                        }}
+                                    >
+                                        View Notifications
+                                    </Button>
+                                </div>
+                            </Box>
                         </div>
-
                         <AdminViewUsers
                             navbar={this}
                         />
@@ -833,6 +848,17 @@ class AppState extends Component {
                         />
 
                         <UserAccount
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="ViewNotification" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"User"}
+                        />
+                        <ViewNotification
                             navbar={this}
                         />
                     </Box>

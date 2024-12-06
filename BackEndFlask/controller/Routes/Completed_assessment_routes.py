@@ -3,7 +3,11 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 from models.completed_assessment import (
     get_completed_assessments,
@@ -153,6 +157,10 @@ def get_all_completed_assessments():
 
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
+
+            if not completed_assessments:
+                completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
+            
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
@@ -171,6 +179,26 @@ def get_all_completed_assessments():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
 
+@bp.route('/completed_assessment', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_completed_assessment_by_team_or_user_id():
+    try:
+        completed_assessment_id = request.args.get("completed_assessment_id")
+        unit = request.args.get("unit")
+        if not completed_assessment_id:
+            return create_bad_response("No completed_assessment_id provided", "completed_assessments", 400)
+
+        if unit == "team":
+            one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_id)
+        elif unit == "user":
+            one_completed_assessment = get_completed_assessment_with_user_name(completed_assessment_id)
+        else:
+            create_bad_response("Invalid unit provided", "completed_assessments", 400)
+        return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
+    except Exception as e:
+        return create_bad_response(f"An error occurred fetching a completed assessment: {e}", "completed_assessments", 400)
 
 @bp.route('/completed_assessment', methods = ['POST'])
 @jwt_required()
@@ -179,17 +207,20 @@ def get_all_completed_assessments():
 def add_completed_assessment():
     try:
         assessment_data = request.json
-
         team_id = int(assessment_data["team_id"])
+        if (team_id == -1):
+            assessment_data["team_id"] = None
         assessment_task_id = int(request.args.get("assessment_task_id"))
         user_id = int(assessment_data["user_id"])
-
+        if (user_id == -1):
+            assessment_data["user_id"] = None
+  
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:
-            completed = replace_completed_assessment(request.json, completed.completed_assessment_id)
+            completed = replace_completed_assessment(assessment_data, completed.completed_assessment_id)
         else:
-            completed = create_completed_assessment(request.json)
+            completed = create_completed_assessment(assessment_data)
 
         return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments")
 
@@ -201,6 +232,7 @@ def add_completed_assessment():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def update_completed_assessment():
     try:
         completed_assessment_id = request.args.get("completed_assessment_id")

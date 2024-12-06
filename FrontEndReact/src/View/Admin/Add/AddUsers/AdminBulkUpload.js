@@ -117,13 +117,7 @@ class AdminBulkUpload extends Component {
                     errorMessage: null,
                     isLoaded: false
                 });
-            }, 2000);
-        }
-
-        if (this.state.errorMessage === null && this.state.isLoaded === true) {
-            setTimeout(() => {
-                this.props.navbar.setNewTab(this.props.tab === "BulkUpload" ? "Users" : "Teams");
-            }, 1000);
+            }, 5000);
         }
     }
 

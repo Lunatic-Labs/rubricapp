@@ -3,7 +3,9 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { getHumanReadableDueDate } from "../../../../utility";
+import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
+
+
 
 class ViewCompletedAssessmentTasks extends Component {
     render() {
@@ -101,7 +103,19 @@ class ViewCompletedAssessmentTasks extends Component {
                                             completedAssessments,
                                             { readOnly: true, skipInstructions: true }
                                         );
-                                    }}
+                              var singluarCompletedAssessment = null;
+                              if (completedAssessments) {
+                                singluarCompletedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === atId) ?? null;
+                              }
+                              genericResourcePOST(
+                                `/rating`,
+                                this,
+                                JSON.stringify({
+                                    "user_id" : singluarCompletedAssessment.user_id,
+                                    "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
+                                }),
+                            );
+                                      }}
                                     aria-label="completedAssessmentTasksViewIconButton"
                                 >
                                     <VisibilityIcon sx={{color:"black"}} />

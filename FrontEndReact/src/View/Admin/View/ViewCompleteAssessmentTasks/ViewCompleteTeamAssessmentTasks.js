@@ -6,7 +6,7 @@ import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
-import { genericResourcePUT } from "../../../../utility";
+import { genericResourcePUT, genericResourcePOST } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
 
@@ -14,12 +14,14 @@ class ViewCompleteTeamAssessmentTasks extends Component {
     constructor(props) {
         super(props);
 
-        this.state = {
-            errorMessage: null,
-            isLoaded: null,
-            showDialog: false,
-            notes: '',
-            notificationSent: false,
+    this.state = {
+      errorMessage: null,
+      isLoaded: null,
+      showDialog: false,
+      notes: '',
+      notificationSent: false,
+      isSingleMsg: false,
+      compATId: null,
 
             errors: {
                 notes:''
@@ -39,11 +41,13 @@ class ViewCompleteTeamAssessmentTasks extends Component {
         });
     };
 
-    handleDialog = () => {
-        this.setState({
-            showDialog: this.state.showDialog === false ? true : false,
-        })
-    }
+  handleDialog = (isSingleMessage, singleCompletedAT) => {
+    this.setState({
+        showDialog: this.state.showDialog === false ? true : false,
+        isSingleMsg: isSingleMessage,
+        compATId: singleCompletedAT,
+      });
+  }
 
     handleSendNotification = () => {
         var notes =  this.state.notes;
@@ -66,19 +70,40 @@ class ViewCompleteTeamAssessmentTasks extends Component {
             return;
         }
 
-        genericResourcePUT(
-            `/assessment_task?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&notification=${true}`,
-            this, JSON.stringify({
-                "notification_date": date,
-                "notification_message": notes
-            })
-        );
-
-        this.setState({
+    if(this.state.isSingleMsg){
+      this.setState({isSingleMsg: false}, () => {
+        genericResourcePOST(
+          `/send_single_email?team=${true}&completed_assessment_id=${this.state.compATId}`, 
+          this, JSON.stringify({ 
+            "notification_message": notes,
+          }) 
+        ).then((result) => {
+          if(result !== undefined && result.errorMessage === null){
+            this.setState({ 
+              showDialog: false, 
+              notificationSent: date, 
+            });
+          }
+        });
+      });
+    }else{
+      genericResourcePUT(
+        `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${true}`,
+        this, JSON.stringify({
+          "date": date,
+          "notification_message": notes
+        })
+      ).then((result) => {
+        if (result !== undefined && result.errorMessage === null) {
+          this.setState({
             showDialog: false,
             notificationSent: date,
-        });
-    };
+          });
+        }
+      });
+    }
+
+  };
 
     render() {
         var navbar = this.props.navbar;
@@ -243,15 +268,46 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                                 </IconButton>
                             )
 
-                        } else {
-                            return(
-                                <p variant='contained' align='center' > {"N/A"} </p>
-                            )
-                        }
-                    }
-                }
+            } else {
+              return(
+                <p variant='contained' align='center' > {"N/A"} </p>
+              )
             }
-        ];
+          }
+        }
+      },
+      {
+        name: "Student/Team Id",
+        label: "Message",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
+          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
+          customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+            const rowIndex = completeAssessmentTasks.rowIndex;
+            const completedATIndex = 5;
+            completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
+            if (completedAssessmentId !== null) {
+              return (
+                <CustomButton
+                onClick={() => this.handleDialog(true, completedAssessmentId)}
+                label="Message"
+                align="center"
+                isOutlined={true}
+                disabled={notificationSent}
+                aria-label="Send individual messages"
+                />
+              )
+            }else{
+              return(
+                <p variant='contained' align='center' > {''} </p>
+              )
+            }
+          }
+        }
+      },
+    ];
 
         const options = {
             onRowsDelete: false,
@@ -287,15 +343,15 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                             error={this.state.errors}
                         />
 
-                        <CustomButton
-                            label="Send Notification"
-                            onClick={this.handleDialog}
-                            isOutlined={false}
-                            disabled={notificationSent}
-                            aria-label="viewCompletedAssessmentSendNotificationButton"
-                        />
-                    </Box>
-                </Box>
+            <CustomButton
+              label="Send Notification"
+              onClick={() => this.handleDialog(false)}
+              isOutlined={false}
+              disabled={notificationSent}
+              aria-label="viewCompletedAssessmentSendNotificationButton"
+            />
+          </Box>
+        </Box>
 
                 <Box className="table-spacing">
                     <CustomDataTable

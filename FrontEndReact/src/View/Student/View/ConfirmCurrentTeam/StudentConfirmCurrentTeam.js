@@ -23,7 +23,7 @@ class StudentConfirmCurrentTeam extends Component {
 
         genericResourceGET(
             `/team_members?course_id=${courseId}`,
-            "teamMembers", this
+            "team_members", this, {dest: "teamMembers"}
         );
     }
 

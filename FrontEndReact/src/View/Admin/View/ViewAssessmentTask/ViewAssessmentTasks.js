@@ -28,21 +28,25 @@ class ViewAssessmentTasks extends Component {
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
-            genericResourceGET(
-                `/csv_assessment_export?assessment_task_id=${atId}`,
-                "csvCreation",
-                this
+            let promise = genericResourceGET(
+                `/csv_assessment_export?assessment_task_id=${atId}&format=1`,
+                "csv_creation",
+                this,
+                {dest: "csvCreation"}
             );
 
-            var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
 
-            var newExportButtonJSON = this.state.exportButtonId;
-
-            newExportButtonJSON[assessmentName] = exportButtonId;
-
-            this.setState({
-                downloadedAssessment: assessmentName,
-                exportButtonId: newExportButtonJSON
+                    var newExportButtonJSON = this.state.exportButtonId;
+        
+                    newExportButtonJSON[assessmentName] = exportButtonId;
+        
+                    this.setState({
+                        downloadedAssessment: assessmentName,
+                        exportButtonId: newExportButtonJSON
+                    });                }
             });
         }
 
@@ -67,19 +71,23 @@ class ViewAssessmentTasks extends Component {
         if(this.state.isLoaded && this.state.csvCreation) {
             const fileData = this.state.csvCreation["csv_data"];
 
-            const blob = new Blob([fileData], { type: 'csv' });
+            const blob = new Blob([fileData], { type: 'text/csv;charset=utf-8;' });
             const url = URL.createObjectURL(blob);
 
             const link = document.createElement("a");
             link.download = this.state.downloadedAssessment + ".csv";
             link.href = url;
-            link.setAttribute('download', 'export.csv');
+            link.setAttribute('download', this.props.navbar.state.chosenCourse['course_name']+'.csv');
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
-
+            
+            const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
+            
             setTimeout(() => {
-                document.getElementById(this.state.exportButtonId[assessmentName]).removeAttribute("disabled");
+                if(exportAssessmentTask) {
+                    exportAssessmentTask.removeAttribute("disabled");
+                }
             }, 10000);
 
             this.setState({
@@ -94,14 +102,16 @@ class ViewAssessmentTasks extends Component {
 
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
-            "assessmentTasks",
-            this
+            "assessment_tasks",
+            this,
+            {dest: "assessmentTasks"}
         );
 
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}&only_course=true`,
-            "completedAssessments",
-            this
+            "completed_assessments",
+            this,
+            {dest: "completedAssessments"}
         );
 
         const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
@@ -177,7 +187,7 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
-                            //assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
+                            assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
 
                         return(

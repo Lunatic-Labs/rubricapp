@@ -4,6 +4,7 @@ import { Box, TextField } from '@mui/material';
 import CustomButton from '../Components/CustomButton.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
+import Loading from '../../../Loading/Loading.js';
 
 
 
@@ -50,20 +51,29 @@ class CodeRequirement extends Component {
 
 		genericResourceGET(
 			`/assessment_task?assessment_task_id=${atId}`, 
-			"assessmentTasks", this);
+			"assessment_tasks", this, {dest: "assessmentTasks"});
 	}
 
 	render() {
 		const { errorMessage } = this.state;
 
-		return (
-			<Box>
+		if (errorMessage) {
+            return (
 				<Box>
 					{errorMessage &&
 						<ErrorMessage errorMessage={errorMessage} />
 					}
 				</Box>
-				
+            );
+
+		} else if (this.state.assessmentTasks === null) {
+            return (
+                <Loading />
+            );
+		}
+		
+		return (
+			<Box>
 				<div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
 					<div className='container'
 						style={{
