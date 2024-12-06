@@ -97,24 +97,24 @@ class ViewCompletedAssessmentTasks extends Component {
                             <div>
                                 <IconButton
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(
-                                            assessmentTasks,
-                                            atId,
-                                            completedAssessments,
-                                            { readOnly: true, skipInstructions: true }
-                                        );
-                              // var singluarCompletedAssessment = null;
-                              // if (completedAssessments) {
-                              //   singluarCompletedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === atId) ?? null;
-                              // }
-                              // genericResourcePOST(
-                              //   `/rating`,
-                              //   this,
-                              //   JSON.stringify({
-                              //       "user_id" : singluarCompletedAssessment.user_id,
-                              //       "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
-                              //   }),
-                              // );
+                              navbar.setAssessmentTaskInstructions(
+                                  assessmentTasks,
+                                  atId,
+                                  completedAssessments,
+                                  { readOnly: true, skipInstructions: true }
+                              );
+                              var singluarCompletedAssessment = null;
+                              if (completedAssessments) {
+                                singluarCompletedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === atId) ?? null;
+                              }
+                              genericResourcePOST(
+                                `/rating`,
+                                this,
+                                JSON.stringify({
+                                    "user_id" : singluarCompletedAssessment.user_id,
+                                    "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
+                                }),
+                              );
                                       }}
                                     aria-label="completedAssessmentTasksViewIconButton"
                                 >

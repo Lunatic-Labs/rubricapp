@@ -23,7 +23,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
 
     genericResourceGET(
       `/rubric?rubric_id=${state.chosenAssessmentTask["rubric_id"]}`,
-      "rubrics", this
+      "rubrics", this, {dest: "rubrics"}
     )
   }
 
