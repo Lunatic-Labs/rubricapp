@@ -10,7 +10,8 @@ import Loading from '../../../Loading/Loading.js';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
-
+import PublishIcon from '@mui/icons-material/Publish';
+import UnpublishedIcon from '@mui/icons-material/Unpublished';
 
 class ViewAssessmentTasks extends Component {
     constructor(props) {
@@ -25,6 +26,7 @@ class ViewAssessmentTasks extends Component {
             completedAssessments: null,
             assessmentTasks: null,
             lockStatus: {},
+            publishedStatus: {},
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
@@ -40,13 +42,14 @@ class ViewAssessmentTasks extends Component {
                     var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
 
                     var newExportButtonJSON = this.state.exportButtonId;
-        
+
                     newExportButtonJSON[assessmentName] = exportButtonId;
-        
+
                     this.setState({
                         downloadedAssessment: assessmentName,
                         exportButtonId: newExportButtonJSON
-                    });                }
+                    });
+                }
             });
         }
 
@@ -65,6 +68,23 @@ class ViewAssessmentTasks extends Component {
               );
           });
         };
+
+        this.handlePublishToggle = (assessmentTaskId, task) => {
+          this.setState((prevState) => {
+              const newPublishedStatus = { ...prevState.publishedStatus };
+              newPublishedStatus[assessmentTaskId] = !newPublishedStatus[assessmentTaskId];
+              return { publishedStatus: newPublishedStatus };
+          }, () => {
+              const publishedStatus = this.state.publishedStatus[assessmentTaskId];
+
+              genericResourcePUT(
+                  `/assessment_task_toggle_published?assessmentTaskId=${assessmentTaskId}`,
+                  this,
+                  JSON.stringify({ published: publishedStatus })
+              );
+          });
+        };
+
     }
 
     componentDidUpdate () {
@@ -81,9 +101,9 @@ class ViewAssessmentTasks extends Component {
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
-            
+
             const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
-            
+
             setTimeout(() => {
                 if(exportAssessmentTask) {
                     exportAssessmentTask.removeAttribute("disabled");
@@ -116,16 +136,17 @@ class ViewAssessmentTasks extends Component {
 
         const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
         const initialLockStatus = {};
+        const initialPublishedStatus = {};
 
         assessmentTasks.forEach((task) => {
             initialLockStatus[task.assessment_task_id] = task.locked;
+            initialPublishedStatus[task.assessment_task_id] = task.published;
         });
 
-        this.setState({ lockStatus: initialLockStatus });
+        this.setState({ lockStatus: initialLockStatus, publishedStatus: initialPublishedStatus });
     }
 
     render() {
-
         if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
             return <Loading />;
         }
@@ -137,8 +158,6 @@ class ViewAssessmentTasks extends Component {
         var roleNames = adminViewAssessmentTask.roleNames;
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
-
-        const lockStatus = this.state.lockStatus;
 
         let assessmentTasksToDueDates = {};
 
@@ -277,6 +296,29 @@ class ViewAssessmentTasks extends Component {
                                 {unitOfAssessment ? "Yes" : "No"}
                             </>
                         )
+                    }
+                }
+            },
+            {
+                name: "assessment_task_id",
+                label: "Publish",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    customBodyRender: (atId) => {
+                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                        const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
+
+                        return (
+                            <IconButton
+                            aria-label={isPublished ? "unlock" : "lock"}
+                            onClick={() => this.handlePublishToggle(atId, task)}
+                            >
+                            {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
+                            </IconButton>
+                        );
                     }
                 }
             },

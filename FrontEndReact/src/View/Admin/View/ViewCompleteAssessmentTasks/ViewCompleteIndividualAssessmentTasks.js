@@ -17,6 +17,14 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         super(props);
 
     this.state = {
+        errorMessage: null,
+        isLoaded: null,
+        showDialog: false,
+        notes: '',
+        notificationSent: false,
+        isSingleMsg: false,
+        compATId: null,
+        lockStatus: {},
       errorMessage: null,
       isLoaded: null,
       showDialog: false,
@@ -32,10 +40,10 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             notificationSent: false,
             lockStatus: {},
 
-            errors: {
-                notes:''
-            }
-        };
+        errors: {
+            notes:''
+        }
+      };
     }
 
     componentDidMount() {

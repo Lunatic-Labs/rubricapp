@@ -38,17 +38,18 @@ class StudentDashboard extends Component {
         var userRole = state.chosenCourse.role_id;
         genericResourceGET(
             `/assessment_task?course_id=${chosenCourse}&role_id=${userRole}`,
-            "assessmentTasks", this);
+            "assessment_tasks", this, {dest: "assessmentTasks"});
 
         if (userRole === 5) {
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourse}`,
-                "completedAssessments", this
+                "completed_assessments", this, {dest: "completedAssessments"}
             );
         } else {
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourse}&role_id=${userRole}`,
-                "completedAssessments", this);
+                "completed_assessments", this, {dest: "completedAssessments"}
+            );
         }
     }
 
@@ -83,11 +84,17 @@ class StudentDashboard extends Component {
         // by an admin.
         const currentDate = new Date();
         for (let i = 0; i < assessmentTasks.length; ++i) {
-            const dueDate = new Date(assessmentTasks[i].due_date);
-            if (dueDate < currentDate || assessmentTasks[i].locked) {
-                completedAssessments.push(assessmentTasks[i]);
+            if (!assessmentTasks[i].published) {
                 assessmentTasks.splice(i, 1);
                 --i;
+            }
+            else {
+                const dueDate = new Date(assessmentTasks[i].due_date);
+                if (dueDate < currentDate || assessmentTasks[i].locked) {
+                    completedAssessments.push(assessmentTasks[i]);
+                    assessmentTasks.splice(i, 1);
+                    --i;
+                }
             }
         }
 

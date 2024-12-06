@@ -24,6 +24,7 @@ from models.assessment_task import (
     create_assessment_task,
     replace_assessment_task,
     toggle_lock_status,
+    toggle_published_status,
 )
 
 from models.completed_assessment import (
@@ -270,7 +271,28 @@ def toggle_lock_status_route():
         )
     except Exception as e:
         return create_bad_response(
-            f"An error occurred copying course assessments {e}", "assessment_tasks", 400
+            f"An error occurred toggling the lock status for assessment {e}", "assessment_tasks", 400
+        )
+
+
+@bp.route('/assessment_task_toggle_published', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def toggle_published_status_route():
+    try:
+        assessmentTaskId = request.args.get('assessmentTaskId')
+
+        toggle_published_status(assessmentTaskId)
+
+        return create_good_response(
+            assessment_task_schema.dump(get_assessment_task(assessmentTaskId)),
+            201,
+            "assessment_tasks"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred toggling the published status for assessment {e}", "assessment_tasks", 400
         )
 
 
@@ -336,6 +358,7 @@ class AssessmentTaskSchema(ma.Schema):
             "max_team_size",
             "notification_sent",
             "locked",
+            "published",
         )
 
 
