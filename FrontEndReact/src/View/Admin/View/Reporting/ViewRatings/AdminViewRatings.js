@@ -20,6 +20,9 @@ class AdminViewRatings extends Component {
         ratings: null,
         categories: null,
         csvCreation: null,
+        exportButtonId: {},
+        downloadedAssessment: null,
+        lastSeenCsvType:null,
     }
 
     this.fetchData = () => {
@@ -63,6 +66,72 @@ class AdminViewRatings extends Component {
     if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
         this.fetchData();
     }
+    if(this.state.isLoaded && this.state.csvCreation) {
+      const suffix = ["-sfis_ocs", "-ratings", "-comments"];
+      let fileName = this.props.navbar.state.chosenCourse['course_name'];
+
+      let assessment = this.props.assessmentTasks.find(obj => obj["assessment_task_id"] === this.props.chosenAssessmentId);
+      const atName = assessment["assessment_task_name"].split(' ');
+      const abreviationLetters = atName.map(word => word.charAt(0).toUpperCase());
+      fileName += '-' + abreviationLetters.join('');
+
+      fileName += suffix[this.state.lastSeenCsvType];
+      fileName += '.csv';
+
+      const fileData = this.state.csvCreation["csv_data"];
+
+      const blob = new Blob([fileData], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+
+      const link = document.createElement("a");
+      link.download = this.state.downloadedAssessment + ".csv";
+      link.href = url;
+      link.setAttribute('download', fileName);
+      link.click();
+
+      var assessmentName = this.state.downloadedAssessment;
+      
+      const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
+      
+      setTimeout(() => {
+          if(exportAssessmentTask) {
+              exportAssessmentTask.removeAttribute("disabled");
+          }
+      }, 10000);
+
+      this.setState({
+          csvCreation: null
+      });
+  }
+  }
+
+  // Note that type should be an int. Look at rubricapp/BackEndFlask/Functions/exportCsv.py for other formats.
+  handleCsvDownloads(type){
+    let promise = genericResourceGET(
+      `/csv_assessment_export?assessment_task_id=${this.state.loadedAssessmentId}&format=${type}`,
+      "csv_creation",
+      this,
+      {dest: "csvCreation"}
+    );
+
+    promise.then(result => {
+      if(result !== undefined && result.errorMessage === null){
+        var assessmentName = "test";
+        var newExportButtonJSON = this.state.exportButtonId;
+        newExportButtonJSON[assessmentName] = "asssessment_export_"+this.state.loadedAssessmentId;
+
+        this.setState({
+          downloadedAssessment: assessmentName,
+          exportButtonId: newExportButtonJSON,
+          lastSeenCsvType: type,
+        });
+      }
+    })
+    .catch(error => {
+      this.setState({
+        csvCreation: null,
+      })
+    })
   }
 
   render() {
@@ -104,12 +173,20 @@ class AdminViewRatings extends Component {
               <Box display="flex" justifyContent="flex-end" gap="10px">
                 <Button
                   variant='contained'
+                  onClick={()=>{this.handleCsvDownloads(0)}}
+                >
+                  Export SFIS & OCS
+                </Button>
+                <Button
+                  variant='contained'
+                  onClick={()=>{this.handleCsvDownloads(1)}}
                 >
                   Export Ratings
                 </Button>
 
                 <Button
                   variant='contained'
+                  onClick={()=>{this.handleCsvDownloads(2)}}
                 >
                   Export Comments
                 </Button>
