@@ -117,20 +117,20 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
   handleSendNotification = () => {
     var notes = this.state.notes;
 
-        var navbar = this.props.navbar;
+    var navbar = this.props.navbar;
 
-        var state = navbar.state;
+    var state = navbar.state;
 
-        var chosenAssessmentTask = state.chosenAssessmentTask;
+    var chosenAssessmentTask = state.chosenAssessmentTask;
 
-        var date = new Date();
+    var date = new Date();
 
-        if (notes.trim() === '') {
-            this.setState({
-                errors: {
-                    notes: 'Notification Message cannot be empty',
-                },
-            });
+    if (notes.trim() === '') {
+        this.setState({
+            errors: {
+                notes: 'Notification Message cannot be empty',
+            },
+        });
 
       return;
     }
@@ -183,6 +183,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         var notificationSent = state.notificationSent;
 
         var chosenCourse = state.chosenCourse;
+
+        var catIds = completedAssessmentTasks.map((task) => task.completed_assessment_id);
 
         const columns = [
             {
@@ -426,6 +428,20 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
               notes={this.state.notes}
               error={this.state.errors}
             />
+
+            <IconButton
+                aria-label={"unlock-all"}
+                onClick={() => this.handleUnlockAllCats(catIds)}
+            >
+                <LockOpenIcon />
+            </IconButton>
+
+            <IconButton
+                aria-label={"lock-all"}
+                onClick={() => this.handleLockAllCats(catIds)}
+            >
+                <LockIcon />
+            </IconButton>
 
             <CustomButton
               label="Send Notification"
