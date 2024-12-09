@@ -22,7 +22,9 @@ from models.assessment_task import (
     get_assessment_tasks,
     get_assessment_task,
     create_assessment_task,
-    replace_assessment_task
+    replace_assessment_task,
+    toggle_lock_status,
+    toggle_published_status,
 )
 
 from models.completed_assessment import (
@@ -101,8 +103,7 @@ def get_all_assessment_tasks():
                     user_course.course_id
                 )
 
-                for assessment_task in assessment_tasks:
-                    all_assessment_tasks.append(assessment_task)
+                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
 
             return create_good_response(
                 assessment_tasks_schema.dump(all_assessment_tasks),
@@ -253,6 +254,47 @@ def update_assessment_task():
         )
 
 
+@bp.route('/assessment_task_toggle_lock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def toggle_lock_status_route():
+    try:
+        assessmentTaskId = request.args.get('assessmentTaskId')
+
+        toggle_lock_status(assessmentTaskId)
+
+        return create_good_response(
+            assessment_task_schema.dump(get_assessment_task(assessmentTaskId)),
+            201,
+            "assessment_tasks"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred toggling the lock status for assessment {e}", "assessment_tasks", 400
+        )
+
+
+@bp.route('/assessment_task_toggle_published', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def toggle_published_status_route():
+    try:
+        assessmentTaskId = request.args.get('assessmentTaskId')
+
+        toggle_published_status(assessmentTaskId)
+
+        return create_good_response(
+            assessment_task_schema.dump(get_assessment_task(assessmentTaskId)),
+            201,
+            "assessment_tasks"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred toggling the published status for assessment {e}", "assessment_tasks", 400
+        )
+
 
 # /assessment_task/ POST
 # copies over assessment_tasks from an existing course to another course
@@ -314,7 +356,9 @@ class AssessmentTaskSchema(ma.Schema):
             "comment",
             "number_of_teams",
             "max_team_size",
-            "notification_sent"
+            "notification_sent",
+            "locked",
+            "published",
         )
 
 

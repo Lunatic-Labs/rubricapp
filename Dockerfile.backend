@@ -15,7 +15,7 @@ RUN apt-get update
 WORKDIR /app
 
 # Copy only requirements and setup scripts first to leverage Docker cache
-COPY BackEndFlask/requirements.txt BackEndFlask/setupEnv.py /app/
+COPY BackEndFlask/requirements.txt BackEndFlask/setupEnv.py BackEndFlask/dbinsert.py /app/
 
 # Install Python dependencies
 RUN pip install --no-cache-dir --upgrade pip \

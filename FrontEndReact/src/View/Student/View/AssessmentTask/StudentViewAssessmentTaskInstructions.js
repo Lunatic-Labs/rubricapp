@@ -23,7 +23,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
 
     genericResourceGET(
       `/rubric?rubric_id=${state.chosenAssessmentTask["rubric_id"]}`,
-      "rubrics", this
+      "rubrics", this, {dest: "rubrics"}
     )
   }
 
@@ -47,7 +47,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
     } else if (!isLoaded || !rubrics) {
       return(
         <Loading />
-      ) 
+      )
 
     } else {
       return(
