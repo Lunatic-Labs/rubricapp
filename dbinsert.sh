@@ -12,7 +12,7 @@ function help() {
     exit 1
 }
 
-if [ $# -le 1 ]; then
+if [ $# -le 0 ]; then
     help
 fi
 
