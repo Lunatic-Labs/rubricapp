@@ -8,365 +8,251 @@ research-based or custom rubrics. Instructors can email
 students their results, as well as download the data
 for analysis.
 
+# Setup
 
+The following shows how to get SkillBuilder running on your operating system.
 
-## SkillBuilder is implemented in three parts: ##
+## Requirements
 
-- A Back End Flask server.
+The following technologies are required:
+1. `Python >= 3.12`
+2. `Redis`
+3. `Docker/Docker Desktop`
+4. `Node >= v21.6.1`
 
-- A Caching Redis server.
+Find your operating system below and follow the instructions
+on installing them.
 
-- A Front End React server.
+### Linux
 
+#### Debian/Ubuntu (and its derivatives)
 
+1. Perform any system upgrades.
 
-## Setting up and running with Docker and Docker Compose: ##
+```
+sudo apt update -y
+sudo apt upgrade -y
+```
 
-- UPDATE: Using Docker and Docker Compose should become the sole
-  method for running this application locally as it solves
-  dependency issues across all platforms! Also makes developing
-  easier as there are now only two commands to worry about.
+2. Install `Python3`:
+```
+sudo apt install python3
+python3 --version
+```
 
-- Follow the link for instructions on downloading Docker Desktop:
-  https://www.docker.com/products/docker-desktop/
+Ensure that the version is `>= 3.12`.
 
-- NOTE: If you have an intel chip with Windows OS, you will need
-  to go to the following link to install Docker Desktop:
-  https://docs.docker.com/desktop/install/windows-install/
+*Note*: Debian uses the last _stable_ release of Python (which is not 3.12), but
+from testing, it seems to work just fine.
 
-- NOTE: Make sure that there are no running frontend,
-  redis, or backend processes as there will be port
-  conflicts. To view if you have processes running
-  on important ports, run the following and expect
-  no output:
+3. Install `Redis`:
 
-      lsof -i :3000,5050,6379
+Using the following link to install:
 
-  If output, there is a chance you still have processes
-  running and you need to use the following command to
-  kill them off:
+https://redis.io/docs/latest/operate/oss_and_stack/install/install-redis/install-redis-on-linux/
 
-      kill <pid>
+*Note*: Ubuntu and Debian typically use `systemctl` as the init system, but if using
+something different, the docs will not cover those.
 
-  or optionally, send with a forced kill (not recommended as it does
-  not allow the process to shut down gracefully).
+4. Install `Node`:
 
-      sudo kill -9 <pid>
+```
+sudo apt install nodejs
+node -v
+```
 
-  There is a chance that your OS has an important process
-  running on one of these ports that should not be terminated.
-  In that case, change the port for conflicting processes in the
-  compose.yml file. Make sure that you also update changed
-  ports in the frontend or backend .env and anywhere else
-  needed!
+5. Install Docker/Docker Desktop:
 
-  Step 1:
-  After following the instructions, ensure you have Docker
-  Desktop open and running.
+Use the following link for the instuctions for Ubuntu:
 
-  Step 2:
-  Open a new terminal and navigate to where you have this
-  repository cloned.
+https://docs.docker.com/desktop/setup/install/linux/ubuntu/
 
-  Step 3:
-  Run the following command to ensure you have docker running:
+Use the following link for the instuctions for Debian:
 
-      docker ps
+https://docs.docker.com/desktop/setup/install/linux/debian/
 
-  Step 4:
-  Run the following command to build the images:
+### MacOS
 
-      docker compose build
+MacOS will require some kind of package manager (this document will
+use `homebrew`).
 
-  NOTE: To rebuild with new changes applied and ignore cached
-  build run the following:
+You can find `homebrew` here: https://brew.sh/
 
-      docker compose build --no-cache
+1. Install `Python3`
 
-  NOTE: To view all of the build logs instead of the default
-  summary run the following:
+You can find the downloads here:
 
-      docker compose build --process=plain
+https://www.python.org/downloads/macos/
 
-  Step 5:
-  Run the following command to run containers from the images:
+2. Install `Redis`
 
-      docker compose up
+```
+brew install redis
+```
 
-  Step 6:
-  Open a browser with the link http://localhost:3000 to see the frontend and log in
-  with one of the demo students/TAs/admins.
+3. Install `Node`
 
+Either download prebuilt binaries directly, or use a package manager:
 
-## REQUIREMENTS: ##
+https://nodejs.org/en/download/package-manager
 
-- Python 3.12 and up.
+4. Install Docker/Docker Desktop
 
-- MySQL-Server.
+The following link will walk you through it:
 
-- Homebrew 4.2.18 and up.
+https://docs.docker.com/desktop/setup/install/mac-install/
 
-- Redis 7.2.4 and up.
+### Windows
 
-- Node.js v21.6.1 and up.
+Running this project on bare metal Windows is no longer supported.
+You will need to get WSL (Windows Subsystem for Linux) or preferably WSL2.
 
-NOTE:
+The following shows you how to set it up:
 
-- You WILL encounter issues when running both the
-Back End and Front End servers if you do NOT have
-installed the REQUIRED versions of Python and
-Node.js.
+https://learn.microsoft.com/en-us/windows/wsl/install
 
-NOTE:
+Once this is install and set up, open Windows Terminal, Powershell, Command Prompt
+(or whatever terminal emulator you use) and do:
 
-- Linux, Mac, and WSL Developers use `python3`.
+```
+wsl
+```
 
-- WINDOWS DEVELOPERS ARE NO LONGER SUPPORTED.
+If this is working correctly, follow the installation instructions in the *Linux*
+section of this README to get all dependencies.
 
+## Running Rubricapp in a Docker container
 
-## Setting up the MySQL Environment: ##
+1. Perform a build:
 
-- Run the following command to install MySQL-Server
-on Linux:
+```
+docker compose build
+```
 
-      sudo apt install mysql-server
+This step is needed for whenever Docker files are modified.
 
-- Run the following command to install MySQL-Server
-on MacOS:
+_Note_: Docker will cache during build time. If you need to rebuild without the
+cache, run:
 
-      brew install mysql
+```
+docker compose build --no-cache
+```
 
-- Run the following command to start MySQL-Server
-on MacOS:
+2. To run the container, do:
 
-      brew services start mysql
+```
+docker compose up
+```
 
-- Run the following command to start MySQL-Server
-in a new terminal:
+_Note_: if changes are required for the database, you can reset the database with:
 
-      sudo mysql -u root
+```
+docker compose down -v
+```
 
-- Next use these commands to create an account
-named skillbuilder and set the password to
-"WasPogil1#"
+When the front end is finished compiling, it should show a link, namely: `http://localhost:3000`.
+Simply open this link in your browser and use an appropriate login.
 
-      CREATE DATABASE account;
-      CREATE USER 'skillbuilder'@'localhost' IDENTIFIED BY 'WasPogil1#';
-      GRANT ALL PRIVILEGES ON *.* TO 'skillbuilder'@'localhost';
-      FLUSH PRIVILEGES;
-      exit;
+# Not using Docker
 
-NOTE:
+You can also run rubricapp without Docker, but you will need to manually run the setup yourself.
 
-- The password should be changed for deployment.
+1. Create a virtual environment
 
-- Once this is done, you can use: `setupEnv.py` as normal
-to create the database. If for any reason you want to
-access the database directly, run the following command:
+```
+python3 -m venv <environment_name>
+source <environment_name>/bin/activate
+```
 
-      mysql -u skillbuilder -p
+This is where all of the Python dependencies will be stored instead of being
+stored globally on your system.
 
-and then type the password.
+2. Start Redis
 
-## Installing requirements ##
+Enable the Redis service using your appropriate `init system` (`systemctl` in this example).
 
-- Follow the link for instructions on downloading Python:
+```
+systemctl start redis
+```
 
-  https://www.python.org/downloads/
+Make sure that it is running:
 
-- Follow the link for instructions on downloading Node.js:
+```
+systemctl status redis
+```
 
-  https://nodejs.org/en/download
+3. Launch the backend:
 
-- Follow the link for instructions on downloading brew:
+```
+user@/(project root)$ cd BackendFlask
+user@/(project root)/BackendFlask$ python3 ./setupEnv.py -irds
+```
 
-  https://brew.sh/
+The setup flags are as follows:
+* `-i, --install` - install all depencencies
+* `-r, --reset` - reset the database
+* `-d, --demo` - load demo data into the database
+* `-s, --start` - start the backend server
 
-- Once installed, run the following command with Homebrew
-  to install redis:
+Later iterations of using `setupEnv.py` only requires the `-s` flag
+(unless new depencencies are added or if the database needs to be reset etc).
 
-      brew install redis
+4. Launch the Frontend Server
 
+```
+user@/(project root)$ cd FrontendReact
+user@/(project root)/FrontendReact$ npm install # only do this once
+user@/(project root)/FrontendReact$ npm start
+```
 
+This will launch the server on port 3000. Access it by navigating to `http://localhost:3000` in your browser and logging in with appropriate credentials.
 
-## Setting up the Back End environment: ##
+# Other
 
-- Follow the instructions for setting up the virtual environment:
-  
-  Step 1:
-  Ensure you are in the BackEndFlask directory by running
-  the command:
+If you are testing with adding students/TAs/admins, it may be time consuming to
+manually do it via the website. There is a script that will automatically insert new
+users into the database straight from the command line. It is important to note
+that this script only works if the backend _is currently running inside docker_.
 
-      cd BackEndFlask
+Run this script with:
 
-  Step 2:
-  Create the virtual environment by running the command:
+```
+./dbinsert.sh
+```
 
-      python3 -m venv BackEndFlaskVenv
+Run this and follow the on-screen instructions.
 
-  Step 3:
-  Activate the virtual environment by running the command:
+# Troubleshooting
 
-      source BackEndFlaskVenv/bin/activate
+## Redis issues
 
-  To Deactivate the virtual environment, run the command:
+If it does not start correctly, there could be a multitude of reasons. I suggest
+using `journalctl` to investigate it (systemctl will give out the full command).
 
-      deactivate
+But a good starting point is seeing if it is already running:
 
-  To Remove the virtual environment, run the command:
+```
+ps aux | grep redis
+```
 
-      rm -r BackEndFlaskVenv
+This will give the PIDs of all processess with `redis` in its name. Try killing them
+with `kill <pid1> <pid2> ..., <pidN>` and then rerunning `systemctl start redis`.
 
-- In order to setup the environment for the first time,
-  you will need to be in the `/rubricapp/BackEndFlask/`
-  directory and run the following command:
+_Note_: if `redis` is not considered a service, try using `redis-server` or `redis-server.service`.
 
-      python3 setupEnv.py -id
+## Port conflicts
 
-- This command will install all the requirements from
-  requirements.txt, create a new database, and load
-  the database with demo data.
+The backend runs on port 5000 and the frontend runs on port 3000. You may already have processes running
+on those ports. If this is the case, you will have conflicts and the server(s) will not run normally.
 
-Flag Meanings:
+You can check what is running on those ports with:
 
-- `-i` install
-- `-d` demo
+```
+lsof -i :5000
+lsof -i :3000
+```
 
-NOTE:
-- If you DO NOT run the above command with the
-  `-i` and `-d` flags once, then the Back End server
-  WILL NOT be initialized properly. If the Back End
-  server is NOT initialized properly, then the Back
-  End server WILL NOT run. IF the Back End server
-  is NOT running, then the Front End server WILL NOT
-  run properly either.
+If any output appears here, you may either want to kill them with `kill`, or run those processes on different ports.
 
-- In the case where you want to restart with a fresh
-  new database, add the flag `-r` to reset the existing
-  database. You WILL then have to rerun the command with
-  the `-d` flag to load demo data.
 
 
-
-## Setting up the Front End environment: ##
-- Follow the link for instructions on downloading Node.js:
-
-  https://nodejs.org/en/download
-
-- In order to install the required packages you WILL need
-  to be in the directory `/rubricapp/FrontEndReact/`.
-
-- Inside the Front End React directory run the following
-  command to install all the Node packages for the project:
-
-      npm install
-
-NOTE:
-- If you run `npm install` outside of the
-  `/rubricapp/FrontEndReact/` directory, it WILL cause
-  issues.
-
-- In the case where you run `npm install` outside
-  of the `/rubricapp/FrontEndReact/` directory,
-  simply remove the created files `package.json` and
-  `package-lock.json` and the directory `node_modules`.
-  Ensure that you have correctly changed the current
-  working directory to `/rubricapp/FrontEndReact/`
-  before attempting to run the command to install
-  the Node packages.
-
-
-
-## Running the Servers after setup: ##
-
-NOTE:
-
-- You WILL need to run the Back End server first,
-  the Redis server second, then the Front End server
-  third.
-
-- You WILL need to run the Back End, Redis, and
-  Front End servers in different terminal windows.
-
-
-
-## Running the Back End server of the application: ##
-- Use the following command for running the Back End
-  server in the `/rubricapp/BackEndFlask/` directory
-  during regular use:
-
-      python3 setupEnv.py -s
-
-Flag meaning:
-
-- `-s` start
-
-
-
-## Running the Redis server: ##
-
-- Use the following command for running the Redis server:
-
-      brew services start redis
-
-NOTE:
-- Run the following command to restart redis with
-  Homebrew:
-
-      brew services restart redis
-
-- Run the following command to stop redis with
-  Homewbrew:
-
-      brew services stop redis
-
-
-
-## Running the Front End server of the application: ##
-
-- Use the following command for running the Front End
-  Server in the `/rubricapp/FrontEndReact/` directory:
-
-      npm start
-
-- This command runs the Front End server in development mode.
-  Open http://localhost:3000 or http://127.0.0.1:3000 to view
-  it in your browser.
-
-- Any changes made in the `/rubricapp/FrontEndReact/`
-  directory will be caught by the running Front End
-  server, thus rerendering any opened tabs in your
-  browser.
-
-- You will also be able to see any compile warnings
-  and errors in the console.
-
-
-
-## Running Pytest: ##
-
-- For running pytests on the Back End server
-  you will use the following command:
-
-      python3 setupEnv.py -t
-
-Flag meaning:
-
-- `-t` test
-
-
-
-## Running Jest tests: ##
-
-- For running Jest tests on the Front End server
-  you will use the following command:
-
-      npm test
-
-- This command launches the test runner in the interactive
-  watch mode. Make sure the version of react is
-  'react-scripts@0.3.0' or higher.
-
-- Here is a link for learning more information about running tests:
-
-  https://facebook.github.io/create-react-app/docs/running-tests

@@ -97,12 +97,12 @@ class ViewCompletedAssessmentTasks extends Component {
                             <div>
                                 <IconButton
                                     onClick={() => {
-                              navbar.setAssessmentTaskInstructions(
-                                  assessmentTasks,
-                                  atId,
-                                  completedAssessments,
-                                  { readOnly: true, skipInstructions: true }
-                              );
+                              // navbar.setAssessmentTaskInstructions(
+                              //     assessmentTasks,
+                              //     atId,
+                              //     completedAssessments,
+                              //     { readOnly: true, skipInstructions: true }
+                              // );
                               var singluarCompletedAssessment = null;
                               if (completedAssessments) {
                                 singluarCompletedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === atId) ?? null;
