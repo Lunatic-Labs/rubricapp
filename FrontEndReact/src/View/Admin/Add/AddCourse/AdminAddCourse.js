@@ -5,7 +5,8 @@ import validator from "validator";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 import { genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
 import Cookies from "universal-cookie";
-import { Box, Button, FormControl, Typography, TextField, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
+import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+import { Box, Button, FormControl, Typography, Popover, TextField, Tooltip, IconButton, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
 
 
 
@@ -25,7 +26,8 @@ class AdminAddCourse extends Component {
             year: "",
             active: true,
             useTas: true,
-            useFixedTeams: true,
+            useFixedTeams: true, 
+            anchorEl: null,
 
             errors: {
                 courseName: "",
@@ -34,7 +36,12 @@ class AdminAddCourse extends Component {
                 year: "",
             },
         };
+        
     }
+
+    setAnchorEl = (element) => {
+        this.setState({ anchorEl: element });
+    };
 
     componentDidMount() {
         var navbar = this.props.navbar;
@@ -56,6 +63,13 @@ class AdminAddCourse extends Component {
             });
         }
     }
+    handleClick = (event) => {
+        this.setAnchorEl(event.currentTarget);
+      };
+    
+    handleClose = () => {
+        this.setAnchorEl(null);
+      };
 
     handleChange = (e) => {
         const { id, value } = e.target;
@@ -144,9 +158,6 @@ class AdminAddCourse extends Component {
         if (term.trim() === "")
             newErrors["term"] = "Term cannot be empty";
 
-        else if (term.trim() !== "Spring" && term.trim() !== "Fall" && term.trim() !== "Summer")
-            newErrors["term"] = "Term should be either Spring, Fall, or Summer";
-
         if (newErrors["courseName"] !== "" || newErrors["courseNumber"] !== "" ||newErrors["year"] !== "" ||newErrors["term"] !== "") {
             this.setState({
                 errors: newErrors
@@ -168,14 +179,20 @@ class AdminAddCourse extends Component {
             "use_fixed_teams": useFixedTeams
         })
 
+        let promise;
+
         if (navbar.state.addCourse) {
-            genericResourcePOST("/course", this, body);
+            promise = genericResourcePOST("/course", this, body);
 
         } else {
-            genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
+            promise = genericResourcePUT(`/course?course_id=${navbar.state.course["course_id"]}`, this, body);
         }
 
-        confirmCreateResource("Course");
+        promise.then(result => {
+            if (result !== undefined && result.errorMessage === null) {
+                confirmCreateResource("Course");
+			}
+		});
     };
 
     hasErrors = () => {
@@ -202,6 +219,8 @@ class AdminAddCourse extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var addCourse = state.addCourse;
+        const open = Boolean(this.state.anchorEl);
+        const id = open ? 'simple-popover' : undefined;
 
         return (
             <React.Fragment>
@@ -260,7 +279,7 @@ class AdminAddCourse extends Component {
                                         id="term"
                                         name="newTerm"
                                         variant="outlined"
-                                        label="Term"
+                                        label="Type your Term name here"
                                         fullWidth
                                         value={term}
                                         error={!!errors.term}
@@ -338,8 +357,31 @@ class AdminAddCourse extends Component {
                                             }
 
                                             name="newFixedTeams"
-                                            label="Fixed Team"
-                                        />
+                                            label="Fixed Teams"
+                                            />
+                                            <div style={{padding: '3px'}}>
+                                            <Tooltip title="Help">
+                                                <IconButton aria-label="help" onClick={this.handleClick}>
+                                                    <HelpOutlineIcon />
+                                                </IconButton>
+                                            </Tooltip>
+                                            </div>
+                                            <Popover
+                                                id={id}
+                                                open={open}
+                                                anchorEl={this.state.anchorEl}
+                                                onClose={this.handleClose}
+                                                anchorOrigin={{
+                                                vertical: 'bottom',
+                                                horizontal: 'left',
+                                                }}
+                                            >
+                                                <Typography sx={{ p: 2 }}>Active:  Uncheck this box at the end of the term to move it to the Inactive Courses table.<br>
+                                                </br>Use TA's:  
+                                                Will you use Teaching or Learning Assistants in this course to fill out rubrics?<br>
+                                                </br>Fixed teams:  Do you assign students to the same team for the entire semester?</Typography>
+                                            </Popover>
+                                            
                                     </FormGroup>
 
                                     <Box

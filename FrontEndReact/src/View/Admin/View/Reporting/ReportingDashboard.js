@@ -22,7 +22,7 @@ class ReportingDashboard extends Component {
     componentDidMount() {
       var courseID = this.props.navbar.state.chosenCourse.course_id;
 
-      genericResourceGET(`/assessment_task?course_id=${courseID}`, "assessmentTasks", this);
+      genericResourceGET(`/assessment_task?course_id=${courseID}`, "assessment_tasks", this, {dest: "assessmentTasks"});
       
     }
   
