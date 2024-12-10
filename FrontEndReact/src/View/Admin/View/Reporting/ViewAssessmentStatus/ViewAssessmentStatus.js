@@ -242,6 +242,7 @@ export default function ViewAssessmentStatus(props) {
                   characteristicsData={characteristicsData}
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
+                  completedAssessments={props.completedAssessments.length}
                 />
               </div>
             </Grid>
@@ -252,6 +253,7 @@ export default function ViewAssessmentStatus(props) {
                   characteristicsData={characteristicsData}
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
+                  completedAssessments={props.completedAssessments.length}
                 />
               </div>
             </Grid>

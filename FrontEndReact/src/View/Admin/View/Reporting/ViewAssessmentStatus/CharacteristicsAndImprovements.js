@@ -28,7 +28,8 @@ export default function CharacteristicsAndImprovements({
   dataType,
   characteristicsData,
   improvementsData,
-  showSuggestions
+  showSuggestions,
+  completedAssessments
 }) {
   const data = dataType === 'characteristics'
     ? characteristicsData.characteristics
@@ -37,7 +38,7 @@ export default function CharacteristicsAndImprovements({
   const processedData = data.map(item => ({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
-    // percentage: +item.toFixed(2)
+    number: ((item.number / completedAssessments)*100).toFixed(2)
   }));
 
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
@@ -67,8 +68,8 @@ export default function CharacteristicsAndImprovements({
                     >
                       <XAxis
                         type="number"
-                        domain={[0, 100]}
-                        tickFormatter={(tick) => `${tick}%`}
+                        domain={[0, 1]}
+                        tickFormatter={(tick) => `${tick}`}
                         style={{ fontSize: '12px' }}
                       />
                       <YAxis
@@ -88,7 +89,7 @@ export default function CharacteristicsAndImprovements({
                         className="cursor-pointer"
                       >
                         <LabelList 
-                          dataKey="percentage" 
+                          dataKey="number" 
                           fill="#ffffff" 
                           position="inside"
                           formatter={value => `${value}%`}
