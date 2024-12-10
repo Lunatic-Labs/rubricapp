@@ -272,7 +272,8 @@ class AppState extends Component {
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
                     chosenCompleteAssessmentTaskIsReadOnly: false,
                     chosenAssessmentTask: chosenAssessmentTask,
-                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
+                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"],
+                    selectedUserId: newCompletedAssessmentTask.user_id,
                 });
             }
         }

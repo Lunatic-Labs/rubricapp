@@ -14,20 +14,26 @@ import Alert from '@mui/material/Alert';
 class Form extends Component {
     constructor(props) {
         super(props);
+        const { startingUserId, form, unitOfAssessment } = this.props;
+
+        let initialUnitValue = unitOfAssessment
+            ? form.units.find(unit => unit["team_id"] === startingUserId)?.team_id
+            : form.units.find(unit => unit["user_id"] === startingUserId)?.user_id;
+
+        // Backup if startingUserId is not valid.
+        initialUnitValue = initialUnitValue || form.units[0]["user_id"];
 
         this.state = {
             value: 0,
             tabCurrentlySelected: 0,
-            unitOfAssessment: this.props.unitOfAssessment,
-            unitValue: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
-                                                     this.props.form.units[0]["user_id"], 
-            currentUnitTab: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
-                                                          this.props.form.units[0]["user_id"], 
-            unitData: this.props.form.unitInfo,
+            unitOfAssessment,
+            unitValue: initialUnitValue,
+            currentUnitTab: initialUnitValue,
+            unitData: form.unitInfo,
             categoryList: null,
             section: null,
             displaySavedNotification: false
-        }
+        };
 
         this.handleUnitChange = (event, newValue) => {
             this.setState({
@@ -41,17 +47,22 @@ class Form extends Component {
         };
 
         this.handleUnitTabChange = (id) => {
-            var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], id, this.props.completedAssessments);
-            this.setState({
-                    currentUnitTab: id,
-                    value: 0,
-                    tabCurrentlySelected: 0,
-                    chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
-                },
-//TODO:  fix in the case that chosenCompleteAssessmentTask is null
-            this.generateCategoriesAndSection
-            );
+            var chosenCompleteAssessmentTask =
+                this.findCompletedAssessmentTask(
+                    this.props.navbar.state.chosenAssessmentTask["assessment_task_id"],
+                    id,
+                    this.props.completedAssessments);
 
+            this.setState({
+                currentUnitTab: id,
+                value: 0,
+                tabCurrentlySelected: 0,
+                chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
+            }, this.generateCategoriesAndSection);
+
+            //TODO:  fix in the case that chosenCompleteAssessmentTask is null
+            // this.generateCategoriesAndSection
+            // );
         };
 
         this.handleChange = (event, newValue) => {
@@ -199,7 +210,7 @@ class Form extends Component {
             var categoryList = [];
 
             var section = [];
-            
+
             // We sort rubric["category_json"] by the index of each entry, since the the data gets
             // automatically sorted when it comes out of the backend
 
@@ -311,7 +322,7 @@ class Form extends Component {
                 }
             }
             var assessmentData = {};
-            if (this.state.unitOfAssessment) { 
+            if (this.state.unitOfAssessment) {
                 assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
                     "rating_observable_characteristics_suggestions_data": selected,
@@ -361,26 +372,42 @@ class Form extends Component {
         this.generateCategoriesAndSection();
     }
 
-    componentDidUpdate() {
-        var rerender = false;
+    componentDidUpdate(prevProps) {
+        // var rerender = false;
 
-        Object.keys(this.props.form.unitInfo).map((unitValue) => {
-            if(this.props.form.unitInfo[unitValue]["done"] !== this.state.unitData[unitValue]["done"]) {
-                rerender = true;
-            }
+        // Object.keys(this.props.form.unitInfo).map((unitValue) => {
+        //     if(this.props.form.unitInfo[unitValue]["done"] !== this.state.unitData[unitValue]["done"]) {
+        //         rerender = true;
+        //     }
 
-            return unitValue;
-        });
+        //     return unitValue;
+        // });
 
-        if(rerender) {
-            this.setState(
-                { unitData: this.props.form.unitInfo },
-                this.generateCategoriesAndSection
-            );
+        // if(rerender) {
+        //     this.setState(
+        //         { unitData: this.props.form.unitInfo },
+        //         this.generateCategoriesAndSection
+        //     );
+        // }
+
+        if (this.props.startingUserId !== prevProps.startingUserId) {
+            const { startingUserId, form, unitOfAssessment } = this.props;
+            let initialUnitValue = unitOfAssessment
+                ? form.units.find(unit => unit["team_id"] === startingUserId)?.team_id
+                : form.units.find(unit => unit["user_id"] === startingUserId)?.user_id;
+
+            initialUnitValue = initialUnitValue || form.units[0]["user_id"];
+
+            this.setState({
+                unitValue: initialUnitValue,
+                currentUnitTab: initialUnitValue,
+            }, this.generateCategoriesAndSection);
         }
     }
 
     render() {
+        let startingUserId = this.props.startingUserId;
+
         return (
             <Box sx={{mt:1}} id="formDiv" className="assessment-task-spacing">
                 <Box sx={{
@@ -430,8 +457,8 @@ class Form extends Component {
 
                     <Box sx={{mt: 1}}>
                         <Tabs
-                            value={this.state.value} 
-                        
+                            value={this.state.value}
+
                             onChange={(event, newValue) => {
                                 this.handleChange(event, newValue);
                                 this.handleCategoryChange(newValue);
@@ -446,10 +473,10 @@ class Form extends Component {
 
                                 [`& .${tabsClasses.scrollButtons}`]: {
                                     '&.Mui-disabled': { opacity: 0.3 },
-                                }, 
+                                },
 
-                                [`& .MuiTabs-indicator`]: { 
-                                    display: 'none' 
+                                [`& .MuiTabs-indicator`]: {
+                                    display: 'none'
                                 },
 
                                 '& .MuiTab-root': {

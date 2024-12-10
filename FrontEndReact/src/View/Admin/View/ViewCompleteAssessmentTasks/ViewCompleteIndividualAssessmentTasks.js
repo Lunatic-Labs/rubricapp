@@ -254,6 +254,9 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId) => {
             if (completedAssessmentId) {
+              var task = completedAssessmentTasks.find((task) => task.completed_assessment_id === completedAssessmentId);
+              var userId = task.user_id;
+
               return (
                 <IconButton
                 align="center"
