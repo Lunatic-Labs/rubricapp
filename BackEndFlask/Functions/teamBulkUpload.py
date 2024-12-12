@@ -273,6 +273,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         else:
             set_inactive_status_of_user_to_active(user_course.user_course_id)
 
+        # Prevents duplicaition in the team user table.
         if not does_team_user_exist(user_id, team_id):
             create_team_user({
                 "team_id": team_id,
