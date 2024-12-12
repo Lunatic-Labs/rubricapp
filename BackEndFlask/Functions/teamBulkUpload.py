@@ -5,6 +5,7 @@ from models.team import *
 from models.team_user import *
 from models.user_course import *
 from models.course import *
+from models.queries import does_team_user_exist
 from Functions.test_files.PopulationFunctions import xlsx_to_csv
 
 from datetime import date
@@ -272,10 +273,11 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         else:
             set_inactive_status_of_user_to_active(user_course.user_course_id)
 
-        create_team_user({
-            "team_id": team_id,
-            "user_id": user_id
-        })
+        if not does_team_user_exist(user_id, team_id):
+            create_team_user({
+                "team_id": team_id,
+                "user_id": user_id
+            })
 
     tainfo = __handle_ta()
 
