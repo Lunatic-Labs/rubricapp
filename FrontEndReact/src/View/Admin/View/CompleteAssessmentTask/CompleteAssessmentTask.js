@@ -85,7 +85,7 @@ class CompleteAssessmentTask extends Component {
 
         var unitOfAssessment = chosenAssessmentTask["unit_of_assessment"];
 
-        if (unitOfAssessment && this.state.rubrics && this.state.teams && this.state.users === null) {
+        if (unitOfAssessment && this.state.rubrics && this.state.teams && this.state.users === null && !this.state.isLoaded) {
             // The Chosen Assessment will be completed for teams!
             // Thus do the logic to get all of the students on those teams!
             var teamIds = [];
@@ -184,7 +184,7 @@ class CompleteAssessmentTask extends Component {
             isLoaded,
             rubrics,
             teams,
-            team,
+            team,// undefined initally
             unitOfAssessment,
             users,
             teams_users,
@@ -192,7 +192,7 @@ class CompleteAssessmentTask extends Component {
             completedAssessments,
             checkin
         } = this.state;
-
+        
         var navbar = this.props.navbar;
 
         const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
@@ -207,7 +207,8 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !completedAssessments || !roles || !users || !teams || !checkin) {
+        }
+        else if (!isLoaded || !rubrics || !completedAssessments || !roles || !users || !teams || !checkin) {
             return (
                 <Loading />
             );
@@ -217,23 +218,25 @@ class CompleteAssessmentTask extends Component {
                 <h1>Please create a team to complete this assessment.</h1>
             )
 
-        } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
+        }
+        else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
                 <h1>Please add students to the roster to complete this assessment.</h1>
             )
 
-        } 
-        var role_name=roles["role_name"]
-        if (role_name === "Student" && this.state.unitOfAssessment && !team){
-            return (
-                <Loading />
-            );
         }
+        var role_name=roles["role_name"]
+        //if (role_name === "Student" && this.state.unitOfAssessment && !team){
+        //    return (
+        //        <Loading /> //perpetual loading here bc team is not properly filled.
+        //    );
+        //}
         if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
             return (
                 <Loading />
             );  
-        } else {
+        } 
+        else {
             var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
             var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
 
