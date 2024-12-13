@@ -129,7 +129,7 @@ class CompleteAssessmentTask extends Component {
             "roles", this
         );
 
-        if (chosenAssessmentTask["role_id"] === 5) {
+        if (chosenAssessmentTask["role_id"] === 5 || chosenAssessmentTask["role_id"] === 4) {
             genericResourceGET(
                 `/team_by_user?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
                 "teams", this, {dest: "team"}
@@ -184,7 +184,7 @@ class CompleteAssessmentTask extends Component {
             isLoaded,
             rubrics,
             teams,
-            team,// undefined initally
+            team,// undefined initally set on mounting
             unitOfAssessment,
             users,
             teams_users,
@@ -226,11 +226,11 @@ class CompleteAssessmentTask extends Component {
 
         }
         var role_name=roles["role_name"]
-        //if (role_name === "Student" && this.state.unitOfAssessment && !team){
-        //    return (
-        //        <Loading /> //perpetual loading here bc team is not properly filled.
-        //    );
-        //}
+        if (role_name === "Student" && this.state.unitOfAssessment && !team){
+            return (
+                <Loading />
+            );
+        }
         if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
             return (
                 <Loading />
