@@ -416,9 +416,18 @@ class Form extends Component {
             }
         }
 
-        this.setState({
-            displaySavedNotification: true
-        });
+        this.setState(
+            prevState => {
+                const updatedUnits = [...prevState.units];
+
+                updatedUnits[currentUnitTabIndex] = updatedUnits[currentUnitTabIndex].withNewIsDone(done);
+
+                return { 
+                    displaySavedNotification: true,
+                    units: updatedUnits 
+                };
+            }
+        );
 
         setTimeout(() => {
             this.props.handleDone();
