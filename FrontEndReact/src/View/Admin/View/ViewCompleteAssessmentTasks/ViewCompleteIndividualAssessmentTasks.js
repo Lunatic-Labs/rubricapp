@@ -25,6 +25,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         isSingleMsg: false,
         compATId: null,
         lockStatus: {},
+<<<<<<< HEAD
       errorMessage: null,
       isLoaded: null,
       showDialog: false,
@@ -39,6 +40,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             notes: '',
             notificationSent: false,
             lockStatus: {},
+=======
+>>>>>>> master
 
         errors: {
             notes:''
@@ -311,6 +314,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                             "Nov",
                             "Dec",
                         ];
+<<<<<<< HEAD
 
                         var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
 
@@ -347,6 +351,11 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                   <VisibilityIcon sx={{color:"black"}}/>
                 </IconButton>
               )
+=======
+
+                        var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
+
+>>>>>>> master
                         return(
                             <p  variant='contained' align='left' >
                                 {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
@@ -463,8 +472,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     />
                 </Box>
 
+<<<<<<< HEAD
         <Box className="subcontent-spacing">
           <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedIndividualAssessmentsTitle"> Completed Assesssment Tasks</Typography>
+=======
+                <Box className="subcontent-spacing">
+                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedAssessmentsTitle"> Completed Assesssment Tasks</Typography>
+>>>>>>> master
 
           <Box>
             <ResponsiveNotification
