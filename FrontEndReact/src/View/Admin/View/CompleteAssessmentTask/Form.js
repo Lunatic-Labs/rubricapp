@@ -9,6 +9,7 @@ import StatusIndicator from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
+import { getUnitCategoryStatus } from './cat_utils.js';
 
 
 class Form extends Component {

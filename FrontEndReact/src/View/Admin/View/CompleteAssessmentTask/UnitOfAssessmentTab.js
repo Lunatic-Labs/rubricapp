@@ -6,6 +6,8 @@ import { Tab } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator.js';
+import {StatusIndicatorState} from './StatusIndicator.js';
+import {getUnitCategoryStatus} from './cat_utils.js';
 
 // This component is used to display the tabs for the names in the unit of assessment (team or individual) 
 // in the complete assessment task page.
@@ -13,18 +15,30 @@ import StatusIndicator from './StatusIndicator.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
-        var units = this.props.form.units;
+        const units = this.props.form.units;
 
-        var unitList = []
+        const unitList = []
 
-        for(var i = 0; i < units.length; i++) {        
+        units.forEach((currentUnit, i) => {
+            const unitName = currentUnit.displayName;
+            const unitId = currentUnit.id;
+            const unitNames = currentUnit.checkedInNames;
 
-            var currentUnit = units[i];
+            let unitStatus;
             
-            var unitName = currentUnit.displayName;
-            var unitId = currentUnit.id;
-            var unitNames = currentUnit.checkedInNames;
-            var isDone = currentUnit.isDone;
+            if (currentUnit.isDone === true) {
+                unitStatus = StatusIndicatorState.COMPLETED;
+            } else{
+                const isNotStarted = currentUnit.categoryNames().every(categoryName => {
+                    return getUnitCategoryStatus(currentUnit, this.props.navbar.state.chosenAssessmentTask, categoryName) === StatusIndicatorState.NOT_STARTED;
+                });
+
+                if (isNotStarted) {
+                    unitStatus = StatusIndicatorState.NOT_STARTED;
+                } else {
+                    unitStatus = StatusIndicatorState.IN_PROGRESS;
+                }
+            }
 
             unitList.push(
                 <Tab
@@ -39,7 +53,7 @@ class UnitOfAssessmentTab extends Component {
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={isDone}
+                                status={unitStatus}
                             />
                         </Box>
                     }
@@ -61,7 +75,8 @@ class UnitOfAssessmentTab extends Component {
                     }}
                 /> 
             )
-        }
+        });
+
         return (
             <React.Fragment> 
                 <Tabs
