@@ -15,9 +15,9 @@ import {getUnitCategoryStatus} from './cat_utils.js';
 
 class UnitOfAssessmentTab extends Component {
     render() {
-        const units = this.props.form.units;
+        const units = this.props.units;
 
-        const unitList = []
+        const unitList = [];
 
         units.forEach((currentUnit, i) => {
             const unitName = currentUnit.displayName;

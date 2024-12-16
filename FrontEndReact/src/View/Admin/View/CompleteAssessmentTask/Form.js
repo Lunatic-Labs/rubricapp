@@ -5,7 +5,7 @@ import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
-import StatusIndicator from './StatusIndicator.js';
+import StatusIndicator, { StatusIndicatorState } from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
@@ -130,7 +130,7 @@ class Form extends Component {
             });
         }
 
-        this.isCategoryComplete = (unitId, categoryName) => {
+        this.getUnitCategoryStatus = (unitId, categoryName) => {
             const unit = this.state.units[unitId];
             const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
             
@@ -172,7 +172,7 @@ class Form extends Component {
                                 <span>{category}</span>
 
                                 <StatusIndicator
-                                    status={this.isCategoryComplete(this.state.currentUnitTabIndex, category)}
+                                    status={this.getUnitCategoryStatus(this.state.currentUnitTabIndex, category)}
                                 />
                             </Box>
                         }
@@ -220,9 +220,11 @@ class Form extends Component {
         }
         
         this.areAllCategoriesCompleted = () => {
-            const categories = Object.keys(this.props.form.rubric["category_json"]);
+            const currentUnit = this.state.units[this.state.currentUnitTabIndex];
             
-            return categories.every(category => this.isCategoryComplete(this.state.currentUnitTabIndex, category));
+            return currentUnit.categoryNames().every(category => {
+                return this.getUnitCategoryStatus(this.state.currentUnitTabIndex, category) === StatusIndicatorState.COMPLETED;
+            });
         };
     }
 
@@ -375,7 +377,7 @@ class Form extends Component {
                             <UnitOfAssessmentTab
                                 navbar={this.props.navbar}
                                 currentUnitTabIndex={this.state.currentUnitTabIndex}
-                                form={this.props.form}
+                                units={this.state.units}
                                 handleUnitTabChange={this.handleUnitTabChange}
                             />
                         </Box>
