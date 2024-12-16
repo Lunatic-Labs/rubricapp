@@ -302,9 +302,18 @@ class Form extends Component {
             }
         }
 
-        this.setState({
-            displaySavedNotification: true
-        });
+        this.setState(
+            prevState => {
+                const updatedUnits = [...prevState.units];
+
+                updatedUnits[currentUnitTabIndex] = updatedUnits[currentUnitTabIndex].withNewIsDone(done);
+
+                return { 
+                    displaySavedNotification: true,
+                    units: updatedUnits 
+                };
+            }
+        );
 
         setTimeout(() => {
             this.props.handleDone();
@@ -319,25 +328,6 @@ class Form extends Component {
 
     componentDidMount() {
         this.generateCategoriesAndSection();
-    }
-
-    componentDidUpdate() {
-        var rerender = false;
-
-        Object.keys(this.props.form.units).map((unitIndex) => {
-            if(this.props.form.units[unitIndex].isDone !== this.state.units[unitIndex].isDone) {
-                rerender = true;
-            }
-
-            return unitIndex;
-        });
-
-        if(rerender) {
-            this.setState(
-                { unitData: this.props.form.unitInfo },
-                this.generateCategoriesAndSection
-            );
-        }
     }
 
     render() {

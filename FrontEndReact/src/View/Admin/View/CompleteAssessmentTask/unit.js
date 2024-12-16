@@ -246,6 +246,17 @@ export class ATUnit {
 		
 		return newUnit;
 	}
+
+	/**
+	 * Creates a copy of this unit with the isDone property modified.
+	 * @param {boolean} isDone
+	 * @returns {ATUnit}
+	 */
+	withNewIsDone(isDone) {
+		const newUnit = this.shallowClone();
+		newUnit.isDone = isDone;
+		return newUnit;
+	}
 	
 	/**
 	 * Returns a list of the category names.
