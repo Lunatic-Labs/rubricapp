@@ -130,25 +130,10 @@ class Form extends Component {
         }
 
         this.isCategoryComplete = (unitId, categoryName) => {
-            var unit = this.state.units[unitId];
-
-            var rocsData = unit.rocsData;
-            var category = rocsData[categoryName];
-            var observableCharacteristic = category["observable_characteristics"].includes("1");
-
-            const showSuggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
-            const suggestions = showSuggestions ? category["suggestions"].includes("1") : false;
-
-            let status = null; // null is for not filled out at all (grey empty circle on category tab)
-
-            if (observableCharacteristic && (!showSuggestions || suggestions)) {
-                status = true; // true is for fully filled out (green filled in circle on category tab)
-
-            } else if (observableCharacteristic || suggestions) {
-                status = false; // false is for partially filled out (yellow half filled in circle on category tab)
-            }
-
-            return status;
+            const unit = this.state.units[unitId];
+            const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
+            
+            return getUnitCategoryStatus(unit, assessmentTask, categoryName);
         }
 
         this.isUnitCompleteAssessmentComplete = (unitIndex) => {
