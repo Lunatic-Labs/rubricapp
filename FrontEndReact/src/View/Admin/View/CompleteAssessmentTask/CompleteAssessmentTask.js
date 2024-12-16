@@ -152,6 +152,53 @@ class CompleteAssessmentTask extends Component {
     componentWillUnmount() {
         this.state.checkinEventSource?.close();
     }
+    
+    componentDidUpdate() {
+        if (this.state.unitList === null) {
+            const {
+                rubrics,
+                teams,
+                team,
+                users,
+                teams_users,
+                roles,
+                completedAssessments,
+                checkin
+            } = this.state;
+            
+            if (rubrics && completedAssessments && roles && users && teams && checkin) {
+                const navbar = this.props.navbar;
+                const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
+                const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+                const roleName = roles["role_name"];
+                
+                if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
+                if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
+                if (roleName === "Student" && this.state.unitOfAssessment && !team) return;
+                if (roleName !== "Student" && this.state.unitOfAssessment && !teams_users) return;
+                
+                const unitList = generateUnitList({
+                    roleName: roleName,
+                    userId: this.userId,
+                    chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
+                    unitType: this.state.unitOfAssessment ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    rubric: rubrics,
+                    completedAssessments,
+                    users,
+                    fixedTeams: teams,
+                    fixedTeamMembers: teams_users,
+                    // team is actually a list of a single team,
+                    //   so index to get the first entry of the list.
+                    userFixedTeam: team?.[0],
+                    checkin,
+                });
+                
+                this.setState({
+                    unitList,
+                });
+            }
+        }
+    }
 
     render() {
         const {
@@ -167,11 +214,9 @@ class CompleteAssessmentTask extends Component {
             checkin
         } = this.state;
 
-        var navbar = this.props.navbar;
-
+        const navbar = this.props.navbar;
         const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
-
-        var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+        const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
         if (errorMessage) {
             return (
@@ -189,80 +234,69 @@ class CompleteAssessmentTask extends Component {
         } else if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) {
             return (
                 <h1>Please create a team to complete this assessment.</h1>
-            )
+            );
 
         } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
                 <h1>Please add students to the roster to complete this assessment.</h1>
-            )
+            );
 
-        } 
-        var role_name=roles["role_name"]
-        if (role_name === "Student" && this.state.unitOfAssessment && !team){
+        }
+        
+        const roleName = roles["role_name"];
+        
+        if (roleName === "Student" && this.state.unitOfAssessment && !team){
             return (
                 <Loading />
             );
         }
-        if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
+        
+        if (roleName !== "Student" && this.state.unitOfAssessment && !teams_users) {
             return (
                 <Loading />
             );  
-        } else { 
-            let unitList = this.state.unitList;
-            
-            if (unitList === null) {
-                unitList = generateUnitList({
-                    roleName: role_name,
-                    userId: this.userId,
-                    chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
-                    unitType: this.state.unitOfAssessment ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
-                    rubric: rubrics,
-                    completedAssessments,
-                    users,
-                    fixedTeams: teams,
-                    fixedTeamMembers: teams_users,
-                    userFixedTeam: team?.[0],
-                    checkin,
-                });
-                
-                this.setState({
-                    unitList,
-                });
-            }
-
-            return (
-                <Box>
-                    <Box className="assessment-title-spacing">
-                        <Box className='d-flex flex-column justify-content-start'>
-                            <h4>{rubrics["rubric_name"]}</h4>
-
-                            <h5>{rubrics["rubric_description"]}</h5>
-                        </Box>
-                    </Box>
-
-                    <Form
-                        navbar={this.props.navbar}
-
-                        unitOfAssessment={this.state.unitOfAssessment}
-
-                        role_name={this.state.roles["role_name"]}
-
-                        checkin={this.state.checkin}
-
-                        form={{
-                            "rubric": rubrics,
-                            "units": unitList,
-                        }}
-
-                        formReference={this}
-
-                        handleDone={this.handleDone}
-
-                        completedAssessments={completedAssessments}
-                    />
-                </Box>
-            )
         }
+         
+        const unitList = this.state.unitList;
+        
+        if (!unitList) {
+            return (
+                <Loading />
+            );
+        }
+
+        return (
+            <Box>
+                <Box className="assessment-title-spacing">
+                    <Box className='d-flex flex-column justify-content-start'>
+                        <h4>{rubrics["rubric_name"]}</h4>
+
+                        <h5>{rubrics["rubric_description"]}</h5>
+                    </Box>
+                </Box>
+
+                <Form
+                    navbar={this.props.navbar}
+
+                    unitOfAssessment={this.state.unitOfAssessment}
+
+                    role_name={this.state.roles["role_name"]}
+
+                    checkin={this.state.checkin}
+
+                    form={{
+                        "rubric": rubrics,
+                        "units": unitList,
+                    }}
+
+                    formReference={this}
+
+                    handleDone={this.handleDone}
+
+                    completedAssessments={completedAssessments}
+                />
+            </Box>
+        );
     }
 }
 
