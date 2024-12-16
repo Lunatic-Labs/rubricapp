@@ -246,6 +246,15 @@ export class ATUnit {
 		
 		return newUnit;
 	}
+	
+	/**
+	 * Returns a list of the category names.
+	 * @returns {string[]}
+	 */
+	categoryNames() {
+		return Object.keys(this.rocsData)
+			.filter(category => category !== "comments" && category !== "done");
+	}
 }
 
 export class IndividualUnit extends ATUnit {
