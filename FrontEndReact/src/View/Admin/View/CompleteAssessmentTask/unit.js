@@ -352,6 +352,24 @@ export class ATUnit {
 	}
 	
 	/**
+	 * Creates a copy of this unit with a new complete assessment task entry.
+	 * @param {object} newCat
+	 * @returns {ATUnit}
+	 */
+	withNewCAT(newCat) {
+		const newUnit = this.shallowClone();
+		
+		newUnit.completedAssessmentTask = newCat;
+		
+		if (newCat && Object.keys(newCat).length > 0) {
+			newUnit.rocsData = newCat["rating_observable_characteristics_suggestions_data"];
+			newUnit.isDone = newCat["done"];
+		}
+		
+		return newUnit;
+	}
+	
+	/**
 	 * Returns a list of the category names.
 	 * @returns {string[]}
 	 */
