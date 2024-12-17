@@ -198,7 +198,7 @@ class Form extends Component {
                                 rubric={this.props.form.rubric}
                                 currentUnitTabIndex={this.state.currentUnitTabIndex}
                                 currentData={this.state.units[this.state.currentUnitTabIndex].rocsData}
-                                active={this.state.currentCategoryTabIndex===index}
+                                active={this.state.currentCategoryTabIndex === index}
                                 key={index}
                                 setSliderValue={this.setSliderValue}
                                 setObservableCharacteristics={this.setObservableCharacteristics}

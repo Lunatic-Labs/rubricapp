@@ -16,9 +16,7 @@ class Section extends Component {
         super(props);
         
         this.autosave = debounce(() => {
-            const done = this.props.currentData?.done === true;
-            
-            this.props.handleSubmit(done);
+            this.props.handleSubmit(this.props.isDone);
         }, 2000);
     }
     
