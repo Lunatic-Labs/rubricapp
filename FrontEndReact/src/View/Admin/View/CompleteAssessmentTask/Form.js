@@ -228,97 +228,107 @@ class Form extends Component {
         };
     }
 
-    handleSubmit = (done) => {
-        var navbar = this.props.navbar;
-
-        var state = navbar.state;
-
-        var chosenAssessmentTask = state.chosenAssessmentTask;
-
-        var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
-
-        var currentUnitTabIndex = this.state.currentUnitTabIndex;
-
-        var selected = this.state.units[currentUnitTabIndex];
-
-        var date = new Date();
-        if(chosenCompleteAssessmentTask) {
-            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected.rocsData;
-
+    handleSubmit = (newIsDone) => {
+        const state = this.props.navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
+        const currentUnitTabIndex = this.state.currentUnitTabIndex;
+        const selectedUnit = this.state.units[currentUnitTabIndex];
+        const date = new Date();
+        
+        let promise;
+        
+        if (chosenCompleteAssessmentTask) {
+            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selectedUnit.rocsData;
             chosenCompleteAssessmentTask["last_update"] = date;
-
-            chosenCompleteAssessmentTask["done"] = selected.isdone;
-            genericResourcePUT(
+            chosenCompleteAssessmentTask["done"] = newIsDone;
+            
+            promise = genericResourcePUT(
                 `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
                 this,
-                JSON.stringify(chosenCompleteAssessmentTask)
+                JSON.stringify(chosenCompleteAssessmentTask),
+                { rawResponse: true }
             );
-
         } else {
-            var cookies = new Cookies();
-            var route="";
-            if(chosenCompleteAssessmentTask && this.props.userRole) {
-                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTabIndex, this.props.completedAssessments);
-
-                var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
+            const cookies = new Cookies();
+            let route;
+            
+            if (chosenCompleteAssessmentTask && this.props.userRole) {
+                const completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTabIndex, this.props.completedAssessments);
                 
-                route = `/completed_assessment${completedAssessmentId}`
+                route = `/completed_assessment?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`
             } else {
                 if (this.state.unitOfAssessment) {
-                    route = `/completed_assessment?team_id=${selected.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?team_id=${selectedUnit.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 } else {
-                    route = `/completed_assessment?uid=${selected.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
+                    route = `/completed_assessment?uid=${selectedUnit.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 }
             }
-            var assessmentData = {};
+            
+            let assessmentData;
+            
             if (this.state.unitOfAssessment) { 
                 assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selected.rocsData,
+                    "rating_observable_characteristics_suggestions_data": selectedUnit.rocsData,
                     "completed_by": cookies.get("user")["user_id"],
-                    "team_id": selected.id,
+                    "team_id": selectedUnit.id,
                     "user_id": -1,        // team assessment has no user.
                     "initial_time": date,
                     "last_update": date,
-                    done: done,
+                    done: newIsDone,
                 };
             } else { 
                 assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selected.rocsData,
+                    "rating_observable_characteristics_suggestions_data": selectedUnit.rocsData,
                     "completed_by": cookies.get("user")["user_id"],
                     "team_id": -1,          // individual assessment has no team.
-                    "user_id": selected.id,
+                    "user_id": selectedUnit.id,
                     "initial_time": date,
                     "last_update": date,
-                    done: done,
+                    done: newIsDone,
                 };
-            }  
+            }
+            
             if (chosenCompleteAssessmentTask && this.props.userRole) {
-                genericResourcePUT(route, this, JSON.stringify(assessmentData));
-
+                promise = genericResourcePUT(route, this, JSON.stringify(assessmentData), { rawResponse: true });
             } else {
-                genericResourcePOST(route, this, JSON.stringify(assessmentData));
+                promise = genericResourcePOST(route, this, JSON.stringify(assessmentData), { rawResponse: true });
             }
         }
-
+        
+        // Once the CAT entry has been updated, insert the new CAT entry into the unit object
+        promise.then(result => {
+            const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
+            
+            if (completeAssessmentEntry) {
+                this.setState(
+                    prevState => {
+                        const updatedUnits = [...prevState.units];
+        
+                        updatedUnits[currentUnitTabIndex] = updatedUnits[currentUnitTabIndex].withNewCAT(completeAssessmentEntry);
+                        
+                        return { units: updatedUnits };
+                    }
+                );
+            }
+        });
+        
+        // Update the done status of the unit and display saving notification
         this.setState(
             prevState => {
                 const updatedUnits = [...prevState.units];
 
-                updatedUnits[currentUnitTabIndex] = updatedUnits[currentUnitTabIndex].withNewIsDone(done);
+                updatedUnits[currentUnitTabIndex] = updatedUnits[currentUnitTabIndex].withNewIsDone(newIsDone);
 
                 return { 
                     displaySavedNotification: true,
-                    units: updatedUnits 
+                    units: updatedUnits,
                 };
             }
         );
-
-        setTimeout(() => {
-            this.props.handleDone();
-        }, 1000);
-
+        
         setTimeout(() => {
             this.setState({
                 displaySavedNotification: false
@@ -329,7 +339,7 @@ class Form extends Component {
     componentDidMount() {
         this.generateCategoriesAndSection();
     }
-
+    
     render() {
         return (
             <Box sx={{mt:1}} id="formDiv" className="assessment-task-spacing">

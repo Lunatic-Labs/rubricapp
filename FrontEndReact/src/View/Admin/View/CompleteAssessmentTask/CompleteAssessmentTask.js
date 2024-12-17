@@ -59,26 +59,6 @@ class CompleteAssessmentTask extends Component {
 
             return completedAssessment ? completedAssessment : false;
         }
-
-        this.handleDone = () => {
-            var navbar = this.props.navbar;
-            let chosenAssessmentTask = null;
-            
-            if (navbar.state.chosenCompleteAssessmentTask && navbar.state.chosenCompleteAssessmentTask.assessment_task_id) {   
-                chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-            } else if(navbar.state.chosenAssessmentTask && navbar.state.chosenAssessmentTask.assessment_task_id) {
-                chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-            }
-            
-            if(!chosenAssessmentTask) {
-                return;
-            }
-            
-            genericResourceGET(
-                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-                "completed_assessments", this, {dest: "completedAssessments"}
-            );
-        }
     }
 
     componentDidMount() {
