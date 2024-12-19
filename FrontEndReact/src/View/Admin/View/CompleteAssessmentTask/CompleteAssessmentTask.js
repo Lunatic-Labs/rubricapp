@@ -204,10 +204,10 @@ class CompleteAssessmentTask extends Component {
                 teams_users,
                 roles,
                 completedAssessments,
-                checkin
+                checkins
             } = this.state;
             
-            if (rubrics && completedAssessments && roles && users && teams && checkin) {
+            if (rubrics && completedAssessments && roles && users && teams && checkins) {
                 const navbar = this.props.navbar;
                 const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
@@ -216,8 +216,8 @@ class CompleteAssessmentTask extends Component {
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
                 if (roleName === "Student" && this.state.unitOfAssessment && !team) return;
-                if (roleName !== "Student" && this.state.unitOfAssessment && !teams_users) return;
-                
+                if (this.state.unitOfAssessment && !teams_users) return;
+                                
                 const unitList = generateUnitList({
                     roleName: roleName,
                     userId: this.userId,
@@ -395,7 +395,7 @@ class CompleteAssessmentTask extends Component {
 
                     role_name={this.state.roles["role_name"]}
 
-                    checkin={this.state.checkin}
+                    checkins={this.state.checkins}
 
                     form={{
                         "rubric": rubrics,

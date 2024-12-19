@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { CheckinsTracker } from './cat_utils';
 
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
@@ -60,8 +61,6 @@ export const UnitType = Object.freeze({
  * @returns {ATUnit[]}
  */
 export function generateUnitList(args) {
-	const checkinsByUserId = makeCheckinsByUserIdMap(args.checkin);
-	
 	let unitList = [];
 	
 	if (args.roleName === "Student") {
@@ -196,7 +195,7 @@ function getOrGenerateUnitData(cat, rubric) {
 	);
 }
 
-function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers, checkinsByUserId) {
+function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	const teamId = team["team_id"];
 	
 	let rocsData;
@@ -214,9 +213,9 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers, checkinsByUser
 		rocsData = structuredClone(rubric["category_rating_observable_characteristics_suggestions_json"]);
 		isDone = false;
 	}
-	
-	const checkedInUsers = getFixedTeamCheckedInUsers(teamId, fixedTeamMembers[teamId], checkinsByUserId);
-	
+		
+	const teamMembers = fixedTeamMembers[teamId];
+		
 	return new FixedTeamUnit(
 		cat ?? null, rocsData, isDone,
 		team, checkedInUsers,
@@ -306,7 +305,8 @@ export class ATUnit {
 	/**
 <<<<<<< HEAD
 	 * @abstract
-	 * @returns {string[]} A list of the student's names checked into the unit.
+	 * @param {CheckinsTracker} checkinsTracker
+	 * @returns {object[]} The contents of the checked in tooltip.
 	 */
 	get checkedInNames() {
 =======
@@ -471,7 +471,7 @@ export class IndividualUnit extends ATUnit {
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} user User object.
 	 */
-	constructor(cat, rocs, done, user, isCheckedIn) {
+	constructor(cat, rocs, done, user) {
 		super(UnitType.INDIVIDUAL, cat, rocs, done);
 		this.user = user;
 		this.isCheckedIn = isCheckedIn;
@@ -563,7 +563,7 @@ export class FixedTeamUnit extends ATUnit {
 <<<<<<< HEAD
 	 * @param {object[]} checkedInUsers List of user objects that are checked into this fixed team.
 	 */
-	constructor(cat, rocs, done, team, checkedInUsers) {
+	constructor(cat, rocs, done, team, teamMembers) {
 		super(UnitType.FIXED_TEAM, cat, rocs, done);
 		this.team = team;
 		this.checkedInUsers = checkedInUsers;
