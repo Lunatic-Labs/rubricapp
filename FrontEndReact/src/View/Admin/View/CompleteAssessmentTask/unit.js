@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { CheckinsTracker } from './cat_utils';
 
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
