@@ -378,6 +378,7 @@ class Form extends Component {
                                 navbar={this.props.navbar}
                                 currentUnitTabIndex={this.state.currentUnitTabIndex}
                                 units={this.state.units}
+                                checkins={this.props.checkins}
                                 handleUnitTabChange={this.handleUnitTabChange}
                             />
                         </Box>

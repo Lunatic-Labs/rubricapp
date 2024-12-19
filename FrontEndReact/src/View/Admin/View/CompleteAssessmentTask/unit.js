@@ -1,4 +1,5 @@
 import { Box } from '@mui/material';
+import { CheckinsTracker } from './cat_utils';
 
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
@@ -29,12 +30,9 @@ export const UnitType = Object.freeze({
  *  if this isn't a fixed team AT.
  * @param {object|null} args.userFixedTeam The fixed team that this user belongs to or null
  *  if this isn't a fixed team AT.
- * @param {object[]} args.checkin 
  * @returns {ATUnit[]}
  */
 export function generateUnitList(args) {
-	const checkinsByUserId = makeCheckinsByUserIdMap(args.checkin);
-	
 	let unitList = [];
 	
 	if (args.roleName === "Student") {
@@ -44,8 +42,8 @@ export function generateUnitList(args) {
 			const user = findUser(args.users, userId);
 			
 			unitList.push(createIndividualUnit(
-				args.chosenCompleteAssessmentTask, user,
-				args.rubric, checkinsByUserId,
+				user, args.chosenCompleteAssessmentTask,
+				args.rubric
 			));
 		} else if (args.unitType === UnitType.FIXED_TEAM) {
 			let team;
@@ -58,8 +56,8 @@ export function generateUnitList(args) {
 			}
 			
 			unitList.push(createFixedTeamUnit(
-				args.chosenCompleteAssessmentTask, team,
-				args.rubric, checkinsByUserId,
+				team, args.chosenCompleteAssessmentTask,
+				args.rubric, args.fixedTeamMembers
 			));
 		}
 	} else {
@@ -70,14 +68,14 @@ export function generateUnitList(args) {
 				const userId = user["user_id"];
 				const cat = args.completedAssessments.find(cat => cat["user_id"] === userId);
 				
-				return createIndividualUnit(user, cat, args.rubric, checkinsByUserId);
+				return createIndividualUnit(user, cat, args.rubric);
 			});
 		} else if (args.unitType === UnitType.FIXED_TEAM) {
 			unitList = args.fixedTeams.map(team => {
 				const teamId = team["team_id"];
 				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
 				
-				return createFixedTeamUnit(team, cat, args.rubric, args.fixedTeamMembers, checkinsByUserId);
+				return createFixedTeamUnit(team, cat, args.rubric, args.fixedTeamMembers);
 			});
 		}
 	}
@@ -95,21 +93,7 @@ function findUser(users, userId) {
 	return users.find(user => user["user_id"] === userId);
 }
 
-function makeCheckinsByUserIdMap(checkins) {
-	const checkinsByUserId = new Map();
-	
-	checkins.forEach(checkin => {
-		if ("user_id" in checkin) {
-			checkinsByUserId[checkin["user_id"]] = checkin;
-		}
-	});
-	
-	return checkinsByUserId;
-}
-
-function createIndividualUnit(user, cat, rubric, checkinsByUserId) {
-	const userId = user["user_id"];
-	
+function createIndividualUnit(user, cat, rubric) {
 	let rocsData;
 	let isDone;
 	
@@ -126,13 +110,10 @@ function createIndividualUnit(user, cat, rubric, checkinsByUserId) {
 		isDone = false;
 	}
 	
-	return new IndividualUnit(
-		cat ?? null, rocsData, isDone,
-		user, checkinsByUserId.has(userId),
-	);
+	return new IndividualUnit(cat ?? null, rocsData, isDone, user);
 }
 
-function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers, checkinsByUserId) {
+function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	const teamId = team["team_id"];
 	
 	let rocsData;
@@ -150,22 +131,13 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers, checkinsByUser
 		rocsData = structuredClone(rubric["category_rating_observable_characteristics_suggestions_json"]);
 		isDone = false;
 	}
-	
-	const checkedInUsers = getFixedTeamCheckedInUsers(teamId, fixedTeamMembers[teamId], checkinsByUserId);
-	
+		
+	const teamMembers = fixedTeamMembers[teamId];
+		
 	return new FixedTeamUnit(
 		cat ?? null, rocsData, isDone,
-		team, checkedInUsers,
+		team, teamMembers,
 	);
-}
-
-// Gets a list of all the team members of a fixed team that are checked in
-function getFixedTeamCheckedInUsers(teamId, teamMembers, checkinsByUserId) {
-	return teamMembers.filter(user => {
-		const checkin = checkinsByUserId.get(user["user_id"]);
-		
-		return checkin !== undefined && checkin["team_number"] === teamId;
-	});
 }
 
 export class ATUnit {
@@ -218,9 +190,10 @@ export class ATUnit {
 	
 	/**
 	 * @abstract
-	 * @returns {string[]} A list of the student's names checked into the unit.
+	 * @param {CheckinsTracker} checkinsTracker
+	 * @returns {object[]} The contents of the checked in tooltip.
 	 */
-	get checkedInNames() {
+	getCheckedInTooltip(checkinsTracker) {
 		throw new Error("Not implemented");
 	}
 	
@@ -294,19 +267,16 @@ export class IndividualUnit extends ATUnit {
 	user;
 
 	/**
-	 * If this unit has checked into the assessment task.
-	 * @type {boolean}
-	 */
-	isCheckedIn;
-	
-	/**
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} user User object.
 	 */
-	constructor(cat, rocs, done, user, isCheckedIn) {
+	constructor(cat, rocs, done, user) {
 		super(UnitType.INDIVIDUAL, cat, rocs, done);
 		this.user = user;
-		this.isCheckedIn = isCheckedIn;
+	}
+	
+	get userId() {
+		return this.user["user_id"];
 	}
 	
 	get displayName() {
@@ -314,12 +284,12 @@ export class IndividualUnit extends ATUnit {
 	}
 
 	get id() {
-		return this.user["user_id"]
+		return this.userId;
 	}
 
-	get checkedInNames() {
-		if (this.isCheckedIn) {
-			return [ <Box key={0}> Checked In </Box>];
+	getCheckedInTooltip(checkinsTracker) {
+		if (checkinsTracker.hasCheckInForUser(this.userId)) {
+			return [ <Box key={0}>Checked In</Box> ];
 		} else {
 			return [];
 		}
@@ -341,20 +311,24 @@ export class FixedTeamUnit extends ATUnit {
 	team;
 	
 	/** 
-	 * List of user objects that are checked into this fixed team.
+	 * List of user objects that are members of this fixed team.
 	 * @type {object[]}
 	 */
-	checkedInUsers;
+	teamMembers;
 	
 	/**
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} team Team object.
-	 * @param {object[]} checkedInUsers List of user objects that are checked into this fixed team.
+	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
 	 */
-	constructor(cat, rocs, done, team, checkedInUsers) {
+	constructor(cat, rocs, done, team, teamMembers) {
 		super(UnitType.FIXED_TEAM, cat, rocs, done);
 		this.team = team;
-		this.checkedInUsers = checkedInUsers;
+		this.teamMembers = teamMembers;
+	}
+	
+	get teamId() {
+		return this.team["team_id"];
 	}
 	
 	get displayName() {
@@ -362,21 +336,27 @@ export class FixedTeamUnit extends ATUnit {
 	}
 
 	get id() {
-		return this.team["team_id"]
+		return this.teamId;
 	}
 	
-	get checkedInNames() {
-		if (this.checkedInUsers.length !== 0) {
-			return this.checkedInUsers.map(user => user["first_name"] + " " + user["last_name"]);
+	getCheckedInTooltip(checkinsTracker) {
+		const checkedInMembers = this.teamMembers.filter(user => {
+			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
+			
+			return checkin && checkin["team_number"] === this.teamId;
+		});
+		
+		if (checkedInMembers.length !== 0) {
+			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
 		} else {
-			return [<Box key={0}> No Team Members Checked In</Box>];
+			return [ <Box key={0}>No Team Members Checked In</Box> ];
 		}
 	}
 	
 	shallowClone() {
 		return new FixedTeamUnit(
 			this.completedAssessmentTask, this.rocsData, this.isDone,
-			this.team, this.checkedInUsers
+			this.team, this.teamMembers
 		);
 	}
 }

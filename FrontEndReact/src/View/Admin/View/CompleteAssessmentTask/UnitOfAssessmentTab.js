@@ -22,13 +22,13 @@ class UnitOfAssessmentTab extends Component {
         units.forEach((currentUnit, i) => {
             const unitName = currentUnit.displayName;
             const unitId = currentUnit.id;
-            const unitNames = currentUnit.checkedInNames;
+            const unitTooltip = currentUnit.getCheckedInTooltip(this.props.checkins);
 
             let unitStatus;
             
             if (currentUnit.isDone === true) {
                 unitStatus = StatusIndicatorState.COMPLETED;
-            } else{
+            } else {
                 const isNotStarted = currentUnit.categoryNames().every(categoryName => {
                     return getUnitCategoryStatus(currentUnit, this.props.navbar.state.chosenAssessmentTask, categoryName) === StatusIndicatorState.NOT_STARTED;
                 });
@@ -49,7 +49,7 @@ class UnitOfAssessmentTab extends Component {
                             alignItems: "center",
                             justifyContent: "center"
                         }}>
-                            <Tooltip title={unitNames}>
+                            <Tooltip title={unitTooltip}>
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
