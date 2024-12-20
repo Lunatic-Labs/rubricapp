@@ -118,12 +118,13 @@ class Form extends Component {
         }
         
         /**
-         * @method modifyUnitCategoryInformation - Modifies a unit's category information (part of the ROCS data).
+         * @method modifyUnitCategoryInformation - Modifies a single property of a unit's category information (part of the ROCS data).
          * @param {number} unitIndex The index of the unit to modify.
          * @param {string} categoryName The name of the category to modify.
-         * @param {function(object)} modifier Callback that modifies the category data.
+         * @param {string} propertyName The name of the category property to modify.
+         * @param {any} propertyValue The value to set.
          */
-        this.modifyUnitCategoryInformation = (unitIndex, categoryName, modifier) => {
+        this.modifyUnitCategoryProperty = (unitIndex, categoryName, propertyName, propertyValue) => {
             if (this.state.units[unitIndex].isDone && !this.props.navbar.props.isAdmin) return;
             
             this.setState(
@@ -131,7 +132,7 @@ class Form extends Component {
                     const updatedUnits = [...prevState.units];
                     
                     updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewRocsData(rocs => {
-                        modifier(rocs[categoryName]);
+                        rocs[categoryName][propertyName] = propertyValue;
                     });
                     
                     return { units: updatedUnits };
