@@ -17,9 +17,9 @@ class UnitOfAssessmentTab extends Component {
     render() {
         const units = this.props.units;
 
-        const unitList = [];
+        const unitTabsList = [];
 
-        units.forEach((currentUnit, i) => {
+        units.forEach((currentUnit, index) => {
             const unitName = currentUnit.displayName;
             const unitId = currentUnit.id;
             const unitTooltip = currentUnit.getCheckedInTooltip(this.props.checkins);
@@ -40,7 +40,7 @@ class UnitOfAssessmentTab extends Component {
                 }
             }
 
-            unitList.push(
+            unitTabsList.push(
                 <Tab
                     label={
                         <Box sx={{
@@ -57,7 +57,7 @@ class UnitOfAssessmentTab extends Component {
                             />
                         </Box>
                     }
-                    value={i}
+                    value={index}
                     key={unitId}
                     sx={{
                         maxWidth: 250,
@@ -68,7 +68,7 @@ class UnitOfAssessmentTab extends Component {
                         padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
-                        border: this.props.currentUnitTab === unitId ? '2px solid #2E8BEF ' : '2px solid gray',
+                        border: this.props.currentUnitTabIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
                         '&.Mui-selected': {
                             color: '#2E8BEF '
                         },
@@ -109,7 +109,7 @@ class UnitOfAssessmentTab extends Component {
                     },
                 }}
             >
-                {unitList}
+                {unitTabsList}
             </Tabs>
         )
     }

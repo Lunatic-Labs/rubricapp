@@ -178,6 +178,7 @@ export class ATUnit {
 	}
 	
 	/**
+	 * Gets the elements for the check in tooltip of this unit's tab on the form.
 	 * @abstract
 	 * @param {CheckinsTracker} checkinsTracker
 	 * @returns {object[]} The contents of the checked in tooltip.
@@ -187,6 +188,7 @@ export class ATUnit {
 	}
 	
 	/**
+	 * Creates a shallow clone of this unit.
 	 * @abstract
 	 * @returns {ATUnit}
 	 */
@@ -246,6 +248,46 @@ export class ATUnit {
 		return Object.keys(this.rocsData)
 			.filter(category => category !== "comments" && category !== "done");
 	}
+	
+	/**
+	 * Returns the query parameter that's used to identify this unit
+	 *  when saving the unit.
+	 * @abstract
+	 * @returns {string}
+	 */
+	getSubmitQueryParam() {
+		throw new Error("Not implemented");
+	}
+	
+	/**
+	 * Returns a new CAT entry ready to be saved to the server.
+	 * @abstract
+	 * @param {number} assessmentTaskId The ID of the assessment task.
+	 * @param {number} completedBy The user ID of the user that completed this assessment task.
+	 * @param {Date} completedAt The date and time that this assessment task was completed/updated.
+	 * @param {boolean} isDone If this unit is done.
+	 * @returns {object}
+	 */
+	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
+		if (this.completedAssessmentTask) {
+			const newCAT = structuredClone(this.completedAssessmentTask);
+			
+			newCAT["rating_observable_characteristics_suggestions_data"] = this.rocsData;
+			newCAT["last_update"] = completedAt;
+			newCAT["done"] = isDone;
+			
+			return newCAT;
+		} else {
+			return {
+				"assessment_task_id": assessmentTaskId,
+				"rating_observable_characteristics_suggestions_data": this.rocsData,
+				"completed_by": completedBy,
+				"initial_time": completedAt,
+				"last_update": completedAt,
+				"done": isDone,
+			};
+		}
+	}
 }
 
 export class IndividualUnit extends ATUnit {
@@ -289,6 +331,18 @@ export class IndividualUnit extends ATUnit {
 			this.completedAssessmentTask, this.rocsData, this.isDone,
 			this.user, this.isCheckedIn
 		);
+	}
+	
+	getSubmitQueryParam() {
+		return `uid=${this.userId}`;
+	}
+	
+	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
+		return {
+			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
+			"user_id": this.userId,
+			"team_id": -1,
+		};
 	}
 }
 
@@ -347,5 +401,17 @@ export class FixedTeamUnit extends ATUnit {
 			this.completedAssessmentTask, this.rocsData, this.isDone,
 			this.team, this.teamMembers
 		);
+	}
+	
+	getSubmitQueryParam() {
+		return `team_id=${this.teamId}`;
+	}
+	
+	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
+		return {
+			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
+			"user_id": -1,
+			"team_id": this.teamId,
+		};
 	}
 }

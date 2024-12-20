@@ -185,115 +185,77 @@ class Form extends Component {
                 return this.getUnitCategoryStatus(this.state.currentUnitTabIndex, category) === StatusIndicatorState.COMPLETED;
             });
         };
-    }
-
-    handleSubmit = (newIsDone) => {
-        const state = this.props.navbar.state;
-        const chosenAssessmentTask = state.chosenAssessmentTask;
-        const chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
-        const currentUnitTabIndex = this.state.currentUnitTabIndex;
-        const selectedUnit = this.state.units[currentUnitTabIndex];
-        const date = new Date();
         
-        let promise;
-        
-        if (chosenCompleteAssessmentTask) {
-            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selectedUnit.rocsData;
-            chosenCompleteAssessmentTask["last_update"] = date;
-            chosenCompleteAssessmentTask["done"] = newIsDone;
+        this.handleSubmit = (newIsDone) => {
+            const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
+            const selectedUnitIndex = this.state.currentUnitTabIndex;
+            const selectedUnit = this.state.units[selectedUnitIndex];
             
-            promise = genericResourcePUT(
-                `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
-                this,
-                JSON.stringify(chosenCompleteAssessmentTask),
-                { rawResponse: true }
-            );
-        } else {
             const cookies = new Cookies();
-            let route;
+            const currentUserId = cookies.get("user")["user_id"];
+            const currentDate = new Date();
             
-            if (chosenCompleteAssessmentTask && this.props.userRole) {
-                const completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTabIndex, this.props.completedAssessments);
+            const newCAT = selectedUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate, newIsDone);
+            const newUnit = selectedUnit.withNewCAT(newCAT);
+            
+            let promise;
+            
+            if (selectedUnit.completedAssessmentTask) {
+                const catId = selectedUnit.completedAssessmentTask["completed_assessment_id"];
                 
-                route = `/completed_assessment?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`
+                promise = genericResourcePUT(
+                    `/completed_assessment?completed_assessment_id=${catId}`,
+                    this,
+                    JSON.stringify(newCAT),
+                    { rawResponse: true }
+                );
             } else {
-                if (this.state.usingTeams) {
-                    route = `/completed_assessment?team_id=${selectedUnit.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
-                } else {
-                    route = `/completed_assessment?uid=${selectedUnit.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
-                }
-            }
-            
-            let assessmentData;
-            
-            if (this.state.usingTeams) { 
-                assessmentData = {
-                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selectedUnit.rocsData,
-                    "completed_by": cookies.get("user")["user_id"],
-                    "team_id": selectedUnit.id,
-                    "user_id": -1,        // team assessment has no user.
-                    "initial_time": date,
-                    "last_update": date,
-                    done: newIsDone,
-                };
-            } else { 
-                assessmentData = {
-                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selectedUnit.rocsData,
-                    "completed_by": cookies.get("user")["user_id"],
-                    "team_id": -1,          // individual assessment has no team.
-                    "user_id": selectedUnit.id,
-                    "initial_time": date,
-                    "last_update": date,
-                    done: newIsDone,
-                };
-            }
-            
-            if (chosenCompleteAssessmentTask && this.props.userRole) {
-                promise = genericResourcePUT(route, this, JSON.stringify(assessmentData), { rawResponse: true });
-            } else {
-                promise = genericResourcePOST(route, this, JSON.stringify(assessmentData), { rawResponse: true });
-            }
-        }
-        
-        // Once the CAT entry has been updated, insert the new CAT entry into the unit object
-        promise.then(result => {
-            const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
-            
-            if (completeAssessmentEntry) {
-                this.setState(
-                    prevState => {
-                        const updatedUnits = [...prevState.units];
-        
-                        updatedUnits[currentUnitTabIndex] = updatedUnits[currentUnitTabIndex].withNewCAT(completeAssessmentEntry);
-                        
-                        return { units: updatedUnits };
-                    }
+                promise = genericResourcePOST(
+                    `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
+                    this,
+                    JSON.stringify(newCAT),
+                    { rawResponse: true }
                 );
             }
-        });
-        
-        // Update the done status of the unit and display saving notification
-        this.setState(
-            prevState => {
-                const updatedUnits = [...prevState.units];
-
-                updatedUnits[currentUnitTabIndex] = updatedUnits[currentUnitTabIndex].withNewIsDone(newIsDone);
-
-                return { 
-                    displaySavedNotification: true,
-                    units: updatedUnits,
-                };
-            }
-        );
-        
-        setTimeout(() => {
-            this.setState({
-                displaySavedNotification: false
+            
+            // Replace the selected unit with updated unit and display saving notification
+            this.setState(
+                prevState => {
+                    const updatedUnits = [...prevState.units];
+                    
+                    updatedUnits[selectedUnitIndex] = newUnit;
+    
+                    return { 
+                        displaySavedNotification: true,
+                        units: updatedUnits,
+                    };
+                }
+            );
+            
+            // Once the CAT entry has been updated, insert the new CAT entry into the unit object
+            promise.then(result => {
+                const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
+                
+                if (completeAssessmentEntry) {
+                    this.setState(
+                        prevState => {
+                            const updatedUnits = [...prevState.units];
+                            
+                            updatedUnits[selectedUnitIndex] = updatedUnits[selectedUnitIndex].withNewCAT(completeAssessmentEntry);
+                            
+                            return { units: updatedUnits };
+                        }
+                    );
+                }
             });
-        }, 3000);
-    };
+            
+            setTimeout(() => {
+                this.setState({
+                    displaySavedNotification: false
+                });
+            }, 3000);
+        };
+    }
 
     componentDidMount() {
         this.generateCategoriesAndSection();
