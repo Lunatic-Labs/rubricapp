@@ -37,16 +37,6 @@ class Form extends Component {
     constructor(props) {
         super(props);
 
-        /**
-         * usingTeams: Boolean of whether teams are being used for this form
-         * units: array of `ATUnit` class objects
-         * currentUnitTabIndex: Index of ATUnit from `units` that is currently selected 
-         * categoryList: Array of `Category` objects using the current rubric
-         * currentCategoryTabIndex: Index of rubric `categoryList` that is currently selected
-         * section: Section object of category `currentCategoryTabIndex` from `categoryList`
-         * displaySavedNotification: Boolean that determines whether to display the pop-up window that confirms the assessment is saved 
-         */
-
         this.state = {
             units: this.props.units,
 >>>>>>> master
