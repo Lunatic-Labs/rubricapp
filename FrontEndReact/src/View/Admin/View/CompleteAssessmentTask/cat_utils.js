@@ -101,6 +101,7 @@ export class CheckinsTracker {
 	
 	/** 
 	 * Map from user id to the index of that user's checkin object in checkinsList.
+	 * 
 	 * @type {Map<number, number>}
 	 */
 	checkinsByUserId;
@@ -120,6 +121,8 @@ export class CheckinsTracker {
 	}
 	
 	/**
+	 * Gets the checkin entry for a user.
+	 * 
 	 * @param {number} userId The user's id.
 	 * @returns {object | null} The checkin entry or null if the user doesn't have one.
 	 */
@@ -130,6 +133,8 @@ export class CheckinsTracker {
 	}
 	
 	/**
+	 * Checks if a user has a checkin entry.
+	 * 
 	 * @param {number} userId The user's id.
 	 * @returns {boolean} If the user has a checkin entry.
 	 */
