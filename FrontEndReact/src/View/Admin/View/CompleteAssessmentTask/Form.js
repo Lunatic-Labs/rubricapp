@@ -39,16 +39,6 @@ class Form extends Component {
     constructor(props) {
         super(props);
 
-        /**
-         * usingTeams: Boolean of whether teams are being used for this form
-         * units: array of `ATUnit` class objects
-         * currentUnitTabIndex: Index of ATUnit from `units` that is currently selected 
-         * categoryList: Array of `Category` objects using the current rubric
-         * currentCategoryTabIndex: Index of rubric `categoryList` that is currently selected
-         * section: Section object of category `currentCategoryTabIndex` from `categoryList`
-         * displaySavedNotification: Boolean that determines whether to display the pop-up window that confirms the assessment is saved 
-         */
-
         this.state = {
 <<<<<<< HEAD
             unitOfAssessment: this.props.unitOfAssessment,
@@ -64,6 +54,10 @@ class Form extends Component {
             displaySavedNotification: false
         }
 
+        /**
+         * @method handleUnitTabChange - Handles the change of the unit tab.
+         * @param {number} newUnitTabIndex - The new index of the unit tab.
+         */
         this.handleUnitTabChange = (newUnitTabIndex) => {
             if (this.state.currentUnitTabIndex !== newUnitTabIndex) {
                 this.setState(
@@ -124,8 +118,7 @@ class Form extends Component {
         }
         
         /**
-         * Modifies a unit's category information (part of the ROCS data).
-         * 
+         * @method modifyUnitCategoryInformation - Modifies a unit's category information (part of the ROCS data).
          * @param {number} unitIndex The index of the unit to modify.
          * @param {string} categoryName The name of the category to modify.
          * @param {function(object)} modifier Callback that modifies the category data.
@@ -149,30 +142,60 @@ class Form extends Component {
             );
         };
 
+        /**
+         * @method setSliderValue - Sets the slider value for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {number} rating - The rating value to set.
+         */
         this.setSliderValue = (unitIndex, categoryName, rating) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["rating"] = rating;
             });
         };
 
+        /**
+         * @method setObservableCharacteristics - Sets the observable characteristics for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {Object} observableCharacteristics - The observable characteristics to set.
+         */
         this.setObservableCharacteristics = (unitIndex, categoryName, observableCharacteristics) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["observable_characteristics"] = observableCharacteristics;
             });
         }
 
+        /**
+         * @method setSuggestions - Sets the suggestions for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {Object} suggestions - The suggestions to set.
+         */
         this.setSuggestions = (unitIndex, categoryName, suggestions) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["suggestions"] = suggestions;
             });
         }
 
+        /**
+         * 
+         * @method setComments - Sets the comments for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {string} comments - The comments to set.
+         */
         this.setComments = (unitIndex, categoryName, comments) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["comments"] = comments;
             });
         }
-
+        /**
+         * @method getUnitCategoryStatus - Gets the status of a unit category.
+         * @param {number} unitId - The ID of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @returns {string} - The status of the unit category.
+         */
         this.getUnitCategoryStatus = (unitId, categoryName) => {
             const unit = this.state.units[unitId];
             const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
@@ -324,6 +347,11 @@ class Form extends Component {
             });
         };
         
+        /**
+         * 
+         * @method handleSubmit - Handles the submission of the form.
+         * @param {boolean} newIsDone - The new completion status of the unit.
+         */
         this.handleSubmit = (newIsDone) => {
             const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
             const selectedUnitIndex = this.state.currentUnitTabIndex;
