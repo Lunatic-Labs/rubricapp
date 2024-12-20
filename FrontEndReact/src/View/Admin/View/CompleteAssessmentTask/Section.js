@@ -86,7 +86,7 @@ class Section extends Component {
                     observableCharacteristic={observableCharacteristics[index]}
                     categoryName={category}
                     setObservableCharacteristics={this.props.setObservableCharacteristics}
-                    observableCharacteristics={currentData[category]["observable_characteristics"]}
+                    observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
                     id={index}
                     key={index}
                     autosave={this.autosave}
@@ -104,7 +104,7 @@ class Section extends Component {
                     navbar={this.props.navbar}
                     currentUnitTabIndex={this.props.currentUnitTabIndex}
                     suggestion={suggestions[index]}
-                    suggestions={currentData[category]["suggestions"]}
+                    suggestions={currentRocsData[category]["suggestions"]}
                     setSuggestions={this.props.setSuggestions}
                     categoryName={category}
                     id={index}
@@ -120,7 +120,7 @@ class Section extends Component {
 
         rating["category_name"] = category;
 
-        rating["stored_value"] = currentData[category]["rating"];
+        rating["stored_value"] = currentRocsData[category]["rating"];
 
         rating["data"] = sliderValues;
 
@@ -203,7 +203,7 @@ class Section extends Component {
 <<<<<<< HEAD
                                 currentUnitTabIndex={this.props.currentUnitTabIndex}
                                 setComments={this.props.setComments}
-                                currentData={currentData}
+                                currentRocsData={currentRocsData}
                                 categoryName={category}
 =======
                                 setComments={(newValue) => this.setCategoryProperty("comments", newValue)}
