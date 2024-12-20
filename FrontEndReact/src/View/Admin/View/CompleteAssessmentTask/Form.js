@@ -40,13 +40,13 @@ class Form extends Component {
         super(props);
 
         /**
-         * unitOfAssessment: boolean of whether teams are being used for this form
+         * usingTeams: Boolean of whether teams are being used for this form
          * units: array of `ATUnit` class objects
-         * currentUnitTabIndex: index of ATUnit from `units` that is currently selected 
-         * categoryList: array of `Category` objects using the current rubric
-         * currentCategoryTabIndex: index of rubric `categoryList` that is currently selected
+         * currentUnitTabIndex: Index of ATUnit from `units` that is currently selected 
+         * categoryList: Array of `Category` objects using the current rubric
+         * currentCategoryTabIndex: Index of rubric `categoryList` that is currently selected
          * section: Section object of category `currentCategoryTabIndex` from `categoryList`
-         * displaySavedNotification:
+         * displaySavedNotification: Boolean that determines whether to display the pop-up window that confirms the assessment is saved 
          */
 
         this.state = {
@@ -65,16 +65,15 @@ class Form extends Component {
         }
 
         this.handleUnitTabChange = (newUnitTabIndex) => {
-            var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], newUnitTabIndex, this.props.completedAssessments);
-            this.setState({
-                    currentUnitTabIndex: newUnitTabIndex,
-                    currentCategoryTabIndex: 0,
-                    chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
-                },
-//TODO:  fix in the case that chosenCompleteAssessmentTask is null
-            this.generateCategoriesAndSection
-            );
-
+            if (this.state.currentUnitTabIndex !== newUnitTabIndex) {
+                this.setState(
+                    {
+                        currentUnitTabIndex: newUnitTabIndex,
+                        currentCategoryTabIndex: 0,
+                    },
+                    this.generateCategoriesAndSection
+                );
+            }
         };
 
         this.handleCategoryChange = (newCategoryTabIndex) => {
@@ -132,7 +131,7 @@ class Form extends Component {
          * @param {function(object)} modifier Callback that modifies the category data.
          */
         this.modifyUnitCategoryInformation = (unitIndex, categoryName, modifier) => {
-            if (this.isUnitCompleteAssessmentComplete(unitIndex) && !this.props.navbar.props.isAdmin) return;
+            if (this.state.units[unitIndex].isDone && !this.props.navbar.props.isAdmin) return;
             
             this.setState(
                 prevState => {
@@ -179,22 +178,6 @@ class Form extends Component {
             const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
             
             return getUnitCategoryStatus(unit, assessmentTask, categoryName);
-        }
-
-        this.isUnitCompleteAssessmentComplete = (unitIndex) => {
-            return this.state.units[unitIndex].isDone;
-        }
-
-        this.findCompletedAssessmentTask = (chosenAssessmentTask, currentUnitTabIndex, completedAssessments) => {
-            let foundItem = null;
-
-            completedAssessments.forEach(obj => {
-                if (obj["assessment_task_id"] === chosenAssessmentTask && obj["team_id"] === currentUnitTabIndex) {
-                    foundItem = obj;
-                }
-            });
-
-            return foundItem;
         }
 
         this.generateCategoriesAndSection = () => {
@@ -372,7 +355,7 @@ class Form extends Component {
                 
                 route = `/completed_assessment?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`
             } else {
-                if (this.state.unitOfAssessment) {
+                if (this.state.usingTeams) {
                     route = `/completed_assessment?team_id=${selectedUnit.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
                 } else {
                     route = `/completed_assessment?uid=${selectedUnit.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
@@ -381,7 +364,7 @@ class Form extends Component {
             
             let assessmentData;
             
-            if (this.state.unitOfAssessment) { 
+            if (this.state.usingTeams) { 
                 assessmentData = {
                     "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
                     "rating_observable_characteristics_suggestions_data": selectedUnit.rocsData,

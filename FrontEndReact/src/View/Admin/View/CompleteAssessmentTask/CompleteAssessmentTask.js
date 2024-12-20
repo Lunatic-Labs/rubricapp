@@ -48,6 +48,7 @@ class CompleteAssessmentTask extends Component {
         super(props);
 
         this.state = {
+            // Set by genericResourceFetch API
             errorMessage: null,
             isLoaded: false,
             
@@ -199,36 +200,36 @@ class CompleteAssessmentTask extends Component {
 <<<<<<< HEAD
                 rubrics,
                 teams,
-                team,
+                userFixedTeam,
                 users,
-                teams_users,
-                roles,
+                teamsUsers,
+                currentUserRole,
                 completedAssessments,
                 checkins
             } = this.state;
             
-            if (rubrics && completedAssessments && roles && users && teams && checkins) {
+            if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
                 const navbar = this.props.navbar;
                 const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-                const roleName = roles["role_name"];
+                const roleName = currentUserRole["role_name"];
                 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.unitOfAssessment && !team) return;
-                if (this.state.unitOfAssessment && !teams_users) return;
-                                
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                if (this.state.usingTeams && !teamsUsers) return;
+                
                 const unitList = generateUnitList({
                     roleName: roleName,
-                    userId: this.userId,
+                    currentUserId: this.currentUserId,
                     chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
-                    unitType: this.state.unitOfAssessment ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
-                    rubric: rubrics,
+                    unitType: this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    assessmentTaskRubric: assessmentTaskRubric,
                     completedAssessments,
                     users,
                     fixedTeams: teams,
-                    fixedTeamMembers: teams_users,
-                    // team is actually a list of a single team,
+                    fixedTeamMembers: teamsUsers,
+                    // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
                     userFixedTeam: team?.[0],
                     checkin,
@@ -327,7 +328,7 @@ class CompleteAssessmentTask extends Component {
         }
 <<<<<<< HEAD
         
-        const roleName = roles["role_name"];
+        const roleName = currentUserRole["role_name"];
         
         if (roleName === "Student" && this.state.unitOfAssessment && !team){
 =======
@@ -342,7 +343,7 @@ class CompleteAssessmentTask extends Component {
         }
 <<<<<<< HEAD
         
-        if (roleName !== "Student" && this.state.unitOfAssessment && !teams_users) {
+        if (roleName !== "Student" && this.state.usingTeams && !teamsUsers) {
             return (
                 <Loading />
             );  
