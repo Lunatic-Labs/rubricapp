@@ -11,16 +11,43 @@ import { CheckinsTracker } from './cat_utils.js';
 
 
 
+/**
+ * CompleteAssessmentTask component is responsible for rendering and managing the state of the complete assessment task view.
+ * It fetches necessary resources and handles the logic for displaying the assessment task details, including rubrics, teams, users, and completed assessments.
+ * 
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.navbar - The navbar object containing the state of the chosen course and assessment task.
+ * 
+ * @property {Object} state - The state of the component.
+ * 
+ * Set by GenericResourceFetch API:
+ * @property {string|null} state.errorMessage - The error message if any error occurs during resource fetching.
+ * @property {boolean} state.isLoaded - Indicates whether the resources have been loaded.
+ * 
+ * Resources fetched in componentDidMount:
+ * @property {Object|null} state.assessmentTaskRubric - The rubric of the assessment task.
+ * @property {Array|null} state.teams - The list of teams.
+ * @property {Object|null} state.userFixedTeam - The fixed team of the current user.
+ * @property {Array|null} state.users - The list of users.
+ * @property {Array|null} state.teamsUsers - The list of users in teams.
+ * @property {Object|null} state.currentUserRole - The role of the current user.
+ * @property {Array|null} state.completedAssessments - The list of completed assessments.
+ * 
+ * Additional state properties:
+ * @property {string|null} state.currentUserId - The ID of the current user.
+ * @property {boolean} state.usingTeams - Indicates whether the assessment task is using teams.
+ * @property {Object|null} state.checkins - The CheckinsTracker object.
+ * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
+ * @property {Array|null} state.unitList - The list of units for the assessment task.
+ */
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            // Set by genericResourceFetch API
             errorMessage: null,
             isLoaded: false,
             
-            // Resources fetched in componentDidMount
             assessmentTaskRubric: null,
             teams: null,
             userFixedTeam: null,
@@ -30,10 +57,10 @@ class CompleteAssessmentTask extends Component {
             completedAssessments: null,
             
             currentUserId: null,
-            usingTeams: this.props.navbar.state.unitOfAssessment, // Whether the assessment task is using teams
-            checkins: null, // CheckinsTracker object
+            usingTeams: this.props.navbar.state.unitOfAssessment,
+            checkins: null,
             checkinEventSource: null,
-            unitList: null, // List of ATUnit objects
+            unitList: null,
         };
     }
 
