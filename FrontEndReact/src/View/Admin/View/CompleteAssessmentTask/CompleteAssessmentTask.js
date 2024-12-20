@@ -48,7 +48,6 @@ class CompleteAssessmentTask extends Component {
         super(props);
 
         this.state = {
-            // Set by genericResourceFetch API
             errorMessage: null,
             isLoaded: false,
             
