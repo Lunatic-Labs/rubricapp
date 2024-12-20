@@ -16,11 +16,11 @@ export const UnitType = Object.freeze({
 /**
  * @param {object} args
  * @param {string} args.roleName The user's role name.
- * @param {string} args.userId The user's user id.
+ * @param {string} args.currentUserId The user's user id.
  * @param {object|null} args.chosenCompleteAssessmentTask The currently chosen CAT or null
  *  if this AT hasn't been completed before.
  * @param {UnitType[keyof UnitType]} args.unitType The type of unit this AT uses.
- * @param {object} args.rubric This AT's rubric.
+ * @param {object} args.assessmentTaskRubric This AT's rubric.
  * @param {object[]} args.completedAssessments The list of all CATs.
  * @param {object[]} args.users The list of all users.
  * @param {object[]|null} args.fixedTeams The list of all fixed teams or null
@@ -37,26 +37,26 @@ export function generateUnitList(args) {
 	if (args.roleName === "Student") {
 		
 		if (args.unitType === UnitType.INDIVIDUAL) {
-			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.userId;
-			const user = findUser(args.users, userId);
+			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.currentUserId;
+			const user = args.users.find(user => user["user_id"] === userId);
 			
 			unitList.push(createIndividualUnit(
 				user, args.chosenCompleteAssessmentTask,
-				args.rubric
+				args.assessmentTaskRubric
 			));
 		} else if (args.unitType === UnitType.FIXED_TEAM) {
 			let team;
 			
 			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
-				team = findTeam(args.fixedTeams, teamId);
+				team = args.fixedTeams.find(team => team["team_id"] === teamId);
 			} else {
 				team = args.userFixedTeam;
 			}
 			
 			unitList.push(createFixedTeamUnit(
 				team, args.chosenCompleteAssessmentTask,
-				args.rubric, args.fixedTeamMembers
+				args.assessmentTaskRubric, args.fixedTeamMembers
 			));
 		}
 	} else {
@@ -67,29 +67,19 @@ export function generateUnitList(args) {
 				const userId = user["user_id"];
 				const cat = args.completedAssessments.find(cat => cat["user_id"] === userId);
 				
-				return createIndividualUnit(user, cat, args.rubric);
+				return createIndividualUnit(user, cat, args.assessmentTaskRubric);
 			});
 		} else if (args.unitType === UnitType.FIXED_TEAM) {
 			unitList = args.fixedTeams.map(team => {
 				const teamId = team["team_id"];
 				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
 				
-				return createFixedTeamUnit(team, cat, args.rubric, args.fixedTeamMembers);
+				return createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
 			});
 		}
 	}
 	
 	return unitList;
-}
-
-// Finds a team with a certain ID from a list
-function findTeam(teams, teamId) {
-	return teams.find(team => team["team_id"] === teamId);
-}
-
-// Finds a user with a certain ID from a list
-function findUser(users, userId) {
-	return users.find(user => user["user_id"] === userId);
 }
 
 function createIndividualUnit(user, cat, rubric) {

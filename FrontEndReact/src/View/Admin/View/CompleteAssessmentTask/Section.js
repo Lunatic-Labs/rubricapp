@@ -21,13 +21,13 @@ class Section extends Component {
     }
     
     render() {
-        var rubric = this.props.rubric;
+        var assessmentTaskRubric = this.props.assessmentTaskRubric;
 
         var currentData = this.props.currentData;
 
         var category = this.props.category;
 
-        var categoryJson = rubric["category_json"][category];
+        var categoryJson = assessmentTaskRubric["category_json"][category];
 
         var ratingJson = currentData[category]["rating_json"];
 

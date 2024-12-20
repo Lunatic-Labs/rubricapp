@@ -78,41 +78,39 @@ class UnitOfAssessmentTab extends Component {
         });
 
         return (
-            <React.Fragment> 
-                <Tabs
-                    value={this.props.currentUnitTabIndex}
+            <Tabs
+                value={this.props.currentUnitTabIndex}
 
-                    onChange={(event, newUnitTabIndex) => {
-                        this.props.handleUnitTabChange(newUnitTabIndex);
-                    }}
+                onChange={(event, newUnitTabIndex) => {
+                    this.props.handleUnitTabChange(newUnitTabIndex);
+                }}
 
-                    variant="scrollable"
-                    scrollButtons
-                    aria-label="visible arrows tabs example"
-                    
-                    sx={{
-                        width: "100%",
+                variant="scrollable"
+                scrollButtons
+                aria-label="visible arrows tabs example"
+                
+                sx={{
+                    width: "100%",
 
-                        [`& .${tabsClasses.scrollButtons}`]: {
-                            '&.Mui-disabled': { opacity: 0.3 },
-                        }, 
+                    [`& .${tabsClasses.scrollButtons}`]: {
+                        '&.Mui-disabled': { opacity: 0.3 },
+                    }, 
 
-                        [`& .MuiTabs-indicator`]: { 
-                            display: 'none' 
-                        },
+                    [`& .MuiTabs-indicator`]: { 
+                        display: 'none' 
+                    },
 
-                        '& .MuiTab-root': {
-                            border: '2px solid',
-                            '&.Mui-selected': {
-                                backgroundColor: '#D9D9D9',
-                                color: 'inherit',
-                            }
-                        },
-                    }}
-                >
-                    {unitList}
-                </Tabs>
-            </React.Fragment>
+                    '& .MuiTab-root': {
+                        border: '2px solid',
+                        '&.Mui-selected': {
+                            backgroundColor: '#D9D9D9',
+                            color: 'inherit',
+                        }
+                    },
+                }}
+            >
+                {unitList}
+            </Tabs>
         )
     }
 }

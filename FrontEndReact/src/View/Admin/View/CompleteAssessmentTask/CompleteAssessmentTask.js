@@ -16,79 +16,50 @@ class CompleteAssessmentTask extends Component {
         super(props);
 
         this.state = {
+            // Set by genericResourceFetch API
             errorMessage: null,
             isLoaded: false,
-            rubrics: null,
+            
+            // Resources fetched in componentDidMount
+            assessmentTaskRubric: null,
             teams: null,
-            team: null,
+            userFixedTeam: null,
             users: null,
-            teams_users: null,
-            unitOfAssessment: this.props.navbar.state.unitOfAssessment,
-            roles: null,
+            teamsUsers: null,
+            currentUserRole: null,
             completedAssessments: null,
+            
+            currentUserId: null,
+            usingTeams: this.props.navbar.state.unitOfAssessment, // Whether the assessment task is using teams
             checkins: null, // CheckinsTracker object
-            userId: null,
             checkinEventSource: null,
             unitList: null, // List of ATUnit objects
-        }
-            this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
-            var newCompletedCategories = Object.keys(newCompleted).sort();
-
-            var storedCompletedCategories = Object.keys(storedCompleted).sort();
-
-            if (newCompletedCategories.length !== storedCompletedCategories.length) {
-                return false;
-            }
-
-            for (var index = 0; index < newCompletedCategories.length; index++) {
-                if (newCompletedCategories[index] !== storedCompletedCategories[index]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        this.getCompleteTeam = (teamId) => {
-            var completedTeam = this.state.completedAssessments.find(completedAssessment => completedAssessment["team_id"] === teamId);
-            
-            return completedTeam ? completedTeam : false;
-        }
-
-        this.getCompleteIndividual = (userId) => {
-            var completedAssessment = this.state.completedAssessments.find(completedAssessment => completedAssessment["user_id"] === userId);
-
-            return completedAssessment ? completedAssessment : false;
-        }
+        };
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-
-        var state = navbar.state;
-
-        var chosenAssessmentTask = state.chosenAssessmentTask;
-
-        var chosenCourse = state.chosenCourse;
-    
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const chosenCourse = state.chosenCourse;
         const cookies = new Cookies();
 
-        this.userId = cookies.get('user')["user_id"];
+        this.currentUserId = cookies.get("user")["user_id"];
 
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
-            "rubrics", this
+            "rubrics", this, { dest: "assessmentTaskRubric" }
         );
 
         genericResourceGET(
-            `/role?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
-            "roles", this
+            `/role?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+            "roles", this, { dest: "currentUserRole" }
         );
 
         if (chosenAssessmentTask["role_id"] === 5) {
             genericResourceGET(
-                `/team_by_user?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
-                "teams", this, {dest: "team"}
+                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+                "teams", this, { dest: "userFixedTeam" }
             );
         }
 
@@ -96,12 +67,12 @@ class CompleteAssessmentTask extends Component {
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
         ).then((result) => {
-            if (this.state.unitOfAssessment && result.teams && result.teams.length > 0) {
+            if (this.state.usingTeams && result.teams && result.teams.length > 0) {
                 const teamIds = result.teams.map(team => team.team_id);
 
                 genericResourceGET(
                     `/user?team_ids=${teamIds}`,
-                    "teams_users", this
+                    "teams_users", this, { dest: "teamsUsers" }
                 );
             }
         });
@@ -112,8 +83,8 @@ class CompleteAssessmentTask extends Component {
         );
 
         genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-            "completed_assessments", this, {dest: "completedAssessments"}
+            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
+            "completed_assessments", this, { dest: "completedAssessments" }
         );
         
         const checkinEventSource = createEventSource(
@@ -137,40 +108,40 @@ class CompleteAssessmentTask extends Component {
     componentDidUpdate() {
         if (this.state.unitList === null) {
             const {
-                rubrics,
+                assessmentTaskRubric,
                 teams,
-                team,
+                userFixedTeam,
                 users,
-                teams_users,
-                roles,
+                teamsUsers,
+                currentUserRole,
                 completedAssessments,
                 checkins
             } = this.state;
             
-            if (rubrics && completedAssessments && roles && users && teams && checkins) {
+            if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
                 const navbar = this.props.navbar;
                 const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-                const roleName = roles["role_name"];
+                const roleName = currentUserRole["role_name"];
                 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.unitOfAssessment && !team) return;
-                if (this.state.unitOfAssessment && !teams_users) return;
-                                
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                if (this.state.usingTeams && !teamsUsers) return;
+                
                 const unitList = generateUnitList({
                     roleName: roleName,
-                    userId: this.userId,
+                    currentUserId: this.currentUserId,
                     chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
-                    unitType: this.state.unitOfAssessment ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
-                    rubric: rubrics,
+                    unitType: this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    assessmentTaskRubric: assessmentTaskRubric,
                     completedAssessments,
                     users,
                     fixedTeams: teams,
-                    fixedTeamMembers: teams_users,
-                    // team is actually a list of a single team,
+                    fixedTeamMembers: teamsUsers,
+                    // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
-                    userFixedTeam: team?.[0],
+                    userFixedTeam: userFixedTeam?.[0],
                 });
                 
                 this.setState({
@@ -184,13 +155,15 @@ class CompleteAssessmentTask extends Component {
         const {
             errorMessage,
             isLoaded,
-            rubrics,
+
+            assessmentTaskRubric,
             teams,
-            team,
+            userFixedTeam,
             users,
-            teams_users,
-            roles,
+            teamsUsers,
+            currentUserRole,
             completedAssessments,
+            
             checkins
         } = this.state;
 
@@ -206,7 +179,7 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !completedAssessments || !roles || !users || !teams || !checkins) {
+        } else if (!isLoaded || !assessmentTaskRubric || !completedAssessments || !currentUserRole || !users || !teams || !checkins) {
             return (
                 <Loading />
             );
@@ -223,15 +196,15 @@ class CompleteAssessmentTask extends Component {
 
         }
         
-        const roleName = roles["role_name"];
+        const roleName = currentUserRole["role_name"];
         
-        if (roleName === "Student" && this.state.unitOfAssessment && !team){
+        if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
             return (
                 <Loading />
             );
         }
         
-        if (roleName !== "Student" && this.state.unitOfAssessment && !teams_users) {
+        if (roleName !== "Student" && this.state.usingTeams && !teamsUsers) {
             return (
                 <Loading />
             );  
@@ -249,31 +222,19 @@ class CompleteAssessmentTask extends Component {
             <Box>
                 <Box className="assessment-title-spacing">
                     <Box className='d-flex flex-column justify-content-start'>
-                        <h4>{rubrics["rubric_name"]}</h4>
+                        <h4>{assessmentTaskRubric["rubric_name"]}</h4>
 
-                        <h5>{rubrics["rubric_description"]}</h5>
+                        <h5>{assessmentTaskRubric["rubric_description"]}</h5>
                     </Box>
                 </Box>
 
                 <Form
                     navbar={this.props.navbar}
-
-                    unitOfAssessment={this.state.unitOfAssessment}
-
-                    role_name={this.state.roles["role_name"]}
-
+                    usingTeams={this.state.usingTeams}
+                    roleName={this.state.currentUserRole["role_name"]}
                     checkins={this.state.checkins}
-
-                    form={{
-                        "rubric": rubrics,
-                        "units": unitList,
-                    }}
-
-                    formReference={this}
-
-                    handleDone={this.handleDone}
-
-                    completedAssessments={completedAssessments}
+                    assessmentTaskRubric={assessmentTaskRubric}
+                    units={unitList}
                 />
             </Box>
         );
