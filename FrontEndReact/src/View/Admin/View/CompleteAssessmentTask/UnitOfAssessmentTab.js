@@ -9,10 +9,19 @@ import StatusIndicator from './StatusIndicator.js';
 import {StatusIndicatorState} from './StatusIndicator.js';
 import {getUnitCategoryStatus} from './cat_utils.js';
 
-// This component is used to display the tabs for the names in the unit of assessment (team or individual) 
-// in the complete assessment task page.
-// It will display the team or individual name and the status of the unit
-
+/**
+ * This component is used to display the tabs for the names in the unit of assessment
+ * in the complete assessment task page.
+ * It will display the team or individual name and the status of the unit.
+ * The name displayed is stored in the ATUnit Objects stored in the units array.
+ *
+ * @param {Object} props
+ * @param {Array} props.units - Array of ATUnit objects
+ * @param {Array} props.checkins - Array of checkins objects
+ * @param {Object} props.navbar - Navbar object
+ * @param {Number} props.currentUnitTabIndex - Index of the current unit tab
+ * @param {Function} props.handleUnitTabChange - Function to handle the change of unit tab
+ */
 class UnitOfAssessmentTab extends Component {
     render() {
         const units = this.props.units;
