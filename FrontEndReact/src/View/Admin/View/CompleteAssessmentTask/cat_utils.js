@@ -1,5 +1,13 @@
 import { StatusIndicatorState } from "./StatusIndicator";
 
+/**
+ * Determines the status of a unit category based on the assessment task and category data.
+ *
+ * @param {Object} unit - The unit object containing rocsData.
+ * @param {Object} assessmentTask - The assessment task object containing show_suggestions.
+ * @param {string} categoryName - The name of the category to check the status for.
+ * @returns {StatusIndicatorState} - The status of the unit category (COMPLETED, IN_PROGRESS, or NOT_STARTED).
+ */
 export function getUnitCategoryStatus(unit, assessmentTask, categoryName) {
 	const showSuggestions = assessmentTask["show_suggestions"];
 	const categoryData = unit.rocsData[categoryName];
@@ -29,6 +37,7 @@ export class CheckinsTracker {
 	
 	/** 
 	 * Map from user id to the index of that user's checkin object in checkinsList.
+	 * 
 	 * @type {Map<number, number>}
 	 */
 	checkinsByUserId;
@@ -48,6 +57,8 @@ export class CheckinsTracker {
 	}
 	
 	/**
+	 * Gets the checkin entry for a user.
+	 * 
 	 * @param {number} userId The user's id.
 	 * @returns {object | null} The checkin entry or null if the user doesn't have one.
 	 */
@@ -58,6 +69,8 @@ export class CheckinsTracker {
 	}
 	
 	/**
+	 * Checks if a user has a checkin entry.
+	 * 
 	 * @param {number} userId The user's id.
 	 * @returns {boolean} If the user has a checkin entry.
 	 */
