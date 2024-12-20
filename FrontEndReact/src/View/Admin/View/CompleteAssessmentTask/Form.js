@@ -157,7 +157,7 @@ class Form extends Component {
                             category={category}
                             assessmentTaskRubric={this.props.assessmentTaskRubric}
                             currentUnitTabIndex={this.state.currentUnitTabIndex}
-                            currentData={this.state.units[this.state.currentUnitTabIndex].rocsData}
+                            currentRocsData={this.state.units[this.state.currentUnitTabIndex].rocsData}
                             active={this.state.currentCategoryTabIndex === index}
                             key={index}
                             

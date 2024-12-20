@@ -10,7 +10,25 @@ import { FormControl } from '@mui/material';
 import { debounce } from '../../../../utility.js';
 
 
-
+/**
+ * This component is used to display the ratings, observable characteristics, suggestions for improvement,
+ * 
+ * @param {Object} props
+ * @param {Object} props.navbar - Navbar object
+ * @param {String} props.category - Category name
+ * @param {Object} props.currentRocsData - Current Rating Observable Characteristics data object
+ * @param {Object} props.assessmentTaskRubric - Rubric object for the assessment task
+ * @param {Boolean} props.isDone - Whether the unit has completed the assessment task
+ * @param {Number} props.currentUnitTabIndex - Index of the current unit tab
+ * @param {Function} props.handleUnitTabChange - Function to handle the change of unit tab
+ * 
+ * @param {Function} props.setSliderValue - Function to set the slider value
+ * @param {Function} props.setObservableCharacteristics - Function to set the observable characteristics
+ * @param {Function} props.setSuggestions - Function to set the suggestions
+ * @param {Function} props.setComments - Function to set the comments
+ * 
+ * @param {Function} props.handleSubmit - Function to handle the submit
+ */
 class Section extends Component {
     constructor(props) {
         super(props);
@@ -22,13 +40,13 @@ class Section extends Component {
     
     render() {
         var assessmentTaskRubric = this.props.assessmentTaskRubric;
-
+        
         var currentData = this.props.currentData;
-
+        
         var category = this.props.category;
-
+        
         var categoryJson = assessmentTaskRubric["category_json"][category];
-
+        
         var ratingJson = currentData[category]["rating_json"];
 
         var sliderValues = [];
@@ -57,7 +75,7 @@ class Section extends Component {
                     observableCharacteristic={observableCharacteristics[index]}
                     categoryName={category}
                     setObservableCharacteristics={this.props.setObservableCharacteristics}
-                    observableCharacteristics={currentData[category]["observable_characteristics"]}
+                    observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
                     id={index}
                     key={index}
                     autosave={this.autosave}
@@ -75,7 +93,7 @@ class Section extends Component {
                     navbar={this.props.navbar}
                     currentUnitTabIndex={this.props.currentUnitTabIndex}
                     suggestion={suggestions[index]}
-                    suggestions={currentData[category]["suggestions"]}
+                    suggestions={currentRocsData[category]["suggestions"]}
                     setSuggestions={this.props.setSuggestions}
                     categoryName={category}
                     id={index}
@@ -91,7 +109,7 @@ class Section extends Component {
 
         rating["category_name"] = category;
 
-        rating["stored_value"] = currentData[category]["rating"];
+        rating["stored_value"] = currentRocsData[category]["rating"];
 
         rating["data"] = sliderValues;
 
@@ -103,7 +121,7 @@ class Section extends Component {
 
         rating["show_suggestions"] = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
 
-        rating["description"] = currentData[category]["description"];
+        rating["description"] = currentRocsData[category]["description"];
 
         return (
             <Box id="rating">
@@ -150,7 +168,7 @@ class Section extends Component {
                                 navbar={this.props.navbar}
                                 currentUnitTabIndex={this.props.currentUnitTabIndex}
                                 setComments={this.props.setComments}
-                                currentData={currentData}
+                                currentRocsData={currentRocsData}
                                 categoryName={category}
                                 autosave={this.autosave}
                             />
