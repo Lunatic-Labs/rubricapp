@@ -12,19 +12,27 @@ import Alert from '@mui/material/Alert';
 import { getUnitCategoryStatus } from './cat_utils.js';
 
 
+/**
+ * Creates an instance of the Form component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @param {boolean} props.usingTeams - Boolean indicating whether teams are being used for this form.
+ * @param {Array<ATUnit>} props.units - Array of `ATUnit` class objects.
+ * @param {Object} props.assessmentTaskRubric - The rubric for the assessment task.
+ * @param {Object} props.navbar - The navbar object.
+ * 
+ * @property {boolean} state.usingTeams - Boolean indicating whether teams are being used for this form.
+ * @property {Array<ATUnit>} state.units - Array of `ATUnit` class objects taken from props.units.
+ * @property {number} state.currentUnitTabIndex - Index of the currently selected `ATUnit` from `units`.
+ * @property {Array<Category>} state.categoryList - Array of `Category` objects using the current rubric.
+ * @property {number} state.currentCategoryTabIndex - Index of the currently selected rubric `categoryList`.
+ * @property {Object} state.section - Section object of the category `currentCategoryTabIndex` from `categoryList`.
+ * @property {boolean} state.displaySavedNotification - Boolean indicating whether to display the pop-up window that confirms the assessment is saved.
+ */
 class Form extends Component {
     constructor(props) {
         super(props);
-
-        /**
-         * usingTeams: Boolean of whether teams are being used for this form
-         * units: array of `ATUnit` class objects
-         * currentUnitTabIndex: Index of ATUnit from `units` that is currently selected 
-         * categoryList: Array of `Category` objects using the current rubric
-         * currentCategoryTabIndex: Index of rubric `categoryList` that is currently selected
-         * section: Section object of category `currentCategoryTabIndex` from `categoryList`
-         * displaySavedNotification: Boolean that determines whether to display the pop-up window that confirms the assessment is saved 
-         */
 
         this.state = {
             usingTeams: this.props.usingTeams,
@@ -36,6 +44,10 @@ class Form extends Component {
             displaySavedNotification: false
         }
 
+        /**
+         * @method handleUnitTabChange - Handles the change of the unit tab.
+         * @param {number} newUnitTabIndex - The new index of the unit tab.
+         */
         this.handleUnitTabChange = (newUnitTabIndex) => {
             if (this.state.currentUnitTabIndex !== newUnitTabIndex) {
                 this.setState(
@@ -48,6 +60,10 @@ class Form extends Component {
             }
         };
 
+        /**
+         * @method handleCategoryChange - Handles the change of the category tab.
+         * @param {number} newCategoryTabIndex - The new index of the category tab.
+         */
         this.handleCategoryChange = (newCategoryTabIndex) => {
             if (this.state.currentCategoryTabIndex !== newCategoryTabIndex) {
                 this.setState(
@@ -60,8 +76,7 @@ class Form extends Component {
         };
 
         /**
-         * Modifies a unit's category information (part of the ROCS data).
-         * 
+         * @method modifyUnitCategoryInformation - Modifies a unit's category information (part of the ROCS data).
          * @param {number} unitIndex The index of the unit to modify.
          * @param {string} categoryName The name of the category to modify.
          * @param {function(object)} modifier Callback that modifies the category data.
@@ -85,30 +100,60 @@ class Form extends Component {
             );
         };
 
+        /**
+         * @method setSliderValue - Sets the slider value for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {number} rating - The rating value to set.
+         */
         this.setSliderValue = (unitIndex, categoryName, rating) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["rating"] = rating;
             });
         };
 
+        /**
+         * @method setObservableCharacteristics - Sets the observable characteristics for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {Object} observableCharacteristics - The observable characteristics to set.
+         */
         this.setObservableCharacteristics = (unitIndex, categoryName, observableCharacteristics) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["observable_characteristics"] = observableCharacteristics;
             });
         }
 
+        /**
+         * @method setSuggestions - Sets the suggestions for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {Object} suggestions - The suggestions to set.
+         */
         this.setSuggestions = (unitIndex, categoryName, suggestions) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["suggestions"] = suggestions;
             });
         }
 
+        /**
+         * 
+         * @method setComments - Sets the comments for a category.
+         * @param {number} unitIndex - The index of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @param {string} comments - The comments to set.
+         */
         this.setComments = (unitIndex, categoryName, comments) => {
             this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
                 category["comments"] = comments;
             });
         }
-
+        /**
+         * @method getUnitCategoryStatus - Gets the status of a unit category.
+         * @param {number} unitId - The ID of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @returns {string} - The status of the unit category.
+         */
         this.getUnitCategoryStatus = (unitId, categoryName) => {
             const unit = this.state.units[unitId];
             const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
@@ -116,6 +161,9 @@ class Form extends Component {
             return getUnitCategoryStatus(unit, assessmentTask, categoryName);
         }
 
+        /**
+         * @method generateCategoriesAndSection - Generates the categories and section for the current unit and category.
+         */
         this.generateCategoriesAndSection = () => {
             const assessmentTaskRubric = this.props.assessmentTaskRubric;
             const categoryList = [];
@@ -178,6 +226,10 @@ class Form extends Component {
             });
         }
         
+        /**
+         * @method areAllCategoriesCompleted - Checks if all categories are completed for the current unit.
+         * @returns {boolean} - True if all categories are completed, false otherwise.
+         */
         this.areAllCategoriesCompleted = () => {
             const currentUnit = this.state.units[this.state.currentUnitTabIndex];
             
@@ -186,6 +238,11 @@ class Form extends Component {
             });
         };
         
+        /**
+         * 
+         * @method handleSubmit - Handles the submission of the form.
+         * @param {boolean} newIsDone - The new completion status of the unit.
+         */
         this.handleSubmit = (newIsDone) => {
             const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
             const selectedUnitIndex = this.state.currentUnitTabIndex;
