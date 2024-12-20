@@ -26,14 +26,6 @@ class UnitOfAssessmentTab extends Component {
     render() {
         const units = this.props.units;
 
-<<<<<<< HEAD
-        const unitList = [];
-
-        units.forEach((currentUnit, i) => {
-            const unitName = currentUnit.displayName;
-            const unitId = currentUnit.id;
-            const unitNames = currentUnit.checkedInNames;
-=======
         const unitTabsList = [];
 
         units.forEach((currentUnit, index) => {
@@ -62,11 +54,7 @@ class UnitOfAssessmentTab extends Component {
                 }
             }
 
-<<<<<<< HEAD
-            unitList.push(
-=======
             unitTabsList.push(
->>>>>>> master
                 <Tab
                     label={
                         <Box sx={{
@@ -83,11 +71,7 @@ class UnitOfAssessmentTab extends Component {
                             />
                         </Box>
                     }
-<<<<<<< HEAD
-                    value={i}
-=======
                     value={index}
->>>>>>> master
                     key={unitId}
                     sx={{
                         maxWidth: 250,
@@ -98,6 +82,7 @@ class UnitOfAssessmentTab extends Component {
                         padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
+                        border: this.props.currentUnitTabIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
                         border: this.props.currentUnitTabIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
                         '&.Mui-selected': {
                             color: '#2E8BEF '
@@ -149,6 +134,7 @@ class UnitOfAssessmentTab extends Component {
                     },
                 }}
             >
+                {unitTabsList}
                 {unitTabsList}
             </Tabs>
         )

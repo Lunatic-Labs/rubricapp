@@ -323,37 +323,30 @@ class Form extends Component {
 <<<<<<< HEAD
             });
         };
-    }
-
-    handleSubmit = (newIsDone) => {
-        const state = this.props.navbar.state;
-        const chosenAssessmentTask = state.chosenAssessmentTask;
-        const chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
-        const currentUnitTabIndex = this.state.currentUnitTabIndex;
-        const selectedUnit = this.state.units[currentUnitTabIndex];
-        const date = new Date();
         
-        let promise;
-        
-        if (chosenCompleteAssessmentTask) {
-            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selectedUnit.rocsData;
-            chosenCompleteAssessmentTask["last_update"] = date;
-            chosenCompleteAssessmentTask["done"] = newIsDone;
+        this.handleSubmit = (newIsDone) => {
+            const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
+            const selectedUnitIndex = this.state.currentUnitTabIndex;
+            const selectedUnit = this.state.units[selectedUnitIndex];
             
-            promise = genericResourcePUT(
-                `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
-                this,
-                JSON.stringify(chosenCompleteAssessmentTask),
-                { rawResponse: true }
-            );
-        } else {
             const cookies = new Cookies();
-            let route;
+            const currentUserId = cookies.get("user")["user_id"];
+            const currentDate = new Date();
             
-            if (chosenCompleteAssessmentTask && this.props.userRole) {
-                const completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTabIndex, this.props.completedAssessments);
+            const newCAT = selectedUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate, newIsDone);
+            const newUnit = selectedUnit.withNewCAT(newCAT);
+            
+            let promise;
+            
+            if (selectedUnit.completedAssessmentTask) {
+                const catId = selectedUnit.completedAssessmentTask["completed_assessment_id"];
                 
-                route = `/completed_assessment?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`
+                promise = genericResourcePUT(
+                    `/completed_assessment?completed_assessment_id=${catId}`,
+                    this,
+                    JSON.stringify(newCAT),
+                    { rawResponse: true }
+                );
             } else {
                 if (this.state.usingTeams) {
                     route = `/completed_assessment?team_id=${selectedUnit.id}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
