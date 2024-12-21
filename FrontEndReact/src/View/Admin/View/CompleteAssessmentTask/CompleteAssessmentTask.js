@@ -389,25 +389,6 @@ class CompleteAssessmentTask extends Component {
 
                 <Form
                     navbar={this.props.navbar}
-<<<<<<< HEAD
-
-                    unitOfAssessment={this.state.unitOfAssessment}
-
-                    role_name={this.state.roles["role_name"]}
-
-                    checkins={this.state.checkins}
-
-                    form={{
-                        "rubric": rubrics,
-                        "units": unitList,
-                    }}
-
-                    formReference={this}
-
-                    handleDone={this.handleDone}
-
-                    completedAssessments={completedAssessments}
-=======
                     roleName={this.state.currentUserRole["role_name"]}
                     checkins={this.state.checkins}
                     assessmentTaskRubric={assessmentTaskRubric}

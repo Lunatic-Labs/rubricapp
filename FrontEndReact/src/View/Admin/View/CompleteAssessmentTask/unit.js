@@ -3,10 +3,7 @@ import { Box } from '@mui/material';
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
 	FIXED_TEAM: "fixed_team",
-<<<<<<< HEAD
-=======
 	AD_HOC_TEAM: "ad_hoc_team", // Currently unused, made in preparation of adding ad hoc teams
->>>>>>> master
 });
 
 // Terminology:
@@ -57,21 +54,6 @@ export const UnitType = Object.freeze({
  *  if this isn't a fixed team AT.
 <<<<<<< HEAD
  * @param {object[]} args.checkin 
- * @returns {ATUnit[]}
- */
-export function generateUnitList(args) {
-	let unitList = [];
-	
-	if (args.roleName === "Student") {
-		
-		if (args.unitType === UnitType.INDIVIDUAL) {
-			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.userId;
-			const user = findUser(args.users, userId);
-			
-			unitList.push(createIndividualUnit(
-				args.chosenCompleteAssessmentTask, user,
-				args.rubric, checkinsByUserId,
-=======
  * @returns {ATUnit[]}
  */
 export function generateUnitList(args) {
@@ -142,35 +124,7 @@ export function generateUnitList(args) {
 	return unitList;
 }
 
-<<<<<<< HEAD
-// Finds a team with a certain ID from a list
-function findTeam(teams, teamId) {
-	return teams.find(team => team["team_id"] === teamId);
-}
-
-// Finds a user with a certain ID from a list
-function findUser(users, userId) {
-	return users.find(user => user["user_id"] === userId);
-}
-
-function makeCheckinsByUserIdMap(checkins) {
-	const checkinsByUserId = new Map();
-	
-	checkins.forEach(checkin => {
-		if ("user_id" in checkin) {
-			checkinsByUserId[checkin["user_id"]] = checkin;
-		}
-	});
-	
-	return checkinsByUserId;
-}
-
-function createIndividualUnit(user, cat, rubric, checkinsByUserId) {
-	const userId = user["user_id"];
-	
-=======
 function getOrGenerateUnitData(cat, rubric) {
->>>>>>> master
 	let rocsData;
 	let isDone;
 	
@@ -187,50 +141,6 @@ function getOrGenerateUnitData(cat, rubric) {
 		isDone = false;
 	}
 	
-<<<<<<< HEAD
-	return new IndividualUnit(
-		cat ?? null, rocsData, isDone,
-		user, checkinsByUserId.has(userId),
-	);
-}
-
-function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
-	const teamId = team["team_id"];
-	
-	let rocsData;
-	let isDone;
-	
-	if (cat && Object.keys(cat).length > 0) {
-		// The unit already has a complete AT entry (it has been completed before)
-		
-		rocsData = cat["rating_observable_characteristics_suggestions_data"];
-		isDone = cat["done"];
-	} else {
-		// Otherwise this is a new CAT
-		
-		// Create new ROCS data from rubric
-		rocsData = structuredClone(rubric["category_rating_observable_characteristics_suggestions_json"]);
-		isDone = false;
-	}
-		
-	const teamMembers = fixedTeamMembers[teamId];
-		
-	return new FixedTeamUnit(
-		cat ?? null, rocsData, isDone,
-		team, checkedInUsers,
-	);
-}
-
-// Gets a list of all the team members of a fixed team that are checked in
-function getFixedTeamCheckedInUsers(teamId, teamMembers, checkinsByUserId) {
-	return teamMembers.filter(user => {
-		const checkin = checkinsByUserId.get(user["user_id"]);
-		
-		return checkin !== undefined && checkin["team_number"] === teamId;
-	});
-}
-
-=======
 	return [rocsData, isDone];
 }
 

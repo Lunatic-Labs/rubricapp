@@ -40,10 +40,6 @@ class Form extends Component {
         super(props);
 
         this.state = {
-<<<<<<< HEAD
-            unitOfAssessment: this.props.unitOfAssessment,
-            units: this.props.form.units,
-=======
             units: this.props.units,
 >>>>>>> master
             currentUnitTabIndex: 0,
