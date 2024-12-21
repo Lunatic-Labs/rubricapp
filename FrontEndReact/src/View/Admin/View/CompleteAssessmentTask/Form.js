@@ -375,14 +375,14 @@ class Form extends Component {
             if (unit.completedAssessmentTask) {
                 const catId = unit.completedAssessmentTask["completed_assessment_id"];
                 
-                promise = genericResourcePUT(
+                genericResourcePUT(
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
                     { rawResponse: true }
                 );
             } else {
-                promise = genericResourcePOST(
+                genericResourcePOST(
                     `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
                     this,
                     JSON.stringify(newCAT),
