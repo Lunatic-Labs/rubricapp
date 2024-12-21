@@ -30,9 +30,9 @@ class Section extends Component {
     constructor(props) {
         super(props);
         
-        this.autosave = debounce(() => {
-            this.props.handleSubmit(this.props.isDone);
-        }, 2000);
+        this.autosave = () => {
+            this.props.markForAutosave(this.props.currentUnitTabIndex);
+        };
         
         /**
          * @method setCategoryProperty - Handles updating the 
