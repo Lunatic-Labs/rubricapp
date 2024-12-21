@@ -22,6 +22,7 @@ import { FormControl } from '@mui/material';
  * @param {Function} props.handleUnitTabChange - Function to handle the change of unit tab
  * 
  * @param {Function} props.modifyUnitCategoryProperty - Function to handle the updating the category property
+ * @param {Function} props.modifyUnitCategoryProperty - Function to handle the updating the category property
  * 
  * @param {Function} props.markForAutosave - Function to mark a unit for autosaving.
  */
@@ -29,9 +30,9 @@ class Section extends Component {
     constructor(props) {
         super(props);
         
-        this.autosave = () => {
-            this.props.markForAutosave(this.props.currentUnitTabIndex);
-        };
+        this.autosave = debounce(() => {
+            this.props.handleSubmit(this.props.isDone);
+        }, 2000);
         
         /**
          * @method setCategoryProperty - Handles updating the 
@@ -48,9 +49,16 @@ class Section extends Component {
         const currentRocsData = this.props.currentRocsData;
         const category = this.props.category;
         const categoryJson = assessmentTaskRubric["category_json"][category];
+        const assessmentTaskRubric = this.props.assessmentTaskRubric;
+        const currentRocsData = this.props.currentRocsData;
+        const category = this.props.category;
+        const categoryJson = assessmentTaskRubric["category_json"][category];
         
         const ratingJson = currentRocsData[category]["rating_json"];
+        const ratingJson = currentRocsData[category]["rating_json"];
 
+        const sliderValues = Object.keys(ratingJson).map(option => {
+            return {
         const sliderValues = Object.keys(ratingJson).map(option => {
             return {
                 "value": option,
@@ -74,27 +82,6 @@ class Section extends Component {
         });
         
         const suggestions = categoryJson["suggestions"];
-
-<<<<<<< HEAD
-        var observableCharacteristicList = [];
-
-        observableCharacteristics.map((oc, index) => {
-            observableCharacteristicList.push(
-                <ObservableCharacteristic
-                    navbar={this.props.navbar}
-                    currentUnitTabIndex={this.props.currentUnitTabIndex}
-                    observableCharacteristic={observableCharacteristics[index]}
-                    categoryName={category}
-                    setObservableCharacteristics={this.props.setObservableCharacteristics}
-                    observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
-                    id={index}
-                    key={index}
-                    autosave={this.autosave}
-                />
-            );
-
-            return oc;
-        });
         
         const suggestions = categoryJson["suggestions"];
 
@@ -109,26 +96,6 @@ class Section extends Component {
                 key={index}
                 autosave={this.autosave}
             />;
-        });
-
-        var rating = {};
-
-        rating["category_name"] = category;
-
-        rating["stored_value"] = currentRocsData[category]["rating"];
-
-        rating["data"] = sliderValues;
-
-        rating["setSliderValue"] = this.props.setSliderValue;
-
-        rating["name"] = category;
-
-        rating["show_ratings"] = this.props.navbar.state.chosenAssessmentTask["show_ratings"];
-
-        rating["show_suggestions"] = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
-
-        rating["description"] = currentData[category]["description"];
-=======
         const suggestionList = suggestions.map((suggestion, index) => {
             return <Suggestion
                 navbar={this.props.navbar}
@@ -144,7 +111,6 @@ class Section extends Component {
 
         const currentRating = currentRocsData[category]["rating"];
         const categoryDescription = currentRocsData[category]["description"];
->>>>>>> master
 
         return (
             <Box id="rating">
@@ -154,19 +120,14 @@ class Section extends Component {
                             <h4>Ratings</h4>
 
                             {categoryDescription}
+                            {categoryDescription}
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
                                     navbar={this.props.navbar}
-<<<<<<< HEAD
-                                    setSliderValue={this.props.setSliderValue}
-                                    currentUnitTabIndex={this.props.currentUnitTabIndex}
-                                    rating={rating}
-=======
                                     setRating={(newValue) => this.setCategoryProperty("rating", newValue)}
                                     currentRating={currentRating}
                                     sliderValues={sliderValues}
->>>>>>> master
                                     autosave={this.autosave}
                                 />
                             </Box>
@@ -180,6 +141,7 @@ class Section extends Component {
                             </Box>
                         </Box>
 
+                        {this.props.navbar.state.chosenAssessmentTask["show_suggestions"] &&
                         {this.props.navbar.state.chosenAssessmentTask["show_suggestions"] &&
                             <Box className="assessment-card" aria-label="suggestionsForImprovementSection">
 
@@ -195,15 +157,8 @@ class Section extends Component {
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
-<<<<<<< HEAD
-                                currentUnitTabIndex={this.props.currentUnitTabIndex}
-                                setComments={this.props.setComments}
-                                currentRocsData={currentRocsData}
-                                categoryName={category}
-=======
                                 setComments={(newValue) => this.setCategoryProperty("comments", newValue)}
                                 currentValue={currentRocsData[category]["comments"]}
->>>>>>> master
                                 autosave={this.autosave}
                             />
                         </Box>
