@@ -10,6 +10,17 @@ export const UnitType = Object.freeze({
 // ROCS Data - An object that stores information about how an assessment task has been completed.
 //  This includes things like what checkboxes have been clicked and comments. This object
 //  also includes information about the rubric it's based on.
+//  
+//  Structure:
+//  A map of rubric category names to category objects.
+//    Category objects:
+//      - comments: string - The comments for this category.
+//      - description: string - The description of this rubric category. This is the same as the description in the rubric itself.
+//      - observable_characteristics: string of 1s and 0s - Each 1 or 0 in the string represents if that checkbox is checked for Observable Characteristics.
+//      - suggestions: string of 1s and 0s - Has the same meaning as observable_characteristics except for Suggestions.
+//      - rating: integer - The rating for the category.
+//      - rating_json: map from tick mark position to tick mark name - Used for the tick mark names on the Ratings slider.
+//   This map also may contain "comments" and "done" entries. These are unused and a legacy artifact.
 //
 // Completed Assessment Task (CAT) - An object fetched by the completedAssessments route that
 //  associates ROCS data and whether the AT is done or not with a user/team.
