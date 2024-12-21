@@ -3,6 +3,7 @@ import { Box } from '@mui/material';
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
 	FIXED_TEAM: "fixed_team",
+	AD_HOC_TEAM: "ad_hoc_team",
 });
 
 // Terminology:

@@ -100,55 +100,6 @@ class Form extends Component {
                 }
             );
         };
-
-        // /**
-        //  * @method setSliderValue - Sets the slider value for a category.
-        //  * @param {number} unitIndex - The index of the unit.
-        //  * @param {string} categoryName - The name of the category.
-        //  * @param {number} rating - The rating value to set.
-        //  */
-        // this.setSliderValue = (unitIndex, categoryName, rating) => {
-        //     this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
-        //         category["rating"] = rating;
-        //     });
-        // };
-
-        // /**
-        //  * @method setObservableCharacteristics - Sets the observable characteristics for a category.
-        //  * @param {number} unitIndex - The index of the unit.
-        //  * @param {string} categoryName - The name of the category.
-        //  * @param {Object} observableCharacteristics - The observable characteristics to set.
-        //  */
-        // this.setObservableCharacteristics = (unitIndex, categoryName, observableCharacteristics) => {
-        //     this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
-        //         category["observable_characteristics"] = observableCharacteristics;
-        //     });
-        // }
-
-        // /**
-        //  * @method setSuggestions - Sets the suggestions for a category.
-        //  * @param {number} unitIndex - The index of the unit.
-        //  * @param {string} categoryName - The name of the category.
-        //  * @param {Object} suggestions - The suggestions to set.
-        //  */
-        // this.setSuggestions = (unitIndex, categoryName, suggestions) => {
-        //     this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
-        //         category["suggestions"] = suggestions;
-        //     });
-        // }
-
-        // /**
-        //  * 
-        //  * @method setComments - Sets the comments for a category.
-        //  * @param {number} unitIndex - The index of the unit.
-        //  * @param {string} categoryName - The name of the category.
-        //  * @param {string} comments - The comments to set.
-        //  */
-        // this.setComments = (unitIndex, categoryName, comments) => {
-        //     this.modifyUnitCategoryInformation(unitIndex, categoryName, category => {
-        //         category["comments"] = comments;
-        //     });
-        // }
         
         /**
          * @method getUnitCategoryStatus - Gets the status of a unit category.
@@ -211,7 +162,7 @@ class Form extends Component {
                             active={this.state.currentCategoryTabIndex === index}
                             key={index}
                             
-                            modifyUnitCategoryProperty={modifyUnitCategoryProperty}
+                            modifyUnitCategoryProperty={this.modifyUnitCategoryProperty}
                             handleSubmit={this.handleSubmit}
                         />;
                     }

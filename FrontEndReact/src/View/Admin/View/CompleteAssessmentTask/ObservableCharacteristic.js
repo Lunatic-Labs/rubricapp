@@ -36,8 +36,6 @@ class ObservableCharacteristic extends Component {
       }
 
       this.props.setObservableCharacteristics(
-        this.props.currentUnitTabIndex,
-        this.props.categoryName,
         newData
       );
       

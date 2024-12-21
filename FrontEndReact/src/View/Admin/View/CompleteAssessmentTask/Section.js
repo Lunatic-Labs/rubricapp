@@ -22,10 +22,7 @@ import { debounce } from '../../../../utility.js';
  * @param {Number} props.currentUnitTabIndex - Index of the current unit tab
  * @param {Function} props.handleUnitTabChange - Function to handle the change of unit tab
  * 
- * @param {Function} props.setSliderValue - Function to set the slider value
- * @param {Function} props.setObservableCharacteristics - Function to set the observable characteristics
- * @param {Function} props.setSuggestions - Function to set the suggestions
- * @param {Function} props.setComments - Function to set the comments
+ * @param {Function} props.modifyUnitCategoryProperty - Function to handle the updating the category property
  * 
  * @param {Function} props.handleSubmit - Function to handle the submit
  */
@@ -36,92 +33,64 @@ class Section extends Component {
         this.autosave = debounce(() => {
             this.props.handleSubmit(this.props.isDone);
         }, 2000);
+        
+        /**
+         * @method setCategoryProperty - Handles updating the 
+         * @param {String} propertyName - the name of the ROCS category property that is to be changed
+         * @param {Any} propertyValue - the new value for the property
+         */
+        this.setCategoryProperty = (propertyName, propertyValue) => {
+            this.props.modifyUnitCategoryProperty(this.props.currentUnitTabIndex, this.props.category, propertyName, propertyValue);
+        };
     }
     
     render() {
-        var assessmentTaskRubric = this.props.assessmentTaskRubric;
+        const assessmentTaskRubric = this.props.assessmentTaskRubric;
+        const currentRocsData = this.props.currentRocsData;
+        const category = this.props.category;
+        const categoryJson = assessmentTaskRubric["category_json"][category];
         
-        var currentData = this.props.currentData;
-        
-        var category = this.props.category;
-        
-        var categoryJson = assessmentTaskRubric["category_json"][category];
-        
-        var ratingJson = currentData[category]["rating_json"];
+        const ratingJson = currentRocsData[category]["rating_json"];
 
-        var sliderValues = [];
-
-        Object.keys(ratingJson).map((option) => {
-            sliderValues = [...sliderValues, {
+        const sliderValues = Object.keys(ratingJson).map(option => {
+            return {
                 "value": option,
                 "label": ratingJson[option],
                 "key": option,
-            }];
-
-            return option;
+            };
         });
         
-        var observableCharacteristics = categoryJson["observable_characteristics"];
+        const observableCharacteristics = categoryJson["observable_characteristics"];
 
-        var suggestions = categoryJson["suggestions"];
+        const observableCharacteristicList = observableCharacteristics.map((observableCharacteristic, index) => {
+            return <ObservableCharacteristic
+                navbar={this.props.navbar}
+                observableCharacteristic={observableCharacteristic}
+                observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
+                setObservableCharacteristics={(newValue) => this.setCategoryProperty("observable_characteristics", newValue)}
+                id={index}
+                key={index}
+                autosave={this.autosave}
+            />;
+        });
+        
+        const suggestions = categoryJson["suggestions"];
 
-        var observableCharacteristicList = [];
-
-        observableCharacteristics.map((oc, index) => {
-            observableCharacteristicList.push(
-                <ObservableCharacteristic
-                    navbar={this.props.navbar}
-                    currentUnitTabIndex={this.props.currentUnitTabIndex}
-                    observableCharacteristic={observableCharacteristics[index]}
-                    categoryName={category}
-                    setObservableCharacteristics={this.props.setObservableCharacteristics}
-                    observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
-                    id={index}
-                    key={index}
-                    autosave={this.autosave}
-                />
-            );
-
-            return oc;
+        const suggestionList = suggestions.map((suggestion, index) => {
+            return <Suggestion
+                navbar={this.props.navbar}
+                suggestion={suggestion}
+                suggestions={currentRocsData[category]["suggestions"]}
+                setCategoryProperty={this.setCategoryProperty}
+                setSuggestions={(newValue) => this.setCategoryProperty("suggestions", newValue)}
+                id={index}
+                key={index}
+                autosave={this.autosave}
+            />;
         });
 
-        var suggestionList = [];
-
-        suggestions.map((s, index) => {
-            suggestionList.push(
-                <Suggestion
-                    navbar={this.props.navbar}
-                    currentUnitTabIndex={this.props.currentUnitTabIndex}
-                    suggestion={suggestions[index]}
-                    suggestions={currentRocsData[category]["suggestions"]}
-                    setSuggestions={this.props.setSuggestions}
-                    categoryName={category}
-                    id={index}
-                    key={index}
-                    autosave={this.autosave}
-                />
-            );
-
-            return s;
-        });
-
-        var rating = {};
-
-        rating["category_name"] = category;
-
-        rating["stored_value"] = currentRocsData[category]["rating"];
-
-        rating["data"] = sliderValues;
-
-        rating["setSliderValue"] = this.props.setSliderValue;
-
-        rating["name"] = category;
-
-        rating["show_ratings"] = this.props.navbar.state.chosenAssessmentTask["show_ratings"];
-
-        rating["show_suggestions"] = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
-
-        rating["description"] = currentRocsData[category]["description"];
+        const currentRating = currentRocsData[category]["rating"];
+        const categoryDescription = currentRocsData[category]["description"];
 
         return (
             <Box id="rating">
@@ -130,14 +99,14 @@ class Section extends Component {
                         <Box className="assessment-card" aria-label="ratingsSection">
                             <h4>Ratings</h4>
 
-                            {rating["description"] }
+                            {categoryDescription}
 
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
                                     navbar={this.props.navbar}
-                                    setSliderValue={this.props.setSliderValue}
-                                    currentUnitTabIndex={this.props.currentUnitTabIndex}
-                                    rating={rating}
+                                    setRating={(newValue) => this.setCategoryProperty("rating", newValue)}
+                                    currentRating={currentRating}
+                                    sliderValues={sliderValues}
                                     autosave={this.autosave}
                                 />
                             </Box>
@@ -151,7 +120,7 @@ class Section extends Component {
                             </Box>
                         </Box>
 
-                        {rating["show_suggestions"] &&
+                        {this.props.navbar.state.chosenAssessmentTask["show_suggestions"] &&
                             <Box className="assessment-card" aria-label="suggestionsForImprovementSection">
 
                                 <h4>Suggestions For Improvement</h4>
@@ -166,10 +135,8 @@ class Section extends Component {
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
-                                currentUnitTabIndex={this.props.currentUnitTabIndex}
-                                setComments={this.props.setComments}
-                                currentRocsData={currentRocsData}
-                                categoryName={category}
+                                setComments={(newValue) => this.setCategoryProperty("comments", newValue)}
+                                currentValue={currentRocsData[category]["comments"]}
                                 autosave={this.autosave}
                             />
                         </Box>
