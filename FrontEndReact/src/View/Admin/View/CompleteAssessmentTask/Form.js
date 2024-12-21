@@ -360,13 +360,11 @@ class Form extends Component {
             
             const newCAT = selectedUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate, newIsDone);
             const newUnit = selectedUnit.withNewCAT(newCAT);
-            
-            let promise;
-            
+                        
             if (selectedUnit.completedAssessmentTask) {
                 const catId = selectedUnit.completedAssessmentTask["completed_assessment_id"];
                 
-                promise = genericResourcePUT(
+                genericResourcePUT(
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
@@ -481,14 +479,14 @@ class Form extends Component {
             if (unit.completedAssessmentTask) {
                 const catId = unit.completedAssessmentTask["completed_assessment_id"];
                 
-                promise = genericResourcePUT(
+                genericResourcePUT(
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
                     { rawResponse: true }
                 );
             } else {
-                promise = genericResourcePOST(
+                genericResourcePOST(
                     `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
                     this,
                     JSON.stringify(newCAT),
@@ -509,23 +507,6 @@ class Form extends Component {
                     };
                 }
             );
-            
-            // Once the CAT entry has been updated, insert the new CAT entry into the unit object
-            promise.then(result => {
-                const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
-
-                if (completeAssessmentEntry) {
-                    this.setState(
-                        prevState => {
-                            const updatedUnits = [...prevState.units];
-
-                            updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewCAT(completeAssessmentEntry);
-
-                            return { units: updatedUnits };
-                        }
-                    );
-                }
-            });
             
             setTimeout(() => {
                 this.setState({
