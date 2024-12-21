@@ -336,14 +336,7 @@ export class ATUnit {
 	 */
 	withNewCAT(newCat) {
 		const newUnit = this.shallowClone();
-		
 		newUnit.completedAssessmentTask = newCat;
-		
-		if (newCat && Object.keys(newCat).length > 0) {
-			newUnit.rocsData = newCat["rating_observable_characteristics_suggestions_data"];
-			newUnit.isDone = newCat["done"];
-		}
-		
 		return newUnit;
 	}
 	
