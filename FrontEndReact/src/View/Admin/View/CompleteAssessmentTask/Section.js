@@ -95,25 +95,20 @@ class Section extends Component {
 
             return oc;
         });
+        
+        const suggestions = categoryJson["suggestions"];
 
-        var suggestionList = [];
-
-        suggestions.map((s, index) => {
-            suggestionList.push(
-                <Suggestion
-                    navbar={this.props.navbar}
-                    currentUnitTabIndex={this.props.currentUnitTabIndex}
-                    suggestion={suggestions[index]}
-                    suggestions={currentRocsData[category]["suggestions"]}
-                    setSuggestions={this.props.setSuggestions}
-                    categoryName={category}
-                    id={index}
-                    key={index}
-                    autosave={this.autosave}
-                />
-            );
-
-            return s;
+        const suggestionList = suggestions.map((suggestion, index) => {
+            return <Suggestion
+                navbar={this.props.navbar}
+                suggestion={suggestion}
+                suggestions={currentRocsData[category]["suggestions"]}
+                setCategoryProperty={this.setCategoryProperty}
+                setSuggestions={(newValue) => this.setCategoryProperty("suggestions", newValue)}
+                id={index}
+                key={index}
+                autosave={this.autosave}
+            />;
         });
 
         var rating = {};
