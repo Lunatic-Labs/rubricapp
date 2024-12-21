@@ -10,8 +10,6 @@ export const UnitType = Object.freeze({
 // ROCS Data - An object that stores information about how an assessment task has been completed.
 //  This includes things like what checkboxes have been clicked and comments. This object
 //  also includes information about the rubric it's based on.
-<<<<<<< HEAD
-=======
 //  
 //  Structure:
 //  A map of rubric category names to category objects.
@@ -23,7 +21,6 @@ export const UnitType = Object.freeze({
 //      - rating: integer - The rating for the category.
 //      - rating_json: map from tick mark position to tick mark name - Used for the tick mark names on the Ratings slider.
 //   This map also may contain "comments" and "done" entries. These are unused and a legacy artifact.
->>>>>>> master
 //
 // Completed Assessment Task (CAT) - An object fetched by the completedAssessments route that
 //  associates ROCS data and whether the AT is done or not with a user/team.
