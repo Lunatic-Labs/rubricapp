@@ -249,9 +249,6 @@ export class ATUnit {
 		
 		const newUnit = this.shallowClone();
 		newUnit.rocsData = newRocs;
-<<<<<<< HEAD
-		
-=======
 		return newUnit;
 	}
 
@@ -274,36 +271,6 @@ export class ATUnit {
 	withNewCAT(newCat) {
 		const newUnit = this.shallowClone();
 		newUnit.completedAssessmentTask = newCat;
->>>>>>> master
-		return newUnit;
-	}
-
-	/**
-	 * Creates a copy of this unit with the isDone property modified.
-	 * @param {boolean} isDone
-	 * @returns {ATUnit}
-	 */
-	withNewIsDone(isDone) {
-		const newUnit = this.shallowClone();
-		newUnit.isDone = isDone;
-		return newUnit;
-	}
-	
-	/**
-	 * Creates a copy of this unit with a new complete assessment task entry.
-	 * @param {object} newCat
-	 * @returns {ATUnit}
-	 */
-	withNewCAT(newCat) {
-		const newUnit = this.shallowClone();
-		
-		newUnit.completedAssessmentTask = newCat;
-		
-		if (newCat && Object.keys(newCat).length > 0) {
-			newUnit.rocsData = newCat["rating_observable_characteristics_suggestions_data"];
-			newUnit.isDone = newCat["done"];
-		}
-		
 		return newUnit;
 	}
 	
@@ -337,11 +304,13 @@ export class ATUnit {
 	 * @returns {object}
 	 */
 	generateNewCAT(assessmentTaskId, completedBy, completedAt) {
+	generateNewCAT(assessmentTaskId, completedBy, completedAt) {
 		if (this.completedAssessmentTask) {
 			const newCAT = structuredClone(this.completedAssessmentTask);
 			
 			newCAT["rating_observable_characteristics_suggestions_data"] = this.rocsData;
 			newCAT["last_update"] = completedAt;
+			newCAT["done"] = this.isDone;
 			newCAT["done"] = this.isDone;
 			
 			return newCAT;
@@ -352,6 +321,7 @@ export class ATUnit {
 				"completed_by": completedBy,
 				"initial_time": completedAt,
 				"last_update": completedAt,
+				"done": this.isDone,
 				"done": this.isDone,
 			};
 		}
