@@ -57,7 +57,9 @@ class Form extends Component {
                         currentUnitTabIndex: newUnitTabIndex,
                         currentCategoryTabIndex: 0,
                     },
-                    this.generateCategoriesAndSection
+                    () => {
+                        this.generateCategoriesAndSection();
+                    }
                 );
             }
         };
@@ -72,7 +74,9 @@ class Form extends Component {
                     {
                         currentCategoryTabIndex: newCategoryTabIndex,
                     },
-                    this.generateCategoriesAndSection
+                    () => {
+                        this.generateCategoriesAndSection();
+                    }
                 );
             }
         };
@@ -205,20 +209,22 @@ class Form extends Component {
             // If markDone then mark the unit as done, otherwise use the original done status.
             const newIsDone = markDone ? true : unit.isDone;
             
-            const newCAT = unit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate, newIsDone);
-            const newUnit = unit.withNewCAT(newCAT);
-                        
+            const newUnit = unit.withNewIsDone(newIsDone);
+            const newCAT = newUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate);
+            
+            let promise;
+            
             if (unit.completedAssessmentTask) {
                 const catId = unit.completedAssessmentTask["completed_assessment_id"];
                 
-                genericResourcePUT(
+                promise = genericResourcePUT(
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
                     { rawResponse: true }
                 );
             } else {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
                     this,
                     JSON.stringify(newCAT),
@@ -239,6 +245,23 @@ class Form extends Component {
                     };
                 }
             );
+            
+            // Once the CAT entry has been updated, insert the new CAT entry into the unit object
+            promise.then(result => {
+                const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
+
+                if (completeAssessmentEntry) {
+                    this.setState(
+                        prevState => {
+                            const updatedUnits = [...prevState.units];
+
+                            updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewCAT(completeAssessmentEntry);
+
+                            return { units: updatedUnits };
+                        }
+                    );
+                }
+            });
             
             setTimeout(() => {
                 this.setState({
