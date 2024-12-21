@@ -3,7 +3,7 @@ import { Box } from '@mui/material';
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
 	FIXED_TEAM: "fixed_team",
-	AD_HOC_TEAM: "ad_hoc_team",
+	AD_HOC_TEAM: "ad_hoc_team", // Currently unused, made in preparation of adding ad hoc teams
 });
 
 // Terminology:
@@ -36,7 +36,6 @@ export function generateUnitList(args) {
 	let unitList = [];
 	
 	if (args.roleName === "Student") {
-		
 		if (args.unitType === UnitType.INDIVIDUAL) {
 			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.currentUserId;
 			const user = args.users.find(user => user["user_id"] === userId);
@@ -83,7 +82,7 @@ export function generateUnitList(args) {
 	return unitList;
 }
 
-function createIndividualUnit(user, cat, rubric) {
+function getOrGenerateUnitData(cat, rubric) {
 	let rocsData;
 	let isDone;
 	
@@ -99,6 +98,12 @@ function createIndividualUnit(user, cat, rubric) {
 		rocsData = structuredClone(rubric["category_rating_observable_characteristics_suggestions_json"]);
 		isDone = false;
 	}
+	
+	return [rocsData, isDone];
+}
+
+function createIndividualUnit(user, cat, rubric) {
+	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
 	
 	return new IndividualUnit(cat ?? null, rocsData, isDone, user);
 }
@@ -106,22 +111,7 @@ function createIndividualUnit(user, cat, rubric) {
 function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	const teamId = team["team_id"];
 	
-	let rocsData;
-	let isDone;
-	
-	if (cat && Object.keys(cat).length > 0) {
-		// The unit already has a complete AT entry (it has been completed before)
-		
-		rocsData = cat["rating_observable_characteristics_suggestions_data"];
-		isDone = cat["done"];
-	} else {
-		// Otherwise this is a new CAT
-		
-		// Create new ROCS data from rubric
-		rocsData = structuredClone(rubric["category_rating_observable_characteristics_suggestions_json"]);
-		isDone = false;
-	}
-		
+	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
 	const teamMembers = fixedTeamMembers[teamId];
 		
 	return new FixedTeamUnit(

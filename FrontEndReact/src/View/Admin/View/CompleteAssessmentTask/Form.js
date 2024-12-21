@@ -22,7 +22,6 @@ import { getUnitCategoryStatus } from './cat_utils.js';
  * @param {Object} props.assessmentTaskRubric - The rubric for the assessment task.
  * @param {Object} props.navbar - The navbar object.
  * 
- * @property {boolean} state.usingTeams - Boolean indicating whether teams are being used for this form.
  * @property {Array<ATUnit>} state.units - Array of `ATUnit` class objects taken from props.units.
  * @property {number} state.currentUnitTabIndex - Index of the currently selected `ATUnit` from `units`.
  * @property {Array<Category>} state.categoryList - Array of `Category` objects using the current rubric.
@@ -35,7 +34,6 @@ class Form extends Component {
         super(props);
 
         this.state = {
-            usingTeams: this.props.usingTeams,
             units: this.props.units,
             currentUnitTabIndex: 0,
             categoryList: null,
