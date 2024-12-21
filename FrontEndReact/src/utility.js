@@ -1,6 +1,6 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
-import { zonedTimeToUtc, format } from "date-fns-tz";
+import { fromZonedTime, format } from "date-fns-tz";
 import * as eventsource from "eventsource-client";
 
 export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
@@ -244,7 +244,7 @@ export function formatDueDate(dueDate, timeZone) {
 
     const timeZoneId = timeZoneMap[timeZone];
 
-    const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+    const zonedDueDate = fromZonedTime(dueDate, timeZoneId);
 
     const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
 
@@ -272,37 +272,27 @@ export function getDueDateString(dueDate) {
 }
 
 export function getHumanReadableDueDate(dueDate, timeZone) {
-    dueDate = dueDate.substring(5);
+    const date = new Date(dueDate);
 
-    var month = Number(dueDate.substring(0, 2)) - 1;
+    const month = date.getMonth();
 
-    dueDate = dueDate.substring(3);
+    const day = date.getDate();
 
-    var day = Number(dueDate.substring(0, 2));
+    const hour = date.getHours();
 
-    dueDate = dueDate.substring(3);
-
-    var hour = Number(dueDate.substring(0, 2));
-
-    var twelveHourClock = hour < 12 ? "am": "pm";
-
-    hour = hour > 12 ? (hour % 12) : hour;
-
-    hour = hour === 0 ? 12 : hour;
-
-    dueDate = dueDate.substring(3);
-
-    var minute = Number(dueDate.substring(0, 2));
-
+    const minute = date.getMinutes();
+    
     const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    
+    const twelveHourClock = hour < 12 ? "am": "pm";
 
-    var minutesString = minute < 10 ? ("0" + minute): minute;
-
-    var timeString = `${hour}:${minutesString}${twelveHourClock}`;
-
-    var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone ? timeZone : ""}`;
-
-    return dueDateString;
+    const displayHour = hour > 12 ? (hour % 12) : (hour === 0 ? 12 : hour);
+    
+    const minutesString = minute < 10 ? ("0" + minute): minute;
+    
+    const timeString = `${displayHour}:${minutesString}${twelveHourClock}`;
+    
+    return `${monthNames[month]} ${day} at ${timeString} ${timeZone ? timeZone : ""}`;
 }
 
 /**

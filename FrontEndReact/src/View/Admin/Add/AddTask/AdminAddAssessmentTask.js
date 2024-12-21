@@ -7,7 +7,7 @@ import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDate
 import { Box, Button, FormControl, Typography, IconButton, TextField, Tooltip, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 import FormHelperText from '@mui/material/FormHelperText';
@@ -386,7 +386,7 @@ class AdminAddAssessmentTask extends Component {
                                             id="numberOfTeams"
                                             name="newPassword"
                                             variant='outlined'
-                                            label="Number of teams"
+                                            label="Maximum number of teams you will use during class for this assessment"
                                             value={this.state.numberOfTeams}
                                             error={!!errors.numberOfTeams}
                                             helperText={errors.numberOfTeams}
@@ -406,7 +406,7 @@ class AdminAddAssessmentTask extends Component {
                                             id="maxTeamSize"
                                             name="setTeamSize"
                                             variant='outlined'
-                                            label="Max team size"
+                                            label="Max team size allowed for each team in class"
                                             value={this.state.maxTeamSize}
                                             error={!!errors.maxTeamSize}
                                             helperText={errors.maxTeamSize}
@@ -534,7 +534,7 @@ class AdminAddAssessmentTask extends Component {
                                         id="password"
                                         name="newPassword"
                                         variant='outlined'
-                                        label="Password to switch teams"
+                                        label="Password to switch teams (Prevents students from switching teams without instructor approval.)"
                                         value={password}
                                         error={!!errors.password}
                                         helperText={errors.password}
@@ -549,7 +549,7 @@ class AdminAddAssessmentTask extends Component {
                                         id="notes"
                                         name="notes"
                                         variant='outlined'
-                                        label="Instructions to Students/TA's"
+                                        label="Instructions for Students/TA's about the Assessment or particular focus areas"
                                         value={notes}
                                         error={!!errors.notes}
                                         helperText={errors.notes}
