@@ -109,6 +109,10 @@ def get_all_completed_assessments():
             
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
+
+            if not completed_assessments:
+                completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
+            
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
@@ -155,17 +159,20 @@ def get_completed_assessment_by_team_or_user_id():
 def add_completed_assessment():
     try:
         assessment_data = request.json
-
         team_id = int(assessment_data["team_id"])
+        if (team_id == -1):
+            assessment_data["team_id"] = None
         assessment_task_id = int(request.args.get("assessment_task_id"))
         user_id = int(assessment_data["user_id"])
+        if (user_id == -1):
+            assessment_data["user_id"] = None
   
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:
-            completed = replace_completed_assessment(request.json, completed.completed_assessment_id)
+            completed = replace_completed_assessment(assessment_data, completed.completed_assessment_id)
         else:
-            completed = create_completed_assessment(request.json)
+            completed = create_completed_assessment(assessment_data)
 
         return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments")
 
