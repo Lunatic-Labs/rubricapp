@@ -6,7 +6,7 @@ import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
 import StatusIndicator, { StatusIndicatorState } from './StatusIndicator.js';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import { genericResourcePOST, genericResourcePUT, debounce } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
 import { getUnitCategoryStatus } from './cat_utils.js';
@@ -28,6 +28,8 @@ import { getUnitCategoryStatus } from './cat_utils.js';
  * @property {number} state.currentCategoryTabIndex - Index of the currently selected rubric `categoryList`.
  * @property {Object} state.section - Section object of the category `currentCategoryTabIndex` from `categoryList`.
  * @property {boolean} state.displaySavedNotification - Boolean indicating whether to display the pop-up window that confirms the assessment is saved.
+ * 
+ * @property {Set<number>} unitsThatNeedSaving - A set of all the unit indexes that need saving for autosave.
  */
 class Form extends Component {
     constructor(props) {
@@ -39,8 +41,10 @@ class Form extends Component {
             categoryList: null,
             currentCategoryTabIndex: 0,
             section: null,
-            displaySavedNotification: false
-        }
+            displaySavedNotification: false,
+        };
+        
+        this.unitsThatNeedSaving = new Set();
 
         /**
          * @method handleUnitTabChange - Handles the change of the unit tab.
@@ -53,7 +57,9 @@ class Form extends Component {
                         currentUnitTabIndex: newUnitTabIndex,
                         currentCategoryTabIndex: 0,
                     },
-                    this.generateCategoriesAndSection
+                    () => {
+                        this.generateCategoriesAndSection();
+                    }
                 );
             }
         };
@@ -68,7 +74,9 @@ class Form extends Component {
                     {
                         currentCategoryTabIndex: newCategoryTabIndex,
                     },
-                    this.generateCategoriesAndSection
+                    () => {
+                        this.generateCategoriesAndSection();
+                    }
                 );
             }
         };
@@ -161,7 +169,7 @@ class Form extends Component {
                             key={index}
                             
                             modifyUnitCategoryProperty={this.modifyUnitCategoryProperty}
-                            handleSubmit={this.handleSubmit}
+                            markForAutosave={this.markForAutosave}
                         />;
                     }
             });
@@ -186,32 +194,37 @@ class Form extends Component {
         
         /**
          * 
-         * @method handleSubmit - Handles the submission of the form.
-         * @param {boolean} newIsDone - The new completion status of the unit.
+         * @method saveUnit - Saves a unit to the server.
+         * @param {number} unitIndex - The index of the unit to save.
+         * @param {boolean} markDone - If the unit should be marked as done or retain the current done status.
          */
-        this.handleSubmit = (newIsDone) => {
+        this.saveUnit = (unitIndex, markDone) => {
             const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
-            const selectedUnitIndex = this.state.currentUnitTabIndex;
-            const selectedUnit = this.state.units[selectedUnitIndex];
+            const unit = this.state.units[unitIndex];
             
             const cookies = new Cookies();
             const currentUserId = cookies.get("user")["user_id"];
             const currentDate = new Date();
             
-            const newCAT = selectedUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate, newIsDone);
-            const newUnit = selectedUnit.withNewCAT(newCAT);
-                        
-            if (selectedUnit.completedAssessmentTask) {
-                const catId = selectedUnit.completedAssessmentTask["completed_assessment_id"];
+            // If markDone then mark the unit as done, otherwise use the original done status.
+            const newIsDone = markDone ? true : unit.isDone;
+            
+            const newUnit = unit.withNewIsDone(newIsDone);
+            const newCAT = newUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate);
+            
+            let promise;
+            
+            if (unit.completedAssessmentTask) {
+                const catId = unit.completedAssessmentTask["completed_assessment_id"];
                 
-                genericResourcePUT(
+                promise = genericResourcePUT(
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
                     { rawResponse: true }
                 );
             } else {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
                     this,
                     JSON.stringify(newCAT),
@@ -224,7 +237,7 @@ class Form extends Component {
                 prevState => {
                     const updatedUnits = [...prevState.units];
                     
-                    updatedUnits[selectedUnitIndex] = newUnit;
+                    updatedUnits[unitIndex] = newUnit;
     
                     return { 
                         displaySavedNotification: true,
@@ -233,12 +246,50 @@ class Form extends Component {
                 }
             );
             
+            // Once the CAT entry has been updated, insert the new CAT entry into the unit object
+            promise.then(result => {
+                const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
+
+                if (completeAssessmentEntry) {
+                    this.setState(
+                        prevState => {
+                            const updatedUnits = [...prevState.units];
+
+                            updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewCAT(completeAssessmentEntry);
+
+                            return { units: updatedUnits };
+                        }
+                    );
+                }
+            });
+            
             setTimeout(() => {
                 this.setState({
                     displaySavedNotification: false
                 });
             }, 3000);
         };
+        
+        /**
+         * @method markForAutosave - Marks a unit to be autosaving soon.
+         * @param {number} unitIndex - The index of the unit.
+         */
+        this.markForAutosave = (unitIndex) => {
+            this.unitsThatNeedSaving.add(unitIndex);
+            
+            this.doAutosave();
+        }
+        
+        /**
+         * @method doAutosave - Performs an autosave.
+         */
+        this.doAutosave = debounce(() => {
+            this.unitsThatNeedSaving.forEach(unitIndex => {
+                this.saveUnit(unitIndex, false);
+            });
+            
+            this.unitsThatNeedSaving.clear();
+        }, 2000);
     }
 
     componentDidMount() {
@@ -266,7 +317,7 @@ class Form extends Component {
                             aria-label="saveButton"
 
                             onClick={() => {
-                                this.handleSubmit(this.areAllCategoriesCompleted());
+                                this.saveUnit(this.state.currentUnitTabIndex, this.areAllCategoriesCompleted());
                             }}
 
                             disabled={!this.areAllCategoriesCompleted()}

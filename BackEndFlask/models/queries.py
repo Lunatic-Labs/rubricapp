@@ -1189,3 +1189,29 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
         )
 
     return student_info.all() 
+
+def does_team_user_exist(user_id:int, team_id:int):
+    """
+    Description:
+    Returns true or false if the (user_id,team_id) entry exists in TeamUser table.
+
+    Paramaters:
+    user_id: <class 'int'> (User Id)
+    team_id: <class 'int'> (Team Id)
+
+    Returns:
+    <class 'bool'> (If a (user_id, team_id) entry is present in TeamUser table)
+
+    Exceptions:
+    None except what the db or oem may raise.
+    """
+    is_entry = db.session.query(
+        TeamUser.team_user_id
+    ).filter(
+        TeamUser.user_id == user_id,
+        TeamUser.team_id == team_id
+    ).all()
+
+    if len(is_entry) == 0:
+        return False
+    return True
