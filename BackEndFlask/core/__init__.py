@@ -1,4 +1,5 @@
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from models.tests import testing
@@ -96,6 +97,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+migrate = Migrate(app, db)
 
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
