@@ -54,7 +54,7 @@ class StudentCompletedAssessmentTasks extends Component {
             completedAssessments,
         } = this.state;
 
-        const filteredATs = this.props.filteredAssessments; // Currently unused, but may be in the future.
+        // const filteredATs = this.props.filteredAssessments; // Currently unused, but may be in the future.
         const filteredCATs = this.props.filteredCompleteAssessments;
 
         if (errorMessage) {

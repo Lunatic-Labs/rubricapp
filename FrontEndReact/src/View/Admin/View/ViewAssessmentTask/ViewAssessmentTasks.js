@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatDueDate, genericResourceGET, genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from '../../../../utility.js';
+import { formatDueDate, genericResourceGET, genericResourcePUT, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
