@@ -9,7 +9,7 @@ import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utilit
 
 class ViewCompletedAssessmentTasks extends Component {
     render() {
-        var navbar = this.props.navbar;
+        // var navbar = this.props.navbar;
 
         var completedAssessments = this.props.completedAssessments;
         var assessmentTasks = this.props.assessmentTasks;

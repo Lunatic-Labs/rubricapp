@@ -75,7 +75,7 @@ class StudentViewAssessmentTask extends Component {
         var role = this.props.role;
 
         const filteredATs = this.props.filteredAssessments;
-        const filteredCATs = this.props.filteredCompleteAssessments; // Currently unused, but may be in the future.
+        // const filteredCATs = this.props.filteredCompleteAssessments; // Currently unused, but may be in the future.
 
         if (errorMessage) {
             return(
