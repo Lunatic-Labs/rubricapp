@@ -25,6 +25,7 @@ class AdminAddUser extends Component {
             firstName: '',
             lastName: '',
             email: '',
+            originalEmail: '',
             role: '',
             lmsId: '',
 
@@ -35,7 +36,7 @@ class AdminAddUser extends Component {
                 role: '',
                 lmsId: '',
             }
-        }
+        };
 
         this.unenrollUser = () => {
             var navbar = this.props.navbar;
@@ -72,11 +73,12 @@ class AdminAddUser extends Component {
         var user = state.user;
         var addUser = state.addUser;
 
-        if(user!==null && !addUser) {
+        if (user !== null && !addUser) {
             this.setState({
                 firstName: user["first_name"],
                 lastName: user["last_name"],
                 email: user["email"],
+                originalEmail: user["email"],
                 role: user["role_id"],
                 lmsId: user["lms_id"],
                 editUser: true,
@@ -89,7 +91,6 @@ class AdminAddUser extends Component {
             mode : "",
             showDialog: this.state.showDialog === false ? true : false,
         })
-        
     }
 
     handleDrop = () => {
@@ -141,6 +142,7 @@ class AdminAddUser extends Component {
             firstName,
             lastName,
             email,
+            originalEmail,
             role,
             lmsId,
         } = this.state;
@@ -165,7 +167,7 @@ class AdminAddUser extends Component {
         if (lastName.trim() === '')
             newErrors["lastName"] = "Last name cannot be empty";
 
-        if (email.trim() === '') 
+        if (email.trim() === '')
             newErrors["email"] = "Email cannot be empty";
 
         if (!navbar.props.isSuperAdmin && role === '')
@@ -195,23 +197,27 @@ class AdminAddUser extends Component {
         });
 
         let promise;
+        let owner_id = cookies.get('user')['user_id'];
 
         if(user === null && addUser === false) {
             if(navbar.props.isSuperAdmin) {
                 promise = genericResourcePOST(`/user`, this, body);
-
             } else {
-                promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}`, this, body);
+                promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}&owner_id=${owner_id}`, this, body);
             }
 
         } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
             promise = genericResourcePOST(`/user`, this, body);
-
         } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
             promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
-        
         } else {
-            promise = genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
+            promise = (email !== originalEmail)
+
+                // The email has been updated, pass the new email
+                ? genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}&new_email=${email}&owner_id=${owner_id}`, this, body)
+
+                // The email has not been updated, no need to pass the new email
+                : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
         promise.then(result => {

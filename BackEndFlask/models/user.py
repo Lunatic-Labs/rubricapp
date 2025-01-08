@@ -4,7 +4,7 @@ from models.schemas import User, UserCourse
 from sqlalchemy import (
     and_
 )
-from models.utility import generate_random_password, send_new_user_email
+from models.utility import generate_random_password, send_new_user_email, check_bounced_emails
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -142,7 +142,7 @@ def update_password(user_id, password) -> str:
 
 
 @error_log
-def set_reset_code(user_id, code_hash): 
+def set_reset_code(user_id, code_hash):
     user = User.query.filter_by(user_id=user_id).first()
 
     setattr(user, 'reset_code', code_hash)
@@ -164,15 +164,16 @@ def user_already_exists(user_data):
 
 
 @error_log
-def create_user(user_data):
+def create_user(user_data, owner_email=None):
     if "password" in user_data:
         password = user_data["password"]
-
         has_set_password = True # for demo users, avoid requirement to choose new password
     else:
         password = generate_random_password(6)
-
         send_new_user_email(user_data["email"], password)
+
+        if owner_email is not None:
+            check_bounced_emails(owner_email)
 
         has_set_password = False
 
