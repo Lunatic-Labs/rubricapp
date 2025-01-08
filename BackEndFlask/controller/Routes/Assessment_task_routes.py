@@ -192,7 +192,6 @@ def add_assessment_task():
         )
 
 
-
 @bp.route('/assessment_task', methods = ['PUT'])
 @jwt_required()
 @bad_token_check()

@@ -24,11 +24,8 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy the rest of the backend code
 COPY BackEndFlask/ /app/
 
-# Initialize the Backend environment
-RUN python setupEnv.py -d
-
 # Expose the Backend port
 EXPOSE 5000
 
 # Start the Flask server
-CMD ["python", "setupEnv.py", "-s"]
+CMD ["python", "setupEnv.py", "-ds"]
