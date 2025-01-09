@@ -6,56 +6,50 @@ import { Tab } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator.js';
+import {StatusIndicatorState} from './StatusIndicator.js';
+import {getUnitCategoryStatus} from './cat_utils.js';
 
-// This component is used to display the tabs for the names in the unit of assessment (team or individual) 
-// in the complete assessment task page.
-// It will display the team or individual name and the status of the unit
-
+/**
+ * This component is used to display the tabs for the names in the unit of assessment
+ * in the complete assessment task page.
+ * It will display the team or individual name and the status of the unit.
+ * The name displayed is stored in the ATUnit Objects stored in the units array.
+ *
+ * @param {Object} props
+ * @param {Array} props.units - Array of ATUnit objects
+ * @param {Array} props.checkins - Array of checkins objects
+ * @param {Object} props.navbar - Navbar object
+ * @param {Number} props.currentUnitTabIndex - Index of the current unit tab
+ * @param {Function} props.handleUnitTabChange - Function to handle the change of unit tab
+ */
 class UnitOfAssessmentTab extends Component {
     render() {
+        const units = this.props.units;
 
-        var units = this.props.form.units;
+        const unitTabsList = [];
 
-        var unitList = []
+        units.forEach((currentUnit, index) => {
+            const unitName = currentUnit.displayName;
+            const unitId = currentUnit.id;
+            const unitTooltip = currentUnit.getCheckedInTooltip(this.props.checkins);
 
-        for(var i = 0; i < units.length; i++) {        
-
-            var currentUnit = units[i];
-            var checkin = this.props.checkin;
-            var unitNames = [];
-            var ci=0;
-            if (this.props.unitOfAssessment) {
-                var unitName = currentUnit["team_name"];
-                var unitId = currentUnit["team_id"];
-                var unitMembers = this.props.form.teams_users[unitId];
-
-                for(var index = 0; index < unitMembers.length; index++){
-                    for (ci = 0; ci < checkin.length; ci++) {
-                        const currentObject = checkin[ci];
-                        
-                        if ('user_id' in currentObject && currentObject.user_id === unitMembers[index]["user_id"]) {
-                            var firstName = unitMembers[index]["first_name"];
-                            var lastName = unitMembers[index]["last_name"];
-                            var fullName = firstName + " " + lastName;
-                            unitNames = [...unitNames, <Box key={index}> {fullName} </Box>];
-                        }
-                    }
-                }
-
-                unitNames = unitNames.length === 0
-                ? [<Box key={0}> No Team Members Checked In</Box>]
-                : unitNames;
+            let unitStatus;
+            
+            if (currentUnit.isDone === true) {
+                unitStatus = StatusIndicatorState.COMPLETED;
             } else {
-                unitName = currentUnit["first_name"] + " " + currentUnit["last_name"];
-                unitId = currentUnit["user_id"];
-                for (ci = 0; ci < checkin.length; ci++) {
-                    if (checkin[ci].user_id === unitId)
-                    {
-                        unitNames = [ <Box key={0}> Checked In </Box>];
-                    }  
-                } 
+                const isNotStarted = currentUnit.categoryNames().every(categoryName => {
+                    return getUnitCategoryStatus(currentUnit, this.props.navbar.state.chosenAssessmentTask, categoryName) === StatusIndicatorState.NOT_STARTED;
+                });
+
+                if (isNotStarted) {
+                    unitStatus = StatusIndicatorState.NOT_STARTED;
+                } else {
+                    unitStatus = StatusIndicatorState.IN_PROGRESS;
+                }
             }
-            unitList.push(
+
+            unitTabsList.push(
                 <Tab
                     label={
                         <Box sx={{
@@ -64,15 +58,15 @@ class UnitOfAssessmentTab extends Component {
                             alignItems: "center",
                             justifyContent: "center"
                         }}>
-                            <Tooltip title={unitNames}>
+                            <Tooltip title={unitTooltip}>
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
-                                status={this.props.form.unitInfo[unitId].done}
+                                status={unitStatus}
                             />
                         </Box>
                     }
-                    value={unitId}
+                    value={index}
                     key={unitId}
                     sx={{
                         maxWidth: 250,
@@ -83,51 +77,49 @@ class UnitOfAssessmentTab extends Component {
                         padding: "",
                         borderRadius: "10px",
                         margin : "0 0px 0 10px",
-                        border: this.props.currentUnitTab === unitId ? '2px solid #2E8BEF ' : '2px solid gray',
+                        border: this.props.currentUnitTabIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
                         '&.Mui-selected': {
                             color: '#2E8BEF '
                         },
                     }}
                 /> 
             )
-        }
+        });
+
         return (
-            <React.Fragment> 
-                <Tabs
-                    value={this.props.unitValue}
+            <Tabs
+                value={this.props.currentUnitTabIndex}
 
-                    onChange={(event, newValue) => {
-                        this.props.handleUnitChange(event, newValue);
-                        this.props.handleUnitTabChange(newValue);
-                    }}
+                onChange={(event, newUnitTabIndex) => {
+                    this.props.handleUnitTabChange(newUnitTabIndex);
+                }}
 
-                    variant="scrollable"
-                    scrollButtons
-                    aria-label="visible arrows tabs example"
-                    
-                    sx={{
-                        width: "100%",
+                variant="scrollable"
+                scrollButtons
+                aria-label="visible arrows tabs example"
+                
+                sx={{
+                    width: "100%",
 
-                        [`& .${tabsClasses.scrollButtons}`]: {
-                            '&.Mui-disabled': { opacity: 0.3 },
-                        }, 
+                    [`& .${tabsClasses.scrollButtons}`]: {
+                        '&.Mui-disabled': { opacity: 0.3 },
+                    }, 
 
-                        [`& .MuiTabs-indicator`]: { 
-                            display: 'none' 
-                        },
+                    [`& .MuiTabs-indicator`]: { 
+                        display: 'none' 
+                    },
 
-                        '& .MuiTab-root': {
-                            border: '2px solid',
-                            '&.Mui-selected': {
-                                backgroundColor: '#D9D9D9',
-                                color: 'inherit',
-                            }
-                        },
-                    }}
-                >
-                    {unitList}
-                </Tabs>
-            </React.Fragment>
+                    '& .MuiTab-root': {
+                        border: '2px solid',
+                        '&.Mui-selected': {
+                            backgroundColor: '#D9D9D9',
+                            color: 'inherit',
+                        }
+                    },
+                }}
+            >
+                {unitTabsList}
+            </Tabs>
         )
     }
 }
