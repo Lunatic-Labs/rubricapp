@@ -5,74 +5,70 @@ import Box from '@mui/material/Box';
 
 
 class Suggestion extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      checked: this.props.suggestions[this.props.id] === "1"
-    };
-  }
-
-  componentDidUpdate() {
-    if((this.props.suggestions[this.props.id] === "1") !== this.state.checked) {
-      this.setState({
-        checked: this.props.suggestions[this.props.id] === "1"
-      });
+        this.state = {
+            checked: this.props.suggestions[this.props.id] === "1"
+        };
     }
-  }
 
-  render() {
-    const handleChange = () => {
-      if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
-      
-      this.setState((prevState) => ({
-        checked: !prevState.checked,
-      }));
+    componentDidUpdate() {
+        if ((this.props.suggestions[this.props.id] === "1") !== this.state.checked) {
+            this.setState({
+                checked: this.props.suggestions[this.props.id] === "1"
+            });
+        }
+    }
 
-      var newData = "";
+    render() {
+        const handleChange = () => {
+            if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
+            
+            this.setState((prevState) => ({
+                checked: !prevState.checked,
+            }));
 
-      for (var i = 0; i < this.props.suggestions.length; i++) {
-        newData += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
-      }
+            var newData = "";
 
-      this.props.setSuggestions(
-        this.props.unitValue,
-        this.props.categoryName,
-        newData
-      );
-      
-      this.props.autosave();
-    };
+            for (var i = 0; i < this.props.suggestions.length; i++) {
+                newData += i === this.props.id ? (this.props.suggestions[i] === "0" ? "1" : "0") : this.props.suggestions[i];
+            }
 
-    return (
-      <Box
-        className="checkbox-alignment"
+            this.props.setSuggestions(newData);
+            
+            this.props.autosave();
+        };
 
-        style={{ backgroundColor: this.state.checked ? "#ADCBEE" : "#D9D9D9" }}
+        return (
+            <Box
+                className="checkbox-alignment"
 
-        onClick={handleChange}
+                style={{ backgroundColor: this.state.checked ? "#ADCBEE" : "#D9D9D9" }}
 
-        disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
-      >
-        <Checkbox
-          sx={{
-            p: 2,
-            width: "1.25rem",
-            height: "1.25rem",
-            color: this.state.checked ? "#2E8BEF !important" : "none",
-          }}
+                onClick={handleChange}
 
-          name={this.props.suggestion}
+                disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
+            >
+                <Checkbox
+                    sx={{
+                        p: 2,
+                        width: "1.25rem",
+                        height: "1.25rem",
+                        color: this.state.checked ? "#2E8BEF !important" : "none",
+                    }}
 
-          checked={this.state.checked}
+                    name={this.props.suggestion}
 
-          disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
-        />
+                    checked={this.state.checked}
 
-        <label>{this.props.suggestion}</label>
-      </Box>
-    );
-  }
+                    disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
+                />
+
+                <label>{this.props.suggestion}</label>
+            </Box>
+        );
+    }
 }
 
 export default Suggestion;
