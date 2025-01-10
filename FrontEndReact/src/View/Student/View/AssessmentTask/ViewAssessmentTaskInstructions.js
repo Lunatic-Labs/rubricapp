@@ -71,10 +71,7 @@ class ViewAssessmentTaskInstructions extends Component {
 
         if (skipInstructions) {
             this.handleContinueClick();
-<<<<<<< HEAD
-=======
             return <></>;
->>>>>>> master
         }
 
         return (

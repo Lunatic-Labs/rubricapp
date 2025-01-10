@@ -325,14 +325,9 @@ class CompleteAssessmentTask extends Component {
             );
 
         }
-<<<<<<< HEAD
-        
-        const roleName = currentUserRole["role_name"];
-        
-        if (roleName === "Student" && this.state.unitOfAssessment && !team){
-=======
 
         const roleName = currentUserRole["role_name"];
+
 
         if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
 >>>>>>> master
@@ -340,17 +335,6 @@ class CompleteAssessmentTask extends Component {
                 <Loading />
             );
         }
-<<<<<<< HEAD
-        
-        if (roleName !== "Student" && this.state.usingTeams && !teamsUsers) {
-            return (
-                <Loading />
-            );  
-        }
-         
-        const unitList = this.state.unitList;
-        
-=======
 
         if (roleName !== "Student" && this.state.usingTeams && !teamsUsers) {
             return (
@@ -360,7 +344,6 @@ class CompleteAssessmentTask extends Component {
 
         const unitList = this.state.unitList;
 
->>>>>>> master
         if (!unitList) {
             return (
                 <Loading />
