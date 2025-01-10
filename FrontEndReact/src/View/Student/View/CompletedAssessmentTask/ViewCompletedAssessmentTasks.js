@@ -150,6 +150,12 @@ class ViewCompletedAssessmentTasks extends Component {
                                   completedAssessments,
                                   { readOnly: true, skipInstructions: true }
                               );
+                              this.props.navbar.setAssessmentTaskInstructions(
+                                  assessmentTasks,
+                                  atId,
+                                  completedAssessments,
+                                  { readOnly: true, skipInstructions: true }
+                              );
                                       }}
                                     aria-label="completedAssessmentTasksViewIconButton"
                                 >
