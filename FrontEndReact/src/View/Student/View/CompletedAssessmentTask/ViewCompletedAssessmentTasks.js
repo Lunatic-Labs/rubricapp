@@ -97,15 +97,12 @@ class ViewCompletedAssessmentTasks extends Component {
                             <div>
                                 <IconButton
                                     onClick={() => {
-                              // navbar.setAssessmentTaskInstructions(
-                              //     assessmentTasks,
-                              //     atId,
-                              //     completedAssessments,
-                              //     { readOnly: true, skipInstructions: true }
-                              // );
                               var singluarCompletedAssessment = null;
                               if (completedAssessments) {
-                                singluarCompletedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === atId) ?? null;
+                                  singluarCompletedAssessment
+                                      = completedAssessments.find(
+                                          completedAssessment => completedAssessment.assessment_task_id === atId
+                                      ) ?? null;
                               }
                               genericResourcePOST(
                                 `/rating`,
@@ -114,6 +111,12 @@ class ViewCompletedAssessmentTasks extends Component {
                                     "user_id" : singluarCompletedAssessment.user_id,
                                     "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
                                 }),
+                              );
+                              this.props.navbar.setAssessmentTaskInstructions(
+                                  assessmentTasks,
+                                  atId,
+                                  completedAssessments,
+                                  { readOnly: true, skipInstructions: true }
                               );
                                       }}
                                     aria-label="completedAssessmentTasksViewIconButton"

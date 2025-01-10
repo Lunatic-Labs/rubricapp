@@ -222,23 +222,23 @@ class CompleteAssessmentTask extends Component {
             );
 
         }
-        
+
         const roleName = currentUserRole["role_name"];
-        
+
         if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
             return (
                 <Loading />
             );
         }
-        
+
         if (roleName !== "Student" && this.state.usingTeams && !teamsUsers) {
             return (
                 <Loading />
-            );  
+            );
         }
-         
+
         const unitList = this.state.unitList;
-        
+
         if (!unitList) {
             return (
                 <Loading />

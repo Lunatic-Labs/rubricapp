@@ -71,6 +71,7 @@ class ViewAssessmentTaskInstructions extends Component {
 
         if (skipInstructions) {
             this.handleContinueClick();
+            return <></>;
         }
 
         return (
