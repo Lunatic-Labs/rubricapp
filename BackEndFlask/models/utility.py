@@ -4,11 +4,12 @@ import string, secrets
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
+OAUTH2_CREDS_FP = 'oauth2_creds.json'
 
-try: 
-    from models.hidden import OAUTH2_CREDS_FP
-except:
-    print("## need to add models/hidden.py and set PASSWORD before sending emails")
+# try: 
+#     from models.hidden import OAUTH2_CREDS_FP
+# except:
+#     print("## need to add models/hidden.py and set PASSWORD before sending emails")
 
 
 
@@ -54,7 +55,7 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
         send_email(student.email, subject, message)
 
-def send_email(address: str, subject: str,  content: str): 
+def send_email(address: str, subject: str,  content: str):
     try:
         yag = yagmail.SMTP("skillbuilder02", oauth2_file=OAUTH2_CREDS_FP)
         yag.send(to=address, subject=subject, contents=content)
