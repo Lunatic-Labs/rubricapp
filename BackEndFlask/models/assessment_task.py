@@ -23,11 +23,11 @@ class InvalidNumberOfTeams(Exception):
 
     def __str__(self):
         return self.message
-    
+
 class InvalidMaxTeamSize(Exception):
     def __init__(self):
         self.message = "Number of people on a team must be greater than 0."
-        
+
     def __str__(self):
         return self.message
 
@@ -39,7 +39,7 @@ def validate_number_of_teams(number_of_teams):
                 raise InvalidNumberOfTeams()
         except ValueError:
                 raise InvalidNumberOfTeams()
-            
+
 def validate_max_team_size(max_team_size):
     if max_team_size is not None:
         try:
@@ -75,10 +75,10 @@ def get_assessment_tasks_by_team_id(team_id):
 @error_log
 def get_assessment_task(assessment_task_id):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
-    
+
     if one_assessment_task is None:
-        raise InvalidAssessmentTaskID(assessment_task_id)    
-    
+        raise InvalidAssessmentTaskID(assessment_task_id)
+
     return one_assessment_task
 
 @error_log
@@ -100,13 +100,15 @@ def create_assessment_task(assessment_task):
         due_date=datetime.strptime(assessment_task["due_date"], '%Y-%m-%dT%H:%M:%S.%fZ'),
         time_zone=assessment_task["time_zone"],
         show_suggestions=assessment_task["show_suggestions"],
+        locked=False,
+        published=True,
         show_ratings=assessment_task["show_ratings"],
         unit_of_assessment=assessment_task["unit_of_assessment"],
         create_team_password=assessment_task["create_team_password"],
         comment=assessment_task["comment"],
         number_of_teams=assessment_task["number_of_teams"],
         max_team_size=assessment_task["max_team_size"],
-        notification_sent=None
+        notification_sent=None,
     )
 
     db.session.add(new_assessment_task)
@@ -120,7 +122,7 @@ def load_demo_admin_assessment_task():
             "assessment_task_name": "Critical Thinking Assessment",
             "comment": "An example comment",
             "create_team_password": "at_cta",
-            "due_date": "2023-04-24T08:30:00",
+            "due_date": "2027-04-24T08:30:00",
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
@@ -128,7 +130,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "EST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {    # Assessment Task 2
             "assessment_task_name": "Formal Communication Assessment",
@@ -142,13 +146,15 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": False,
             "time_zone": "EST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {      # Assessment Task 3
             "assessment_task_name": "Information Processing Assessment",
             "comment": None,
             "create_team_password": "at_ipa",
-            "due_date": "2023-02-14T08:00:00",
+            "due_date": "2027-02-14T08:00:00",
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 5,
@@ -156,13 +162,15 @@ def load_demo_admin_assessment_task():
             "show_ratings": False,
             "show_suggestions": True,
             "time_zone": "EST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 4
             "assessment_task_name": "Interpersonal Communication",
             "comment": None,
             "create_team_password": "at_ic",
-            "due_date": "2023-03-05T09:30:00",
+            "due_date": "2025-03-05T09:30:00",
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 5,
@@ -170,7 +178,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": False,
             "show_suggestions": False,
             "time_zone": "EST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": True,
+            "published": True,
         },
         {   # Assessment Task 5
             "assessment_task_name": "Management Assessment",
@@ -184,7 +194,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "EST",
-            "unit_of_assessment": True
+            "unit_of_assessment": True,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 6
             "assessment_task_name": "Problem Solving Assessment",
@@ -198,7 +210,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": False,
             "show_suggestions": False,
             "time_zone": "EST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 7
             "assessment_task_name": "Teamwork Assessment",
@@ -212,7 +226,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": False,
             "show_suggestions": True,
             "time_zone": "EST",
-            "unit_of_assessment": True
+            "unit_of_assessment": True,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 8
             "assessment_task_name": "Critical Thinking Assessment 2",
@@ -226,7 +242,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "CST",
-            "unit_of_assessment": True
+            "unit_of_assessment": True,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 9
             "assessment_task_name": "AAAAAAAAAAAA",
@@ -240,7 +258,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "EST",
-            "unit_of_assessment": True
+            "unit_of_assessment": True,
+            "locked": False,
+            "published": True,
         },
         {  # Assessment Task 10
             "assessment_task_name": "CCCCCCCCCCCCC",
@@ -254,7 +274,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
-            "unit_of_assessment": True
+            "unit_of_assessment": True,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 11
             "assessment_task_name": "DDDDDDDDDDDDDD",
@@ -268,7 +290,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
-            "unit_of_assessment": True
+            "unit_of_assessment": True,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 12
             "assessment_task_name": "Student 1",
@@ -282,7 +306,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "EST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 13
             "assessment_task_name": "Student 2 Individ",
@@ -296,7 +322,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 14
             "assessment_task_name": "UI 1",
@@ -310,7 +338,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 15
             "assessment_task_name": "UI 2",
@@ -324,7 +354,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 16
             "assessment_task_name": "Calc 1",
@@ -338,7 +370,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 17
             "assessment_task_name": "Calc 2",
@@ -352,7 +386,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 18
             "assessment_task_name": "Phys 1",
@@ -366,7 +402,9 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "MST",
-            "unit_of_assessment": False
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
         },
         {   # Assessment Task 19
             "assessment_task_name": "Phys 2",
@@ -380,8 +418,10 @@ def load_demo_admin_assessment_task():
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "MST",
-            "unit_of_assessment": False
-        }
+            "unit_of_assessment": False,
+            "locked": False,
+            "published": True,
+        },
     ]
 
     for assessment in list_of_assessment_tasks:
@@ -393,12 +433,14 @@ def load_demo_admin_assessment_task():
             "rubric_id": assessment["rubric_id"],
             "role_id": assessment["role_id"],
             "show_suggestions": assessment["show_suggestions"],
+            "locked": assessment["locked"],
+            "published": assessment["published"],
             "show_ratings": assessment["show_ratings"],
             "unit_of_assessment": assessment["unit_of_assessment"],
             "create_team_password": assessment["create_team_password"],
             "comment": assessment["comment"],
             "number_of_teams": assessment["number_of_teams"],
-            "max_team_size": assessment["max_team_size"]
+            "max_team_size": assessment["max_team_size"],
         })
 
 @error_log
@@ -451,4 +493,18 @@ def toggle_notification_sent_to_true(assessment_task_id, date):
 
     db.session.commit()
 
+    return one_assessment_task
+
+@error_log
+def toggle_lock_status(assessment_task_id):
+    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task.locked = not one_assessment_task.locked
+    db.session.commit()
+    return one_assessment_task
+
+@error_log
+def toggle_published_status(assessment_task_id):
+    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task.published = not one_assessment_task.published
+    db.session.commit()
     return one_assessment_task
