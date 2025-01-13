@@ -621,10 +621,11 @@ class AppState extends Component {
 
                 {this.state.activeTab==="Teams" &&
                     <Box className="page-spacing">
-                        <TeamDashboard
-                            navbar={this}
-                            aria-label="teamDashboard"
-                        />
+                        <div aria-label="teamDashboard">
+                            <TeamDashboard
+                                navbar={this}
+                            />
+                        </div>
                     </Box>
                 }
 
