@@ -31,7 +31,6 @@ var catb = "cancelAddTeamButton";
 var aosatb = "addOrSaveAddTeamButton";
 var atf = "addTeamForm";
 var utni = "userTeamNameInput";
-var uodd = "userObserverDropDown";
 
 
 
