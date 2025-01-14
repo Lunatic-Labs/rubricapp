@@ -58,7 +58,6 @@ def get_student_individual_ratings():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-@admin_check()
 def student_view_feedback(): 
     """
         Description:
@@ -67,7 +66,7 @@ def student_view_feedback():
         used to calculate lag time. 
     """
     try: 
-        user_id = request.json.get("user_id")
+        user_id = request.args.get("user_id")
         completed_assessment_id = request.json.get("completed_assessment_id")
 
         exists = check_feedback_exists(user_id, completed_assessment_id)

@@ -54,6 +54,9 @@ class StudentCompletedAssessmentTasks extends Component {
             completedAssessments,
         } = this.state;
 
+        // const filteredATs = this.props.filteredAssessments; // Currently unused, but may be in the future.
+        const filteredCATs = this.props.filteredCompleteAssessments;
+
         if (errorMessage) {
             return(
                 <div className='container'>
@@ -74,7 +77,7 @@ class StudentCompletedAssessmentTasks extends Component {
                 <div className='container'>
                     <ViewCompletedAssessmentTasks
                         navbar={this.props.navbar}
-                        completedAssessments={this.state.completedAssessments}
+                        completedAssessments={filteredCATs}
                         assessmentTasks={this.state.assessmentTasks}
                     />
                 </div>
