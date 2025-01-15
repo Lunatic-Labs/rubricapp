@@ -99,15 +99,15 @@ test("ReportingDashboard.test.js Test 5: Should show Roster Dashboard when click
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
-
-        clickFirstElementWithAriaLabel(vcib);
     });
+
+    clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
-
-        clickElementWithAriaLabel(rpt);
     });
+
+    clickElementWithAriaLabel(rpt);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vasb);
@@ -116,9 +116,7 @@ test("ReportingDashboard.test.js Test 5: Should show Roster Dashboard when click
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
 
@@ -140,9 +138,9 @@ test("ReportingDashboard.test.js Test 6: Should show Ratings and Feedback page w
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vasb);
-
-        clickElementWithAriaLabel(raft);
     });
+
+    clickElementWithAriaLabel(raft);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(avrb);
@@ -155,15 +153,15 @@ test("ReportingDashboard.test.js Test 7: Should show Roster Dashboard when click
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
-
-        clickFirstElementWithAriaLabel(vcib);
     });
+
+    clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
-
-        clickElementWithAriaLabel(rpt);
     });
+
+    clickElementWithAriaLabel(rpt);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vasb);
@@ -178,8 +176,6 @@ test("ReportingDashboard.test.js Test 7: Should show Roster Dashboard when click
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
