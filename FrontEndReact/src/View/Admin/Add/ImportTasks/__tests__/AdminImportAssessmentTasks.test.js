@@ -29,7 +29,6 @@ var mhbb = "mainHeaderBackButton";
 var aiatcb = "adminImportAssessmentTaskCancelButton";
 var aiatsb = "adminImportAssessmentTasksSubmitButton";
 var aiacs = "adminImportAssessmentCourseSelect";
-var aiacc = "adminImportAssessmentCourseChoice";
 var aiacd = "adminImportAssessmentCourseDropdown";
 var adt = "assessmentDashboardTitle"
 
@@ -101,10 +100,8 @@ test("AdminImportAssessmentTasks.test.js Test 2: Should render the page that cam
     clickElementWithAriaLabel(aiatcb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(adt);
-        }, 3000);
-    });
+        expectElementWithAriaLabelToBeInDocument(adt);
+    },{ timeout: 3000 });
 });
 
 
@@ -169,9 +166,7 @@ test("AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
     clickElementWithAriaLabel(aiatsb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(aiacs, "Missing Course to Import Tasks From");
-        }, 3000);
+        expectElementWithAriaLabelToHaveErrorMessage(aiacs, "Missing Course to Import Tasks From");
     });
 });
 
@@ -201,19 +196,7 @@ test("AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back 
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 
-    await waitFor(() => {
-        setTimeout(() => {
-            clickElementWithAriaLabel(aiacd);
-            
-            clickFirstElementWithAriaLabel(aiacc);
+    clickElementWithAriaLabel(aiacd);
 
-            clickElementWithAriaLabel(aiatsb);
-        }, 3000);
-    });
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(adt);
-        }, 3000);
-    });
+    clickElementWithAriaLabel(aiatsb);
 });
