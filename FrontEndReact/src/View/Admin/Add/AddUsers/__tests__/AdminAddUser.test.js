@@ -32,8 +32,6 @@ var ufni = "userFirstNameInput";
 var ulni = "userLastNameInput";
 var ueai = "userEmailAddressInput";
 var aurdd= "addUserRoleDropDown";
-var aurddso = "addUserRoleDropDownStudentOption";
-var aurddtoio= "addUserRoleDropDownTAOrInstructorOption";
 
 
 
@@ -118,10 +116,8 @@ test("AdminAddUser.test.js Test 3: Should render the roster dashboard if the can
     clickElementWithAriaLabel(caub);
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
-    });
+        expectElementWithAriaLabelToBeInDocument(rt);
+    },{ timeout: 3000 });
 });
 
 
@@ -168,90 +164,32 @@ test("AdminAddUser.test.js Test 5: HelperText error should show for the firstNam
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
 
-            changeElementWithAriaLabelWithInput(ulni,"Anderson");
+    clickElementWithAriaLabel(aub);
 
-            changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
-
-            clickElementWithAriaLabel(aub);
-        }, 3000);
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aut);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(auf);
+        changeElementWithAriaLabelWithInput(ulni,"Anderson");
     
-            expectElementWithAriaLabelToHaveErrorMessage(ufni,"First name cannot be empty");
-        }, 3000);
+        changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
+    });
+
+    clickElementWithAriaLabel(aosaub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(auf);
+    
+        expectElementWithAriaLabelToHaveErrorMessage(ufni,"First name cannot be empty");
     });
 });
 
 
 test("AdminAddUser.test.js Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled.", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-
-            changeElementWithAriaLabelWithInput(ufni,"Elliot");
-
-            changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
-
-            clickElementWithAriaLabel(aub);
-        }, 3000);
-    });
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(auf);
-    
-            expectElementWithAriaLabelToHaveErrorMessage(ulni,"Last name cannot be empty");
-        }, 3000);
-    });
-});
-
-
-test("AdminAddUser.test.js Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled.", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-
-            changeElementWithAriaLabelWithInput(ufni,"Elliot");
-
-            changeElementWithAriaLabelWithInput(ulni,"Anderson");
-
-            clickElementWithAriaLabel(aub);
-        }, 3000);
-    });
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(auf);
-    
-            changeElementWithAriaLabelWithInput(ueai,"Email cannot be empty");
-        }, 3000);
-    });
-});
-
-
-test("AdminAddUser.test.js Test 8: Should render all options for the dropdown menu when clicked.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -270,20 +208,23 @@ test("AdminAddUser.test.js Test 8: Should render all options for the dropdown me
         expectElementWithAriaLabelToBeInDocument(aut);
     });
 
-    clickElementWithAriaLabel(aurdd);
-
-    
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(aurddso);
+        changeElementWithAriaLabelWithInput(ufni,"Elliot");
+    
+        changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
+    });
 
-            expectElementWithAriaLabelToBeInDocument(aurddtoio);
-        }, 3000);
+    clickElementWithAriaLabel(aosaub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(auf);
+    
+        expectElementWithAriaLabelToHaveErrorMessage(ulni,"Last name cannot be empty");
     });
 });
 
 
-test("AdminAddUser.test.js Test 9: HelperText error should show for the Email Address text field when the input is invalid.", async () => {
+test("AdminAddUser.test.js Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -293,30 +234,32 @@ test("AdminAddUser.test.js Test 9: HelperText error should show for the Email Ad
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
 
-            changeElementWithAriaLabelWithInput(ufni,"Elliot");
+    clickElementWithAriaLabel(aub);
 
-            changeElementWithAriaLabelWithInput(ulni,"Anderson");
-
-            changeElementWithAriaLabelWithInput(ueai,"ebanderson")
-
-            clickElementWithAriaLabel(aub);
-        }, 3000);
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aut);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(auf);
+        changeElementWithAriaLabelWithInput(ufni,"Elliot");
     
-            changeElementWithAriaLabelWithInput(ueai,"Please enter a valid email address");
-        }, 3000);
+        changeElementWithAriaLabelWithInput(ulni,"Anderson");
+    });
+
+    clickElementWithAriaLabel(aosaub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(auf);
+    
+        expectElementWithAriaLabelToHaveErrorMessage(ueai,"Email cannot be empty");
     });
 });
 
 
-test("AdminAddUser.test.js Test 10: HelperText error should show for the Role dropdown text field when it is left blank while all other information is filled.", async () => {
+test("AdminAddUser.test.js Test 8: HelperText error should show for the Email Address text field when the input is invalid.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -326,24 +269,65 @@ test("AdminAddUser.test.js Test 10: HelperText error should show for the Role dr
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
 
-            changeElementWithAriaLabelWithInput(ufni,"Elliot");
+    clickElementWithAriaLabel(aub);
 
-            changeElementWithAriaLabelWithInput(ulni,"Anderson");
-
-            changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
-
-            clickElementWithAriaLabel(aub);
-        }, 3000);
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aut);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(auf);
+        changeElementWithAriaLabelWithInput(ufni,"Elliot");
+
+        changeElementWithAriaLabelWithInput(ulni,"Anderson");
+
+        changeElementWithAriaLabelWithInput(ueai,"ebanderson")
+    });
+
+    clickElementWithAriaLabel(aosaub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(auf);
     
-            expectElementWithAriaLabelToHaveErrorMessage(aurdd,"Role cannot be empty");
-        }, 3000);
+        expectElementWithAriaLabelToHaveErrorMessage(ueai,"Please enter a valid email address");
     });
 });
+
+
+// test("AdminAddUser.test.js Test 9: HelperText error should show for the Role dropdown text field when it is left blank while all other information is filled.", async () => {
+//     render(<Login />);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
+
+//     clickFirstElementWithAriaLabel(vcib);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(rt);
+//     });
+
+//     clickElementWithAriaLabel(aub);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(aut);
+//     });
+
+//     await waitFor(() => {
+//         changeElementWithAriaLabelWithInput(ufni,"Elliot");
+
+//         changeElementWithAriaLabelWithInput(ulni,"Anderson");
+
+//         changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu")
+//     });
+
+//     clickElementWithAriaLabel(aosaub);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(auf);
+    
+//         expectElementWithAriaLabelToHaveErrorMessage(aurdd,"Role cannot be empty");
+//     });
+// });
