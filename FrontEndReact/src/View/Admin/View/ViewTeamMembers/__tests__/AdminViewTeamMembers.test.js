@@ -27,9 +27,9 @@ var td = "teamDashboard";
 var vtib = "viewTeamsIconButton";
 var avtmt = "adminViewTeamMembersTitle";
 var amb = "addMemberButton";
-var atmt = "addTeamMembersTitle";
+var atmt = "AddTeamMembersTitle";
 var rmb = "removeMemberButton";
-var rtmt = "removeTeamMembersTitle";
+var rtmt = "RemoveTeamMembersTitle";
 var aetmstb = "adminEditTeamMembersSaveTeamButton";
 
 
@@ -61,9 +61,7 @@ test("AdminViewTeamMembers.test.js Test 1: Should render the TeamDashboard", asy
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 });
 
@@ -84,19 +82,15 @@ test("AdminViewTeamMembers.test.js Test 2: Should render the View Team page if t
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
 
@@ -117,27 +111,21 @@ test("AdminViewTeamMembers.test.js Test 3: Should render the View Team page if t
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
     
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 });
 
@@ -158,29 +146,21 @@ test("AdminViewTeamMembers.test.js Test 4: Should render the Add Team Members pa
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(amb);
-    }, 3000);
+    clickElementWithAriaLabel(amb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(atmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(atmt);
     });
 });
 
@@ -201,29 +181,21 @@ test("AdminViewTeamMembers.test.js Test 5: Should render the Remove Team Members
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(rmb);
-    }, 3000);
+    clickElementWithAriaLabel(rmb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rtmt);
     });
 });
 
@@ -244,37 +216,27 @@ test("AdminViewTeamMembers.test.js Test 6: Should render the AdminViewTeamMember
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(amb);
-    }, 3000);
+    clickElementWithAriaLabel(amb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(atmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(atmt);
     });
     
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
 
@@ -295,37 +257,27 @@ test("AdminViewTeamMembers.test.js Test 7: Should render the AdminViewTeamMember
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(rmb);
-    }, 3000);
+    clickElementWithAriaLabel(rmb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rtmt);
     });
     
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
 
@@ -346,40 +298,24 @@ test("AdminViewTeamMembers.test.js Test 8: Should render the AdminViewTeamMember
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(amb);
-    }, 3000);
+    clickElementWithAriaLabel(amb);
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(atmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(atmt);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(aetmstb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
-    });
+    clickElementWithAriaLabel(aetmstb);
 });
 
 
@@ -399,38 +335,22 @@ test("AdminViewTeamMembers.test.js Test 9: Should render the AdminViewTeamMember
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(vtib);
-    }, 3000);
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(rmb);
-    }, 3000);
+    clickElementWithAriaLabel(rmb);
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rtmt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rtmt);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(aetmstb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
-    });
+    clickElementWithAriaLabel(aetmstb);
 });
