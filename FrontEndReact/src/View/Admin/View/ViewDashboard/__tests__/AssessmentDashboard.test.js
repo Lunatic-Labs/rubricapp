@@ -32,7 +32,7 @@ var atb = "addTaskButton";
 var aaatt = "adminAddAssessmentTaskTitle";
 var eaib = "editAssessmentIconButton";
 var vcaib = "viewCompletedAssessmentIconButton";
-var vcatt = "viewCompletedAssessmentsTitle";
+var vciat = "viewCompletedIndividualAssessmentsTitle";
 var satb = "startAssessmentTasksButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var vmcrb = "viewMyCustomRubricsButton";
@@ -228,9 +228,11 @@ test("AssessmentDashboard.test.js Test 9: Should show Edit Assessment page when 
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(eaib);
     });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(eaib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aeatt);
@@ -255,12 +257,14 @@ test("AssessmentDashboard.test.js Test 10: Should show View Completed Assessment
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(vcaib);
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vcatt);
+        clickFirstElementWithAriaLabel(vcaib);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
 });
 
@@ -282,9 +286,12 @@ test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessme
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(satb);
     });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(satb);
+    },{ timeout: 3000 });
+
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vatit);
