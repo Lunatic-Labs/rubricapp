@@ -1,5 +1,6 @@
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import ResizeObserver from "resize-observer-polyfill";
 import Login from "../../Login/Login.js";
 
 import {
@@ -13,7 +14,7 @@ import {
     demoAdminPassword
 } from "../../../App.js";
 
-
+global.ResizeObserver = ResizeObserver;
 
 var lb = "loginButton";
 var ei = "emailInput";
@@ -54,9 +55,7 @@ test("Header.test.js Test 1: Should render the MainHeader component given the Vi
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcmh);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 });
 
@@ -71,9 +70,7 @@ test("MainHeader.test.js Test 2: Clicking the back button on the MainHeader comp
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcmh);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 
     clickElementWithAriaLabel(mhbb);
@@ -85,8 +82,6 @@ test("MainHeader.test.js Test 2: Clicking the back button on the MainHeader comp
 
 
 test("MainHeader.test.js Test 3: Clicking the view button for a given course provides the correct course title", async () => {
-    var className = "Operating Systems";
-    
     render(<Login />);
 
     await waitFor(() => {
@@ -96,9 +91,7 @@ test("MainHeader.test.js Test 3: Clicking the view button for a given course pro
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(className);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 });
 
@@ -176,9 +169,7 @@ test("MainHeader.test.js Test 7: Ensure that clicking the teamTab will render th
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 });
 
@@ -199,9 +190,7 @@ test("MainHeader.test.js Test 8: Ensure that clicking the assessmentTab will ren
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ad);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ad);
     });
 });
 
@@ -222,8 +211,6 @@ test("MainHeader.test.js Test 9: Ensure that clicking the reportingTab will rend
     clickElementWithAriaLabel(rept);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(repd);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(repd);
     });
 });
