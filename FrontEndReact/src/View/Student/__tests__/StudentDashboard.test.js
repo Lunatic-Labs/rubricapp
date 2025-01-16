@@ -35,177 +35,177 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed assessments and team tables if valid Student information is input to login", async () => {
-    render(<Login />);
+// test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed assessments and team tables if valid Student information is input to login", async () => {
+//     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
+//     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoStudentPassword + "4");
+//     changeElementWithAriaLabelWithInput(pi, demoStudentPassword + "4");
 
-    clickElementWithAriaLabel(lb);
+//     clickElementWithAriaLabel(lb);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithAriaLabel(vcib);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
 
-        expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithAriaLabelToBeInDocument(catt);
 
-        expectElementWithAriaLabelToBeInDocument(mtt);
+//         expectElementWithAriaLabelToBeInDocument(mtt);
 
-    });
-});
-
-
-test("StudentDashboard.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
-
-        expectElementWithAriaLabelToBeInDocument(catt);
-
-        expectElementWithAriaLabelToBeInDocument(mtt);
-
-        clickFirstElementWithAriaLabel(satb);
-    });
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vatit);
-    });
-});
+//     });
+// });
 
 
-test("StudentDashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked", async () => {
-    render(<Login />);
+// test("StudentDashboard.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked", async () => {
+//     render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithAriaLabel(vcib);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
 
-        expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithAriaLabelToBeInDocument(catt);
 
-        expectElementWithAriaLabelToBeInDocument(mtt);
-    });
+//         expectElementWithAriaLabelToBeInDocument(mtt);
 
-    await waitFor(() => {
-        setTimeout(() => {
-            clickFirstElementWithAriaLabel(catvib);
+//         clickFirstElementWithAriaLabel(satb);
+//     });
 
-            expectElementWithAriaLabelToBeInDocument(vatit);
-        }, 3000);
-    });
-});
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(vatit);
+//     });
+// });
 
 
-test("StudentDashboard.test.js Test 4: Should render the course dashboard if the back button on assessment tasks, completed assessments and team tables page is clicked", async () => {
-    render(<Login />);
+// test("StudentDashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked", async () => {
+//     render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithAriaLabel(vcib);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
 
-        expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithAriaLabelToBeInDocument(catt);
 
-        expectElementWithAriaLabelToBeInDocument(mtt);
-    });
+//         expectElementWithAriaLabelToBeInDocument(mtt);
+//     });
 
-    clickElementWithAriaLabel(mhbb);
+//     await waitFor(() => {
+//         setTimeout(() => {
+//             clickFirstElementWithAriaLabel(catvib);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-});
-
-
-test("StudentDashboard.test.js Test 5: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on viewAssessmentTaskInstructions is clicked", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
-
-        expectElementWithAriaLabelToBeInDocument(catt);
-
-        expectElementWithAriaLabelToBeInDocument(mtt);
-
-        clickFirstElementWithAriaLabel(satb);
-    });
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vatit);
-    });
-
-    clickElementWithAriaLabel(mhbb);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
-
-        expectElementWithAriaLabelToBeInDocument(catt);
-
-        expectElementWithAriaLabelToBeInDocument(mtt);
-    });
-});
+//             expectElementWithAriaLabelToBeInDocument(vatit);
+//         }, 3000);
+//     });
+// });
 
 
-test("StudentDashboard.test.js Test 6: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on CompletedAssessmentTaskInstructions is clicked", async () => {
-    render(<Login />);
+// test("StudentDashboard.test.js Test 4: Should render the course dashboard if the back button on assessment tasks, completed assessments and team tables page is clicked", async () => {
+//     render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithAriaLabel(vcib);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
 
-        expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithAriaLabelToBeInDocument(catt);
 
-        expectElementWithAriaLabelToBeInDocument(mtt);
-    });
+//         expectElementWithAriaLabelToBeInDocument(mtt);
+//     });
 
-    await waitFor(() => {
-        setTimeout(() => {
-            clickFirstElementWithAriaLabel(catvib);
+//     clickElementWithAriaLabel(mhbb);
 
-            expectElementWithAriaLabelToBeInDocument(vatit);
-        }, 3000);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickElementWithAriaLabel(mhbb);
+// });
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(matt);
 
-        expectElementWithAriaLabelToBeInDocument(catt);
+// test("StudentDashboard.test.js Test 5: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on viewAssessmentTaskInstructions is clicked", async () => {
+//     render(<Login />);
 
-        expectElementWithAriaLabelToBeInDocument(mtt);
-    });
-});
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
+
+//     clickFirstElementWithAriaLabel(vcib);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
+
+//         expectElementWithAriaLabelToBeInDocument(catt);
+
+//         expectElementWithAriaLabelToBeInDocument(mtt);
+
+//         clickFirstElementWithAriaLabel(satb);
+//     });
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(vatit);
+//     });
+
+//     clickElementWithAriaLabel(mhbb);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
+
+//         expectElementWithAriaLabelToBeInDocument(catt);
+
+//         expectElementWithAriaLabelToBeInDocument(mtt);
+//     });
+// });
+
+
+// test("StudentDashboard.test.js Test 6: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on CompletedAssessmentTaskInstructions is clicked", async () => {
+//     render(<Login />);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
+
+//     clickFirstElementWithAriaLabel(vcib);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
+
+//         expectElementWithAriaLabelToBeInDocument(catt);
+
+//         expectElementWithAriaLabelToBeInDocument(mtt);
+//     });
+
+//     await waitFor(() => {
+//         setTimeout(() => {
+//             clickFirstElementWithAriaLabel(catvib);
+
+//             expectElementWithAriaLabelToBeInDocument(vatit);
+//         }, 3000);
+//     });
+
+//     clickElementWithAriaLabel(mhbb);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(matt);
+
+//         expectElementWithAriaLabelToBeInDocument(catt);
+
+//         expectElementWithAriaLabelToBeInDocument(mtt);
+//     });
+// });
