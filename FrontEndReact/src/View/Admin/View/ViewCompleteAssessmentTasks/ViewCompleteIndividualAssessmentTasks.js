@@ -264,7 +264,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     chosenAssessmentTask
                   );
                 }}
-                aria-label="See more details"
+                aria-label="assessmentIndividualSeeMoreDetailsButton"
                 >
                   <VisibilityIcon sx={{color:"black"}}/>
                 </IconButton>
@@ -333,7 +333,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         </Box>
 
         <Box className="subcontent-spacing">
-          <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedAssessmentsTitle"> Completed Assesssment Tasks</Typography>
+          <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedIndividualAssessmentsTitle"> Completed Assesssment Tasks</Typography>
 
           <Box>
             <ResponsiveNotification
@@ -350,7 +350,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
               onClick={() => this.handleDialog(false)}
               isOutlined={false}
               disabled={notificationSent}
-              aria-label="viewCompletedAssessmentSendNotificationButton"
+              aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
             />
           </Box>
         </Box>

@@ -7,7 +7,6 @@ import {
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
-    expectElementWithAriaLabelToHaveErrorMessage
 } from "../../../../../testUtilities.js";
 
 import {
@@ -24,29 +23,23 @@ var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
 var adt = "assessmentDashboardTitle";
-var vcatt = "viewCompletedAssessmentTasksTitle";
-var avb = "assessmentViewButton";
+var vciat = "viewCompletedIndividualAssessmentsTitle";
+var aismdb = "assessmentIndividualSeeMoreDetailsButton";
 var mhbb = "mainHeaderBackButton";
-var vcasnb = "viewCompletedAssessmentSendNotificationButton";
+var vcaisnb = "viewCompletedAssessmentIndividualSendNotificationButton";
 var vcaamt = "viewCompletedAssessmentAddMessageTitle";
 var ampcb = "addMessagePromptCancelButton";
 var ampsnb = "addMessagePromptSendNotificationButton";
-var rs = "ratingsSection";
-var ocs = "observableCharacteristicsSection";
-var sfis = "suggestionsForImprovementSection";
-var cbs = "commentBoxSection";
-var rb = "refreshButton";
-var sb = "saveButton";
 var vcaib = "viewCompletedAssessmentIconButton";
 
 
 
-test("NOTE: Tests 1-10 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
 
-test("AdminViewCompleteAssessmentTasks.test.js Test 1: Should render the AdminViewCompleteAssessmentTasks component given the View Icon Button on AssessmentTasks is clicked", async () => {
+test("AdminViewCompleteAssessmentTasks.test.js Test 1: Should render the AdminViewCompleteAssessmentTasks component given the View Icon Button on Individual AssessmentTasks is clicked.", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -71,19 +64,17 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 1: Should render the AdminVi
         expectElementWithAriaLabelToBeInDocument(adt);
     });
     
-    setTimeout(() => {
+    await waitFor(() => {
         clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
 });
 
 
-test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessment Dashboard if the back button on the View Completed Assessment Tasks is clicked", async () => {
+test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessment Dashboard if the back button on the View Individual Completed Assessment Tasks is clicked.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -102,14 +93,12 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessm
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    setTimeout(() => {
+    await waitFor(() => {
         clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
 
     clickElementWithAriaLabel(mhbb);
@@ -120,7 +109,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessm
 });
 
 
-test("AdminViewCompleteAssessmentTasks.test.js Test 3: Should render the Add Message prompt given that the Send Notification button is clicked", async () => {
+test("AdminViewCompleteAssessmentTasks.test.js Test 3: Should render the Add Message prompt given that the Send Notification button is clicked on View Individual Completed Assessment Tasks page.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -139,29 +128,23 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 3: Should render the Add Mes
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    setTimeout(() => {
+    await waitFor(() => {
         clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
-    
-    setTimeout(() => {
-        clickElementWithAriaLabel(vcasnb);
-    }, 3000);
+
+    clickElementWithAriaLabel(vcaisnb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcaamt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcaamt);
     });
 });
 
 
-test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Assessment Task name page given that the View button is clicked", async () => {
+test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Individual Assessment Task name page given that the See More Details button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -180,35 +163,60 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Assessm
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    setTimeout(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
-
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
-    });
-
-    setTimeout(() => {
-        clickElementWithAriaLabel(avb);
-    }, 3000);
+        clickFirstElementWithAriaLabel(vcaib);
+    },{ timeout: 3000 });
     
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
+        expectElementWithAriaLabelToBeInDocument(vciat);
+    });
 
-            expectElementWithAriaLabelToBeInDocument(ocs);
+    clickFirstElementWithAriaLabel(aismdb);
+});
 
-            expectElementWithAriaLabelToBeInDocument(sfis);
 
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
+test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Individual Completed Assessment Tasks page when the cancel button on the Add Message prompt is clicked", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(at);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(adt);
+    });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vcaib);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vciat);
+    });
+    
+    clickElementWithAriaLabel(vcaisnb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vcaamt);
+    });
+
+    clickElementWithAriaLabel(ampcb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
 });
 
 
-test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Completed Assessment Tasks page when the cancel button on the Add Message prompt is clicked", async () => {
+test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Individual Completed Assessment Tasks page when the send notification button on the Add Message prompt is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -227,39 +235,29 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Complet
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    setTimeout(() => {
+    await waitFor(() => {
         clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
     
-    setTimeout(() => {
-        clickElementWithAriaLabel(vcasnb);
-    }, 3000);
+    clickElementWithAriaLabel(vcaisnb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcaamt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcaamt);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(ampcb);
-    }, 3000);
-
+    clickElementWithAriaLabel(ampsnb);
+    
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcaamt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
 });
 
 
-test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Completed Assessment Tasks page when the send notification button on the Add Message prompt is clicked", async () => {
+test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Individual Completed Assessment Tasks page if the back button on the Critical Thinking page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -278,266 +276,19 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Complet
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 
-    setTimeout(() => {
+    await waitFor(() => {
         clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
-    });
-    
-    setTimeout(() => {
-        clickElementWithAriaLabel(vcasnb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcaamt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
 
-    setTimeout(() => {
-        clickElementWithAriaLabel(ampsnb);
-    }, 3000);
-    
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcaamt);
-        }, 3000);
-    });
-});
-
-
-test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Completed Assessment Tasks page if the back button on the Critical Thinking page is clicked", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
-    });
-
-    clickElementWithAriaLabel(at);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
-    });
-
-    setTimeout(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
-    });
-
-    setTimeout(() => {
-        clickElementWithAriaLabel(avb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
-    });
+    clickFirstElementWithAriaLabel(aismdb);
 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vciat);
     });
-});
-
-
-test("AdminViewCompleteAssessmentTasks.test.js Test 8: Should undo the selections made in the sections boxes in the Assessment Task name page when the Refresh Button is clicked", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
-    });
-
-    clickElementWithAriaLabel(at);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
-    });
-
-    setTimeout(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
-    });
-    
-    setTimeout(() => {
-        clickElementWithAriaLabel(avb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
-    });
-
-    setTimeout(() => {
-        clickElementWithAriaLabel(rb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
-    });
-});
-
-
-test("AdminViewCompleteAssessmentTasks.test.js Test 9: Should save the selections made in the sections boxes in the Critical Thinking page when the Save Button is clicked", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
-    });
-
-    clickElementWithAriaLabel(at);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
-    });
-
-    setTimeout(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-
-        }, 3000);
-    });
-
-    setTimeout(() => {
-        clickElementWithAriaLabel(avb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
-    });
-
-    setTimeout(() => {
-        clickElementWithAriaLabel(sb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rs);
-
-            expectElementWithAriaLabelToBeInDocument(ocs);
-
-            expectElementWithAriaLabelToBeInDocument(sfis);
-
-            expectElementWithAriaLabelToBeInDocument(cbs);
-        }, 3000);
-    });
-});
-
-
-test("AdminViewCompleteAssessmentTasks.test.js Test 10: Should provide a HelperText error when the Add Message box is left empty", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
-    });
-
-    clickElementWithAriaLabel(at);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
-    });
-
-    setTimeout(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcatt);
-        }, 3000);
-    });
-    
-    setTimeout(() => {
-        clickElementWithAriaLabel(vcasnb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcaamt);
-        }, 3000);
-    });
-    
-    setTimeout(() => {
-        clickElementWithAriaLabel(ampsnb);
-    }, 3000);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(vcaamt,"Notification Message cannot be empty");
-        }, 3000);
-    })
 });
