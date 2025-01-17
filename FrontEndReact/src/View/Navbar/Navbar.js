@@ -106,6 +106,22 @@ export default function ButtonAppBar(props) {
 
               <Divider />
 
+              <MenuItem  
+                onClick={() => window.open('https://rubricapp.atlassian.net/servicedesk/customer/portal/1', '_blank')
+                }>
+                Help Center
+              </MenuItem>
+
+              <Divider />
+
+              <MenuItem  onClick={() => {
+                props.setNewTab("PrivacyPolicy");
+              }}>
+                Privacy Policy
+              </MenuItem>
+
+              <Divider />
+
               {/* <MenuItem onClick={handleClose}>
                 <ListItemIcon>
                   <Settings fontSize="small" />
