@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Button, TextField, FormControl, Box, Typography, ListItem, IconButton, Dialog, DialogContent, DialogTitle } from '@mui/material';
+import { Box, Typography, ListItem } from '@mui/material';
 
 class PrivacyPolicy extends Component {
 
