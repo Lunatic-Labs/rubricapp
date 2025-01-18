@@ -299,26 +299,28 @@ test("AdminAddCourse.test.js Test 10: Filling in valid input and clicking the Ad
         expectElementWithAriaLabelToBeInDocument(act);
     });
 
-    var courseName = "Object Oriented Programming";
+    var courseName = "Calculus";
 
     changeElementWithAriaLabelWithInput(cnami, courseName);
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+    changeElementWithAriaLabelWithInput(cnumi, "MA1314");
 
-    changeElementWithAriaLabelWithInput(cti, "Fall");
+    changeElementWithAriaLabelWithInput(cti, "Summer");
 
-    changeElementWithAriaLabelWithInput(cyi, "2025");
+    changeElementWithAriaLabelWithInput(cyi, "2023");
 
     clickElementWithAriaLabel(aosacb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithAriaLabelToBeInDocument(ct);
+    },{ timeout: 3000 });
 
-            expectElementWithAriaLabelToBeInDocument(vcd);
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vcd);
+    });
 
-            expectElementWithAriaLabelToBeInDocument(courseName);
-        }, 3000);
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(courseName);
     });
 });
 
@@ -349,6 +351,5 @@ test("AdminAddCourse.test.js Test 11: HelperText errors should show for the addC
         expectElementWithAriaLabelToBeInDocument(acf);
 
         expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year must be a numeric value");
-        
     });
 });
