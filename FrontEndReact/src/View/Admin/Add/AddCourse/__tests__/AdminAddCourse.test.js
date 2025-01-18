@@ -55,7 +55,6 @@ test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(act);
     });
-
 });
 
 
