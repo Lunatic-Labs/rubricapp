@@ -27,10 +27,12 @@ var td = "teamDashboard";
 var vtib = "viewTeamsIconButton";
 var avtmt = "adminViewTeamMembersTitle";
 var amb = "addMemberButton";
-var atmt = "addTeamMembersTitle";
+var atmt = "AddTeamMembersTitle";
 var rmb = "removeMemberButton";
-var rtmt = "removeTeamMembersTitle";
-var aetmstb = "adminEditTeamMembersSaveTeamButton";
+var rtmt = "RemoveTeamMembersTitle";
+// var aetmstb = "adminEditTeamMembersSaveTeamButton";
+// var amib = "addMemberIconButton";
+// var rmib = "removeMemberIconButton"
 
 
 

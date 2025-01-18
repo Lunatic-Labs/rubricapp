@@ -623,10 +623,11 @@ class AppState extends Component {
 
                 {this.state.activeTab==="Teams" &&
                     <Box className="page-spacing">
-                        <TeamDashboard
-                            navbar={this}
-                            aria-label="teamDashboard"
-                        />
+                        <div aria-label="teamDashboard">
+                            <TeamDashboard
+                                navbar={this}
+                            />
+                        </div>
                     </Box>
                 }
 
@@ -687,10 +688,11 @@ class AppState extends Component {
 
                 {this.state.activeTab==="AssessmentTasks" &&
                     <Box className="page-spacing">
-                        <AssessmentDashboard
-                            navbar={this}
-                            aria-label="assessmentDashboard"
-                        />
+                        <div aria-label="assessmentDashboard">
+                            <AssessmentDashboard
+                                navbar={this}
+                            />
+                        </div>
                     </Box>
                 }
 
@@ -818,10 +820,11 @@ class AppState extends Component {
 
                 {this.state.activeTab==="Reporting" &&
                     <Box className="page-spacing">
-                        <ReportingDashboard
-                            navbar={this}
-                            aria-label="reportingDashboard"
-                        />
+                        <div aria-label="reportingDashboard">
+                            <ReportingDashboard
+                                navbar={this}
+                            />
+                        </div>
                     </Box>
                 }
 

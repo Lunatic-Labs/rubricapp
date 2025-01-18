@@ -28,15 +28,13 @@ var atb = "addTaskButton";
 var aaatt = "adminAddAssessmentTaskTitle";
 var aaacb = "adminAddAssessmentCancelButton"
 var aagaro = "addAssessmentGroupAssessmentRadioOption";
+var aaiaro = "addAssessmentInvididualAssessmentRadioOption";
 var aatp = "addAssessmentTeamPassword";
 var aacoub = "addAssessmentCreateOrUpdateButton";
 var aatn = "addAssessmentTaskName";
 var aard = "addAssessmentRubricDropdown";
-var aaro = "addAssessmentRoleOption";
 var aatd = "addAssessmentTimezoneDropdown";
-var aaero = "addAssessmentEstRadioOption";
 var aan = "addAssessmentNotes";
-var aarubo = "addAssessmentRubricOption";
 
 
 
