@@ -20,13 +20,12 @@ var ei = "emailInput";
 var pi = "passwordInput";
 var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
-var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
 var tt = "teamsTab";
 var rt = "rosterTitle";
 var td = "teamDashboard";
 var abub = "adminBulkUploadButton";
-var abu = "adminBulkUpload";
+var abut = "adminBulkUploadTitle";
 var aatb = "adminAddTeamButton";
 var aatt = "adminAddTeamTitle";
 var vtib = "viewTeamsIconButton";
@@ -55,17 +54,13 @@ test("TeamDashboard.test.js Test 1: Should render the TeamDashboard", async () =
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 });
 
@@ -80,25 +75,21 @@ test("TeamDashboard.test.js Test 2: Should render the Admin Bulk Upload page if 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(abub);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abu);
-        }, 3000);
+        clickElementWithAriaLabel(abub);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(abut);
     });
 });
 
@@ -113,25 +104,21 @@ test("TeamDashboard.test.js Test 3: Should render the Add Team page if the admin
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(aatb);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(aatt);
-        }, 3000);
+        clickElementWithAriaLabel(aatb);
+    },{ timeout: 3000 });
+    
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aatt);
     });
 });
 
@@ -146,25 +133,21 @@ test("TeamDashboard.test.js Test 4: Should render the View Team page if the admi
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(vtib);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(avtmt);
-        }, 3000);
+        clickFirstElementWithAriaLabel(vtib);
+    },{ timeout: 3000 });
+    
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
 
@@ -179,18 +162,12 @@ test("MainHeader.test.js Test 5: Clicking the back button on the page should go 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcmh);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
-    await waitFor(() => {
-        clickElementWithAriaLabel(mhbb);
-    });
+    clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
