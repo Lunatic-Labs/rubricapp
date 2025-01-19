@@ -1,5 +1,5 @@
 // import { render, waitFor } from "@testing-library/react";
-// import "@testing-library/jest-dom";
+import "@testing-library/jest-dom";
 // import Login from "../../Login/Login.js";
 
 // import {
@@ -30,9 +30,9 @@
 
 
 
-// test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
-//     expect(true).toBe(true);
-// });
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
+    expect(true).toBe(true);
+});
 
 
 // test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed assessments and team tables if valid Student information is input to login", async () => {

@@ -298,15 +298,15 @@ test("AdminAddCourse.test.js Test 10: Filling in valid input and clicking the Ad
         expectElementWithAriaLabelToBeInDocument(act);
     });
 
-    var courseName = "Calculus";
+    var courseName = "Comparative Programming Languages";
 
     changeElementWithAriaLabelWithInput(cnami, courseName);
 
-    changeElementWithAriaLabelWithInput(cnumi, "MA1314");
+    changeElementWithAriaLabelWithInput(cnumi, "CS3713");
 
-    changeElementWithAriaLabelWithInput(cti, "Summer");
+    changeElementWithAriaLabelWithInput(cti, "Fall");
 
-    changeElementWithAriaLabelWithInput(cyi, "2023");
+    changeElementWithAriaLabelWithInput(cyi, "2024");
 
     clickElementWithAriaLabel(aosacb);
 

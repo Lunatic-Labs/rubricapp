@@ -1,5 +1,5 @@
 // import { render, waitFor } from "@testing-library/react";
-// import "@testing-library/jest-dom";
+import "@testing-library/jest-dom";
 // import Login from "../../Login/Login.js";
 
 // import {
@@ -36,9 +36,9 @@
 
 
 
-// test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
-//     expect(true).toBe(true);
-// });
+test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
+    expect(true).toBe(true);
+});
 
 
 // test("TADashboard.test.js Test 1: Should render both assessment tables if valid TA information is input to login.", async () => {

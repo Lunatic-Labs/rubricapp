@@ -1,5 +1,5 @@
 // import { render, waitFor } from "@testing-library/react";
-// import "@testing-library/jest-dom";
+import "@testing-library/jest-dom";
 // import Login from "../../../../Login/Login.js";
 
 // import {
@@ -39,9 +39,9 @@
 
 
 
-// test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
-//     expect(true).toBe(true);
-// });
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
+    expect(true).toBe(true);
+});
 
 
 // Tests will be redone at a future time as Custom Rubrics is still making changes.
