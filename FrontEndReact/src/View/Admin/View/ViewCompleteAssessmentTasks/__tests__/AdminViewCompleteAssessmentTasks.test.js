@@ -7,7 +7,6 @@ import {
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
-    expectElementWithAriaLabelToHaveErrorMessage
 } from "../../../../../testUtilities.js";
 
 import {

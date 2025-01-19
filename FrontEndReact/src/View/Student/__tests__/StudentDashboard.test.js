@@ -1,38 +1,38 @@
-import { render, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Login from "../../Login/Login.js";
+// import { render, waitFor } from "@testing-library/react";
+// import "@testing-library/jest-dom";
+// import Login from "../../Login/Login.js";
 
-import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
-} from "../../../testUtilities.js";
+// import {
+//     clickElementWithAriaLabel,
+//     expectElementWithAriaLabelToBeInDocument,
+//     changeElementWithAriaLabelWithInput,
+//     clickFirstElementWithAriaLabel
+// } from "../../../testUtilities.js";
 
-import {
-    demoStudentPassword
-} from "../../../App.js";
-
-
-
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var matt = "myAssessmentTasksTitle";
-var catt = "completedAssessmentTasksTitle";
-var mtt = "myTeamsTitle";
-var satb = "startAssessmentTasksButton";
-var vatit = "viewAssessmentTaskInstructionsTitle";
-var catvib = "completedAssessmentTasksViewIconButton";
-var mhbb = "mainHeaderBackButton";
+// import {
+//     demoStudentPassword
+// } from "../../../App.js";
 
 
 
-test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
-    expect(true).toBe(true);
-});
+// var lb = "loginButton";
+// var ei = "emailInput";
+// var pi = "passwordInput";
+// var ct = "coursesTitle";
+// var vcib = "viewCourseIconButton";
+// var matt = "myAssessmentTasksTitle";
+// var catt = "completedAssessmentTasksTitle";
+// var mtt = "myTeamsTitle";
+// var satb = "startAssessmentTasksButton";
+// var vatit = "viewAssessmentTaskInstructionsTitle";
+// var catvib = "completedAssessmentTasksViewIconButton";
+// var mhbb = "mainHeaderBackButton";
+
+
+
+// test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
+//     expect(true).toBe(true);
+// });
 
 
 // test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed assessments and team tables if valid Student information is input to login", async () => {

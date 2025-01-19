@@ -1,38 +1,38 @@
-import { render, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+// import { render, waitFor } from "@testing-library/react";
+// import "@testing-library/jest-dom";
+// import Login from "../../../../Login/Login.js";
 
-import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+// import {
+//     clickElementWithAriaLabel,
+//     expectElementWithAriaLabelToBeInDocument,
+//     changeElementWithAriaLabelWithInput,
+//     clickFirstElementWithAriaLabel
+// } from "../../../../../testUtilities.js";
 
-import {
-    demoAdminPassword
-} from "../../../../../App.js";
-
-
-
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var at = "assessmentTab";
-var adt = "assessmentDashboardTitle";
-var mhbb = "mainHeaderBackButton";
-var vmcrb = "viewMyCustomRubricsButton";
-var acrt = "addCustomRubricTitle";
-var mcracrb = "myCustomRubricsAddCustomRubricButton"
+// import {
+//     demoAdminPassword
+// } from "../../../../../App.js";
 
 
 
-test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
-    expect(true).toBe(true);
-});
+// var lb = "loginButton";
+// var ei = "emailInput";
+// var pi = "passwordInput";
+// var ct = "coursesTitle";
+// var vcib = "viewCourseIconButton";
+// var rt = "rosterTitle";
+// var at = "assessmentTab";
+// var adt = "assessmentDashboardTitle";
+// var mhbb = "mainHeaderBackButton";
+// var vmcrb = "viewMyCustomRubricsButton";
+// var acrt = "addCustomRubricTitle";
+// var mcracrb = "myCustomRubricsAddCustomRubricButton"
+
+
+
+// test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
+//     expect(true).toBe(true);
+// });
 
 /* The rest of the tests will be redone due to updates that were made in my Custrom Rubrics*/
 

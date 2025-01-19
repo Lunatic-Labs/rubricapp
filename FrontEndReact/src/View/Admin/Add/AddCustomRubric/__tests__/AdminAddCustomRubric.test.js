@@ -1,47 +1,47 @@
-import { render, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+// import { render, waitFor } from "@testing-library/react";
+// import "@testing-library/jest-dom";
+// import Login from "../../../../Login/Login.js";
 
-import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    expectElementWithAriaLabelToHaveErrorMessage,
-    clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+// import {
+//     clickElementWithAriaLabel,
+//     expectElementWithAriaLabelToBeInDocument,
+//     changeElementWithAriaLabelWithInput,
+//     expectElementWithAriaLabelToHaveErrorMessage,
+//     clickFirstElementWithAriaLabel
+// } from "../../../../../testUtilities.js";
 
-import {
-    demoAdminPassword
-} from "../../../../../App.js";
-
-
-
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var at = "assessmentTab";
-var adt = "assessmentDashboardTitle";
-var mhbb = "mainHeaderBackButton";
-var cyrcrb = "customizeYourRubricCreateRubricButton";
-var cyrrn = "customizeYourRubricRubricName";
-var cyrrd = "customizeYourRubricRubricDescription";
-var rci = "rubricCategoryIcon";
-var rcn = "rubricCategoryNames";
-var rncb = "rubricNamesCheckBox";
-var ysc = "yourSelectedCategories";
-var vmcrb = "viewMyCustomRubricsButton";
-var mcrt = "addCustomRubricTitle";
-var acrb = "addCustomRubricButton";
-var acyrt = "addCustomizeYourRubricTitle";
+// import {
+//     demoAdminPassword
+// } from "../../../../../App.js";
 
 
 
-test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
-    expect(true).toBe(true);
-});
+// var lb = "loginButton";
+// var ei = "emailInput";
+// var pi = "passwordInput";
+// var ct = "coursesTitle";
+// var vcib = "viewCourseIconButton";
+// var rt = "rosterTitle";
+// var at = "assessmentTab";
+// var adt = "assessmentDashboardTitle";
+// var mhbb = "mainHeaderBackButton";
+// var cyrcrb = "customizeYourRubricCreateRubricButton";
+// var cyrrn = "customizeYourRubricRubricName";
+// var cyrrd = "customizeYourRubricRubricDescription";
+// var rci = "rubricCategoryIcon";
+// var rcn = "rubricCategoryNames";
+// var rncb = "rubricNamesCheckBox";
+// var ysc = "yourSelectedCategories";
+// var vmcrb = "viewMyCustomRubricsButton";
+// var mcrt = "addCustomRubricTitle";
+// var acrb = "addCustomRubricButton";
+// var acyrt = "addCustomizeYourRubricTitle";
+
+
+
+// test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
+//     expect(true).toBe(true);
+// });
 
 
 // Tests will be redone at a future time as Custom Rubrics is still making changes.

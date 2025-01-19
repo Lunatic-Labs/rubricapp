@@ -1,44 +1,44 @@
-import { render, waitFor } from "@testing-library/react";
-import "@testing-library/jest-dom";
-import Login from "../../Login/Login.js";
+// import { render, waitFor } from "@testing-library/react";
+// import "@testing-library/jest-dom";
+// import Login from "../../Login/Login.js";
 
-import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
-} from "../../../testUtilities.js";
+// import {
+//     clickElementWithAriaLabel,
+//     expectElementWithAriaLabelToBeInDocument,
+//     changeElementWithAriaLabelWithInput,
+//     clickFirstElementWithAriaLabel
+// } from "../../../testUtilities.js";
 
-import {
-    demoTaInstructorPassword
-} from "../../../App.js";
-
-
-
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var matt = "myAssessmentTasksTitle";
-var catt = "completedAssessmentTasksTitle";
-var vcib = "viewCourseIconButton";
-var satb = "startAssessmentTasksButton";
-var catvib = "completedAssessmentTasksViewIconButton";
-var vatit = "viewAssessmentTaskInstructionsTitle";
-var mhbb = "mainHeaderBackButton";
-var vaticb = "viewAssessmentTaskInstructionsContinueButton";
-var rs = "ratingsSection";
-var ocs = "observableCharacteristicsSection";
-var sfis = "suggestionsForImprovementSection";
-var cbs = "commentBoxSection";
-var rb = "refreshButton";
-var sb = "saveButton";
+// import {
+//     demoTaInstructorPassword
+// } from "../../../App.js";
 
 
 
-test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
-    expect(true).toBe(true);
-});
+// var lb = "loginButton";
+// var ei = "emailInput";
+// var pi = "passwordInput";
+// var ct = "coursesTitle";
+// var matt = "myAssessmentTasksTitle";
+// var catt = "completedAssessmentTasksTitle";
+// var vcib = "viewCourseIconButton";
+// var satb = "startAssessmentTasksButton";
+// var catvib = "completedAssessmentTasksViewIconButton";
+// var vatit = "viewAssessmentTaskInstructionsTitle";
+// var mhbb = "mainHeaderBackButton";
+// var vaticb = "viewAssessmentTaskInstructionsContinueButton";
+// var rs = "ratingsSection";
+// var ocs = "observableCharacteristicsSection";
+// var sfis = "suggestionsForImprovementSection";
+// var cbs = "commentBoxSection";
+// var rb = "refreshButton";
+// var sb = "saveButton";
+
+
+
+// test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
+//     expect(true).toBe(true);
+// });
 
 
 // test("TADashboard.test.js Test 1: Should render both assessment tables if valid TA information is input to login.", async () => {

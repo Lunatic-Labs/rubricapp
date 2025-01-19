@@ -7,7 +7,6 @@ import {
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
-    expectElementWithAriaLabelToHaveErrorMessage,
 } from "../../../../../testUtilities.js";
 
 import {
@@ -27,7 +26,6 @@ var abut = "adminBulkUploadTitle";
 var mhbb = "mainHeaderBackButton";
 var abucfb = "adminBulkUploadChooseFileButton";
 var abuufb = "adminBulkUploadUploadFileButton";
-var abuem = "adminBulkUploadErrorMessage";
 var cabub = "cancelAdminBulkUploadButton";
 var tt = "teamsTab";
 var td = "teamDashboard";
