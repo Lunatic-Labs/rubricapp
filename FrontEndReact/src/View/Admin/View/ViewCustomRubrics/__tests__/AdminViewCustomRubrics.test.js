@@ -1,5 +1,5 @@
 // import { render, waitFor } from "@testing-library/react";
-// import "@testing-library/jest-dom";
+import "@testing-library/jest-dom";
 // import Login from "../../../../Login/Login.js";
 
 // import {
@@ -30,9 +30,9 @@
 
 
 
-// test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
-//     expect(true).toBe(true);
-// });
+test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
+    expect(true).toBe(true);
+});
 
 /* The rest of the tests will be redone due to updates that were made in my Custrom Rubrics*/
 

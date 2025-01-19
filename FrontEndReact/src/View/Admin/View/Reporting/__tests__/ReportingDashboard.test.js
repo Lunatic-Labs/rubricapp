@@ -1,6 +1,6 @@
 // import { render, waitFor } from "@testing-library/react";
-// import "@testing-library/jest-dom";
-// import ResizeObserver from "resize-observer-polyfill";
+import "@testing-library/jest-dom";
+import ResizeObserver from "resize-observer-polyfill";
 // import Login from "../../../../Login/Login.js";
 
 // import {
@@ -14,7 +14,7 @@
 //     demoAdminPassword,
 // } from "../../../../../App.js";
 
-// global.ResizeObserver = ResizeObserver;
+global.ResizeObserver = ResizeObserver;
 
 // var lf = "loginForm";
 // var lb = "loginButton";
@@ -31,9 +31,9 @@
 
 
 
-// test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
-//     expect(true).toBe(true);
-// });
+test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
+    expect(true).toBe(true);
+});
 
 
 // test("ReportingDashboard.test.js Test 1: Should render Login Form component", () => {
