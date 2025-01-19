@@ -176,10 +176,10 @@ test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment 
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(eaib);
     });
 
+    clickFirstElementWithAriaLabel(eaib);
+    
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aeatt);
     });
@@ -203,9 +203,11 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(vcaib);
     });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(vcaib);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcat);
@@ -230,9 +232,11 @@ test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(satb);
     });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(satb);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vatit);
