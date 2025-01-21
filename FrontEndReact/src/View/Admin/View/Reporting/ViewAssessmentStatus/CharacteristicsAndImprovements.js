@@ -31,10 +31,7 @@ export default function CharacteristicsAndImprovements({
   showSuggestions,
   completedAssessments
 }) {
-  console.log('Data Type:', dataType);
-  console.log('Completed Assessments:', completedAssessments);
-  console.log('Characteristics Data:', characteristicsData);
-  console.log('Improvements Data:', improvementsData);
+
   const data = dataType === 'characteristics'
     ? characteristicsData.characteristics
     : improvementsData.improvements;
