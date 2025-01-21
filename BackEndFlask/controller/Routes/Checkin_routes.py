@@ -1,5 +1,5 @@
 import json
-from flask import request
+from flask import request, stream_with_context
 from requests import Timeout
 import flask
 from flask_jwt_extended import jwt_required
@@ -95,6 +95,7 @@ async def stream_checked_in_events():
 
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
+        queue =  asyncio.Queue()
 
         # Async code to query and encode a msg.
         async def encode_message():
@@ -103,17 +104,38 @@ async def stream_checked_in_events():
                 checkins_json = json.dumps(checkins_schema.dump(checkins))
                 return f"data: {checkins_json}\n\n"
             
+        # Adds data to the queue
+        async def redis_listener():
+            pubsub = red.pubsub() 
+            pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
+            await queue.put(await encode_message())
+            for message in pubsub.listen(): 
+                if message["type"] == "message" and str(message["data"]) == str(assessment_task_id): 
+                    encoded_message = await encode_message() 
+                    await queue.put(encoded_message) 
+                await asyncio.sleep(5.0) # Non-blocking sleep to save system resources.
+
         # Async code to keep viewing the stream of info and update client.
         async def check_in_stream():
-            with red.pubsub() as pubsub:
-                pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
-                yield await encode_message() # Inital check and response.
-                async for msg in pubsub.listen():
-                    if msg["type"] == "message" and str(msg["data"]) == str(assessment_task_id):
-                        yield await encode_message()
-                    await asyncio.sleep(3.0) # Non-Blocking sleep to save system resources.
-                    
-        return flask.Response(await check_in_stream(), mimetype="text/event-stream", status=200)
+            while True:
+                message = await queue.get()
+                yield message
+
+        # Wrapper to make async_generator into a standard itterable for the response.
+        def sync_generator():
+            loop = asyncio.new_event_loop()
+            asyncio.set_event_loop(loop)
+            try:
+                loop.create_task(redis_listener())
+                async_gen = check_in_stream()
+                while True:
+                    yield loop.run_until_complete(async_gen.__anext__())
+            except StopAsyncIteration:
+                pass
+            finally:
+                loop.close()
+
+        return flask.Response(sync_generator(), mimetype="text/event-stream", status=200)
     
     except Timeout as e:
         return create_bad_response(f"Connection closed by server {e}", "checkin", 400)
