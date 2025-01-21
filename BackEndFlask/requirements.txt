@@ -1,4 +1,5 @@
 flask >= 2.2.2
+flask[async]>=2.2.2
 flask-sqlalchemy >= 3.0.3
 Flask-Migrate >= 4.0.7
 sqlalchemy >= 2.0.13
