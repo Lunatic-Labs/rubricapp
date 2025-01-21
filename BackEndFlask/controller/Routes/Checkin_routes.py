@@ -8,7 +8,7 @@ from controller import bp
 from controller.Route_response import *
 from core import red, app
 
-from time import sleep
+import asyncio
 
 from models.queries import (
     get_all_checkins_for_assessment,
@@ -87,6 +87,30 @@ async def stream_checked_in_events():
 
     Exceptions: Failure to read new info and format it results in an exception.
     """
+
+    try:
+        assessment_task_id = int(request.args.get("assessment_task_id"))
+
+        # Async code to query and encode a msg.
+        async def encode_message():
+            with app.app_context():
+                checkins = get_all_checkins_for_assessment(assessment_task_id)
+                checkins_json = json.dumps(checkins_schema.dump(checkins))
+                return f"data: {checkins_json}\n\n"
+            
+        # Async code to keep viewing the stream of info and update client.
+        async def check_in_stream():
+            with red.pubsub() as pubsub:
+                pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
+                yield await encode_message() # Inital check and response.
+                async for msg in pubsub.listen():
+                    if msg["type"] == "message" and str(msg["data"]) == str(assessment_task_id):
+                        yield await encode_message()
+                    await asyncio.sleep(3.0) # Non-Blocking sleep to save system resources.
+                    
+        return flask.Response(await check_in_stream(), mimetype="text/event-stream", status=200)
+    except Exception as e:
+        return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
 #@bp.route('/checkin_events', methods = ['GET']) 
 #@jwt_required()
