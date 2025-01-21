@@ -69,37 +69,55 @@ def get_checked_in():
     except Exception as e:
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
+
+# NOTE: This is async so that it does not block other routes since this one is a SSE.
 @bp.route('/checkin_events', methods = ['GET']) 
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def stream_checked_in_events():
-    #might need to change how we approach this code and it make it slightly more sse compliant\
-    #that woudl require modifiying the front end as well.
-    try:
-        assessment_task_id = int(request.args.get("assessment_task_id"))
-        
-        #collects data and serializes it to the proper format.
-        def encode_message():
-            with app.app_context():
-                checkins = get_all_checkins_for_assessment(assessment_task_id)
-                checkins_json = json.dumps(checkins_schema.dump(checkins))
-                return f"data: {checkins_json}\n\n"
-        
-        def check_in_stream():
-            with red.pubsub() as pubsub:
-                pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
-                yield encode_message() #Initial msg sent out to the client.
-                for msg in pubsub.listen():
-                    # we hang here till time out leading to timeouts and infinate loading in form.js
-                    if msg["type"] == "message" and str(msg["data"]) == str(assessment_task_id):
-                        yield encode_message()
-                    sleep(3.0) # The seconds are needed to not block other requests.
-                    #testing needed to determin where the sleep timeout should be.
-        return flask.Response(check_in_stream(), mimetype="text/event-stream", status=200)
+async def stream_checked_in_events():
+    """
+    Description: Establishes SSE connection to stream checkin events.
 
-    except Exception as e:
-        return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
+    Parameters:
+    assesment_task_id: <class int>(The id of an AT)
+    
+    Returns:
+    <class 'str'>(Response of either new info or terminated connection)
+
+    Exceptions: Failure to read new info and format it results in an exception.
+    """
+
+#@bp.route('/checkin_events', methods = ['GET']) 
+#@jwt_required()
+#@bad_token_check()
+#@AuthCheck()
+#def stream_checked_in_events():
+#    #might need to change how we approach this code and it make it slightly more sse compliant\
+#    #that woudl require modifiying the front end as well.
+#    try:
+#        assessment_task_id = int(request.args.get("assessment_task_id"))
+#        #collects data and serializes it to the proper format.
+#        def encode_message():
+#            with app.app_context():
+#                checkins = get_all_checkins_for_assessment(assessment_task_id)
+#                checkins_json = json.dumps(checkins_schema.dump(checkins))
+#                return f"data: {checkins_json}\n\n"
+#        
+#        def check_in_stream():
+#            with red.pubsub() as pubsub:
+#                pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
+#                yield encode_message() #Initial msg sent out to the client.
+#                for msg in pubsub.listen():
+#                    # we hang here till time out leading to timeouts and infinate loading in form.js
+#                    if msg["type"] == "message" and str(msg["data"]) == str(assessment_task_id):
+#                        yield encode_message()
+#                    sleep(3.0) # The seconds are needed to not block other requests.
+#                    #testing needed to determin where the sleep timeout should be.
+#        return flask.Response(check_in_stream(), mimetype="text/event-stream", status=200)
+#
+#    except Exception as e:
+#        return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
 class CheckinSchema(ma.Schema):
     class Meta:
