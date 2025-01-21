@@ -1,5 +1,6 @@
 import json
 from flask import request
+from requests import Timeout
 import flask
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
@@ -85,7 +86,11 @@ async def stream_checked_in_events():
     Returns:
     <class 'str'>(Response of either new info or terminated connection)
 
-    Exceptions: Failure to read new info and format it results in an exception.
+    Exceptions:
+        Timeout - due to server terminating a connection thats been inactive for too long
+        OverflowError - json.dump being given too much
+        TypeError - incorrect data for json.dump
+        asyncio.CancelledError - client closed the connection
     """
 
     try:
@@ -109,6 +114,15 @@ async def stream_checked_in_events():
                     await asyncio.sleep(3.0) # Non-Blocking sleep to save system resources.
                     
         return flask.Response(await check_in_stream(), mimetype="text/event-stream", status=200)
+    
+    except Timeout as e:
+        return create_bad_response(f"Connection closed by server {e}", "checkin", 400)
+    except OverflowError as e:
+        return create_bad_response(f"Overflow {e}", "checkin", 400)
+    except TypeError as e:
+        return create_bad_response(f"Possible serialization issue {e}", "checkin", 400)
+    except asyncio.CancelledError as e:
+        return create_bad_response(f"Connection closed by client {e}", "checkin", 400)
     except Exception as e:
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 
