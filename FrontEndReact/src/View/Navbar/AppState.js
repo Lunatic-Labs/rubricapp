@@ -30,6 +30,7 @@ import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
 import UserAccount from './UserAccount.js';
+import PrivacyPolicy from './PrivacyPolicy.js';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 
 
@@ -851,6 +852,19 @@ class AppState extends Component {
                         />
 
                         <UserAccount
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="PrivacyPolicy" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                            aria-label="UserAccountBackButton"
+                        />
+
+                        <PrivacyPolicy
                             navbar={this}
                         />
                     </Box>
