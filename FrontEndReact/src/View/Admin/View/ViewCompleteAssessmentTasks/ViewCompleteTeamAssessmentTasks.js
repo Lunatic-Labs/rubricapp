@@ -331,7 +331,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                 </Box>
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedAssessmentsTitle"> Completed Assesssment Tasks</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedTeamAssessmentsTitle"> Completed Assesssment Tasks</Typography>
 
                     <Box>
                         <ResponsiveNotification
@@ -348,7 +348,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
               onClick={() => this.handleDialog(false)}
               isOutlined={false}
               disabled={notificationSent}
-              aria-label="viewCompletedAssessmentSendNotificationButton"
+              aria-label="viewCompletedAssessmentTeamSendNotificationButton"
             />
           </Box>
         </Box>
