@@ -109,7 +109,7 @@ export default function ButtonAppBar(props) {
               <MenuItem  
                 onClick={() => window.open('https://rubricapp.atlassian.net/servicedesk/customer/portal/1', '_blank')
                 }>
-                support Center
+                Support Center
               </MenuItem>
 
               <Divider />
