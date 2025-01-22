@@ -94,7 +94,7 @@ class UserCourse(db.Model):
     __tablename__ = "UserCourse"
     __table_args__ = {'sqlite_autoincrement': True}
     user_course_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id,ondelete='CASCADE'), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     active = db.Column(db.Boolean)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
