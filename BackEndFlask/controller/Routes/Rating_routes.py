@@ -65,15 +65,16 @@ def student_view_feedback():
         for that student and that completed assessment. Currently only stores the time of creation,
         used to calculate lag time. 
     """
-    try: 
+    try:
+    ## Code needs a rework to better handle issues from a bit of testing I dont think this is the only issue student wise
         user_id = request.args.get("user_id")
         completed_assessment_id = request.json.get("completed_assessment_id")
-
         exists = check_feedback_exists(user_id, completed_assessment_id)
-        if exists: 
-            return create_bad_response(f"Feedback already exists", "feedbacks", 409)    
+        #if exists: 
+        #    return create_good_response(f"Feedback already exists", "feedbacks", 400)    
 
         feedback_data = request.json
+        feedback_data["user_id"] = user_id
         string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
         feedback_data["feedback_time"] = datetime.now().strftime(string_format)
         
