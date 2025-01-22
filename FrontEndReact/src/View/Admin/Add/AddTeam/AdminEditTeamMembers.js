@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import Button from "@mui/material/Button";
 import "bootstrap/dist/css/bootstrap.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
-import { Checkbox, IconButton, Typography } from "@mui/material";
+import { Checkbox, Typography } from "@mui/material";
 
 
 
