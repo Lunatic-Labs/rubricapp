@@ -93,6 +93,7 @@ async def stream_checked_in_events():
         asyncio.CancelledError - client closed the connection
     """
     #Server is having issues handling this. Swapping this to threading to see if its the server.
+    # Perhaps the workers are not handling this code as expected. 
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
         queue =  asyncio.Queue()
