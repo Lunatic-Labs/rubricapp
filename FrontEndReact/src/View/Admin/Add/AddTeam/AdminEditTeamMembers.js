@@ -166,7 +166,7 @@ class AdminEditTeamMembers extends Component {
                     customBodyRender: (userId) => {
                         return (
                             <Checkbox
-                                checked={this.state.userEdits[userId] === undefined}
+                                checked={this.state.userEdits[userId] !== undefined}
                                 onChange={() => {
                                     this.saveUser(userId);
                                 }}
