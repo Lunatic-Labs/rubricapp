@@ -84,7 +84,7 @@ class CompleteAssessmentTask extends Component {
             "roles", this, { dest: "currentUserRole" }
         );
 
-        if (chosenAssessmentTask["role_id"] === 5) {
+        if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
             genericResourceGET(
                 `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
                 "teams", this, { dest: "userFixedTeam" }

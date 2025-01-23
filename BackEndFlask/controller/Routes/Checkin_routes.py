@@ -92,7 +92,8 @@ async def stream_checked_in_events():
         TypeError - incorrect data for json.dump
         asyncio.CancelledError - client closed the connection
     """
-
+    #Server is having issues handling this. Swapping this to threading to see if its the server.
+    # Perhaps the workers are not handling this code as expected. 
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
         queue =  asyncio.Queue()
@@ -109,17 +110,27 @@ async def stream_checked_in_events():
             pubsub = red.pubsub() 
             pubsub.subscribe(CHECK_IN_REDIS_CHANNEL)
             await queue.put(await encode_message())
-            for message in pubsub.listen(): 
-                if message["type"] == "message" and str(message["data"]) == str(assessment_task_id): 
-                    encoded_message = await encode_message() 
-                    await queue.put(encoded_message) 
-                await asyncio.sleep(5.0) # Non-blocking sleep to save system resources.
+            try:
+                for message in pubsub.listen(): 
+                    if message["type"] == "message" and str(message["data"]) == str(assessment_task_id): 
+                        encoded_message = await encode_message() 
+                        await queue.put(encoded_message) 
+                    await asyncio.sleep(5.0) # Non-blocking sleep to save system resources.
+            except Exception as e:
+                return create_bad_response(f"Error in redis listener: {e}", "checkin", 400)
+            finally:
+                pubsub.close()
 
         # Async code to keep viewing the stream of info and update client.
         async def check_in_stream():
             while True:
-                message = await queue.get()
-                yield message
+                try:
+                    message = await queue.get()
+                    yield message
+                except asyncio.CancelledError:
+                    raise Exception(f"Client ended connection: {e}", "checkin", 400)
+                except Exception as e:
+                    raise Exception(f"Error while streaming: {e}", "checkin", 400)
 
         # Wrapper to make async_generator into a standard itterable for the response.
         def sync_generator():
@@ -132,19 +143,15 @@ async def stream_checked_in_events():
                     yield loop.run_until_complete(async_gen.__anext__())
             except StopAsyncIteration:
                 pass
+            except Exception as e:
+                yield create_bad_response(str(e), "checkin", 400)
             finally:
                 loop.close()
 
         return flask.Response(sync_generator(), mimetype="text/event-stream", status=200)
     
-    except Timeout as e:
-        return create_bad_response(f"Connection closed by server {e}", "checkin", 400)
-    except OverflowError as e:
-        return create_bad_response(f"Overflow {e}", "checkin", 400)
-    except TypeError as e:
-        return create_bad_response(f"Possible serialization issue {e}", "checkin", 400)
-    except asyncio.CancelledError as e:
-        return create_bad_response(f"Connection closed by client {e}", "checkin", 400)
+    except (Timeout, OverflowError, TypeError) as e:
+        return create_bad_response(f"Connection closed by server or json parsing issue {e}", "checkin", 400)
     except Exception as e:
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
 

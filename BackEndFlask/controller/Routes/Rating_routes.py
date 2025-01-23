@@ -60,27 +60,28 @@ def get_student_individual_ratings():
 @AuthCheck()
 def student_view_feedback(): 
     """
-        Description:
-        Given a user_id and completed_assessment_id creates an entry in the Feedback table
-        for that student and that completed assessment. Currently only stores the time of creation,
-        used to calculate lag time. 
+    Description:
+        Creates an entry in the Feedback table for that student and that completed assessment.
+    Parameters:
+        user_id: <class 'str'>(The user's ID whos feedback time will be created)
+        completed_assessment_id = <class 'str'>(Desired CAT_ID to modify the feedback for)
+    Exceptions:
+       Errors that the database can raise. 
     """
-    try: 
+    try:
         user_id = request.args.get("user_id")
         completed_assessment_id = request.json.get("completed_assessment_id")
-
+        
         exists = check_feedback_exists(user_id, completed_assessment_id)
-        if exists: 
-            return create_bad_response(f"Feedback already exists", "feedbacks", 409)    
-
+        if exists:
+            return create_bad_response(f"Using server's existing data as source of truth.", "feedbacks", 409)    
+        
         feedback_data = request.json
+        feedback_data["user_id"] = user_id
         string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
         feedback_data["feedback_time"] = datetime.now().strftime(string_format)
-        
         feedback = create_feedback(feedback_data)
-        
         return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
-    
     except Exception as e:
         return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)
 
