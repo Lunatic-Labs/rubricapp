@@ -128,9 +128,9 @@ async def stream_checked_in_events():
                     message = await queue.get()
                     yield message
                 except asyncio.CancelledError:
-                    return create_bad_response(f"Client ended connection: {e}", "checkin", 400)
+                    raise Exception(f"Client ended connection: {e}", "checkin", 400)
                 except Exception as e:
-                    return create_bad_response(f"Error while streaming: {e}", "checkin", 400)
+                    raise Exception(f"Error while streaming: {e}", "checkin", 400)
 
         # Wrapper to make async_generator into a standard itterable for the response.
         def sync_generator():
@@ -143,6 +143,8 @@ async def stream_checked_in_events():
                     yield loop.run_until_complete(async_gen.__anext__())
             except StopAsyncIteration:
                 pass
+            except Exception as e:
+                yield create_bad_response(str(e), "checkin", 400)
             finally:
                 loop.close()
 
