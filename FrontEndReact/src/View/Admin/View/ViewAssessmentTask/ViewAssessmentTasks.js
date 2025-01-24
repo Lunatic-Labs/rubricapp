@@ -345,12 +345,21 @@ class ViewAssessmentTasks extends Component {
                         const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
 
                         return (
-                            <IconButton
-                            aria-label={isLocked ? "unlock" : "lock"}
-                            onClick={() => this.handleLockToggle(atId, task)}
+                            <Tooltip
+                                title={
+                                    <>
+                                        <p>
+                                            If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
+                                        </p>
+                                    </>
+                                }>
+                                <IconButton
+                                aria-label={isLocked ? "unlock" : "lock"}
+                                onClick={() => this.handleLockToggle(atId, task)}
                             >
-                            {isLocked ? <LockIcon /> : <LockOpenIcon />}
-                            </IconButton>
+                                {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                                </IconButton>
+                            </Tooltip>
                         );
                     }
                 }
