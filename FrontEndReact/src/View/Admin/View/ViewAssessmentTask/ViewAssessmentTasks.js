@@ -312,12 +312,22 @@ class ViewAssessmentTasks extends Component {
                         const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
 
                         return (
-                            <IconButton
-                            aria-label={isPublished ? "unlock" : "lock"}
-                            onClick={() => this.handlePublishToggle(atId, task)}
+                            <Tooltip 
+                                title={
+                                    <>
+                                        <p> 
+                                            If the icon shows <strong>an upward arrow</strong>, the assessment task is published and visible to students; otherwise, the task is unpublished and hidden from students. 
+                                        </p>
+                                         
+                                    </>
+                                }>
+                                <IconButton
+                                aria-label={isPublished ? "unlock" : "lock"}
+                                onClick={() => this.handlePublishToggle(atId, task)}
                             >
-                            {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
-                            </IconButton>
+                                {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
+                                </IconButton>
+                            </Tooltip>
                         );
                     }
                 }
