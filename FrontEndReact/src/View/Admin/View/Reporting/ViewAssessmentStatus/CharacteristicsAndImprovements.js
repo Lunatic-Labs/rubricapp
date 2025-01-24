@@ -28,15 +28,18 @@ export default function CharacteristicsAndImprovements({
   dataType,
   characteristicsData,
   improvementsData,
-  showSuggestions
+  showSuggestions,
+  completedAssessments
 }) {
+
   const data = dataType === 'characteristics'
     ? characteristicsData.characteristics
     : improvementsData.improvements;
 
   const processedData = data.map(item => ({
     ...item,
-    truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement'])
+    truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
+    number: ((item.number / completedAssessments)*100).toFixed(2)
   }));
 
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
@@ -66,7 +69,9 @@ export default function CharacteristicsAndImprovements({
                     >
                       <XAxis
                         type="number"
-                        domain={[0, 1]}
+                        domain={[0, 100]}
+                        ticks={[0, 25, 50, 75, 100]}
+                        tickFormatter={(tick) => `${tick}`}
                         style={{ fontSize: '12px' }}
                       />
                       <YAxis
@@ -86,17 +91,17 @@ export default function CharacteristicsAndImprovements({
                         className="cursor-pointer"
                       >
                         <LabelList 
-                          dataKey="percentage" 
+                          dataKey="number" 
                           fill="#ffffff" 
                           position="inside"
-                          formatter={value => `${value}`}
+                          formatter={value => `${value}%`}
                         />
                       </Bar>
                     </BarChart>
                   </ResponsiveContainer>
                 ) : (
                   <div className="d-flex justify-content-center align-items-center h-100">
-                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="grey" className="bi bi-bar-chart" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="grey" className="bi bi-chart" viewBox="0 0 16 16">
                       <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
                     </svg>
                   </div>

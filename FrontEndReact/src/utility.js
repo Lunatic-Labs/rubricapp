@@ -25,7 +25,8 @@ function createApiRequestUrl(fetchURL, cookies) {
 
 async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
     const {
-        dest = resource
+        dest = resource,
+        rawResponse = false, // Return the raw response from the backend instead of just the resource
     } = options;
 
     const cookies = new Cookies();
@@ -76,7 +77,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
 
             component.setState(state);
             
-            return state;
+            return rawResponse ? result : state;
         
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
@@ -102,7 +103,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             
             component.setState(state);
             
-            return state;
+            return rawResponse ? result : state;
         }
     }
 }

@@ -1,4 +1,5 @@
 from flask_jwt_extended import JWTManager
+from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from models.tests import testing
@@ -11,6 +12,7 @@ import sys
 import os
 import re
 import redis
+#import logging
 
 def setup_cron_jobs():
     # Check if we've already set up cron
@@ -78,6 +80,9 @@ app.config['JSON_SORT_KEYS'] = False
 # Enable CORS
 CORS(app)
 
+# Enable the CORS logger
+#logging.getLogger('flask_cors').level = logging.DEBUG
+
 # Initialize JWT
 jwt = JWTManager(app)
 account_db_path = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
@@ -96,6 +101,7 @@ app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
 db = SQLAlchemy(app)
 ma = Marshmallow(app)
+migrate = Migrate(app, db)
 
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
