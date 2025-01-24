@@ -375,7 +375,15 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
                             return (
-                                <IconButton
+                                <Tooltip
+                                    title={
+                                        <>
+                                            <p>
+                                                Instructors can modify the details of the assessment task such as its name, unit of assessment, due date or assigned rubric.
+                                            </p>
+                                        </>
+                                    }>
+                                    <IconButton
                                     id=""
                                     onClick={() => {
                                         setAddAssessmentTaskTabWithAssessmentTask(
@@ -388,8 +396,9 @@ class ViewAssessmentTasks extends Component {
                                     }}
                                     aria-label='editAssessmentIconButton'
                                 >
-                               <EditIcon sx={{color:"black"}}/>
-                             </IconButton>
+                                    <EditIcon sx={{color:"black"}}/>
+                                    </IconButton>
+                                </Tooltip>
                             )
 
                         } else {
