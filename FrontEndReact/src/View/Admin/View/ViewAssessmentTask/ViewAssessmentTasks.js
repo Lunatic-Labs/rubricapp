@@ -322,9 +322,9 @@ class ViewAssessmentTasks extends Component {
                                     </>
                                 }>
                                 <IconButton
-                                aria-label={isPublished ? "unlock" : "lock"}
-                                onClick={() => this.handlePublishToggle(atId, task)}
-                            >
+                                    aria-label={isPublished ? "unlock" : "lock"}
+                                    onClick={() => this.handlePublishToggle(atId, task)}
+                                >
                                 {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
                                 </IconButton>
                             </Tooltip>
@@ -354,9 +354,9 @@ class ViewAssessmentTasks extends Component {
                                     </>
                                 }>
                                 <IconButton
-                                aria-label={isLocked ? "unlock" : "lock"}
-                                onClick={() => this.handleLockToggle(atId, task)}
-                            >
+                                    aria-label={isLocked ? "unlock" : "lock"}
+                                    onClick={() => this.handleLockToggle(atId, task)}
+                                >
                                 {isLocked ? <LockIcon /> : <LockOpenIcon />}
                                 </IconButton>
                             </Tooltip>
@@ -384,18 +384,18 @@ class ViewAssessmentTasks extends Component {
                                         </>
                                     }>
                                     <IconButton
-                                    id=""
-                                    onClick={() => {
-                                        setAddAssessmentTaskTabWithAssessmentTask(
-                                            assessmentTasks,
-                                            assessmentTaskId,
-                                            chosenCourse,
-                                            roleNames,
-                                            rubricNames
-                                        )
-                                    }}
-                                    aria-label='editAssessmentIconButton'
-                                >
+                                        id=""
+                                        onClick={() => {
+                                            setAddAssessmentTaskTabWithAssessmentTask(
+                                                assessmentTasks,
+                                                assessmentTaskId,
+                                                chosenCourse,
+                                                roleNames,
+                                                rubricNames
+                                            )
+                                        }}
+                                        aria-label='editAssessmentIconButton'
+                                    >
                                     <EditIcon sx={{color:"black"}}/>
                                     </IconButton>
                                 </Tooltip>
@@ -426,15 +426,24 @@ class ViewAssessmentTasks extends Component {
                             if (selectedTask) {
                                 return (
                                     <>
-                                        <IconButton
-                                            id=""
-                                            onClick={() => {
-                                                setCompleteAssessmentTaskTabWithID(selectedTask);
-                                            }}
-                                            aria-label='viewCompletedAssessmentIconButton'
-                                        >
-                                        <VisibilityIcon sx={{color:"black"}} />
-                                        </IconButton>
+                                        <Tooltip
+                                            title={
+                                                <>
+                                                    <p>
+                                                        Instructors can review the contents of the assessment task to ensure everything is up to date.
+                                                    </p>
+                                                </>
+                                            }>
+                                            <IconButton
+                                                id=""
+                                                onClick={() => {
+                                                    setCompleteAssessmentTaskTabWithID(selectedTask);
+                                                }}
+                                                aria-label='viewCompletedAssessmentIconButton'
+                                            >
+                                            <VisibilityIcon sx={{color:"black"}} />
+                                            </IconButton>
+                                        </Tooltip>
                                     </>
                                 );
                             }
