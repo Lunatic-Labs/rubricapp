@@ -23,7 +23,7 @@ var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
 var adt = "assessmentDashboardTitle";
-var vciat = "viewCompletedIndividualAssessmentsTitle";
+var vcirt = "viewCompletedIndividualRubricsTitle";
 var aismdb = "assessmentIndividualSeeMoreDetailsButtons";
 var mhbb = "mainHeaderBackButton";
 var vcaisnb = "viewCompletedAssessmentIndividualSendNotificationButton";
@@ -69,7 +69,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 1: Should render the AdminVi
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
 
@@ -98,7 +98,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessm
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 
     clickElementWithAriaLabel(mhbb);
@@ -133,7 +133,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 3: Should render the Add Mes
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 
     clickElementWithAriaLabel(vcaisnb);
@@ -168,7 +168,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Individ
     },{ timeout: 3000 });
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 
     clickFirstElementWithAriaLabel(aismdb);
@@ -199,7 +199,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Individ
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
     
     clickElementWithAriaLabel(vcaisnb);
@@ -211,7 +211,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Individ
     clickElementWithAriaLabel(ampcb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
 
@@ -240,7 +240,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Individ
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
     
     clickElementWithAriaLabel(vcaisnb);
@@ -252,7 +252,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Individ
     clickElementWithAriaLabel(ampsnb);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
 
@@ -281,7 +281,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Individ
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 
     clickFirstElementWithAriaLabel(aismdb);
@@ -289,6 +289,6 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Individ
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });

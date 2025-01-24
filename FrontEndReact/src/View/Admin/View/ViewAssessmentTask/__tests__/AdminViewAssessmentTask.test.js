@@ -32,7 +32,7 @@ var aaatt = "adminAddAssessmentTaskTitle";
 var eaib = "editAssessmentIconButton";
 var aeatt = "adminEditAssessmentTaskTitle";
 var vcaib = "viewCompletedAssessmentIconButton";
-var vciat = "viewCompletedIndividualAssessmentsTitle";
+var vcirt = "viewCompletedIndividualRubricsTitle";
 var satb = "startAssessmentTasksButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var lb = "loginButton";
@@ -212,7 +212,7 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
 

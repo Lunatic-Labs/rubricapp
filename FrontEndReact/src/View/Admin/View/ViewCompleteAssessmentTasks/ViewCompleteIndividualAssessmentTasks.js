@@ -417,7 +417,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 </Box>
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedIndividualAssessmentsTitle"> Completed Rubrics</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedIndividualRubricsTitle"> Completed Rubrics</Typography>
 
           <Box>
             <ResponsiveNotification
