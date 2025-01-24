@@ -40,6 +40,7 @@ FrontEndReact/package-lock.json
 package-lock.json
 BackEndFlask/logs/all.log
 BackEndFlask/models/hidden.py
+BackEndFlask/oauth2_creds.json
 BackEndFlask/logs/all.log
 BackEndFlask/.env
 .vscode
