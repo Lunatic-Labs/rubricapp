@@ -97,11 +97,10 @@ class AdminImportAssessmentTask extends Component {
 
                                     <Box sx={{ mb: 3}}>
                                         <Box>
-                                            <FormControl error={!!errors.courseToImportTasksFrom} required fullWidth sx={{mb: 3}} >
+                                            <FormControl error={!!errors.courseToImportTasksFrom} required fullWidth sx={{mb: 3}} aria-label="adminImportAssessmentCourseSelect" >
                                                 <CourseDropdown
                                                     id="courseSelected"
                                                     setSelectedCourse={this.setSelectedCourse}
-                                                    aria-label="adminImportAssessmentCourseSelect"
                                                 />
 
                                                 <FormHelperText>{errors.courseToImportTasksFrom}</FormHelperText>

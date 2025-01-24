@@ -202,8 +202,7 @@ export default function ViewAssessmentStatus(props) {
                 <div style={{
                   ...innerGridStyle,
                   padding: '20px',
-                  marginTop: '16px',
-                  
+                  marginTop: '16px',  
                 }}>
                   <h3 style={{ fontWeight: 'normal', textAlign: 'center'}}>
                     <u>Assessment Tasks Completed:</u>
@@ -242,6 +241,7 @@ export default function ViewAssessmentStatus(props) {
                   characteristicsData={characteristicsData}
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
+                  completedAssessments={props.completedAssessments.length}
                 />
               </div>
             </Grid>
@@ -252,6 +252,7 @@ export default function ViewAssessmentStatus(props) {
                   characteristicsData={characteristicsData}
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
+                  completedAssessments={props.completedAssessments.length}
                 />
               </div>
             </Grid>

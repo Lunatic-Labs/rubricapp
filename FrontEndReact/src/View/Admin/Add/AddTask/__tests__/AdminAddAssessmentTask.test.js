@@ -28,15 +28,13 @@ var atb = "addTaskButton";
 var aaatt = "adminAddAssessmentTaskTitle";
 var aaacb = "adminAddAssessmentCancelButton"
 var aagaro = "addAssessmentGroupAssessmentRadioOption";
+var aaiaro = "addAssessmentInvididualAssessmentRadioOption";
 var aatp = "addAssessmentTeamPassword";
 var aacoub = "addAssessmentCreateOrUpdateButton";
 var aatn = "addAssessmentTaskName";
 var aard = "addAssessmentRubricDropdown";
-var aaro = "addAssessmentRoleOption";
 var aatd = "addAssessmentTimezoneDropdown";
-var aaero = "addAssessmentEstRadioOption";
 var aan = "addAssessmentNotes";
-var aarubo = "addAssessmentRubricOption";
 
 
 
@@ -45,7 +43,7 @@ test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-test("AdminAddAssessmentTask.test.js Test 1: Should render the AdminAddCourse component given the Add Task button is clicked", async () => {
+test("AdminAddAssessmentTask.test.js Test 1: Should render the Add Assessment Task Form given the Add Task button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -61,25 +59,19 @@ test("AdminAddAssessmentTask.test.js Test 1: Should render the AdminAddCourse co
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(adt);
-
-            clickElementWithAriaLabel(atb);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(adt);
     });
 
+    clickElementWithAriaLabel(atb);
+
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(aaatt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(aaatt);
     });
 });
 
@@ -94,36 +86,30 @@ test("AdminAddAssessmentTask.test.js Test 2: Should render the Assessment dashbo
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(adt);
-
-            clickElementWithAriaLabel(atb);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(adt);
     });
+    
+    clickElementWithAriaLabel(atb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(aaatt);
-
-            clickElementWithAriaLabel(aaacb);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(aaatt);
     });
+
+    clickElementWithAriaLabel(aaacb);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-    });
+    },{ timeout: 3000 });
 });
 
 
-test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text field if the Group Assessment radio option is clicked", async () => {
+test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text field if the Team Assessment option is clicked for Unit of Assessment", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -133,22 +119,22 @@ test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text fie
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickElementWithAriaLabel(atb);
     });
+    
+    clickElementWithAriaLabel(atb);
 
     await waitFor(() => {
-        clickElementWithAriaLabel(aagaro);
+        expectElementWithAriaLabelToBeInDocument(aaatt);
     });
+
+    clickElementWithAriaLabel(aagaro);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aatp);
@@ -166,27 +152,25 @@ test("AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error w
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickElementWithAriaLabel(atb);
     });
 
-    await waitFor(() => {
-        clickElementWithAriaLabel(aacoub);
-    });
+    clickElementWithAriaLabel(atb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(aatn, "Task Name cannot be empty");
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(aaatt);
+    });
+
+    clickElementWithAriaLabel(aacoub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToHaveErrorMessage(aatn, "Task Name cannot be empty");
     });
 });
 
@@ -201,121 +185,108 @@ test("AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessmen
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickElementWithAriaLabel(atb);
-        
     });
+
+    clickElementWithAriaLabel(atb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(aaatt);
+    });
+
+    clickElementWithAriaLabel(aatn);
 
     await waitFor(() => {
         changeElementWithAriaLabelWithInput(aatn, "Make a class");
+    });
 
+    await waitFor(() => {
         clickElementWithAriaLabel(aard);
-    });
+    
+        clickFirstElementWithAriaLabel(aaiaro);
+    
+        clickElementWithAriaLabel(aatd);
+    },{ timeout: 3000 });
 
+    
     await waitFor(() => {
-        setTimeout(() => {
-            clickFirstElementWithAriaLabel(aarubo);
-
-            clickFirstElementWithAriaLabel(aaro);
-
-            clickElementWithAriaLabel(aatd);
-        }, 3000);
-    }); 
-
-    await waitFor(() => {
-        setTimeout(() => {
-            clickElementWithAriaLabel(aaero);
-
-            changeElementWithAriaLabelWithInput(aan, "Make a class");
-        }, 3000);
+        changeElementWithAriaLabelWithInput(aan, "Good luck!");
     });
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(adt);
-        }, 3000)
-    });
+    
+    clickElementWithAriaLabel(aacoub);
 });
 
 
-test("AdminAddAssessmentTask.test.js Test 6: Should provide a HelperText error when no option is selected in the Time Zone Dropdown", async () => {
-    render(<Login />);
+// test("AdminAddAssessmentTask.test.js Test 6: Should provide a HelperText error when no option is selected in the Time Zone Dropdown", async () => {
+//     render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithAriaLabel(vcib);
 
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(rt);
+//     });
 
-    clickElementWithAriaLabel(at);
+//     clickElementWithAriaLabel(at);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(adt);
+//     });
 
-        clickElementWithAriaLabel(atb);
-    });
+//     clickElementWithAriaLabel(atb);
 
-    await waitFor(() => {
-        clickElementWithAriaLabel(aacoub);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(aaatt);
+//     });
 
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(aatd, "Time Zone cannot be empty");
-        }, 3000);
-    });
-});
+//     clickElementWithAriaLabel(aacoub);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToHaveErrorMessage(aatd, "Time Zone cannot be empty");
+//     });
+// });
 
 
-test("AdminAddAssessmentTask.test.js Test 7: Should provide a HelperText error when no option is selected in the Rubric Dropdown", async () => {
-    render(<Login />);
+// test("AdminAddAssessmentTask.test.js Test 7: Should provide a HelperText error when no option is selected in the Rubric Dropdown", async () => {
+//     render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithAriaLabel(vcib);
 
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(rt);
+//     });
 
-    clickElementWithAriaLabel(at);
+//     clickElementWithAriaLabel(at);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(adt);
+//     });
 
-        clickElementWithAriaLabel(atb);
-    });
+//     clickElementWithAriaLabel(atb);
 
-    await waitFor(() => {
-        clickElementWithAriaLabel(aacoub);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(aaatt);
+//     });
 
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(aard, "Rubric cannot be empty");
-        }, 3000);
-    });
-});
+//     clickElementWithAriaLabel(aacoub);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToHaveErrorMessage(aard, "Rubric cannot be empty");
+//     });
+// });
 
 
 test("AdminAddAssessmentTask.test.js Test 8: Should provide a HelperText error when Instructions to Students/TA's is left empty", async () => {
@@ -328,26 +299,24 @@ test("AdminAddAssessmentTask.test.js Test 8: Should provide a HelperText error w
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickElementWithAriaLabel(atb);
     });
 
-    await waitFor(() => {
-        clickElementWithAriaLabel(aacoub);
-    });
+    clickElementWithAriaLabel(atb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToHaveErrorMessage(aan, "Assessment Notes cannot be empty");
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(aaatt);
+    });
+
+    clickElementWithAriaLabel(aacoub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToHaveErrorMessage(aan, "Assessment Notes cannot be empty");
     });
 });

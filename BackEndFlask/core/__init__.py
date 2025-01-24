@@ -12,6 +12,7 @@ import sys
 import os
 import re
 import redis
+#import logging
 
 def setup_cron_jobs():
     # Check if we've already set up cron
@@ -78,6 +79,9 @@ app.config['JSON_SORT_KEYS'] = False
 
 # Enable CORS
 CORS(app)
+
+# Enable the CORS logger
+#logging.getLogger('flask_cors').level = logging.DEBUG
 
 # Initialize JWT
 jwt = JWTManager(app)

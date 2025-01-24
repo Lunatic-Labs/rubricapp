@@ -58,7 +58,8 @@ class CompleteAssessmentTask extends Component {
             
             currentUserId: null,
             usingTeams: this.props.navbar.state.unitOfAssessment,
-            checkins: null,
+            checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
+                                                             // The loop happens due to server caching as per testing.
             checkinEventSource: null,
             unitList: null,
         };
@@ -190,7 +191,6 @@ class CompleteAssessmentTask extends Component {
             teamsUsers,
             currentUserRole,
             completedAssessments,
-            
             checkins
         } = this.state;
 
