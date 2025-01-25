@@ -54,7 +54,7 @@ export default function CharacteristicsAndImprovements({
                 <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
               </h6>
               
-              <div style={{ height: '210px' }}>
+              <div style={{ height: '250px' }}>
                 {shouldShowGraph ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
