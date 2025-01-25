@@ -487,16 +487,25 @@ class ViewAssessmentTasks extends Component {
                         }
 
                         return (
-                            <Button
-                                className='primary-color'
-                                variant='contained'
-                                onClick={() => {
-                                    navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
-                                }}
-                                aria-label='startAssessmentTasksButton'
-                            >
+                            <Tooltip
+                                title={
+                                    <>
+                                        <p>
+                                            Begins the process of completing an assessment task, allowing the assessor to review the instructions and rubric criteria for the selected task.
+                                        </p>
+                                    </>
+                                }>
+                                <Button
+                                    className='primary-color'
+                                    variant='contained'
+                                    onClick={() => {
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                    }}
+                                    aria-label='startAssessmentTasksButton'
+                                >
                                 START
-                            </Button>
+                                </Button>
+                            </Tooltip>
                         )
                     }
                 }
