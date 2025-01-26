@@ -168,6 +168,7 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
 def send_email(address: str, subject: str,  content: str):
     try:
+        return
         yag = yagmail.SMTP("skillbuilder02", oauth2_file=OAUTH2_CREDS_FP)
         yag.send(to=address, subject=subject, contents=content)
     except Exception as e:

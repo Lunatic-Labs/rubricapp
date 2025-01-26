@@ -364,7 +364,8 @@ class UserSchema(ma.Schema):
             'active',
             'has_set_password',
             'is_admin',
-            'role_id'
+            'role_id',
+            'last_update',
         )
 
 
