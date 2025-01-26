@@ -51,3 +51,7 @@ BackEndFlask/.env
 
 # SSL/TLS certificate files
 /etc/letsencrypt/live/*
+
+# Misc
+BackEndFlask/core/.cron_setup_done
+BackEndFlask/token.json

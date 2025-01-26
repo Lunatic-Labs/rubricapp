@@ -421,7 +421,7 @@ function serve_rubricapp() {
     # Start gunicorn
     log "Starting gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --bind unix:rubricapp.sock wsgi:app &
+    gunicorn --reload --bind unix:rubricapp.sock wsgi:app &
     sudo systemctl start rubricapp.service
 
     # Start nginx
