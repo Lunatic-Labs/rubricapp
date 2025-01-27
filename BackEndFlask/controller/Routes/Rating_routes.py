@@ -9,14 +9,12 @@ from flask_jwt_extended import jwt_required
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
-    admin_check
 )
 
 @bp.route("/rating", methods=["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-@admin_check()
 def get_student_individual_ratings():
     """
         Description:

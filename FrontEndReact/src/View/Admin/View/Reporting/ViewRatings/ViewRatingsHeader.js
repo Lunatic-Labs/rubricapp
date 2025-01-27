@@ -7,11 +7,10 @@ import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 export default function ViewRatingsHeader(props) {
   var assessmentIsTeam = parseAssessmentIndividualOrTeam(props.assessmentTasks);
-
   return (
     <Box>
       <Box style={{ display: "flex", flexDirection: "column", justifyContent: "center", alignItems: "center" }}>
-        <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center" }}>
+        <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "center", alignItems: "center", width: "100%" }}>
           <AssessmentTaskDropdown
             assessmentTasks={props.assessmentTasks}
             chosenAssessmentId={props.chosenAssessmentId}
@@ -23,6 +22,7 @@ export default function ViewRatingsHeader(props) {
               { assessmentIsTeam[props.chosenAssessmentId] ? "Team Assignment" : "Individual Assignment" }
             </Typography>
           }
+
         </Box>
       </Box>
     </Box>
