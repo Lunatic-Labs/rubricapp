@@ -118,7 +118,7 @@ def stream_checked_in_events():
     except (TypeError, ValueError) as e:
         return create_bad_response(f"Potential encoding error {e}", "checkin", 400)
     except ConnectionError as e:
-        return create_bad_response(f"Interupted redis connection {e}", "checkin", 400)
+        return create_bad_response(f"Interrupted redis connection {e}", "checkin", 400)
     except Exception as e:
         return create_bad_response(f"An error occurred getting checked in user {e}", "checkin", 400)
     
