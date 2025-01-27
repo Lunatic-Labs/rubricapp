@@ -5,6 +5,7 @@ from models.team import *
 from models.team_user import *
 from models.user_course import *
 from models.course import *
+from models.queries import does_team_user_exist
 from Functions.test_files.PopulationFunctions import xlsx_to_csv
 
 from datetime import date
@@ -35,14 +36,14 @@ def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     will modify the original list passed.
     """
     hd: list[str] = lst.pop(0)
-    
+ 
     # Clean the row - specifically handle 'Unnamed:' columns and empty strings
     cleaned = []
     for x in hd:
         stripped = x.strip()
         if stripped and not stripped.startswith('Unnamed:'):
             cleaned.append(stripped)
-    
+
     if cols is not None and len(cleaned) != cols:
         raise TooManyColumns(1, cols, len(cleaned))
     return cleaned
@@ -71,7 +72,16 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
                     raise EmptyTeamName if team_name == "" else EmptyTAEmail
                 teams.append(TBUTeam(team_name, ta, students))
                 students = []
-                current_state = EXPECT_TA
+
+                multiple_observers = True
+                if len(lst) > 2:
+                    hd = __expect(lst)
+                    lookAhead = __expect(lst)
+                    lst.insert(0, lookAhead)
+                    lst.insert(0, hd)   
+                    multiple_observers = len(hd) == len(lookAhead) == 1
+
+                current_state = EXPECT_TA if multiple_observers else EXPECT_TEAM 
             continue
 
         # Process based on what type of row we're expecting
@@ -263,10 +273,12 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         else:
             set_inactive_status_of_user_to_active(user_course.user_course_id)
 
-        create_team_user({
-            "team_id": team_id,
-            "user_id": user_id
-        })
+        # Prevents duplicaition in the team user table.
+        if not does_team_user_exist(user_id, team_id):
+            create_team_user({
+                "team_id": team_id,
+                "user_id": user_id
+            })
 
     tainfo = __handle_ta()
 

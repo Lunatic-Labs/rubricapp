@@ -1,6 +1,6 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
-import { zonedTimeToUtc, format } from "date-fns-tz";
+import { fromZonedTime, format } from "date-fns-tz";
 import * as eventsource from "eventsource-client";
 
 export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
@@ -25,7 +25,8 @@ function createApiRequestUrl(fetchURL, cookies) {
 
 async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
     const {
-        dest = resource
+        dest = resource,
+        rawResponse = false, // Return the raw response from the backend instead of just the resource
     } = options;
 
     const cookies = new Cookies();
@@ -76,7 +77,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
 
             component.setState(state);
             
-            return state;
+            return rawResponse ? result : state;
         
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
@@ -102,7 +103,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             
             component.setState(state);
             
-            return state;
+            return rawResponse ? result : state;
         }
     }
 }
@@ -243,7 +244,7 @@ export function formatDueDate(dueDate, timeZone) {
 
     const timeZoneId = timeZoneMap[timeZone];
 
-    const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+    const zonedDueDate = fromZonedTime(dueDate, timeZoneId);
 
     const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
 

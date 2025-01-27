@@ -49,7 +49,7 @@ def get_completed_assessment_count(assessment_task_id):
 @error_log
 def completed_assessment_exists(team_id, assessment_task_id, user_id):
     if (user_id == -1):   # Team assessment, otherwise individual assessment
-        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
+        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id).first()
     else:   
         return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
 
@@ -84,7 +84,8 @@ def create_completed_assessment(completed_assessment_data):
         initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
         last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ'),
         rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"],
-        done=completed_assessment_data["done"]
+        done=completed_assessment_data["done"],
+        locked=False,
     )
 
     db.session.add(completed_assessment_data)
@@ -92,11 +93,48 @@ def create_completed_assessment(completed_assessment_data):
 
     return completed_assessment_data
 
+@error_log
+def toggle_lock_status(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = not one_completed_assessment.locked
+    db.session.commit()
+
+    return one_completed_assessment
+
+@error_log
+def make_complete_assessment_locked(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = True
+    db.session.commit()
+
+    return one_completed_assessment
+
+@error_log
+def make_complete_assessment_unlocked(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = False
+    db.session.commit()
+
+    return one_completed_assessment
+
 def load_demo_completed_assessment():
     list_of_completed_assessments = [
         {    # Completed Assessment id 1
             "assessment_task_id": 1,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:08:36.376000",
             "last_update": "2024-02-01T21:01:33.458000",
             "rating_observable_characteristics_suggestions_data": {
@@ -200,6 +238,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 2
             "assessment_task_id": 2,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:08:55.755000",
             "last_update": "2024-02-01T21:02:45.652000",
             "rating_observable_characteristics_suggestions_data": {
@@ -318,6 +357,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 3
             "assessment_task_id": 5,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:09:24.685000",
             "last_update": "2024-02-01T21:03:25.208000",
             "rating_observable_characteristics_suggestions_data": {
@@ -391,6 +431,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 4
             "assessment_task_id": 8,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:22:03.218000",
             "last_update": "2024-02-01T21:04:16.909000",
             "rating_observable_characteristics_suggestions_data": {
@@ -494,6 +535,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 5
             "assessment_task_id": 9,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:26:21.901000",
             "last_update": "2024-02-01T21:05:39.666000",
             "rating_observable_characteristics_suggestions_data": {
@@ -612,6 +654,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 6
             "assessment_task_id": 10,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-30T15:11:00.760000",
             "last_update": "2024-02-01T21:06:49.714000",
             "rating_observable_characteristics_suggestions_data": {
@@ -730,6 +773,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 7
             "assessment_task_id": 11,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-30T15:12:56.525000",
             "last_update": "2024-02-05T16:26:42.377000",
             "rating_observable_characteristics_suggestions_data": {
@@ -803,6 +847,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 8
             "assessment_task_id": 12,
             "done": True,
+            "locked": False,
             "initial_time": "2024-02-05T17:04:36.368000",
             "last_update": "2024-02-05T17:04:38.112000",
             "rating_observable_characteristics_suggestions_data": {
@@ -891,6 +936,7 @@ def load_demo_completed_assessment():
         {  # Completed Assessment id 9
             "assessment_task_id": 13,
             "done": True,
+            "locked": False,
             "initial_time": "2024-02-05T17:07:57.768000",
             "last_update": "2024-02-05T17:08:00.783000",
             "rating_observable_characteristics_suggestions_data": {
@@ -988,6 +1034,7 @@ def load_demo_completed_assessment():
             "last_update": comp_assessment["last_update"],
             "rating_observable_characteristics_suggestions_data": comp_assessment["rating_observable_characteristics_suggestions_data"],
             "done": comp_assessment["done"],
+            "locked": comp_assessment["locked"],
         })
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):

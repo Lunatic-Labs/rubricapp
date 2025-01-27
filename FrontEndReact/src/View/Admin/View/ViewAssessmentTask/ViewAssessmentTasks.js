@@ -1,14 +1,17 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
-import { IconButton } from '@mui/material';
 import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatDueDate, genericResourceGET, getHumanReadableDueDate } from '../../../../utility.js';
+import { formatDueDate, genericResourceGET, genericResourcePUT, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
-
+import { IconButton } from '@mui/material';
+import LockIcon from '@mui/icons-material/Lock';
+import LockOpenIcon from '@mui/icons-material/LockOpen';
+import PublishIcon from '@mui/icons-material/Publish';
+import UnpublishedIcon from '@mui/icons-material/Unpublished';
 
 class ViewAssessmentTasks extends Component {
     constructor(props) {
@@ -21,7 +24,9 @@ class ViewAssessmentTasks extends Component {
             downloadedAssessment: null,
             exportButtonId: {},
             completedAssessments: null,
-            assessmentTasks: null  
+            assessmentTasks: null,
+            lockStatus: {},
+            publishedStatus: {},
         }
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
@@ -37,15 +42,49 @@ class ViewAssessmentTasks extends Component {
                     var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
 
                     var newExportButtonJSON = this.state.exportButtonId;
-        
+
                     newExportButtonJSON[assessmentName] = exportButtonId;
-        
+
                     this.setState({
                         downloadedAssessment: assessmentName,
                         exportButtonId: newExportButtonJSON
-                    });                }
+                    });
+                }
             });
         }
+
+        this.handleLockToggle = (assessmentTaskId, task) => {
+          this.setState((prevState) => {
+              const newLockStatus = { ...prevState.lockStatus };
+              newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
+              return { lockStatus: newLockStatus };
+          }, () => {
+              const lockStatus = this.state.lockStatus[assessmentTaskId];
+
+              genericResourcePUT(
+                  `/assessment_task_toggle_lock?assessmentTaskId=${assessmentTaskId}`,
+                  this,
+                  JSON.stringify({ locked: lockStatus })
+              );
+          });
+        };
+
+        this.handlePublishToggle = (assessmentTaskId, task) => {
+          this.setState((prevState) => {
+              const newPublishedStatus = { ...prevState.publishedStatus };
+              newPublishedStatus[assessmentTaskId] = !newPublishedStatus[assessmentTaskId];
+              return { publishedStatus: newPublishedStatus };
+          }, () => {
+              const publishedStatus = this.state.publishedStatus[assessmentTaskId];
+
+              genericResourcePUT(
+                  `/assessment_task_toggle_published?assessmentTaskId=${assessmentTaskId}`,
+                  this,
+                  JSON.stringify({ published: publishedStatus })
+              );
+          });
+        };
+
     }
 
     componentDidUpdate () {
@@ -62,9 +101,9 @@ class ViewAssessmentTasks extends Component {
             link.click();
 
             var assessmentName = this.state.downloadedAssessment;
-            
+
             const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
-            
+
             setTimeout(() => {
                 if(exportAssessmentTask) {
                     exportAssessmentTask.removeAttribute("disabled");
@@ -87,22 +126,32 @@ class ViewAssessmentTasks extends Component {
             this,
             {dest: "assessmentTasks"}
         );
-        
+
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}&only_course=true`,
             "completed_assessments",
             this,
             {dest: "completedAssessments"}
         );
+
+        const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
+        const initialLockStatus = {};
+        const initialPublishedStatus = {};
+
+        assessmentTasks.forEach((task) => {
+            initialLockStatus[task.assessment_task_id] = task.locked;
+            initialPublishedStatus[task.assessment_task_id] = task.published;
+        });
+
+        this.setState({ lockStatus: initialLockStatus, publishedStatus: initialPublishedStatus });
     }
 
     render() {
-
         if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
             return <Loading />;
         }
         const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
-        
+
         var navbar = this.props.navbar;
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
 
@@ -252,6 +301,52 @@ class ViewAssessmentTasks extends Component {
             },
             {
                 name: "assessment_task_id",
+                label: "Publish",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    customBodyRender: (atId) => {
+                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                        const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
+
+                        return (
+                            <IconButton
+                            aria-label={isPublished ? "unlock" : "lock"}
+                            onClick={() => this.handlePublishToggle(atId, task)}
+                            >
+                            {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
+                            </IconButton>
+                        );
+                    }
+                }
+            },
+            {
+                name: "assessment_task_id",
+                label: "Lock",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
+                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    customBodyRender: (atId) => {
+                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                        const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
+
+                        return (
+                            <IconButton
+                            aria-label={isLocked ? "unlock" : "lock"}
+                            onClick={() => this.handleLockToggle(atId, task)}
+                            >
+                            {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                            </IconButton>
+                        );
+                    }
+                }
+            },
+            {
+                name: "assessment_task_id",
                 label: "Edit",
                 options: {
                     filter: false,
@@ -299,21 +394,23 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
                             const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
-        
+
                             if (selectedTask) {
                                 return (
-                                    <IconButton
-                                        id=""
-                                        onClick={() => {
-                                            setCompleteAssessmentTaskTabWithID(selectedTask);
-                                        }}
-                                        aria-label='viewCompletedAssessmentIconButton'
-                                    >
-                                    <VisibilityIcon sx={{color:"black"}} />
-                                    </IconButton>
+                                    <>
+                                        <IconButton
+                                            id=""
+                                            onClick={() => {
+                                                setCompleteAssessmentTaskTabWithID(selectedTask);
+                                            }}
+                                            aria-label='viewCompletedAssessmentIconButton'
+                                        >
+                                        <VisibilityIcon sx={{color:"black"}} />
+                                        </IconButton>
+                                    </>
                                 );
                             }
-                        } 
+                        }
                         return(
                             <>
                                 {"N/A"}
@@ -334,7 +431,7 @@ class ViewAssessmentTasks extends Component {
                         const assessmentTask = assessmentTasks.find(task => task.assessment_task_id === atId);
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
-            
+
                         if (isTeamAssessment && (fixedTeams && !teamsExist)) {
                             return (
                                 <Tooltip title="No teams available for this team assessment">
@@ -351,7 +448,7 @@ class ViewAssessmentTasks extends Component {
                                 </Tooltip>
                             );
                         }
-            
+
                         return (
                             <Button
                                 className='primary-color'
@@ -413,7 +510,7 @@ class ViewAssessmentTasks extends Component {
                         )
                     }
                 }
-            }
+            },
         ]
 
         const options = {

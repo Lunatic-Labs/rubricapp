@@ -1,5 +1,7 @@
 flask >= 2.2.2
+flask[async]>=2.2.2
 flask-sqlalchemy >= 3.0.3
+Flask-Migrate >= 4.0.7
 sqlalchemy >= 2.0.13
 flask-marshmallow >= 0.15.0
 marshmallow-sqlalchemy >= 0.29.0
@@ -17,3 +19,4 @@ python-dotenv >= 1.0.0
 yagmail >= 0.15.293
 openpyxl >= 3.1.2
 cryptography >= 43.0.1
+gevent >= 24.11.1

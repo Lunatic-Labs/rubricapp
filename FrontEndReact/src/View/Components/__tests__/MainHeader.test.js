@@ -1,5 +1,6 @@
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import ResizeObserver from "resize-observer-polyfill";
 import Login from "../../Login/Login.js";
 
 import {
@@ -13,7 +14,7 @@ import {
     demoAdminPassword
 } from "../../../App.js";
 
-
+global.ResizeObserver = ResizeObserver;
 
 var lb = "loginButton";
 var ei = "emailInput";
@@ -22,8 +23,8 @@ var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
 var vcmh = "viewCourseMainHeader";
 var mhbb = "mainHeaderBackButton";
-var rt = "rosterTab";
-// var rt = "rosterTitle"; // Why are these named the same?!?
+var rot = "rosterTab";
+var rt = "rosterTitle";
 var tt = "teamsTab";
 var at = "assessmentTab";
 var rept = "reportingTab";
@@ -54,9 +55,7 @@ test("Header.test.js Test 1: Should render the MainHeader component given the Vi
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcmh);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 });
 
@@ -71,26 +70,18 @@ test("MainHeader.test.js Test 2: Clicking the back button on the MainHeader comp
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(vcmh);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 
-    await waitFor(() => {
-        clickElementWithAriaLabel(mhbb);
-    });
+    clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
 
 
 test("MainHeader.test.js Test 3: Clicking the view button for a given course provides the correct course title", async () => {
-    var className = "Operating Systems";
-    
     render(<Login />);
 
     await waitFor(() => {
@@ -100,9 +91,7 @@ test("MainHeader.test.js Test 3: Clicking the view button for a given course pro
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(className);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 });
 
@@ -117,15 +106,13 @@ test("MainHeader.test.js Test 4: Clicking a View Course button on the main page 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rot);
 
-            expectElementWithAriaLabelToBeInDocument(at);
+        expectElementWithAriaLabelToBeInDocument(at);
 
-            expectElementWithAriaLabelToBeInDocument(tt);
+        expectElementWithAriaLabelToBeInDocument(tt);
 
-            expectElementWithAriaLabelToBeInDocument(rept);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rept);
     });
 });
 
@@ -140,9 +127,7 @@ test("MainHeader.test.js Test 5: Ensure that clicking the view button for a give
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
 
@@ -157,17 +142,13 @@ test("MainHeader.test.js Test 6: Ensure that clicking the rosterTab will render 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(rt);
+    clickElementWithAriaLabel(rot);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
 
@@ -182,17 +163,13 @@ test("MainHeader.test.js Test 7: Ensure that clicking the teamTab will render th
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 });
 
@@ -207,17 +184,13 @@ test("MainHeader.test.js Test 8: Ensure that clicking the assessmentTab will ren
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(ad);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(ad);
     });
 });
 
@@ -232,16 +205,12 @@ test("MainHeader.test.js Test 9: Ensure that clicking the reportingTab will rend
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(rept);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(repd);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(repd);
     });
 });

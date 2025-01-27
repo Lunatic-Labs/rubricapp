@@ -30,6 +30,7 @@ import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
 import UserAccount from './UserAccount.js';
+import PrivacyPolicy from './PrivacyPolicy.js';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 
 
@@ -131,7 +132,8 @@ class AppState extends Component {
         }
 
         this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
-            readOnly = false
+            readOnly = false,
+            skipInstructions = false
         }={}) => { // wip
             var completedAssessment = null;
 
@@ -139,13 +141,14 @@ class AppState extends Component {
                completedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId) ?? null;
             }
             const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
-            
+
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
                 unitOfAssessment: assessmentTask["unit_of_assessment"],
                 chosenCompleteAssessmentTaskIsReadOnly: readOnly,
+                skipInstructions: skipInstructions
             });
         }
 
@@ -621,10 +624,11 @@ class AppState extends Component {
 
                 {this.state.activeTab==="Teams" &&
                     <Box className="page-spacing">
-                        <TeamDashboard
-                            navbar={this}
-                            aria-label="teamDashboard"
-                        />
+                        <div aria-label="teamDashboard">
+                            <TeamDashboard
+                                navbar={this}
+                            />
+                        </div>
                     </Box>
                 }
 
@@ -685,10 +689,11 @@ class AppState extends Component {
 
                 {this.state.activeTab==="AssessmentTasks" &&
                     <Box className="page-spacing">
-                        <AssessmentDashboard
-                            navbar={this}
-                            aria-label="assessmentDashboard"
-                        />
+                        <div aria-label="assessmentDashboard">
+                            <AssessmentDashboard
+                                navbar={this}
+                            />
+                        </div>
                     </Box>
                 }
 
@@ -816,10 +821,11 @@ class AppState extends Component {
 
                 {this.state.activeTab==="Reporting" &&
                     <Box className="page-spacing">
-                        <ReportingDashboard
-                            navbar={this}
-                            aria-label="reportingDashboard"
-                        />
+                        <div aria-label="reportingDashboard">
+                            <ReportingDashboard
+                                navbar={this}
+                            />
+                        </div>
                     </Box>
                 }
 
@@ -846,6 +852,19 @@ class AppState extends Component {
                         />
 
                         <UserAccount
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="PrivacyPolicy" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                            aria-label="UserAccountBackButton"
+                        />
+
+                        <PrivacyPolicy
                             navbar={this}
                         />
                     </Box>
