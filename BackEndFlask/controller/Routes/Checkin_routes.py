@@ -91,6 +91,8 @@ def stream_checked_in_events():
             Exception: There was some other unexpected problem
     """
     try:
+        # The main problem is that nothing is creating the checkins so there si nothig
+
         assessment_task_id = int(request.args.get("assessment_task_id"))
         
         #collects data and serializes it to the proper format.
