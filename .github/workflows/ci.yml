@@ -60,7 +60,7 @@ jobs:
       - name: Run Jest tests
         run: |
           cd FrontEndReact
-          npm test -- --all --cacheDirectory /tmp/jest-cache --setupFiles ./jest-ci-setup.js --setupFiles ./node_modules/react-app-polyfill/jsdom.js
+          npm test -- --all --cacheDirectory /tmp/jest-cache
         # See FrontEndReact/jest-ci-setup.js for the rationale behind the --setupFiles ./jest-ci-setup.js hack
         # The ./node_modules/react-app-polyfill/jsdom.js setup file is enabled by default, but
         #  using any setupFiles args overrides the defaults so I have to add it

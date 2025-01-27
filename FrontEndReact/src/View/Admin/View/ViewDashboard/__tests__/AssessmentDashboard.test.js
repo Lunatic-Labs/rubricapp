@@ -32,7 +32,7 @@ var atb = "addTaskButton";
 var aaatt = "adminAddAssessmentTaskTitle";
 var eaib = "editAssessmentIconButton";
 var vcaib = "viewCompletedAssessmentIconButton";
-var vciat = "viewCompletedIndividualAssessmentsTitle";
+var vcirt = "viewCompletedIndividualRubricsTitle";
 var satb = "startAssessmentTasksButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var vmcrb = "viewMyCustomRubricsButton";
@@ -264,7 +264,7 @@ test("AssessmentDashboard.test.js Test 10: Should show View Completed Assessment
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vciat);
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
 
