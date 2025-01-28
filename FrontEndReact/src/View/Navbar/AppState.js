@@ -73,6 +73,7 @@ class AppState extends Component {
             successMessageTimeout: undefined,
 
             addCustomRubric: null,
+            chosenUserIdForJump: null,
         }
 
         this.setNewTab = (newTab) => {
@@ -252,7 +253,7 @@ class AppState extends Component {
         // When you click "complete" on the "TO DO" column the completed fields were null 
         // thus it would not display anything
         // By adding === null as a test case, we were able to have it populate.
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask) => {
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask, user_id=null) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
@@ -260,6 +261,7 @@ class AppState extends Component {
                     unitOfAssessment: null,
                     chosenCompleteAssessmentTask: null,
                     chosenCompleteAssessmentTaskIsReadOnly: false,
+                    chosenUserIdForJump: user_id,
                 });
 
             } else {
