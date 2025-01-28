@@ -217,6 +217,13 @@ function kill_procs() {
     kill_pids 5001
     kill_pids 3000
 
+    pkill gunicorn
+
+    cd ../
+    find . -type d -name "*.pyc" -exec rm -r {} +
+    find . -type d -name "__pycache__" -exec rm -r {} +
+    cd - > /dev/null
+
     log "done"
 }
 
@@ -421,7 +428,7 @@ function serve_rubricapp() {
     # Start gunicorn
     log "Starting gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --reload --bind unix:rubricapp.sock wsgi:app &
+    # gunicorn --reload --bind unix:rubricapp.sock wsgi:app &
     sudo systemctl start rubricapp.service
 
     # Start nginx
@@ -517,7 +524,7 @@ case "$1" in
     "$UPDATE")
         kill_procs
         update_repo
-        serve
+        serve_rubricapp
         ;;
     "$STATUS")
         show_status
