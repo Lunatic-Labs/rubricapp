@@ -217,8 +217,6 @@ function kill_procs() {
     kill_pids 5001
     kill_pids 3000
 
-    pkill gunicorn
-
     cd ../
     find . -type d -name "*.pyc" -exec rm -r {} +
     find . -type d -name "__pycache__" -exec rm -r {} +
