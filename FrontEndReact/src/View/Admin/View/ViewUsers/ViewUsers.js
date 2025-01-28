@@ -7,7 +7,6 @@ import CustomDataTable from "../../../Components/CustomDataTable.js";
 import Cookies from 'universal-cookie';
 import { genericResourceDELETE } from "../../../../utility.js";
 
-//TODO -> Currently the deleteUser functionality seems to show the delete button, allow one to attempt to delete a user, but doesn't make any backend call 
 class ViewUsers extends Component {
   async deleteUser(userId) {
     try {
