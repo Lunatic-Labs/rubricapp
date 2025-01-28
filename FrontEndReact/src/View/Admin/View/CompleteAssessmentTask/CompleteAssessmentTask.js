@@ -39,6 +39,7 @@ import { CheckinsTracker } from './cat_utils.js';
  * @property {Object|null} state.checkins - The CheckinsTracker object.
  * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
  * @property {Array|null} state.unitList - The list of units for the assessment task.
+ * @property {int|null} state.jumpId - What team or student to open first.
  */
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -62,6 +63,8 @@ class CompleteAssessmentTask extends Component {
                                                              // The loop happens due to server caching as per testing.
             checkinEventSource: null,
             unitList: null,
+
+            jumpId: this.props.navbar.state.jumpToSection // The desired jump location.
         };
     }
 
@@ -191,7 +194,7 @@ class CompleteAssessmentTask extends Component {
             teamsUsers,
             currentUserRole,
             completedAssessments,
-            checkins
+            checkins,
         } = this.state;
 
         const navbar = this.props.navbar;
@@ -261,6 +264,7 @@ class CompleteAssessmentTask extends Component {
                     checkins={this.state.checkins}
                     assessmentTaskRubric={assessmentTaskRubric}
                     units={unitList}
+                    jumpId={this.state.jumpId}
                 />
             </Box>
         );

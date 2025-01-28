@@ -338,7 +338,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
                     customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
                         const rowIndex = completeAssessmentTasks.rowIndex;
-                        const user_id = this.props.completedAssessment[rowIndex].user_id;
+                        const userId = this.props.completedAssessment[rowIndex].user_id;
                         if (completedAssessmentId) {
                             return (
                                 <IconButton // problem : need to pass who im looking at
@@ -348,7 +348,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                                             completedAssessmentTasks,
                                             completedAssessmentId,
                                             chosenAssessmentTask,
-                                            user_id
+                                            userId,
                                         );
                                     }}
                                     aria-label="assessmentIndividualSeeMoreDetailsButtons"
