@@ -264,6 +264,7 @@ class CompleteAssessmentTask extends Component {
                     checkins={this.state.checkins}
                     assessmentTaskRubric={assessmentTaskRubric}
                     units={unitList}
+                    usingTeams={this.state.usingTeams}
                     jumpId={this.state.jumpId}
                 />
             </Box>

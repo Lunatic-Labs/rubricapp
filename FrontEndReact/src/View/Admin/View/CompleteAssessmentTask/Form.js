@@ -297,15 +297,20 @@ class Form extends Component {
         const entity = usingTeams ? 'team': 'user';
         const entityId = usingTeams ? 'team_id': 'user_id';
         if(jumpId !== null){
-            this.state.units.forEach((unit, index) =>{
+            for (let index = 0; index < this.state.units.length; index++){
+                const unit = this.state.units[index];
                 if(unit[entity][entityId] === jumpId){
                     this.setState({
-                        currentUnitTabIndex: index,
-                    })
+                        currentUnitTabIndex : index,
+                    }, () => {
+                        this.generateCategoriesAndSection();
+                    });
+                    break;
                 }
-            });
-        }
-        this.generateCategoriesAndSection();
+            }
+        }else{
+            this.generateCategoriesAndSection();
+        };
     }
     
     render() {
