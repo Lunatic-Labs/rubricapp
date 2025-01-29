@@ -27,6 +27,20 @@ time.sleep(sleep_time)
 
 with app.app_context():
     print("[dbcreate] attempting to create new db...")
+    print("[dbcreate] attempting to drop all tables if populated...")
+    if len(sys.argv) > 1 and sys.argv[1] == "reset_db":
+        try:
+            # Drop all tables
+            db.session.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
+            db.reflect()
+            db.drop_all()
+            db.session.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
+            db.session.commit()
+            print("[dbcreate] successfully dropped all tables")
+        except Exception as e:
+            print(f"[dbcreate] an error ({e}) occurred while dropping all tables")
+            print("[dbcreate] exiting...")
+    time.sleep(sleep_time)
     try:
         db.create_all()
         is_docker = os.getenv('DOCKER_BUILD', 'false').lower() == 'true'

@@ -148,7 +148,7 @@ def reset_db():
     if os.path.exists(db_filepath):
         os.remove(db_filepath)
 
-    exit_code = cmd(f"{python_cmd} dbcreate.py", "reset_db()")
+    exit_code = cmd(f"{python_cmd} dbcreate.py reset_db", "reset_db()")
 
     if exit_code != 0:
         err(f"{python_cmd} failed to run. Is it installed?")
