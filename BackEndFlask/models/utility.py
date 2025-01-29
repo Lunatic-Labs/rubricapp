@@ -171,8 +171,7 @@ def send_email(address: str, subject: str,  content: str):
         yag = yagmail.SMTP("skillbuilder02", oauth2_file=OAUTH2_CREDS_FP)
         yag.send(to=address, subject=subject, contents=content)
     except Exception as e:
-        print('Failed to send email: ', e)
-        raise EmailFailureException
+        raise EmailFailureException(str(e))
 
 def generate_random_password(length: int):
     letters = string.ascii_letters + string.digits
