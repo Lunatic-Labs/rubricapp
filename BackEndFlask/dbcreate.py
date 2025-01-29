@@ -15,6 +15,7 @@ from models.assessment_task import *
 from models.completed_assessment import * 
 from controller.security.blacklist import start_redis
 from models.feedback import *
+from sqlalchemy import text
 import time
 import os
 import sys
@@ -26,7 +27,6 @@ time.sleep(sleep_time)
 
 with app.app_context():
     print("[dbcreate] attempting to create new db...")
-    time.sleep(sleep_time)
     try:
         db.create_all()
         is_docker = os.getenv('DOCKER_BUILD', 'false').lower() == 'true'

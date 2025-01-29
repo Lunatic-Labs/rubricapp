@@ -148,9 +148,6 @@ def reset_db():
     if os.path.exists(db_filepath):
         os.remove(db_filepath)
 
-    os.system("find .. -name '__pycache__' -exec rm -r {} \;")
-    os.system("find .. -name '*.pyc' -exec rm -f {} \;")
-
     exit_code = cmd(f"{python_cmd} dbcreate.py", "reset_db()")
 
     if exit_code != 0:
