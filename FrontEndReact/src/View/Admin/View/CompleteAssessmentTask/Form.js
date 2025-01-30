@@ -10,6 +10,9 @@ import { genericResourcePOST, genericResourcePUT, debounce } from '../../../../u
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
 import { getUnitCategoryStatus } from './cat_utils.js';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch'
 
 
 /**
@@ -28,6 +31,8 @@ import { getUnitCategoryStatus } from './cat_utils.js';
  * @property {number} state.currentCategoryTabIndex - Index of the currently selected rubric `categoryList`.
  * @property {Object} state.section - Section object of the category `currentCategoryTabIndex` from `categoryList`.
  * @property {boolean} state.displaySavedNotification - Boolean indicating whether to display the pop-up window that confirms the assessment is saved.
+ * @property {boolean} state.hideUnits - Boolean indicating if there are tabs that we want to not render.
+ * @property {int} state.consistentValidUnit - Int to what tab I want to jump to when swapping between hidden units.
  * 
  * @property {Set<number>} unitsThatNeedSaving - A set of all the unit indexes that need saving for autosave.
  */
@@ -42,6 +47,8 @@ class Form extends Component {
             currentCategoryTabIndex: 0,
             section: null,
             displaySavedNotification: false,
+            hideUnits: false,
+            consistentValidUnit: 0,
         };
         
         this.unitsThatNeedSaving = new Set();
@@ -290,10 +297,44 @@ class Form extends Component {
             
             this.unitsThatNeedSaving.clear();
         }, 2000);
-    }
+
+        /**
+        * @method hideTabs - Handles setting the properties needed for hiding tabs.
+        */
+        this.hideTabs = (event) => {
+            this.setState({
+                hideUnits: event.target.checked
+            })
+            if(event.target.checked){
+                this.handleUnitTabChange(this.state.consistentValidUnit);
+            }
+        };
+
+        /**
+        * @method ensureHiddenTabNotActive - Finds a tab that will not be hidden.
+        */
+        this.findPersistantTab = () => {
+            const cookies = new Cookies();
+            const currentUserId = cookies.get("user")["user_id"];
+
+            for(let index = 0; index < this.state.units.length; ++index){
+                let currentUnit = this.state.units[index];
+                if (currentUnit["team"]["observer_id"] === currentUserId){
+                    return index;
+                }
+
+            }
+        };
+    };
 
     componentDidMount() {
         this.generateCategoriesAndSection();
+        //Modifiy this for later
+        if(!this.props.usingTeams){
+            this.setState({
+                consistentValidUnit: this.findPersistantTab(),
+            });
+        }
     }
     
     render() {
@@ -303,10 +344,26 @@ class Form extends Component {
                     display:"flex",
                     justifyContent:"end",
                     gap:"20px",
-                    height: "1.5rem"
+                    height: "1.5rem",
                 }}>
                     { this.state.displaySavedNotification &&
                         <Alert severity={"success"} sx={{ height: "fit-content" }}>Assessment Saved!</Alert>
+                    }
+
+                    
+                    { !this.props.usingTeams && this.props.roleName === "TA/Instructor" &&
+                        //Modify the using teams when the other stuff gets pushed
+                        <FormGroup sx={{ marginTop: "-0.50rem" }}>
+                            <FormControlLabel 
+                                control={
+                                    <Switch 
+                                        checked={this.state.hideUnits}
+                                        onChange={(event) => this.hideTabs(event)} 
+                                    />
+                                } 
+                                label={"MY TEAMS"}
+                            />
+                        </FormGroup>
                     }
 
                     { !this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly &&
@@ -336,6 +393,7 @@ class Form extends Component {
                                 units={this.state.units}
                                 checkins={this.props.checkins}
                                 handleUnitTabChange={this.handleUnitTabChange}
+                                hideUnits={this.state.hideUnits}
                             />
                         </Box>
                     }
