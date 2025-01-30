@@ -21,14 +21,14 @@ import { getUnitCategoryStatus } from './cat_utils.js';
  * @param {Array<ATUnit>} props.units - Array of `ATUnit` class objects.
  * @param {Object} props.assessmentTaskRubric - The rubric for the assessment task.
  * @param {Object} props.navbar - The navbar object.
- * 
+ * @property {int|null} props.jumpId - Id of what team or user to veiw first.
+ *  
  * @property {Array<ATUnit>} state.units - Array of `ATUnit` class objects taken from props.units.
  * @property {number} state.currentUnitTabIndex - Index of the currently selected `ATUnit` from `units`.
  * @property {Array<Category>} state.categoryList - Array of `Category` objects using the current rubric.
  * @property {number} state.currentCategoryTabIndex - Index of the currently selected rubric `categoryList`.
  * @property {Object} state.section - Section object of the category `currentCategoryTabIndex` from `categoryList`.
  * @property {boolean} state.displaySavedNotification - Boolean indicating whether to display the pop-up window that confirms the assessment is saved.
- * 
  * @property {Set<number>} unitsThatNeedSaving - A set of all the unit indexes that need saving for autosave.
  */
 class Form extends Component {
@@ -42,6 +42,7 @@ class Form extends Component {
             currentCategoryTabIndex: 0,
             section: null,
             displaySavedNotification: false,
+            jumpId: this.props.jumpId,
         };
         
         this.unitsThatNeedSaving = new Set();
@@ -130,7 +131,6 @@ class Form extends Component {
             
             // We sort assessmentTaskRubric["category_json"] by the index of each entry, since the the data gets
             // automatically sorted when it comes out of the backend
-
             Object.entries(assessmentTaskRubric["category_json"])
                 .toSorted((a, b) => a[1].index - b[1].index)
                 .forEach(([category, _], index) => {
@@ -176,7 +176,7 @@ class Form extends Component {
 
             this.setState({
                 categoryList: categoryList,
-                section: section
+                section: section, 
             });
         }
         
@@ -293,7 +293,24 @@ class Form extends Component {
     }
 
     componentDidMount() {
-        this.generateCategoriesAndSection();
+        const {usingTeams, jumpId} = this.props;
+        const entity = usingTeams ? 'team': 'user';
+        const entityId = usingTeams ? 'team_id': 'user_id';
+        if(jumpId !== null){
+            for (let index = 0; index < this.state.units.length; index++){
+                const unit = this.state.units[index];
+                if(unit[entity][entityId] === jumpId){
+                    this.setState({
+                        currentUnitTabIndex : index,
+                    }, () => {
+                        this.generateCategoriesAndSection();
+                    });
+                    break;
+                }
+            }
+        }else{
+            this.generateCategoriesAndSection();
+        };
     }
     
     render() {
