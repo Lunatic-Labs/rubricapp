@@ -379,7 +379,7 @@ class AdminAddCourse extends Component {
                                                 <Typography sx={{ p: 2 }}>Active:  Uncheck this box at the end of the term to move it to the Inactive Courses table.<br>
                                                 </br>Use TA's:  
                                                 Will you use Teaching or Learning Assistants in this course to fill out rubrics?<br>
-                                                </br>Fixed teams:  Do you assign students to the same team for the entire semester?</Typography>
+                                                </br>Fixed teams:  Do you assign students to teams or do they form teams on their own?</Typography>
                                             </Popover>
                                             
                                     </FormGroup>
