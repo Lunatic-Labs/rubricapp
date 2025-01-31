@@ -1,17 +1,26 @@
+import traceback # Debugging, remove once done
+
+import os
 import sys
 import time
 import yagmail
 import string, secrets
+
+import base64
+from email.message import EmailMessage
+
+import google.auth
+from googleapiclient.discovery import build
+from googleapiclient.errors import HttpError
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
+from google_auth_oauthlib.flow import InstalledAppFlow
+
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
-OAUTH2_CREDS_FP = 'oauth2_creds.json'
-
-# try: 
-#     from models.hidden import OAUTH2_CREDS_FP
-# except:
-#     print("## need to add models/hidden.py and set PASSWORD before sending emails")
-
+OAUTH2_CREDS_FP = '/home/ubuntu/private/client_secret.json'
+OAUTH2_TOKEN_FP = '/home/ubuntu/private/token.json'
 
 def send_email_and_check_for_bounces(func,
                                      dest_addr,
@@ -166,12 +175,43 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
         send_email(student.email, subject, message)
 
-def send_email(address: str, subject: str,  content: str):
+def send_email(address: str, subject: str, content: str):
     try:
-        yag = yagmail.SMTP("skillbuilder02", oauth2_file=OAUTH2_CREDS_FP)
-        yag.send(to=address, subject=subject, contents=content)
+        scopes = ["https://www.googleapis.com/auth/gmail.compose"]
+
+        creds = None
+
+        if os.path.exists(OAUTH2_TOKEN_FP):
+            creds = Credentials.from_authorized_user_file(OAUTH2_TOKEN_FP, scopes)
+
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+
+        if not creds or not creds.valid:
+            raise EmailFailureException("creds is invalid")
+
+        service = build("gmail", "v1", credentials=creds)
+
+        message = EmailMessage()
+        message.set_content(content)
+        message["To"] = address
+        message["From"] = "skillbuilder02@gmail.com"
+        message["Subject"] = subject
+
+        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        create_message = {
+                "raw": encoded_message,
+        }
+
+        send_message = service.users().messages().send(userId="me", body=create_message).execute()
+
+    # except RecursionError:
+    #     s = traceback.format_exc()
+    #     raise EmailFailureException(f"STACK ERROR: {s}")
+
     except Exception as e:
         raise EmailFailureException(str(e))
+
 
 def generate_random_password(length: int):
     letters = string.ascii_letters + string.digits
