@@ -311,7 +311,8 @@ class Form extends Component {
         };
 
         /**
-        * @method ensureHiddenTabNotActive - Finds a tab that will not be hidden.
+        * @method ensureHiddenTabNotActive - Finds a tab that will not be hidden. 
+        *                                       If none, defaults to null.
         */
         this.findPersistantTab = () => {
             const cookies = new Cookies();
@@ -324,13 +325,13 @@ class Form extends Component {
                 }
 
             }
+            return null;
         };
     };
 
     componentDidMount() {
         this.generateCategoriesAndSection();
-        //Modifiy this for later
-        if(!this.props.usingTeams){
+        if(this.props.usingTeams){
             this.setState({
                 consistentValidUnit: this.findPersistantTab(),
             });
@@ -351,7 +352,7 @@ class Form extends Component {
                     }
 
                     
-                    { !this.props.usingTeams && this.props.roleName === "TA/Instructor" &&
+                    { this.props.usingTeams && this.props.roleName === "TA/Instructor" &&
                         //Modify the using teams when the other stuff gets pushed
                         <FormGroup sx={{ marginTop: "-0.50rem" }}>
                             <FormControlLabel 

@@ -24,7 +24,6 @@ import Cookies from 'universal-cookie';
  * @param {Function} props.handleUnitTabChange - Function to handle the change of unit tab
  * @param {Boolean} props.hideUnits - Bool that represents if there are units to hide.
  * @param {Boolean} props.usingTeams - Bool that represents if the person is using teams.
- * @param {function} props.ensureHiddenTabNotActive - Function to swap to a non hidden tab.
  * 
  * @param {boolean} state.usingTeams - Bool that represents if we are on a valid tab when hiding other tabs.
  */
@@ -40,7 +39,7 @@ class UnitOfAssessmentTab extends Component {
 
         for (let index = 0; index < units.length; index++){
             let currentUnit = units[index];
-
+            
             if (hideUnits && currentUnit["team"]["observer_id"] !== currentUserId){continue;}
 
             const unitName = currentUnit.displayName;
