@@ -422,7 +422,33 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
                             const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
+                            const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === assessmentTaskId);
+                            const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
+                            if (completedCount === 0) {
+                                return (
+                                    <>
+                                        <Tooltip
+                                            title={
+                                                <>
+                                                    <p>
+                                                        Completed Rubrics are not present.
+                                                    </p>
+                                                </>
+                                            }>
+                                            <span>
+                                                <IconButton
+                                                    id=""
+                                                    disabled
+                                                    aria-label='viewCompletedAssessmentIconButton'
+                                                >
+                                                <VisibilityIcon sx={{color: "rgba(0, 0, 0, 0.26)"}} />
+                                                </IconButton>
+                                            </span>
+                                        </Tooltip>
+                                    </>
+                                );
+                            }
                             if (selectedTask) {
                                 return (
                                     <>
