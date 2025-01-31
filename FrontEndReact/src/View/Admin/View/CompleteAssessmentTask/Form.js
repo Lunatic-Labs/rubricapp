@@ -336,6 +336,7 @@ class Form extends Component {
         this.shouldTabsCategoriesRender = (renderObject) => {
             const {hideUnits, consistentValidUnit} = this.state;
             const tabToDefualtTo = consistentValidUnit !== null;
+            // {hideUnits} holds precedence.
             return (
                 ( (hideUnits && tabToDefualtTo) || (!hideUnits) )
                 && renderObject 
@@ -389,7 +390,22 @@ class Form extends Component {
                                 control={
                                     <Switch 
                                         checked={this.state.hideUnits}
-                                        onChange={(event) => this.hideTabs(event)} 
+                                        onChange={(event) => this.hideTabs(event)}
+                                        sx={{
+                                            '& .MuiSwitch-track': {
+                                                width: '2.6rem',
+                                                height: '1.2rem', 
+                                                borderRadius: '0.6rem', 
+                                            },
+                                            '& .MuiSwitch-thumb': {
+                                                width: '1rem',
+                                                height: '1rem',
+                                                margin: '0.1rem',
+                                            },
+                                            '& .MuiSwitch-switchBase': {
+                                                 top: '0.17rem',
+                                            },
+                                        }}  
                                     />
                                 } 
                                 label={"MY TEAMS"}
