@@ -305,7 +305,7 @@ class Form extends Component {
             this.setState({
                 hideUnits: event.target.checked
             })
-            if(event.target.checked){
+            if(event.target.checked && this.state.consistentValidUnit !== null){
                 this.handleUnitTabChange(this.state.consistentValidUnit);
             }
         };
@@ -326,6 +326,20 @@ class Form extends Component {
 
             }
             return null;
+        };
+
+        /**
+        * @method shouldTabsCategoriesRender - Prevents rendering tabs if TA view has all tabs hidden.
+        * 
+        * @param {object} - What is supposed to be rendered.
+        */
+        this.shouldTabsCategoriesRender = (renderObject) => {
+            const {hideUnits, consistentValidUnit} = this.state;
+            const tabToDefualtTo = consistentValidUnit !== null;
+            return (
+                ( (hideUnits && tabToDefualtTo) || (!hideUnits) )
+                && renderObject 
+            );
         };
     };
 
@@ -348,7 +362,7 @@ class Form extends Component {
         }else{
             this.generateCategoriesAndSection();
         };
-        if(!this.props.usingTeams){
+        if(this.props.usingTeams){
             this.setState({
                 consistentValidUnit: this.findPersistantTab(),
             });
@@ -370,7 +384,6 @@ class Form extends Component {
 
                     
                     { this.props.usingTeams && this.props.roleName === "TA/Instructor" &&
-                        //Modify the using teams when the other stuff gets pushed
                         <FormGroup sx={{ marginTop: "-0.50rem" }}>
                             <FormControlLabel 
                                 control={
@@ -448,12 +461,12 @@ class Form extends Component {
                                 },
                             }}
                         >
-                            {this.state.consistentValidUnit !== null && this.state.categoryList}
+                            {this.shouldTabsCategoriesRender(this.state.categoryList)}
                         </Tabs>
                     </Box>
                 </Box>
 
-                {this.state.consistentValidUnit !== null && this.state.section}
+                {this.shouldTabsCategoriesRender(this.state.section)}
             </Box>
         )
     }
