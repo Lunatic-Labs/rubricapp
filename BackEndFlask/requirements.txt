@@ -1,4 +1,7 @@
+google-auth
 google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
 flask >= 2.2.2
 flask[async]>=2.2.2
 flask-sqlalchemy >= 3.0.3
