@@ -73,6 +73,7 @@ class AppState extends Component {
             successMessageTimeout: undefined,
 
             addCustomRubric: null,
+            jumpToSection: null,
         }
 
         this.setNewTab = (newTab) => {
@@ -246,13 +247,20 @@ class AppState extends Component {
             })
         }
 
+        // Use this as a callback Function to prevent jump data from being sticky.
+        this.resetJump = () => {
+            this.setState({
+                jumpToSection: null,
+            })
+        };
+
         // The ===null section of the next line is not permanent. 
         // The only purpose was to test to see if we could see the "My Assessment Task" 
         // on the student dashboard
         // When you click "complete" on the "TO DO" column the completed fields were null 
         // thus it would not display anything
         // By adding === null as a test case, we were able to have it populate.
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask) => {
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask, jumpId=null) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
@@ -260,7 +268,13 @@ class AppState extends Component {
                     unitOfAssessment: null,
                     chosenCompleteAssessmentTask: null,
                     chosenCompleteAssessmentTaskIsReadOnly: false,
-                });
+                    jumpToSection: jumpId,
+                }, () =>{
+                    if(jumpId !== null){
+                        this.resetJump();
+                    }
+                }
+            );
 
             } else {
                 var newCompletedAssessmentTask = null;
@@ -275,10 +289,16 @@ class AppState extends Component {
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
                     chosenCompleteAssessmentTaskIsReadOnly: false,
                     chosenAssessmentTask: chosenAssessmentTask,
-                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
-                });
+                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"],
+                    jumpToSection: jumpId,
+                }, () => {
+                    if(jumpId !== null){
+                        this.resetJump();
+                    }
+                }
+            );
             }
-        }
+        }; 
 
         this.ViewCTwithAT = (assessmentTasks, atId) => {
             var selectedAssessment = null;
