@@ -331,7 +331,7 @@ class Form extends Component {
 
     componentDidMount() {
         this.generateCategoriesAndSection();
-        if(this.props.usingTeams){
+        if(!this.props.usingTeams){
             this.setState({
                 consistentValidUnit: this.findPersistantTab(),
             });
@@ -431,12 +431,12 @@ class Form extends Component {
                                 },
                             }}
                         >
-                            {this.state.categoryList}
+                            {this.state.consistentValidUnit !== null && this.state.categoryList}
                         </Tabs>
                     </Box>
                 </Box>
 
-                {this.state.section}
+                {this.state.consistentValidUnit !== null && this.state.section}
             </Box>
         )
     }
