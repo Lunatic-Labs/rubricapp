@@ -64,6 +64,8 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
+                        console.warn("atID:", atId);
+                        console.log("ATobject:", assessmentTasks);
                         const assessmentTask = assessmentTasks.find(at => at.assessment_task_id === atId);
                         if (assessmentTask === undefined) {
                             return <>UNDEFINED</>
