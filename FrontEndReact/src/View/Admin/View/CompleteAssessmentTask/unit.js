@@ -6,6 +6,28 @@ export const UnitType = Object.freeze({
 	AD_HOC_TEAM: "ad_hoc_team", // Currently unused, made in preparation of adding ad hoc teams
 });
 
+// REMEMBER TO DELETE these personal notes.
+// NOTE: Look into converting all front end logic into units. This would lower the more
+// confusing part of the logic.
+// NOTE: look at reacts context api.
+
+// NOTE: seems that the ATunit class is okay may need testing upon completion.
+
+// NOTE: the fixed team unit seems to be fully functioning. The logic it has needs to be replicated to identitify
+// units in other parts of the front end code.
+
+// NOTE: it seems the code can be ripped off the fixed teams and play around with it to allow the adhoc teams
+
+// NOTE: It is stange that the mappings that andre mentioned are from utility.js
+//		-maybe its a rendering logic issue.
+//		-confirmation that the db and back-end is managing the data well.
+//		-edge-case that raises the error as the state changes.
+
+// NOTE: deleted previous code that I had because I misunderstood how the current things are dealing with
+// the code.
+
+// NOTE: no one refrernces the code way in a manner that is consistent.
+
 // Terminology:
 // ROCS Data - An object that stores information about how an assessment task has been completed.
 //  This includes things like what checkboxes have been clicked and comments. This object
@@ -391,6 +413,77 @@ export class FixedTeamUnit extends ATUnit {
 	
 	shallowClone() {
 		return new FixedTeamUnit(
+			this.completedAssessmentTask, this.rocsData, this.isDone,
+			this.team, this.teamMembers
+		);
+	}
+	
+	getSubmitQueryParam() {
+		return `team_id=${this.teamId}`;
+	}
+	
+	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
+		return {
+			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
+			"user_id": -1,
+			"team_id": this.teamId,
+		};
+	}
+}
+
+
+// Why cant adhoc inherit from the team class?
+//missing AT id/ missing unit of assessment? 
+export class AdHocTeamsUnit extends ATUnit{
+	/** 
+	 * The team object associated with this unit.
+	 * @type {object}
+	 */
+	team;
+	/** 
+	 * List of user objects that are members of this ad hoc team.
+	 * @type {object[]}
+	 */
+	teamMembers;
+	/**
+	 * @param {object} cat Complete assessment task object.
+	 * @param {object} team Team object.
+	 * @param {object[]} teamMembers List of user objects that are members of this ad hoc team.
+	 */
+	constructor(cat, rocs, done, team, teamMembers) {
+		super(UnitType.AD_HOC_TEAM, cat, rocs, done);
+		this.team = team;
+		this.teamMembers = teamMembers;
+	}
+
+	get teamId() {
+		return this.team["team_id"];
+	}
+	
+	get displayName() {
+		return this.team["team_name"];
+	}
+
+	get id() {
+		return this.teamId;
+	}
+
+	getCheckedInTooltip(checkinsTracker) {
+		const checkedInMembers = this.teamMembers.filter(user => {
+			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
+			
+			return checkin && checkin["team_number"] === this.teamId;
+		});
+		
+		if (checkedInMembers.length !== 0) {
+			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
+		} else {
+			return [ <Box key={0}>No Team Members Checked In</Box> ];
+		}
+	}
+	
+	shallowClone() {
+		return new AdHocTeamsUnit(
 			this.completedAssessmentTask, this.rocsData, this.isDone,
 			this.team, this.teamMembers
 		);
