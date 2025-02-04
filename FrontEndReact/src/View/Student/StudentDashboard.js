@@ -139,15 +139,7 @@ class StudentDashboard extends Component {
                     </Box>
 
                     <Box>
-                        {role["role_id"] === 5 &&
-                         <StudentCompletedAssessmentTasks
-                             navbar={navbar}
-                             role={role}
-                             filteredAssessments={assessmentTasks}
-                             filteredCompleteAssessments={completedAssessments}
-                         />
-                        }
-                        {role["role_id"] === 4 &&
+                        {[4, 5].includes(role["role_id"])&&
                          <StudentCompletedAssessmentTasks
                              navbar={navbar}
                              role={role}

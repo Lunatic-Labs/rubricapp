@@ -91,6 +91,20 @@ export function generateUnitList(args) {
 				team, args.chosenCompleteAssessmentTask,
 				args.assessmentTaskRubric, args.fixedTeamMembers
 			));
+		} else {// Note this is temp rememebr to change this 
+			let team;
+
+			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
+				const teamId = args.chosenCompleteAssessmentTask["team_id"];
+				team = args.fixedTeams.find(team => team["team_id"] === teamId);
+			} else {
+				team = args.userFixedTeam;
+			}
+			
+			unitList.push(createAdHocTeamUnit(
+				team, args.chosenCompleteAssessmentTask,
+				args.assessmentTaskRubric, args.fixedTeamMembers
+			));
 		}
 	} else {
 		// Otherwise we must be an admin or TA
@@ -151,6 +165,11 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 		cat ?? null, rocsData, isDone,
 		team, teamMembers,
 	);
+}
+
+//subject to change since we might just want to inherit instead
+function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
+	return createFixedTeamUnit(team, cat, rubric, fixedTeamMembers);
 }
 
 export class ATUnit {
