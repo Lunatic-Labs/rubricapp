@@ -310,7 +310,7 @@ def update_user():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
     
-@bp.route('/user/basic', methods = ['DELETE'])
+@bp.route('/user', methods = ['DELETE'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
@@ -319,11 +319,12 @@ def delete_user():
     try:
         if request.args and request.args.get("uid"):
             user_id = request.args.get("uid")
-
+            print(user_id, flush=True)
             delete_user_by_user_id(user_id)
 
-            return create_good_response([], 200, "")
-        
+            t = create_good_response([], 200, "")
+            print(t, flush = True)
+            return t
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
     
@@ -350,6 +351,7 @@ def delete_selected_user():
                 associated_tasks = []
             if len(associated_tasks) > 0:
                 refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, user_id=user_id)
+                print(refetched_tasks, flush = True)
                 if not refetched_tasks:
                     delete_user_by_user_id(user_id)
                     return create_good_response([], 200, "users")
