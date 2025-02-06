@@ -4,6 +4,7 @@ import ViewCompletedAssessmentTasks from './ViewCompletedAssessmentTasks.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
+//import Cookies from 'universal-cookie';
 
 
 class StudentCompletedAssessmentTasks extends Component {
@@ -54,7 +55,23 @@ class StudentCompletedAssessmentTasks extends Component {
             completedAssessments,
         } = this.state;
 
-        const filteredCATs = this.props.filteredCompleteAssessments;
+        
+        const filteredCATs = this.props.filteredCompleteAssessments; 
+        //console.warn(this.props);
+        //const unitList = generateUnitList({
+        //    roleName: this.props.role["role_name"],
+        //    currentUserId: (new Cookies).get('user').user_id,
+        //    chosenCompleteAssessmentTask: filteredCATs,//done
+        //    unitType: this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL, The problem is this line cannt figure out the logic yet
+        //    assessmentTaskRubric: assessmentTaskRubric,
+        //    completedAssessments,
+        //    users,
+        //    fixedTeams: teams,
+        //    fixedTeamMembers: teamsUsers,
+        //    // userFixedTeam is actually a list of a single team,
+        //    //   so index to get the first entry of the list.
+        //    userFixedTeam: userFixedTeam?.[0],
+        //});
 
         if (errorMessage) {
             return(

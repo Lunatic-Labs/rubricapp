@@ -9,22 +9,14 @@ export const UnitType = Object.freeze({
 // REMEMBER TO DELETE these personal notes.
 // NOTE: Look into converting all front end logic into units. This would lower the more
 // confusing part of the logic.
-// NOTE: look at reacts context api.
-
-// NOTE: seems that the ATunit class is okay may need testing upon completion.
 
 // NOTE: the fixed team unit seems to be fully functioning. The logic it has needs to be replicated to identitify
 // units in other parts of the front end code.
-
-// NOTE: it seems the code can be ripped off the fixed teams and play around with it to allow the adhoc teams
 
 // NOTE: It is stange that the mappings that andre mentioned are from utility.js
 //		-maybe its a rendering logic issue.
 //		-confirmation that the db and back-end is managing the data well.
 //		-edge-case that raises the error as the state changes.
-
-// NOTE: deleted previous code that I had because I misunderstood how the current things are dealing with
-// the code.
 
 // NOTE: no one refrernces the code way in a manner that is consistent.
 
@@ -77,35 +69,22 @@ export function generateUnitList(args) {
 				user, args.chosenCompleteAssessmentTask,
 				args.assessmentTaskRubric
 			));
-		} else if (args.unitType === UnitType.FIXED_TEAM) {
+		} else {
 			let team;
+			const classFunc = args.unitType === UnitType.FIXED_TEAM ? createFixedTeamUnit:createAdHocTeamUnit;
 			
 			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
-				team = args.fixedTeams.find(team => team["team_id"] === teamId);
+				team = args.fixedTeams.find(team => team["team_id"] === teamId);//SHOULD ERROR 
 			} else {
-				team = args.userFixedTeam;
+				team = args.userFixedTeam;//SHOULD ERROR
 			}
 			
-			unitList.push(createFixedTeamUnit(
+			unitList.push(classFunc(
 				team, args.chosenCompleteAssessmentTask,
 				args.assessmentTaskRubric, args.fixedTeamMembers
 			));
-		} else {// Note this is temp rememebr to change this 
-			let team;
-
-			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
-				const teamId = args.chosenCompleteAssessmentTask["team_id"];
-				team = args.fixedTeams.find(team => team["team_id"] === teamId);
-			} else {
-				team = args.userFixedTeam;
-			}
-			
-			unitList.push(createAdHocTeamUnit(
-				team, args.chosenCompleteAssessmentTask,
-				args.assessmentTaskRubric, args.fixedTeamMembers
-			));
-		}
+		} 
 	} else {
 		// Otherwise we must be an admin or TA
 		
@@ -116,14 +95,16 @@ export function generateUnitList(args) {
 				
 				return createIndividualUnit(user, cat, args.assessmentTaskRubric);
 			});
-		} else if (args.unitType === UnitType.FIXED_TEAM) {
+
+		} else {
+			const classFunc = args.unitType === UnitType.FIXED_TEAM ? createFixedTeamUnit:createAdHocTeamUnit;
 			unitList = args.fixedTeams.map(team => {
 				const teamId = team["team_id"];
 				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
 				
-				return createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
+				return classFunc(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
 			});
-		}
+		} 
 	}
 	
 	return unitList;
@@ -167,9 +148,16 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	);
 }
 
-//subject to change since we might just want to inherit instead
 function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
-	return createFixedTeamUnit(team, cat, rubric, fixedTeamMembers);
+	const teamId = team["team_id"];
+	
+	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
+	const teamMembers = fixedTeamMembers[teamId];
+		
+	return new AdHocTeamUnit(
+		cat ?? null, rocsData, isDone,
+		team, teamMembers,
+	);
 }
 
 export class ATUnit {
@@ -450,73 +438,22 @@ export class FixedTeamUnit extends ATUnit {
 	}
 }
 
-
-// Why cant adhoc inherit from the team class?
-//missing AT id/ missing unit of assessment? 
-export class AdHocTeamsUnit extends ATUnit{
-	/** 
-	 * The team object associated with this unit.
-	 * @type {object}
-	 */
-	team;
-	/** 
-	 * List of user objects that are members of this ad hoc team.
-	 * @type {object[]}
-	 */
-	teamMembers;
+export class AdHocTeamUnit extends FixedTeamUnit{
 	/**
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} team Team object.
-	 * @param {object[]} teamMembers List of user objects that are members of this ad hoc team.
+	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
 	 */
 	constructor(cat, rocs, done, team, teamMembers) {
 		super(UnitType.AD_HOC_TEAM, cat, rocs, done);
 		this.team = team;
 		this.teamMembers = teamMembers;
-	}
+	}	
 
-	get teamId() {
-		return this.team["team_id"];
-	}
-	
-	get displayName() {
-		return this.team["team_name"];
-	}
-
-	get id() {
-		return this.teamId;
-	}
-
-	getCheckedInTooltip(checkinsTracker) {
-		const checkedInMembers = this.teamMembers.filter(user => {
-			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
-			
-			return checkin && checkin["team_number"] === this.teamId;
-		});
-		
-		if (checkedInMembers.length !== 0) {
-			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
-		} else {
-			return [ <Box key={0}>No Team Members Checked In</Box> ];
-		}
-	}
-	
 	shallowClone() {
-		return new AdHocTeamsUnit(
+		return new AdHocTeamUnit(
 			this.completedAssessmentTask, this.rocsData, this.isDone,
 			this.team, this.teamMembers
 		);
-	}
-	
-	getSubmitQueryParam() {
-		return `team_id=${this.teamId}`;
-	}
-	
-	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
-		return {
-			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
-			"user_id": -1,
-			"team_id": this.teamId,
-		};
 	}
 }
