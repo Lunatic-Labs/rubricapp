@@ -1,9 +1,6 @@
-import traceback # Debugging, remove once done
-
 import os
 import sys
 import time
-import yagmail
 import string, secrets
 
 import base64
@@ -19,8 +16,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
-OAUTH2_CREDS_FP = '/home/ubuntu/private/client_secret.json'
-OAUTH2_TOKEN_FP = '/home/ubuntu/private/token.json'
+# from core import oauth2_service
 
 def send_email_and_check_for_bounces(func,
                                      dest_addr,
@@ -30,8 +26,8 @@ def send_email_and_check_for_bounces(func,
     func(*vargs)
     check_bounced_emails(dest_addr, start_timestamp, end_timestamp)
 
-
 def check_bounced_emails(dest_addr, start_timestamp=None, end_timestamp=None):
+    return
     time.sleep(1)
 
     scopes, max_fetched_emails, mailer_daemon_sender = (
@@ -181,6 +177,8 @@ def send_email(address: str, subject: str, content: str):
 
         creds = None
 
+        OAUTH2_TOKEN_FP = "/home/ubuntu/private/token.json"
+
         if os.path.exists(OAUTH2_TOKEN_FP):
             creds = Credentials.from_authorized_user_file(OAUTH2_TOKEN_FP, scopes)
 
@@ -202,12 +200,8 @@ def send_email(address: str, subject: str, content: str):
         create_message = {
                 "raw": encoded_message,
         }
-
         send_message = service.users().messages().send(userId="me", body=create_message).execute()
-
-    # except RecursionError:
-    #     s = traceback.format_exc()
-    #     raise EmailFailureException(f"STACK ERROR: {s}")
+        # send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
     except Exception as e:
         raise EmailFailureException(str(e))
