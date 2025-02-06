@@ -16,7 +16,7 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
-# from core import oauth2_service
+from core import oauth2_service
 
 def send_email_and_check_for_bounces(func,
                                      dest_addr,
@@ -173,22 +173,22 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
 def send_email(address: str, subject: str, content: str):
     try:
-        scopes = ["https://www.googleapis.com/auth/gmail.compose"]
+        # scopes = ["https://www.googleapis.com/auth/gmail.compose"]
 
-        creds = None
+        # creds = None
 
-        OAUTH2_TOKEN_FP = "/home/ubuntu/private/token.json"
+        # OAUTH2_TOKEN_FP = "/home/ubuntu/private/token.json"
 
-        if os.path.exists(OAUTH2_TOKEN_FP):
-            creds = Credentials.from_authorized_user_file(OAUTH2_TOKEN_FP, scopes)
+        # if os.path.exists(OAUTH2_TOKEN_FP):
+        #     creds = Credentials.from_authorized_user_file(OAUTH2_TOKEN_FP, scopes)
 
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
+        # if creds and creds.expired and creds.refresh_token:
+        #     creds.refresh(Request())
 
-        if not creds or not creds.valid:
-            raise EmailFailureException("creds is invalid")
+        # if not creds or not creds.valid:
+        #     raise EmailFailureException("creds is invalid")
 
-        service = build("gmail", "v1", credentials=creds)
+        # service = build("gmail", "v1", credentials=creds)
 
         message = EmailMessage()
         message.set_content(content)
@@ -200,8 +200,8 @@ def send_email(address: str, subject: str, content: str):
         create_message = {
                 "raw": encoded_message,
         }
-        send_message = service.users().messages().send(userId="me", body=create_message).execute()
-        # send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
+        # send_message = service.users().messages().send(userId="me", body=create_message).execute()
+        send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
     except Exception as e:
         raise EmailFailureException(str(e))
