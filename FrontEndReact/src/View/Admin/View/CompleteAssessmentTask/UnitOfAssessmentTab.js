@@ -8,6 +8,7 @@ import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator.js';
 import {StatusIndicatorState} from './StatusIndicator.js';
 import {getUnitCategoryStatus} from './cat_utils.js';
+import Cookies from 'universal-cookie';
 
 /**
  * This component is used to display the tabs for the names in the unit of assessment
@@ -21,14 +22,26 @@ import {getUnitCategoryStatus} from './cat_utils.js';
  * @param {Object} props.navbar - Navbar object
  * @param {Number} props.currentUnitTabIndex - Index of the current unit tab
  * @param {Function} props.handleUnitTabChange - Function to handle the change of unit tab
+ * @param {Boolean} props.hideUnits - Bool that represents if there are units to hide.
+ * @param {Boolean} props.usingTeams - Bool that represents if the person is using teams.
+ * 
+ * @param {boolean} state.usingTeams - Bool that represents if we are on a valid tab when hiding other tabs.
  */
 class UnitOfAssessmentTab extends Component {
     render() {
         const units = this.props.units;
+        const hideUnits = this.props.hideUnits;
 
         const unitTabsList = [];
+        
+        const cookies = new Cookies();
+        const currentUserId = cookies.get("user")["user_id"];
 
-        units.forEach((currentUnit, index) => {
+        for (let index = 0; index < units.length; index++){
+            let currentUnit = units[index];
+            
+            if (hideUnits && currentUnit["team"]["observer_id"] !== currentUserId){continue;}
+
             const unitName = currentUnit.displayName;
             const unitId = currentUnit.id;
             const unitTooltip = currentUnit.getCheckedInTooltip(this.props.checkins);
@@ -84,7 +97,7 @@ class UnitOfAssessmentTab extends Component {
                     }}
                 /> 
             )
-        });
+        };
 
         return (
             <Tabs
