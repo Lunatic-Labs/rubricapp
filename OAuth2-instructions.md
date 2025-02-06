@@ -52,7 +52,10 @@ from google.oauth2.credentials import Credentials
 from google_auth_oauthlib.flow import InstalledAppFlow
 
 def get_gmail_credentials():
-    SCOPES = ['https://mail.google.com/']
+    SCOPES = [
+        "https://www.googleapis.com/auth/gmail.compose",
+        "https://www.googleapis.com/auth/gmail.readonly",
+    ]
 
     creds = None
     if os.path.exists('token.json'):
@@ -63,7 +66,7 @@ def get_gmail_credentials():
         else:
             flow = InstalledAppFlow.from_client_secrets_file(
                 'credentials.json', SCOPES)
-            creds = flow.run_local_server(port=8080)
+            creds = flow.run_local_server(port=8080, access_type='offline', prompt='consent')
         with open('token.json', 'w') as token:
             token.write(creds.to_json())
     return creds
