@@ -160,7 +160,7 @@ class Ratings_Csv(Csv_Creation):
         # Adding the column name. Noitice that done and comments is skipped since they are categories but are not important.
         column_name += [i for i in self._singular[Csv_Data.JSON.value] if (i != "done" and i !="comments")]
 
-        column_name += ["Lag Time"]
+        column_name += ["Lag Time (Hours)"]
 
         self._writer.writerow(column_name)
 
@@ -272,11 +272,11 @@ class CSV_Type(Enum):
     """
     Description: This is the enum for the different types of csv file formats the clients have requested.
     """
-    RATING_CSV = 0
-    OCS_SFI_CSV = 1
+    OCS_SFI_CSV = 0
+    RATING_CSV = 1
     COMMENTS_CSV = 2
 
-def create_csv_strings(at_id:int, type_csv:int=1) -> str:
+def create_csv_strings(at_id:int, type_csv:int=0) -> str:
     """
     Description: Creates a csv file with the data in the format specified by type_csv.
 

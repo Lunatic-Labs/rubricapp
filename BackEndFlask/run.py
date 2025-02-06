@@ -1,5 +1,7 @@
 from gevent import monkey
 monkey.patch_all() 
+# Socket patching has not been added since it seems to add unwanted complexity.
+
 from core import app
 
 

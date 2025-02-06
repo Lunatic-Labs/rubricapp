@@ -31,7 +31,7 @@ class ViewAssessmentTasks extends Component {
 
         this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
             let promise = genericResourceGET(
-                `/csv_assessment_export?assessment_task_id=${atId}&format=1`,
+                `/csv_assessment_export?assessment_task_id=${atId}&format=0`,
                 "csv_creation",
                 this,
                 {dest: "csvCreation"}
@@ -312,12 +312,22 @@ class ViewAssessmentTasks extends Component {
                         const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
 
                         return (
-                            <IconButton
-                            aria-label={isPublished ? "unlock" : "lock"}
-                            onClick={() => this.handlePublishToggle(atId, task)}
-                            >
-                            {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
-                            </IconButton>
+                            <Tooltip 
+                                title={
+                                    <>
+                                        <p> 
+                                            If the icon shows <strong>an upward arrow</strong>, the assessment task is published and visible to students; otherwise, the task is unpublished and hidden from students. 
+                                        </p>
+                                         
+                                    </>
+                                }>
+                                <IconButton
+                                    aria-label={isPublished ? "unlock" : "lock"}
+                                    onClick={() => this.handlePublishToggle(atId, task)}
+                                >
+                                {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
+                                </IconButton>
+                            </Tooltip>
                         );
                     }
                 }
@@ -335,12 +345,21 @@ class ViewAssessmentTasks extends Component {
                         const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
 
                         return (
-                            <IconButton
-                            aria-label={isLocked ? "unlock" : "lock"}
-                            onClick={() => this.handleLockToggle(atId, task)}
-                            >
-                            {isLocked ? <LockIcon /> : <LockOpenIcon />}
-                            </IconButton>
+                            <Tooltip
+                                title={
+                                    <>
+                                        <p>
+                                            If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
+                                        </p>
+                                    </>
+                                }>
+                                <IconButton
+                                    aria-label={isLocked ? "unlock" : "lock"}
+                                    onClick={() => this.handleLockToggle(atId, task)}
+                                >
+                                {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                                </IconButton>
+                            </Tooltip>
                         );
                     }
                 }
@@ -356,21 +375,30 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
                             return (
-                                <IconButton
-                                    id=""
-                                    onClick={() => {
-                                        setAddAssessmentTaskTabWithAssessmentTask(
-                                            assessmentTasks,
-                                            assessmentTaskId,
-                                            chosenCourse,
-                                            roleNames,
-                                            rubricNames
-                                        )
-                                    }}
-                                    aria-label='editAssessmentIconButton'
-                                >
-                               <EditIcon sx={{color:"black"}}/>
-                             </IconButton>
+                                <Tooltip
+                                    title={
+                                        <>
+                                            <p>
+                                                Instructors can modify the details of the assessment task such as its name, unit of assessment, due date or assigned rubric.
+                                            </p>
+                                        </>
+                                    }>
+                                    <IconButton
+                                        id=""
+                                        onClick={() => {
+                                            setAddAssessmentTaskTabWithAssessmentTask(
+                                                assessmentTasks,
+                                                assessmentTaskId,
+                                                chosenCourse,
+                                                roleNames,
+                                                rubricNames
+                                            )
+                                        }}
+                                        aria-label='editAssessmentIconButton'
+                                    >
+                                    <EditIcon sx={{color:"black"}}/>
+                                    </IconButton>
+                                </Tooltip>
                             )
 
                         } else {
@@ -394,19 +422,54 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (assessmentTaskId) => {
                         if (assessmentTaskId && assessmentTasks) {
                             const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
+                            const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === assessmentTaskId);
+                            const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
+                            if (completedCount === 0) {
+                                return (
+                                    <>
+                                        <Tooltip
+                                            title={
+                                                <>
+                                                    <p>
+                                                        Completed Rubrics are not present.
+                                                    </p>
+                                                </>
+                                            }>
+                                            <span>
+                                                <IconButton
+                                                    id=""
+                                                    disabled
+                                                    aria-label='viewCompletedAssessmentIconButton'
+                                                >
+                                                <VisibilityIcon sx={{color: "rgba(0, 0, 0, 0.26)"}} />
+                                                </IconButton>
+                                            </span>
+                                        </Tooltip>
+                                    </>
+                                );
+                            }
                             if (selectedTask) {
                                 return (
                                     <>
-                                        <IconButton
-                                            id=""
-                                            onClick={() => {
-                                                setCompleteAssessmentTaskTabWithID(selectedTask);
-                                            }}
-                                            aria-label='viewCompletedAssessmentIconButton'
-                                        >
-                                        <VisibilityIcon sx={{color:"black"}} />
-                                        </IconButton>
+                                        <Tooltip
+                                            title={
+                                                <>
+                                                    <p>
+                                                        Instructors can review the contents of the assessment task to ensure everything is up to date.
+                                                    </p>
+                                                </>
+                                            }>
+                                            <IconButton
+                                                id=""
+                                                onClick={() => {
+                                                    setCompleteAssessmentTaskTabWithID(selectedTask);
+                                                }}
+                                                aria-label='viewCompletedAssessmentIconButton'
+                                            >
+                                            <VisibilityIcon sx={{color:"black"}} />
+                                            </IconButton>
+                                        </Tooltip>
                                     </>
                                 );
                             }
@@ -450,16 +513,25 @@ class ViewAssessmentTasks extends Component {
                         }
 
                         return (
-                            <Button
-                                className='primary-color'
-                                variant='contained'
-                                onClick={() => {
-                                    navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
-                                }}
-                                aria-label='startAssessmentTasksButton'
-                            >
+                            <Tooltip
+                                title={
+                                    <>
+                                        <p>
+                                            Begins the process of completing an assessment task, allowing the assessor to review the instructions and rubric criteria for the selected task.
+                                        </p>
+                                    </>
+                                }>
+                                <Button
+                                    className='primary-color'
+                                    variant='contained'
+                                    onClick={() => {
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                    }}
+                                    aria-label='startAssessmentTasksButton'
+                                >
                                 START
-                            </Button>
+                                </Button>
+                            </Tooltip>
                         )
                     }
                 }

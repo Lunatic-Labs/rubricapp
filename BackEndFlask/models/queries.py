@@ -1011,6 +1011,9 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
         Feedback.feedback_time,
         AssessmentTask.notification_sent,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.completed_assessment_id,
+        User.user_id,
+        Feedback.feedback_id,
     ).join(
         Role,
         AssessmentTask.role_id == Role.role_id,
