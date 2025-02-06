@@ -173,23 +173,6 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
 def send_email(address: str, subject: str, content: str):
     try:
-        # scopes = ["https://www.googleapis.com/auth/gmail.compose"]
-
-        # creds = None
-
-        # OAUTH2_TOKEN_FP = "/home/ubuntu/private/token.json"
-
-        # if os.path.exists(OAUTH2_TOKEN_FP):
-        #     creds = Credentials.from_authorized_user_file(OAUTH2_TOKEN_FP, scopes)
-
-        # if creds and creds.expired and creds.refresh_token:
-        #     creds.refresh(Request())
-
-        # if not creds or not creds.valid:
-        #     raise EmailFailureException("creds is invalid")
-
-        # service = build("gmail", "v1", credentials=creds)
-
         message = EmailMessage()
         message.set_content(content)
         message["To"] = address
@@ -200,7 +183,6 @@ def send_email(address: str, subject: str, content: str):
         create_message = {
                 "raw": encoded_message,
         }
-        # send_message = service.users().messages().send(userId="me", body=create_message).execute()
         send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
     except Exception as e:
