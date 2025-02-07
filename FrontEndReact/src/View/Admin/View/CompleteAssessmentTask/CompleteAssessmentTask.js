@@ -36,11 +36,30 @@ import { CheckinsTracker } from './cat_utils.js';
  * Additional state properties:
  * @property {string|null} state.currentUserId - The ID of the current user.
  * @property {boolean} state.usingTeams - Indicates whether the assessment task is using teams.
+ * @property {boolean} state.usingAdHoc - Indicates if we are using adHoc teams. Note usingteams truth affects this var.
  * @property {Object|null} state.checkins - The CheckinsTracker object.
  * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
  * @property {Array|null} state.unitList - The list of units for the assessment task.
  * @property {int|null} state.jumpId - What team or student to open first.
  */
+
+
+/*
+    DELETE THIS AT THE END. Team is failing since its undefined. intergrating adhoc will break both this
+    and form.js. Lack the routes to retrive the proper information too.
+
+    changes : Onmount func now has a new if else to prevent crashing and retrive adhoc data.
+
+    problems: stuck loading in adhoc locations bc there is no route yet for getting adhoc teams.
+
+    admin view: adhoc form.js broken
+    super view: pass
+    ta    view: adhoc form.js broken
+    stdent viw: adhoc form.js broken
+*/
+
+
+
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -59,12 +78,13 @@ class CompleteAssessmentTask extends Component {
             
             currentUserId: null,
             usingTeams: this.props.navbar.state.unitOfAssessment,
+            usingAdHoc: !this.props.navbar.state.chosenCourse.use_fixed_teams && this.props.navbar.state.unitOfAssessment,
             checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
                                                              // The loop happens due to server caching as per testing.
             checkinEventSource: null,
             unitList: null,
 
-            jumpId: this.props.navbar.state.jumpToSection // The desired jump location.
+            jumpId: this.props.navbar.state.jumpToSection // The desired jump location student assessment tasks.
         };
     }
 
@@ -74,6 +94,7 @@ class CompleteAssessmentTask extends Component {
         const chosenAssessmentTask = state.chosenAssessmentTask;
         const chosenCourse = state.chosenCourse;
         const cookies = new Cookies();
+        const adHocMode = this.state.usingAdHoc;
 
         this.currentUserId = cookies.get("user")["user_id"];
 
@@ -87,26 +108,30 @@ class CompleteAssessmentTask extends Component {
             "roles", this, { dest: "currentUserRole" }
         );
 
-        if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
-            genericResourceGET(
-                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
-                "teams", this, { dest: "userFixedTeam" }
-            );
-        }
-
-        genericResourceGET(
-            `/team?course_id=${chosenCourse["course_id"]}`,
-            "teams", this
-        ).then((result) => {
-            if (this.state.usingTeams && result.teams && result.teams.length > 0) {
-                const teamIds = result.teams.map(team => team.team_id);
-
+        if (adHocMode){
+            //Left empty for the new routes that retrive the adhoc information.
+        }else{
+            if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
                 genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
-                    "teams_users", this, { dest: "teamsUsers" }
+                    `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+                    "teams", this, { dest: "userFixedTeam" }
                 );
             }
-        });
+    
+            genericResourceGET(
+                `/team?course_id=${chosenCourse["course_id"]}`,
+                "teams", this
+            ).then((result) => {
+                if (this.state.usingTeams && result.teams && result.teams.length > 0) {
+                    const teamIds = result.teams.map(team => team.team_id);
+    
+                    genericResourceGET(
+                        `/user?team_ids=${teamIds}`,
+                        "teams_users", this, { dest: "teamsUsers" }
+                    );
+                }
+            });
+        }
     
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
@@ -136,7 +161,7 @@ class CompleteAssessmentTask extends Component {
         this.state.checkinEventSource?.close();
     }
     
-    componentDidUpdate() {
+    componentDidUpdate() {  
         if (this.state.unitList === null) {
             const {
                 assessmentTaskRubric,
@@ -195,6 +220,7 @@ class CompleteAssessmentTask extends Component {
             currentUserRole,
             completedAssessments,
             checkins,
+            usingAdHoc,
         } = this.state;
 
         const navbar = this.props.navbar;
@@ -210,6 +236,16 @@ class CompleteAssessmentTask extends Component {
             );
 
         } else if (!isLoaded || !assessmentTaskRubric || !completedAssessments || !currentUserRole || !users || !teams || !checkins) {
+            console.warn("First loading bar");
+            console.warn({
+                loaded: isLoaded,//pass
+                Atr: assessmentTaskRubric,//pass
+                cat: completedAssessments,//pass
+                userRole: currentUserRole,//pass
+                usrs: users,//pass
+                tms: teams,//null ERROR HERE -fix through the route data and poper formating/ logic change? no too much broken
+                checkintruth: checkins,//pass
+            });
             return (
                 <Loading />
             );

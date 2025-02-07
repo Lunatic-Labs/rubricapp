@@ -6,20 +6,6 @@ export const UnitType = Object.freeze({
 	AD_HOC_TEAM: "ad_hoc_team", // Currently unused, made in preparation of adding ad hoc teams
 });
 
-// REMEMBER TO DELETE these personal notes.
-// NOTE: Look into converting all front end logic into units. This would lower the more
-// confusing part of the logic.
-
-// NOTE: the fixed team unit seems to be fully functioning. The logic it has needs to be replicated to identitify
-// units in other parts of the front end code.
-
-// NOTE: It is stange that the mappings that andre mentioned are from utility.js
-//		-maybe its a rendering logic issue.
-//		-confirmation that the db and back-end is managing the data well.
-//		-edge-case that raises the error as the state changes.
-
-// NOTE: no one refrernces the code way in a manner that is consistent.
-
 // Terminology:
 // ROCS Data - An object that stores information about how an assessment task has been completed.
 //  This includes things like what checkboxes have been clicked and comments. This object
@@ -438,6 +424,8 @@ export class FixedTeamUnit extends ATUnit {
 	}
 }
 
+
+// Do we even need the classes FIXED and AdHoc? it seems both can be the same and generalization works anyways.
 export class AdHocTeamUnit extends FixedTeamUnit{
 	/**
 	 * @param {object} cat Complete assessment task object.

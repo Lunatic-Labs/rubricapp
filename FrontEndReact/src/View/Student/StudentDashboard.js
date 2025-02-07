@@ -7,7 +7,6 @@ import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 import Loading from '../Loading/Loading.js';
-//import { generateUnitList } from '../Admin/View/CompleteAssessmentTask/unit.js';
 
 // StudentDashboard is used for both students and TAs.
 // StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
