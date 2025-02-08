@@ -155,6 +155,11 @@ class CompleteAssessmentTask extends Component {
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
                 const roleName = currentUserRole["role_name"];
 
+                if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
+                if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                if (this.state.usingTeams && !teamsUsers) return;
+                
                 const userSort = [...users].sort((firstUser,secondUser) => {
                     const firstLastName = firstUser.last_name.toLowerCase();
                     const secondLastName = secondUser.last_name.toLowerCase();
@@ -162,12 +167,7 @@ class CompleteAssessmentTask extends Component {
                     if(firstLastName > secondLastName) return 1;
                     return 0;
                 });
-                
-                if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
-                if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
-                if (this.state.usingTeams && !teamsUsers) return;
-                
+
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
