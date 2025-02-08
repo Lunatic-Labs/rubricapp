@@ -756,6 +756,33 @@ def get_all_checkins_for_assessment(assessment_task_id):
 
     return checkins
 
+@error_log
+def get_adhoc_team_size_amount(assessment_task_id):
+    """
+    Description:
+    Returns the adhoc information for a particular assessment task.
+
+    Parameters:
+    assessment_task_id: <class 'int'> (The id of an assessment task)
+
+    Return:
+    <class 'object'> (max team size, number of teams)
+
+    Exceptions:
+    None except what the database is allowed to raise.
+    """
+    assessment_task_adhoc_info = db.session.query(
+        AssessmentTask.max_team_size,
+        AssessmentTask.number_of_teams,
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id
+    ).first()
+
+    if not assessment_task_adhoc_info:
+        return []  # No assessment task found
+
+    return assessment_task_adhoc_info
+
 # This query was written by ChatGPT
 @error_log
 def get_all_nonfull_adhoc_teams(assessment_task_id):

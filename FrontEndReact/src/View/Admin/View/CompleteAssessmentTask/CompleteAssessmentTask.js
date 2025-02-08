@@ -220,7 +220,7 @@ class CompleteAssessmentTask extends Component {
             currentUserRole,
             completedAssessments,
             checkins,
-            usingAdHoc,
+            //usingAdHoc,
         } = this.state;
 
         const navbar = this.props.navbar;
@@ -246,6 +246,46 @@ class CompleteAssessmentTask extends Component {
                 tms: teams,//null ERROR HERE -fix through the route data and poper formating/ logic change? no too much broken
                 checkintruth: checkins,//pass
             });
+            /** 
+             * code for the teams; I need to ensure that all the pieces are structred in this manner
+             * 
+             * current backend can send me the checkin data for a certain AT.
+             *  I have the AT
+             *          atid
+             *          atname
+             *          courseid
+             *          rubricid
+             *          roleid
+             *          duedate
+             *          timezone
+             *          suggestions
+             *          unitofassessment
+             *          comment
+             *          createteam
+             *          size
+             *          numofteams
+             *          noti
+             * I have checkin
+             *          id
+             *          atid
+             *          teamnum
+             *          userid
+             *          time
+             * 
+             * 0: Object { course_id: 1, date_created: "2023-01-01", observer_id: 3, … }
+                active_until: null
+                ​​​
+                course_id: 1 //frontend already has it can still be bound using a at tabel join to checkins
+                ​​​
+                date_created: "2023-01-01" // time is the at creation time
+                ​​​
+                observer_id: 3 user id for now to get it working then fix it later with a join
+                ​​​
+                team_id: 1  // impossible? teamnum
+                ​​​
+                team_name: "Black Mambas"  "Team"+teamnum
+            */
+
             return (
                 <Loading />
             );
