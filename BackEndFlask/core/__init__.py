@@ -139,10 +139,16 @@ oauth2_scopes = [
     "https://www.googleapis.com/auth/gmail.compose",
     "https://www.googleapis.com/auth/gmail.readonly",
 ]
-# oauth2_token_fp = os.getenv("GMAIL_TOKEN_FP")
 oauth2_token_fp = "/home/ubuntu/private/token.json"
 oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
 oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
+
+# This gets set in wsgi.py/run.py depending on if we
+# are running locally or on a server.
+class Config:
+    rubricapp_running_locally = False
+
+config = Config()
 
 # Register blueprints
 from controller import bp

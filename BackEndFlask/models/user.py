@@ -6,6 +6,7 @@ from sqlalchemy import (
     and_
 )
 from models.utility import generate_random_password, send_new_user_email, check_bounced_emails
+from models.email_validation import create_validation
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -196,8 +197,9 @@ def create_user(user_data, owner_email=None):
     )
 
     db.session.add(user_data)
-
     db.session.commit()
+
+    email_validation = create_validation(user_data.user_id, user_data.email)
 
     return user_data
 
