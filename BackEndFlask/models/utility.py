@@ -18,99 +18,6 @@ from controller.Routes.RouteExceptions import EmailFailureException
 
 from core import oauth2_service
 
-def send_email_and_check_for_bounces(func,
-                                     dest_addr,
-                                     start_timestamp,
-                                     end_timestamp,
-                                     *vargs):
-    func(*vargs)
-    check_bounced_emails(dest_addr, start_timestamp, end_timestamp)
-
-def check_bounced_emails(dest_addr, start_timestamp=None, end_timestamp=None):
-    return
-    time.sleep(1)
-
-    scopes, max_fetched_emails, mailer_daemon_sender = (
-        ["https://www.googleapis.com/auth/gmail.readonly"],
-        5,
-        "mailer-daemon@googlemail.com",
-    )
-
-    creds = None
-    if os.path.exists("gmail-token.json"):
-        creds = Credentials.from_authorized_user_file("gmail-token.json", scopes)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "gmail-credentials.json", scopes
-            )
-            creds = flow.run_local_server(port=0)
-
-        with open("gmail-token.json", "w") as token:
-            token.write(creds.to_json())
-
-    try:
-        service = build("gmail", "v1", credentials=creds)
-
-        # Fetch the emails
-
-        query, messages_result = (None, None)
-
-        if start_timestamp is not None and end_timestamp is not None:
-            query = f"after:{int(start_timestamp)} before:{int(end_timestamp)}"
-
-        if query is not None:
-            messages_result = service.users().messages().list(
-                userId="me", maxResults=max_fetched_emails, q=query
-            ).execute()
-        else:
-            messages_result = service.users().messages().list(
-                userId="me", maxResults=max_fetched_emails
-            ).execute()
-
-        messages, bounced_emails = (messages_result.get("messages", []), [])
-
-        if messages:
-            for msg in messages:
-                msg_detail = service.users().messages().get(userId="me", id=msg["id"]).execute()
-                headers = msg_detail.get("payload", {}).get("headers", [])
-                sender = next(
-                    (header["value"] for header in headers if header["name"] == "From"),
-                    None,
-                )
-
-                # Parse the sender
-                if sender:
-                    parts = sender.split("<")
-                    if len(parts) > 1:
-                        sender = parts[1][0:-1]
-
-                if sender and sender == mailer_daemon_sender:
-                    snippet = msg_detail.get("snippet", "No snippet available")
-                    snippet = html.unescape(snippet)
-                    main_failure = snippet[0]
-
-                    for i in range(1, len(snippet)):
-                        if snippet[i].isupper():
-                            break
-                        main_failure += snippet[i]
-
-                    bounced_emails.append({
-                        'id': msg['id'],
-                        'msg': snippet,
-                        'sender': sender,
-                        'main_failure': main_failure.strip(),
-                    })
-
-            for bounced in bounced_emails:
-                send_bounced_email_notification(dest_addr, bounced['msg'], bounced['main_failure'])
-
-    except HttpError as error:
-        print(f"An error occurred: {error}")
-
 def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
     subject = "Student's email failed to send."
     message = f'''The email could not send due to
@@ -172,21 +79,22 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
         send_email(student.email, subject, message)
 
 def send_email(address: str, subject: str, content: str):
-    try:
-        message = EmailMessage()
-        message.set_content(content)
-        message["To"] = address
-        message["From"] = "skillbuilder02@gmail.com"
-        message["Subject"] = subject
-
-        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-        create_message = {
-                "raw": encoded_message,
-        }
-        send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
-
-    except Exception as e:
-        raise EmailFailureException(str(e))
+    return
+    # try:
+    #     message = EmailMessage()
+    #     message.set_content(content)
+    #     message["To"] = address
+    #     message["From"] = "skillbuilder02@gmail.com"
+    #     message["Subject"] = subject
+    # 
+    #     encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+    #     create_message = {
+    #             "raw": encoded_message,
+    #     }
+    #     send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
+    # 
+    # except Exception as e:
+    #     raise EmailFailureException(str(e))
 
 
 def generate_random_password(length: int):
