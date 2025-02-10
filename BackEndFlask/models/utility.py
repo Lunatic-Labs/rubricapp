@@ -18,6 +18,77 @@ from controller.Routes.RouteExceptions import EmailFailureException
 
 from core import oauth2_service
 
+def send_email_and_check_for_bounces(func,
+                                     dest_addr,
+                                     from_timestamp,
+                                     *vargs):
+    func(*vargs)
+    check_bounced_emails(dest_addr, from_timestamp)
+
+def check_bounced_emails(dest_addr, from_timestamp=None):
+    if not start_timestamp or not end_timestamp:
+        return
+
+    time.sleep(1)
+
+    max_fetched_emails, mailer_daemon_sender = (16, "mailer-daemon@googlemail.com")
+
+    try:
+        # Fetch the emails
+        query, messages_result = (None, None)
+
+        if from_timestamp is not None:
+            query = f"after:{int(from_timestamp)}"
+
+        if query is not None:
+            messages_result = oauth2_service.users().messages().list(
+                userId="me", maxResults=max_fetched_emails, q=query
+            ).execute()
+        else:
+            messages_result = oauth2_service.users().messages().list(
+                userId="me", maxResults=max_fetched_emails
+            ).execute()
+
+        messages, bounced_emails = (messages_result.get("messages", []), [])
+
+        if messages:
+            for msg in messages:
+                msg_detail = oauth2_service.users().messages().get(userId="me", id=msg["id"]).execute()
+                headers = msg_detail.get("payload", {}).get("headers", [])
+                sender = next(
+                    (header["value"] for header in headers if header["name"] == "From"),
+                    None,
+                )
+
+                # Parse the sender
+                if sender:
+                    parts = sender.split("<")
+                    if len(parts) > 1:
+                        sender = parts[1][0:-1]
+
+                if sender and sender == mailer_daemon_sender:
+                    snippet = msg_detail.get("snippet", "No snippet available")
+                    snippet = html.unescape(snippet)
+                    main_failure = snippet[0]
+
+                    for i in range(1, len(snippet)):
+                        if snippet[i].isupper():
+                            break
+                        main_failure += snippet[i]
+
+                    bounced_emails.append({
+                        'id': msg['id'],
+                        'msg': snippet,
+                        'sender': sender,
+                        'main_failure': main_failure.strip(),
+                    })
+
+            for bounced in bounced_emails:
+                send_bounced_email_notification(dest_addr, bounced['msg'], bounced['main_failure'])
+
+    except HttpError as error:
+        print(f"An error occurred: {error}")
+
 def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
     subject = "Student's email failed to send."
     message = f'''The email could not send due to
