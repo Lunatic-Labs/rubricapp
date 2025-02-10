@@ -146,8 +146,8 @@ oauth2_token_fp = "/home/ubuntu/private/token.json"
 oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
 oauth2_service = None
 
-if oauth2_credentials is not None:
-    oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
+# if oauth2_credentials is not None:
+#     oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
 
 # Register blueprints
 from controller import bp
