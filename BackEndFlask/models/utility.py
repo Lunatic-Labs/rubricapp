@@ -20,54 +20,32 @@ from core import oauth2_service
 
 def send_email_and_check_for_bounces(func,
                                      dest_addr,
-                                     start_timestamp,
-                                     end_timestamp,
+                                     from_timestamp,
                                      *vargs):
     func(*vargs)
-    check_bounced_emails(dest_addr, start_timestamp, end_timestamp)
+    check_bounced_emails(dest_addr, from_timestamp)
 
-def check_bounced_emails(dest_addr, start_timestamp=None, end_timestamp=None):
-    return
+def check_bounced_emails(dest_addr, from_timestamp=None):
+    if not start_timestamp or not end_timestamp:
+        return
+
     time.sleep(1)
 
-    scopes, max_fetched_emails, mailer_daemon_sender = (
-        ["https://www.googleapis.com/auth/gmail.readonly"],
-        5,
-        "mailer-daemon@googlemail.com",
-    )
-
-    creds = None
-    if os.path.exists("gmail-token.json"):
-        creds = Credentials.from_authorized_user_file("gmail-token.json", scopes)
-
-    if not creds or not creds.valid:
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        else:
-            flow = InstalledAppFlow.from_client_secrets_file(
-                "gmail-credentials.json", scopes
-            )
-            creds = flow.run_local_server(port=0)
-
-        with open("gmail-token.json", "w") as token:
-            token.write(creds.to_json())
+    max_fetched_emails, mailer_daemon_sender = (16, "mailer-daemon@googlemail.com")
 
     try:
-        service = build("gmail", "v1", credentials=creds)
-
         # Fetch the emails
-
         query, messages_result = (None, None)
 
-        if start_timestamp is not None and end_timestamp is not None:
-            query = f"after:{int(start_timestamp)} before:{int(end_timestamp)}"
+        if from_timestamp is not None:
+            query = f"after:{int(from_timestamp)}"
 
         if query is not None:
-            messages_result = service.users().messages().list(
+            messages_result = oauth2_service.users().messages().list(
                 userId="me", maxResults=max_fetched_emails, q=query
             ).execute()
         else:
-            messages_result = service.users().messages().list(
+            messages_result = oauth2_service.users().messages().list(
                 userId="me", maxResults=max_fetched_emails
             ).execute()
 
@@ -75,7 +53,7 @@ def check_bounced_emails(dest_addr, start_timestamp=None, end_timestamp=None):
 
         if messages:
             for msg in messages:
-                msg_detail = service.users().messages().get(userId="me", id=msg["id"]).execute()
+                msg_detail = oauth2_service.users().messages().get(userId="me", id=msg["id"]).execute()
                 headers = msg_detail.get("payload", {}).get("headers", [])
                 sender = next(
                     (header["value"] for header in headers if header["name"] == "From"),
