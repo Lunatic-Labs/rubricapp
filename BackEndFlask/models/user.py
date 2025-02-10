@@ -192,6 +192,11 @@ def create_user(user_data, owner_email=None):
 
     db.session.add(user_data)
     db.session.commit()
+
+    # Avoid adding validation to demo users.
+    if not has_set_password:
+        create_validation(user_data.user_id, user_data.email)
+
     return user_data
 
 

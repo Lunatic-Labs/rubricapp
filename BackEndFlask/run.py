@@ -7,7 +7,6 @@ from Functions.threads import email_checker_thread
 
 import core
 
-
 if __name__ == '__main__':
     core.config.rubricapp_running_locally = True
 
