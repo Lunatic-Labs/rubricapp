@@ -32,7 +32,6 @@ from models.course import (
 )
 
 from models.utility import (
-    send_email_and_check_for_bounces,
     send_email_for_updated_email,
 )
 

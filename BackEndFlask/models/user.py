@@ -5,7 +5,7 @@ from models.schemas import User, UserCourse
 from sqlalchemy import (
     and_
 )
-from models.utility import generate_random_password, send_new_user_email, check_bounced_emails
+from models.utility import generate_random_password, send_new_user_email
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -172,9 +172,6 @@ def create_user(user_data, owner_email=None):
     else:
         password = generate_random_password(6)
         send_new_user_email(user_data["email"], password)
-
-        if owner_email is not None:
-            check_bounced_emails(owner_email)
 
         has_set_password = False
 
