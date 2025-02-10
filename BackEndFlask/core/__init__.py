@@ -138,13 +138,18 @@ redis_host = os.environ.get('REDIS_HOST', 'localhost')
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 
 # Initialize Gmail OAuth2 service
-oauth2_scopes = [
-    "https://www.googleapis.com/auth/gmail.compose",
-    "https://www.googleapis.com/auth/gmail.readonly",
-]
-oauth2_token_fp = "/home/ubuntu/private/token.json"
-oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
-oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
+# oauth2_scopes = [
+#     "https://www.googleapis.com/auth/gmail.compose",
+#     "https://www.googleapis.com/auth/gmail.readonly",
+# ]
+# oauth2_token_fp = "/home/ubuntu/private/token.json"
+# oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
+# oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
+
+oauth2_scopes = None
+oauth2_token_fp = None
+oauth2_credentials = None
+oauth2_service = None
 
 # Register blueprints
 from controller import bp
