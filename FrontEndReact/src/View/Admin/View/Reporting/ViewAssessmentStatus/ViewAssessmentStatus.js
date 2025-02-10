@@ -61,12 +61,17 @@ export default function ViewAssessmentStatus(props) {
       {'rating': 5, 'number': 0},
     ]
   };
-
+  var finished =0;
   var allRatings = [];
   var avg = 0;
   var stdev = 0;
-  var progress = +props.completedAssessmentsPercentage.toFixed(2);
 
+  for (let i = 0; i < props.completedAssessments.length; i++) {
+    if (props.completedAssessments[i].done === true) {
+      finished++;
+    }
+  }
+  var progress = +props.completedAssessmentsPercentage.toFixed(2);
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
     for (var i = 0; i < props.completedAssessments.length; i++) {
@@ -106,16 +111,18 @@ export default function ViewAssessmentStatus(props) {
     }
 
     // add percentage to each JSON object in improvement/characteristics
+    let totalCharacteristics = characteristicsData['characteristics'].reduce((sum, characteristic) => sum + characteristic.number, 0);
     for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
-      let percent = characteristicsData['characteristics'][i]['number'] / (props.completedAssessments !== null ? props.completedAssessments.length : 1) * 100;
-
-      characteristicsData['characteristics'][i]['percentage'] = percent + "%";
+      let percent = totalCharacteristics === 0 ? 0 : 
+        (characteristicsData['characteristics'][i]['number'] / totalCharacteristics * 100);
+      characteristicsData['characteristics'][i]['percentage'] = percent;
     }
  
+    let totalImprovements = improvementsData['improvements'].reduce((sum, improvement) => sum + improvement.number, 0);
     for (let i = 0; i < improvementsData['improvements'].length; i++) {
-      let percent = improvementsData['improvements'][i]['number'] / (props.completedAssessments !== null ? props.completedAssessments.length : 1) * 100;
-
-      improvementsData['improvements'][i]['percentage'] = percent  + "%";
+      let percent = totalImprovements === 0 ? 0 : 
+        (improvementsData['improvements'][i]['number'] / totalImprovements * 100);
+      improvementsData['improvements'][i]['percentage'] = percent;
     }
   }
   const innerGridStyle = {
@@ -242,6 +249,7 @@ export default function ViewAssessmentStatus(props) {
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
                   completedAssessments={props.completedAssessments.length}
+                  done = {finished}
                 />
               </div>
             </Grid>
@@ -253,6 +261,7 @@ export default function ViewAssessmentStatus(props) {
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
                   completedAssessments={props.completedAssessments.length}
+                  done = {finished}
                 />
               </div>
             </Grid>

@@ -29,7 +29,8 @@ export default function CharacteristicsAndImprovements({
   characteristicsData,
   improvementsData,
   showSuggestions,
-  completedAssessments
+  completedAssessments,
+  done
 }) {
 
   const data = dataType === 'characteristics'
@@ -39,11 +40,10 @@ export default function CharacteristicsAndImprovements({
   const processedData = data.map(item => ({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
-    number: ((item.number / completedAssessments)*100).toFixed(2)
   }));
-
+  console.log('data',processedData);
+  console.log('done',done);
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
-
   return (
     <div className="container-fluid p-0"> 
       <div className="row">
@@ -86,12 +86,12 @@ export default function CharacteristicsAndImprovements({
                         cursor={{ fill: 'rgba(46, 139, 239, 0.1)' }}
                       />
                       <Bar 
-                        dataKey="number" 
+                        dataKey="percentage" 
                         fill="#2e8bef"
                         className="cursor-pointer"
                       >
                         <LabelList 
-                          dataKey="number" 
+                          dataKey="percentage" 
                           fill="#ffffff" 
                           position="inside"
                           formatter={value => `${value}%`}
