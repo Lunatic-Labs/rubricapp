@@ -250,8 +250,10 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId) => {
-                        if (completedAssessmentId) {
+                    customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+                      const rowIndex = completeAssessmentTasks.rowIndex;
+                      const teamId = this.props.completedAssessment[rowIndex].team_id;
+                      if (completedAssessmentId) {
                             return (
                                 <IconButton
                                     align="center"
@@ -259,7 +261,8 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                                         navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                             completedAssessmentTasks,
                                             completedAssessmentId,
-                                            chosenAssessmentTask
+                                            chosenAssessmentTask,
+                                            teamId,
                                         );
                                     }}
                                     aria-label="See more details"

@@ -10,6 +10,9 @@ import { genericResourcePOST, genericResourcePUT, debounce } from '../../../../u
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
 import { getUnitCategoryStatus } from './cat_utils.js';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch'
 
 
 /**
@@ -21,14 +24,16 @@ import { getUnitCategoryStatus } from './cat_utils.js';
  * @param {Array<ATUnit>} props.units - Array of `ATUnit` class objects.
  * @param {Object} props.assessmentTaskRubric - The rubric for the assessment task.
  * @param {Object} props.navbar - The navbar object.
- * 
+ * @property {int|null} props.jumpId - Id of what team or user to veiw first.
+ *  
  * @property {Array<ATUnit>} state.units - Array of `ATUnit` class objects taken from props.units.
  * @property {number} state.currentUnitTabIndex - Index of the currently selected `ATUnit` from `units`.
  * @property {Array<Category>} state.categoryList - Array of `Category` objects using the current rubric.
  * @property {number} state.currentCategoryTabIndex - Index of the currently selected rubric `categoryList`.
  * @property {Object} state.section - Section object of the category `currentCategoryTabIndex` from `categoryList`.
  * @property {boolean} state.displaySavedNotification - Boolean indicating whether to display the pop-up window that confirms the assessment is saved.
- * 
+ * @property {boolean} state.hideUnits - Boolean indicating if there are tabs that we want to not render.
+ * @property {int} state.consistentValidUnit - Int to what tab I want to jump to when swapping between hidden units.
  * @property {Set<number>} unitsThatNeedSaving - A set of all the unit indexes that need saving for autosave.
  */
 class Form extends Component {
@@ -42,6 +47,9 @@ class Form extends Component {
             currentCategoryTabIndex: 0,
             section: null,
             displaySavedNotification: false,
+            jumpId: this.props.jumpId,
+            hideUnits: false,
+            consistentValidUnit: 0,
         };
         
         this.unitsThatNeedSaving = new Set();
@@ -130,7 +138,6 @@ class Form extends Component {
             
             // We sort assessmentTaskRubric["category_json"] by the index of each entry, since the the data gets
             // automatically sorted when it comes out of the backend
-
             Object.entries(assessmentTaskRubric["category_json"])
                 .toSorted((a, b) => a[1].index - b[1].index)
                 .forEach(([category, _], index) => {
@@ -176,7 +183,7 @@ class Form extends Component {
 
             this.setState({
                 categoryList: categoryList,
-                section: section
+                section: section, 
             });
         }
         
@@ -290,10 +297,77 @@ class Form extends Component {
             
             this.unitsThatNeedSaving.clear();
         }, 2000);
-    }
+
+        /**
+        * @method hideTabs - Handles setting the properties needed for hiding tabs.
+        */
+        this.hideTabs = (event) => {
+            this.setState({
+                hideUnits: event.target.checked
+            })
+            if(event.target.checked && this.state.consistentValidUnit !== null){
+                this.handleUnitTabChange(this.state.consistentValidUnit);
+            }
+        };
+
+        /**
+        * @method ensureHiddenTabNotActive - Finds a tab that will not be hidden. 
+        *                                       If none, defaults to null.
+        */
+        this.findPersistantTab = () => {
+            const cookies = new Cookies();
+            const currentUserId = cookies.get("user")["user_id"];
+
+            for(let index = 0; index < this.state.units.length; ++index){
+                let currentUnit = this.state.units[index];
+                if (currentUnit["team"]["observer_id"] === currentUserId){
+                    return index;
+                }
+
+            }
+            return null;
+        };
+
+        /**
+        * @method shouldTabsCategoriesRender - Prevents rendering tabs if TA view has all tabs hidden.
+        * 
+        * @param {object} - What is supposed to be rendered.
+        */
+        this.shouldTabsCategoriesRender = (renderObject) => {
+            const {hideUnits, consistentValidUnit} = this.state;
+            const tabToDefualtTo = consistentValidUnit !== null;
+            // {hideUnits} holds precedence.
+            return (
+                ( (hideUnits && tabToDefualtTo) || (!hideUnits) )
+                && renderObject 
+            );
+        };
+    };
 
     componentDidMount() {
-        this.generateCategoriesAndSection();
+        const {usingTeams, jumpId} = this.props;
+        const entity = usingTeams ? 'team': 'user';
+        const entityId = usingTeams ? 'team_id': 'user_id';
+        if(jumpId !== null){
+            for (let index = 0; index < this.state.units.length; index++){
+                const unit = this.state.units[index];
+                if(unit[entity][entityId] === jumpId){
+                    this.setState({
+                        currentUnitTabIndex : index,
+                    }, () => {
+                        this.generateCategoriesAndSection();
+                    });
+                    break;
+                }
+            }
+        }else{
+            this.generateCategoriesAndSection();
+        };
+        if(this.props.usingTeams){
+            this.setState({
+                consistentValidUnit: this.findPersistantTab(),
+            });
+        }
     }
     
     render() {
@@ -303,10 +377,40 @@ class Form extends Component {
                     display:"flex",
                     justifyContent:"end",
                     gap:"20px",
-                    height: "1.5rem"
+                    height: "1.5rem",
                 }}>
                     { this.state.displaySavedNotification &&
                         <Alert severity={"success"} sx={{ height: "fit-content" }}>Assessment Saved!</Alert>
+                    }
+
+                    
+                    { this.props.usingTeams && this.props.roleName === "TA/Instructor" &&
+                        <FormGroup sx={{ marginTop: "-0.50rem" }}>
+                            <FormControlLabel 
+                                control={
+                                    <Switch 
+                                        checked={this.state.hideUnits}
+                                        onChange={(event) => this.hideTabs(event)}
+                                        sx={{
+                                            '& .MuiSwitch-track': {
+                                                width: '2.6rem',
+                                                height: '1.2rem', 
+                                                borderRadius: '0.6rem', 
+                                            },
+                                            '& .MuiSwitch-thumb': {
+                                                width: '1rem',
+                                                height: '1rem',
+                                                margin: '0.1rem',
+                                            },
+                                            '& .MuiSwitch-switchBase': {
+                                                 top: '0.17rem',
+                                            },
+                                        }}  
+                                    />
+                                } 
+                                label={"MY TEAMS"}
+                            />
+                        </FormGroup>
                     }
 
                     { !this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly &&
@@ -336,6 +440,7 @@ class Form extends Component {
                                 units={this.state.units}
                                 checkins={this.props.checkins}
                                 handleUnitTabChange={this.handleUnitTabChange}
+                                hideUnits={this.state.hideUnits}
                             />
                         </Box>
                     }
@@ -372,12 +477,12 @@ class Form extends Component {
                                 },
                             }}
                         >
-                            {this.state.categoryList}
+                            {this.shouldTabsCategoriesRender(this.state.categoryList)}
                         </Tabs>
                     </Box>
                 </Box>
 
-                {this.state.section}
+                {this.shouldTabsCategoriesRender(this.state.section)}
             </Box>
         )
     }

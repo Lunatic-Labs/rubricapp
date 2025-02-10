@@ -336,16 +336,19 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId) => {
+                    customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+                        const rowIndex = completeAssessmentTasks.rowIndex;
+                        const userId = this.props.completedAssessment[rowIndex].user_id;
                         if (completedAssessmentId) {
                             return (
-                                <IconButton
+                                <IconButton // problem : need to pass who im looking at
                                     align="center"
                                     onClick={() => {
                                         navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                             completedAssessmentTasks,
                                             completedAssessmentId,
-                                            chosenAssessmentTask
+                                            chosenAssessmentTask,
+                                            userId,
                                         );
                                     }}
                                     aria-label="assessmentIndividualSeeMoreDetailsButtons"
