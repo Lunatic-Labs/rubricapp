@@ -201,7 +201,7 @@ def create_user(user_data, owner_email=None):
 
     # Avoid adding validation to demo users.
     if not has_set_password:
-        email_validation = create_validation(user_data.user_id, user_data.email)
+        create_validation(user_data.user_id, user_data.email)
 
     return user_data
 
