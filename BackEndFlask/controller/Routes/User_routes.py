@@ -310,17 +310,6 @@ def update_user():
 
         user = replace_user(request.json, user_id)
 
-        # The email was updated, send email notification to the new addr.
-        if new_email is not None and owner_id is not None:
-            owner_email = get_user(owner_id).email
-            send_email_and_check_for_bounces(
-                send_email_for_updated_email,
-                owner_email,
-                None,
-                None,
-                new_email
-            )
-
         if request.json["role_id"] == 3:
             make_admin(user_id)
         else:
