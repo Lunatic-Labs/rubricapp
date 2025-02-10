@@ -79,22 +79,21 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
         send_email(student.email, subject, message)
 
 def send_email(address: str, subject: str, content: str):
-    return
-    # try:
-    #     message = EmailMessage()
-    #     message.set_content(content)
-    #     message["To"] = address
-    #     message["From"] = "skillbuilder02@gmail.com"
-    #     message["Subject"] = subject
+    try:
+        message = EmailMessage()
+        message.set_content(content)
+        message["To"] = address
+        message["From"] = "skillbuilder02@gmail.com"
+        message["Subject"] = subject
 
-    #     encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-    #     create_message = {
-    #             "raw": encoded_message,
-    #     }
-    #     send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
+        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
+        create_message = {
+                "raw": encoded_message,
+        }
+        send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
-    # except Exception as e:
-    #     raise EmailFailureException(str(e))
+    except Exception as e:
+        raise EmailFailureException(str(e))
 
 
 def generate_random_password(length: int):

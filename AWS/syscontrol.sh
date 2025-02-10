@@ -442,20 +442,18 @@ function serve_rubricapp() {
     log "serving front-end"
     cd "$PROJ_DIR/FrontEndReact"
 
-    npm run build
-
-    # if [ "$environment" = "prod" ];
-    # then
-    #     log "serving production build for frontend"
-    #     npm run build
-    # elif [ "$environment" = "dev" ];
-    # then
-    #     log "serving development build for frontend"
-    #     # npm run dev
-    #     npm run start
-    # else
-    #     panic "serve takes either 'prod' or 'dev'"
-    # fi
+    if [ "$environment" = "prod" ];
+    then
+        log "serving production build for frontend"
+        npm run build
+    elif [ "$environment" = "dev" ];
+    then
+        log "serving development build for frontend"
+        # npm run dev
+        npm run start
+    else
+        panic "serve takes either 'prod' or 'dev'"
+    fi
 
     serve -s -l tcp://0.0.0.0:3000 build &
     cd -
@@ -534,12 +532,11 @@ case "$1" in
         configure
         ;;
     "$SERVE")
-        # if [ "$#" -lt 2 ];
-        # then
-        #     panic "missing <dev/prod> for serving"
-        #     exit 1
-        # fi
-        # serve_rubricapp "$2"
+        if [ "$#" -lt 2 ];
+        then
+            panic "missing <dev/prod> for serving"
+            exit 1
+        fi
         serve_rubricapp "$2"
         ;;
     "$UPDATE")
