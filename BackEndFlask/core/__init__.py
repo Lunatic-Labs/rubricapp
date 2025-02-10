@@ -23,7 +23,7 @@ def get_oauth2_credentials(token_fp, scopes):
         raise ValueError("The environment variable for the token path has not been set")
 
     if not os.path.exists(token_fp):
-        raise FileNotFoundError(f"Token file not found: {token_fp}")
+        return None
 
     try:
         creds = Credentials.from_authorized_user_file(token_fp, scopes)
