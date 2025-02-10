@@ -61,16 +61,10 @@ export default function ViewAssessmentStatus(props) {
       {'rating': 5, 'number': 0},
     ]
   };
-  var finished =0;
   var allRatings = [];
   var avg = 0;
   var stdev = 0;
 
-  for (let i = 0; i < props.completedAssessments.length; i++) {
-    if (props.completedAssessments[i].done === true) {
-      finished++;
-    }
-  }
   var progress = +props.completedAssessmentsPercentage.toFixed(2);
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
