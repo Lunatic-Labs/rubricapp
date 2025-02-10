@@ -115,16 +115,17 @@ export default function ViewAssessmentStatus(props) {
     for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
       let percent = totalCharacteristics === 0 ? 0 : 
         (characteristicsData['characteristics'][i]['number'] / totalCharacteristics * 100);
-      characteristicsData['characteristics'][i]['percentage'] = percent;
+      characteristicsData['characteristics'][i]['percentage'] = +percent.toFixed(2);
     }
  
     let totalImprovements = improvementsData['improvements'].reduce((sum, improvement) => sum + improvement.number, 0);
     for (let i = 0; i < improvementsData['improvements'].length; i++) {
       let percent = totalImprovements === 0 ? 0 : 
         (improvementsData['improvements'][i]['number'] / totalImprovements * 100);
-      improvementsData['improvements'][i]['percentage'] = percent;
+      improvementsData['improvements'][i]['percentage'] = +percent.toFixed(2);
     }
   }
+  
   const innerGridStyle = {
     borderRadius: '1px',
     height: '100%',
@@ -248,8 +249,6 @@ export default function ViewAssessmentStatus(props) {
                   characteristicsData={characteristicsData}
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
-                  completedAssessments={props.completedAssessments.length}
-                  done = {finished}
                 />
               </div>
             </Grid>
@@ -260,8 +259,6 @@ export default function ViewAssessmentStatus(props) {
                   characteristicsData={characteristicsData}
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
-                  completedAssessments={props.completedAssessments.length}
-                  done = {finished}
                 />
               </div>
             </Grid>

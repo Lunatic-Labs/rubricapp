@@ -29,8 +29,6 @@ export default function CharacteristicsAndImprovements({
   characteristicsData,
   improvementsData,
   showSuggestions,
-  completedAssessments,
-  done
 }) {
 
   const data = dataType === 'characteristics'
@@ -41,8 +39,6 @@ export default function CharacteristicsAndImprovements({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
   }));
-  console.log('data',processedData);
-  console.log('done',done);
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
   return (
     <div className="container-fluid p-0"> 
