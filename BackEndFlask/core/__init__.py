@@ -156,6 +156,13 @@ try:
 except Exception:
     oauth2_service = None
 
+# This gets set in wsgi.py/run.py depending on if we
+# are running locally or on a server.
+class Config:
+    rubricapp_running_locally = False
+
+config = Config()
+
 # Register blueprints
 from controller import bp
 app.register_blueprint(bp, url_prefix='/api')
