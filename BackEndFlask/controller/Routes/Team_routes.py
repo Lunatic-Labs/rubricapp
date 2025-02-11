@@ -25,6 +25,7 @@ from models.queries import (
     get_all_nonfull_adhoc_teams,
     get_students_by_team_id,
     get_team_users,
+    get_sorted_adhoc_teams,
 )
 
 @bp.route('/team', methods = ['GET'])
@@ -163,6 +164,32 @@ def get_one_team():
 
     except Exception as e:
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
+
+@bp.route('/team/adhoc', methods = ["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_adhoc_team_data():
+    """
+    Description:
+        This returns the needed adhoc data from checkins for completeAssessmentTask.js to function.
+
+    Parameters:
+    assessment_task_id: <class 'int'> (The assessment task id)
+
+    Returns:
+        Data from the checkins table.
+
+    Exceptions:
+        None except what the database may raise.
+    """
+
+    try:
+        assessment_task_id = int(request.args.get("assessment_task_id"))
+        adhoc_data = get_sorted_adhoc_teams(assessment_task_id)
+        return create_good_response(checkins_schema.dump(adhoc_data), 200, "teams")
+    except Exception as e:
+        return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
 
 @bp.route('/team/nonfull-adhoc', methods = ["GET"])
 @jwt_required()
@@ -312,7 +339,19 @@ class TeamUserSchema(ma.Schema):
             'user_id'
         )
 
+class CheckinSchema(ma.Schema):
+    class Meta:
+        fields = (
+            'checkin_id',
+            'assessment_task_id',
+            'team_number',
+            'user_id',
+            'time'
+        )
 
+
+checkin_schema = CheckinSchema()
+checkins_schema = CheckinSchema(many=True)
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
 team_user_schema = TeamUserSchema()

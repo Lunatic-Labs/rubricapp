@@ -27,7 +27,7 @@ import { CheckinsTracker } from './cat_utils.js';
  * Resources fetched in componentDidMount:
  * @property {Object|null} state.assessmentTaskRubric - The rubric of the assessment task.
  * @property {Array|null} state.teams - The list of teams.
- * @property {Object|null} state.userFixedTeam - The fixed team of the current user.
+ * @property {Object|null} state.userFixedTeam - The "fixed" team of the current user.
  * @property {Array|null} state.users - The list of users.
  * @property {Array|null} state.teamsUsers - The list of users in teams.
  * @property {Object|null} state.currentUserRole - The role of the current user.
@@ -42,23 +42,6 @@ import { CheckinsTracker } from './cat_utils.js';
  * @property {Array|null} state.unitList - The list of units for the assessment task.
  * @property {int|null} state.jumpId - What team or student to open first.
  */
-
-
-/*
-    DELETE THIS AT THE END. Team is failing since its undefined. intergrating adhoc will break both this
-    and form.js. Lack the routes to retrive the proper information too.
-
-    changes : Onmount func now has a new if else to prevent crashing and retrive adhoc data.
-
-    problems: stuck loading in adhoc locations bc there is no route yet for getting adhoc teams.
-
-    admin view: adhoc form.js broken
-    super view: pass
-    ta    view: adhoc form.js broken
-    stdent viw: adhoc form.js broken
-*/
-
-
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -79,6 +62,7 @@ class CompleteAssessmentTask extends Component {
             currentUserId: null,
             usingTeams: this.props.navbar.state.unitOfAssessment,
             usingAdHoc: !this.props.navbar.state.chosenCourse.use_fixed_teams && this.props.navbar.state.unitOfAssessment,
+            numberOfAdhocTeams: null,
             checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
                                                              // The loop happens due to server caching as per testing.
             checkinEventSource: null,
@@ -109,7 +93,39 @@ class CompleteAssessmentTask extends Component {
         );
 
         if (adHocMode){
-            //Left empty for the new routes that retrive the adhoc information.
+            const numOfTeams = chosenAssessmentTask.number_of_teams;
+            let teamData = {};
+            for(let i = 0; i < numOfTeams; ++i){
+                teamData[i] = {
+                    'active_until': null,
+                    'course_id': chosenCourse.course_id,
+                    'date_created': chosenAssessmentTask.due_date,
+                    'observer_id':chosenCourse.admin_id,
+                    'team_id': i,
+                    'team_name': "Team "+ (i + 1),
+                }
+            }
+            this.setState({
+                teams: teamData,
+            })
+
+            genericResourceGET(
+                `/team/adhoc?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
+                "teams", this
+            ).then(response =>{
+                let teamId = 0;
+                if(response.teams){
+                    teamId = response.teams.find(teams => teams.user_id === this.currentUserId)?.team_number??null;
+                }
+                for(let i = 0; i < numOfTeams; ++i){
+                    teamData[i].team_users = (i === teamId - 1) ? [navbar.props.userName.split(" ")[0]] : [];
+                }
+                this.setState({
+                    userFixedTeam: teamData,
+                })
+            }).catch (error => {
+                console.log("error getting/formating adhoc data:",error);
+            });
         }else{
             if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
                 genericResourceGET(
@@ -172,7 +188,7 @@ class CompleteAssessmentTask extends Component {
                 currentUserRole,
                 completedAssessments,
                 checkins
-            } = this.state;
+            } = this.state; 
             
             if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
                 const navbar = this.props.navbar;
@@ -236,55 +252,16 @@ class CompleteAssessmentTask extends Component {
             );
 
         } else if (!isLoaded || !assessmentTaskRubric || !completedAssessments || !currentUserRole || !users || !teams || !checkins) {
-            console.warn("First loading bar");
-            console.warn({
-                loaded: isLoaded,//pass
-                Atr: assessmentTaskRubric,//pass
-                cat: completedAssessments,//pass
-                userRole: currentUserRole,//pass
-                usrs: users,//pass
-                tms: teams,//null ERROR HERE -fix through the route data and poper formating/ logic change? no too much broken
-                checkintruth: checkins,//pass
-            });
-            /** 
-             * code for the teams; I need to ensure that all the pieces are structred in this manner
-             * 
-             * current backend can send me the checkin data for a certain AT.
-             *  I have the AT
-             *          atid
-             *          atname
-             *          courseid
-             *          rubricid
-             *          roleid
-             *          duedate
-             *          timezone
-             *          suggestions
-             *          unitofassessment
-             *          comment
-             *          createteam
-             *          size
-             *          numofteams
-             *          noti
-             * I have checkin
-             *          id
-             *          atid
-             *          teamnum
-             *          userid
-             *          time
-             * 
-             * 0: Object { course_id: 1, date_created: "2023-01-01", observer_id: 3, … }
-                active_until: null
-                ​​​
-                course_id: 1 //frontend already has it can still be bound using a at tabel join to checkins
-                ​​​
-                date_created: "2023-01-01" // time is the at creation time
-                ​​​
-                observer_id: 3 user id for now to get it working then fix it later with a join
-                ​​​
-                team_id: 1  // impossible? teamnum
-                ​​​
-                team_name: "Black Mambas"  "Team"+teamnum
-            */
+            //console.warn("First loading bar");
+            //console.warn({
+            //    loaded: isLoaded,//pass
+            //    Atr: assessmentTaskRubric,//pass
+            //    cat: completedAssessments,//pass
+            //    userRole: currentUserRole,//pass
+            //    usrs: users,//pass
+            //    tms: teams,//pass
+            //    checkintruth: checkins,
+            //});
 
             return (
                 <Loading />
@@ -303,6 +280,7 @@ class CompleteAssessmentTask extends Component {
         }
 
         const roleName = currentUserRole["role_name"];
+        console.warn("out of first elses");
 
         if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
             return (
@@ -316,7 +294,9 @@ class CompleteAssessmentTask extends Component {
             );
         }
 
+        console.warn("student check esles");
         const unitList = this.state.unitList;
+        console.assert(unitList !== null, `unitlist!== null instead got: ${unitList}`);
 
         if (!unitList) {
             return (
