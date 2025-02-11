@@ -85,5 +85,4 @@ what I currently use:
 scp -i <path/to/pem/file> ./token.json <server@IP:/home/ubuntu>
 ```
 
-SSH into the server and put the token somewhere safe *(DO NOT put it
-in the repo and version control it)*.
+SSH into the server and put the token in `private/`.

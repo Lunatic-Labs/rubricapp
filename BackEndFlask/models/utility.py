@@ -93,7 +93,7 @@ def send_email(address: str, subject: str, content: str):
         send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
     except Exception as e:
-        raise EmailFailureException(str(e))
+        raise EmailFailureException()
 
 
 def generate_random_password(length: int):
