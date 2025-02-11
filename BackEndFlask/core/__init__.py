@@ -152,7 +152,8 @@ oauth2_service = None
 
 if oauth2_credentials is not None:
     # oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
-    oauth2_service = None
+    # oauth2_service = None
+    __testvar = 1
 
 # Register blueprints
 from controller import bp
