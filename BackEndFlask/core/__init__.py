@@ -147,13 +147,12 @@ oauth2_scopes = [
     "https://www.googleapis.com/auth/gmail.readonly",
 ]
 oauth2_token_fp = "/home/ubuntu/private/token.json"
-# oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
+oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
 # oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
 oauth2_service = None
 
 try:
-    if False:
-        oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=get_oauth2_credentials(oauth2_token_fp, oauth2_scopes))
+    oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
 except Exception:
     oauth2_service = None
 
