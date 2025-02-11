@@ -21,7 +21,7 @@ import redis
 
 def get_oauth2_credentials(token_fp, scopes):
     if token_fp is None:
-        raise ValueError("The environment variable for the token path has not been set")
+        return None
 
     if not os.path.exists(token_fp):
         return None
@@ -29,16 +29,19 @@ def get_oauth2_credentials(token_fp, scopes):
     try:
         creds = Credentials.from_authorized_user_file(token_fp, scopes)
     except Exception as e:
-        raise ValueError(f"Failed to load credentials from {token_fp}: {e}")
+        # raise ValueError(f"Failed to load credentials from {token_fp}: {e}")
+        return None
 
     if creds and creds.expired and creds.refresh_token:
         try:
             creds.refresh(Request())
         except Exception as e:
-            raise ValueError(f"Failed to refresh credentials: {e}")
+            return None
+            # raise ValueError(f"Failed to refresh credentials: {e}")
 
     if not creds or not creds.valid:
-        raise ValueError("Credentials are not valid for read/write emails")
+        # raise ValueError("Credentials are not valid for read/write emails")
+        return None
 
     with open(token_fp, 'w') as token:
         token.write(creds.to_json())
@@ -147,9 +150,8 @@ oauth2_token_fp = "/home/ubuntu/private/token.json"
 oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
 oauth2_service = None
 
-# if oauth2_credentials is not None:
-#     oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
-oauth2_service = None
+if oauth2_credentials is not None:
+    oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
 
 # Register blueprints
 from controller import bp
