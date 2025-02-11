@@ -43,6 +43,34 @@ import { CheckinsTracker } from './cat_utils.js';
  * @property {int|null} state.jumpId - What team or student to open first.
  */
 
+class Debug {
+    static data = {};
+
+    static increment(that){
+        ++Debug.data[that];
+    }
+    static firstZero(that){
+        if(Debug.data[that] === undefined){
+            Debug.data[that] = 0;
+            return true;
+        }
+        else return false;
+    }
+    static change(that, val){
+        try{
+            Debug.data[that] = val;
+        }catch{
+            return false;
+        }
+    }
+    static get(that){
+        return Debug.data[that];
+    }
+}
+if(module.hot){
+    Debug.data = {};
+}
+
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -177,7 +205,13 @@ class CompleteAssessmentTask extends Component {
         this.state.checkinEventSource?.close();
     }
     
-    componentDidUpdate() {  
+    componentDidUpdate() { 
+
+        if (!Debug.firstZero("UPDATE")){
+            Debug.increment("UPDATE");
+        }
+        console.log("update iter : ", Debug.get("UPDATE"));
+
         if (this.state.unitList === null) {
             const {
                 assessmentTaskRubric,
@@ -236,7 +270,7 @@ class CompleteAssessmentTask extends Component {
             currentUserRole,
             completedAssessments,
             checkins,
-            //usingAdHoc,
+            //usingAdHoc, will i want to pass it to form.js ?
         } = this.state;
 
         const navbar = this.props.navbar;
@@ -252,17 +286,6 @@ class CompleteAssessmentTask extends Component {
             );
 
         } else if (!isLoaded || !assessmentTaskRubric || !completedAssessments || !currentUserRole || !users || !teams || !checkins) {
-            //console.warn("First loading bar");
-            //console.warn({
-            //    loaded: isLoaded,//pass
-            //    Atr: assessmentTaskRubric,//pass
-            //    cat: completedAssessments,//pass
-            //    userRole: currentUserRole,//pass
-            //    usrs: users,//pass
-            //    tms: teams,//pass
-            //    checkintruth: checkins,
-            //});
-
             return (
                 <Loading />
             );
@@ -280,7 +303,7 @@ class CompleteAssessmentTask extends Component {
         }
 
         const roleName = currentUserRole["role_name"];
-        console.warn("out of first elses");
+        // console.warn("out of first elses");
 
         if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
             return (
@@ -294,7 +317,7 @@ class CompleteAssessmentTask extends Component {
             );
         }
 
-        console.warn("student check esles");
+        // console.warn("student check esles");
         const unitList = this.state.unitList;
         console.assert(unitList !== null, `unitlist!== null instead got: ${unitList}`);
 
