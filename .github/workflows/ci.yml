@@ -36,7 +36,7 @@ jobs:
       #      ${{ runner.os }}-build-${{ env.cache-name }}-
       
       - name: Build backend
-        run: docker compose build backend
+        run: docker compose build backend --no-cache
       
       # TODO: Run pytests here using docker compose run or something
       
