@@ -319,50 +319,42 @@ def delete_user():
     try:
         if request.args and request.args.get("uid"):
             user_id = request.args.get("uid")
-            print(user_id, flush=True)
+            #print(user_id, flush=True)
             delete_user_by_user_id(user_id)
 
             t = create_good_response([], 200, "")
-            print(t, flush = True)
+            #print(t, flush = True)
             return t
-    except Exception as e:
-        return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
-    
-@bp.route('/user', methods = ['DELETE'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-@admin_check()
-def delete_selected_user():
-    try:
-        if request.args and request.args.get("user_id") and request.args.get("role_id"):
-            user_id = int(request.args.get("user_id"))
-            role_id = int(request.args.get("role_id"))
-            user = None
-            if role_id == 5:
-                user = get_user_by_role_id(role_id)
-                return user
-            if not user:
-                return create_bad_response("User does not exist", "users", 400)
+    except Exception:
+        #return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
+        try:
+            if request.args and request.args.get("uid") and request.args.get("role_id"):
+                user_id = int(request.args.get("uid"))
+                role_id = int(request.args.get("role_id"))
+                print(role_id, flush=True)
+                user = None
+                if role_id == 5:
+                    user = get_user_by_role_id(role_id)
+                    return user
+                if not user:
+                    return create_bad_response("User does not exist", "users", 400)
 
-            associated_tasks = completed_assessment_team_or_user_exists(team_id = None, user_id=user_id)
-            print(associated_tasks, flush=True)
-            if associated_tasks is None:
-                associated_tasks = []
-            if len(associated_tasks) > 0:
-                refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, user_id=user_id)
-                print(refetched_tasks, flush = True)
-                if not refetched_tasks:
+                associated_tasks = completed_assessment_team_or_user_exists(team_id = None, user_id=user_id)
+                if associated_tasks is None:
+                    associated_tasks = []
+                if len(associated_tasks) > 0:
+                    refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, user_id=user_id)
+                    if not refetched_tasks:
+                        delete_user_by_user_id(user_id)
+                        return create_good_response([], 200, "users")
+                    else:
+                        return create_bad_response("Cannot delete user with associated tasks", "users", 400)
+                else:
                     delete_user_by_user_id(user_id)
                     return create_good_response([], 200, "users")
-                else:
-                    return create_bad_response("Cannot delete user with associated tasks", "users", 400)
-            else:
-                delete_user_by_user_id(user_id)
-                return create_good_response([], 200, "users")
 
-    except Exception as e:
-        return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
+        except Exception as e1:
+            return create_bad_response(f"An error occurred deleting a user: {e1}", "users", 400)
 
 class UserSchema(ma.Schema):
     class Meta:
