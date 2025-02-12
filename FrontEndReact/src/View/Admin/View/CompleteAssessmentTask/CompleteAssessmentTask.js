@@ -43,6 +43,8 @@ import { CheckinsTracker } from './cat_utils.js';
  * @property {int|null} state.jumpId - What team or student to open first.
  */
 
+
+//The benifit of this class and global call is that you can keep certain things static to help with the debugger.
 class Debug {
     static data = {};
 
@@ -62,14 +64,15 @@ class Debug {
         }catch{
             return false;
         }
+        return true;
     }
     static get(that){
         return Debug.data[that];
     }
 }
 if(module.hot){
-    Debug.data = {};
-}
+    Debug.data = {}; 
+}  
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -180,7 +183,13 @@ class CompleteAssessmentTask extends Component {
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
             "users", this
-        );
+        ).then(response => {
+            if(adHocMode){
+                this.setState({
+                    teamsUsers: response.users,// modify? hot fix to get it working
+                })
+            }
+        });
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
@@ -212,7 +221,15 @@ class CompleteAssessmentTask extends Component {
         }
         console.log("update iter : ", Debug.get("UPDATE"));
 
+        Debug.change("unitList", this.state.unitList);
+        console.log("unitList",Debug.get("unitList"));//persistant null
+
         if (this.state.unitList === null) {
+            if (!Debug.firstZero("if")){
+                Debug.increment("if");
+            }
+            console.log("null check : ", Debug.get("if"));
+
             const {
                 assessmentTaskRubric,
                 teams,
@@ -225,6 +242,12 @@ class CompleteAssessmentTask extends Component {
             } = this.state; 
             
             if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
+
+                if (!Debug.firstZero("secondif")){
+                    Debug.increment("secondif");
+                }
+                console.log("entered second if : ", Debug.get("secondif"));
+
                 const navbar = this.props.navbar;
                 const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
@@ -232,9 +255,14 @@ class CompleteAssessmentTask extends Component {
                 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                if (roleName === "Student" && this.state.usingTeamss && !userFixedTeam) return;
                 if (this.state.usingTeams && !teamsUsers) return;
+
+                console.log("reached past ifs");
                 
+                const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
+                                                         : UnitType.INDIVIDUAL;
+
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
@@ -247,8 +275,9 @@ class CompleteAssessmentTask extends Component {
                     fixedTeamMembers: teamsUsers,
                     // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
-                    userFixedTeam: userFixedTeam?.[0],
+                    userFixedTeam: userFixedTeam?.[0],//good
                 });
+                console.warn(unitList);
                 
                 this.setState({
                     unitList,
@@ -319,7 +348,13 @@ class CompleteAssessmentTask extends Component {
 
         // console.warn("student check esles");
         const unitList = this.state.unitList;
+        if (!Debug.firstZero("render")){
+            Debug.increment("render");
+        }
+        console.log("render iter : ", Debug.get("render"));
+
         console.assert(unitList !== null, `unitlist!== null instead got: ${unitList}`);
+        console.assert(unitList?.length === 0, unitList);
 
         if (!unitList) {
             return (
@@ -327,6 +362,8 @@ class CompleteAssessmentTask extends Component {
             );
         }
 
+/*         console.warn("++++++++++++++++++ENTERING FORM.JS++++++++++++++++++++");
+ */
         return (
             <Box>
                 <Box className="assessment-title-spacing">
