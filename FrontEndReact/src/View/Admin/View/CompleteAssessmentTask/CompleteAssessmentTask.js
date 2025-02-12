@@ -168,6 +168,14 @@ class CompleteAssessmentTask extends Component {
                     return 0;
                 });
 
+                const teamSort = [...teams].sort((firstTeam, secondTeam) => {
+                    const firstTeamName = firstTeam.team_name.toLowerCase();
+                    const secondTeamName = secondTeam.team_name.toLowerCase();
+                    if(firstTeamName < secondTeamName) return -1;
+                    if(firstTeamName > secondTeamName) return 1;
+                    return 0;
+                });
+
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
@@ -176,7 +184,7 @@ class CompleteAssessmentTask extends Component {
                     assessmentTaskRubric: assessmentTaskRubric,
                     completedAssessments,
                     users: userSort,
-                    fixedTeams: teams,
+                    fixedTeams: teamSort,
                     fixedTeamMembers: teamsUsers,
                     // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
