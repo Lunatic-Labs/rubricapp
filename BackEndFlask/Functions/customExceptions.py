@@ -2,9 +2,6 @@
 Custom exceptions used throughout the Functions directory
 """
 
-from yagmail import message
-
-
 class FileNotFound(Exception):
     def __init__(self):
         self.message = "File not found or does not exist!"

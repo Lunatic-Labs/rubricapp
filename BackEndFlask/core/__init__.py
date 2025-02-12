@@ -1,3 +1,8 @@
+import google.auth
+# from googleapiclient.discovery import build
+import googleapiclient.discovery
+from google.auth.transport.requests import Request
+from google.oauth2.credentials import Credentials
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
@@ -14,14 +19,43 @@ import re
 import redis
 #import logging
 
+def get_oauth2_credentials(token_fp, scopes):
+    if token_fp is None:
+        return None
+
+    if not os.path.exists(token_fp):
+        return None
+
+    try:
+        creds = Credentials.from_authorized_user_file(token_fp, scopes)
+    except Exception as e:
+        # raise ValueError(f"Failed to load credentials from {token_fp}: {e}")
+        return None
+
+    if creds and creds.expired and creds.refresh_token:
+        try:
+            creds.refresh(Request())
+        except Exception as e:
+            return None
+            # raise ValueError(f"Failed to refresh credentials: {e}")
+
+    if not creds or not creds.valid:
+        # raise ValueError("Credentials are not valid for read/write emails")
+        return None
+
+    with open(token_fp, 'w') as token:
+        token.write(creds.to_json())
+
+    return creds
+
 def setup_cron_jobs():
     # Check if we've already set up cron
     flag_file = os.path.join(os.path.dirname(__file__), '.cron_setup_complete')
-    
+
     # If we've already set up cron, skip
     if os.path.exists(flag_file):
         return
-        
+
     try:
         # Set up cron jobs
         pull_cron_jobs = subprocess.run(
@@ -53,7 +87,7 @@ def setup_cron_jobs():
         # Create flag file after successful setup
         with open(flag_file, 'w') as f:
             f.write(f'Cron setup completed at: {subprocess.check_output(["date"]).decode().strip()}\n')
-            
+
     except Exception as e:
         # Log any errors but don't prevent app from starting
         print(f"Warning: Cron setup failed: {str(e)}")
@@ -106,6 +140,21 @@ migrate = Migrate(app, db)
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
+
+# Initialize Gmail OAuth2 service
+oauth2_scopes = [
+    "https://www.googleapis.com/auth/gmail.compose",
+    "https://www.googleapis.com/auth/gmail.readonly",
+]
+oauth2_token_fp = "/home/ubuntu/private/token.json"
+oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
+# oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
+oauth2_service = None
+
+try:
+    oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
+except Exception:
+    oauth2_service = None
 
 # Register blueprints
 from controller import bp
