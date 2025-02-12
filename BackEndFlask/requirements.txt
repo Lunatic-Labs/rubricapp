@@ -1,3 +1,7 @@
+google-auth
+google-auth-oauthlib
+google-auth-httplib2
+google-api-python-client
 flask >= 2.2.2
 flask[async]>=2.2.2
 flask-sqlalchemy >= 3.0.3
@@ -16,7 +20,6 @@ flask-jwt-extended >= 4.5.2
 Werkzeug >= 2.0.2
 redis >= 4.5.5
 python-dotenv >= 1.0.0
-yagmail >= 0.15.293
 openpyxl >= 3.1.2
 cryptography >= 43.0.1
 gevent >= 24.11.1

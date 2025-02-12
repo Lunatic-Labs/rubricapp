@@ -25,7 +25,7 @@ from sqlalchemy import ForeignKey, func, DateTime, Interval
 class Role(db.Model):
     __tablename__ = "Role"
     role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    role_name = db.Column(db.Text, nullable=False) 
+    role_name = db.Column(db.Text, nullable=False)
 
 class User(db.Model):
     __tablename__ = "User"
@@ -37,9 +37,10 @@ class User(db.Model):
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
-    has_set_password = db.Column(db.Boolean, nullable=False) 
+    has_set_password = db.Column(db.Boolean, nullable=False)
     reset_code = db.Column(db.Text, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False)
+    last_update = db.Column(DateTime(timezone=True), nullable=True)
 
 class Rubric(db.Model):
     __tablename__ = "Rubric"
@@ -126,7 +127,7 @@ class AssessmentTask(db.Model):
     show_suggestions = db.Column(db.Boolean, nullable=False)
     show_ratings = db.Column(db.Boolean, nullable=False)
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
-    comment = db.Column(db.Text, nullable=True) 
+    comment = db.Column(db.Text, nullable=True)
     create_team_password = db.Column(db.Text, nullable=True)
     number_of_teams = db.Column(db.Integer, nullable=True)
     max_team_size = db.Column(db.Integer, nullable=True)

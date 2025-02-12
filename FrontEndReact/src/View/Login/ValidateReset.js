@@ -19,7 +19,7 @@ class ValidateReset extends Component {
             email: '',
             code: '',
         };
-        
+
         this.sendEmail = () => {
             let email = this.state.email;
 

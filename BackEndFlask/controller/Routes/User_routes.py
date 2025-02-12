@@ -3,8 +3,8 @@ from controller  import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 
-from controller.security.CustomDecorators import( 
-    AuthCheck, bad_token_check, 
+from controller.security.CustomDecorators import(
+    AuthCheck, bad_token_check,
     admin_check
 )
 
@@ -31,6 +31,10 @@ from models.course import (
     get_course
 )
 
+from models.utility import (
+    send_email_for_updated_email,
+)
+
 from models.user import(
     get_users,
     get_user,
@@ -43,7 +47,8 @@ from models.user import(
     unmake_admin,
     delete_user_by_user_id,
     get_user_by_role_id
-    
+    ,
+    get_user_by_email,
 )
 
 from models.queries import (
@@ -167,7 +172,7 @@ def get_all_team_members():
                 result = {}
 
             return create_good_response(resultList, 200, "team_members")
-        
+
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
             course_id=request.args.get("course_id")
 
@@ -211,7 +216,13 @@ def add_user():
             return create_good_response([], 201, "users")
 
         if(request.args and request.args.get("course_id")):
+            owner_id = request.args.get("owner_id")
+            owner_email = None
             course_id = request.args.get("course_id")
+
+            if owner_id is not None:
+                owner = get_user(owner_id)
+                owner_email = owner.email
 
             get_course(course_id)  # Trigger an error if not exists.
 
@@ -233,7 +244,7 @@ def add_user():
                 return create_good_response(user_schema.dump(user_exists), 200, "users")
 
             else:
-                new_user = create_user(request.json)
+                new_user = create_user(request.json, owner_email)
 
                 create_user_course({
                     "user_id": new_user.user_id,
@@ -269,7 +280,6 @@ def update_user():
 
             if request.args.get("unenroll_user"):
                 set_active_status_of_user_to_inactive(uid, course_id)
-
                 return create_good_response([], 201, "users")
 
             role_id = request.json["role_id"]
@@ -293,6 +303,8 @@ def update_user():
             return create_good_response([], 201, "users")
 
         user_id = request.args.get("uid")
+        new_email = request.args.get("new_email")
+        owner_id = request.args.get("owner_id")
 
         get_user(user_id)  # Trigger an error if not exists.
 
@@ -309,7 +321,7 @@ def update_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
-    
+
 @bp.route('/user', methods = ['DELETE'])
 @jwt_required()
 @bad_token_check()
@@ -371,7 +383,8 @@ class UserSchema(ma.Schema):
             'active',
             'has_set_password',
             'is_admin',
-            'role_id'
+            'role_id',
+            'last_update',
         )
 
 
