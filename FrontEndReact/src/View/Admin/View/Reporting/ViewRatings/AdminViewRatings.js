@@ -4,7 +4,7 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../../utility';
 import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
-import { Box, Button } from '@mui/material';
+import { Box, Button, Tooltip } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
 
 
@@ -196,12 +196,24 @@ class AdminViewRatings extends Component {
                 userData = {this}    
               />
               <Box display="flex" justifyContent="flex-end" gap="10px">
-                <Button
-                  variant='contained'
-                  onClick={()=>{this.handleCsvDownloads(0)}}
-                >
-                  Export SFIS & OCS
-                </Button>
+                <Tooltip
+                  title={
+                    <> 
+                      <p>
+                          SFIS = Suggestions for Improvement. OCS = Observable Characteristics.
+                      </p>
+                    </>
+                  }>
+                  <span>
+                    <Button
+                      variant='contained'
+                      onClick={()=>{this.handleCsvDownloads(0)}}
+                    >
+                      Export SFIS & OCS
+                    </Button>
+                  </span>
+                </Tooltip>
+                
                 <Button
                   variant='contained'
                   onClick={()=>{this.handleCsvDownloads(1)}}
