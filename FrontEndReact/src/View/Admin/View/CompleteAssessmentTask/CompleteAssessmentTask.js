@@ -41,38 +41,7 @@ import { CheckinsTracker } from './cat_utils.js';
  * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
  * @property {Array|null} state.unitList - The list of units for the assessment task.
  * @property {int|null} state.jumpId - What team or student to open first.
- */
-
-
-//The benifit of this class and global call is that you can keep certain things static to help with the debugger.
-class Debug {
-    static data = {};
-
-    static increment(that){
-        ++Debug.data[that];
-    }
-    static firstZero(that){
-        if(Debug.data[that] === undefined){
-            Debug.data[that] = 0;
-            return true;
-        }
-        else return false;
-    }
-    static change(that, val){
-        try{
-            Debug.data[that] = val;
-        }catch{
-            return false;
-        }
-        return true;
-    }
-    static get(that){
-        return Debug.data[that];
-    }
-}
-if(module.hot){
-    Debug.data = {}; 
-}  
+ */ 
 
 class CompleteAssessmentTask extends Component {
     constructor(props) {
@@ -215,21 +184,7 @@ class CompleteAssessmentTask extends Component {
     }
     
     componentDidUpdate() { 
-
-        if (!Debug.firstZero("UPDATE")){
-            Debug.increment("UPDATE");
-        }
-        console.log("update iter : ", Debug.get("UPDATE"));
-
-        Debug.change("unitList", this.state.unitList);
-        console.log("unitList",Debug.get("unitList"));//persistant null
-
         if (this.state.unitList === null) {
-            if (!Debug.firstZero("if")){
-                Debug.increment("if");
-            }
-            console.log("null check : ", Debug.get("if"));
-
             const {
                 assessmentTaskRubric,
                 teams,
@@ -243,11 +198,6 @@ class CompleteAssessmentTask extends Component {
             
             if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
 
-                if (!Debug.firstZero("secondif")){
-                    Debug.increment("secondif");
-                }
-                console.log("entered second if : ", Debug.get("secondif"));
-
                 const navbar = this.props.navbar;
                 const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
@@ -257,8 +207,6 @@ class CompleteAssessmentTask extends Component {
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
                 if (roleName === "Student" && this.state.usingTeamss && !userFixedTeam) return;
                 if (this.state.usingTeams && !teamsUsers) return;
-
-                console.log("reached past ifs");
                 
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
@@ -267,7 +215,7 @@ class CompleteAssessmentTask extends Component {
                     roleName: roleName,
                     currentUserId: this.currentUserId,
                     chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
-                    unitType: this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    unitType: unitClass,//this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
                     assessmentTaskRubric: assessmentTaskRubric,
                     completedAssessments,
                     users,
@@ -275,9 +223,8 @@ class CompleteAssessmentTask extends Component {
                     fixedTeamMembers: teamsUsers,
                     // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
-                    userFixedTeam: userFixedTeam?.[0],//good
+                    userFixedTeam: userFixedTeam?.[0],
                 });
-                console.warn(unitList);
                 
                 this.setState({
                     unitList,
@@ -299,7 +246,6 @@ class CompleteAssessmentTask extends Component {
             currentUserRole,
             completedAssessments,
             checkins,
-            //usingAdHoc, will i want to pass it to form.js ?
         } = this.state;
 
         const navbar = this.props.navbar;
@@ -332,7 +278,6 @@ class CompleteAssessmentTask extends Component {
         }
 
         const roleName = currentUserRole["role_name"];
-        // console.warn("out of first elses");
 
         if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
             return (
@@ -346,15 +291,10 @@ class CompleteAssessmentTask extends Component {
             );
         }
 
-        // console.warn("student check esles");
         const unitList = this.state.unitList;
-        if (!Debug.firstZero("render")){
-            Debug.increment("render");
-        }
-        console.log("render iter : ", Debug.get("render"));
 
         console.assert(unitList !== null, `unitlist!== null instead got: ${unitList}`);
-        console.assert(unitList?.length === 0, unitList);
+        console.assert(unitList?.length === 0, "should be some type of unit here");
 
         if (!unitList) {
             return (

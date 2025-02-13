@@ -43,6 +43,37 @@ export const UnitType = Object.freeze({
  *  if this isn't a fixed team AT.
  * @returns {ATUnit[]}
  */
+
+//The benifit of this class and global call is that you can keep certain things static to help with the debugger.
+class Debug {
+    static data = {};
+
+    static increment(that){
+        ++Debug.data[that];
+    }
+    static firstZero(that){
+        if(Debug.data[that] === undefined){
+            Debug.data[that] = 0;
+            return true;
+        }
+        else return false;
+    }
+    static change(that, val){
+        try{
+            Debug.data[that] = val;
+        }catch{
+            return false;
+        }
+        return true;
+    }
+    static get(that){
+        return Debug.data[that];
+    }
+}
+if(module.hot){
+    Debug.data = {}; 
+} 
+
 export function generateUnitList(args) {
 	let unitList = [];
 	
@@ -61,9 +92,10 @@ export function generateUnitList(args) {
 			
 			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
+				// create an instance to enter this.
 				team = args.fixedTeams.find(team => team["team_id"] === teamId);//SHOULD ERROR 
 			} else {
-				team = args.userFixedTeam;//SHOULD ERROR
+ 				team = args.userFixedTeam;
 			}
 			
 			unitList.push(classFunc(
@@ -139,7 +171,7 @@ function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
 	const teamMembers = fixedTeamMembers[teamId];
-		
+
 	return new AdHocTeamUnit(
 		cat ?? null, rocsData, isDone,
 		team, teamMembers,
@@ -424,7 +456,6 @@ export class FixedTeamUnit extends ATUnit {
 	}
 }
 
-
 // Do we even need the classes FIXED and AdHoc? it seems both can be the same and generalization works anyways.
 export class AdHocTeamUnit extends FixedTeamUnit{
 	/**
@@ -433,7 +464,8 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
 	 */
 	constructor(cat, rocs, done, team, teamMembers) {
-		super(UnitType.AD_HOC_TEAM, cat, rocs, done);
+		super(cat, rocs, done, team, teamMembers);
+		this.unitType = UnitType.AD_HOC_TEAM;
 		this.team = team;
 		this.teamMembers = teamMembers;
 	}	
