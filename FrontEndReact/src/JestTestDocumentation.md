@@ -25,6 +25,11 @@ error message matching the provided text.
 `changeElementWithAriaLabelWithCode()` - Enters a sequence of characters (such as a code) into multiple 
 input fields identified by the same `aria-label`.
 
+# Testing functions we use from React Testing Library
+
+`await waitFor()` is a utility function used from the `@testing-library/react` where the purpose is to wait until the provided function has been successfully completed without throwing an error. It is useful for waiting for asynchronous updates in the user interface, such as elements appearing after an action.
+
+In some of the test files, you will see that you can pass options to `waitFor`, such as `{ timeout: 3000 }`, which sets the maximum time to wait before throwing an error if the condition is not met. In this case, it will wait up to 3000 milliseconds (3 seconds).
 
 # Set up
 
@@ -71,20 +76,18 @@ test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component 
 
 To see more information on where the variables are declared, refer to `AdminAddCourse.test.js`.
 
-`await waitFor()` is a utility function used from the `@testing-library/react` where the purpose is to wait until the provided function has been successfully completed without throwing an error. It is useful for waiting for asynchronous updates in the user interface, such as elements appearing after an action.
-
 Step to step explanation:
 
-render(<Login />) - It renders the login component to begin the test.
+`render(<Login />)` - It renders the login component to begin the test.
 
-changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu"); - Enters the provided email into the input field identified by the `aria-label` stored in `ei`.
+`changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu")` - Enters the provided email into the input field identified by the `aria-label` stored in `ei`.
 
-changeElementWithAriaLabelWithInput(pi, demoAdminPassword) - Enters the admin password into the input field identified by the `aria-label` stored in `pi`.
+`changeElementWithAriaLabelWithInput(pi, demoAdminPassword)` - Enters the admin password into the input field identified by the `aria-label` stored in `pi`.
 
-clickElementWithAriaLabel(lb) - Clicks the button identified by the aria-label stored in lb (Login button).
+`clickElementWithAriaLabel(lb)` - Clicks the button identified by the `aria-label` stored in `lb` (Login button).
 
-expectElementWithAriaLabelToBeInDocument(ct) - Waits until the element with aria-label stored in ct is present on the page, then verifies it exists.
+`expectElementWithAriaLabelToBeInDocument(ct)` - Waits until the element with `aria-label` stored in `ct` is present on the page, then verifies it exists. (Course Title)
 
-clickElementWithAriaLabel(ac) - Clicks the button identified by the aria-label stored in ac (Add Course button).
+`clickElementWithAriaLabel(ac)` - Clicks the button identified by the `aria-label` stored in `ac` (Add Course button).
 
-expectElementWithAriaLabelToBeInDocument(act) - Waits until the element with aria-label stored in act is present on the page, then verifies it exists.
+`expectElementWithAriaLabelToBeInDocument(act)` - Waits until the element with `aria-label` stored in `act` is present on the page, then verifies it exists. (Add Course Title)
