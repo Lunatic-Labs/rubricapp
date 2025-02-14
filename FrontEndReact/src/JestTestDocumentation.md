@@ -68,3 +68,7 @@ test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component 
     });
 });
 ```
+
+To see more information on where the variables are declared, refer to `AdminAddCourse.test.js`.
+
+
