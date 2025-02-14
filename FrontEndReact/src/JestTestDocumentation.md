@@ -71,4 +71,20 @@ test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component 
 
 To see more information on where the variables are declared, refer to `AdminAddCourse.test.js`.
 
+`await waitFor()` is a utility function used from the `@testing-library/react` where the purpose is to wait until the provided function has been successfully completed without throwing an error. It is useful for waiting for asynchronous updates in the user interface, such as elements appearing after an action.
 
+Step to step explanation:
+
+render(<Login />) - It renders the login component to begin the test.
+
+changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu"); - Enters the provided email into the input field identified by the `aria-label` stored in `ei`.
+
+changeElementWithAriaLabelWithInput(pi, demoAdminPassword) - Enters the admin password into the input field identified by the `aria-label` stored in `pi`.
+
+clickElementWithAriaLabel(lb) - Clicks the button identified by the aria-label stored in lb (Login button).
+
+expectElementWithAriaLabelToBeInDocument(ct) - Waits until the element with aria-label stored in ct is present on the page, then verifies it exists.
+
+clickElementWithAriaLabel(ac) - Clicks the button identified by the aria-label stored in ac (Add Course button).
+
+expectElementWithAriaLabelToBeInDocument(act) - Waits until the element with aria-label stored in act is present on the page, then verifies it exists.
