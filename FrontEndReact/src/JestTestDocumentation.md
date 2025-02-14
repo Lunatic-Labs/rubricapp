@@ -4,7 +4,7 @@ This document will talk about the implementation and functionality of Jest Tests
 
 Our testing utilities are contained in `testUtilities.js`
 
-`aria-label`  - is an attribute that defines a string value that can be used to name an element,
+`aria-label` - is an attribute that defines a string value that can be used to name an element,
 as long as the element's role does not prohibit naming. It is useful for our tests to find and
 interact with specific elements.
 
