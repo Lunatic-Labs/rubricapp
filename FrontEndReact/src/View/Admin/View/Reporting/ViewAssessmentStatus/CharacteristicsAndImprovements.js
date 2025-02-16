@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
 
 const truncateText = (text, limit = 15) => {
@@ -29,8 +29,8 @@ export default function CharacteristicsAndImprovements({
   characteristicsData,
   improvementsData,
   showSuggestions,
-  completedAssessments
 }) {
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const data = dataType === 'characteristics'
     ? characteristicsData.characteristics
@@ -39,22 +39,56 @@ export default function CharacteristicsAndImprovements({
   const processedData = data.map(item => ({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
-    number: ((item.number / completedAssessments)*100).toFixed(2)
   }));
 
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
 
+  const expandedStyles = {
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    zIndex: 1000,
+    backgroundColor: 'white',
+    padding: '20px',
+    transition: 'all 0.3s ease',
+    overflow: 'auto'
+  };
+
+  const normalStyles = {
+    height: '100%',
+    backgroundColor: '#f8f8f8',
+    transition: 'all 0.3s ease',
+    cursor: 'pointer'
+  };
+
   return (
-    <div className="container-fluid p-0"> 
+    <div className="container-fluid p-0">
       <div className="row">
         <div className="col-12">
-          <div className="card border-0 shadow-none" style={{height: '100%', backgroundColor: '#f8f8f8' }}>
+          <div 
+            className="card border-0 shadow-none" 
+            style={isExpanded ? expandedStyles : normalStyles}
+            onClick={() => !isExpanded && setIsExpanded(true)}
+          >
+            {isExpanded && (
+              <button
+                className="btn btn-link position-absolute top-0 end-0 mt-2 me-2"
+                onClick={(e) => {
+                  e.stopPropagation();
+                  setIsExpanded(false);
+                }}
+                style={{ fontSize: '24px', textDecoration: 'none' }}
+              >
+              </button>
+            )}
             <div className="card-body">
               <h6 className="text-center mb-4">
                 <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
               </h6>
               
-              <div style={{ height: '250px' }}>
+              <div style={{ height: isExpanded ? '80vh' : '250px' }}>
                 {shouldShowGraph ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
@@ -62,9 +96,9 @@ export default function CharacteristicsAndImprovements({
                       data={processedData}
                       margin={{ 
                         top: 5, 
-                        right: 20, 
+                        right: isExpanded ? 40 : 20, 
                         bottom: 5, 
-                        left: 20 
+                        left: isExpanded ? 40 : 20 
                       }}
                     >
                       <XAxis
@@ -72,13 +106,13 @@ export default function CharacteristicsAndImprovements({
                         domain={[0, 100]}
                         ticks={[0, 25, 50, 75, 100]}
                         tickFormatter={(tick) => `${tick}`}
-                        style={{ fontSize: '12px' }}
+                        style={{ fontSize: isExpanded ? '14px' : '12px' }}
                       />
                       <YAxis
-                        style={{ fontSize: '12px' }}
+                        style={{ fontSize: isExpanded ? '14px' : '12px' }}
                         type="category"
                         dataKey="truncatedLabel"
-                        width={100}
+                        width={isExpanded ? 150 : 100}
                       />
                       <CartesianGrid horizontal={false} />
                       <Tooltip
@@ -86,15 +120,16 @@ export default function CharacteristicsAndImprovements({
                         cursor={{ fill: 'rgba(46, 139, 239, 0.1)' }}
                       />
                       <Bar 
-                        dataKey="number" 
+                        dataKey="percentage" 
                         fill="#2e8bef"
                         className="cursor-pointer"
                       >
                         <LabelList 
-                          dataKey="number" 
+                          dataKey="percentage" 
                           fill="#ffffff" 
                           position="inside"
                           formatter={value => `${value}%`}
+                          style={{ fontSize: isExpanded ? '14px' : '12px' }}
                         />
                       </Bar>
                     </BarChart>
