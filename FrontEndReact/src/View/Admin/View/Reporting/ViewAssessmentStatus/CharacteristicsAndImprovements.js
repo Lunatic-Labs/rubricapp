@@ -40,7 +40,6 @@ export default function CharacteristicsAndImprovements({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
   }));
-
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
 
   const expandedStyles = {
@@ -121,10 +120,12 @@ export default function CharacteristicsAndImprovements({
                       />
                       <Bar 
                         dataKey="percentage" 
+                        dataKey="percentage" 
                         fill="#2e8bef"
                         className="cursor-pointer"
                       >
                         <LabelList 
+                          dataKey="percentage" 
                           dataKey="percentage" 
                           fill="#ffffff" 
                           position="inside"
