@@ -1,4 +1,5 @@
 import os
+import re
 import sys
 import time
 import string, secrets
@@ -27,77 +28,7 @@ def send_email_and_check_for_bounces(func,
     # func(*vargs)
     # check_bounced_emails(dest_addr, from_timestamp)
 
-# def check_bounced_emails(dest_addr, from_timestamp=None):
-#     if config.rubricapp_running_locally:
-#         return
-
-#     if not from_timestamp:
-#         return
-
-#     time.sleep(5)
-
-#     max_fetched_emails, mailer_daemon_sender = (
-#         16,
-#         "mailer-daemon@googlemail.com"
-#     )
-
-#     try:
-#         # Fetch the emails
-#         query, messages_result = (None, None)
-
-#         if from_timestamp is not None:
-#             query = f"after:{int(from_timestamp.timestamp())}"
-
-#         if query is not None:
-#             messages_result = oauth2_service.users().messages().list(
-#                 userId="me", maxResults=max_fetched_emails, q=query
-#             ).execute()
-#         else:
-#             messages_result = oauth2_service.users().messages().list(
-#                 userId="me", maxResults=max_fetched_emails
-#             ).execute()
-
-#         messages, bounced_emails = (messages_result.get("messages", []), [])
-
-#         if messages:
-#             for msg in messages:
-#                 msg_detail = oauth2_service.users().messages().get(userId="me", id=msg["id"]).execute()
-#                 headers = msg_detail.get("payload", {}).get("headers", [])
-#                 sender = next(
-#                     (header["value"] for header in headers if header["name"] == "From"),
-#                     None,
-#                 )
-
-#                 # Parse the sender
-#                 if sender:
-#                     parts = sender.split("<")
-#                     if len(parts) > 1:
-#                         sender = parts[1][0:-1]
-
-#                 if sender and sender == mailer_daemon_sender:
-#                     snippet = msg_detail.get("snippet", "No snippet available")
-#                     snippet = html.unescape(snippet)
-#                     main_failure = snippet[0]
-
-#                     for i in range(1, len(snippet)):
-#                         if snippet[i].isupper():
-#                             break
-#                         main_failure += snippet[i]
-
-#                     bounced_emails.append({
-#                         'id': msg['id'],
-#                         'msg': snippet,
-#                         'sender': sender,
-#                         'main_failure': main_failure.strip(),
-#                     })
-
-#             for bounced in bounced_emails:
-#                 send_bounced_email_notification(dest_addr, bounced['msg'], bounced['main_failure'])
-
-#     except Exception as e:
-#         raise EmailFailureException(str(e))
-
-def check_bounced_emails(sender_to_user, from_timestamp=None):
+def check_bounced_emails(from_timestamp=None):
     if config.rubricapp_running_locally:
         return
 
@@ -143,6 +74,10 @@ def check_bounced_emails(sender_to_user, from_timestamp=None):
                     snippet = msg_detail.get("snippet", "No snippet available")
                     snippet = html.unescape(snippet)
                     main_failure = snippet[0]
+                    to_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', snippet)
+                    to_ = None
+                    if to_match:
+                        to_ = to_match.group()
 
                     for i in range(1, len(snippet)):
                         if snippet[i].isupper():
@@ -151,22 +86,20 @@ def check_bounced_emails(sender_to_user, from_timestamp=None):
 
                     bounced_emails.append({
                         'id': msg['id'],
-                        'msg': snippet,
+                        'to': to_,
+                        'msg': snippet.split('LEARN')[0],
                         'sender': sender,
                         'main_failure': main_failure.strip(),
                     })
 
             return bounced_emails
 
-            # for bounced in bounced_emails:
-            #     send_bounced_email_notification(dest_addr, bounced['msg'], bounced['main_failure'])
-
     except Exception as e:
         raise EmailFailureException(str(e))
 
 def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
     subject = "Student's email failed to send."
-    message = f'''The email could not send due to
+    message = f'''The email could not sent due to:
 
                 {msg}
 
