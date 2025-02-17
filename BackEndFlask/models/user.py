@@ -36,15 +36,6 @@ class EmailAlreadyExists(Exception):
 def get_users():
     return User.query.all()
 
-@error_log
-def get_users_by_role_id(role_id):
-    return User.query.filter_by(role_id=role_id).all()
-
-def get_user_by_role_id(role_id):
-    one_user = User.query.filter_by(role_id=role_id).first()
-    if one_user is None:
-        raise InvalidUserID(role_id)
-    return one_user
 
 @error_log
 def get_users_by_owner_id(owner_id):
