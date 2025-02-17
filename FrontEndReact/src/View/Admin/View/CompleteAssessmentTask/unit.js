@@ -45,7 +45,7 @@ export const UnitType = Object.freeze({
  */
 
 //The benifit of this class and global call is that you can keep certain things static to help with the debugger.
-class Debug {
+/* class Debug {
     static data = {};
 
     static increment(that){
@@ -72,7 +72,7 @@ class Debug {
 }
 if(module.hot){
     Debug.data = {}; 
-} 
+}  */
 
 export function generateUnitList(args) {
 	let unitList = [];
@@ -88,19 +88,22 @@ export function generateUnitList(args) {
 			));
 		} else {
 			let team;
-			const classFunc = args.unitType === UnitType.FIXED_TEAM ? createFixedTeamUnit:createAdHocTeamUnit;
+
+			const isFixedTeams = args.UnitType === UnitType.FIXED_TEAM;
 			
-			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
+			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask && isFixedTeams) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
-				// create an instance to enter this.
-				team = args.fixedTeams.find(team => team["team_id"] === teamId);//SHOULD ERROR 
+				team = args.fixedTeams.find(team => team["team_id"] === teamId);
 			} else {
- 				team = args.userFixedTeam;
+ 				team = args.userFixedTeam;// Despite the var name this works for adhocs.
 			}
-			
-			unitList.push(classFunc(
+			unitList.push(isFixedTeams ? 
+				createFixedTeamUnit(
+					team, args.chosenCompleteAssessmentTask,
+					args.assessmentTaskRubric, args.fixedTeamMembers
+			): createAdHocTeamUnit(
 				team, args.chosenCompleteAssessmentTask,
-				args.assessmentTaskRubric, args.fixedTeamMembers
+				args.assessmentTaskRubric, args.fixedTeamMembers, args.currentUserId,
 			));
 		} 
 	} else {
@@ -166,7 +169,7 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	);
 }
 
-function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
+function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers, currentUserId) {
 	const teamId = team["team_id"];
 	
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
@@ -174,7 +177,7 @@ function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
 
 	return new AdHocTeamUnit(
 		cat ?? null, rocsData, isDone,
-		team, teamMembers,
+		team, teamMembers, currentUserId,
 	);
 }
 
@@ -462,18 +465,35 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} team Team object.
 	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
+	 * @param {int} currentUserId - The current user to save data under.
 	 */
-	constructor(cat, rocs, done, team, teamMembers) {
+	currentUserId;
+
+	constructor(cat, rocs, done, team, teamMembers, currentUserId) {
 		super(cat, rocs, done, team, teamMembers);
 		this.unitType = UnitType.AD_HOC_TEAM;
 		this.team = team;
 		this.teamMembers = teamMembers;
+		this.currentUserId = currentUserId;
 	}	
+
+	// This is used for the post and puts for CATS. Notice that we bind to a user as opposed to a team that is changing.
+	getSubmitQueryParam() {
+		return `uid=${this.currentUserId}`;
+	}
 
 	shallowClone() {
 		return new AdHocTeamUnit(
 			this.completedAssessmentTask, this.rocsData, this.isDone,
-			this.team, this.teamMembers
+			this.team, this.teamMembers, this.currentUserId,
 		);
+	}
+
+	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
+		return {
+			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
+			"user_id": this.currentUserId,
+			"team_id": -1,
+		};
 	}
 }

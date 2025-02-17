@@ -214,7 +214,11 @@ def add_completed_assessment():
         user_id = int(assessment_data["user_id"])
         if (user_id == -1):
             assessment_data["user_id"] = None
-  
+
+        with open("ap.txt",'w') as out:
+            print(user_id, file=out)
+            print(team_id, file=out)
+
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:

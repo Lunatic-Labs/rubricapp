@@ -76,6 +76,7 @@ class ViewCompletedAssessmentTasks extends Component {
                         if (assessmentTask === undefined) {
                             return <>UNDEFINED</>
                         }
+                        console.log(assessmentTask);
                         return <>{assessmentTask.team_id ? "Team" : "Individual"}</>;
                     }
                 }
@@ -120,6 +121,7 @@ class ViewCompletedAssessmentTasks extends Component {
                                     "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
                                 }),
                               );
+                              //console.warn("issue on swap");
                               this.props.navbar.setAssessmentTaskInstructions(
                                   assessmentTasks,
                                   atId,

@@ -210,7 +210,6 @@ class CompleteAssessmentTask extends Component {
                 
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
-
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
@@ -293,17 +292,12 @@ class CompleteAssessmentTask extends Component {
 
         const unitList = this.state.unitList;
 
-        console.assert(unitList !== null, `unitlist!== null instead got: ${unitList}`);
-        console.assert(unitList?.length === 0, "should be some type of unit here");
-
         if (!unitList) {
             return (
                 <Loading />
             );
         }
-
-/*         console.warn("++++++++++++++++++ENTERING FORM.JS++++++++++++++++++++");
- */
+        
         return (
             <Box>
                 <Box className="assessment-title-spacing">
