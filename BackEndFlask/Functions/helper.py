@@ -101,8 +101,6 @@ def helper_create_user(
         consent=None,
     ):
 
-    owner = get_user(owner_id)
-
     return create_user({
         "first_name": fname,
         "last_name":  lname,
@@ -111,4 +109,4 @@ def helper_create_user(
         "lms_id":     lms_id,
         "owner_id":   owner_id,
         "consent":    consent
-    }, owner_email=owner.email)
+    })
