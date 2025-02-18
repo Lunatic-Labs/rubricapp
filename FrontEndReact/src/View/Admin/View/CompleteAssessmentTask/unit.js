@@ -118,12 +118,13 @@ export function generateUnitList(args) {
 			});
 
 		} else {
-			const classFunc = args.unitType === UnitType.FIXED_TEAM ? createFixedTeamUnit:createAdHocTeamUnit;
+			const isFixed = args.unitType === UnitType.FIXED_TEAM;
 			unitList = args.fixedTeams.map(team => {
 				const teamId = team["team_id"];
 				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
-				
-				return classFunc(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
+				return isFixed ?
+					createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers):
+					createAdHocTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers, args.currentUserId);
 			});
 		} 
 	}
@@ -170,10 +171,11 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 }
 
 function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers, currentUserId) {
-	const teamId = team["team_id"];
+	const teamId = team["team_id"] || team["team_number"];
 	
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
 	const teamMembers = fixedTeamMembers[teamId];
+
 
 	return new AdHocTeamUnit(
 		cat ?? null, rocsData, isDone,
@@ -475,7 +477,7 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 		this.team = team;
 		this.teamMembers = teamMembers;
 		this.currentUserId = currentUserId;
-	}	
+	}
 
 	// This is used for the post and puts for CATS. Notice that we bind to a user as opposed to a team that is changing.
 	getSubmitQueryParam() {
@@ -487,6 +489,22 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 			this.completedAssessmentTask, this.rocsData, this.isDone,
 			this.team, this.teamMembers, this.currentUserId,
 		);
+	}
+
+	getCheckedInTooltip(checkinsTracker) {
+		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
+		
+		const checkedInMembers = teamMembersArray.filter(user => {
+			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
+			
+			return checkin && checkin["team_number"] === this.teamId;
+		});
+		
+		if (checkedInMembers.length !== 0) {
+			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
+		} else {
+			return [ <Box key={0}>No Team Members Checked In</Box> ];
+		}
 	}
 
 	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {

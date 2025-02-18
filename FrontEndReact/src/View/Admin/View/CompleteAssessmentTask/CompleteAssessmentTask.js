@@ -155,7 +155,7 @@ class CompleteAssessmentTask extends Component {
         ).then(response => {
             if(adHocMode){
                 this.setState({
-                    teamsUsers: response.users,// modify? hot fix to get it working
+                    teamsUsers: response.users,
                 })
             }
         });
