@@ -9,18 +9,8 @@ import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utilit
 
 class ViewCompletedAssessmentTasks extends Component {
     render() {
-        // var navbar = this.props.navbar;
-
         var completedAssessments = this.props.completedAssessments;
         var assessmentTasks = this.props.assessmentTasks;
-
-        // This is too consuming. Fix is reworking this so 
-        // that when the network request comes back all this work is already done.
-        // as it stands this work is done repeadtly and there seems to be unneeded requests.
-        //const unitList = generateUnitList({
-        //    roleName
-        //})
-        
 
         const columns = [
             {
@@ -72,11 +62,10 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
-                        const assessmentTask = completedAssessments.find(at => at.assessment_task_id === atId);
+                        const assessmentTask = completedAssessments.find(cat => cat.assessment_task_id === atId);
                         if (assessmentTask === undefined) {
                             return <>UNDEFINED</>
                         }
-                        console.log(assessmentTask);
                         return <>{assessmentTask.team_id ? "Team" : "Individual"}</>;
                     }
                 }
@@ -121,7 +110,6 @@ class ViewCompletedAssessmentTasks extends Component {
                                     "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
                                 }),
                               );
-                              //console.warn("issue on swap");
                               this.props.navbar.setAssessmentTaskInstructions(
                                   assessmentTasks,
                                   atId,

@@ -73,7 +73,6 @@ class ViewAssessmentTasks extends Component {
         }
 
         var assessmentTasks = this.props.assessmentTasks;
-        // var completedAssessmentTasks = this.props.completedAssessments; // why is this needed
 
         const columns = [
             {
