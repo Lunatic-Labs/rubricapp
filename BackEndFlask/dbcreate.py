@@ -15,6 +15,7 @@ from models.assessment_task import *
 from models.completed_assessment import * 
 from controller.security.blacklist import start_redis
 from models.feedback import *
+from sqlalchemy import text
 import time
 import os
 import sys
@@ -26,6 +27,19 @@ time.sleep(sleep_time)
 
 with app.app_context():
     print("[dbcreate] attempting to create new db...")
+    print("[dbcreate] attempting to drop all tables if populated...")
+    if len(sys.argv) > 1 and sys.argv[1] == "reset_db":
+        try:
+            # Drop all tables
+            db.session.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
+            db.reflect()
+            db.drop_all()
+            db.session.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
+            db.session.commit()
+            print("[dbcreate] successfully dropped all tables")
+        except Exception as e:
+            print(f"[dbcreate] an error ({e}) occurred while dropping all tables")
+            print("[dbcreate] exiting...")
     time.sleep(sleep_time)
     try:
         db.create_all()
@@ -35,9 +49,21 @@ with app.app_context():
     except Exception as e:
         print(f"[dbcreate] an error ({e}) occured with db.create_all()")
         print("[dbcreate] exiting...")
-        os.abort()
+        raise e
     print("[dbcreate] successfully created new db")
     time.sleep(sleep_time)
+    if (get_roles().__len__() == 0):
+        print("[dbcreate] attempting to load existing roles...")
+        time.sleep(sleep_time)
+        load_existing_roles()
+        print("[dbcreate] successfully loaded existing roles")
+        time.sleep(sleep_time)
+    if(get_users().__len__()==0):
+        print("[dbcreate] attempting to load SuperAdminUser...")
+        time.sleep(sleep_time)
+        load_SuperAdminUser()
+        print("[dbcreate] successfully loaded SuperAdminUser")
+        time.sleep(sleep_time)
     if(get_rubrics().__len__()==0):
         print("[dbcreate] attempting to load existing rubrics...")
         time.sleep(sleep_time)
@@ -61,18 +87,6 @@ with app.app_context():
         time.sleep(sleep_time)
         load_existing_suggestions()
         print("[dbcreate] successfully loaded existing suggestions")
-    if(get_roles().__len__()==0):
-        print("[dbcreate] attempting to load existing roles...")
-        time.sleep(sleep_time)
-        load_existing_roles()
-        print("[dbcreate] successfully loaded existing roles")
-        time.sleep(sleep_time)
-    if(get_users().__len__()==0):
-        print("[dbcreate] attempting to load SuperAdminUser...")
-        time.sleep(sleep_time)
-        load_SuperAdminUser()
-        print("[dbcreate] successfully loaded SuperAdminUser")
-        time.sleep(sleep_time)
     if len(sys.argv) == 2 and sys.argv[1]=="demo":
         if(get_users().__len__()==1):
             print("[dbcreate] attempting to load demo Admin...")
@@ -130,17 +144,17 @@ with app.app_context():
             load_demo_admin_assessment_task()
             print("[dbcreate] successfully loaded demo AssessmentTask")
             time.sleep(sleep_time)
-        if(get_feedback().__len__()==0):
-            print("[dbcreate] attempting to load demo Feedback...")
-            time.sleep(sleep_time)
-            load_demo_feedback()
-            print("[dbcreate] successfully loaded demo Feedback")
-            time.sleep(sleep_time)
         if (get_completed_assessments().__len__() == 0):
             print("[dbcreate] attempting to load demo completed assessments...")
             time.sleep(sleep_time)
             load_demo_completed_assessment()
             print("[dbcreate] successfully loaded demo completed assessments")
+            time.sleep(sleep_time)
+        if(get_feedback().__len__()==0):
+            print("[dbcreate] attempting to load demo Feedback...")
+            time.sleep(sleep_time)
+            load_demo_feedback()
+            print("[dbcreate] successfully loaded demo Feedback")
             time.sleep(sleep_time)
 
     print("[dbcreate] exiting...")

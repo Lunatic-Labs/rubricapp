@@ -4,218 +4,150 @@ import '../../../../SBStyles.css';
 import Section from './Section.js';
 import { Box, Tab, Button } from '@mui/material';
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
-import RefreshIcon from '@mui/icons-material/Refresh';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
-import StatusIndicator from './StatusIndicator.js';
-import { genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import StatusIndicator, { StatusIndicatorState } from './StatusIndicator.js';
+import { genericResourcePOST, genericResourcePUT, debounce } from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
+import { getUnitCategoryStatus } from './cat_utils.js';
+import FormGroup from '@mui/material/FormGroup';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Switch from '@mui/material/Switch'
 
 
+/**
+ * Creates an instance of the Form component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @param {boolean} props.usingTeams - Boolean indicating whether teams are being used for this form.
+ * @param {Array<ATUnit>} props.units - Array of `ATUnit` class objects.
+ * @param {Object} props.assessmentTaskRubric - The rubric for the assessment task.
+ * @param {Object} props.navbar - The navbar object.
+ * @property {int|null} props.jumpId - Id of what team or user to veiw first.
+ *  
+ * @property {Array<ATUnit>} state.units - Array of `ATUnit` class objects taken from props.units.
+ * @property {number} state.currentUnitTabIndex - Index of the currently selected `ATUnit` from `units`.
+ * @property {Array<Category>} state.categoryList - Array of `Category` objects using the current rubric.
+ * @property {number} state.currentCategoryTabIndex - Index of the currently selected rubric `categoryList`.
+ * @property {Object} state.section - Section object of the category `currentCategoryTabIndex` from `categoryList`.
+ * @property {boolean} state.displaySavedNotification - Boolean indicating whether to display the pop-up window that confirms the assessment is saved.
+ * @property {boolean} state.hideUnits - Boolean indicating if there are tabs that we want to not render.
+ * @property {int} state.consistentValidUnit - Int to what tab I want to jump to when swapping between hidden units.
+ * @property {Set<number>} unitsThatNeedSaving - A set of all the unit indexes that need saving for autosave.
+ */
 class Form extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            value: 0,
-            tabCurrentlySelected: 0,
-            unitOfAssessment: this.props.unitOfAssessment,
-            unitValue: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
-                                                     this.props.form.units[0]["user_id"], 
-            currentUnitTab: this.props.unitOfAssessment ? this.props.form.units[0]["team_id"] : 
-                                                          this.props.form.units[0]["user_id"], 
-            unitData: this.props.form.unitInfo,
+            units: this.props.units,
+            currentUnitTabIndex: 0,
             categoryList: null,
+            currentCategoryTabIndex: 0,
             section: null,
-            displaySavedNotification: false
-        }
-
-        this.handleUnitChange = (event, newValue) => {
-            this.setState({
-                    unitValue: newValue,
-                    value: 0,
-                    tabCurrentlySelected: 0
-                },
-
-                this.generateCategoriesAndSection
-            );
+            displaySavedNotification: false,
+            jumpId: this.props.jumpId,
+            hideUnits: false,
+            consistentValidUnit: 0,
         };
+        
+        this.unitsThatNeedSaving = new Set();
 
-        this.handleUnitTabChange = (id) => {
-            var chosenCompleteAssessmentTask = this.findCompletedAssessmentTask(this.props.navbar.state.chosenAssessmentTask["assessment_task_id"], id, this.props.completedAssessments);
-            this.setState({
-                    currentUnitTab: id,
-                    value: 0,
-                    tabCurrentlySelected: 0,
-                    chosenCompleteAssessmentTask: chosenCompleteAssessmentTask ? chosenCompleteAssessmentTask : null
-                },
-//TODO:  fix in the case that chosenCompleteAssessmentTask is null
-            this.generateCategoriesAndSection
-            );
-            console.log("handleUnitTabChange chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
-
-        };
-
-        this.handleChange = (event, newValue) => {
-            console.log("newValue", newValue)
-            this.setState({
-                    value: newValue,
-                },
-
-                this.generateCategoriesAndSection
-            );
-        };
-
-        this.handleCategoryChange = (id) => {
-            if (this.state.tabCurrentlySelected !== id) {
-                this.setState({
-                        tabCurrentlySelected: id
+        /**
+         * @method handleUnitTabChange - Handles the change of the unit tab.
+         * @param {number} newUnitTabIndex - The new index of the unit tab.
+         */
+        this.handleUnitTabChange = (newUnitTabIndex) => {
+            if (this.state.currentUnitTabIndex !== newUnitTabIndex) {
+                this.setState(
+                    {
+                        currentUnitTabIndex: newUnitTabIndex,
+                        currentCategoryTabIndex: 0,
                     },
-
-                    this.generateCategoriesAndSection
+                    () => {
+                        this.generateCategoriesAndSection();
+                    }
                 );
             }
         };
 
-        this.deepClone = (obj) => {
-            if (Array.isArray(obj)) {
-                return obj.map(item => this.deepClone(item));
-
-            } else if (typeof obj === 'object' && obj !== null) {
-                const cloned = {};
-
-                for (let key in obj) {
-                    if (Object.prototype.hasOwnProperty.call(obj, key)) {
-                        cloned[key] = this.deepClone(obj[key]);
+        /**
+         * @method handleCategoryChange - Handles the change of the category tab.
+         * @param {number} newCategoryTabIndex - The new index of the category tab.
+         */
+        this.handleCategoryChange = (newCategoryTabIndex) => {
+            if (this.state.currentCategoryTabIndex !== newCategoryTabIndex) {
+                this.setState(
+                    {
+                        currentCategoryTabIndex: newCategoryTabIndex,
+                    },
+                    () => {
+                        this.generateCategoriesAndSection();
                     }
-                }
-
-                return cloned;
-
-            } else {
-                return obj;
+                );
             }
-        }
-
-        this.setSliderValue = (unitValue, categoryName, rating) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["rating"] = rating;
-
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
         };
 
-        this.setObservableCharacteristics = (unitValue, categoryName, observableCharacteristics) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["observable_characteristics"] = observableCharacteristics;
-                
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
-        }
-
-        this.setSuggestions = (unitValue, categoryName, suggestions) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["suggestions"] = suggestions;
-
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
-        }
-
-        this.setComments = (unitValue, categoryName, comments) => {
-            if(this.isUnitCompleteAssessmentComplete(unitValue) && !this.props.navbar.props.isAdmin) return;
-
-            this.setState(prevState => {
-                const updatedUnitData = this.deepClone(prevState.unitData);
-
-                updatedUnitData[unitValue][categoryName]["comments"] = comments;
-
-                return { unitData: updatedUnitData };
-            },
-
-            this.generateCategoriesAndSection
-            );
-        }
-
-        this.isCategoryComplete = (unitValue, categoryName) => {
-            var unit = this.state.unitData[unitValue];
-
-            var category = unit[categoryName];
-
-            var observableCharacteristic = category["observable_characteristics"].includes("1");
-
-            const showSuggestions = this.props.navbar.state.chosenAssessmentTask["show_suggestions"];
-            const suggestions = showSuggestions ? category["suggestions"].includes("1") : false;
-
-            let status = null; // null is for not filled out at all (grey empty circle on category tab)
-
-            if (observableCharacteristic && (!showSuggestions || suggestions)) {
-                status = true; // true is for fully filled out (green filled in circle on category tab)
-
-            } else if (observableCharacteristic || suggestions) {
-                status = false; // false is for partially filled out (yellow half filled in circle on category tab)
-            }
-
-            return status;
-        }
-
-        this.isUnitCompleteAssessmentComplete = (unitValue) => {
-
-            return this.state.unitData[unitValue]["done"];
-        }
-
-        this.findCompletedAssessmentTask = (chosenAssessmentTask, currentUnitTab, completedAssessments) => {
-            let foundItem = null;
-
-            completedAssessments.forEach(obj => {
-                if (obj["assessment_task_id"] === chosenAssessmentTask && obj["team_id"] === currentUnitTab) {
-                    foundItem = obj;
-                }
-            });
-
-            return foundItem;
-        }
-
-        this.generateCategoriesAndSection = () => {
-            var rubric = this.props.form.rubric;
-
-            var categoryList = [];
-
-            var section = [];
+        /**
+         * @method modifyUnitCategoryInformation - Modifies a single property of a unit's category information (part of the ROCS data).
+         * @param {number} unitIndex The index of the unit to modify.
+         * @param {string} categoryName The name of the category to modify.
+         * @param {string} propertyName The name of the category property to modify.
+         * @param {any} propertyValue The value to set.
+         */
+        this.modifyUnitCategoryProperty = (unitIndex, categoryName, propertyName, propertyValue) => {
+            if (this.state.units[unitIndex].isDone && !this.props.navbar.props.isAdmin) return;
             
-            // We sort rubric["category_json"] by the index of each entry, since the the data gets
-            // automatically sorted when it comes out of the backend
+            this.setState(
+                prevState => {
+                    const updatedUnits = [...prevState.units];
+                    
+                    updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewRocsData(rocs => {
+                        rocs[categoryName][propertyName] = propertyValue;
+                    });
+                    
+                    return { units: updatedUnits };
+                },
+                () => {
+                    this.generateCategoriesAndSection();
+                }
+            );
+        };
+        
+        /**
+         * @method getUnitCategoryStatus - Gets the status of a unit category.
+         * @param {number} unitId - The ID of the unit.
+         * @param {string} categoryName - The name of the category.
+         * @returns {string} - The status of the unit category.
+         */
+        this.getUnitCategoryStatus = (unitId, categoryName) => {
+            const unit = this.state.units[unitId];
+            const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
+            
+            return getUnitCategoryStatus(unit, assessmentTask, categoryName);
+        }
 
-            Object.entries(rubric["category_json"])
+        /**
+         * @method generateCategoriesAndSection - Generates the categories and section for the current unit and category.
+         */
+        this.generateCategoriesAndSection = () => {
+            const assessmentTaskRubric = this.props.assessmentTaskRubric;
+            const categoryList = [];
+            let section;
+            
+            // We sort assessmentTaskRubric["category_json"] by the index of each entry, since the the data gets
+            // automatically sorted when it comes out of the backend
+            Object.entries(assessmentTaskRubric["category_json"])
                 .toSorted((a, b) => a[1].index - b[1].index)
-                .map(([category, _], index) => {
+                .forEach(([category, _], index) => {
                     categoryList.push(
                         <Tab label={
                             <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
                                 <span>{category}</span>
 
                                 <StatusIndicator
-                                    status={this.isCategoryComplete(this.state.currentUnitTab, category)}
+                                    status={this.getUnitCategoryStatus(this.state.currentUnitTabIndex, category)}
                                 />
                             </Box>
                         }
@@ -227,167 +159,217 @@ class Form extends Component {
                             padding: "",
                             borderRadius: "10px",
                             margin : "0 0px 0 10px",
-                            border: this.state.tabCurrentlySelected === index ? '2px solid #2E8BEF ' : '2px solid gray',
+                            border: this.state.currentCategoryTabIndex === index ? '2px solid #2E8BEF ' : '2px solid gray',
                             '&.Mui-selected': { color: '#2E8BEF ' }
                         }}/>
                     );
 
-                    if(this.state.tabCurrentlySelected === index) {
-                        section.push(
-                            <Section
-                                navbar={this.props.navbar}
-                                isDone={this.isUnitCompleteAssessmentComplete(this.state.unitValue)}
-                                category={category}
-                                rubric={this.props.form.rubric}
-                                unitValue={this.state.unitValue}
-                                currentData={this.state.unitData[this.state.unitValue]}
-                                active={this.state.tabCurrentlySelected===index}
-                                key={index}
-                                setSliderValue={this.setSliderValue}
-                                setObservableCharacteristics={this.setObservableCharacteristics}
-                                setSuggestions={this.setSuggestions}
-                                setRatingObservableCharacteristicsSuggestionsJson={this.setRatingObservableCharacteristicsSuggestionsJson}
-                                setComments={this.setComments}
-                                handleSaveForLater={this.handleSaveForLater}
-                                handleSubmit={this.handleSubmit}
-                                isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
-                            />
-                        );
+                    if (this.state.currentCategoryTabIndex === index) {
+                        section = <Section
+                            navbar={this.props.navbar}
+                            isDone={this.state.units[this.state.currentUnitTabIndex].isDone}
+                            category={category}
+                            assessmentTaskRubric={this.props.assessmentTaskRubric}
+                            currentUnitTabIndex={this.state.currentUnitTabIndex}
+                            currentRocsData={this.state.units[this.state.currentUnitTabIndex].rocsData}
+                            active={this.state.currentCategoryTabIndex === index}
+                            key={index}
+                            
+                            modifyUnitCategoryProperty={this.modifyUnitCategoryProperty}
+                            markForAutosave={this.markForAutosave}
+                        />;
                     }
-
-                    return index;
             });
 
             this.setState({
                 categoryList: categoryList,
-                section: section
+                section: section, 
             });
         }
         
+        /**
+         * @method areAllCategoriesCompleted - Checks if all categories are completed for the current unit.
+         * @returns {boolean} - True if all categories are completed, false otherwise.
+         */
         this.areAllCategoriesCompleted = () => {
-            const categories = Object.keys(this.props.form.rubric["category_json"]);
+            const currentUnit = this.state.units[this.state.currentUnitTabIndex];
             
-            return categories.every(category => this.isCategoryComplete(this.state.currentUnitTab, category));
-        };
-    }
-
-    handleSubmit = (done) => {
-        var navbar = this.props.navbar;
-
-        var state = navbar.state;
-console.log("state", state)
-        var chosenAssessmentTask = state.chosenAssessmentTask;
-
-        var chosenCompleteAssessmentTask = state.chosenCompleteAssessmentTask;
-
-        var currentUnitTab = this.state.currentUnitTab;
-
-        var selected = this.state.unitData[currentUnitTab];
-
-        var date = new Date();
-console.log("before the if chosenCompleteAssessmentTask", chosenCompleteAssessmentTask)
-        if(chosenCompleteAssessmentTask) {
-            chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"] = selected;
-
-            chosenCompleteAssessmentTask["last_update"] = date;
-
-            chosenCompleteAssessmentTask["done"] = done;
-console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentTask)
-            genericResourcePUT(
-                `/completed_assessment?completed_assessment_id=${chosenCompleteAssessmentTask["completed_assessment_id"]}`,
-                this,
-                JSON.stringify(chosenCompleteAssessmentTask)
-            );
-
-        } else {
-            var cookies = new Cookies();
-            var route="";
-            if(chosenCompleteAssessmentTask && this.props.userRole) {
-                var completedAssessment = this.findCompletedAssessmentTask(chosenAssessmentTask["assessment_task_id"], currentUnitTab, this.props.completedAssessments);
-
-                var completedAssessmentId = `?completed_assessment_id=${completedAssessment["completed_assessment_id"]}`;
-                
-                route = `/completed_assessment${completedAssessmentId}`
-            } else {
-                if (this.state.unitOfAssessment) {
-                    route = `/completed_assessment?team_id=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
-                } else {
-                    route = `/completed_assessment?uid=${currentUnitTab}&assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`;
-                }
-            }
-            var assessmentData = {};
-            if (this.state.unitOfAssessment) { 
-                assessmentData = {
-                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selected,
-                    "completed_by": cookies.get("user")["user_id"],
-                    "team_id": currentUnitTab,
-                    "user_id": -1,        // team assessment has no user.
-                    "initial_time": date,
-                    "last_update": date,
-                    done: done,
-                };
-            } else { 
-                assessmentData = {
-                    "assessment_task_id": chosenAssessmentTask["assessment_task_id"],
-                    "rating_observable_characteristics_suggestions_data": selected,
-                    "completed_by": cookies.get("user")["user_id"],
-                    "team_id": -1,          // individual assessment has no team.
-                    "user_id": currentUnitTab,
-                    "initial_time": date,
-                    "last_update": date,
-                    done: done,
-                };
-            }  
- console.log("chosenCompleteAssessmentTask", chosenCompleteAssessmentTask, "userRole", this.props.userRole)
-            if (chosenCompleteAssessmentTask && this.props.userRole) {
-                console.log("PUT")
-                genericResourcePUT(route, this, JSON.stringify(assessmentData));
-
-            } else {
-                console.log("POST")
-                genericResourcePOST(route, this, JSON.stringify(assessmentData));
-            }
-        }
-
-        this.setState({
-            displaySavedNotification: true
-        });
-
-        setTimeout(() => {
-            this.props.handleDone();
-        }, 1000);
-
-        setTimeout(() => {
-            this.setState({
-                displaySavedNotification: false
+            return currentUnit.categoryNames().every(category => {
+                return this.getUnitCategoryStatus(this.state.currentUnitTabIndex, category) === StatusIndicatorState.COMPLETED;
             });
-        }, 3000);
+        };
+        
+        /**
+         * 
+         * @method saveUnit - Saves a unit to the server.
+         * @param {number} unitIndex - The index of the unit to save.
+         * @param {boolean} markDone - If the unit should be marked as done or retain the current done status.
+         */
+        this.saveUnit = (unitIndex, markDone) => {
+            const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
+            const unit = this.state.units[unitIndex];
+            
+            const cookies = new Cookies();
+            const currentUserId = cookies.get("user")["user_id"];
+            const currentDate = new Date();
+            
+            // If markDone then mark the unit as done, otherwise use the original done status.
+            const newIsDone = markDone ? true : unit.isDone;
+            
+            const newUnit = unit.withNewIsDone(newIsDone);
+            const newCAT = newUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate);
+            
+            let promise;
+            
+            if (unit.completedAssessmentTask) {
+                const catId = unit.completedAssessmentTask["completed_assessment_id"];
+                
+                promise = genericResourcePUT(
+                    `/completed_assessment?completed_assessment_id=${catId}`,
+                    this,
+                    JSON.stringify(newCAT),
+                    { rawResponse: true }
+                );
+            } else {
+                promise = genericResourcePOST(
+                    `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
+                    this,
+                    JSON.stringify(newCAT),
+                    { rawResponse: true }
+                );
+            }
+            
+            // Replace the selected unit with updated unit and display saving notification
+            this.setState(
+                prevState => {
+                    const updatedUnits = [...prevState.units];
+                    
+                    updatedUnits[unitIndex] = newUnit;
+    
+                    return { 
+                        displaySavedNotification: true,
+                        units: updatedUnits,
+                    };
+                }
+            );
+            
+            // Once the CAT entry has been updated, insert the new CAT entry into the unit object
+            promise.then(result => {
+                const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
+
+                if (completeAssessmentEntry) {
+                    this.setState(
+                        prevState => {
+                            const updatedUnits = [...prevState.units];
+
+                            updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewCAT(completeAssessmentEntry);
+
+                            return { units: updatedUnits };
+                        }
+                    );
+                }
+            });
+            
+            setTimeout(() => {
+                this.setState({
+                    displaySavedNotification: false
+                });
+            }, 3000);
+        };
+        
+        /**
+         * @method markForAutosave - Marks a unit to be autosaving soon.
+         * @param {number} unitIndex - The index of the unit.
+         */
+        this.markForAutosave = (unitIndex) => {
+            this.unitsThatNeedSaving.add(unitIndex);
+            
+            this.doAutosave();
+        }
+        
+        /**
+         * @method doAutosave - Performs an autosave.
+         */
+        this.doAutosave = debounce(() => {
+            this.unitsThatNeedSaving.forEach(unitIndex => {
+                this.saveUnit(unitIndex, false);
+            });
+            
+            this.unitsThatNeedSaving.clear();
+        }, 2000);
+
+        /**
+        * @method hideTabs - Handles setting the properties needed for hiding tabs.
+        */
+        this.hideTabs = (event) => {
+            this.setState({
+                hideUnits: event.target.checked
+            })
+            if(event.target.checked && this.state.consistentValidUnit !== null){
+                this.handleUnitTabChange(this.state.consistentValidUnit);
+            }
+        };
+
+        /**
+        * @method ensureHiddenTabNotActive - Finds a tab that will not be hidden. 
+        *                                       If none, defaults to null.
+        */
+        this.findPersistantTab = () => {
+            const cookies = new Cookies();
+            const currentUserId = cookies.get("user")["user_id"];
+
+            for(let index = 0; index < this.state.units.length; ++index){
+                let currentUnit = this.state.units[index];
+                if (currentUnit["team"]["observer_id"] === currentUserId){
+                    return index;
+                }
+
+            }
+            return null;
+        };
+
+        /**
+        * @method shouldTabsCategoriesRender - Prevents rendering tabs if TA view has all tabs hidden.
+        * 
+        * @param {object} - What is supposed to be rendered.
+        */
+        this.shouldTabsCategoriesRender = (renderObject) => {
+            const {hideUnits, consistentValidUnit} = this.state;
+            const tabToDefualtTo = consistentValidUnit !== null;
+            // {hideUnits} holds precedence.
+            return (
+                ( (hideUnits && tabToDefualtTo) || (!hideUnits) )
+                && renderObject 
+            );
+        };
     };
 
     componentDidMount() {
-        this.generateCategoriesAndSection();
-    }
-
-    componentDidUpdate() {
-        var rerender = false;
-
-        Object.keys(this.props.form.unitInfo).map((unitValue) => {
-            if(this.props.form.unitInfo[unitValue]["done"] !== this.state.unitData[unitValue]["done"]) {
-                rerender = true;
+        const {usingTeams, jumpId} = this.props;
+        const entity = usingTeams ? 'team': 'user';
+        const entityId = usingTeams ? 'team_id': 'user_id';
+        if(jumpId !== null){
+            for (let index = 0; index < this.state.units.length; index++){
+                const unit = this.state.units[index];
+                if(unit[entity][entityId] === jumpId){
+                    this.setState({
+                        currentUnitTabIndex : index,
+                    }, () => {
+                        this.generateCategoriesAndSection();
+                    });
+                    break;
+                }
             }
-
-            return unitValue;
-        });
-
-        if(rerender) {
-            this.setState(
-                { unitData: this.props.form.unitInfo },
-                this.generateCategoriesAndSection
-            );
+        }else{
+            this.generateCategoriesAndSection();
+        };
+        if(this.props.usingTeams){
+            this.setState({
+                consistentValidUnit: this.findPersistantTab(),
+            });
         }
     }
-
+    
     render() {
         return (
             <Box sx={{mt:1}} id="formDiv" className="assessment-task-spacing">
@@ -395,66 +377,80 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
                     display:"flex",
                     justifyContent:"end",
                     gap:"20px",
-                    height: "1.5rem"
+                    height: "1.5rem",
                 }}>
                     { this.state.displaySavedNotification &&
-                        <Alert severity={"success"} sx={{ height: "fit-content"}}>Assessment Saved!</Alert>
+                        <Alert severity={"success"} sx={{ height: "fit-content" }}>Assessment Saved!</Alert>
                     }
 
-                     <Button
-                        variant="text"
-                        color="primary"
-                        startIcon={<RefreshIcon />}
-                        arialabel="refreshButton"
+                    
+                    { this.props.usingTeams && this.props.roleName === "TA/Instructor" &&
+                        <FormGroup sx={{ marginTop: "-0.50rem" }}>
+                            <FormControlLabel 
+                                control={
+                                    <Switch 
+                                        checked={this.state.hideUnits}
+                                        onChange={(event) => this.hideTabs(event)}
+                                        sx={{
+                                            '& .MuiSwitch-track': {
+                                                width: '2.6rem',
+                                                height: '1.2rem', 
+                                                borderRadius: '0.6rem', 
+                                            },
+                                            '& .MuiSwitch-thumb': {
+                                                width: '1rem',
+                                                height: '1rem',
+                                                margin: '0.1rem',
+                                            },
+                                            '& .MuiSwitch-switchBase': {
+                                                 top: '0.17rem',
+                                            },
+                                        }}  
+                                    />
+                                } 
+                                label={"MY TEAMS"}
+                            />
+                        </FormGroup>
+                    }
 
-                        onClick={() => {
-                            this.props.refreshUnits();
-                        }}
-                        aria-label="refreshButton"
-                    >
-                        Refresh
-                    </Button>
+                    { !this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly &&
+                        <Button
+                            id="formSubmitButton"
+                            variant="contained"
+                            color="primary"
+                            aria-label="saveButton"
 
-                    <Button
-                        id="formSubmitButton"
-                        variant="contained"
-                        color="primary"
-                        aria-label="saveButton"
+                            onClick={() => {
+                                this.saveUnit(this.state.currentUnitTabIndex, this.areAllCategoriesCompleted());
+                            }}
 
-                        onClick={() => {
-                            this.handleSubmit(this.areAllCategoriesCompleted());
-                        }}
-
-                        disabled={!this.areAllCategoriesCompleted()}
-                    >
-                        Done
-                    </Button>
+                            disabled={!this.areAllCategoriesCompleted()}
+                        >
+                            Done
+                        </Button>
+                    }
                 </Box>
 
                 <Box>
-                    {this.props.role_name !== "Student" &&
+                    {this.props.roleName !== "Student" &&
                         <Box sx={{pb: 1}} className="content-spacing">
                             <UnitOfAssessmentTab
                                 navbar={this.props.navbar}
-                                currentUnitTab={this.state.currentUnitTab}
-                                unitValue={this.state.unitValue}
-                                unitOfAssessment={this.state.unitOfAssessment}
-                                checkin={this.props.checkin}
-                                form={this.props.form}
-                                handleUnitChange={this.handleUnitChange}
+                                currentUnitTabIndex={this.state.currentUnitTabIndex}
+                                units={this.state.units}
+                                checkins={this.props.checkins}
                                 handleUnitTabChange={this.handleUnitTabChange}
-                                isUnitCompleteAssessmentComplete={this.isUnitCompleteAssessmentComplete}
+                                hideUnits={this.state.hideUnits}
                             />
                         </Box>
                     }
 
                     <Box sx={{mt: 1}}>
                         <Tabs
-                            value={this.state.value} 
+                            value={this.state.currentCategoryTabIndex} 
                         
-                            onChange={(event, newValue) => {
-                                this.handleChange(event, newValue);
-                                this.handleCategoryChange(newValue);
+                            onChange={(event, newCategoryTabIndex) => {
+                                this.handleCategoryChange(newCategoryTabIndex);
                             }}
 
                             variant="scrollable"
@@ -470,15 +466,23 @@ console.log("chosenCompleteAssessmentTask", this.state.chosenCompleteAssessmentT
 
                                 [`& .MuiTabs-indicator`]: { 
                                     display: 'none' 
-                                }
+                                },
+
+                                '& .MuiTab-root': {
+                                    border: '2px solid',
+                                    '&.Mui-selected': {
+                                        backgroundColor: '#D9D9D9',
+                                        color: 'inherit',
+                                    }
+                                },
                             }}
                         >
-                            {this.state.categoryList}
+                            {this.shouldTabsCategoriesRender(this.state.categoryList)}
                         </Tabs>
                     </Box>
                 </Box>
 
-                {this.state.section}
+                {this.shouldTabsCategoriesRender(this.state.section)}
             </Box>
         )
     }

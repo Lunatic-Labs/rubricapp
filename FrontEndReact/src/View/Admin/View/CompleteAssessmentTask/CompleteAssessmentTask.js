@@ -1,14 +1,46 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
-import { genericResourceGET } from '../../../../utility.js';
+import { genericResourceGET, createEventSource } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
 import Loading from '../../../Loading/Loading.js';
+import { generateUnitList, UnitType } from './unit.js';
+import { CheckinsTracker } from './cat_utils.js';
 
 
 
+/**
+ * CompleteAssessmentTask component is responsible for rendering and managing the state of the complete assessment task view.
+ * It fetches necessary resources and handles the logic for displaying the assessment task details, including rubrics, teams, users, and completed assessments.
+ * 
+ * @param {Object} props - The properties passed to the component.
+ * @param {Object} props.navbar - The navbar object containing the state of the chosen course and assessment task.
+ * 
+ * @property {Object} state - The state of the component.
+ * 
+ * Set by GenericResourceFetch API:
+ * @property {string|null} state.errorMessage - The error message if any error occurs during resource fetching.
+ * @property {boolean} state.isLoaded - Indicates whether the resources have been loaded.
+ * 
+ * Resources fetched in componentDidMount:
+ * @property {Object|null} state.assessmentTaskRubric - The rubric of the assessment task.
+ * @property {Array|null} state.teams - The list of teams.
+ * @property {Object|null} state.userFixedTeam - The fixed team of the current user.
+ * @property {Array|null} state.users - The list of users.
+ * @property {Array|null} state.teamsUsers - The list of users in teams.
+ * @property {Object|null} state.currentUserRole - The role of the current user.
+ * @property {Array|null} state.completedAssessments - The list of completed assessments.
+ * 
+ * Additional state properties:
+ * @property {string|null} state.currentUserId - The ID of the current user.
+ * @property {boolean} state.usingTeams - Indicates whether the assessment task is using teams.
+ * @property {Object|null} state.checkins - The CheckinsTracker object.
+ * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
+ * @property {Array|null} state.unitList - The list of units for the assessment task.
+ * @property {int|null} state.jumpId - What team or student to open first.
+ */
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -16,147 +48,62 @@ class CompleteAssessmentTask extends Component {
         this.state = {
             errorMessage: null,
             isLoaded: false,
-            rubrics: null,
+            
+            assessmentTaskRubric: null,
             teams: null,
+            userFixedTeam: null,
             users: null,
-            teams_users: null,
-            unitOfAssessment: this.props.navbar.state.unitOfAssessment,
-            roles: null,
+            teamsUsers: null,
+            currentUserRole: null,
             completedAssessments: null,
-            checkin: null,
-            userId: null
-        }
-            this.doRubricsForCompletedMatch = (newCompleted, storedCompleted) => {
-            var newCompletedCategories = Object.keys(newCompleted).sort();
-
-            var storedCompletedCategories = Object.keys(storedCompleted).sort();
-
-            if (newCompletedCategories.length !== storedCompletedCategories.length) {
-                return false;
-            }
-
-            for (var index = 0; index < newCompletedCategories.length; index++) {
-                if (newCompletedCategories[index] !== storedCompletedCategories[index]) {
-                    return false;
-                }
-            }
-
-            return true;
-        }
-
-        this.getCompleteTeam = (teamId) => {
-            var completedTeam = this.state.completedAssessments.find(completedAssessment => completedAssessment["team_id"] === teamId);
             
-            return completedTeam ? completedTeam : false;
-        }
+            currentUserId: null,
+            usingTeams: this.props.navbar.state.unitOfAssessment,
+            checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
+                                                             // The loop happens due to server caching as per testing.
+            checkinEventSource: null,
+            unitList: null,
 
-        this.getCompleteIndividual = (userId) => {
-            var completedAssessment = this.state.completedAssessments.find(completedAssessment => completedAssessment["user_id"] === userId);
-
-            return completedAssessment ? completedAssessment : false;
-        }
-
-        this.handleDone = () => {
-            var navbar = this.props.navbar;
-            let chosenAssessmentTask;
-            
-            if (navbar.state.chosenCompleteAssessmentTask !== null) {   
-                chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-            } else {
-                chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-            }
-            
-            genericResourceGET(
-                `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-                "completedAssessments", this
-            );
-        }
-
-        this.refreshUnits = () => {
-            var navbar = this.props.navbar;
-
-            var chosenAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-
-            genericResourceGET(
-                `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-                 "checkin", this
-            );
-        }
-    }
-
-    componentDidUpdate() {
-        var navbar = this.props.navbar;
-
-        var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
-
-        var unitOfAssessment = chosenAssessmentTask["unit_of_assessment"];
-
-        if (unitOfAssessment && this.state.rubrics && this.state.teams && this.state.users === null) {
-            // The Chosen Assessment will be completed for teams!
-            // Thus do the logic to get all of the students on those teams!
-            var teamIds = [];
-
-            for (var index = 0; index < this.state.teams.length; index++) {
-                teamIds = [...teamIds, this.state.teams[index]["team_id"]];
-
-                genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
-                    "users", this
-                );
-            }
-
-            if (this.state.teams.length === 0)
-                this.setState({
-                    "users": []
-                });
-        }
+            jumpId: this.props.navbar.state.jumpToSection // The desired jump location.
+        };
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-
-        var state = navbar.state;
-
-        var chosenAssessmentTask = state.chosenAssessmentTask;
-
-        var chosenCourse = state.chosenCourse;
-    
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const chosenCourse = state.chosenCourse;
         const cookies = new Cookies();
 
-        this.userId = cookies.get('user')["user_id"];
+        this.currentUserId = cookies.get("user")["user_id"];
 
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
-            "rubrics", this
+            "rubrics", this, { dest: "assessmentTaskRubric" }
         );
 
         genericResourceGET(
-            `/role?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
-            "roles", this
+            `/role?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+            "roles", this, { dest: "currentUserRole" }
         );
 
-        if (chosenAssessmentTask["role_id"] === 5) {
+        if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
             genericResourceGET(
-                `/team_by_user?user_id=${this.userId}&course_id=${chosenCourse["course_id"]}`,
-                "team", this
+                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+                "teams", this, { dest: "userFixedTeam" }
             );
         }
-
-        genericResourceGET( 
-            `/checkin?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-             "checkin", this
-        );
 
         genericResourceGET(
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
         ).then((result) => {
-            if (this.state.unitOfAssessment && result.teams && result.teams.length > 0) {
-                var teamIds = result.teams.map(team => team.team_id);
+            if (this.state.usingTeams && result.teams && result.teams.length > 0) {
+                const teamIds = result.teams.map(team => team.team_id);
 
                 genericResourceGET(
                     `/user?team_ids=${teamIds}`,
-                    "teams_users", this
+                    "teams_users", this, { dest: "teamsUsers" }
                 );
             }
         });
@@ -167,30 +114,108 @@ class CompleteAssessmentTask extends Component {
         );
 
         genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.unitOfAssessment ? "team" : "individual"}`,
-            "completedAssessments", this
+            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
+            "completed_assessments", this, { dest: "completedAssessments" }
         );
+        
+        const checkinEventSource = createEventSource(
+            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            ({data}) => {
+                this.setState({
+                    checkins: new CheckinsTracker(JSON.parse(data)),
+                });
+            }
+        );
+        
+        this.setState({
+            checkinEventSource: checkinEventSource,
+        });
+    }
+    
+    componentWillUnmount() {
+        this.state.checkinEventSource?.close();
+    }
+    
+    componentDidUpdate() {
+        if (this.state.unitList === null) {
+            const {
+                assessmentTaskRubric,
+                teams,
+                userFixedTeam,
+                users,
+                teamsUsers,
+                currentUserRole,
+                completedAssessments,
+                checkins
+            } = this.state;
+            
+            if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
+                const navbar = this.props.navbar;
+                const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
+                const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+                const roleName = currentUserRole["role_name"];
 
+                if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
+                if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                if (this.state.usingTeams && !teamsUsers) return;
+                
+                const userSort = [...users].sort((firstUser,secondUser) => {
+                    const firstLastName = firstUser.last_name.toLowerCase();
+                    const secondLastName = secondUser.last_name.toLowerCase();
+                    if(firstLastName < secondLastName) return -1;
+                    if(firstLastName > secondLastName) return 1;
+                    return 0;
+                });
+
+                const teamSort = [...teams].sort((firstTeam, secondTeam) => {
+                    const firstTeamName = firstTeam.team_name.toLowerCase();
+                    const secondTeamName = secondTeam.team_name.toLowerCase();
+                    if(firstTeamName < secondTeamName) return -1;
+                    if(firstTeamName > secondTeamName) return 1;
+                    return 0;
+                });
+
+                const unitList = generateUnitList({
+                    roleName: roleName,
+                    currentUserId: this.currentUserId,
+                    chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
+                    unitType: this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    assessmentTaskRubric: assessmentTaskRubric,
+                    completedAssessments,
+                    users: userSort,
+                    fixedTeams: teamSort,
+                    fixedTeamMembers: teamsUsers,
+                    // userFixedTeam is actually a list of a single team,
+                    //   so index to get the first entry of the list.
+                    userFixedTeam: userFixedTeam?.[0],
+                });
+                
+                this.setState({
+                    unitList,
+                });
+            }
+        }
     }
 
     render() {
         const {
             errorMessage,
             isLoaded,
-            rubrics,
+
+            assessmentTaskRubric,
             teams,
-            team,
-            unitOfAssessment,
+            userFixedTeam,
             users,
-            teams_users,
-            roles,
+            teamsUsers,
+            currentUserRole,
             completedAssessments,
-            checkin
+            checkins,
         } = this.state;
 
-        var navbar = this.props.navbar;
-
-        var chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+        const navbar = this.props.navbar;
+        const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
+        const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
 
         if (errorMessage) {
             return (
@@ -200,158 +225,66 @@ class CompleteAssessmentTask extends Component {
                 />
             );
 
-        } else if (!isLoaded || !rubrics || !completedAssessments || !roles || !users || !teams || !checkin) {
+        } else if (!isLoaded || !assessmentTaskRubric || !completedAssessments || !currentUserRole || !users || !teams || !checkins) {
             return (
                 <Loading />
             );
 
-        } else if (chosenAssessmentTask["unit_of_assessment"] && teams.length === 0) {
+        } else if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) {
             return (
-                <h1>Please create a team to complete this assessment for.</h1>
-            )
+                <h1>Please create a team to complete this assessment.</h1>
+            );
 
         } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
-                <h1>Please add students to the roster to complete this assessment for.</h1>
-            )
+                <h1>Please add students to the roster to complete this assessment.</h1>
+            );
 
-        } 
-        var role_name=roles["role_name"]
-        if (role_name !== "Student" && this.state.unitOfAssessment && !teams_users) {
+        }
+
+        const roleName = currentUserRole["role_name"];
+
+        if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
             return (
                 <Loading />
-            );  
-        } else {
-            var chosenCompleteAssessmentTask = navbar.state.chosenCompleteAssessmentTask;
-            var json = rubrics["category_rating_observable_characteristics_suggestions_json"];
-
-            json["done"] = false;
-
-            json["comments"] = "";
-
-            if (role_name === "Student") {  
-                // If the user is a student, this prepares assessments for the student or their team
-                var singleUnitData = {};
-
-                var singleTeam = [];
-    
-                var singleUser = [];
-
-                var data = json;
-                // There is an existing assessment for this student
-                if (chosenCompleteAssessmentTask && Object.keys(chosenCompleteAssessmentTask).length > 0) {
-                    // chosenCompleteAssessmentTask = chosenCompleteAssessmentTask[0];
-                    data = chosenCompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
-    
-                    if (data && this.doRubricsForCompletedMatch(json, data)) {
-                        data["done"] = chosenCompleteAssessmentTask["done"];
-                    } 
-  
-                    if (this.state.unitOfAssessment)  { 
-
-                        var teamId = chosenCompleteAssessmentTask["team_id"];
-                        singleUnitData[teamId] = data; 
-                        singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);
-                    } else {
-                        var CATuserId = chosenCompleteAssessmentTask["user_id"];
-                        singleUnitData[CATuserId] = data;  
-                        singleUser.push(users.filter(user => user["user_id"] === CATuserId)[0]);
-                    } 
-                } else {
-                    // new student assessment
-                    if (this.state.unitOfAssessment)  { 
-                        const teamId = team[0]["team_id"];
-                        singleUnitData[teamId] = data;
-                        singleTeam.push(teams.filter(team => team["team_id"] === teamId)[0]);   
-                    }  else {
-                        singleUnitData[this.userId] = data; 
-                        singleUser.push(users.filter(user => user["user_id"] === this.userId)[0]);
-                    }
-                }
-            } else {
-                // If the user is a TA or Admin, this returns assessments completed by the TA
-                var initialUnitData = {};
-                if (this.state.unitOfAssessment) { 
-
-                    Object.keys(teams).forEach((teamId) => {
-                        var t_id = teams[teamId].team_id;
-                        var complete = this.getCompleteTeam(t_id);
-                        if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
-                                                this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                            complete["rating_observable_characteristics_suggestions_data"]["done"] = complete["done"];
-
-                            initialUnitData[t_id] = complete["rating_observable_characteristics_suggestions_data"];
-
-                        } else {
-                            initialUnitData[t_id] = json;
-                        }
-                        //return initialUnitData;
-                    });
-                } else {
-                    if (users === null || users.length === 0) {
-                        return (
-                            <ErrorMessage
-                                fetchedResource={"Student users for this course"}
-                                errorMessage={"No users found for this course."}
-                            />
-                        );
-                    } else {
-                        users.forEach((user) => {
-                
-                            var complete = this.getCompleteIndividual(user["user_id"]);
-                            if (complete !== false && complete["rating_observable_characteristics_suggestions_data"] !== null && 
-                                                    this.doRubricsForCompletedMatch(json, complete["rating_observable_characteristics_suggestions_data"])) {
-                                complete["rating_observable_characteristics_suggestions_data"]["done"] = this.props.userRole ? false : complete["done"];
-
-                                initialUnitData[user["user_id"]] = complete["rating_observable_characteristics_suggestions_data"];
-
-                            } else {
-                                initialUnitData[user["user_id"]] = json;
-                            }
-                            //return initialUnitData;
-                        });
-                    }
-                }
-            }            
-
-            return (
-                <Box>
-                    <Box className="assessment-title-spacing">
-                        <Box className='d-flex flex-column justify-content-start'>
-                            <h4>{rubrics["rubric_name"]}</h4>
-
-                            <h5>{rubrics["rubric_description"]}</h5>
-                        </Box>
-                    </Box>
-
-                    <Form
-                        navbar={this.props.navbar}
-
-                        unitOfAssessment={this.state.unitOfAssessment}
-
-                        role_name={this.state.roles["role_name"]}
-
-                        checkin={this.state.checkin}
-
-                        form={{
-                            "rubric": rubrics,
-                            "units": (unitOfAssessment ? (role_name === "Student" ? singleTeam : teams) : 
-                                                         (role_name === "Student" ? singleUser : users)),
-                            "teams_users": teams_users,
-                            "unitInfo": role_name === "Student" ? singleUnitData : initialUnitData,
-                        }}
-
-                        formReference={this}
-
-                        handleDone={this.handleDone}
-
-                        refreshUnits={this.refreshUnits}
-
-                        completedAssessments={completedAssessments}
-                    />
-                </Box>
-            )
+            );
         }
+
+        if (roleName !== "Student" && this.state.usingTeams && !teamsUsers) {
+            return (
+                <Loading />
+            );
+        }
+
+        const unitList = this.state.unitList;
+
+        if (!unitList) {
+            return (
+                <Loading />
+            );
+        }
+
+        return (
+            <Box>
+                <Box className="assessment-title-spacing">
+                    <Box className='d-flex flex-column justify-content-start'>
+                        <h4>{assessmentTaskRubric["rubric_name"]}</h4>
+
+                        <h5>{assessmentTaskRubric["rubric_description"]}</h5>
+                    </Box>
+                </Box>
+
+                <Form
+                    navbar={this.props.navbar}
+                    roleName={this.state.currentUserRole["role_name"]}
+                    checkins={this.state.checkins}
+                    assessmentTaskRubric={assessmentTaskRubric}
+                    units={unitList}
+                    usingTeams={this.state.usingTeams}
+                    jumpId={this.state.jumpId}
+                />
+            </Box>
+        );
     }
 }
 

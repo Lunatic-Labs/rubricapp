@@ -1,28 +1,38 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
-import { zonedTimeToUtc, format } from "date-fns-tz";
+import { fromZonedTime, format } from "date-fns-tz";
+import * as eventsource from "eventsource-client";
 
-export async function genericResourceGET(fetchURL, resource, component) {    
-    return await genericResourceFetch(fetchURL, resource, component, "GET", null);
+export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
+    return await genericResourceFetch(fetchURL, resource, component, "GET", null, options);
 }
 
-export async function genericResourcePOST(fetchURL, component, body) {    
-    return await genericResourceFetch(fetchURL, null, component, "POST", body);
+export async function genericResourcePOST(fetchURL, component, body, options = {}) {    
+    return await genericResourceFetch(fetchURL, null, component, "POST", body, options);
 }
 
-export async function genericResourcePUT(fetchURL, component, body) {    
-    return await genericResourceFetch(fetchURL, null, component, "PUT", body);
+export async function genericResourcePUT(fetchURL, component, body, options = {}) {    
+    return await genericResourceFetch(fetchURL, null, component, "PUT", body, options);
 }
 
-export async function genericResourceDELETE(fetchURL, component) {
-    return await genericResourceFetch(fetchURL, null, component, "DELETE", null)
+export async function genericResourceDELETE(fetchURL, component, options = {}) {
+    return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options)
 }
 
-async function genericResourceFetch(fetchURL, resource, component, type, body) {
+function createApiRequestUrl(fetchURL, cookies) {
+    return fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+}
+
+async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
+    const {
+        dest = resource,
+        rawResponse = false, // Return the raw response from the backend instead of just the resource
+    } = options;
+
     const cookies = new Cookies();
 
     if(cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
-        let url = fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
+        let url = createApiRequestUrl(fetchURL, cookies);
 
         var headers = {
             "Authorization": "Bearer " + cookies.get('access_token')
@@ -53,7 +63,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
         }
 
         const result = await response.json();
-   
+
         if(result['success']) {
             let state = {};
 
@@ -61,29 +71,13 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
 
             state['errorMessage'] = null;
 
-            if(resource != null) {
-                var getResource = resource;
-    
-                getResource = (getResource === "assessmentTasks") ? "assessment_tasks": getResource;
-
-                getResource = (getResource === "completedAssessments") ? "completed_assessments": getResource;
-
-                getResource = (getResource === "csvCreation") ? "csv_creation": getResource;
-
-                getResource = (getResource === "teamMembers") ? "team_members": getResource;
-
-                getResource = (getResource === "indiv_users") ? "users": getResource;
-                
-                getResource = (getResource === "counts") ? "course_count": getResource;
-                
-                getResource = (getResource === "team") ? "teams": getResource;
-                               
-                state[resource] = result['content'][getResource][0];
+            if(resource) {
+                state[dest] = result['content'][resource][0];
             }
 
             component.setState(state);
             
-            return state;
+            return rawResponse ? result : state;
         
         } else if(result['msg']==="BlackListed" || result['msg']==="No Authorization") {
             cookies.remove('access_token');
@@ -109,8 +103,26 @@ async function genericResourceFetch(fetchURL, resource, component, type, body) {
             
             component.setState(state);
             
-            return state;
+            return rawResponse ? result : state;
         }
+    }
+}
+
+export function createEventSource(fetchURL, onMessage) {
+    const cookies = new Cookies();
+
+    if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+        const url = createApiRequestUrl(fetchURL, cookies);
+        
+        const headers = {
+            "Authorization": "Bearer " + cookies.get('access_token')
+        };
+        
+        return eventsource.createEventSource({
+            url,
+            headers,
+            onMessage,
+        });
     }
 }
 
@@ -219,16 +231,20 @@ export function validPasword(password) {
 // NOTE: This function is used to format the Date so that it doesn't have any timezone issues
 export function formatDueDate(dueDate, timeZone) {
     const timeZoneMap = {
-        "EST": "America/New_York",
-        "CST": "America/Chicago",
-        "MST": "America/Denver",
         "PST": "America/Los_Angeles",
-        "UTC": ""
+        "PDT": "America/Los_Angeles",
+        "MST": "America/Denver",
+        "MDT": "America/Denver",
+        "CST": "America/Chicago",
+        "CDT": "America/Chicago",
+        "EST": "America/New_York",
+        "EDT": "America/New_York",
+        "UTC": "UTC"
     };
 
     const timeZoneId = timeZoneMap[timeZone];
 
-    const zonedDueDate = zonedTimeToUtc(dueDate, timeZoneId);
+    const zonedDueDate = fromZonedTime(dueDate, timeZoneId);
 
     const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
 
@@ -256,37 +272,27 @@ export function getDueDateString(dueDate) {
 }
 
 export function getHumanReadableDueDate(dueDate, timeZone) {
-    dueDate = dueDate.substring(5);
+    const date = new Date(dueDate);
 
-    var month = Number(dueDate.substring(0, 2)) - 1;
+    const month = date.getMonth();
 
-    dueDate = dueDate.substring(3);
+    const day = date.getDate();
 
-    var day = Number(dueDate.substring(0, 2));
+    const hour = date.getHours();
 
-    dueDate = dueDate.substring(3);
-
-    var hour = Number(dueDate.substring(0, 2));
-
-    var twelveHourClock = hour < 12 ? "am": "pm";
-
-    hour = hour > 12 ? (hour % 12) : hour;
-
-    hour = hour === 0 ? 12 : hour;
-
-    dueDate = dueDate.substring(3);
-
-    var minute = Number(dueDate.substring(0, 2));
-
+    const minute = date.getMinutes();
+    
     const monthNames = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    
+    const twelveHourClock = hour < 12 ? "am": "pm";
 
-    var minutesString = minute < 10 ? ("0" + minute): minute;
-
-    var timeString = `${hour}:${minutesString}${twelveHourClock}`;
-
-    var dueDateString = `${monthNames[month]} ${day} at ${timeString} ${timeZone ? timeZone : ""}`;
-
-    return dueDateString;
+    const displayHour = hour > 12 ? (hour % 12) : (hour === 0 ? 12 : hour);
+    
+    const minutesString = minute < 10 ? ("0" + minute): minute;
+    
+    const timeString = `${displayHour}:${minutesString}${twelveHourClock}`;
+    
+    return `${monthNames[month]} ${day} at ${timeString} ${timeZone ? timeZone : ""}`;
 }
 
 /**

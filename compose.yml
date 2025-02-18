@@ -6,7 +6,10 @@ services:
     ports:
       - "127.0.0.1:5050:5000"
     depends_on:
-      - redis
+      redis:
+        condition: service_started
+      mysql:
+        condition: service_healthy
     volumes:
       # Mount the source files inside the container to allow for Flask hot reloading to work
       - "./BackEndFlask/Functions:/app/Functions:rw"
@@ -18,12 +21,15 @@ services:
     environment:
       - REDIS_HOST=redis
       - FLASK_DEBUG=1
+      - MYSQL_HOST=mysql
+      - MYSQL_USER=skillbuilder
+      - MYSQL_PASSWORD=WasPogil1#
+      - MYSQL_DATABASE=account
 
   redis:
     image: redis:7.2.4
-    ports: 
-    - "127.0.0.1:6379:6379"
-    #[] # Disable exposed port so that Redis can run inside of the container and not be exposed to host machine 
+    ports: [] # Disable exposed port so that Redis can run inside of the container and not be exposed to host machine.
+    #- "127.0.0.1:6379:6379" # Remove [] next to ports and uncomemnt this line to expose redis to the system again
     networks:
       - app-network
 
@@ -45,9 +51,30 @@ services:
     networks:
       - app-network
 
+  mysql:
+    image: mysql:8.0
+    restart: always
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_DATABASE: account
+      MYSQL_USER: skillbuilder
+      MYSQL_PASSWORD: WasPogil1#
+    ports:
+      - "5551:3306"
+    volumes:
+      - mysql-data:/var/lib/mysql
+    networks:
+      - app-network
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
 networks:
   app-network:
     driver: bridge
 
 volumes:
+  mysql-data:
   frontend-cache:

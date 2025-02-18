@@ -23,13 +23,14 @@ class StudentViewTeams extends Component {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
+        var chosenCourseId = chosenCourse["course_id"];
 
         genericResourceGET(
-            `/team_by_user?course_id=${chosenCourse["course_id"]}`, "teams", this);
+            `/team_by_user?course_id=${chosenCourseId}`, "teams", this);
 
         var url = (
             chosenCourse["use_tas"] ?
-            `/user?course_id=${chosenCourse["course_id"]}&role_id=4` :
+            `/user?course_id=${chosenCourseId}&role_id=4` :
             `/user?uid=${chosenCourse["admin_id"]}`
         );
 

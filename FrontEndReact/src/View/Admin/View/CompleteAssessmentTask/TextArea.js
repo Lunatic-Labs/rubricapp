@@ -5,59 +5,57 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 
 class TextArea extends Component {
-  constructor(props) {
-    super(props);
+    constructor(props) {
+        super(props);
 
-    this.state = {
-      textareaValue: this.props.currentData[this.props.categoryName]['comments'], // Set initial value from props
-    };
-  }
-  
-  handleTextareaChange = (event) => {
-    if(this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin) return;
-
-    const { unitValue, categoryName, setComments } = this.props;
-
-    const textareaValue = event.target.value;
-
-    this.setState({ textareaValue });
-
-    setComments(unitValue, categoryName, textareaValue);
-    
-    this.props.autosave();
-  };
-  
-  componentDidUpdate() {
-    if((this.props.currentData[this.props.categoryName]['comments']) !== this.state.textareaValue) {
-      this.setState({
-          textareaValue: this.props.currentData[this.props.categoryName]['comments']
-      });
+        this.state = {
+            textAreaValue: this.props.currentValue, // Set initial value from props
+        };
     }
-  }
+    
+    handleTextareaChange = (event) => {
+        if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
-  render() {
-    return (
-      <Box sx={{ width:"100%" }}>
-        <TextareaAutosize
-            id="outlined-multiline-static"
+        const textAreaValue = event.target.value;
 
-            minRows={4}
+        this.setState({ textAreaValue });
 
-            maxRows={4}
+        this.props.setComments(textAreaValue);
+        
+        this.props.autosave();
+    };
+    
+    componentDidUpdate() {
+        if (this.props.currentValue !== this.state.textAreaValue) {
+            this.setState({
+                textAreaValue: this.props.currentValue,
+            });
+        }
+    }
 
-            style={{ width:"100%" }}
+    render() {
+        return (
+            <Box sx={{ width:"100%" }}>
+                <TextareaAutosize
+                        id="outlined-multiline-static"
 
-            placeholder="Comments for improvement..."
+                        minRows={4}
 
-            value={this.state.textareaValue}
+                        maxRows={4}
 
-            onChange={this.handleTextareaChange}
+                        style={{ width:"100%" }}
 
-            disabled={this.props.isUnitCompleteAssessmentComplete(this.props.unitValue) && !this.props.navbar.props.isAdmin}
-        />
-      </Box>
-    );
-  }
+                        placeholder="Comments for improvement..."
+
+                        value={this.state.textAreaValue}
+
+                        onChange={this.handleTextareaChange}
+
+                        disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
+                />
+            </Box>
+        );
+    }
 }
-  
+    
 export default TextArea;

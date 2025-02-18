@@ -28,10 +28,12 @@ var aub = "addUserButton";
 var aut = "addUserTitle";
 var eut = "editUserTitle";
 var eub = "editUserButton";
+var dub = "dropUserButton";
+var dut = "dropUserTitle";
 
 
 
-test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
+test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 
@@ -126,11 +128,42 @@ test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking t
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
-
-        clickFirstElementWithAriaLabel(eub);
     });
 
     await waitFor(() => {
+        clickFirstElementWithAriaLabel(eub);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(eut);
+    });
+});
+
+
+test("RosterDashboard.test.js Test 7: Should drop a user when clicking on the drop user button", async () => {
+    render(<Login/>);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+    
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(eub);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(eut);
+    });
+
+    clickFirstElementWithAriaLabel(dub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(dut);
     });
 });

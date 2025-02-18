@@ -3,7 +3,11 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 from models.completed_assessment import (
     get_completed_assessments,
@@ -11,18 +15,67 @@ from models.completed_assessment import (
     create_completed_assessment,
     replace_completed_assessment,
     completed_assessment_exists,
-    get_completed_assessment_count
+    get_completed_assessment_count,
+    toggle_lock_status,
+    make_complete_assessment_locked,
+    make_complete_assessment_unlocked,
 )
 
 from models.queries import (
     get_completed_assessment_by_ta_user_id,
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id,
-    get_completed_assessment_with_user_name
+    get_completed_assessment_with_user_name,
+    get_completed_assessment_ratio,
 )
 
 from models.assessment_task import get_assessment_tasks_by_course_id
 
+
+@bp.route('/completed_assessment_toggle_lock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def toggle_complete_assessment_lock_status():
+    try:
+        assessmentTaskId = request.args.get('assessment_task_id')
+        toggle_lock_status(assessmentTaskId)
+        return create_good_response(None, 201, "completed_assessments")
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred toggling CAT lock: {e}", "completed_assessments", 400
+        )
+
+@bp.route('/completed_assessment_lock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def lock_complete_assessment():
+    try:
+        assessmentTaskId = request.args.get('assessment_task_id')
+        make_complete_assessment_locked(assessmentTaskId)
+        return create_good_response(None, 201, "completed_assessments")
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred locking a CAT: {e}", "completed_assessments", 400
+        )
+
+@bp.route('/completed_assessment_unlock', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def unlock_complete_assessment():
+    try:
+        assessmentTaskId = request.args.get('assessment_task_id')
+        make_complete_assessment_unlocked(assessmentTaskId)
+        return create_good_response(None, 201, "completed_assessments")
+
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred unlocking a CAT: {e}", "completed_assessments", 400
+        )
 
 @bp.route('/completed_assessment', methods=['GET'])
 @jwt_required()
@@ -30,7 +83,9 @@ from models.assessment_task import get_assessment_tasks_by_course_id
 @AuthCheck()
 def get_all_completed_assessments():
     try:
-        if request.args and request.args.get("course_id"):
+        # only_course is a marker parameter that prevents requests intended for routes
+        #  below from hitting this route
+        if request.args and request.args.get("course_id") and request.args.get("only_course") == "true":
             course_id = int(request.args.get("course_id"))
             all_completed_assessments = get_completed_assessment_by_course_id(course_id)
             assessment_tasks = get_assessment_tasks_by_course_id(course_id)
@@ -62,13 +117,22 @@ def get_all_completed_assessments():
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
-            course_id = int(request.args.get("course_id"))
+            if request.args.get("assessment_id"):
+                course_id = request.args.get("course_id")
+                
+                assessment_id = request.args.get("assessment_id")
 
-            user_id = request.args.get("user_id")
+                ratio = get_completed_assessment_ratio(course_id, assessment_id)
 
-            completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
+                return create_good_response(ratio, 200, "completed_assessments")
+            else:
+                course_id = int(request.args.get("course_id"))
 
-            return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
+                user_id = request.args.get("user_id")
+
+                completed_assessments_task_by_user = get_completed_assessment_by_user_id(course_id, user_id)
+
+                return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
         if request.args and request.args.get("assessment_task_id") and request.args.get("unit"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
@@ -80,7 +144,7 @@ def get_all_completed_assessments():
                 completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
             else:
                 completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
-            
+
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
@@ -90,16 +154,20 @@ def get_all_completed_assessments():
 
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
-            
+
             get_assessment_task(assessment_task_id)  # Trigger an error if not exists.
             completed_assessments = get_completed_assessment_with_team_name(assessment_task_id)
+
+            if not completed_assessments:
+                completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
+            
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
                 for assessment in completed_assessments
             ]
             return create_good_response(result, 200, "completed_assessments")
-        
+
         if request.args and request.args.get("completed_assessment_task_id"):
             completed_assessment_task_id = int(request.args.get("completed_assessment_task_id"))
             one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_task_id)
@@ -111,6 +179,26 @@ def get_all_completed_assessments():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
 
+@bp.route('/completed_assessment', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_completed_assessment_by_team_or_user_id():
+    try:
+        completed_assessment_id = request.args.get("completed_assessment_id")
+        unit = request.args.get("unit")
+        if not completed_assessment_id:
+            return create_bad_response("No completed_assessment_id provided", "completed_assessments", 400)
+
+        if unit == "team":
+            one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_id)
+        elif unit == "user":
+            one_completed_assessment = get_completed_assessment_with_user_name(completed_assessment_id)
+        else:
+            create_bad_response("Invalid unit provided", "completed_assessments", 400)
+        return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
+    except Exception as e:
+        return create_bad_response(f"An error occurred fetching a completed assessment: {e}", "completed_assessments", 400)
 
 @bp.route('/completed_assessment', methods = ['POST'])
 @jwt_required()
@@ -119,17 +207,20 @@ def get_all_completed_assessments():
 def add_completed_assessment():
     try:
         assessment_data = request.json
-
         team_id = int(assessment_data["team_id"])
+        if (team_id == -1):
+            assessment_data["team_id"] = None
         assessment_task_id = int(request.args.get("assessment_task_id"))
         user_id = int(assessment_data["user_id"])
+        if (user_id == -1):
+            assessment_data["user_id"] = None
   
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:
-            completed = replace_completed_assessment(request.json, completed.completed_assessment_id)
+            completed = replace_completed_assessment(assessment_data, completed.completed_assessment_id)
         else:
-            completed = create_completed_assessment(request.json)
+            completed = create_completed_assessment(assessment_data)
 
         return create_good_response(completed_assessment_schema.dump(completed), 201, "completed_assessments")
 
@@ -143,15 +234,23 @@ def add_completed_assessment():
 @AuthCheck()
 def update_completed_assessment():
     try:
+        assessment_data = request.json
+        team_id = int(assessment_data["team_id"])
+        if (team_id == -1):
+            assessment_data["team_id"] = None
+        user_id = int(assessment_data["user_id"])
+        if (user_id == -1):
+            assessment_data["user_id"] = None
+        
         completed_assessment_id = request.args.get("completed_assessment_id")
 
         updated_completed_assessment = None
 
         if(completed_assessment_id):
-            updated_completed_assessment = replace_completed_assessment(request.json, completed_assessment_id)
+            updated_completed_assessment = replace_completed_assessment(assessment_data, completed_assessment_id)
 
         else:
-            updated_completed_assessment = create_completed_assessment(request.json)
+            updated_completed_assessment = create_completed_assessment(assessment_data)
 
         return create_good_response(completed_assessment_schema.dump(updated_completed_assessment), 201, "completed_assessments")
 
@@ -170,9 +269,10 @@ class CompletedAssessmentSchema(ma.Schema):
             'team_name',
             'user_id',
             'first_name',
-            'last_name',                                
+            'last_name',
             'initial_time',
             'done',
+            'locked',
             'last_update',
             'rating_observable_characteristics_suggestions_data',
             'course_id',

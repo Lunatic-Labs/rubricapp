@@ -32,7 +32,7 @@ var aaatt = "adminAddAssessmentTaskTitle";
 var eaib = "editAssessmentIconButton";
 var aeatt = "adminEditAssessmentTaskTitle";
 var vcaib = "viewCompletedAssessmentIconButton";
-var vcat = "viewCompletedAssessmentsTitle";
+var vcirt = "viewCompletedIndividualRubricsTitle";
 var satb = "startAssessmentTasksButton";
 var vatit = "viewAssessmentTaskInstructionsTitle";
 var lb = "loginButton";
@@ -176,10 +176,12 @@ test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment 
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(eaib);
     });
 
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(eaib);
+    },{ timeout: 3000 });
+    
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aeatt);
     });
@@ -203,12 +205,14 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(vcaib);
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vcat);
+        clickFirstElementWithAriaLabel(vcaib);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
 
@@ -230,9 +234,11 @@ test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
-
-        clickFirstElementWithAriaLabel(satb);
     });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(satb);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vatit);

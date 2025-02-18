@@ -67,14 +67,6 @@ test("AdminViewUsers.test.js Test 2: Should show roster page of the users for ad
 test("AdminViewUsers.test.js Test 3: Should show Edit User Form when clicking the Edit Icon for admin view using demo admin credentials", async () => {
     render(<Login />);
 
-    setTimeout(() => {
-        changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-    
-        changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-    
-        clickElementWithAriaLabel(lb);
-    }, 3000);
-
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
     });
@@ -85,28 +77,18 @@ test("AdminViewUsers.test.js Test 3: Should show Edit User Form when clicking th
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 
-    setTimeout(() => {
+    await waitFor(() => {
         clickFirstElementWithAriaLabel(eub);
-    }, 3000);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(eut);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(eut);
     });
 });
 
 
 test("AdminViewUsers.test.js Test 4: Should show Student Bulk Upload Form when clicking the Student Bulk Upload Button for admin view using demo admin credentials", async () => {
     render(<Login />);
-
-    setTimeout(() => {
-        changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-    
-        changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-    
-        clickElementWithAriaLabel(lb);
-    }, 3000);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -128,14 +110,6 @@ test("AdminViewUsers.test.js Test 4: Should show Student Bulk Upload Form when c
 
 test("AdminViewUsers.test.js Test 5: Should show Add User Form when clicking the Add User Button for admin view using demo admin credentials", async () => {
     render(<Login />);
-
-    setTimeout(() => {
-        changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
-    
-        changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
-    
-        clickElementWithAriaLabel(lb);
-    }, 3000);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);

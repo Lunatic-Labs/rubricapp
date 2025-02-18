@@ -7,7 +7,7 @@ import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDate
 import { Box, Button, FormControl, Typography, IconButton, TextField, Tooltip, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
-import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFns';
+import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 import FormHelperText from '@mui/material/FormHelperText';
@@ -29,8 +29,8 @@ class AdminAddAssessmentTask extends Component {
             rubricId: '',
             password: '',
             notes: '',
-            numberOfTeams: '',
-            maxTeamSize: '',
+            numberOfTeams: null,
+            maxTeamSize: null,
             suggestions: true,
             ratings: true,
             usingTeams: false,
@@ -79,8 +79,9 @@ class AdminAddAssessmentTask extends Component {
         if (assessmentTask && !addAssessmentTask) {
             genericResourceGET(
             `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, 
-            "completedAssessments", 
-            this
+            "completed_assessments", 
+            this,
+            { dest: "completedAssessments" }
         );
 
             this.setState({
@@ -223,29 +224,30 @@ class AdminAddAssessmentTask extends Component {
                 "number_of_teams": numberOfTeams,
                 "max_team_size": maxTeamSize
             });
+
+            let promise;
             
             if (navbar.state.addAssessmentTask) {
-                genericResourcePOST(
+                promise = genericResourcePOST(
                     "/assessment_task",
                     this, body
                 );
 
             } else {
-                genericResourcePUT(
+                promise = genericResourcePUT(
                     `/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
                     this, body
                 );
             }
 
-            confirmCreateResource("AssessmentTask");
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("AssessmentTask");
+                }
+            });
         }
     };
 
-    hasErrors = () => {
-        const { errors } = this.state;
-
-        return Object.values(errors).some((error) => !!error);
-    };
 
     render() {
         var navbar = this.props.navbar;
@@ -384,7 +386,7 @@ class AdminAddAssessmentTask extends Component {
                                             id="numberOfTeams"
                                             name="newPassword"
                                             variant='outlined'
-                                            label="Number of teams"
+                                            label="Maximum number of teams you will use during class for this assessment"
                                             value={this.state.numberOfTeams}
                                             error={!!errors.numberOfTeams}
                                             helperText={errors.numberOfTeams}
@@ -404,7 +406,7 @@ class AdminAddAssessmentTask extends Component {
                                             id="maxTeamSize"
                                             name="setTeamSize"
                                             variant='outlined'
-                                            label="Max team size"
+                                            label="Max team size allowed for each team in class"
                                             value={this.state.maxTeamSize}
                                             error={!!errors.maxTeamSize}
                                             helperText={errors.maxTeamSize}
@@ -507,11 +509,19 @@ class AdminAddAssessmentTask extends Component {
 
                                                     <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
 
+                                                    <MenuItem value={"EDT"} aria-label="addAssessmentEdtRadioOption" >EDT</MenuItem>
+
                                                     <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
+
+                                                    <MenuItem value={"CDT"} aria-label="addAssessmentCdtRadioOption" >CDT</MenuItem>
 
                                                     <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
 
+                                                    <MenuItem value={"MDT"} aria-label="addAssessmentMdtRadioOption" >MDT</MenuItem>
+
                                                     <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
+
+                                                    <MenuItem value={"PDT"} aria-label="addAssessmentPdtRadioOption" >PDT</MenuItem>
                                                 </Select>
                                                 <FormHelperText>{errors.timeZone}</FormHelperText>
                                             </FormControl>
@@ -524,7 +534,7 @@ class AdminAddAssessmentTask extends Component {
                                         id="password"
                                         name="newPassword"
                                         variant='outlined'
-                                        label="Password to switch teams"
+                                        label="Password to switch teams (Prevents students from switching teams without instructor approval.)"
                                         value={password}
                                         error={!!errors.password}
                                         helperText={errors.password}
@@ -539,7 +549,7 @@ class AdminAddAssessmentTask extends Component {
                                         id="notes"
                                         name="notes"
                                         variant='outlined'
-                                        label="Instructions to Students/TA's"
+                                        label="Instructions for Students/TA's about the Assessment or particular focus areas"
                                         value={notes}
                                         error={!!errors.notes}
                                         helperText={errors.notes}
