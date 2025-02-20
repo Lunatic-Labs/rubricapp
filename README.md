@@ -149,6 +149,13 @@ _Note_: if changes are required for the database, you can reset the database wit
 ```
 docker compose down -v
 ```
+If ```docker compose build --no-cache``` still creates the same db despite changing how the database gets created, try 
+```sudo docker-compose down --rmi all --volumes``` (and then rebuild it all). The difference is that the first one 
+recreates the images, but that does not mean the volumes (location of persistent data that docker manages for the images) 
+are cleaned up. The second command frees up all the resources  including volumes (yes even the downloaded packages for 
+the image are gone); that way the db is forced to run through whatever code you made instead of using something old. 
+The second command takes a bit since it wipes everything then you have to run ```docker compose build``` to make it all again. 
+
 
 When the front end is finished compiling, it should show a link, namely: `http://localhost:3000`.
 Simply open this link in your browser and use an appropriate login.

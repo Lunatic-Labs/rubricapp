@@ -97,9 +97,9 @@ class ViewCompletedAssessmentTasks extends Component {
                             <div>
                                 <IconButton
                                     onClick={() => {
-                              var singluarCompletedAssessment = null;
+                              var singularCompletedAssessment = null;
                               if (completedAssessments) {
-                                  singluarCompletedAssessment
+                                  singularCompletedAssessment
                                       = completedAssessments.find(
                                           completedAssessment => completedAssessment.assessment_task_id === atId
                                       ) ?? null;
@@ -108,8 +108,8 @@ class ViewCompletedAssessmentTasks extends Component {
                                 `/rating`,
                                 this,
                                 JSON.stringify({
-                                    "user_id" : singluarCompletedAssessment.user_id,
-                                    "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
+                                    "user_id" : singularCompletedAssessment.user_id,
+                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
                                 }),
                               );
                               this.props.navbar.setAssessmentTaskInstructions(
