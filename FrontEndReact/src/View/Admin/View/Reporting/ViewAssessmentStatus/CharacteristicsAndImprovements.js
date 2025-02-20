@@ -30,7 +30,10 @@ export default function CharacteristicsAndImprovements({
   improvementsData,
   showSuggestions,
 }) {
-  const [isExpanded, setIsExpanded] = useState(false);
+  const [isModalOpen, setModalOpen] = useState(false);
+
+  const openModal = () => setModalOpen(true);
+  const closeModal = () => setModalOpen(false);
 
   const data = dataType === 'characteristics'
     ? characteristicsData.characteristics
@@ -39,79 +42,41 @@ export default function CharacteristicsAndImprovements({
   const processedData = data.map(item => ({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
+    fullLabel: item[dataType === 'characteristics' ? 'characteristic' : 'improvement']
   }));
+  
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
 
-  const expandedStyles = {
-    position: 'fixed',
-    top: 0,
-    left: 0,
-    right: 0,
-    bottom: 0,
-    zIndex: 1000,
-    backgroundColor: 'white',
-    padding: '20px',
-    transition: 'all 0.3s ease',
-    overflow: 'auto'
-  };
-
-  const normalStyles = {
-    height: '100%',
-    backgroundColor: '#f8f8f8',
-    transition: 'all 0.3s ease',
-    cursor: 'pointer'
-  };
-
   return (
-    <div className="container-fluid p-0">
+    <div className="container-fluid p-0"> 
       <div className="row">
         <div className="col-12">
-          <div 
-            className="card border-0 shadow-none" 
-            style={isExpanded ? expandedStyles : normalStyles}
-            onClick={() => !isExpanded && setIsExpanded(true)}
-          >
-            {isExpanded && (
-              <button
-                className="btn btn-link position-absolute top-0 end-0 mt-2 me-2"
-                onClick={(e) => {
-                  e.stopPropagation();
-                  setIsExpanded(false);
-                }}
-                style={{ fontSize: '24px', textDecoration: 'none' }}
-              >
-              </button>
-            )}
+          <div className="card border-0 shadow-none" style={{height: '100%', backgroundColor: '#f8f8f8' }}>
             <div className="card-body">
-              <h6 className="text-center mb-4">
+              <h6 className="text-center">
                 <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
               </h6>
-              
-              <div style={{ height: isExpanded ? '80vh' : '250px' }}>
+              <div style={{ height: '210px' }}>
                 {shouldShowGraph ? (
                   <ResponsiveContainer width="100%" height="100%">
                     <BarChart
                       layout="vertical"
                       data={processedData}
-                      margin={{ 
-                        top: 5, 
-                        right: isExpanded ? 40 : 20, 
-                        bottom: 5, 
-                        left: isExpanded ? 40 : 20 
-                      }}
+                      margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
+                      onClick={openModal}
                     >
                       <XAxis
                         type="number"
                         domain={[0, 100]}
                         ticks={[0, 25, 50, 75, 100]}
                         tickFormatter={(tick) => `${tick}`}
-                        style={{ fontSize: isExpanded ? '14px' : '12px' }}
+                        style={{ fontSize: '12px' }}
                       />
                       <YAxis
-                        style={{ fontSize: isExpanded ? '14px' : '12px' }}
+                        style={{ fontSize: '12px' }}
                         type="category"
                         dataKey="truncatedLabel"
-                        width={isExpanded ? 150 : 100}
+                        width={100}
                       />
                       <CartesianGrid horizontal={false} />
                       <Tooltip
@@ -120,17 +85,14 @@ export default function CharacteristicsAndImprovements({
                       />
                       <Bar 
                         dataKey="percentage" 
-                        dataKey="percentage" 
                         fill="#2e8bef"
                         className="cursor-pointer"
                       >
                         <LabelList 
                           dataKey="percentage" 
-                          dataKey="percentage" 
                           fill="#ffffff" 
                           position="inside"
                           formatter={value => `${value}%`}
-                          style={{ fontSize: isExpanded ? '14px' : '12px' }}
                         />
                       </Bar>
                     </BarChart>
@@ -147,6 +109,70 @@ export default function CharacteristicsAndImprovements({
           </div>
         </div>
       </div>
+
+      {/* Expanded Modal */}
+      <div className={`modal fade ${isModalOpen ? 'show' : ''}`} 
+           tabIndex="-1" 
+           role="dialog"
+           style={{ display: isModalOpen ? 'block' : 'none' }}>
+        <div className="modal-dialog modal-lg">
+          <div className="modal-content">
+            <div className="modal-header position-relative">
+              <div className="w-100">
+                <h5 className="modal-title text-center m-0 fw-normal">
+                  {dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}
+                </h5>
+              </div>
+              <button type="button" 
+                      className="btn-close position-absolute"
+                      style={{ right: '1rem', top: '50%', transform: 'translateY(-50%)' }}
+                      onClick={closeModal} 
+                      aria-label="Close">
+              </button>
+            </div>
+            <div className="modal-body">
+              <ResponsiveContainer width="100%" height={400}>
+                <BarChart
+                  layout="vertical"
+                  data={processedData}
+                  margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
+                >
+                  <XAxis
+                    type="number"
+                    domain={[0, 100]}
+                    ticks={[0, 25, 50, 75, 100]}
+                    tickFormatter={(tick) => `${tick}`}
+                    style={{ fontSize: '13px' }}
+                  />
+                  <YAxis
+                    style={{ fontSize: '13px' }}
+                    type="category"
+                    dataKey="fullLabel"
+                    width={300}
+                  />
+                  <CartesianGrid horizontal={false} />
+                  <Bar 
+                    dataKey="percentage" 
+                    fill="#2e8bef"
+                  >
+                    <LabelList 
+                      dataKey="percentage" 
+                      fill="#ffffff" 
+                      position="inside"
+                      formatter={value => `${value}%`}
+                    />
+                  </Bar>
+                </BarChart>
+              </ResponsiveContainer>
+            </div>
+          </div>
+        </div>
+      </div>
+      {isModalOpen && (
+        <div className="modal-backdrop fade show" 
+             onClick={closeModal}>
+        </div>
+      )}
     </div>
   );
 }
