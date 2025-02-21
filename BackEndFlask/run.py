@@ -2,8 +2,6 @@ from gevent import monkey
 monkey.patch_all()
 # Socket patching has not been added since it seems to add unwanted complexity.
 
-import threading
-
 import core
 
 if __name__ == '__main__':
