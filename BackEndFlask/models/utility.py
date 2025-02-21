@@ -41,8 +41,9 @@ def check_bounced_emails(from_timestamp=None):
         # Fetch the emails
         query, messages_result = (None, None)
 
-        if from_timestamp is not None:
-            query = f"after:{int(from_timestamp.timestamp())}"
+        # TODO: handle timestamp correctly
+        # if from_timestamp is not None:
+        #     query = f"after:{int(from_timestamp.timestamp())}"
 
         if query is not None:
             messages_result = oauth2_service.users().messages().list(
@@ -92,7 +93,7 @@ def check_bounced_emails(from_timestamp=None):
                         'main_failure': main_failure.strip(),
                     })
 
-            return bounced_emails
+            return bounced_emails if len(bounced_emails) != 0 else None
 
     except Exception as e:
         raise EmailFailureException(str(e))
