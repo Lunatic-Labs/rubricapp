@@ -540,19 +540,15 @@ def get_individual_ratings(assessment_task_id):
         CompletedAssessment.last_update,
         Feedback.feedback_id
     ).join(
-        User,
-        CompletedAssessment.user_id == User.user_id
-    ).join(
         Feedback,
-        User.user_id == Feedback.user_id
-        and
         CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
         isouter=True # allows to still get students who haven't viewed their feedback yet
+    ).join(
+        User,
+        CompletedAssessment.user_id == User.user_id
     ).filter(
-        and_(
-            CompletedAssessment.team_id == None,
-            CompletedAssessment.assessment_task_id == assessment_task_id
-        )
+        CompletedAssessment.team_id == None,
+        CompletedAssessment.assessment_task_id == assessment_task_id
     ).all()
 
 

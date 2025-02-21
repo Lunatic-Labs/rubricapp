@@ -202,12 +202,28 @@ class CompleteAssessmentTask extends Component {
                 const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
                 const roleName = currentUserRole["role_name"];
-                
+
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
                 if (roleName === "Student" && this.state.usingTeamss && !userFixedTeam) return;
                 if (this.state.usingTeams && !teamsUsers) return;
                 
+                const userSort = [...users].sort((firstUser,secondUser) => {
+                    const firstLastName = firstUser.last_name.toLowerCase();
+                    const secondLastName = secondUser.last_name.toLowerCase();
+                    if(firstLastName < secondLastName) return -1;
+                    if(firstLastName > secondLastName) return 1;
+                    return 0;
+                });
+
+                const teamSort = [...teams].sort((firstTeam, secondTeam) => {
+                    const firstTeamName = firstTeam.team_name.toLowerCase();
+                    const secondTeamName = secondTeam.team_name.toLowerCase();
+                    if(firstTeamName < secondTeamName) return -1;
+                    if(firstTeamName > secondTeamName) return 1;
+                    return 0;
+                });
+
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
                 const unitList = generateUnitList({
@@ -217,8 +233,8 @@ class CompleteAssessmentTask extends Component {
                     unitType: unitClass,//this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
                     assessmentTaskRubric: assessmentTaskRubric,
                     completedAssessments,
-                    users,
-                    fixedTeams: teams,
+                    users: userSort,
+                    fixedTeams: teamSort,
                     fixedTeamMembers: teamsUsers,
                     // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
