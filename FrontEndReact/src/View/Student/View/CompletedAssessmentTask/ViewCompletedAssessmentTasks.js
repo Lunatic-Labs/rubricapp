@@ -62,11 +62,12 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
-                        const assessmentTask = completedAssessments.find(cat => cat.assessment_task_id === atId);
-                        if (assessmentTask === undefined) {
+                        // Note that when we are in adhoc mode CATs have no differing data from individual to teams.
+                        const chosenAT = assessmentTasks.find(at => at.assessment_task_id === atId);
+                        if (!chosenAT) {
                             return <>UNDEFINED</>
                         }
-                        return <>{assessmentTask.team_id ? "Team" : "Individual"}</>;
+                        return <>{chosenAT.unit_of_assessment ? "Team" : "Individual"}</>;
                     }
                 }
             },
