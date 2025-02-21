@@ -99,6 +99,7 @@ def helper_create_user(
         lms_id: int|None,
         owner_id: int,
         consent=None,
+        validate_emails=True,
     ):
 
     return create_user({
@@ -109,4 +110,4 @@ def helper_create_user(
         "lms_id":     lms_id,
         "owner_id":   owner_id,
         "consent":    consent
-    })
+    }, validate_emails=validate_emails)
