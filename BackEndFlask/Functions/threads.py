@@ -89,9 +89,12 @@ def validate_pending_emails():
 
     # Imports are placed here to handle circular dependencies.
     from models.user import get_user
-    from models.utility import check_bounced_emails
+    from models.utility import (
+        check_bounced_emails,
+        send_bounced_email_notification,
+    )
 
-    time.sleep(7)
+    time.sleep(30)
 
     with app.app_context():
         try:
@@ -111,8 +114,6 @@ def validate_pending_emails():
                     data[user_email] = owner_email
                     all_pending_emails.append(user_email)
 
-                print(data)
-
                 # Regardless of if we find any bounces or not, we need
                 # to update these.
                 mark_emails_as_checked(all_pending_emails)
@@ -125,8 +126,8 @@ def validate_pending_emails():
                 for bounce in bounced:
                     # TODO: Find solution if the student's email in the message is not there.
                     #       Will this ever happen?
-                    if bounce["to"]:
-                        send_bounced_email_notification(data[bounce['to']], bounce['msg'], bounce['main_failure'])
+                    # if bounce["to"]:
+                    send_bounced_email_notification(data[bounce['to']], bounce['msg'], bounce['main_failure'])
 
             except Exception as e:
                 print(f"Error in email checker thread: {e}")
