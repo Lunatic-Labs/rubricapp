@@ -14,7 +14,7 @@ import csv
 def validate_row(row: List[str], row_num: int, seen_emails: Dict[str, int], 
                 seen_lms_ids: Dict[str, int], valid_roles: List[str]) -> TypingTuple[str, str, str, str, str]:
     """Validates a single row of CSV data and returns parsed values"""
-    
+
     # Check column count
     if len(row) < 3:
         raise NotEnoughColumns(row_num, 3, len(row))
@@ -25,10 +25,10 @@ def validate_row(row: List[str], row_num: int, seen_emails: Dict[str, int],
     name = row[0].strip()
     if ',' not in name:
         raise InvalidNameFormat(row_num, name)
-    
+
     last_name = name.split(',')[0].strip()
     first_name = name.split(',')[1].strip()
-    
+
     if not last_name or not first_name:
         raise InvalidNameFormat(row_num, name)
 
@@ -36,7 +36,7 @@ def validate_row(row: List[str], row_num: int, seen_emails: Dict[str, int],
     email = row[1].strip()
     if not helper_verify_email_syntax(email):
         raise InvalidEmail(row_num, email)
-    
+
     if email in seen_emails:
         raise DuplicateEmail(email, [seen_emails[email], row_num])
     seen_emails[email] = row_num
@@ -58,7 +58,7 @@ def validate_row(row: List[str], row_num: int, seen_emails: Dict[str, int],
 
     return first_name, last_name, email, role, lms_id
 
-def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_id):
+def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_id, validate_emails):
         """
         Description
         Adds the user to the DB based on the function parameters
@@ -71,6 +71,8 @@ def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_i
         email: str: email of the user
         role_id: int: role ID of the user
         lms_id: int: LMS ID of the user
+        validate_emails: bool: whether or not create_user should spawn a thread
+                               checking for bounced emails after creating the user.
 
         Returns
         None
@@ -80,7 +82,7 @@ def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_i
 
         # If the user is not already in the DB.
         if user is None:
-            helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id)
+            helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id, validate_emails)
 
         else:
             updated_user_first_name = user.first_name
@@ -240,8 +242,11 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
 
             students.append((first_name, last_name, email, role_id, lms_id))
 
+        i = 0
         for first_name, last_name, email, role_id, lms_id in students:
-            __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_id)
+            validate_emails = i == len(students)-1
+            __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_id, validate_emails)
+            i += 1
 
         student_csv.close()
 

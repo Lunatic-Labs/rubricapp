@@ -162,7 +162,7 @@ def user_already_exists(user_data):
 
 
 @error_log
-def create_user(user_data):
+def create_user(user_data, validate_emails=True):
     if "password" in user_data:
         password = user_data["password"]
         has_set_password = True # for demo users, avoid requirement to choose new password
@@ -193,7 +193,7 @@ def create_user(user_data):
     db.session.commit()
 
     # Avoid adding validation to demo users.
-    if not has_set_password:
+    if validate_emails and not has_set_password:
         create_validation(user_data.user_id, user_data.email)
         spawn_thread(validate_pending_emails)
 
