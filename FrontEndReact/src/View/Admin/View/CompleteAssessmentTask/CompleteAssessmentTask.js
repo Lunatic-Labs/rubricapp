@@ -62,7 +62,7 @@ class CompleteAssessmentTask extends Component {
             currentUserId: null,
             usingTeams: this.props.navbar.state.unitOfAssessment,
             usingAdHoc: !this.props.navbar.state.chosenCourse.use_fixed_teams && this.props.navbar.state.unitOfAssessment,
-            numberOfAdhocTeams: null,
+            numberOfAdhocTeams: null, // FIX: this is set up for removal.
             checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
                                                              // The loop happens due to server caching as per testing.
             checkinEventSource: null,
@@ -131,20 +131,26 @@ class CompleteAssessmentTask extends Component {
                 genericResourceGET(
                     `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
                     "teams", this, { dest: "userFixedTeam" }
-                );
+                ).then(response =>{
+                    console.log("Goes into userFixedTeam:", response);
+                });
             }
     
             genericResourceGET(
                 `/team?course_id=${chosenCourse["course_id"]}`,
                 "teams", this
             ).then((result) => {
+                console.log("team GET course_id:", result);
+
                 if (this.state.usingTeams && result.teams && result.teams.length > 0) {
                     const teamIds = result.teams.map(team => team.team_id);
     
                     genericResourceGET(
                         `/user?team_ids=${teamIds}`,
                         "teams_users", this, { dest: "teamsUsers" }
-                    );
+                    ).then(result => {
+                        console.log("teamUsers:", result);
+                    });
                 }
             });
         }

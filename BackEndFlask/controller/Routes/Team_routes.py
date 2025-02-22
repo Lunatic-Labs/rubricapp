@@ -26,6 +26,7 @@ from models.queries import (
     get_students_by_team_id,
     get_team_users,
     get_sorted_adhoc_teams,
+    get_num_of_adhocs,
 )
 
 @bp.route('/team', methods = ['GET'])
@@ -207,6 +208,21 @@ def get_nonfull_adhoc_teams():
 
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
+
+
+@bp.route('/team/adhoc_amount', methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def get_how_many_adhocs_teams_exist():
+    try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            return create_good_response(get_num_of_adhocs(course_id), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
 
 @bp.route('/team', methods = ['POST'])

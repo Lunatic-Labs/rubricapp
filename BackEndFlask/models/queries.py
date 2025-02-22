@@ -1278,3 +1278,22 @@ def does_team_user_exist(user_id:int, team_id:int):
     if len(is_entry) == 0:
         return False
     return True
+
+def get_num_of_adhocs(course_id:int):
+    """
+    Description:
+    Returns the number of adhoc teams found.
+
+    Paramaters:
+    course_id: <class 'int'> (User Id)
+
+    Returns:
+    <class 'int'> (number of adhoc teams)
+
+    Exceptions:
+    None except what the db or oem may raise.
+    """
+
+    pattern = '^Team [0-9]+$'
+    count = db.session.query(func.count(Team.team_id)).filter(Team.team_name.op('REGEXP')(pattern)).scalar()
+    return count
