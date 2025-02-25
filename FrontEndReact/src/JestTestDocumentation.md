@@ -33,7 +33,7 @@ In some of the test files, you will see that you can pass options to `waitFor`, 
 
 # Set up
 
-1. Make sure Docker is running successfully.
+1. You will need to run Docker for jest tests to work so make sure Docker is running successfully before proceeding to the next step. 
 
 2. In the `FrontEndReact` directory, locate the `.env` and change the `REACT_APP_API_URL` port 
 to 5050. Make sure to change it back to 5000 after you finish running tests/make any
