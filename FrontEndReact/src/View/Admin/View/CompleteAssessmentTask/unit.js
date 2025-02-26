@@ -76,7 +76,6 @@ if(module.hot){
 
 export function generateUnitList(args) {
 	let unitList = [];
-	console.warn("called unit");
 	
 	if (args.roleName === "Student") {
 		if (args.unitType === UnitType.INDIVIDUAL) {
@@ -90,7 +89,7 @@ export function generateUnitList(args) {
 		} else {
 			let team;
 
-			const isFixedTeams = args.UnitType === UnitType.FIXED_TEAM;
+			const isFixedTeams = args.unitType === UnitType.FIXED_TEAM;
 			
 			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask && isFixedTeams) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];

@@ -104,15 +104,12 @@ class CompleteAssessmentTask extends Component {
         ).then((result) => {
             if (this.state.usingTeams && result.teams && result.teams.length > 0) {
                 const teamIds = result.teams.map(team => team.team_id);
-                console.log(result);
                 
                 if(!adHocMode){
                     genericResourceGET(
                         `/user?team_ids=${teamIds}`,
                         "teams_users", this, { dest: "teamsUsers" }
-                    ).then(result => {
-                        console.log("teamUsers:", result);
-                    });
+                    );
                 }
             }
         });
@@ -194,11 +191,12 @@ class CompleteAssessmentTask extends Component {
 
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
+
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
                     chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
-                    unitType: unitClass,//this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    unitType: unitClass,
                     assessmentTaskRubric: assessmentTaskRubric,
                     completedAssessments,
                     users: userSort,
