@@ -46,8 +46,6 @@ from models.user import(
     make_admin,
     unmake_admin,
     delete_user_by_user_id,
-    get_user_by_role_id
-    ,
     get_user_by_email,
 )
 
@@ -98,7 +96,7 @@ def get_all_users():
             get_team(team_id)  # Trigger an error if not exists.
 
             course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
-            
+
             # We are going to add students by default!
             # Return students that are not in the team!
             all_users = get_active_students_not_in_a_team(course_id, team_id)
@@ -146,7 +144,7 @@ def get_all_users():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_all_team_members(): 
+def get_all_team_members():
     try:
         if request.args and request.args.get("course_id") and request.args.get("observer_id"):
             course_id=request.args.get("course_id")
@@ -340,17 +338,8 @@ def delete_user():
     except Exception:
         #return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
         try:
-            if request.args and request.args.get("uid") and request.args.get("role_id"):
+            if request.args and request.args.get("uid"):
                 user_id = int(request.args.get("uid"))
-                role_id = int(request.args.get("role_id"))
-                print(role_id, flush=True)
-                user = None
-                if role_id == 5:
-                    user = get_user_by_role_id(role_id)
-                    return user
-                if not user:
-                    return create_bad_response("User does not exist", "users", 400)
-
                 associated_tasks = completed_assessment_team_or_user_exists(team_id = None, user_id=user_id)
                 if associated_tasks is None:
                     associated_tasks = []
