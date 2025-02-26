@@ -61,21 +61,23 @@ def get_all_teams_by_user():
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
+            adhoc_mode = bool(request.args.get("adhoc_mode"))
 
-            teams = get_team_by_course_id_and_user_id(course_id, user_id)
+            team_get_func =  get_adHoc_team_by_course_id_and_user_id if adhoc_mode else get_team_by_course_id_and_user_id
+            teams = team_get_func(course_id, user_id)
 
             json = []
 
             for i in range(0, len(teams)):
                 team_id = teams[i].team_id
                 team_name = teams[i].team_name
-                team_users = get_team_users(course_id, team_id, user_id)
+                team_users = get_adhoc_team_users(team_id) if adhoc_mode else get_team_users(course_id, team_id, user_id)
                 users = []
 
                 # Get the names of each team member w/ the LName shortened.
                 for user in team_users:
                     # users.append((user[1]+' '+user[2][0]+'.'))
-                    users.append(user[1])
+                    users.append(user[0] if adhoc_mode else user[1])
 
                 data = {
                     'team_id': teams[i].team_id,
@@ -91,46 +93,6 @@ def get_all_teams_by_user():
             return create_good_response(json, 200, "teams")
             # return create_good_response(teams_schema.dump(teams), 200, "teams")
 
-    except Exception as e:
-        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
-    
-@bp.route('/adhoc_team_by_user', methods = ['GET'])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-def get_all_adhoc_teams_by_user():
-    try:
-        if request.args and request.args.get("course_id"):
-            course_id = int(request.args.get("course_id"))
-            user_id = int(request.args.get("user_id"))
-
-            teams = get_adHoc_team_by_course_id_and_user_id(course_id, user_id)
-
-            json = []
-
-            for i in range(0, len(teams)):
-                team_id = teams[i].team_id
-                team_users = get_adhoc_team_users(team_id)
-                users = []
-
-                # Get the names of each team member w/ the LName shortened.
-                for user in team_users:
-                    # users.append((user[1]+' '+user[2][0]+'.'))
-                    users.append(user[0])
-
-                data = {
-                    'team_id': teams[i].team_id,
-                    'team_name': teams[i].team_name,
-                    'observer_id': teams[i].observer_id,
-                    'course_id': teams[i].course_id,
-                    'date_created': teams[i].date_created,
-                    'active_until': teams[i].active_until,
-                    'team_users': users,
-                }
-                json.append(data)
-
-            return create_good_response(json, 200, "teams")
-            # return create_good_response(teams_schema.dump(teams), 200, "teams")
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
@@ -240,6 +202,16 @@ def get_adhoc_team_data():
 @bad_token_check()
 @AuthCheck()
 def get_nonfull_adhoc():
+    """
+    DESCRIPTION: 
+        Given an assessment task id, return list of team ids that have not reached the max team size.
+    PARAMETERS:
+        assessment_task_id: <class 'int'> (disired AT id)
+    RETURNS:
+        JSON object
+    EXCEPTIONS:
+        None other than what the database is allowed to raise.
+    """
     # given an assessment task id, return list of team ids that have not reached the max team size
     try:
         if request.args and request.args.get("assessment_task_id"):

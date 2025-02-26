@@ -6,7 +6,6 @@ from models.assessment_task import get_assessment_task
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
-    admin_check
 )
 
 from models.completed_assessment import (

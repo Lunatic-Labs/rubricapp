@@ -93,7 +93,7 @@ class CompleteAssessmentTask extends Component {
 
         if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
             genericResourceGET(
-                `/${adHocMode ? 'adhoc_team_by_user':'team_by_user'}?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}&adhoc_mode=${adHocMode}`,
                 "teams", this, { dest: "userFixedTeam" }
             );
         }
