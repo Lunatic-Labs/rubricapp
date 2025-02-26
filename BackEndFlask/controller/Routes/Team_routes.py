@@ -25,8 +25,10 @@ from models.queries import (
     get_all_nonfull_adhoc_teams,
     get_students_by_team_id,
     get_team_users,
-    get_sorted_adhoc_teams,
+    get_course_from_at,
     get_num_of_adhocs,
+    get_adHoc_team_by_course_id_and_user_id,
+    get_adhoc_team_users,
 )
 
 @bp.route('/team', methods = ['GET'])
@@ -89,6 +91,46 @@ def get_all_teams_by_user():
             return create_good_response(json, 200, "teams")
             # return create_good_response(teams_schema.dump(teams), 200, "teams")
 
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
+    
+@bp.route('/adhoc_team_by_user', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_all_adhoc_teams_by_user():
+    try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            user_id = int(request.args.get("user_id"))
+
+            teams = get_adHoc_team_by_course_id_and_user_id(course_id, user_id)
+
+            json = []
+
+            for i in range(0, len(teams)):
+                team_id = teams[i].team_id
+                team_users = get_adhoc_team_users(team_id)
+                users = []
+
+                # Get the names of each team member w/ the LName shortened.
+                for user in team_users:
+                    # users.append((user[1]+' '+user[2][0]+'.'))
+                    users.append(user[0])
+
+                data = {
+                    'team_id': teams[i].team_id,
+                    'team_name': teams[i].team_name,
+                    'observer_id': teams[i].observer_id,
+                    'course_id': teams[i].course_id,
+                    'date_created': teams[i].date_created,
+                    'active_until': teams[i].active_until,
+                    'team_users': users,
+                }
+                json.append(data)
+
+            return create_good_response(json, 200, "teams")
+            # return create_good_response(teams_schema.dump(teams), 200, "teams")
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
@@ -179,7 +221,7 @@ def get_adhoc_team_data():
     assessment_task_id: <class 'int'> (The assessment task id)
 
     Returns:
-        Data from the checkins table.
+        Teams data.
 
     Exceptions:
         None except what the database may raise.
@@ -187,24 +229,25 @@ def get_adhoc_team_data():
 
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        adhoc_data = get_sorted_adhoc_teams(assessment_task_id)
-        return create_good_response(checkins_schema.dump(adhoc_data), 200, "teams")
+
+        adhoc_data = get_adHoc_team_by_course_id_and_user_id(get_course_from_at(assessment_task_id), -1, True)
+        return create_good_response(teams_schema.dump(adhoc_data), 200, "teams")
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
 
-@bp.route('/team/nonfull-adhoc', methods = ["GET"])
+@bp.route('nonfull-adhoc', methods = ["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_nonfull_adhoc_teams():
+def get_nonfull_adhoc():
     # given an assessment task id, return list of team ids that have not reached the max team size
     try:
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
 
-            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]
+            valid_teams = get_all_nonfull_adhoc_teams(assessment_task_id)
 
-            return create_good_response(valid_teams, 200, "teams")
+            return create_good_response(teams_schema.dump(valid_teams), 200, "teams")
 
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
@@ -354,20 +397,6 @@ class TeamUserSchema(ma.Schema):
             'team_id',
             'user_id'
         )
-
-class CheckinSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'checkin_id',
-            'assessment_task_id',
-            'team_number',
-            'user_id',
-            'time'
-        )
-
-
-checkin_schema = CheckinSchema()
-checkins_schema = CheckinSchema(many=True)
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
 team_user_schema = TeamUserSchema()

@@ -62,7 +62,6 @@ class CompleteAssessmentTask extends Component {
             currentUserId: null,
             usingTeams: this.props.navbar.state.unitOfAssessment,
             usingAdHoc: !this.props.navbar.state.chosenCourse.use_fixed_teams && this.props.navbar.state.unitOfAssessment,
-            numberOfAdhocTeams: null, // FIX: this is set up for removal.
             checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
                                                              // The loop happens due to server caching as per testing.
             checkinEventSource: null,
@@ -92,59 +91,22 @@ class CompleteAssessmentTask extends Component {
             "roles", this, { dest: "currentUserRole" }
         );
 
-        if (adHocMode){
-            const numOfTeams = chosenAssessmentTask.number_of_teams;
-            let teamData = {};
-            for(let i = 0; i < numOfTeams; ++i){
-                teamData[i] = {
-                    'active_until': null,
-                    'course_id': chosenCourse.course_id,
-                    'date_created': chosenAssessmentTask.due_date,
-                    'observer_id':chosenCourse.admin_id,
-                    'team_id': i,
-                    'team_name': "Team "+ (i + 1),
-                }
-            }
-            this.setState({
-                teams: teamData,
-            })
-
+        if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
             genericResourceGET(
-                `/team/adhoc?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
-                "teams", this
-            ).then(response =>{
-                let teamId = 0;
-                if(response.teams){
-                    teamId = response.teams.find(teams => teams.user_id === this.currentUserId)?.team_number??null;
-                }
-                for(let i = 0; i < numOfTeams; ++i){
-                    teamData[i].team_users = (i === teamId - 1) ? [navbar.props.userName.split(" ")[0]] : [];
-                }
-                this.setState({
-                    userFixedTeam: teamData,
-                })
-            }).catch (error => {
-                console.log("error getting/formating adhoc data:",error);
-            });
-        }else{
-            if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
-                genericResourceGET(
-                    `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
-                    "teams", this, { dest: "userFixedTeam" }
-                ).then(response =>{
-                    console.log("Goes into userFixedTeam:", response);
-                });
-            }
-    
-            genericResourceGET(
-                `/team?course_id=${chosenCourse["course_id"]}`,
-                "teams", this
-            ).then((result) => {
-                console.log("team GET course_id:", result);
+                `/${adHocMode ? 'adhoc_team_by_user':'team_by_user'}?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+                "teams", this, { dest: "userFixedTeam" }
+            );
+        }
 
-                if (this.state.usingTeams && result.teams && result.teams.length > 0) {
-                    const teamIds = result.teams.map(team => team.team_id);
-    
+        genericResourceGET(
+            `/${adHocMode ? 'team/adhoc':'team'}?${adHocMode ?`assessment_task_id=${chosenAssessmentTask.assessment_task_id}`:`course_id=${chosenCourse["course_id"]}`}`,
+            "teams", this
+        ).then((result) => {
+            if (this.state.usingTeams && result.teams && result.teams.length > 0) {
+                const teamIds = result.teams.map(team => team.team_id);
+                console.log(result);
+                
+                if(!adHocMode){
                     genericResourceGET(
                         `/user?team_ids=${teamIds}`,
                         "teams_users", this, { dest: "teamsUsers" }
@@ -152,8 +114,8 @@ class CompleteAssessmentTask extends Component {
                         console.log("teamUsers:", result);
                     });
                 }
-            });
-        }
+            }
+        });
     
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,

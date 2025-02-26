@@ -217,6 +217,44 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
 
     return teams
 
+def get_adHoc_team_by_course_id_and_user_id(course_id, user_id, all=False):
+    """
+    Description:
+    Gets the ad hoc teams for the given user in the given course.
+    Returns None if the given user is not in the given course.
+
+    Parameters:
+    user_id: int (The id of a user logged in)
+    course_id: int (The id of a course)
+    all: bool (if all the teams should be fetched)
+    """
+    teams = db.session.query(
+        Team
+    ).join(
+        Checkin, Checkin.team_number == Team.team_id
+    )
+    
+    pattern = '^Team [0-9]+$'
+
+    if(all):
+        teams = teams.filter(
+            and_(
+                Team.course_id == course_id,
+                Team.team_name.op('REGEXP')(pattern)
+            )
+        ).all()
+    else:
+        teams = teams.filter(
+            and_(
+                Team.course_id == course_id,
+                Checkin.user_id == user_id
+            )
+        ).all()
+
+    return teams
+
+
+
 # HERE
 @error_log
 def get_team_users(course_id: int, team_id: int, user_id: int):
@@ -753,29 +791,27 @@ def get_all_checkins_for_assessment(assessment_task_id):
     return checkins
 
 @error_log
-def get_sorted_adhoc_teams(assessment_task_id):
+def get_course_from_at(assessment_task_id):
     """
     Description:
-    Returns the adhoc information for a particular assessment task in a sorted manner for easier data manipulation.
+    Returns course_id.
 
     Parameters:
     assessment_task_id: <class 'int'> (The id of an assessment task)
 
     Return:
-    <class 'object'> (checkin rows)
+    <class 'object'> (teams)
 
     Exceptions:
     None except what the database is allowed to raise.
     """
-    checkins=db.session.query(
-        Checkin
+    course_id=db.session.query(
+        AssessmentTask.course_id
     ).filter(
-        Checkin.assessment_task_id == assessment_task_id,
-    ).order_by(
-        Checkin.team_number, Checkin.time,
-    ).all()
+        AssessmentTask.assessment_task_id == assessment_task_id,
+    )
 
-    return checkins
+    return course_id[0]
 
 # This query was written by ChatGPT
 @error_log
@@ -819,8 +855,14 @@ def get_all_nonfull_adhoc_teams(assessment_task_id):
     # Generate a list of all team numbers up to number_of_teams
     all_team_numbers = set(range(1, number_of_teams + 1))
 
-    # Return only those team numbers that are not invalid
-    return list(all_team_numbers - invalid_team_numbers)
+    valid_team_numbers = list(all_team_numbers - invalid_team_numbers)
+    
+    valid_teams = db.session.query(
+        Team
+    ).filter(
+        Team.team_name.in_([f"Team {num}" for num in valid_team_numbers])
+    ).all()
+    return valid_teams  
 
 @error_log
 def get_completed_assessment_with_team_name(assessment_task_id):
@@ -1297,3 +1339,28 @@ def get_num_of_adhocs(course_id:int):
     pattern = '^Team [0-9]+$'
     count = db.session.query(func.count(Team.team_id)).filter(Team.team_name.op('REGEXP')(pattern)).scalar()
     return count
+
+def get_adhoc_team_users(team_id):
+    """
+    Description:
+    Returns the users of the particular ad hoc team.
+
+    Parameters:
+    team_id : <class 'int'> (specific team.)
+
+    Returns:
+    <class 'list'> (the users of the given team)
+
+    Exceptions:
+    None except what the db or oem raise.
+    """
+    users = db.session.query(
+        User.first_name
+    ).join(
+        Checkin,
+        Checkin.user_id == User.user_id,
+    ).filter(
+        Checkin.team_number == team_id,
+    ).all()
+
+    return users

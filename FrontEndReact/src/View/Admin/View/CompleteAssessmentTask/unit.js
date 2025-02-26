@@ -76,6 +76,7 @@ if(module.hot){
 
 export function generateUnitList(args) {
 	let unitList = [];
+	console.warn("called unit");
 	
 	if (args.roleName === "Student") {
 		if (args.unitType === UnitType.INDIVIDUAL) {
@@ -103,7 +104,7 @@ export function generateUnitList(args) {
 					args.assessmentTaskRubric, args.fixedTeamMembers
 			): createAdHocTeamUnit(
 				team, args.chosenCompleteAssessmentTask,
-				args.assessmentTaskRubric, args.fixedTeamMembers, args.currentUserId,
+				args.assessmentTaskRubric, args.fixedTeamMembers,
 			));
 		} 
 	} else {
@@ -124,7 +125,7 @@ export function generateUnitList(args) {
 				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
 				return isFixed ?
 					createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers):
-					createAdHocTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers, args.currentUserId);
+					createAdHocTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
 			});
 		} 
 	}
@@ -170,7 +171,7 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	);
 }
 
-function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers, currentUserId) {
+function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	const teamId = team["team_id"] || team["team_number"];
 	
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
@@ -179,7 +180,7 @@ function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers, currentUserId)
 
 	return new AdHocTeamUnit(
 		cat ?? null, rocsData, isDone,
-		team, teamMembers, currentUserId,
+		team, teamMembers,
 	);
 }
 
@@ -469,19 +470,12 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
 	 * @param {int} currentUserId - The current user to save data under.
 	 */
-	currentUserId;
 
-	constructor(cat, rocs, done, team, teamMembers, currentUserId) {
+	constructor(cat, rocs, done, team, teamMembers) {
 		super(cat, rocs, done, team, teamMembers);
 		this.unitType = UnitType.AD_HOC_TEAM;
 		this.team = team;
 		this.teamMembers = teamMembers;
-		this.currentUserId = currentUserId;
-	}
-
-	// This is used for the post and puts for CATS. Notice that we bind to a user as opposed to a team that is changing.
-	getSubmitQueryParam() {
-		return `uid=${this.currentUserId}`;
 	}
 
 	shallowClone() {
@@ -505,13 +499,5 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 		} else {
 			return [ <Box key={0}>No Team Members Checked In</Box> ];
 		}
-	}
-
-	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
-		return {
-			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
-			"user_id": this.currentUserId,
-			"team_id": -1,
-		};
 	}
 }
