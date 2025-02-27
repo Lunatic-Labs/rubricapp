@@ -217,7 +217,7 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
 
     return teams
 
-def get_adHoc_team_by_course_id_and_user_id(course_id, user_id, all=False):
+def get_adHoc_team_by_course_id_and_user_id(course_id, user_id):
     """
     Description:
     Gets the ad hoc teams for the given user in the given course.
@@ -226,34 +226,54 @@ def get_adHoc_team_by_course_id_and_user_id(course_id, user_id, all=False):
     Parameters:
     user_id: int (The id of a user logged in)
     course_id: int (The id of a course)
-    all: bool (if all the teams should be fetched)
     """
     teams = db.session.query(
         Team
     ).join(
         Checkin, Checkin.team_number == Team.team_id
-    )
-    
-    pattern = '^Team [0-9]+$'
-
-    if(all):
-        teams = teams.filter(
-            and_(
-                Team.course_id == course_id,
-                Team.team_name.op('REGEXP')(pattern)
-            )
-        ).all()
-    else:
-        teams = teams.filter(
-            and_(
-                Team.course_id == course_id,
-                Checkin.user_id == user_id
-            )
-        ).all()
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            Checkin.user_id == user_id
+        )
+    ).all()
 
     return teams
 
+def get_all_adhoc_teams_from_AT(assessment_task_id):
+    """
+    DESCRIPTION:
+        Returns all adhoc teams for a particular AT.
+    PARAMETERS:
+        assessment_task_id: <class 'int'> (desired AT's id)
+    RETURNS:
+        query object
+    EXCEPTIONS:
+        None except what the database may raise.
+    """
+    course_id = get_course_from_at(assessment_task_id)
+    course_id = 0 if course_id == None else course_id[0]
 
+    number_of_teams = db.session.query(
+        AssessmentTask.number_of_teams
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id
+    ).all()
+
+    number_of_teams = 0 if number_of_teams== None else number_of_teams[0][0]
+
+    pattern = '^Team [0-9]+$'
+
+    teams = db.session.query(
+        Team
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            Team.team_name.op('REGEXP')(pattern)
+        )
+    ).order_by(Team.team_name).limit(number_of_teams).all()
+    
+    return teams
 
 # HERE
 @error_log

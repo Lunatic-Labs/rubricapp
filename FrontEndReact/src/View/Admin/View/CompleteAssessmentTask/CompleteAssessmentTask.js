@@ -104,7 +104,6 @@ class CompleteAssessmentTask extends Component {
         ).then((result) => {
             if (this.state.usingTeams && result.teams && result.teams.length > 0) {
                 const teamIds = result.teams.map(team => team.team_id);
-                
                 if(!adHocMode){
                     genericResourceGET(
                         `/user?team_ids=${teamIds}`,
@@ -191,7 +190,7 @@ class CompleteAssessmentTask extends Component {
 
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
-
+                
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
@@ -206,7 +205,7 @@ class CompleteAssessmentTask extends Component {
                     //   so index to get the first entry of the list.
                     userFixedTeam: userFixedTeam?.[0],
                 });
-                
+
                 this.setState({
                     unitList,
                 });
@@ -279,7 +278,7 @@ class CompleteAssessmentTask extends Component {
                 <Loading />
             );
         }
-        
+
         return (
             <Box>
                 <Box className="assessment-title-spacing">

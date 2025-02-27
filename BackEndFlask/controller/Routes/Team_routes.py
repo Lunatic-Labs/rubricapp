@@ -11,7 +11,6 @@ from models.team import (
     replace_team,
     delete_team
 )
-from models.assessment_task import get_assessment_tasks_by_team_id
 from models.completed_assessment import completed_assessment_team_or_user_exists
 from models.team_user import *
 
@@ -25,7 +24,7 @@ from models.queries import (
     get_all_nonfull_adhoc_teams,
     get_students_by_team_id,
     get_team_users,
-    get_course_from_at,
+    get_all_adhoc_teams_from_AT,
     get_num_of_adhocs,
     get_adHoc_team_by_course_id_and_user_id,
     get_adhoc_team_users,
@@ -170,7 +169,7 @@ def get_one_team():
     except Exception as e:
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
 
-@bp.route('/team/adhoc', methods = ["GET"])
+@bp.route('/team/adhoc', methods = ["GET"])#not returning anything for super users
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
@@ -191,11 +190,10 @@ def get_adhoc_team_data():
 
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-
-        adhoc_data = get_adHoc_team_by_course_id_and_user_id(get_course_from_at(assessment_task_id), -1, True)
+        adhoc_data = get_all_adhoc_teams_from_AT(assessment_task_id)
         return create_good_response(teams_schema.dump(adhoc_data), 200, "teams")
     except Exception as e:
-        return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
+        return create_bad_response(f"An error occurred getting adhoc teams {e}", "teams", 400)
 
 @bp.route('nonfull-adhoc', methods = ["GET"])
 @jwt_required()

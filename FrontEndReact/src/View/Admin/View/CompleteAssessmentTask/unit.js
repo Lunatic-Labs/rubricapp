@@ -76,7 +76,7 @@ if(module.hot){
 
 export function generateUnitList(args) {
 	let unitList = [];
-	
+
 	if (args.roleName === "Student") {
 		if (args.unitType === UnitType.INDIVIDUAL) {
 			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.currentUserId;
