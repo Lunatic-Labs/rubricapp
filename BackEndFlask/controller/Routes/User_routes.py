@@ -332,28 +332,37 @@ def delete_user():
             #print(user_id, flush=True)
             delete_user_by_user_id(user_id)
 
-            t = create_good_response([], 200, "")
-            #print(t, flush = True)
-            return t
+            return create_good_response([], 200, "")
     except Exception:
         #return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
         try:
             if request.args and request.args.get("uid"):
                 user_id = int(request.args.get("uid"))
-                associated_tasks = completed_assessment_team_or_user_exists(team_id = None, user_id=user_id)
-                if associated_tasks is None:
-                    associated_tasks = []
-                if len(associated_tasks) > 0:
-                    refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, user_id=user_id)
-                    if not refetched_tasks:
+                from models.user_course import get_user_courses_by_user_id
+                userCourses = get_user_courses_by_user_id(user_id)
+
+                has_role_5 = False
+                for userCourse in userCourses:
+                    if userCourse.role_id == 5:
+                        has_role_5 = True
+                        break
+                if has_role_5:
+                    associated_tasks = completed_assessment_team_or_user_exists(team_id = None, user_id=user_id)
+                    if associated_tasks is None:
+                        associated_tasks = []
+                    if len(associated_tasks) > 0:
+                        refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, user_id=user_id)
+                        if not refetched_tasks:
+                            delete_user_by_user_id(user_id)
+                            return create_good_response([], 200, "users")
+                        else:
+                            return create_bad_response("Cannot delete user with associated tasks", "users", 400)
+                    else:
                         delete_user_by_user_id(user_id)
                         return create_good_response([], 200, "users")
-                    else:
-                        return create_bad_response("Cannot delete user with associated tasks", "users", 400)
                 else:
                     delete_user_by_user_id(user_id)
                     return create_good_response([], 200, "users")
-
         except Exception as e1:
             return create_bad_response(f"An error occurred deleting a user: {e1}", "users", 400)
 
