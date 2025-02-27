@@ -338,29 +338,19 @@ def delete_user():
         try:
             if request.args and request.args.get("uid"):
                 user_id = int(request.args.get("uid"))
-                from models.user_course import get_user_courses_by_user_id
-                userCourses = get_user_courses_by_user_id(user_id)
 
-                has_role_5 = False
-                for userCourse in userCourses:
-                    if userCourse.role_id == 5:
-                        has_role_5 = True
-                        break
-                if has_role_5:
-                    associated_tasks = completed_assessment_team_or_user_exists(team_id = None, user_id=user_id)
-                    if associated_tasks is None:
-                        associated_tasks = []
-                    if len(associated_tasks) > 0:
-                        refetched_tasks = completed_assessment_team_or_user_exists( team_id = None, user_id=user_id)
-                        if not refetched_tasks:
-                            delete_user_by_user_id(user_id)
-                            return create_good_response([], 200, "users")
-                        else:
-                            return create_bad_response("Cannot delete user with associated tasks", "users", 400)
-                    else:
+                if request.args.get("role_id") and request.args.get("role_id") == "5":
+                    associated_tasks = completed_assessment_team_or_user_exists(team_id=None, user_id=user_id)
+
+                    if associated_tasks is None or len(associated_tasks) == 0:
+                                            # No tasks associated, safe to delete
                         delete_user_by_user_id(user_id)
                         return create_good_response([], 200, "users")
+                    else:
+                                            # User has associated tasks, return error
+                        return create_bad_response("Cannot delete user. There are assessment tasks associated with this user.", "users", 400)
                 else:
+                                        # Standard deletion for users without role_id=5 in request params
                     delete_user_by_user_id(user_id)
                     return create_good_response([], 200, "users")
         except Exception as e1:
