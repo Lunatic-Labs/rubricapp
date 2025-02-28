@@ -171,7 +171,7 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 }
 
 function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
-	const teamId = team["team_id"] || team["team_number"];
+	const teamId = team["team_id"]; //|| team["team_number"];
 	
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
 	const teamMembers = fixedTeamMembers[teamId];

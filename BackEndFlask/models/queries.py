@@ -243,7 +243,7 @@ def get_adHoc_team_by_course_id_and_user_id(course_id, user_id):
 def get_all_adhoc_teams_from_AT(assessment_task_id):
     """
     DESCRIPTION:
-        Returns all adhoc teams for a particular AT.
+        Returns all adhoc teams for a particular AT that have students checkedin.
     PARAMETERS:
         assessment_task_id: <class 'int'> (desired AT's id)
     RETURNS:
@@ -266,6 +266,12 @@ def get_all_adhoc_teams_from_AT(assessment_task_id):
 
     teams = db.session.query(
         Team
+    ).join(
+        Checkin,
+        and_(
+            Checkin.assessment_task_id == assessment_task_id,
+            Checkin.team_number == Team.team_id,
+        )
     ).filter(
         and_(
             Team.course_id == course_id,

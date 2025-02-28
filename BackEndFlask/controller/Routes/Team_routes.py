@@ -169,14 +169,14 @@ def get_one_team():
     except Exception as e:
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
 
-@bp.route('/team/adhoc', methods = ["GET"])#not returning anything for super users
+@bp.route('/team/adhoc', methods = ["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
 def get_adhoc_team_data():
     """
     Description:
-        This returns the needed adhoc data from checkins for completeAssessmentTask.js to function.
+        This returns all the teams from the AT that have students checkin.
 
     Parameters:
     assessment_task_id: <class 'int'> (The assessment task id)

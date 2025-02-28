@@ -188,9 +188,12 @@ class CompleteAssessmentTask extends Component {
                     return 0;
                 });
 
+                console.log("Chosen CAT:", navbar.state.chosenCompleteAssessmentTask);
+                console.log("Chosen -AT:", chosenAssessmentTask);
+                console.log("CATS:", completedAssessments);
+
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
-                
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
@@ -226,6 +229,7 @@ class CompleteAssessmentTask extends Component {
             currentUserRole,
             completedAssessments,
             checkins,
+            usingAdHoc,
         } = this.state;
 
         const navbar = this.props.navbar;
@@ -244,17 +248,18 @@ class CompleteAssessmentTask extends Component {
             return (
                 <Loading />
             );
-
         } else if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) {
             return (
                 <h1>Please create a team to complete this assessment.</h1>
             );
-
         } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
                 <h1>Please add students to the roster to complete this assessment.</h1>
             );
-
+        } else if (usingAdHoc && teams.length < 1){
+            return (
+                <h1>No team has any students checked in at the moment.</h1>
+            );
         }
 
         const roleName = currentUserRole["role_name"];
