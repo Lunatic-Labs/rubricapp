@@ -87,8 +87,8 @@ export function generateUnitList(args) {
 				args.assessmentTaskRubric
 			));
 		} else {
+			// Note that when we are here args.ChosenCompleteAssessmentTask is not populated.
 			let team;
-
 			const isFixedTeams = args.unitType === UnitType.FIXED_TEAM;
 			
 			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask && isFixedTeams) {
@@ -97,12 +97,22 @@ export function generateUnitList(args) {
 			} else {
  				team = args.userFixedTeam;// Despite the var name this works for adhocs.
 			}
+
+			let chosenCAT = args.chosenCompleteAssessmentTask
+
+			const exitsAndMeaningful = (i) =>{return i && i.length > 0;}
+			
+			// Next if statement allows for quicksaved data to be reflected in the AT view.
+			if (chosenCAT === null && exitsAndMeaningful(args.completedAssessments)){
+				chosenCAT = args.completedAssessments.find(cat => cat.team_id === team.team_id);
+			}
+
 			unitList.push(isFixedTeams ? 
 				createFixedTeamUnit(
-					team, args.chosenCompleteAssessmentTask,
+					team, chosenCAT,
 					args.assessmentTaskRubric, args.fixedTeamMembers
 			): createAdHocTeamUnit(
-				team, args.chosenCompleteAssessmentTask,
+				team, chosenCAT,
 				args.assessmentTaskRubric, args.fixedTeamMembers,
 			));
 		} 

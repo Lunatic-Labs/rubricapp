@@ -188,10 +188,6 @@ class CompleteAssessmentTask extends Component {
                     return 0;
                 });
 
-                console.log("Chosen CAT:", navbar.state.chosenCompleteAssessmentTask);
-                console.log("Chosen -AT:", chosenAssessmentTask);
-                console.log("CATS:", completedAssessments);
-
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
                 const unitList = generateUnitList({
