@@ -58,13 +58,18 @@ export default function CharacteristicsAndImprovements({
               </h6>
               <div style={{ height: '210px' }}>
                 {shouldShowGraph ? (
-                  <ResponsiveContainer width="100%" height="100%">
+                  <ResponsiveContainer width="100%" height="100%">  
+                    <Tooltip
+                      content={<CustomTooltip />}
+                      cursor={{ fill: 'rgba(46, 139, 239, 0.1)' }}
+                    />                                                     
                     <BarChart
                       layout="vertical"
                       data={processedData}
                       margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
                       onClick={openModal}
                     >
+
                       <XAxis
                         type="number"
                         domain={[0, 100]}
@@ -78,11 +83,7 @@ export default function CharacteristicsAndImprovements({
                         dataKey="truncatedLabel"
                         width={100}
                       />
-                      <CartesianGrid horizontal={false} />
-                      <Tooltip
-                        content={<CustomTooltip />}
-                        cursor={{ fill: 'rgba(46, 139, 239, 0.1)' }}
-                      />
+                      <CartesianGrid horizontal={false} /> 
                       <Bar 
                         dataKey="percentage" 
                         fill="#2e8bef"
@@ -116,12 +117,13 @@ export default function CharacteristicsAndImprovements({
            role="dialog"
            style={{ display: isModalOpen ? 'block' : 'none' }}>
         <div className="modal-dialog modal-lg">
+        <ResponsiveContainer width="140%" height= "100%" className={'justify-content-center align-items-center'}>
           <div className="modal-content">
             <div className="modal-header position-relative">
               <div className="w-100">
-                <h5 className="modal-title text-center m-0 fw-normal">
+                <h4 className="modal-title text-center m-0 fw-normal">
                   {dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}
-                </h5>
+                </h4>
               </div>
               <button type="button" 
                       className="btn-close position-absolute"
@@ -131,7 +133,7 @@ export default function CharacteristicsAndImprovements({
               </button>
             </div>
             <div className="modal-body">
-              <ResponsiveContainer width="100%" height={400}>
+              <ResponsiveContainer width="100%" height={500}>
                 <BarChart
                   layout="vertical"
                   data={processedData}
@@ -142,10 +144,11 @@ export default function CharacteristicsAndImprovements({
                     domain={[0, 100]}
                     ticks={[0, 25, 50, 75, 100]}
                     tickFormatter={(tick) => `${tick}`}
-                    style={{ fontSize: '13px' }}
+                    style={{ fontSize: '15px' }}
+                    scale="linear" 
                   />
                   <YAxis
-                    style={{ fontSize: '13px' }}
+                    style={{ fontSize: '15px' }}
                     type="category"
                     dataKey="fullLabel"
                     width={300}
@@ -166,6 +169,7 @@ export default function CharacteristicsAndImprovements({
               </ResponsiveContainer>
             </div>
           </div>
+          </ResponsiveContainer>
         </div>
       </div>
       {isModalOpen && (
