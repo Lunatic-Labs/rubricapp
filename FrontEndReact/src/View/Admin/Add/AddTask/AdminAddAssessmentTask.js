@@ -173,13 +173,13 @@ class AdminAddAssessmentTask extends Component {
             numberOfTeams,
             maxTeamSize
         } = this.state;
-
+    
         var navbar = this.props.navbar;
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
         var assessmentTask = state.assessmentTask;
         var chosenCourse = state.chosenCourse;
-
+    
         if (usingTeams && !chosenCourse["use_fixed_teams"]) {
             if (!numberOfTeams || !/^[1-9]\d*$/.test(numberOfTeams)) {
                 this.setState({
@@ -212,7 +212,7 @@ class AdminAddAssessmentTask extends Component {
                     notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
                 },
             });
-
+    
         } else {
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
@@ -229,54 +229,56 @@ class AdminAddAssessmentTask extends Component {
                 "number_of_teams": numberOfTeams,
                 "max_team_size": maxTeamSize
             });
-
+    
             let promise;
-            
+    
             if (navbar.state.addAssessmentTask) {
-                promise = genericResourcePOST(
-                    "/assessment_task",
-                    this, body
-                );
-
+                promise = genericResourcePOST("/assessment_task", this, body);
             } else {
-                promise = genericResourcePUT(
-                    `/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
-                    this, body
-                );
+                promise = genericResourcePUT(`/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`, this, body);
             }
-
+    
             promise.then(result => {
                 if (result !== undefined && result.errorMessage === null) {
                     confirmCreateResource("AssessmentTask");
+                } else {
+                    console.error("Error occurred:", result ? result.errorMessage : "Unknown error");
                 }
-            });
-
-            if(usingTeams && !chosenCourse.use_fixed_teams){
-
-                this.findAmountOfAdhoc(chosenCourse.course_id).then(amountOfExistingAdhocs =>{
-                    const date = new Date().getDate();
-                    const month = new Date().getMonth() + 1;
-                    const year = new Date().getFullYear();
-
-                    for (let i=amountOfExistingAdhocs; i < numberOfTeams; ++i){
-                        const body = JSON.stringify({
-                            team_name: "Team "+ (i+1),
-                            observer_id: chosenCourse.admin_id,
-                            course_id: chosenCourse.course_id,
-                            date_created: `${month}/${date}/${year}`,
-                            active_until: null,
-                        });
-                        genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body).catch(
-                            error =>{
-                                console.warn(error);
+    
+                if (usingTeams && !chosenCourse.use_fixed_teams) {
+                    this.findAmountOfAdhoc(chosenCourse.course_id).then(amountOfExistingAdhocs => {
+                        const date = new Date().getDate();
+                        const month = new Date().getMonth() + 1;
+                        const year = new Date().getFullYear();
+    
+                        const createTeamPromises = [];
+    
+                        for (let i = amountOfExistingAdhocs; i < numberOfTeams; ++i) {
+                            const body = JSON.stringify({
+                                team_name: "Team " + (i + 1),
+                                observer_id: chosenCourse.admin_id,
+                                course_id: chosenCourse.course_id,
+                                date_created: `${month}/${date}/${year}`,
+                                active_until: null,
                             });
-                    }
+                            createTeamPromises.push(
+                                genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body)
+                            );
+                        }
+    
+                        return Promise.all(createTeamPromises);
+                    }).then(results => {
+                        console.log("All teams created successfully:", results);
                     }).catch(error => {
-                        console.warn(error);
+                        console.warn("An error occurred during team creation:", error);
                     });
-            }
+                }
+            }).catch(error => {
+                console.warn("An error occurred:", error);
+            });
         }
     };
+    
 
 
     render() {
