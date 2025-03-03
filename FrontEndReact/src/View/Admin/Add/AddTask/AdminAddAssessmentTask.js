@@ -271,6 +271,8 @@ class AdminAddAssessmentTask extends Component {
                                 console.warn(error);
                             });
                     }
+                    }).catch(error => {
+                        console.warn(error);
                     });
             }
         }
