@@ -113,11 +113,11 @@ export default function CharacteristicsAndImprovements({
 
       {/* Expanded Modal */}
       <div className={`modal fade ${isModalOpen ? 'show' : ''}`} 
-           tabIndex="-1" 
-           role="dialog"
-           style={{ display: isModalOpen ? 'block' : 'none' }}>
-        <div className="modal-dialog modal-lg">
-        <ResponsiveContainer width="140%" height= "100%" className={'justify-content-center align-items-center'}>
+        tabIndex="-1" 
+        role="dialog"
+        style={{ display: isModalOpen ? 'block' : 'none', justifyContent: 'center', alignItems: 'center' }}>
+      <div className="modal-dialog modal-lg" style={{ maxWidth: '80%' }}>
+        <ResponsiveContainer width="100%" height= "100%">
           <div className="modal-content">
             <div className="modal-header position-relative">
               <div className="w-100">
