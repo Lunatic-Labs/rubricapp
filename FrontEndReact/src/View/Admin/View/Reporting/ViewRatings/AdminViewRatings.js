@@ -126,9 +126,7 @@ class AdminViewRatings extends Component {
    * Calls api to recive csv data and stores it.
    * @param {int} type: INT that informs what csv is to be retived; sif/ocs,ratings,comments are respecitvley 1,2,3.
    */
-  handleCsvDownloads(type){
-    console.log(typeof this.state.downloadedAssessment);
-
+  handleCsvDownloads(type) {
     let promise = genericResourceGET(
       `/csv_assessment_export?assessment_task_id=${this.state.loadedAssessmentId}&format=${type}`,
       "csv_creation",
