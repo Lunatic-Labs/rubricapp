@@ -71,7 +71,7 @@ export default function CharacteristicsAndImprovements({
                       style={{ 
                         opacity: 0, 
                         transition: 'opacity 0.3s ease',
-                        backgroundColor: 'rgba(46, 139, 239,0.45)',
+                        backgroundColor: 'rgba(46, 139, 239,0.4)',
                         color: 'rgb(255, 255, 255)',
                         textShadow: '2px 2px 5px rgb(0, 37, 79)',
                         fontWeight: 'bold',
