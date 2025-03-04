@@ -80,7 +80,7 @@ export default function CharacteristicsAndImprovements({
                         zIndex: 10
                       }}
                     >
-                      <u>Click for expanded chart</u>
+                      Click for expanded chart
                     </div>
                     <ResponsiveContainer width="100%" height="100%">
                       <BarChart 
