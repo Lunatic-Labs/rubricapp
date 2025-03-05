@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
+import { Tooltip } from '@mui/material';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
@@ -317,14 +318,23 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                         const task = completedAssessmentTasks.find((task) => task["assessment_task_id"] === catId);
                         const isLocked = this.state.lockStatus[catId] !== undefined ? this.state.lockStatus[catId] : (task ? task.locked : false);
 
-                        return (
-                            <IconButton
-                                aria-label={isLocked ? "unlock" : "lock"}
-                                onClick={() => this.handleLockToggle(catId, task)}
-                            >
-                                {isLocked ? <LockIcon /> : <LockOpenIcon />}
-                            </IconButton>
-                        );
+                            return (
+                                <Tooltip
+                                    title={
+                                        <>
+                                            <p>
+                                                If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
+                                            </p>
+                                        </>
+                                    }>
+                                    <IconButton
+                                        aria-label={isLocked ? "unlock" : "lock"}
+                                        onClick={() => this.handleLockToggle(catId, task)}
+                                    >
+                                        {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                                    </IconButton>
+                                </Tooltip>
+                            );
                     },
                 }
             },
