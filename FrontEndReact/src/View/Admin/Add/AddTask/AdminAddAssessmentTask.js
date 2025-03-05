@@ -153,15 +153,6 @@ class AdminAddAssessmentTask extends Component {
         });
     };
 
-    findAmountOfAdhoc = async (course_id) =>{
-        try{
-            const promise = await genericResourceGET(`/team/adhoc_amount?course_id=${course_id}`,"teams",this);
-            return promise.teams || 0;
-        }catch (error) {
-            return 0; // Defaults to 0 so as to avoid doing work.
-        }
-    }
-
     handleSubmit = () => {
         const {
             taskName,
@@ -256,7 +247,12 @@ class AdminAddAssessmentTask extends Component {
             });
 
             if(usingTeams && !chosenCourse.use_fixed_teams){
-                this.findAmountOfAdhoc(chosenCourse.course_id).then(amountOfExistingAdhocs =>{
+                genericResourceGET(`/team/adhoc_amount?course_id=${chosenCourse.course_id}`,"teams",this).then(amountOfExistingAdhocs =>{
+                    if(!amountOfExistingAdhocs.teams){
+                        return;
+                    }
+                    amountOfExistingAdhocs = amountOfExistingAdhocs.teams;
+                    
                     const date = new Date().getDate();
                     const month = new Date().getMonth() + 1;
                     const year = new Date().getFullYear();
