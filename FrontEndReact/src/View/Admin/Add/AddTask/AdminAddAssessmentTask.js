@@ -105,8 +105,9 @@ class AdminAddAssessmentTask extends Component {
     handleChange = (e) => {
         const { id, value } = e.target;
         const regex = /^[1-9]\d*$/; // Positive digits
+        const {usingTeams} = this.state;
 
-        if (id === 'numberOfTeams') {
+        if (id === 'numberOfTeams' && usingTeams) {
             if (value !== '' && !regex.test(value)) {
                 this.setState({
                     errors: {
@@ -118,7 +119,7 @@ class AdminAddAssessmentTask extends Component {
             }
         }
 
-        if (id === 'maxTeamSize') {
+        if (id === 'maxTeamSize' && usingTeams) {
             if (value !== '' && !regex.test(value)) {
                 this.setState({
                     errors: {
@@ -209,6 +210,7 @@ class AdminAddAssessmentTask extends Component {
             });
 
         } else {
+            const fixTeamData = (i) => this.state.usingTeams ? i : null;
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
@@ -221,8 +223,8 @@ class AdminAddAssessmentTask extends Component {
                 "unit_of_assessment": usingTeams,
                 "create_team_password": password,
                 "comment": notes,
-                "number_of_teams": numberOfTeams,
-                "max_team_size": maxTeamSize
+                "number_of_teams": fixTeamData(numberOfTeams),
+                "max_team_size": fixTeamData(maxTeamSize)
             });
 
             let promise;
@@ -247,7 +249,7 @@ class AdminAddAssessmentTask extends Component {
             });
 
             if(usingTeams && !chosenCourse.use_fixed_teams){
-                genericResourceGET(`/team/adhoc_amount?course_id=${chosenCourse.course_id}`,"teams",this).then(amountOfExistingAdhocs =>{
+                genericResourceGET(`/adhoc_amount?course_id=${chosenCourse.course_id}`,"teams",this).then(amountOfExistingAdhocs =>{
                     if(!amountOfExistingAdhocs.teams){
                         return;
                     }
@@ -276,8 +278,6 @@ class AdminAddAssessmentTask extends Component {
             }
         }
     };
-    
-
 
     render() {
         var navbar = this.props.navbar;

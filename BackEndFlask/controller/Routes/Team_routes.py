@@ -223,7 +223,7 @@ def get_nonfull_adhoc():
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
 
 
-@bp.route('/team/adhoc_amount', methods=["GET"])
+@bp.route('/adhoc_amount', methods=["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
