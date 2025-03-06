@@ -242,15 +242,9 @@ class AdminAddAssessmentTask extends Component {
                 );
             }
 
-            promise.then(result => {
-                if (result !== undefined && result.errorMessage === null) {
-                    confirmCreateResource("AssessmentTask");
-                }
-            });
-
             if(usingTeams && !chosenCourse.use_fixed_teams){
                 genericResourceGET(`/adhoc_amount?course_id=${chosenCourse.course_id}`,"teams",this).then(amountOfExistingAdhocs =>{
-                    if(!amountOfExistingAdhocs.teams){
+                    if(amountOfExistingAdhocs.teams === undefined || amountOfExistingAdhocs.teams === null){
                         return;
                     }
                     amountOfExistingAdhocs = amountOfExistingAdhocs.teams;
@@ -267,6 +261,7 @@ class AdminAddAssessmentTask extends Component {
                             date_created: `${month}/${date}/${year}`,
                             active_until: null,
                         });
+                        console.log("here");
                         genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body).catch(
                             error =>{
                                 return;
@@ -276,6 +271,12 @@ class AdminAddAssessmentTask extends Component {
                         return;
                     });
             }
+
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("AssessmentTask");
+                }
+            });
         }
     };
 
