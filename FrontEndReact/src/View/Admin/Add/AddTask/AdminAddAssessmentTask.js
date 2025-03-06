@@ -261,7 +261,6 @@ class AdminAddAssessmentTask extends Component {
                             date_created: `${month}/${date}/${year}`,
                             active_until: null,
                         });
-                        console.log("here");
                         genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body).catch(
                             error =>{
                                 return;
