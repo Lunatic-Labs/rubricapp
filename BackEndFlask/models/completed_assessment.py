@@ -62,6 +62,24 @@ def completed_assessment_team_or_user_exists(team_id, user_id):
     else:
         return []
 
+@error_log 
+def delete_completed_assessment_tasks(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    try:
+        db.session.delete(one_completed_assessment)
+        db.session.commit()
+        return True 
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        error_log(f"Error deleting completed assessment task {completed_assessment_id}: {str(e)}")
+        return False
+
+    return one_completed_assessment
+
 @error_log
 def create_completed_assessment(completed_assessment_data):
     if "." not in completed_assessment_data["initial_time"]:
