@@ -38,17 +38,17 @@ class StudentDashboard extends Component {
         var userRole = state.chosenCourse.role_id;
         genericResourceGET(
             `/assessment_task?course_id=${chosenCourse}&role_id=${userRole}`,
-            "assessment_tasks", this, {dest: "assessmentTasks"});
+            "assessment_tasks", this, { dest: "assessmentTasks" });
 
         if (userRole === 5) {
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourse}`,
-                "completed_assessments", this, {dest: "completedAssessments"}
+                "completed_assessments", this, { dest: "completedAssessments" }
             );
         } else {
             genericResourceGET(
                 `/completed_assessment?course_id=${chosenCourse}&role_id=${userRole}`,
-                "completed_assessments", this, {dest: "completedAssessments"}
+                "completed_assessments", this, { dest: "completedAssessments" }
             );
         }
     }
@@ -102,11 +102,11 @@ class StudentDashboard extends Component {
             <>
                 <Box className="page-spacing">
                     <Box sx={{
-                             display: "flex",
-                             justifyContent: "space-between",
-                             alignItems: "center",
-                             alignSelf: "stretch"
-                         }}>
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"
+                    }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
                             <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
                                 My Assessment Tasks
@@ -126,11 +126,11 @@ class StudentDashboard extends Component {
 
                 <Box className="page-spacing">
                     <Box sx={{
-                             display: "flex",
-                             justifyContent: "space-between",
-                             alignItems: "center",
-                             alignSelf: "stretch"
-                         }}>
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"
+                    }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
                             <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
                                 Completed Assessments
@@ -139,32 +139,24 @@ class StudentDashboard extends Component {
                     </Box>
 
                     <Box>
-                        {role["role_id"] === 5 &&
-                         <StudentCompletedAssessmentTasks
-                             navbar={navbar}
-                             role={role}
-                             filteredAssessments={assessmentTasks}
-                             filteredCompleteAssessments={completedAssessments}
-                         />
-                        }
-                        {role["role_id"] === 4 &&
-                         <StudentCompletedAssessmentTasks
-                             navbar={navbar}
-                             role={role}
-                             filteredAssessments={assessmentTasks}
-                             filteredCompleteAssessments={completedAssessments}
-                         />
+                        {[4, 5].includes(role["role_id"]) &&
+                            <StudentCompletedAssessmentTasks
+                                navbar={navbar}
+                                role={role}
+                                filteredAssessments={assessmentTasks}
+                                filteredCompleteAssessments={completedAssessments}
+                            />
                         }
                     </Box>
                 </Box>
 
                 <Box className="page-spacing">
                     <Box sx={{
-                             display: "flex",
-                             justifyContent: "space-between",
-                             alignItems: "center",
-                             alignSelf: "stretch"
-                         }}>
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"
+                    }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
                             <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
                                 My Teams
@@ -174,14 +166,14 @@ class StudentDashboard extends Component {
 
                     <Box>
                         {role["role_id"] === 5 &&
-                         <StudentViewTeams
-                             navbar={navbar}
-                         />
+                            <StudentViewTeams
+                                navbar={navbar}
+                            />
                         }
                         {role["role_id"] === 4 &&
-                         <TAViewTeams
-                             navbar={navbar}
-                         />
+                            <TAViewTeams
+                                navbar={navbar}
+                            />
                         }
                     </Box>
                 </Box>

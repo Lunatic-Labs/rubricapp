@@ -59,7 +59,7 @@ class SelectTeam extends Component {
             let atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 
             genericResourceGET(
-                `/team/nonfull-adhoc?assessment_task_id=${atId}`,
+                `/nonfull-adhoc?assessment_task_id=${atId}`,
                 "teams", this
             )
         }

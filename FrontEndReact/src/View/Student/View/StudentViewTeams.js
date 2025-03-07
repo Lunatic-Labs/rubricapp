@@ -26,7 +26,7 @@ class StudentViewTeams extends Component {
         var chosenCourseId = chosenCourse["course_id"];
 
         genericResourceGET(
-            `/team_by_user?course_id=${chosenCourseId}`, "teams", this);
+            `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${false}`, "teams", this); //This requires future adjusting
 
         var url = (
             chosenCourse["use_tas"] ?

@@ -5,7 +5,6 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 
-
 class StudentCompletedAssessmentTasks extends Component {
     constructor(props) {
         super(props);
@@ -17,6 +16,27 @@ class StudentCompletedAssessmentTasks extends Component {
             users: null,
             assessmentTasks: null,
             completedAssessments: null,
+            isFiltered: false,
+            filteredCATs: null,
+        }
+    }
+
+    componentDidUpdate(){
+        // Pruning irrelavant data.
+        if(this.state.completedAssessments && this.state.assessmentTasks && !this.state.isFiltered){
+            const ats = new Map();
+            for(let i=0; i < this.state.assessmentTasks.length; ++i){
+                const at = this.state.assessmentTasks[i];
+                ats.set(at.assessment_task_id, at);
+            }
+            let filteredData = this.state.completedAssessments.filter(cat => {
+                const at = ats.get(cat.assessment_task_id);
+                return at && cat.done === true;
+            });
+            this.setState({
+                filteredCATs: filteredData,
+                isFiltered: true,
+            });
         }
     }
 
@@ -52,10 +72,8 @@ class StudentCompletedAssessmentTasks extends Component {
             isLoaded,
             assessmentTasks,
             completedAssessments,
+            isFiltered,
         } = this.state;
-
-        // const filteredATs = this.props.filteredAssessments; // Currently unused, but may be in the future.
-        const filteredCATs = this.props.filteredCompleteAssessments;
 
         if (errorMessage) {
             return(
@@ -67,7 +85,7 @@ class StudentCompletedAssessmentTasks extends Component {
                 </div>
             )
 
-        } else if (!isLoaded || !assessmentTasks || !completedAssessments) {
+        } else if (!isLoaded || !assessmentTasks || !completedAssessments || !isFiltered) {
             return(
                 <Loading />
             )
@@ -77,7 +95,7 @@ class StudentCompletedAssessmentTasks extends Component {
                 <div className='container'>
                     <ViewCompletedAssessmentTasks
                         navbar={this.props.navbar}
-                        completedAssessments={filteredCATs}
+                        completedAssessments={this.state.filteredCATs}
                         assessmentTasks={this.state.assessmentTasks}
                     />
                 </div>
