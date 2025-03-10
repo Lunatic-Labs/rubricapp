@@ -27,7 +27,7 @@ import { CheckinsTracker } from './cat_utils.js';
  * Resources fetched in componentDidMount:
  * @property {Object|null} state.assessmentTaskRubric - The rubric of the assessment task.
  * @property {Array|null} state.teams - The list of teams.
- * @property {Object|null} state.userFixedTeam - The fixed team of the current user.
+ * @property {Object|null} state.userFixedTeam - The "fixed" team of the current user.
  * @property {Array|null} state.users - The list of users.
  * @property {Array|null} state.teamsUsers - The list of users in teams.
  * @property {Object|null} state.currentUserRole - The role of the current user.
@@ -36,11 +36,13 @@ import { CheckinsTracker } from './cat_utils.js';
  * Additional state properties:
  * @property {string|null} state.currentUserId - The ID of the current user.
  * @property {boolean} state.usingTeams - Indicates whether the assessment task is using teams.
+ * @property {boolean} state.usingAdHoc - Indicates if we are using adHoc teams. Note usingteams truth affects this var.
  * @property {Object|null} state.checkins - The CheckinsTracker object.
  * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
  * @property {Array|null} state.unitList - The list of units for the assessment task.
  * @property {int|null} state.jumpId - What team or student to open first.
- */
+ */ 
+
 class CompleteAssessmentTask extends Component {
     constructor(props) {
         super(props);
@@ -59,12 +61,13 @@ class CompleteAssessmentTask extends Component {
             
             currentUserId: null,
             usingTeams: this.props.navbar.state.unitOfAssessment,
+            usingAdHoc: !this.props.navbar.state.chosenCourse.use_fixed_teams && this.props.navbar.state.unitOfAssessment,
             checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
                                                              // The loop happens due to server caching as per testing.
             checkinEventSource: null,
             unitList: null,
 
-            jumpId: this.props.navbar.state.jumpToSection // The desired jump location.
+            jumpId: this.props.navbar.state.jumpToSection // The desired jump location student assessment tasks.
         };
     }
 
@@ -74,6 +77,7 @@ class CompleteAssessmentTask extends Component {
         const chosenAssessmentTask = state.chosenAssessmentTask;
         const chosenCourse = state.chosenCourse;
         const cookies = new Cookies();
+        const adHocMode = this.state.usingAdHoc;
 
         this.currentUserId = cookies.get("user")["user_id"];
 
@@ -89,29 +93,36 @@ class CompleteAssessmentTask extends Component {
 
         if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
             genericResourceGET(
-                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}`,
+                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}&adhoc_mode=${adHocMode}`,
                 "teams", this, { dest: "userFixedTeam" }
             );
         }
 
         genericResourceGET(
-            `/team?course_id=${chosenCourse["course_id"]}`,
+            `/${adHocMode ? 'team/adhoc':'team'}?${adHocMode ?`assessment_task_id=${chosenAssessmentTask.assessment_task_id}`:`course_id=${chosenCourse["course_id"]}`}`,
             "teams", this
         ).then((result) => {
             if (this.state.usingTeams && result.teams && result.teams.length > 0) {
                 const teamIds = result.teams.map(team => team.team_id);
-
-                genericResourceGET(
-                    `/user?team_ids=${teamIds}`,
-                    "teams_users", this, { dest: "teamsUsers" }
-                );
+                if(!adHocMode){
+                    genericResourceGET(
+                        `/user?team_ids=${teamIds}`,
+                        "teams_users", this, { dest: "teamsUsers" }
+                    );
+                }
             }
         });
     
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
             "users", this
-        );
+        ).then(response => {
+            if(adHocMode){
+                this.setState({
+                    teamsUsers: response.users,
+                })
+            }
+        });
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
@@ -136,7 +147,7 @@ class CompleteAssessmentTask extends Component {
         this.state.checkinEventSource?.close();
     }
     
-    componentDidUpdate() {
+    componentDidUpdate() { 
         if (this.state.unitList === null) {
             const {
                 assessmentTaskRubric,
@@ -147,9 +158,10 @@ class CompleteAssessmentTask extends Component {
                 currentUserRole,
                 completedAssessments,
                 checkins
-            } = this.state;
+            } = this.state; 
             
             if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
+
                 const navbar = this.props.navbar;
                 const fixedTeams = navbar.state.chosenCourse["use_fixed_teams"];
                 const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
@@ -157,7 +169,7 @@ class CompleteAssessmentTask extends Component {
 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                if (roleName === "Student" && this.state.usingTeamss && !userFixedTeam) return;
                 if (this.state.usingTeams && !teamsUsers) return;
                 
                 const userSort = [...users].sort((firstUser,secondUser) => {
@@ -176,11 +188,13 @@ class CompleteAssessmentTask extends Component {
                     return 0;
                 });
 
+                const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
+                                                         : UnitType.INDIVIDUAL;
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
                     chosenCompleteAssessmentTask: navbar.state.chosenCompleteAssessmentTask,
-                    unitType: this.state.usingTeams ? UnitType.FIXED_TEAM : UnitType.INDIVIDUAL,
+                    unitType: unitClass,
                     assessmentTaskRubric: assessmentTaskRubric,
                     completedAssessments,
                     users: userSort,
@@ -190,7 +204,7 @@ class CompleteAssessmentTask extends Component {
                     //   so index to get the first entry of the list.
                     userFixedTeam: userFixedTeam?.[0],
                 });
-                
+
                 this.setState({
                     unitList,
                 });
@@ -211,6 +225,7 @@ class CompleteAssessmentTask extends Component {
             currentUserRole,
             completedAssessments,
             checkins,
+            usingAdHoc,
         } = this.state;
 
         const navbar = this.props.navbar;
@@ -229,17 +244,18 @@ class CompleteAssessmentTask extends Component {
             return (
                 <Loading />
             );
-
         } else if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) {
             return (
                 <h1>Please create a team to complete this assessment.</h1>
             );
-
         } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
                 <h1>Please add students to the roster to complete this assessment.</h1>
             );
-
+        } else if (usingAdHoc && teams.length < 1){
+            return (
+                <h1>No team has any students checked in at the moment.</h1>
+            );
         }
 
         const roleName = currentUserRole["role_name"];

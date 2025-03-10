@@ -18,12 +18,14 @@ class AdminViewTeams extends Component {
       teams: null,
       users: null,
       prevTeamsLength: 0,
-      successMessage: null
+      successMessage: null,
+      filtered: false,
     };
   }
 
 
   fetchData = () => {
+    if(this.state.filtered) return;
     var navbar = this.props.navbar;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
@@ -32,7 +34,16 @@ class AdminViewTeams extends Component {
       `/team?course_id=${chosenCourse["course_id"]}`,
       "teams",
       this,
-    );
+    ).then(response => {
+      if (!this.props.navbar.state.chosenCourse.use_fixed_teams){
+        const regex = /^Team [0-9]+$/;
+        const temp = response.teams.filter(team => !regex.test(team.team_name));
+        this.setState({
+          filtered: true,
+          teams: temp,
+        })
+      };
+    });
 
     var url = chosenCourse["use_tas"]
       ? `/user?course_id=${chosenCourse["course_id"]}&role_id=4`
@@ -47,7 +58,7 @@ class AdminViewTeams extends Component {
 
 
   componentDidUpdate(){
-    if (this.state.teams && this.state.teams.length !== this.state.prevTeamsLength) {
+    if (this.state.teams && this.state.teams.length !== this.state.prevTeamsLength && !this.state.filtered) {
       this.setState({ prevTeamsLength: this.state.teams.length });
       this.fetchData();
     }

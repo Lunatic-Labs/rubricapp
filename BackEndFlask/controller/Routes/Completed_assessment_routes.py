@@ -6,7 +6,6 @@ from models.assessment_task import get_assessment_task
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
-    admin_check
 )
 
 from models.completed_assessment import (
@@ -214,7 +213,7 @@ def add_completed_assessment():
         user_id = int(assessment_data["user_id"])
         if (user_id == -1):
             assessment_data["user_id"] = None
-  
+
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:

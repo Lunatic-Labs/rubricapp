@@ -14,7 +14,6 @@ class InvalidTeamUserID(Exception):
 def get_team_users():
     return TeamUser.query.all()
 
-
 @error_log
 def get_team_user(team_user_id):
     one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
