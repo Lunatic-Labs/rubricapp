@@ -11,7 +11,6 @@ from models.team import (
     replace_team,
     delete_team
 )
-from models.assessment_task import get_assessment_tasks_by_team_id
 from models.completed_assessment import completed_assessment_team_or_user_exists
 from models.team_user import *
 
@@ -25,6 +24,10 @@ from models.queries import (
     get_all_nonfull_adhoc_teams,
     get_students_by_team_id,
     get_team_users,
+    get_all_adhoc_teams_from_AT,
+    get_num_of_adhocs,
+    get_adHoc_team_by_course_id_and_user_id,
+    get_adhoc_team_users,
 )
 
 @bp.route('/team', methods = ['GET'])
@@ -57,21 +60,23 @@ def get_all_teams_by_user():
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
+            adhoc_mode = bool(request.args.get("adhoc_mode"))
 
-            teams = get_team_by_course_id_and_user_id(course_id, user_id)
+            team_get_func =  get_adHoc_team_by_course_id_and_user_id if adhoc_mode else get_team_by_course_id_and_user_id
+            teams = team_get_func(course_id, user_id)
 
             json = []
 
             for i in range(0, len(teams)):
                 team_id = teams[i].team_id
                 team_name = teams[i].team_name
-                team_users = get_team_users(course_id, team_id, user_id)
+                team_users = get_adhoc_team_users(team_id) if adhoc_mode else get_team_users(course_id, team_id, user_id)
                 users = []
 
                 # Get the names of each team member w/ the LName shortened.
                 for user in team_users:
                     # users.append((user[1]+' '+user[2][0]+'.'))
-                    users.append(user[1])
+                    users.append(user[0] if adhoc_mode else user[1])
 
                 data = {
                     'team_id': teams[i].team_id,
@@ -164,22 +169,73 @@ def get_one_team():
     except Exception as e:
         return create_bad_response(f"An error occurred fetching a team: {e}", "teams", 400)
 
-@bp.route('/team/nonfull-adhoc', methods = ["GET"])
+@bp.route('/team/adhoc', methods = ["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_nonfull_adhoc_teams():
+def get_adhoc_team_data():
+    """
+    Description:
+        This returns all the teams from the AT that have students checkin.
+
+    Parameters:
+    assessment_task_id: <class 'int'> (The assessment task id)
+
+    Returns:
+        Teams data.
+
+    Exceptions:
+        None except what the database may raise.
+    """
+
+    try:
+        assessment_task_id = int(request.args.get("assessment_task_id"))
+        adhoc_data = get_all_adhoc_teams_from_AT(assessment_task_id)
+        return create_good_response(teams_schema.dump(adhoc_data), 200, "teams")
+    except Exception as e:
+        return create_bad_response(f"An error occurred getting adhoc teams {e}", "teams", 400)
+
+@bp.route('nonfull-adhoc', methods = ["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_nonfull_adhoc():
+    """
+    DESCRIPTION: 
+        Given an assessment task id, return list of team ids that have not reached the max team size.
+    PARAMETERS:
+        assessment_task_id: <class 'int'> (disired AT id)
+    RETURNS:
+        JSON object
+    EXCEPTIONS:
+        None other than what the database is allowed to raise.
+    """
     # given an assessment task id, return list of team ids that have not reached the max team size
     try:
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
 
-            valid_teams = [{"team_name": f"Team {team}", "team_id": team} for team in get_all_nonfull_adhoc_teams(assessment_task_id)]
+            valid_teams = get_all_nonfull_adhoc_teams(assessment_task_id)
 
-            return create_good_response(valid_teams, 200, "teams")
+            return create_good_response(teams_schema.dump(valid_teams), 200, "teams")
 
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
+
+
+@bp.route('/adhoc_amount', methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def get_how_many_adhocs_teams_exist():
+    try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            return create_good_response(get_num_of_adhocs(course_id), 200, "teams")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
 
 @bp.route('/team', methods = ['POST'])
@@ -311,8 +367,6 @@ class TeamUserSchema(ma.Schema):
             'team_id',
             'user_id'
         )
-
-
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
 team_user_schema = TeamUserSchema()

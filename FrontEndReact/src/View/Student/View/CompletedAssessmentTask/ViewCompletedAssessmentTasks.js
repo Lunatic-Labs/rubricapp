@@ -4,13 +4,11 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
-
+//import { UnitType, generateUnitList } from "../../../Admin/View/CompleteAssessmentTask/unit";
 
 
 class ViewCompletedAssessmentTasks extends Component {
     render() {
-        // var navbar = this.props.navbar;
-
         var completedAssessments = this.props.completedAssessments;
         var assessmentTasks = this.props.assessmentTasks;
 
@@ -64,11 +62,12 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
-                        const assessmentTask = assessmentTasks.find(at => at.assessment_task_id === atId);
-                        if (assessmentTask === undefined) {
+                        // Note that when we are in adhoc mode CATs have no differing data from individual to teams.
+                        const chosenAT = assessmentTasks.find(at => at.assessment_task_id === atId);
+                        if (!chosenAT) {
                             return <>UNDEFINED</>
                         }
-                        return <>{assessmentTask.unit_of_assessment ? "Team" : "Individual"}</>;
+                        return <>{chosenAT.unit_of_assessment ? "Team" : "Individual"}</>;
                     }
                 }
             },

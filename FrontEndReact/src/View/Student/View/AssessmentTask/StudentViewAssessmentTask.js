@@ -16,6 +16,34 @@ class StudentViewAssessmentTask extends Component {
             checkin: null,
             rubrics: null,
             completedAssessments: null,
+            unfinishedATS:null,
+            areAtsFiltered:false,
+        }
+    }
+
+    componentDidUpdate(){
+        const{
+            completedAssessments,
+            assessmentTasks,
+            areAtsFiltered,
+        } = this.state;
+
+        // Pruning AT data that should not be displayed. Notice the same task is being
+        // done by StudentCompletedAssessmentTasks.js. Perhaps later move it up.
+        if(completedAssessments && assessmentTasks && !areAtsFiltered){
+            const finshedCATS = new Map();
+            for(let i=0; i<completedAssessments.length; ++i){
+                const cat = completedAssessments[i];
+                if(cat.done){
+                    finshedCATS.set(cat.assessment_task_id, cat);
+                }
+            }
+            let filteredATs = assessmentTasks.filter(at => !finshedCATS.has(at.assessment_task_id));            
+
+            this.setState({
+                unfinishedATS: filteredATs,
+                areAtsFiltered:true,
+            })
         }
     }
 
@@ -67,15 +95,14 @@ class StudentViewAssessmentTask extends Component {
             completedAssessments,
             checkin,
             rubrics,
-            counts
+            counts, 
+            areAtsFiltered,
+            unfinishedATS,
         } = this.state;
 
         var navbar = this.props.navbar;
 
         var role = this.props.role;
-
-        const filteredATs = this.props.filteredAssessments;
-        // const filteredCATs = this.props.filteredCompleteAssessments; // Currently unused, but may be in the future.
 
         if (errorMessage) {
             return(
@@ -87,7 +114,7 @@ class StudentViewAssessmentTask extends Component {
                 </div>
             )
 
-        } else if (!isLoaded || !assessmentTasks || !checkin || !rubrics || !counts || !completedAssessments) {
+        } else if (!isLoaded || !assessmentTasks || !checkin || !rubrics || !counts || !completedAssessments || !areAtsFiltered) {
             return(
                 <Loading />
             )
@@ -98,7 +125,7 @@ class StudentViewAssessmentTask extends Component {
                     <ViewAssessmentTasks
                         navbar={navbar}
                         role={role}
-                        assessmentTasks={filteredATs}
+                        assessmentTasks={unfinishedATS}
                         completedAssessments={completedAssessments}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
