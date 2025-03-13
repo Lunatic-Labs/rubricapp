@@ -30,7 +30,7 @@ class StudentDashboard extends Component {
         super(props);
 
         this.state = {
-            roles: null,
+            roles: null, 
             assessmentTasks: null,
             completedAssessments: null,
             filteredATs: null,
@@ -85,50 +85,33 @@ class StudentDashboard extends Component {
 
             let filteredAssessmentTasks = assessmentTasks.filter(task => {
                 const cat =  CATmap.get(task.assessment_task_id);
+                
+                // Qualites for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUserNDone = (roleId <= task.role_id) && (done || roleId === 4); // CAT must be done when the 
-                const locked = task.locked;                                                 // TA/instructor is the completer.
+                const correctUser = (roleId <= task.role_id);
+                const locked = task.locked;                                  
                 const published = task.published;
-                const pastDue = correctUserNDone || locked || published || isATPastDue(task, currentDate) ; //short-circuit
-                console.warn("task_id", correctUserNDone);
-                console.warn("int:", roles["role_id"]);
-                console.warn("at",task);
-                if ( (locked || !published || pastDue) && !correctUserNDone) { 
+                const pastDue = !correctUser || locked || published || isATPastDue(task, currentDate) ; //short-circuit
+
+                const viewable = !done && correctUser && !locked && published && !pastDue;
+                const CATviewable = correctUser===false && done===false;
+                
+                if (!viewable && !CATviewable) {    // TA/Instructor CATs will appear when done.
                     filteredCompletedAsseessments.push(task); 
                 }
                 
-                return correctUserNDone && !done && !locked && published && !pastDue;
+                return viewable;
             });
 
-            console.log("ATs:", assessmentTasks);
-            console.log("CATs:", completedAssessments);
+            //console.log("ATs:", assessmentTasks);
+            //console.log("CATs:", completedAssessments);
 
             this.setState({
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAsseessments,
             });
-
-            // Move past due ATs into CATs
-            /* // Move the remaining (past due) ATs into the CATs
-            // as well as any ATs that have been manually locked
-            // by an admin.
-            const currentDate = new Date();
-            for (let i = 0; i < assessmentTasks.length; ++i) {
-                if (!assessmentTasks[i].published) {
-                    assessmentTasks.splice(i, 1);
-                    --i;
-                }
-                else {
-                    const dueDate = new Date(assessmentTasks[i].due_date);
-                    if (dueDate < currentDate || assessmentTasks[i].locked) {
-                        completedAssessments.push(assessmentTasks[i]);
-                        assessmentTasks.splice(i, 1);
-                        --i;
-                    }
-                }
-            } */
-            console.log("Filtered ATs:", filteredAssessmentTasks);
-            console.log("filtered CATs:", filteredCompletedAsseessments);
+            //console.log("Filtered ATs:", filteredAssessmentTasks);
+            //console.log("filtered CATs:", filteredCompletedAsseessments);
         }
     }
 
