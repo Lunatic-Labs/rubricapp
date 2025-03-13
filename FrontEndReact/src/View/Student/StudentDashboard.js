@@ -17,6 +17,7 @@ import Loading from '../Loading/Loading.js';
 /**
  *  @description This component pulls the CATs & ATs, filters them, then sends them
  *                  to its children components.
+ * 
  *  @property {object} roles - Possess the current users role_id and role_name;
  *  @property {Array}  assessmentTasks - All the related ATs to this course & user.
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
@@ -46,7 +47,7 @@ class StudentDashboard extends Component {
         genericResourceGET( `/role?course_id=${chosenCourse}`, 'roles', this);
         
         genericResourceGET(
-            `/assessment_task?course_id=${chosenCourse}&role_id=${userRole}`,
+            `/assessment_task?course_id=${chosenCourse}`,
             "assessment_tasks", this, { dest: "assessmentTasks" }
         );
 
@@ -72,18 +73,38 @@ class StudentDashboard extends Component {
         if (filterATsAndCATs) {
             // Remove ATs where the ID matches one of the IDs
             // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
-            let filteredCompletedAsseessments = completedAssessments; 
-            let filterdAssessmentTasks = assessmentTasks.filter(task => {
-                const relatedCat = completedAssessments.some(cat =>
-                    (cat.assessment_task_id === task.assessment_task_id) &&
-                    (cat.done)
-                )
+            let filteredCompletedAsseessments = [];
+            
+            const CATmap = new Map();
+            const roleId = roles["role_id"];
+            completedAssessments.forEach(cat => {CATmap.set(cat.assessment_task_id, cat)});
+            
+            const currentDate = new Date();
+            const isATDone = (cat) => cat !== undefined && cat.done;
+            const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
+
+            let filteredAssessmentTasks = assessmentTasks.filter(task => {
+                const cat =  CATmap.get(task.assessment_task_id);
+                const done = isATDone(cat);
+                const correctUserNDone = (roleId <= task.role_id) && (done || roleId === 4); // CAT must be done when the 
+                const locked = task.locked;                                                 // TA/instructor is the completer.
+                const published = task.published;
+                const pastDue = correctUserNDone || locked || published || isATPastDue(task, currentDate) ; //short-circuit
+                console.warn("task_id", correctUserNDone);
+                console.warn("int:", roles["role_id"]);
+                console.warn("at",task);
+                if ( (locked || !published || pastDue) && !correctUserNDone) { 
+                    filteredCompletedAsseessments.push(task); 
+                }
                 
-                return task.published && !relatedCat;
+                return correctUserNDone && !done && !locked && published && !pastDue;
             });
 
+            console.log("ATs:", assessmentTasks);
+            console.log("CATs:", completedAssessments);
+
             this.setState({
-                filteredATs: filterdAssessmentTasks,
+                filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAsseessments,
             });
 
@@ -106,6 +127,8 @@ class StudentDashboard extends Component {
                     }
                 }
             } */
+            console.log("Filtered ATs:", filteredAssessmentTasks);
+            console.log("filtered CATs:", filteredCompletedAsseessments);
         }
     }
 
