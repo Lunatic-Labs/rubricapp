@@ -5,7 +5,6 @@ import { Box, Button } from '@mui/material';
 import { getHumanReadableDueDate } from '../../../../utility';
 
 
-
 class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
@@ -73,6 +72,7 @@ class ViewAssessmentTasks extends Component {
         }
 
         var assessmentTasks = this.props.assessmentTasks;
+        console.log(assessmentTasks);
 
         const columns = [
             {

@@ -89,35 +89,36 @@ class StudentDashboard extends Component {
                 // Qualites for if an AT is viewable.
                 const done = isATDone(cat);
                 const correctUser = (roleId <= task.role_id);
-                const locked = task.locked;                                  
+                const locked = task.locked;                                
                 const published = task.published;
-                const pastDue = !correctUser || locked || published || isATPastDue(task, currentDate) ; //short-circuit
+                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate) ; //short-circuit
 
                 const viewable = !done && correctUser && !locked && published && !pastDue;
                 const CATviewable = correctUser===false && done===false;
                 
-                if (!viewable && !CATviewable) {    // TA/Instructor CATs will appear when done.
-                    filteredCompletedAsseessments.push(task); 
+                if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                    filteredCompletedAsseessments.push(cat); 
                 }
                 
                 return viewable;
             });
 
-            //console.log("ATs:", assessmentTasks);
-            //console.log("CATs:", completedAssessments);
+            console.log("ATs:", assessmentTasks);
+            console.log("CATs:", completedAssessments);
 
             this.setState({
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAsseessments,
             });
-            //console.log("Filtered ATs:", filteredAssessmentTasks);
-            //console.log("filtered CATs:", filteredCompletedAsseessments);
+            console.log("Filtered ATs:", filteredAssessmentTasks);
+            console.log("filtered CATs:", filteredCompletedAsseessments);
         }
     }
 
     render() {
         const {
             roles,
+            assessmentTasks,
             filteredATs,
             filteredCATs, 
         } = this.state; 
@@ -179,7 +180,7 @@ class StudentDashboard extends Component {
                             <StudentCompletedAssessmentTasks
                                 navbar={navbar}
                                 role={roles}
-                                filteredAssessments={filteredATs}
+                                assessmentTasks={assessmentTasks}
                                 filteredCompleteAssessments={filteredCATs}
                             />
                         }
