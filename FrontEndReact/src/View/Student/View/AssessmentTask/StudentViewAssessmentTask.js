@@ -11,7 +11,7 @@ import Loading from '../../../Loading/Loading.js';
  * @prop {object} navbar - Passed navbar.
  * @prop {object} role - Object with role_id and role_name.
  * @prop {object} filteredAssessments - Filtered ATs.
- * @prop {object} filteredCompleteAssessments - Filtered CATs.
+ * @prop {object} CompleteAssessments - CATs.
  * 
  * @property {object} errorMessage - Any errors encountered.
  * @property {bool} isLoaded - Did requests complete without issues.
@@ -56,7 +56,7 @@ class StudentViewAssessmentTask extends Component {
         } = this.state;
 
         const filteredATs = this.props.filteredAssessments;
-        const filteredCATs = this.props.filteredCompleteAssessments;
+        const filteredCATs = this.props.CompleteAssessments;
 
         var navbar = this.props.navbar;
 

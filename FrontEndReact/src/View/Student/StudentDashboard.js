@@ -23,6 +23,7 @@ import Loading from '../Loading/Loading.js';
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
  *  @property {Array}  filteredCATs - All valid CATs for the course and user.
+ * 
  */
 
 class StudentDashboard extends Component {
@@ -88,7 +89,7 @@ class StudentDashboard extends Component {
                 
                 // Qualites for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUser = (roleId <= task.role_id);
+                const correctUser = (roleId === task.role_id);
                 const locked = task.locked;                                
                 const published = task.published;
                 const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate) ; //short-circuit
@@ -99,19 +100,14 @@ class StudentDashboard extends Component {
                 if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
                     filteredCompletedAsseessments.push(cat); 
                 }
-                
+
                 return viewable;
             });
-
-            console.log("ATs:", assessmentTasks);
-            console.log("CATs:", completedAssessments);
 
             this.setState({
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAsseessments,
             });
-            console.log("Filtered ATs:", filteredAssessmentTasks);
-            console.log("filtered CATs:", filteredCompletedAsseessments);
         }
     }
 
@@ -119,6 +115,7 @@ class StudentDashboard extends Component {
         const {
             roles,
             assessmentTasks,
+            completedAssessments,
             filteredATs,
             filteredCATs, 
         } = this.state; 
@@ -135,6 +132,9 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
 
+
+        // Note: The [My Assessment Tasks] & [Completed Assessments] each require exactly one of of the filtered objects.
+        //      The reason stems from them needing an original list to properly bind data.
         return (
             <>
                 <Box className="page-spacing">
@@ -156,7 +156,7 @@ class StudentDashboard extends Component {
                             navbar={navbar}
                             role={roles}
                             filteredAssessments={filteredATs}
-                            filteredCompleteAssessments={filteredCATs}
+                            CompleteAssessments={completedAssessments}
                         />
                     </Box>
                 </Box>

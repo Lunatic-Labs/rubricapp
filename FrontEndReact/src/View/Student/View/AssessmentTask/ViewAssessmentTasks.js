@@ -72,7 +72,6 @@ class ViewAssessmentTasks extends Component {
         }
 
         var assessmentTasks = this.props.assessmentTasks;
-        console.log(assessmentTasks);
 
         const columns = [
             {
@@ -168,7 +167,7 @@ class ViewAssessmentTasks extends Component {
 
                                         onClick={() => {
                                             if (!fixedTeams && navbar.state.team === null) {
-                                                navbar.setSelectCurrentTeam(assessmentTasks, atId)
+                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
                                             } else {
                                                 navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
                                             }
