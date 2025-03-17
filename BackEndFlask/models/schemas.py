@@ -134,6 +134,10 @@ class AssessmentTask(db.Model):
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
     locked = db.Column(db.Boolean, nullable=False)
     published = db.Column(db.Boolean, nullable=False)
+    #Indexes
+    __table_args__ = (
+        Index('idx_team_due_date', 'course_id', 'due_date'),
+    )
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"
