@@ -4,13 +4,21 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
-//import { UnitType, generateUnitList } from "../../../Admin/View/CompleteAssessmentTask/unit";
 
+
+/**
+ * @description Column logic.
+ * 
+ * @prop {object} navbar - Passed navbar.
+ * @prop {object} assessmentTasks - ATs. Note we need the original ATs to load the rest of the columns.
+ * @prop {object} filteredCompleteAssessments - Filtered CATs.
+ * 
+ */
 
 class ViewCompletedAssessmentTasks extends Component {
     render() {
-        var completedAssessments = this.props.completedAssessments;
-        var assessmentTasks = this.props.assessmentTasks;
+        const completedAssessments = this.props.completedAssessments;
+        const assessmentTasks = this.props.assessmentTasks;
 
         const columns = [
             {
@@ -62,7 +70,6 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
-                        // Note that when we are in adhoc mode CATs have no differing data from individual to teams.
                         const chosenAT = assessmentTasks.find(at => at.assessment_task_id === atId);
                         if (!chosenAT) {
                             return <>UNDEFINED</>

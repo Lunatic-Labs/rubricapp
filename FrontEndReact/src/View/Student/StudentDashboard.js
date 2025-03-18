@@ -14,46 +14,117 @@ import Loading from '../Loading/Loading.js';
 // the TAViewTeams components.
 
 
+/**
+ *  @description This component pulls the CATs & ATs, filters them, then sends them
+ *                  to its children components.
+ * 
+ *  @property {object} roles - Possess the current users role_id and role_name;
+ *  @property {Array}  assessmentTasks - All the related ATs to this course & user.
+ *  @property {Array}  completedAssessments - All the related CATs to this course & user.
+ *  @property {Array}  filteredATs - All valid ATs for the course and user.
+ *  @property {Array}  filteredCATs - All valid CATs for the course and user.
+ * 
+ */
+
 class StudentDashboard extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            roles: null,
+            roles: null, 
             assessmentTasks: null,
             completedAssessments: null,
+            filteredATs: null,
+            filteredCATs: null,
         }
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenCourse = state.chosenCourse["course_id"];
+        const userRole = state.chosenCourse.role_id;
 
-        var state = navbar.state;
-
-        var chosenCourse = state.chosenCourse["course_id"];
-
+        genericResourceGET( `/role?course_id=${chosenCourse}`, 'roles', this);
+        
         genericResourceGET(
-            `/role?course_id=${chosenCourse}`, 'roles', this);
+            `/assessment_task?course_id=${chosenCourse}`,
+            "assessment_tasks", this, { dest: "assessmentTasks" }
+        );
 
-        var userRole = state.chosenCourse.role_id;
+        // For a student, the role_id is not added calling a different route.
+        const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
+        
         genericResourceGET(
-            `/assessment_task?course_id=${chosenCourse}&role_id=${userRole}`,
-            "assessment_tasks", this, { dest: "assessmentTasks" });
+            routeToCall,
+            "completed_assessments", this, { dest: "completedAssessments" }
+        );
+    }
 
-        if (userRole === 5) {
-            genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourse}`,
-                "completed_assessments", this, { dest: "completedAssessments" }
-            );
-        } else {
-            genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourse}&role_id=${userRole}`,
-                "completed_assessments", this, { dest: "completedAssessments" }
-            );
+    componentDidUpdate() {
+        const {
+            filteredATs, 
+            roles,
+            assessmentTasks,
+            completedAssessments,
+        } = this.state;
+
+        const filterATsAndCATs = roles && assessmentTasks && completedAssessments && (filteredATs === null);
+
+        if (filterATsAndCATs) {
+            // Remove ATs where the ID matches one of the IDs
+            // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
+            let filteredCompletedAsseessments = [];
+            
+            const CATmap = new Map();
+            const roleId = roles["role_id"];
+            completedAssessments.forEach(cat => {CATmap.set(cat.assessment_task_id, cat)});
+            
+            const currentDate = new Date();
+            const isATDone = (cat) => cat !== undefined && cat.done;
+            const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
+
+            let filteredAssessmentTasks = assessmentTasks.filter(task => {
+                const cat =  CATmap.get(task.assessment_task_id);
+                
+                // Qualites for if an AT is viewable.
+                const done = isATDone(cat);
+                const correctUser = (roleId === task.role_id);
+                const locked = task.locked;                                
+                const published = task.published;
+                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate) ; //short-circuit
+
+                const viewable = !done && correctUser && !locked && published && !pastDue;
+                const CATviewable = correctUser===false && done===false;
+                
+                if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                    filteredCompletedAsseessments.push(cat); 
+                }
+
+                return viewable;
+            });
+
+            this.setState({
+                filteredATs: filteredAssessmentTasks,
+                filteredCATs: filteredCompletedAsseessments,
+            });
         }
     }
 
     render() {
+        const {
+            roles,
+            assessmentTasks,
+            completedAssessments,
+            filteredATs,
+            filteredCATs, 
+        } = this.state; 
+
+        // Wait for information to be filtered.
+        if (filteredATs === null || filteredCATs === null) {
+            return <Loading />
+        }
+
         var navbar = this.props.navbar;
         navbar.studentViewTeams = {};
         navbar.studentViewTeams.show = "ViewTeams";
@@ -61,43 +132,9 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
 
-        var role = this.state.roles;
 
-        let assessmentTasks = this.state.assessmentTasks;
-        let completedAssessments = this.state.completedAssessments;
-
-        // Wait for information to be retrieved from DB.
-        if (!role || !assessmentTasks || !completedAssessments) {
-            return <Loading />
-        }
-
-        // Remove ATs where the ID matches one of the IDs
-        // in the CATs (that AT is completed, no need to display it).
-        assessmentTasks = assessmentTasks.filter(task =>
-            !completedAssessments.some(completed =>
-                completed.assessment_task_id === task.assessment_task_id
-            )
-        );
-
-        // Move the remaining (past due) ATs into the CATs
-        // as well as any ATs that have been manually locked
-        // by an admin.
-        const currentDate = new Date();
-        for (let i = 0; i < assessmentTasks.length; ++i) {
-            if (!assessmentTasks[i].published) {
-                assessmentTasks.splice(i, 1);
-                --i;
-            }
-            else {
-                const dueDate = new Date(assessmentTasks[i].due_date);
-                if (dueDate < currentDate || assessmentTasks[i].locked) {
-                    completedAssessments.push(assessmentTasks[i]);
-                    assessmentTasks.splice(i, 1);
-                    --i;
-                }
-            }
-        }
-
+        // Note: The [My Assessment Tasks] & [Completed Assessments] each require exactly one of of the filtered objects.
+        //      The reason stems from them needing an original list to properly bind data.
         return (
             <>
                 <Box className="page-spacing">
@@ -117,9 +154,9 @@ class StudentDashboard extends Component {
                     <Box>
                         <StudentViewAssessmentTask
                             navbar={navbar}
-                            role={role}
-                            filteredAssessments={assessmentTasks}
-                            filteredCompleteAssessments={completedAssessments}
+                            role={roles}
+                            filteredAssessments={filteredATs}
+                            CompleteAssessments={completedAssessments}
                         />
                     </Box>
                 </Box>
@@ -139,12 +176,12 @@ class StudentDashboard extends Component {
                     </Box>
 
                     <Box>
-                        {[4, 5].includes(role["role_id"]) &&
+                        {[4, 5].includes(roles["role_id"]) &&
                             <StudentCompletedAssessmentTasks
                                 navbar={navbar}
-                                role={role}
-                                filteredAssessments={assessmentTasks}
-                                filteredCompleteAssessments={completedAssessments}
+                                role={roles}
+                                assessmentTasks={assessmentTasks}
+                                filteredCompleteAssessments={filteredCATs}
                             />
                         }
                     </Box>
@@ -165,12 +202,12 @@ class StudentDashboard extends Component {
                     </Box>
 
                     <Box>
-                        {role["role_id"] === 5 &&
+                        {roles["role_id"] === 5 &&
                             <StudentViewTeams
                                 navbar={navbar}
                             />
                         }
-                        {role["role_id"] === 4 &&
+                        {roles["role_id"] === 4 &&
                             <TAViewTeams
                                 navbar={navbar}
                             />
