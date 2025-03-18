@@ -210,7 +210,8 @@ class AdminAddAssessmentTask extends Component {
             });
 
         } else {
-            const fixTeamData = (i) => this.state.usingTeams ? i : null;
+            const adhoc = this.props.navbar.state.chosenCourse.use_fixed_teams;
+            const fixTeamData = (i) => this.state.usingTeams && !adhoc ? i : null;
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
