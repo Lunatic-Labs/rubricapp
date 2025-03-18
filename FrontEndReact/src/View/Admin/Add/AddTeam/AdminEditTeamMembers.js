@@ -197,7 +197,7 @@ class AdminEditTeamMembers extends Component {
                         variant="h5"
                         aria-label={this.props.addTeamAction + "TeamMembersTitle"}
                     >
-                        {this.props.addTeamAction} Members
+                        {this.props.addTeamAction} Members {this.props.addTeamAction === "Add" ? "to" : "from"} Team {this.props.navbar.state.team.team_name}
                     </Typography>
 
                     <Button

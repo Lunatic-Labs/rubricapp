@@ -224,14 +224,14 @@ class Form extends Component {
             if (unit.completedAssessmentTask) {
                 const catId = unit.completedAssessmentTask["completed_assessment_id"];
                 
-                promise = genericResourcePUT(
+                promise = genericResourcePUT(//if there is a cat
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
                     { rawResponse: true }
                 );
             } else {
-                promise = genericResourcePOST(
+                promise = genericResourcePOST(//errr since not bound to real team on adhocs
                     `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
                     this,
                     JSON.stringify(newCAT),

@@ -43,9 +43,40 @@ export const UnitType = Object.freeze({
  *  if this isn't a fixed team AT.
  * @returns {ATUnit[]}
  */
+
+//The benifit of this class and global call is that you can keep certain things static to help with the debugger.
+/* class Debug {
+    static data = {};
+
+    static increment(that){
+        ++Debug.data[that];
+    }
+    static firstZero(that){
+        if(Debug.data[that] === undefined){
+            Debug.data[that] = 0;
+            return true;
+        }
+        else return false;
+    }
+    static change(that, val){
+        try{
+            Debug.data[that] = val;
+        }catch{
+            return false;
+        }
+        return true;
+    }
+    static get(that){
+        return Debug.data[that];
+    }
+}
+if(module.hot){
+    Debug.data = {}; 
+}  */
+
 export function generateUnitList(args) {
 	let unitList = [];
-	
+
 	if (args.roleName === "Student") {
 		if (args.unitType === UnitType.INDIVIDUAL) {
 			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.currentUserId;
@@ -55,21 +86,36 @@ export function generateUnitList(args) {
 				user, args.chosenCompleteAssessmentTask,
 				args.assessmentTaskRubric
 			));
-		} else if (args.unitType === UnitType.FIXED_TEAM) {
+		} else {
+			// Note that when we are here args.ChosenCompleteAssessmentTask is not populated.
 			let team;
+			const isFixedTeams = args.unitType === UnitType.FIXED_TEAM;
 			
-			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask) {
+			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask && isFixedTeams) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
 				team = args.fixedTeams.find(team => team["team_id"] === teamId);
 			} else {
-				team = args.userFixedTeam;
+ 				team = args.userFixedTeam;// Despite the var name this works for adhocs.
 			}
+
+			let chosenCAT = args.chosenCompleteAssessmentTask
+
+			const exitsAndMeaningful = (i) =>{return i && i.length > 0;}
 			
-			unitList.push(createFixedTeamUnit(
-				team, args.chosenCompleteAssessmentTask,
-				args.assessmentTaskRubric, args.fixedTeamMembers
+			// Next if statement allows for quicksaved data to be reflected in the AT view.
+			if (chosenCAT === null && exitsAndMeaningful(args.completedAssessments)){
+				chosenCAT = args.completedAssessments.find(cat => cat.team_id === team.team_id);
+			}
+
+			unitList.push(isFixedTeams ? 
+				createFixedTeamUnit(
+					team, chosenCAT,
+					args.assessmentTaskRubric, args.fixedTeamMembers
+			): createAdHocTeamUnit(
+				team, chosenCAT,
+				args.assessmentTaskRubric, args.fixedTeamMembers,
 			));
-		}
+		} 
 	} else {
 		// Otherwise we must be an admin or TA
 		
@@ -80,14 +126,17 @@ export function generateUnitList(args) {
 				
 				return createIndividualUnit(user, cat, args.assessmentTaskRubric);
 			});
-		} else if (args.unitType === UnitType.FIXED_TEAM) {
+
+		} else {
+			const isFixed = args.unitType === UnitType.FIXED_TEAM;
 			unitList = args.fixedTeams.map(team => {
 				const teamId = team["team_id"];
 				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
-				
-				return createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
+				return isFixed ?
+					createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers):
+					createAdHocTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
 			});
-		}
+		} 
 	}
 	
 	return unitList;
@@ -126,6 +175,19 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	const teamMembers = fixedTeamMembers[teamId];
 		
 	return new FixedTeamUnit(
+		cat ?? null, rocsData, isDone,
+		team, teamMembers,
+	);
+}
+
+function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
+	const teamId = team["team_id"]; //|| team["team_number"];
+	
+	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
+	const teamMembers = fixedTeamMembers[teamId];
+
+
+	return new AdHocTeamUnit(
 		cat ?? null, rocsData, isDone,
 		team, teamMembers,
 	);
@@ -406,5 +468,45 @@ export class FixedTeamUnit extends ATUnit {
 			"user_id": -1,
 			"team_id": this.teamId,
 		};
+	}
+}
+
+// Do we even need the classes FIXED and AdHoc? it seems both can be the same and generalization works anyways.
+export class AdHocTeamUnit extends FixedTeamUnit{
+	/**
+	 * @param {object} cat Complete assessment task object.
+	 * @param {object} team Team object.
+	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
+	 * @param {int} currentUserId - The current user to save data under.
+	 */
+
+	constructor(cat, rocs, done, team, teamMembers) {
+		super(cat, rocs, done, team, teamMembers);
+		this.unitType = UnitType.AD_HOC_TEAM;
+		this.team = team;
+		this.teamMembers = teamMembers;
+	}
+
+	shallowClone() {
+		return new AdHocTeamUnit(
+			this.completedAssessmentTask, this.rocsData, this.isDone,
+			this.team, this.teamMembers, this.currentUserId,
+		);
+	}
+
+	getCheckedInTooltip(checkinsTracker) {
+		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
+		
+		const checkedInMembers = teamMembersArray.filter(user => {
+			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
+			
+			return checkin && checkin["team_number"] === this.teamId;
+		});
+		
+		if (checkedInMembers.length !== 0) {
+			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
+		} else {
+			return [ <Box key={0}>No Team Members Checked In</Box> ];
+		}
 	}
 }
