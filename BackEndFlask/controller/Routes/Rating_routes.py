@@ -26,7 +26,7 @@ def get_student_individual_ratings():
 
         student_ratings = get_individual_ratings(assessment_task_id)
         if student_ratings == None: return create_good_response([], 200, "ratings")
-
+        
         result = {} 
         result = []
         for rating in student_ratings:
@@ -35,14 +35,16 @@ def get_student_individual_ratings():
             
             if feedback_time is not None and submission_time is not None: 
                 lag_time = feedback_time - submission_time
-            else: 
+            elif feedback_time is None and submission_time is not None:
+                lag_time = "Notification sent"
+            else:
                 lag_time = None
-
             data = {}
             data['first_name'] = rating[0]
             data['last_name'] = rating[1]
             data['rating_observable_characteristics_suggestions_data'] = rating[2]
-            data['lag_time'] = str(lag_time) if lag_time is not None else None
+            if lag_time is not None or "Notification sent":
+                data['lag_time'] = str(lag_time)  
             
             result.append(data)
 
