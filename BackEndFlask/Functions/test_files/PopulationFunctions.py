@@ -6,7 +6,7 @@ from models.team_user import *
 import pandas as pd
 import os
 import re
-import random
+import uuid
 
 # TODO: Need to write a test for both student_import and team_import to make sure
 #   that is_valid_email works as should!
