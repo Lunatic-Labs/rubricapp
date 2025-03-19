@@ -21,7 +21,7 @@ def is_valid_email(email):
 def xlsx_to_csv(csv_file):
     read_file = pd.read_excel(csv_file)
     sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-    temp_file = "/temp.csv"
+    temp_file = "/temp_"+ uuid.uuid4().hex +".csv"
     read_file.to_csv(sample_files+temp_file, index=None, header=True)
     return sample_files + os.path.join(os.path.sep, temp_file)
 

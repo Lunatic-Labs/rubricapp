@@ -1,4 +1,5 @@
 import os
+import uuid
 import json
 import shutil
 import pandas as pd
@@ -38,7 +39,8 @@ def upload_team_csv():
 
             directory = os.path.join(os.getcwd(), "Test")
             os.makedirs(directory, exist_ok=True)
-            file_path = os.path.join(directory, file.filename)
+            unique_filename = extension[0] + uuid.uuid4().hex + extension[1]
+            file_path = os.path.join(directory, unique_filename)
             file.save(file_path)
 
             teamBulkUpload.team_bulk_upload(file_path, user_id, course_id)

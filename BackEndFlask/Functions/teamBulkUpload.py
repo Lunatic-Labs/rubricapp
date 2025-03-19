@@ -316,7 +316,7 @@ def __verify_information(teams: list[TBUTeam]):
             if not helper_verify_email_syntax(student.email):
                 raise SuspectedMisformatting
 
-
+# First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
     try:
         xlsx: bool = filepath.endswith('.xlsx')
