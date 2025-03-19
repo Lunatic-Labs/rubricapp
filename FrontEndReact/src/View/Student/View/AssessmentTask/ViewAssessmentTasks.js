@@ -5,7 +5,6 @@ import { Box, Button } from '@mui/material';
 import { getHumanReadableDueDate } from '../../../../utility';
 
 
-
 class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
@@ -168,7 +167,7 @@ class ViewAssessmentTasks extends Component {
 
                                         onClick={() => {
                                             if (!fixedTeams && navbar.state.team === null) {
-                                                navbar.setSelectCurrentTeam(assessmentTasks, atId)
+                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
                                             } else {
                                                 navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
                                             }

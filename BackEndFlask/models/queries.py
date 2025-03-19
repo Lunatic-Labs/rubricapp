@@ -1031,9 +1031,38 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.user_id == user_id,
     )
 
-    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
+    complete_assessments_adhoc = db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        CompletedAssessment.locked,
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.rubric_id,
+        AssessmentTask.unit_of_assessment
+    ).join(
+        AssessmentTask,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).filter(
+        AssessmentTask.course_id == course_id
+    ).join(
+        Checkin,
+        and_(
+            CompletedAssessment.team_id == Checkin.team_number,
+            Checkin.user_id == user_id,
+            CompletedAssessment.assessment_task_id == Checkin.assessment_task_id
+        )
+    )
 
-    return complete_assessments
+    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
+    final_result = complete_assessments.union(complete_assessments_adhoc)
+
+    return final_result
 
 @error_log
 def get_completed_assessment_by_ta_user_id(course_id, user_id):
