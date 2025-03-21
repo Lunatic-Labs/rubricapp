@@ -20,13 +20,15 @@ class StudentViewTeams extends Component {
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenCourse = state.chosenCourse;
-        var chosenCourseId = chosenCourse["course_id"];
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenCourse = state.chosenCourse;
+        const chosenCourseId = chosenCourse["course_id"];
+        const adhocMode = !chosenCourse.use_fixed_teams;
 
         genericResourceGET(
-            `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${false}`, "teams", this); //This requires future adjusting
+            `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${adhocMode}`, "teams", this
+        ); //This requires future adjusting
 
         var url = (
             chosenCourse["use_tas"] ?

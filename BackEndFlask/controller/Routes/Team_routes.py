@@ -60,7 +60,7 @@ def get_all_teams_by_user():
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
-            adhoc_mode = bool(request.args.get("adhoc_mode"))
+            adhoc_mode = True if request.args.get("adhoc_mode") == "true" else False
 
             team_get_func =  get_adHoc_team_by_course_id_and_user_id if adhoc_mode else get_team_by_course_id_and_user_id
             teams = team_get_func(course_id, user_id)
