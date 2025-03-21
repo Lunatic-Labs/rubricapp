@@ -101,7 +101,7 @@ def create_assessment_task(assessment_task):
         time_zone=assessment_task["time_zone"],
         show_suggestions=assessment_task["show_suggestions"],
         locked=False,
-        published=True,
+        published=False,
         show_ratings=assessment_task["show_ratings"],
         unit_of_assessment=assessment_task["unit_of_assessment"],
         create_team_password=assessment_task["create_team_password"],
