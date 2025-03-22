@@ -5,7 +5,7 @@ from models.schemas import User, UserCourse
 from sqlalchemy import (
     and_
 )
-from models.utility import generate_random_password, send_new_user_email, check_bounced_emails
+from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails
@@ -35,10 +35,6 @@ class EmailAlreadyExists(Exception):
 @error_log
 def get_users():
     return User.query.all()
-
-@error_log
-def get_users_by_role_id(role_id):
-    return User.query.filter_by(role_id=role_id).all()
 
 
 @error_log

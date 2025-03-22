@@ -10,7 +10,7 @@ from Functions.test_files.PopulationFunctions import xlsx_to_csv
 
 from datetime import date
 import csv
-
+    
 
 class TBUStudent:
     def __init__(self, fname: str, lname: str, email: str, lms_id: None|str = None) -> None:
@@ -74,7 +74,7 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
                 students = []
 
                 multiple_observers = True
-                if len(lst) > 2:
+                if len(lst) >= 2:
                     hd = __expect(lst)
                     lookAhead = __expect(lst)
                     lst.insert(0, lookAhead)
@@ -316,7 +316,7 @@ def __verify_information(teams: list[TBUTeam]):
             if not helper_verify_email_syntax(student.email):
                 raise SuspectedMisformatting
 
-
+# First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
     try:
         xlsx: bool = filepath.endswith('.xlsx')

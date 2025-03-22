@@ -1,5 +1,6 @@
 import google.auth
-from googleapiclient.discovery import build
+# from googleapiclient.discovery import build
+import googleapiclient.discovery
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
 from flask_jwt_extended import JWTManager
@@ -25,16 +26,19 @@ def get_oauth2_credentials(token_fp, scopes):
     try:
         creds = Credentials.from_authorized_user_file(token_fp, scopes)
     except Exception as e:
-        raise ValueError(f"Failed to load credentials from {token_fp}: {e}")
+        # raise ValueError(f"Failed to load credentials from {token_fp}: {e}")
+        return None
 
     if creds and creds.expired and creds.refresh_token:
         try:
             creds.refresh(Request())
         except Exception as e:
-            raise ValueError(f"Failed to refresh credentials: {e}")
+            return None
+            # raise ValueError(f"Failed to refresh credentials: {e}")
 
     if not creds or not creds.valid:
-        raise ValueError("Credentials are not valid for read/write emails")
+        # raise ValueError("Credentials are not valid for read/write emails")
+        return None
 
     with open(token_fp, 'w') as token:
         token.write(creds.to_json())
@@ -141,7 +145,13 @@ oauth2_scopes = [
 ]
 oauth2_token_fp = "/home/ubuntu/private/token.json"
 oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
-oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
+# oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
+oauth2_service = None
+
+try:
+    oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
+except Exception:
+    oauth2_service = None
 
 # This gets set in wsgi.py/run.py depending on if we
 # are running locally or on a server.

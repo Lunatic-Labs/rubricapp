@@ -29,8 +29,8 @@ class AdminAddAssessmentTask extends Component {
             rubricId: '',
             password: '',
             notes: '',
-            numberOfTeams: null,
-            maxTeamSize: null,
+            numberOfTeams: '',
+            maxTeamSize: '',
             suggestions: true,
             ratings: true,
             usingTeams: false,
@@ -105,8 +105,9 @@ class AdminAddAssessmentTask extends Component {
     handleChange = (e) => {
         const { id, value } = e.target;
         const regex = /^[1-9]\d*$/; // Positive digits
+        const {usingTeams} = this.state;
 
-        if (id === 'numberOfTeams') {
+        if (id === 'numberOfTeams' && usingTeams) {
             if (value !== '' && !regex.test(value)) {
                 this.setState({
                     errors: {
@@ -118,7 +119,7 @@ class AdminAddAssessmentTask extends Component {
             }
         }
 
-        if (id === 'maxTeamSize') {
+        if (id === 'maxTeamSize' && usingTeams) {
             if (value !== '' && !regex.test(value)) {
                 this.setState({
                     errors: {
@@ -209,6 +210,8 @@ class AdminAddAssessmentTask extends Component {
             });
 
         } else {
+            const adhoc = this.props.navbar.state.chosenCourse.use_fixed_teams;
+            const fixTeamData = (i) => this.state.usingTeams && !adhoc ? i : null;
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
@@ -221,8 +224,8 @@ class AdminAddAssessmentTask extends Component {
                 "unit_of_assessment": usingTeams,
                 "create_team_password": password,
                 "comment": notes,
-                "number_of_teams": numberOfTeams,
-                "max_team_size": maxTeamSize
+                "number_of_teams": fixTeamData(numberOfTeams),
+                "max_team_size": fixTeamData(maxTeamSize)
             });
 
             let promise;
@@ -240,6 +243,35 @@ class AdminAddAssessmentTask extends Component {
                 );
             }
 
+            if(usingTeams && !chosenCourse.use_fixed_teams){
+                genericResourceGET(`/adhoc_amount?course_id=${chosenCourse.course_id}`,"teams",this).then(amountOfExistingAdhocs =>{
+                    if(amountOfExistingAdhocs.teams === undefined || amountOfExistingAdhocs.teams === null){
+                        return;
+                    }
+                    amountOfExistingAdhocs = amountOfExistingAdhocs.teams;
+                    
+                    const date = new Date().getDate();
+                    const month = new Date().getMonth() + 1;
+                    const year = new Date().getFullYear();
+
+                    for (let i=amountOfExistingAdhocs; i < numberOfTeams; ++i){
+                        const body = JSON.stringify({
+                            team_name: "Team "+ (i+1),
+                            observer_id: chosenCourse.admin_id,
+                            course_id: chosenCourse.course_id,
+                            date_created: `${month}/${date}/${year}`,
+                            active_until: null,
+                        });
+                        genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body).catch(
+                            error =>{
+                                return;
+                            });
+                    }
+                    }).catch(error => {
+                        return;
+                    });
+            }
+
             promise.then(result => {
                 if (result !== undefined && result.errorMessage === null) {
                     confirmCreateResource("AssessmentTask");
@@ -247,7 +279,6 @@ class AdminAddAssessmentTask extends Component {
             });
         }
     };
-
 
     render() {
         var navbar = this.props.navbar;

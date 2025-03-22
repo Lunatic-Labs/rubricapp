@@ -53,8 +53,8 @@ Parameters:
 None
 """
 class EmailFailureException(Exception):
-    def __init__(self, msg="Email failure") -> None:
-        self.message = msg
+    def __init__(self) -> None:
+        self.message = "Email failure"
 
     def __str__(self) -> str:
         return self.message

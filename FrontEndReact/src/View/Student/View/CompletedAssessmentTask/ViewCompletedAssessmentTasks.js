@@ -6,13 +6,19 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 
 
+/**
+ * @description Column logic.
+ * 
+ * @prop {object} navbar - Passed navbar.
+ * @prop {object} assessmentTasks - ATs. Note we need the original ATs to load the rest of the columns.
+ * @prop {object} filteredCompleteAssessments - Filtered CATs.
+ * 
+ */
 
 class ViewCompletedAssessmentTasks extends Component {
     render() {
-        // var navbar = this.props.navbar;
-
-        var completedAssessments = this.props.completedAssessments;
-        var assessmentTasks = this.props.assessmentTasks;
+        const completedAssessments = this.props.completedAssessments;
+        const assessmentTasks = this.props.assessmentTasks;
 
         const columns = [
             {
@@ -64,11 +70,11 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
-                        const assessmentTask = assessmentTasks.find(at => at.assessment_task_id === atId);
-                        if (assessmentTask === undefined) {
+                        const chosenAT = assessmentTasks.find(at => at.assessment_task_id === atId);
+                        if (!chosenAT) {
                             return <>UNDEFINED</>
                         }
-                        return <>{assessmentTask.unit_of_assessment ? "Team" : "Individual"}</>;
+                        return <>{chosenAT.unit_of_assessment ? "Team" : "Individual"}</>;
                     }
                 }
             },
@@ -97,9 +103,9 @@ class ViewCompletedAssessmentTasks extends Component {
                             <div>
                                 <IconButton
                                     onClick={() => {
-                              var singluarCompletedAssessment = null;
+                              var singularCompletedAssessment = null;
                               if (completedAssessments) {
-                                  singluarCompletedAssessment
+                                  singularCompletedAssessment
                                       = completedAssessments.find(
                                           completedAssessment => completedAssessment.assessment_task_id === atId
                                       ) ?? null;
@@ -108,8 +114,8 @@ class ViewCompletedAssessmentTasks extends Component {
                                 `/rating`,
                                 this,
                                 JSON.stringify({
-                                    "user_id" : singluarCompletedAssessment.user_id,
-                                    "completed_assessment_id": singluarCompletedAssessment.completed_assessment_id,
+                                    "user_id" : singularCompletedAssessment.user_id,
+                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
                                 }),
                               );
                               this.props.navbar.setAssessmentTaskInstructions(

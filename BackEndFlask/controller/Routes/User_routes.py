@@ -36,10 +36,9 @@ from models.course import (
     get_course
 )
 
-from models.utility import (
-    send_email_and_check_for_bounces,
+""" from models.utility import (
     send_email_for_updated_email,
-)
+) """
 
 from models.user import(
     get_users,
@@ -52,7 +51,7 @@ from models.user import(
     make_admin,
     unmake_admin,
     delete_user_by_user_id,
-    get_user_by_email,
+    #get_user_by_email,
 )
 
 from models.queries import (

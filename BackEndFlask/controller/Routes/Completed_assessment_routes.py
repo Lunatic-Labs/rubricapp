@@ -6,7 +6,6 @@ from models.assessment_task import get_assessment_task
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
-    admin_check
 )
 
 from models.completed_assessment import (
@@ -85,6 +84,7 @@ def get_all_completed_assessments():
     try:
         # only_course is a marker parameter that prevents requests intended for routes
         #  below from hitting this route
+
         if request.args and request.args.get("course_id") and request.args.get("only_course") == "true":
             course_id = int(request.args.get("course_id"))
             all_completed_assessments = get_completed_assessment_by_course_id(course_id)
@@ -214,7 +214,7 @@ def add_completed_assessment():
         user_id = int(assessment_data["user_id"])
         if (user_id == -1):
             assessment_data["user_id"] = None
-  
+
         completed = completed_assessment_exists(team_id, assessment_task_id, user_id)
 
         if completed:

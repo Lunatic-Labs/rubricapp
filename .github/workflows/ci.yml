@@ -25,24 +25,27 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
       
-      - name: Cache jest cache
-        uses: actions/cache@v4
-        env:
-          cache-name: jest-cache
-        with:
-          path: /tmp/jest-cache
-          key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('FrontEndReact/**/*.js', 'FrontEndReact/package.json') }}
-          restore-keys: |
-            ${{ runner.os }}-build-${{ env.cache-name }}-
+      #- name: Cache jest cache
+      #  uses: actions/cache@v4
+      #  env:
+      #    cache-name: jest-cache
+      #  with:
+      #    path: /tmp/jest-cache
+      #    key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('FrontEndReact/**/*.js', 'FrontEndReact/package.json') }}
+      #    restore-keys: |
+      #      ${{ runner.os }}-build-${{ env.cache-name }}-
       
       - name: Build backend
-        run: docker compose build backend
+        run: docker compose build backend --no-cache
       
       # TODO: Run pytests here using docker compose run or something
       
       - name: Start backend
         run: |
           docker compose up --no-build --detach backend
+          docker ps  # Check if container is running
+          docker compose logs backend  # Check backend logs
+          netstat -tulpn | grep 5050  # Check if port is actually listening
           sleep 5
           curl -v 'http://127.0.0.1:5050/api'
         # Use curl to make sure the backend is up and accessible

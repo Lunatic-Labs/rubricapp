@@ -1,5 +1,5 @@
 from core import db
-from sqlalchemy import ForeignKey, func, DateTime, Interval
+from sqlalchemy import ForeignKey, func, DateTime, Interval, Index
 from datetime import datetime
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
@@ -135,6 +135,10 @@ class AssessmentTask(db.Model):
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
     locked = db.Column(db.Boolean, nullable=False)
     published = db.Column(db.Boolean, nullable=False)
+    #Indexes
+    __table_args__ = (
+        Index('idx_team_due_date', 'course_id', 'due_date'),
+    )
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"
@@ -145,6 +149,10 @@ class Checkin(db.Model): # keeps students checking to take a specific AT
     team_number = db.Column(db.Integer, nullable=False)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     time = db.Column(db.DateTime)
+    # Indexes
+    __table_args__ = (
+        Index('idx_time', 'time'),
+    )
 
 class CompletedAssessment(db.Model):
     __tablename__ = "CompletedAssessment"
