@@ -20,14 +20,6 @@ from controller.Routes.RouteExceptions import EmailFailureException
 
 from core import oauth2_service, config
 
-def send_email_and_check_for_bounces(func,
-                                     dest_addr,
-                                     from_timestamp,
-                                     *vargs):
-    assert False, "unimplemented"
-    # func(*vargs)
-    # check_bounced_emails(dest_addr, from_timestamp)
-
 def check_bounced_emails(from_timestamp=None):
     if config.rubricapp_running_locally:
         return
