@@ -31,16 +31,15 @@ def get_student_individual_ratings():
         result = []
         for rating in student_ratings:
             feedback_time = rating[3]
-            submission_time = rating[4]
-            
-            if feedback_time is not None and submission_time is not None: 
-                lag_time = feedback_time - submission_time
-            elif feedback_time is None and submission_time is not None:
+            notif_time = rating[4]
+            if feedback_time is not None and notif_time is not None: 
+                lag_time = feedback_time - notif_time
+            elif feedback_time is None and notif_time is not None:
                 lag_time = "Notification sent"
             else:
-                lag_time = None
-            data = {}
-            data['first_name'] = rating[0]
+                lag_time = "No feedback"
+            data = {}  
+            data['first_name'] = rating[0] 
             data['last_name'] = rating[1]
             data['rating_observable_characteristics_suggestions_data'] = rating[2]
             if lag_time is not None or "Notification sent":
