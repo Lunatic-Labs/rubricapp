@@ -135,12 +135,14 @@ oauth2_scopes = [
 ]
 oauth2_token_fp = "/home/ubuntu/private/token.json"
 oauth2_service = None
+oauth2_credentials = None
 
-try:
-    oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
-    oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
-except Exception:
-    oauth2_service = None
+# try:
+#     oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
+#     oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
+# except Exception:
+#     oauth2_credentials = None
+#     oauth2_service = None
 
 # This gets set in wsgi.py/run.py depending on if we
 # are running locally or on a server.
