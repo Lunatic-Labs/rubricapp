@@ -9,6 +9,7 @@ import CustomButton from "../../../Student/View/Components/CustomButton";
 import { genericResourcePUT, genericResourcePOST } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
+import { getHumanReadableDueDate } from "../../../../utility";
 
 class ViewCompleteTeamAssessmentTasks extends Component {
     constructor(props) {
@@ -172,33 +173,12 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (dueDate) => {
-                        var date = new Date(dueDate);
-                        var month = date.getMonth();
-                        var day = date.getDate();
-                        var hour = date.getHours();
-                        var minute = date.getMinutes();
-
-                        const monthNames = [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "May",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec",
-                        ];
-
-                        var initialTimeString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-
+                    customBodyRender: (initialTime) => { 
+                        const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
+                        
                         return (
                             <p variant="contained" align="left">
-                                {dueDate && initialTimeString ? initialTimeString : "N/A"}
+                                {getHumanReadableDueDate(initialTime,timeZone)}
                             </p>
                         );
                     },
@@ -211,34 +191,13 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                     filter: true,
 
                     customBodyRender: (lastUpdate) => {
-                        var date = new Date(lastUpdate);
-                        var month = date.getMonth();
-                        var day = date.getDate();
-                        var hour = date.getHours();
-                        var minute = date.getMinutes();
+                      const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";    
 
-                        const monthNames = [
-                            "Jan",
-                            "Feb",
-                            "Mar",
-                            "Apr",
-                            "May",
-                            "Jun",
-                            "Jul",
-                            "Aug",
-                            "Sep",
-                            "Oct",
-                            "Nov",
-                            "Dec",
-                        ];
-
-                        var lastUpdateString = `${monthNames[month]} ${day} at ${hour % 12}:${minute < 10 ? "0" + minute : minute}${hour < 12 ? "am" : "pm"}`;
-
-                        return(
-                            <p  variant='contained' align='left' >
-                                {lastUpdate && lastUpdateString ? lastUpdateString : "N/A"}
-                            </p>
-                        )
+                      return (
+                        <p  variant='contained' align='left' >
+                          {getHumanReadableDueDate(lastUpdate,timeZone)}
+                        </p>
+                      );
                     }
                 }
             },
