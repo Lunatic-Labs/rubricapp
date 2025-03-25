@@ -20,33 +20,20 @@ import redis
 #import logging
 
 def get_oauth2_credentials(token_fp, scopes):
-    if token_fp is None:
-        return None
-
-    if not os.path.exists(token_fp):
-        return None
-
     try:
-        creds = Credentials.from_authorized_user_file(token_fp, scopes)
-    except Exception as e:
-        # raise ValueError(f"Failed to load credentials from {token_fp}: {e}")
-        return None
-
-    if creds and creds.expired and creds.refresh_token:
-        try:
-            creds.refresh(Request())
-        except Exception as e:
+        if not os.path.exists(token_fp):
             return None
-            # raise ValueError(f"Failed to refresh credentials: {e}")
-
-    if not creds or not creds.valid:
-        # raise ValueError("Credentials are not valid for read/write emails")
+        creds = Credentials.from_authorized_user_file(token_fp, scopes)
         return None
-
-    with open(token_fp, 'w') as token:
-        token.write(creds.to_json())
-
-    return creds
+        if creds and creds.expired and creds.refresh_token:
+            creds.refresh(Request())
+        if not creds or not creds.valid:
+            return None
+        with open(token_fp, 'w') as token:
+            token.write(creds.to_json())
+        return creds
+    except:
+        return None
 
 def setup_cron_jobs():
     # Check if we've already set up cron
@@ -147,11 +134,10 @@ oauth2_scopes = [
     "https://www.googleapis.com/auth/gmail.readonly",
 ]
 oauth2_token_fp = "/home/ubuntu/private/token.json"
-oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
-# oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
 oauth2_service = None
 
 try:
+    oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
     oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
 except Exception:
     oauth2_service = None
