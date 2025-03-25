@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
 from datetime import datetime
 from models.utility import error_log
+from Functions.time import *
 
 # new function to read number of records for a particular assessment task id, if 0 disable the export button, ask how many get_completed_assessment_by_course
 # get total assessments by course id and return it to assessment taks cancatenate that to the 
@@ -88,6 +89,12 @@ def create_completed_assessment(completed_assessment_data):
         locked=False,
     )
 
+    assessment_task = db.session.query(AssessmentTask).filter_by(id=completed_assessment_data["assessment_task_id"]).first()
+
+    # This handles the timezone conversion of the asssessment task.
+    if assessment_task:
+        completed_assessment = convert_timezone(completed_assessment, assessment_task)
+    
     db.session.add(completed_assessment_data)
     db.session.commit()
 
