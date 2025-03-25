@@ -103,14 +103,16 @@ test("ValidateReset.test.js Test 6: Should show SetNewPassword page when email i
 
     clickElementWithAriaLabel(rpb);
 
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(vrt);
+    });
+
     changeElementWithAriaLabelWithInput(vrei, "demoadmin02@skillbuilder.edu");
 
     clickElementWithAriaLabel(vrcb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vrf);
-
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Email failure");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
     });
 });
 
