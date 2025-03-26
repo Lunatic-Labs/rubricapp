@@ -66,7 +66,7 @@ export default function ViewAssessmentStatus(props) {
   var stdev = 0;
   var finished = 0;
   var total = props.courseTotalStudents;  //total teams or students
-  for (var i = 0; i < props.completedAssessments.length; i++) {
+  for (let i = 0; i < props.completedAssessments.length; i++) {
     if (props.completedAssessments[i].done) {
       finished++;
     }
