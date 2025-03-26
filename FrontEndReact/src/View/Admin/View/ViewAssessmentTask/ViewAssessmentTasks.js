@@ -310,7 +310,6 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (atId) => {
                         const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
                         const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
-
                         return (
                             <Tooltip 
                                 title={
@@ -325,7 +324,7 @@ class ViewAssessmentTasks extends Component {
                                     aria-label={isPublished ? "unlock" : "lock"}
                                     onClick={() => this.handlePublishToggle(atId, task)}
                                 >
-                                {isPublished ? <UnpublishedIcon /> : <PublishIcon />}
+                                {isPublished ? <PublishIcon /> : <UnpublishedIcon />}
                                 </IconButton>
                             </Tooltip>
                         );
