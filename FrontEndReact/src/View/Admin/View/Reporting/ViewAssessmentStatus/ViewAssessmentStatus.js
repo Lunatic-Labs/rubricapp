@@ -64,8 +64,16 @@ export default function ViewAssessmentStatus(props) {
   var allRatings = [];
   var avg = 0;
   var stdev = 0;
-
-  var progress = +props.completedAssessmentsPercentage.toFixed(2);
+  var finished = 0;
+  var total = props.courseTotalStudents;  //total teams or students
+  for (var i = 0; i < props.completedAssessments.length; i++) {
+    if (props.completedAssessments[i].done) {
+      finished++;
+    }
+  }
+  console.log("finished: ", finished);
+  console.log("total: ", total);
+  var progress = +((finished / total) * 100).toFixed(2);
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
     for (var i = 0; i < props.completedAssessments.length; i++) {
@@ -105,17 +113,15 @@ export default function ViewAssessmentStatus(props) {
     }
 
     // add percentage to each JSON object in improvement/characteristics
-    let totalCharacteristics = characteristicsData['characteristics'].reduce((sum, characteristic) => sum + characteristic.number, 0);
     for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
-      let percent = totalCharacteristics === 0 ? 0 : 
-        (characteristicsData['characteristics'][i]['number'] / totalCharacteristics * 100);
+      let percent = total === 0 ? 0 : 
+        (characteristicsData['characteristics'][i]['number'] / total * 100);
       characteristicsData['characteristics'][i]['percentage'] = +percent.toFixed(2);
     }
  
-    let totalImprovements = improvementsData['improvements'].reduce((sum, improvement) => sum + improvement.number, 0);
     for (let i = 0; i < improvementsData['improvements'].length; i++) {
-      let percent = totalImprovements === 0 ? 0 : 
-        (improvementsData['improvements'][i]['number'] / totalImprovements * 100);
+      let percent = total === 0 ? 0 : 
+        (improvementsData['improvements'][i]['number'] / total * 100);
       improvementsData['improvements'][i]['percentage'] = +percent.toFixed(2);
     }
   }

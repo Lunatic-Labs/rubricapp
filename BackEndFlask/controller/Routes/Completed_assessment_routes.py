@@ -25,7 +25,7 @@ from models.queries import (
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id,
     get_completed_assessment_with_user_name,
-    get_completed_assessment_ratio,
+    get_course_total_students,
 )
 
 from models.assessment_task import get_assessment_tasks_by_course_id
@@ -122,9 +122,9 @@ def get_all_completed_assessments():
                 
                 assessment_id = request.args.get("assessment_id")
 
-                ratio = get_completed_assessment_ratio(course_id, assessment_id)
+                course_total = get_course_total_students(course_id, assessment_id)
 
-                return create_good_response(ratio, 200, "completed_assessments")
+                return create_good_response(course_total, 200, "completed_assessments")
             else:
                 course_id = int(request.args.get("course_id"))
 
