@@ -71,8 +71,6 @@ export default function ViewAssessmentStatus(props) {
       finished++;
     }
   }
-  console.log("finished: ", finished);
-  console.log("total: ", total);
   var progress = +((finished / total) * 100).toFixed(2);
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
