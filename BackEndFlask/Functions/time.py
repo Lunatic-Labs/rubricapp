@@ -28,16 +28,14 @@ def convert_timezone(completed_assessment, assessment_task):
         "EDT": "America/New_York",
     }
 
-    task_timezone = getattr(assessment_task, "timezone", "UTC")
+    task_timezone = assessment_task.time_zone
     pytz_timezone = pytz.timezone(timezone_list.get(task_timezone, "UTC"))
 
     if completed_assessment.initial_time:
-        utc_time = completed_assessment.initial_time.replace(tzinfo=pytz.UTC)
-        completed_assessment.initial_time = utc_time.astimezone(pytz_timezone)
-
+        completed_assessment.initial_time = completed_assessment.initial_time.astimezone(pytz_timezone)
+        
     if completed_assessment.last_update:
-        utc_time = completed_assessment.last_update.replace(tzinfo=pytz.UTC)
-        completed_assessment.last_update = utc_time.astimezone(pytz_timezone)
+        completed_assessment.last_update = completed_assessment.last_update.astimezone(pytz_timezone)
 
     return completed_assessment
     

@@ -77,7 +77,7 @@ def create_completed_assessment(completed_assessment_data):
     if "Z" not in completed_assessment_data["last_update"]:
         completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + "Z"
 
-    completed_assessment_data = CompletedAssessment(
+    completed_assessment = CompletedAssessment(
         assessment_task_id=completed_assessment_data["assessment_task_id"],
         completed_by=completed_assessment_data["completed_by"],
         team_id=completed_assessment_data["team_id"],
@@ -88,17 +88,17 @@ def create_completed_assessment(completed_assessment_data):
         done=completed_assessment_data["done"],
         locked=False,
     )
-
-    assessment_task = db.session.query(AssessmentTask).filter_by(id=completed_assessment_data["assessment_task_id"]).first()
-
-    # This handles the timezone conversion of the asssessment task.
+    
+    assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=completed_assessment_data["assessment_task_id"]).first()
+    
+    # This handles the timezone conversion of the assessment task
     if assessment_task:
         completed_assessment = convert_timezone(completed_assessment, assessment_task)
+        
+        db.session.add(completed_assessment)
+        db.session.commit()
     
-    db.session.add(completed_assessment_data)
-    db.session.commit()
-
-    return completed_assessment_data
+    return completed_assessment
 
 @error_log
 def toggle_lock_status(completed_assessment_id):
