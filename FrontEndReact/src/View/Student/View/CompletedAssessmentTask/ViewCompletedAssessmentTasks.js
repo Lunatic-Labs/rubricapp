@@ -79,14 +79,16 @@ class ViewCompletedAssessmentTasks extends Component {
                 }
             },
             {
-                name: "completed_by_role_id",
+                name: "assessment_task_id",
                 label: "Completed By",
                 options: {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"140px" } },
                     setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (roleId) => {
-                        return <>{roleId === 5 ? "Student" : "TA/Instructor"}</>;
+                    customBodyRender: (atId) => {
+                        const at = assessmentTasks.find(at => at.assessment_task_id === atId);
+                        const completer = at.role_id;
+                        return <>{completer === 5 ? "Student" : "TA/Instructor"}</>;
                     }
                 }
             },
