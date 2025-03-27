@@ -14,10 +14,11 @@ timezone_list = {
 
 def parse_and_convert_timezone(time_str, assessment_task):
     """
-    Parse a time string and convert it to the assessment task's timezone
+    Description:
+    Parse and convert a time string to the chosen assessment task's timezone.
     
     Parameters:
-    time_str: ISO format time string in UTC
+    time_str: Format time string in UTC (default time)
     assessment_task: AssessmentTask object
     
     Returns:
@@ -29,11 +30,12 @@ def parse_and_convert_timezone(time_str, assessment_task):
     
     if "Z" not in time_str:
         time_str = time_str + "Z"
-    
 
+    
+    # Parse the time string into a UTC datetime object
     utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
     
-    # Gets the correct timezone
+    # Handles the conversion of the chosen assessment task timezone
     if assessment_task and assessment_task.time_zone:
         pytz_timezone = pytz.timezone(timezone_list.get(assessment_task.time_zone, "UTC"))
         return utc_time.astimezone(pytz_timezone)
