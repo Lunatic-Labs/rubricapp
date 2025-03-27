@@ -1243,34 +1243,29 @@ def get_course_name_by_at_id(at_id:int) -> str :
 
     return course_name[0][0]
 
-def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> int:
+def get_course_total_students(course_id: int, assessment_task_id: int) -> int:
     """
     Description:
-    Returns the ratio of users who have completed an assessment task
+    Returns the total number of students or teams in a course.
     
     Parameters:
     course_id : int (The id of a course)
     assessment_task_id : int (The id of an assessment task)
 
-    Return: int (Ratio of users who have completed an assessment task rounded to the nearest whole number)
+    Return: int (The total number of students or teams in a course.)
     """
-    ratio = 0
+    course_total = 0
 
     all_usernames_for_completed_task = get_completed_assessment_with_user_name(assessment_task_id)
 
     if all_usernames_for_completed_task:
         all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
-
-        ratio = len(all_usernames_for_completed_task) / len(all_students_in_course) * 100
+        course_total = len(all_students_in_course) 
     else:
-        all_teams_in_course = get_team_members_in_course(course_id)
-        all_teams_for_completed_task = get_completed_assessment_with_team_name(assessment_task_id)
-        
-        ratio = len(all_teams_for_completed_task) / len(all_teams_in_course) * 100
+        all_teams_in_course = get_team_members_in_course(course_id)  
+        course_total =  len(all_teams_in_course) 
 
-    ratio_rounded = round(ratio)
-
-    return ratio_rounded
+    return course_total
 
 def is_admin_by_user_id(user_id: int) -> bool:
     """
