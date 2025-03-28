@@ -101,6 +101,10 @@ class UserCourse(db.Model):
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     active = db.Column(db.Boolean)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
+    #Indexes
+    __table_args__ = (
+        Index('idx_active', 'active'),
+    )
 
 class Team(db.Model): # keeps track of default teams for a fixed team scenario
     __tablename__ = "Team"
