@@ -1,6 +1,5 @@
 from core import db
 from sqlalchemy import ForeignKey, func, DateTime, Interval, Index
-from sqlalchemy import ForeignKey, func, DateTime, Interval
 from datetime import datetime
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.

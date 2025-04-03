@@ -6,7 +6,6 @@ from sqlalchemy import (
     and_
 )
 from models.utility import generate_random_password, send_new_user_email
-from models.utility import generate_random_password, send_new_user_email, check_bounced_emails
 from models.email_validation import create_validation
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails

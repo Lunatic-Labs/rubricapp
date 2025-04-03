@@ -2,6 +2,9 @@ from core import app
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> master
 import threading
 
 import time
@@ -68,6 +71,7 @@ def validate_pending_emails():
 
         except Exception as e:
             print(f'failed to run thread {e}')
+<<<<<<< HEAD
 =======
 import time
 
@@ -266,3 +270,5 @@ def validate_pending_emails():
             except Exception as e:
                 print(f"Error in email checker thread: {e}")
 >>>>>>> 86ce120c4 (add threading, local runtime detection, EmailValidation table)
+=======
+>>>>>>> master

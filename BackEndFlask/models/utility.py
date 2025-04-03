@@ -4,7 +4,6 @@ import sys
 import time
 import string, secrets
 import html
-import html
 
 import base64
 from email.message import EmailMessage
