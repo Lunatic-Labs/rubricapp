@@ -18,13 +18,13 @@ import os
 import re
 import redis
 #import logging
+from models.logger import Logger
 
 def get_oauth2_credentials(token_fp, scopes):
     try:
         if not os.path.exists(token_fp):
             return None
         creds = Credentials.from_authorized_user_file(token_fp, scopes)
-        return None
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         if not creds or not creds.valid:
@@ -128,6 +128,14 @@ redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 
+# This gets set in wsgi.py/run.py depending on if we
+# are running locally or on a server.
+class Config:
+    rubricapp_running_locally = False
+    logger = Logger("init-config-logger")
+
+config = Config()
+
 # Initialize Gmail OAuth2 service
 try:
     oauth2_scopes = [
@@ -139,16 +147,10 @@ try:
     oauth2_credentials = None
     oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
     oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
-except Exception:
+except Exception as e:
+    config.logger.error(str(e))
     oauth2_credentials = None
     oauth2_service = None
-
-# This gets set in wsgi.py/run.py depending on if we
-# are running locally or on a server.
-class Config:
-    rubricapp_running_locally = False
-
-config = Config()
 
 # Register blueprints
 from controller import bp
