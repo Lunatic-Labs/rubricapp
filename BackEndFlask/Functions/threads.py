@@ -4,6 +4,7 @@ import threading
 import time
 
 from models.email_validation import *
+from models.logger import logger
 
 def spawn_thread(f, *args, **kwargs):
     threading.Thread(
@@ -64,4 +65,5 @@ def validate_pending_emails():
                     send_bounced_email_notification(data[bounce['to']], bounce['msg'], bounce['main_failure'])
 
         except Exception as e:
+            logger.error("Failed to spin up thread: " + str(e))
             print(f'failed to run thread {e}')

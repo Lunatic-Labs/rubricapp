@@ -24,9 +24,6 @@ def check_bounced_emails(from_timestamp=None):
     if config.rubricapp_running_locally:
         return
 
-    if not from_timestamp:
-        return
-
     max_fetched_emails = 32
 
     try:
@@ -88,7 +85,8 @@ def check_bounced_emails(from_timestamp=None):
             return bounced_emails if len(bounced_emails) != 0 else None
 
     except Exception as e:
-        raise EmailFailureException(str(e))
+        config.logger.error("Could not check for bounced email: " + str(e))
+        raise EmailFailureException()
 
 def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
     subject = "Student's email failed to send."
@@ -165,9 +163,11 @@ def send_email(address: str, subject: str, content: str):
         create_message = {
                 "raw": encoded_message,
         }
+
         send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
     except Exception as e:
+        config.logger.error("Could not send email: " + str(e))
         raise EmailFailureException()
 
 
