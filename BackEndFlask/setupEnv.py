@@ -193,7 +193,7 @@ def eat(args, argc):
 def start_tests():
     log("Starting tests...")
 
-    cmd(f"{python_cmd} -m pytest", "start_tests()")
+    cmd(f"{python_cmd} -m pytest --disable-warnings", "start_tests()") #remove --disable-warnings before pr
 
     log("Finished tests")
 

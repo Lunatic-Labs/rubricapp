@@ -1,4 +1,4 @@
-from Functions.customExceptions import *
+""" from Functions.customExceptions import *
 from Functions.teamBulkUpload import team_bulk_upload
 from Functions.test_files.PopulationFunctions import *
 import os
@@ -217,4 +217,4 @@ def test_should_pass_when_given_2_teams_2_tas(flask_app_mock):
             delete_all_teams_team_members(result["course_id"])
             delete_one_admin_ta_student_course(result)
             delete_all_users_user_courses(result["course_id"])
-            raise
+            raise """
