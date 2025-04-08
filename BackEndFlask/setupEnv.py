@@ -4,6 +4,8 @@ import subprocess
 import platform
 import sys
 import os
+from core import config
+import pytest 
 
 FILENAME = ""
 
@@ -193,7 +195,12 @@ def eat(args, argc):
 def start_tests():
     log("Starting tests...")
 
-    cmd(f"{python_cmd} -m pytest --disable-warnings", "start_tests()") #remove --disable-warnings before pr
+    config.rubricapp_running_locally = False
+    config.testing_mode = True
+
+    # NOTE: Testing is now running in the same process.
+    pytest.main(["--disable-warnings"])
+
 
     log("Finished tests")
 

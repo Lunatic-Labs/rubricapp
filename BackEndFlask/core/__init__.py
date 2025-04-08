@@ -133,6 +133,7 @@ red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 class Config:
     rubricapp_running_locally = False
     logger = Logger("init-config-logger")
+    testing_mode = False
 
 config = Config()
 
