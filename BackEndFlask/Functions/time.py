@@ -41,29 +41,3 @@ def parse_and_convert_timezone(time_str, assessment_task):
         return utc_time.astimezone(pytz_timezone)
     
     return utc_time
-
-
-def get_due_date_timezone(assessment_task):
-    """
-    Description:
-    Converts the due date to the assessment task's timezone.
-    
-    Parameters:
-    assessment_task: AssessmentTask object
-    
-    Returns:
-    Timezone-aware datetime due date in the assessment task's timezone
-    """
-    if assessment_task.due_date is None:
-        return None
-    
-    # Add UTC timezone to the datetime
-    utc_due_date = assessment_task.due_date.replace(tzinfo=pytz.UTC)
-    
-    # Converts to timezone
-    if assessment_task.time_zone:
-        timezone_name = timezone_list.get(assessment_task.time_zone, "UTC")
-        local_tz = pytz.timezone(timezone_name)
-        return utc_due_date.astimezone(local_tz)
-    
-    return utc_due_date
