@@ -34,6 +34,11 @@ class MockUtil:
         assert i is j, MockUtil.dynamic_msg(i, j, "is", expected)
 
     @staticmethod
+    def neg_singleton_comparision(i, j, expected = None):
+        """Assertion test for not Boolean ors None singleton."""
+        assert i is not j, MockUtil.dynamic_msg(i, j, "is", expected)
+
+    @staticmethod
     def list_comparision(list_a, list_b, func, none_comparison=False, expected = None):
         """Usage: give it two lists and a MockUtil function to compare things faster.
             It is possible to give it one list and an empty list if none_comparision is true.
@@ -65,8 +70,10 @@ def test_token_file_path():
     correct_path = "/home/ubuntu/private/token.json"
     MockUtil.equal(oauth2_token_fp, correct_path, "Ensure both paths are correctly typed.")
 
-def test_init_mock_objects_are_up():
-    MockUtil.singleton_comparision(create_init_service_and_creds_mock(), True, "Creds should be mocked.")
+def test_init_mock_credential_retrival():
+    oauth2_credentials = create_mock_credentials()
+    MockUtil.neg_singleton_comparision(oauth2_credentials, None, "Should not be empty as the patch should populate them.")
+
 
 """ def test_replicate_credential_creation():
     # Initialize Gmail OAuth2 service
