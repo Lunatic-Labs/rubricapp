@@ -8,13 +8,14 @@
 #-------------------------------------------------------------------------
 
 from email_test_util import EmailConsts, MockUtil
+from unittest.mock import patch, mock_open
 from core import (
     config, oauth2_credentials, 
     oauth2_service, oauth2_token_fp, 
-    oauth2_scopes
+    oauth2_scopes, get_oauth2_credentials,
 )
 from email_mock import (
-    create_mock_email_objs
+    create_mock_email_objs,
 )
 
 # NOTE: That the google objects must be running, so testing overrides certain defaults.
@@ -37,6 +38,19 @@ def test_005_token_file_path():
 def test_006_create_mock_objects():
     SUCCESS = create_mock_email_objs()
     MockUtil.singleton_comparision(SUCCESS, True, "Must have objects running for everything else. If not possible then comment out the config changes in the setupEnv.py for testing.")
+
+def test_007_attempt_to_fetch_creds():
+    try:
+        my_open = mock_open()
+        creds = None
+        with patch('builtins.open', my_open), \
+            patch('os.path.exists', return_value=True):
+            creds = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
+            MockUtil.equal(my_open.call_count, 1000,f"{my_open.call_count}")
+
+    except Exception as e:
+        MockUtil.singleton_comparision(True, False, f"You should not let an exception through to here. {e}")
+    MockUtil.neg_singleton_comparision(creds, None, "Creds should be populated by now")
 
 """ def test_replicate_credential_creation():
     # Initialize Gmail OAuth2 service

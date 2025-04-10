@@ -27,6 +27,10 @@ def param_check(param, correct_param):
 def flat_error(param):
     if param == "ERROR":
         raise Exception("Forced exception")
+def error_param_type(param,list):
+    for i in list:
+        if isinstance(param,list[i]):
+            raise ValueError("Invalid type recived")
 #---------------------------------------------------------   
 
 def from_authorized_user_file_mock(token_fp, scopes):
@@ -41,10 +45,15 @@ def from_authorized_user_file_mock(token_fp, scopes):
     param_check(scopes, EmailConsts.CORRECT_SCOPES)
     return EmailConsts.MOCKED_CREDS
 
-def credentials_class_refresh_method_mock(object, correct_obj):
-    if not isinstance(object, correct_obj):
-        raise ValueError("Make use Request was used")
-    return True
+def credentials_class_refresh_method_mock(object):
+    timeout_param(object)
+    flat_error(object)
+    error_param_type(object, [str, int, list])
+
+class MockRequest:
+    def __init__(self, *args, **kwargs):
+        param_check(len(*args), 0)
+        # Can be inflated to do more logging or debugging
 
 def create_mock_email_objs():
     """Takes commonly used objects and replaces them with the Mocked objects and its respective functions"""
@@ -59,6 +68,9 @@ def create_mock_email_objs():
         sys.modules["google.oauth2.credentials"].Credentials = mock_creds
         # Replacing the Request class
         from google.auth.transport.requests import Request
+        mock_request = MagicMock()
+        sys.modules["google.auth.transport.requests"] = mock_request
+        mock_request.Request = MockRequest
 
         return True
     except:
