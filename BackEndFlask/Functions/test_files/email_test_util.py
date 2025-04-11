@@ -14,7 +14,6 @@ class EmailConsts:
     MOCKED_REFRESH = "MOCKED REFRESH"
 
 
-
 class MockUtil:
     """This class just formats information passed to it for debugging purposes."""
     @staticmethod
