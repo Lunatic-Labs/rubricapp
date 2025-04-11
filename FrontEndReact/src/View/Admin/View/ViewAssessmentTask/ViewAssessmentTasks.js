@@ -5,7 +5,7 @@ import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { formatDueDate, genericResourceGET, genericResourcePUT, getHumanReadableDueDate } from '../../../../utility.js';
+import { genericResourceGET, genericResourcePUT, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
@@ -163,7 +163,7 @@ class ViewAssessmentTasks extends Component {
 
         for(let index = 0; index < assessmentTasks.length; index++) {
             assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
-                "due_date": formatDueDate(assessmentTasks[index]["due_date"], assessmentTasks[index]["time_zone"]),
+                "due_date": assessmentTasks[index]["due_date"],
                 "time_zone": assessmentTasks[index]["time_zone"]
             };
         }
