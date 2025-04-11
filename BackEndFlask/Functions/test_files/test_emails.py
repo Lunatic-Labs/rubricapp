@@ -56,12 +56,15 @@ def test_007_attempt_to_fetch_creds(mock_exists, mock_open_func) -> None:
     MockUtil.neg_singleton_comparision(creds, None, "Creds should be populated by now")
     oauth2_credentials = creds
 
-def test_008_attempt_to_start_email_service() -> None:
+# Patching here is need to force the function to look elsewhere.
+@patch('googleapiclient.discovery.build', new_callable=build_service_mock(True))
+def test_008_attempt_to_start_email_service(mock_service) -> None:
     oauth2_service = None
     try:
         from googleapiclient.discovery import build
-        with patch("googleapiclient.discovery.build", build_service_mock(True)):
-            oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
+        oauth2_service = build("gmail", "v1", credentials=oauth2_credentials)
+        correct_object_called = mock_service.call_count > 0
+        MockUtil.singleton_comparision(correct_object_called, True, "We should have called at least more than once.")
     except Exception as e:
         MockUtil.singleton_comparision(True, False, f"You should not get here: {e}")
     MockUtil.neg_singleton_comparision(oauth2_service, None, "UNFINISHED")
