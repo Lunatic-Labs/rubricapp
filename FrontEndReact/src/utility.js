@@ -1,6 +1,5 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
-import { fromZonedTime, format } from "date-fns-tz";
 import * as eventsource from "eventsource-client";
 
 export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
