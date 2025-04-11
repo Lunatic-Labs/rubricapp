@@ -82,13 +82,14 @@ def request_mock() -> None:
     mock_request.Request = mock_request
     sys.modules["google.auth.transport.requests"] = mock_request
 
-def build_service_mock() -> None:
+def build_service_mock(return_mock=False) -> None | MagicMock:
     """Replacing the build function for the oauth service."""
     from googleapiclient.discovery import build
     mock_service = MagicMock()
     return_self = lambda x,y,z: (build_param_mock(x, y, z), mock_service)[1]
     mock_service.build = return_self
     sys.modules["googleapiclient.discovery.build"] = mock_service
+    if return_mock: return mock_service
 
 def create_mock_email_objs() -> bool:
     """Takes commonly used objects and replaces them with the Mocked objects and its respective functions"""
