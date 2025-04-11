@@ -39,18 +39,21 @@ def test_006_create_mock_objects():
     SUCCESS = create_mock_email_objs()
     MockUtil.singleton_comparision(SUCCESS, True, "Must have objects running for everything else. If not possible then comment out the config changes in the setupEnv.py for testing.")
 
-def test_007_attempt_to_fetch_creds():
-    try:
-        my_open = mock_open()
-        creds = None
-        with patch('builtins.open', my_open), \
-            patch('os.path.exists', return_value=True):
-            creds = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
-            MockUtil.equal(my_open.call_count, 1000,f"{my_open.call_count}")
-
+# Forcing moduels to read the mock objects.
+@patch('builtins.open', new_callable=mock_open)
+@patch('os.path.exists', return_value=True)
+def test_007_attempt_to_fetch_creds(mock_exists, mock_open_func):
+    creds = None
+    try:    
+        creds = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
+        exists_called = mock_exists.call_count == 1
+        open_called = mock_open_func.call_count == 1
+        MockUtil.singleton_comparision(exists_called, True, f"Exists should be called once; was called {mock_exists.call_count}")
+        MockUtil.singleton_comparision(open_called, True, f"open should be called once; called {mock_open_func.call_count}")
     except Exception as e:
         MockUtil.singleton_comparision(True, False, f"You should not let an exception through to here. {e}")
     MockUtil.neg_singleton_comparision(creds, None, "Creds should be populated by now")
+    oauth2_credentials = creds
 
 """ def test_replicate_credential_creation():
     # Initialize Gmail OAuth2 service

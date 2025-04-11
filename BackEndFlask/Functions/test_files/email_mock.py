@@ -10,6 +10,7 @@ import sys
 from unittest.mock import MagicMock
 from email_test_util import EmailConsts
 import time
+import importlib
 
 # NOTE: The sys functions are used to override the run time objects so all
 # the other tests can also take advantage of these objects and logging.
@@ -29,7 +30,7 @@ def flat_error(param):
         raise Exception("Forced exception")
 def error_param_type(param,list):
     for i in list:
-        if isinstance(param,list[i]):
+        if isinstance(param,i):
             raise ValueError("Invalid type recived")
 #---------------------------------------------------------   
 
@@ -43,17 +44,11 @@ def from_authorized_user_file_mock(token_fp, scopes):
     flat_error(token_fp)
     param_check(token_fp, EmailConsts.CORRECT_PATH_TO_TOKEN)
     param_check(scopes, EmailConsts.CORRECT_SCOPES)
-    return EmailConsts.MOCKED_CREDS
 
 def credentials_class_refresh_method_mock(object):
     timeout_param(object)
     flat_error(object)
     error_param_type(object, [str, int, list])
-
-class MockRequest:
-    def __init__(self, *args, **kwargs):
-        param_check(len(*args), 0)
-        # Can be inflated to do more logging or debugging
 
 def create_mock_email_objs():
     """Takes commonly used objects and replaces them with the Mocked objects and its respective functions"""
@@ -61,17 +56,24 @@ def create_mock_email_objs():
         # Replacing the Credentials class.
         from google.oauth2.credentials import Credentials
         mock_creds = MagicMock()
-        mock_creds.from_authorized_user_file.side_effect = from_authorized_user_file_mock
-        mock_creds.expired = False
+        return_self = lambda i, j :(from_authorized_user_file_mock(i, j), mock_creds)[1]
+        mock_creds.from_authorized_user_file.side_effect = return_self
+        mock_creds.expired = True
+        mock_creds.valid = True
         mock_creds.refresh_token = EmailConsts.MOCKED_REFRESH
-        mock_creds.refresh = credentials_class_refresh_method_mock
+        return_self = lambda i: (credentials_class_refresh_method_mock(i), mock_creds)[1]
+        mock_creds.refresh = return_self
         sys.modules["google.oauth2.credentials"].Credentials = mock_creds
+
         # Replacing the Request class
         from google.auth.transport.requests import Request
         mock_request = MagicMock()
+        mock_request.Request = mock_request
         sys.modules["google.auth.transport.requests"] = mock_request
-        mock_request.Request = MockRequest
 
+        # Forcing a cache reload
+        import core
+        importlib.reload(core)
         return True
     except:
         return False
