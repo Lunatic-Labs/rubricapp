@@ -20,33 +20,28 @@ class ViewAssessmentTaskInstructions extends Component {
         const state = navbar.state;
         const cookies = new Cookies();
 
-        try {
-            const userId = cookies.get('user')?.user_id;
-            if (!userId) {
-                console.error('User ID not found in cookies');
-                this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
-                return;
-            }
-
-            const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
-            if (!completedAssessmentId) {
-                console.error('Completed assessment ID not found');
-                this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
-                return;
-            }
-
-            await genericResourcePOST(
-                '/feedback',
-                this,
-                JSON.stringify({
-                    user_id: userId,
-                    completed_assessment_id: completedAssessmentId
-                })
-            );
-
-        } catch (error) {
-            console.error('Error recording feedback view:', error);
+    
+        const userId = cookies.get('user')?.user_id;
+        if (!userId) {
+            this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+            return;
         }
+
+        const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
+        if (!completedAssessmentId) {
+            this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+            return;
+        }
+
+        await genericResourcePOST(
+            '/feedback',
+            this,
+            JSON.stringify({
+                user_id: userId,
+                completed_assessment_id: completedAssessmentId
+            })
+        );
+
 
         this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
     }
