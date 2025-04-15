@@ -6,7 +6,6 @@ from flask import request
 from controller.Route_response import *
 from models.completed_assessment import *
 from models.queries import get_individual_ratings, get_team_ratings
-from models.queries import get_individual_ratings, get_team_ratings
 from flask_jwt_extended import jwt_required
 
 from controller.security.CustomDecorators import (
@@ -23,7 +22,7 @@ def output(x):
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_ratings():
+def get_student_individual_ratings():
     """
         Description:
         Given an the id of an individual or team assessment task, gets all the students or teams who completed it, their ratings,
