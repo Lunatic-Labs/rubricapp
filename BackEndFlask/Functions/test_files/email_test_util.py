@@ -12,6 +12,8 @@ class EmailConsts:
     CORRECT_PATH_TO_TOKEN = "/home/ubuntu/private/token.json"
     MOCKED_CREDS = "Mocked Creds Yo"
     MOCKED_REFRESH = "MOCKED REFRESH"
+    FAKE_STUDENT = "KUNG FU PANDA"
+    FAKE_EMAIL = "FAKEhkjhkjhkjhkjhkh@gmail.com"
 
 
 class MockUtil:

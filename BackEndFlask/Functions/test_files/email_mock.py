@@ -3,7 +3,7 @@
 # api so that at local host level we use fake objects and at a higher
 # level we use the real api.
 #
-# Date Updated: Tue 08 Apr 2025 01:43:42 PM CDT
+# Date Updated: Fri 11 Apr 2025 02:27:29 PM CDT
 #-------------------------------------------------------------------------
 
 import sys
@@ -11,7 +11,7 @@ from unittest.mock import MagicMock
 from email_test_util import EmailConsts
 import time
 import importlib
-import Functions
+import models
 
 # NOTE: The sys functions are used to override the run time objects so all
 # the other tests can also take advantage of these objects and logging.
@@ -33,6 +33,9 @@ def error_param_type(param,list):
     for i in list:
         if isinstance(param,i):
             raise ValueError("Invalid type recived")
+def param_singleton(param, correct_param):
+    if param is not correct_param:
+        raise ValueError("Incorrect Params")
 
 # Below are parameter and other function checks for mocks.
 #---------------------------------------------------------   
@@ -57,6 +60,12 @@ def build_param_mock(extension, ver, creds):
     param_check(extension, "email")
     param_check(ver, "ve1")
     param_check(creds.creds, EmailConsts.MOCKED_CREDS)
+
+def email_msg_init(email_policy):
+    param_singleton(email_policy, None)
+
+def sending_email_param_check(x=None, y= None):
+    param_check(x, "me")
 
 # Below are now the mock object creators.
 #--------------------------------------------------------- 
@@ -88,8 +97,26 @@ def build_service_mock(return_mock=False) -> None | MagicMock:
     mock_service = MagicMock()
     return_self = lambda x,y,z: (build_param_mock(x, y, z), mock_service)[1]
     mock_service.build = return_self
+    mock_service.users = mock_service
+    mock_service.messages = mock_service
+    return_self = lambda x, y : (sending_email_param_check(x, y))[1]
+    mock_service.send = return_self
+    mock_service.execute = "SENT EMAIL"
     sys.modules["googleapiclient.discovery.build"] = mock_service
     if return_mock: return mock_service
+
+def mock_email_send_objects()-> None:
+    """Replacing send_email() email objects and anything else that might not run locally."""
+    from email.message import EmailMessage
+    mock_email_msg = MagicMock()
+    return_self = lambda x=None: (email_msg_init(x), mock_email_msg)[1]
+    mock_email_msg.EmailMessage = return_self
+    def setValue(x):
+        mock_email_msg.content = x
+    return_self =  lambda x=None: (setValue(x), mock_email_msg)[1]
+    mock_email_msg.set_content = return_self
+    sys.modules["email.message.EmailMessage"] = mock_email_msg
+
 
 def create_mock_email_objs() -> bool:
     """Takes commonly used objects and replaces them with the Mocked objects and its respective functions"""
@@ -97,10 +124,12 @@ def create_mock_email_objs() -> bool:
         credentials_mock()
         request_mock()
         build_service_mock()
+        mock_email_send_objects()
 
         # Forcing a cache reload so mock objects can take their place
         import core
         importlib.reload(core)
+        importlib.reload(models)
 
         return True
     except:

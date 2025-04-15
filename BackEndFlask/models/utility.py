@@ -163,7 +163,7 @@ def send_email(address: str, subject: str, content: str):
         create_message = {
                 "raw": encoded_message,
         }
-
+        
         send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
     except Exception as e:
