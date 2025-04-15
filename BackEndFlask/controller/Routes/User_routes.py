@@ -2,6 +2,11 @@ from flask import request
 from controller  import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
+from Functions.threads import (
+    spawn_thread,
+    validate_pending_emails,
+    update_email_to_pending,
+)
 
 from controller.security.CustomDecorators import(
     AuthCheck, bad_token_check,
@@ -241,7 +246,7 @@ def add_user():
                 return create_good_response(user_schema.dump(user_exists), 200, "users")
 
             else:
-                new_user = create_user(request.json, owner_email)
+                new_user = create_user(request.json)
 
                 create_user_course({
                     "user_id": new_user.user_id,
@@ -306,6 +311,10 @@ def update_user():
         get_user(user_id)  # Trigger an error if not exists.
 
         request.json["password"] = get_user_password(user_id)
+
+        # The email was updated, update the email validation table for that entry.
+        if new_email is not None and owner_id is not None:
+            update_email_to_pending(user_id)
 
         user = replace_user(request.json, user_id)
 
