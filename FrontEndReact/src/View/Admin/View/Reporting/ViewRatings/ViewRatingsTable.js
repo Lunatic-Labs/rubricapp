@@ -9,7 +9,7 @@ class ViewRatingsTable extends Component {
     let nameLabel = "";
     var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
     // Determines if it is students or teams
-    if (assessmentIsTeam[this.props.chosenAssessmentId] === false) {
+    if (assessmentIsTeam[this.props.chosenAssessmentId] == false) {
         nameLabel = "Student Name";
       } else {
         nameLabel = "Team Name";
@@ -17,7 +17,7 @@ class ViewRatingsTable extends Component {
 
     this.props.ratings.map((currentRating) => {
       var rating = {};
-      console.log(`Is team: ${nameLabel}`);
+      // console.log("Current Rating:", currentRating);
       if (currentRating["first_name"] && currentRating["last_name"]) {
         rating["name"] = currentRating["first_name"] + " " + currentRating["last_name"];
       } else if (currentRating["team_name"]) {

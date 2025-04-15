@@ -30,54 +30,32 @@ def get_ratings():
     """
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        team_id = request.args.get("team_id") # what is team_id supposed to be? the actual team_id for the requested teams or a checker to see if a team exists or not.
-        
-        output(f"{datetime.datetime.now()} 1 - Team ID: {team_id}")
-        if team_id: 
-            output(f"{datetime.datetime.now()} 2 - Team ID: {team_id}")
-            ratings = get_team_ratings(assessment_task_id)
-            if ratings is None:
-                return create_good_response([], 200, "ratings")
         team_id = request.args.get("team_id")  
-        output(f"{datetime.datetime.now()} 1 - Team ID: {team_id}")
+
         if team_id: 
             ratings = get_team_ratings(assessment_task_id)
             if ratings is None:
                 return create_good_response([], 200, "ratings")
 
-            result = []
-            for team in ratings:
-                feedback_time = team[3]
-                submission_time = team[4]
-                lag_time = feedback_time - submission_time if feedback_time and submission_time else None
+        result = {} 
+        result = []
+        for rating in student_ratings:
+            feedback_time = rating[3]
+            submission_time = rating[4]
+            
+            if feedback_time is not None and submission_time is not None: 
+                lag_time = feedback_time - submission_time
+            else: 
+                lag_time = None
 
-                result.append({
-                    "team_id": team[0],
-                    "team_name": team[1],
-                    "rating_observable_characteristics_suggestions_data": team[2],
-                    "lag_time": str(lag_time) if lag_time else None,
-                })
-                output(f"Ratings: {ratings}")
+            data = {}
+            data['first_name'] = rating[0]
+            data['last_name'] = rating[1]
+            data['rating_observable_characteristics_suggestions_data'] = rating[2]
+            data['lag_time'] = str(lag_time) if lag_time is not None else None
+            
+            result.append(data)
 
-        else:
-            ratings = get_individual_ratings(assessment_task_id)
-            if ratings is None:
-                return create_good_response([], 200, "ratings")
-
-            result = []
-            for rating in ratings:
-                feedback_time = rating[3]
-                submission_time = rating[4]
-                lag_time = feedback_time - submission_time if feedback_time and submission_time else None
-
-                result.append({
-                    "first_name": rating[0],
-                    "last_name": rating[1],
-                    "rating_observable_characteristics_suggestions_data": rating[2],
-                    "lag_time": str(lag_time) if lag_time else None,
-                })
-            output(f"Ratings: {ratings}")
-            output(f"{datetime.datetime.now()} 3 - Team ID: {team_id}")
         return create_good_response(result, 200, "ratings")
 
     except Exception as e:
