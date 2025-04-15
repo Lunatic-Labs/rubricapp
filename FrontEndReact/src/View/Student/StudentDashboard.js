@@ -26,6 +26,14 @@ import Loading from '../Loading/Loading.js';
  * 
  */
 
+/**
+ * TODO:
+ * Noticed that the front-end student views utilize .find() a lot. It is not inherently wrong; the time 
+ *  complexity, however, is O(N) so converting to these [object, Map, Set] might be more useful in the
+ *  long run. Because the creation of those data structs is independent, then we could leverage 
+ *  the power of awaiting [Promise.all].
+ */
+
 class StudentDashboard extends Component {
     constructor(props) {
         super(props);

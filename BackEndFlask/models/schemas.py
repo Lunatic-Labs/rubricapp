@@ -1,5 +1,6 @@
 from core import db
 from sqlalchemy import ForeignKey, func, DateTime, Interval, Index
+from datetime import datetime
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
@@ -99,6 +100,10 @@ class UserCourse(db.Model):
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     active = db.Column(db.Boolean)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
+    #Indexes
+    __table_args__ = (
+        Index('idx_active', 'active'),
+    )
 
 class Team(db.Model): # keeps track of default teams for a fixed team scenario
     __tablename__ = "Team"
@@ -172,3 +177,18 @@ class Feedback(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
     completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
     feedback_time = db.Column(DateTime(timezone=True), nullable=True) # time the student viewed their feedback
+
+class EmailValidation(db.Model):
+    __tablename__ = "EmailValidation"
+
+    email_validation_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    email = db.Column(db.String(254), nullable=False)
+    status = db.Column(db.String(50), nullable=False)
+    validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    validation_error = db.Column(db.String(500), nullable=True)
+
+    user = db.relationship('User', backref=db.backref('email_validations', lazy=True))
+
+    def __repr__(self):
+        return f"<EmailValidation {self.email} - {self.status}>"

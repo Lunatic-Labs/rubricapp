@@ -6,15 +6,15 @@ from sqlalchemy import (
     and_
 )
 from models.utility import generate_random_password, send_new_user_email
+from models.email_validation import create_validation
 from dotenv import load_dotenv
+from Functions.threads import spawn_thread, validate_pending_emails
 
 load_dotenv()
 
 from models.utility import error_log
 
 import os
-
-
 
 class InvalidUserID(Exception):
     def __init__(self, id):
@@ -161,7 +161,7 @@ def user_already_exists(user_data):
 
 
 @error_log
-def create_user(user_data, owner_email=None):
+def create_user(user_data, validate_emails=True):
     if "password" in user_data:
         password = user_data["password"]
         has_set_password = True # for demo users, avoid requirement to choose new password
@@ -189,11 +189,14 @@ def create_user(user_data, owner_email=None):
     )
 
     db.session.add(user_data)
-
     db.session.commit()
 
-    return user_data
+    # Avoid adding validation to demo users.
+    if validate_emails and not has_set_password:
+        create_validation(user_data.user_id, user_data.email)
+        spawn_thread(validate_pending_emails)
 
+    return user_data
 
 @error_log
 def make_admin(user_id):
@@ -348,6 +351,9 @@ def replace_user(user_data, user_id):
 
     if one_user is None:
         raise InvalidUserID
+
+    if one_user.email != user_data["email"]:
+        spawn_thread(validate_pending_emails)
 
     one_user.first_name = user_data["first_name"]
 

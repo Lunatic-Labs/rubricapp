@@ -1,6 +1,5 @@
 import { apiUrl } from './App.js'; 
 import Cookies from 'universal-cookie';
-import { fromZonedTime, format } from "date-fns-tz";
 import * as eventsource from "eventsource-client";
 
 export async function genericResourceGET(fetchURL, resource, component, options = {}) {    
@@ -227,29 +226,6 @@ export function validPasword(password) {
         return "have at least one digit."
     return true;
 }
-
-// NOTE: This function is used to format the Date so that it doesn't have any timezone issues
-export function formatDueDate(dueDate, timeZone) {
-    const timeZoneMap = {
-        "PST": "America/Los_Angeles",
-        "PDT": "America/Los_Angeles",
-        "MST": "America/Denver",
-        "MDT": "America/Denver",
-        "CST": "America/Chicago",
-        "CDT": "America/Chicago",
-        "EST": "America/New_York",
-        "EDT": "America/New_York",
-        "UTC": "UTC"
-    };
-
-    const timeZoneId = timeZoneMap[timeZone];
-
-    const zonedDueDate = fromZonedTime(dueDate, timeZoneId);
-
-    const formattedDueDate = format(zonedDueDate, "yyyy-MM-dd'T'HH:mm:ss.SSS'Z'", { timeZone: timeZoneId });
-
-    return formattedDueDate;
-};
 
 export function getDueDateString(dueDate) {
     let year = dueDate.getFullYear();

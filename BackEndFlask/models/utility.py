@@ -1,7 +1,9 @@
 import os
+import re
 import sys
 import time
 import string, secrets
+import html
 
 import base64
 from email.message import EmailMessage
@@ -16,11 +18,79 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
-from core import oauth2_service
+from core import oauth2_service, config
+
+def check_bounced_emails(from_timestamp=None):
+    if config.rubricapp_running_locally:
+        return
+
+    max_fetched_emails = 32
+
+    try:
+        # Fetch the emails
+        query, messages_result = (None, None)
+
+        # TODO: handle timestamp correctly
+        # if from_timestamp is not None:
+        #     query = f"after:{int(from_timestamp.timestamp())}"
+
+        if query is not None:
+            messages_result = oauth2_service.users().messages().list(
+                userId="me", maxResults=max_fetched_emails, q=query
+            ).execute()
+        else:
+            messages_result = oauth2_service.users().messages().list(
+                userId="me", maxResults=max_fetched_emails
+            ).execute()
+
+        messages, bounced_emails = (messages_result.get("messages", []), [])
+
+        if messages:
+            for msg in messages:
+                msg_detail = oauth2_service.users().messages().get(userId="me", id=msg["id"]).execute()
+                headers = msg_detail.get("payload", {}).get("headers", [])
+                sender = next(
+                    (header["value"] for header in headers if header["name"] == "From"),
+                    None,
+                )
+
+                # Parse the sender
+                if sender:
+                    parts = sender.split("<")
+                    if len(parts) > 1:
+                        sender = parts[1][0:-1]
+
+                if sender and sender == "mailer-daemon@googlemail.com":
+                    snippet = msg_detail.get("snippet", "No snippet available")
+                    snippet = html.unescape(snippet)
+                    main_failure = snippet[0]
+                    to_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', snippet)
+                    to_ = None
+                    if to_match:
+                        to_ = to_match.group()
+
+                    for i in range(1, len(snippet)):
+                        if snippet[i].isupper():
+                            break
+                        main_failure += snippet[i]
+
+                    bounced_emails.append({
+                        'id': msg['id'],
+                        'to': to_,
+                        'msg': snippet.split('LEARN')[0],
+                        'sender': sender,
+                        'main_failure': main_failure.strip(),
+                    })
+
+            return bounced_emails if len(bounced_emails) != 0 else None
+
+    except Exception as e:
+        config.logger.error("Could not check for bounced email: " + str(e))
+        raise EmailFailureException()
 
 def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
     subject = "Student's email failed to send."
-    message = f'''The email could not send due to
+    message = f'''The email could not sent due to:
 
                 {msg}
 
@@ -79,6 +149,9 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
         send_email(student.email, subject, message)
 
 def send_email(address: str, subject: str, content: str):
+    if config.rubricapp_running_locally:
+        return
+
     try:
         message = EmailMessage()
         message.set_content(content)
@@ -90,9 +163,11 @@ def send_email(address: str, subject: str, content: str):
         create_message = {
                 "raw": encoded_message,
         }
+
         send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
 
     except Exception as e:
+        config.logger.error("Could not send email: " + str(e))
         raise EmailFailureException()
 
 
