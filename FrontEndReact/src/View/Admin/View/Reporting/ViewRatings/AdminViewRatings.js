@@ -73,11 +73,13 @@ class AdminViewRatings extends Component {
 
   componentDidMount() {
     this.fetchData();
+    console.log("Did mount:",this.state.ratings);
   }
 
   componentDidUpdate() {
     if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
         this.fetchData();
+      console.log("Did update:",this.state.ratings);
     }
 
     /**
@@ -233,6 +235,8 @@ class AdminViewRatings extends Component {
           
           <Box>
             <ViewRatingsTable
+              assessmentTasks={this.props.assessmentTasks}
+              chosenAssessmentId={this.props.chosenAssessmentId}      
               ratings={ratings ? ratings : []}
               categories={categories}
             />

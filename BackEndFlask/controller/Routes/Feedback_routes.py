@@ -39,6 +39,7 @@ class StudentFeedbackSchema(ma.Schema):
         fields = (
             'feedback_id',
             'user_id',
+            'team_id',
             'completed_assessment_id',
             'feedback_time',
             'lag_time'
