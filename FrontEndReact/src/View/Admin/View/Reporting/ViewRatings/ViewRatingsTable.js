@@ -9,7 +9,7 @@ class ViewRatingsTable extends Component {
     let nameLabel = "";
     var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
     // Determines if it is students or teams
-    if (assessmentIsTeam[this.props.chosenAssessmentId] === false) {
+    if (assessmentIsTeam[this.props.chosenAssessmentId] == false) {
         nameLabel = "Student Name";
       } else {
         nameLabel = "Team Name";
