@@ -7,33 +7,40 @@ from models.user_course import *
 from models.course import *
 from models.queries import does_team_user_exist
 from Functions.test_files.PopulationFunctions import xlsx_to_csv
+from enum import Enum
 
 from datetime import date
 import csv
     
+class ParseState(Enum):
+    TA = 0
+    TEAM = 1
+    STUDENT = 2
+
+def output(i, restart=False):
+    flag = 'w' if restart else 'a'
+    with open("ap.txt", flag) as out:
+        print(i, file=out)
 
 class TBUStudent:
     def __init__(self, fname: str, lname: str, email: str, lms_id: None|str = None) -> None:
-        self.fname = fname
-        self.lname = lname
-        self.email = email
-        self.lms_id = lms_id
-
+        self.fname :str  = fname
+        self.lname :str  = lname
+        self.email :str  = email
+        self.lms_id :None | str = lms_id
 
 class TBUTeam:
     def __init__(self, name: str, ta_email: str, students: list[TBUStudent]) -> None:
-        self.name = name
-        self.ta_email = ta_email
-        self.students = students
-
+        self.name :str = name
+        self.ta_email :str = ta_email
+        self.students :list[TBUStudent] = students
 
 def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     """
     Description:
-    Determines if the columns in the head of the list
-    matches the expected `cols`. It will then pop off
-    that head element and return it back. This, in turn,
-    will modify the original list passed.
+        Pops off the "top" row of the csv data and sanitizes it. At the same
+        time it checks to make sure the desired number of columns are present
+        in the row.
     """
     hd: list[str] = lst.pop(0)
  
@@ -46,27 +53,55 @@ def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
 
     if cols is not None and len(cleaned) != cols:
         raise TooManyColumns(1, cols, len(cleaned))
+    
     return cleaned
 
-def __parse(lst: list[list[str]]) -> list[TBUTeam]:
+def _parseMine(lst: list[list[str]]) -> list[TBUTeam]:
+    """
+    DESCRIPTION:
+        Reads the teams and associates sudents/tas with their respective team.
+    """
     teams: list[TBUTeam] = []
     students: list[TBUStudent] = []
     ta: str = ""
     team_name: str = ""
-    current_row = 0
+    user_row: int = 0 # This is to keep track of the user line with an error.
+
+    current_state = ParseState.TA
+
+    # Continues while there is still data to process.
+    while(len(lst) > 0):
+        # Retrive the head row.
+        hd = __expect(lst)
+        user_row += 1
+
+        
+
+    # We enter this case upon no real work done.
+    if len(teams) == 0:
+        raise EmptyTeamMembers
+    
+    return teams
+
+def __parse(lst: list[list[str]]) -> list[TBUTeam]:
+    """
+    DESCRIPTION:
+        Reads the teams and associates sudents/tas with their respective team.
+    """
+    teams: list[TBUTeam] = []
+    students: list[TBUStudent] = []
+    ta: str = ""
+    team_name: str = ""
+    current_row: int = 0
     
     # State to track what type of row we expect next
-    EXPECT_TA = 0
-    EXPECT_TEAM = 1
-    EXPECT_STUDENT = 2
-    current_state = EXPECT_TA
+    current_state = ParseState.TA
     
     while len(lst) > 0:
         hd = __expect(lst)
         current_row += 1
         
-        # Skip empty rows, they signal end of current team
-        if not hd:
+        if current_state == ParseState.STUDENT and len(hd) == 1:
             if len(students) > 0:
                 if ta == "" or team_name == "":
                     raise EmptyTeamName if team_name == "" else EmptyTAEmail
@@ -74,30 +109,29 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
                 students = []
 
                 multiple_observers = True
-                if len(lst) >= 2:
-                    hd = __expect(lst)
+                if len(lst) >= 1:
                     lookAhead = __expect(lst)
                     lst.insert(0, lookAhead)
-                    lst.insert(0, hd)   
-                    multiple_observers = len(hd) == len(lookAhead) == 1
+                    lst.insert(0, hd)
+                    multiple_observers = not (len(hd) == len(lookAhead) == 1)
+                    current_row -= 1
 
-                current_state = EXPECT_TA if multiple_observers else EXPECT_TEAM 
+                current_state = ParseState.TEAM if multiple_observers else ParseState.TA 
             continue
 
         # Process based on what type of row we're expecting
-        if current_state == EXPECT_TA:
+        if current_state == ParseState.TA:
+            # For this pass, the TA should be only the email. 
             if len(hd) != 1:
                 raise TooManyColumns(current_row, 1, len(hd))
             ta = hd[0]
-            current_state = EXPECT_TEAM
-            
-        elif current_state == EXPECT_TEAM:
+            current_state = ParseState.TEAM 
+        elif current_state == ParseState.TEAM:
             if len(hd) != 1:
                 raise TooManyColumns(current_row, 1, len(hd))
             team_name = hd[0]
-            current_state = EXPECT_STUDENT
-            
-        elif current_state == EXPECT_STUDENT:
+            current_state = ParseState.STUDENT
+        elif current_state == ParseState.STUDENT:
             # Student row should have 2 or 3 columns
             if len(hd) > 3:
                 raise TooManyColumns(current_row, 3, len(hd))
@@ -124,7 +158,6 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
         raise EmptyTeamMembers
 
     return teams
-
 
 def __update_existing_student_info(stored_student, new_student):
     nfname = new_student.fname
@@ -153,7 +186,6 @@ def __update_existing_student_info(stored_student, new_student):
     }
 
     replace_user(user_data, stored_student.user_id)
-
 
 def __create_team(team: TBUTeam, owner_id: int, course_id: int):
     """
@@ -285,15 +317,14 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
     for student in students:
         __handle_student(student, team_name, tainfo)
 
-
-# def __verify_emails(teams: list[TBUTeam]):
-#     for team in teams:
-#         if not helper_verify_email_syntax(team.ta_email):
-#             raise SuspectedMisformatting
-#         for student in team.students:
-#             if not helper_verify_email_syntax(student.email):
-#                 raise SuspectedMisformatting
-
+#def __verify_emails(teams: list[TBUTeam]):
+#    """DEPRECATED"""
+#    for team in teams:
+#        if not helper_verify_email_syntax(team.ta_email):
+#            raise SuspectedMisformatting
+#        for student in team.students:
+#            if not helper_verify_email_syntax(student.email):
+#                raise SuspectedMisformatting
 
 def __verify_information(teams: list[TBUTeam]):
     for team in teams:
@@ -319,11 +350,11 @@ def __verify_information(teams: list[TBUTeam]):
 # First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
     try:
-        xlsx: bool = filepath.endswith('.xlsx')
-        if not filepath.endswith('.csv') and not xlsx:
+        is_xlsx = filepath.endswith('.xlsx')
+        is_valid_extension = is_xlsx or filepath.endswith('.csv')
+        if not is_valid_extension:
             raise WrongExtension
-
-        if xlsx:
+        if is_xlsx:
             filepath = xlsx_to_csv(filepath)
 
         with open(filepath, 'r') as file:
