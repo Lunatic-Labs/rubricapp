@@ -17,11 +17,6 @@ class ParseState(Enum):
     TEAM = 1
     STUDENT = 2
 
-def output(i, restart=False):
-    flag = 'w' if restart else 'a'
-    with open("ap.txt", flag) as out:
-        print(i, file=out)
-
 class TBUStudent:
     def __init__(self, fname: str, lname: str, email: str, lms_id: None|str = None) -> None:
         self.fname :str  = fname
@@ -56,33 +51,6 @@ def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     
     return cleaned
 
-def _parseMine(lst: list[list[str]]) -> list[TBUTeam]:
-    """
-    DESCRIPTION:
-        Reads the teams and associates sudents/tas with their respective team.
-    """
-    teams: list[TBUTeam] = []
-    students: list[TBUStudent] = []
-    ta: str = ""
-    team_name: str = ""
-    user_row: int = 0 # This is to keep track of the user line with an error.
-
-    current_state = ParseState.TA
-
-    # Continues while there is still data to process.
-    while(len(lst) > 0):
-        # Retrive the head row.
-        hd = __expect(lst)
-        user_row += 1
-
-        
-
-    # We enter this case upon no real work done.
-    if len(teams) == 0:
-        raise EmptyTeamMembers
-    
-    return teams
-
 def __parse(lst: list[list[str]]) -> list[TBUTeam]:
     """
     DESCRIPTION:
@@ -101,6 +69,7 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
         hd = __expect(lst)
         current_row += 1
         
+        # Handles the end of one team
         if current_state == ParseState.STUDENT and len(hd) == 1:
             if len(students) > 0:
                 if ta == "" or team_name == "":
