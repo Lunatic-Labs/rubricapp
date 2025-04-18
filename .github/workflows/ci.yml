@@ -46,8 +46,6 @@ jobs:
           docker ps  # Check if container is running
           docker compose logs backend  # Check backend logs
           netstat -tulpn | grep 5050  # Check if port is actually listening
-          
-          docker exec -it rubricapp-backend-1 netstat -tulpn | grep 5000
           sleep 20
           curl -v 'http://127.0.0.1:5050/api'
         # Use curl to make sure the backend is up and accessible
