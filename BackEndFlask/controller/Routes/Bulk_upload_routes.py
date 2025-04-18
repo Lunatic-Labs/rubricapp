@@ -39,7 +39,7 @@ def upload_CSV():
 
             user_id = int(request.args.get("user_id"))
 
-            directory = os.path.join(os.getcwd(), "Test-" + str(uuid.uuid4()))
+            directory = os.path.join(os.getcwd(), "Test-" + uuid.uuid4().hex)
 
             os.makedirs(directory, exist_ok=True)
 
