@@ -47,6 +47,7 @@ jobs:
           docker compose logs backend  # Check backend logs
           netstat -tulpn | grep 5050  # Check if port is actually listening
           sleep 5
+          docker ps
           curl -v 'http://localhost:5050/api'
         # Use curl to make sure the backend is up and accessible
       
