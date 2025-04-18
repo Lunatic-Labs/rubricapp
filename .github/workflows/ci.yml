@@ -46,7 +46,7 @@ jobs:
           docker ps  # Check if container is running
           docker compose logs backend  # Check backend logs
           netstat -tulpn | grep 5050  # Check if port is actually listening
-          sleep 5
+          sleep 1
           docker ps -a | grep rubricapp-backend
           docker ps
           curl -v 'http://localhost:5050/api'
