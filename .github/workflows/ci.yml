@@ -50,7 +50,7 @@ jobs:
           sleep 5
           docker ps -a | grep rubricapp-backend
           docker ps
-          curl -v 'http://localhost:5050/api'
+          curl -v 'http://127.0.0.1:5050/api'
         # Use curl to make sure the backend is up and accessible
       
       - name: Install Node dependencies
