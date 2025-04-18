@@ -29,3 +29,6 @@ EXPOSE 5000
 
 # Start the Flask server
 CMD ["python", "setupEnv.py", "-ds"]
+
+# Prevents container from exiting immediately
+ENTRYPOINT ["tail", "-f", "/dev/null"]
