@@ -42,7 +42,7 @@ jobs:
       
       - name: Start backend
         run: |
-          docker compose up --no-build -detach mysql redis
+          docker compose up --no-build --detach mysql redis
 
           docker compose up --no-build --detach backend
           docker ps  # Check if container is running
