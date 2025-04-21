@@ -10,6 +10,10 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    env:
+      ACTIONS_RUNNER_DEBUG: true
+      ACTIONS_STEP_DEBUG: true
     
     steps:
       - name: Checkout
@@ -47,8 +51,7 @@ jobs:
           docker compose logs backend  # Check backend logs
           netstat -tulpn | grep 5050  # Check if port is actually listening
           sleep 5
-          docker compose exec rubricapp-backend curl -s 'http://127.0.0.1:5050/api' || exit 1
-        #  curl -v 'http://127.0.0.1:5050/api'
+          curl -v 'http://127.0.0.1:5050/api'
         # Use curl to make sure the backend is up and accessible
       
       - name: Install Node dependencies
