@@ -43,7 +43,7 @@ jobs:
       - name: Start backend
         run: |
 
-          docker compose up --no-build backend frontend
+          docker compose up --no-build
           docker ps  # Check if container is running
           docker compose logs backend  # Check backend logs
           
