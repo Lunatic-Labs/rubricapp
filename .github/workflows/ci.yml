@@ -44,7 +44,7 @@ jobs:
         run: |
           set +e  # Prevent exit on failure for emailing code
 
-          docker compose up --no-build --detach backend || trues
+          docker compose up --no-build --detach backend || true
           docker ps  # Check if container is running
           docker compose logs backend  # Check backend logs
           
