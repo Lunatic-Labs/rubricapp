@@ -42,14 +42,13 @@ jobs:
       
       - name: Start backend
         run: |
-          set +e  # Prevent exit on failure for emailing code
 
-          docker compose up --no-build --detach backend || true
-          docker ps  # Check if container is running
-          docker compose logs backend  # Check backend logs
-          
-          docker ps -a | grep rubricapp-backend
-          docker inspect rubricapp-backend-1
+          #docker compose up --no-build --detach backend || true
+          #docker ps  # Check if container is running
+          #docker compose logs backend  # Check backend logs
+          #
+          #docker ps -a | grep rubricapp-backend
+          #docker inspect rubricapp-backend-1
 
           netstat -tulpn | grep 5050  # Check if port is actually listening
           sleep 5
