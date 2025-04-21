@@ -41,6 +41,7 @@ jobs:
       # TODO: Run pytests here using docker compose run or something
       
       - name: Start backend
+        privileged: true
         run: |
           docker compose up --no-build --detach backend
           docker ps  # Check if container is running
