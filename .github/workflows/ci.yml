@@ -48,7 +48,7 @@ jobs:
           
           docker ps -a | grep rubricapp-backend
           docker inspect rubricapp-backend-1
-          docker ps 
+          docker compose logs -f -t
 
           netstat -tulpn | grep 5050  # Check if port is actually listening
           sleep 5
