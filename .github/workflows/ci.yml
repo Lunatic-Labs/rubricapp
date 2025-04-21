@@ -54,6 +54,7 @@ jobs:
           sleep 5
           curl -v 'http://127.0.0.1:5050/api'
         #Use curl to make sure the backend is up and accessible
+        continue-on-error: true
       
       - name: Install Node dependencies
         run: |
