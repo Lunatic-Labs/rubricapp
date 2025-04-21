@@ -42,10 +42,9 @@ jobs:
       
       - name: Start backend
         run: |
-          docker compose run --rm backend python setupEnv.py -ds || true
-          #docker compose up --no-build --detach backend
-          #docker ps  # Check if container is running
-          #docker compose logs backend  # Check backend logs
+          docker compose up --no-build --detach backend
+          docker ps  # Check if container is running
+          docker compose logs backend  # Check backend logs 
           
           docker ps -a | grep rubricapp-backend
           docker inspect rubricapp-backend-1
