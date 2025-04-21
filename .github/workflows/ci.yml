@@ -42,7 +42,7 @@ jobs:
       
       - name: Start backend
         run: |
-          true || docker compose up --no-build --detach backend
+          docker compose up --no-build --detach backend || true
           docker ps  # Check if container is running
           docker compose logs backend  # Check backend logs 
           
