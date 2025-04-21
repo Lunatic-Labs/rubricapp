@@ -34,7 +34,6 @@ services:
       - app-network
 
   frontend:
-    image: rubricapp-frontend:latest
     build:
       context: .
       dockerfile: Dockerfile.frontend
