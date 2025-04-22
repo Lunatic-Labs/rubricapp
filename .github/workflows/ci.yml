@@ -50,7 +50,7 @@ jobs:
           docker inspect rubricapp-backend-1
 
           netstat -tulpn | grep 5050  # Check if port is actually listening
-          sleep 5
+          sleep 21S
           curl -v 'http://127.0.0.1:5050/api'
         #Use curl to make sure the backend is up and accessible
       
