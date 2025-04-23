@@ -47,9 +47,6 @@ jobs:
           docker ps  # Check if container is running
           docker compose logs backend  # Check backend logs 
 
-          docker ps -a | grep rubricapp-backend
-          docker inspect rubricapp-backend-1
-
           netstat -tulpn | grep 5050  # Check if port is actually listening
 
           sleep 5
