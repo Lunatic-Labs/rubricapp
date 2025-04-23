@@ -53,10 +53,6 @@ jobs:
 
           sleep 5
           curl -v 'http://127.0.0.1:5050/api'
-
-          echo "NOW PERSONAL INSPECTIONS"
-          uname -a 
-          docker inspect rubricapp-backend-1
         #Use curl to make sure the backend is up and accessible
       
       - name: Install Node dependencies
