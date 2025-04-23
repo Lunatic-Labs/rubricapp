@@ -52,6 +52,7 @@ jobs:
           sleep 5
           docker stop rubricapp-backend-1
           docker start rubricapp-backend-1
+          docker compose logs backend
           docker ps -a | grep rubricapp-backend
           curl -v 'http://127.0.0.1:5050/api'
         #Use curl to make sure the backend is up and accessible
