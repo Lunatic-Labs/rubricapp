@@ -148,7 +148,7 @@ try:
     oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
     oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
 except Exception as e:
-    #config.logger.warning(str(e))
+    config.logger.error(str(e))
     oauth2_credentials = None
     oauth2_service = None
 

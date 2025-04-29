@@ -1,8 +1,16 @@
-name: CI
+#-----------------------------------------------------------------------
+# This is a file that is run by Github actions to test certain aspects
+# of our code befor we merge into master.
+#
+# Date last modified: Fri Apr 25 11:58:27 AM CDT 2025
+#-----------------------------------------------------------------------
 
+name: Continuous Integration (CI)
+
+# Specifying the events that will start the workflow. 
+# As of now the workflow is triggered on a pr to merge to master.
 on:
   pull_request:
-  
   push:
     branches:
       - "master"
@@ -10,7 +18,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -37,24 +44,25 @@ jobs:
       
       - name: Build backend
         run: docker compose build backend --no-cache
+
+      - name: Validate backend image
+        run: docker images | grep backend || (echo "Error = Backend image not found" && exit 1)
       
       # TODO: Run pytests here using docker compose run or something
       
       # Note that any error will immediatly trigger the contianer to be shut down.
       - name: Start backend
         run: |
-          docker compose up --no-build --detach backend
-          docker ps  # Check if container is running
-          docker compose logs backend  # Check backend logs 
+            docker compose up --no-build --detach backend
 
-          netstat -tulpn | grep 5050  # Check if port is actually listening
+            docker ps  # Check if container is running
+            #docker compose logs backend  # Check backend logs 
 
-          sleep 5
-          docker stop rubricapp-backend-1
-          docker start rubricapp-backend-1
-          docker compose logs backend
-          docker ps -a | grep rubricapp-backend
-          curl -v 'http://127.0.0.1:5050/api'
+            docker exec rubricapp-backend-1 pip freeze
+
+            netstat -tulpn | grep 5050  # Check if port is actually listening
+            sleep 5
+            curl -v 'http://127.0.0.1:5050/api'
         #Use curl to make sure the backend is up and accessible
       
       - name: Install Node dependencies
