@@ -10,6 +10,7 @@ import os
 import shutil
 from controller.Route_response import create_bad_response, create_good_response
 from flask_jwt_extended import jwt_required
+import uuid
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -38,7 +39,7 @@ def upload_CSV():
 
             user_id = int(request.args.get("user_id"))
 
-            directory = os.path.join(os.getcwd(), "Test")
+            directory = os.path.join(os.getcwd(), "Test-" + uuid.uuid4().hex)
 
             os.makedirs(directory, exist_ok=True)
 
