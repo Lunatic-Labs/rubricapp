@@ -7,8 +7,9 @@ flask[async]>=2.2.2
 flask-sqlalchemy >= 3.0.3
 Flask-Migrate >= 4.0.7
 sqlalchemy >= 2.0.13
-flask-marshmallow >= 0.15.0
-marshmallow-sqlalchemy >= 0.29.0
+flask-marshmallow == 1.2.1
+marshmallow-sqlalchemy == 1.0.0
+marshmallow==3.21.2
 flask_cors >= 3.0.10
 gunicorn >= 20.1.0
 pytest >= 7.3.1
