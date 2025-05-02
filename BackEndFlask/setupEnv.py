@@ -4,6 +4,7 @@ import subprocess
 import platform
 import sys
 import os
+from dependency_check import dependency_check
 
 FILENAME = ""
 
@@ -199,6 +200,7 @@ def start_tests():
 
 
 if __name__ == "__main__":
+    dependency_check()
     if SYSTEM == "Windows":
         err("Windows is no longer supported for development. :((")
 
