@@ -61,7 +61,7 @@ jobs:
 
             (pip freeze | sed 's/[>=]//g' | awk -F '==' '{print $1, $2}' | sort) > installed.txt
             (sed 's/[>=]//g' BackEndFlask/requirements.txt | awk -F '==' '{print $1, $2}' | sort) > expected.txt
-            comm -3 installed_sorted.txt expected_sorted.txt | column -t
+            comm -3 installed.txt expected.txt | column -t
             rm -f -v installed.txt expected.txt 
 
             echo "CHECK STATUS"
