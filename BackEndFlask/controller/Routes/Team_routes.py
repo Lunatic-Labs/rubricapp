@@ -362,6 +362,7 @@ class TeamSchema(ma.Schema):
 
 
 class TeamUserSchema(ma.Schema):
+    fields.
     class Meta:
         fields = (
             'team_id',
