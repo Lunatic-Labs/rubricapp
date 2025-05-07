@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
@@ -117,20 +118,17 @@ def update_course():
 
 
 class CourseSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'course_id',
-            'course_number',
-            'course_name',
-            'year',
-            'term',
-            'active',
-            'UserCourse_active',
-            'admin_id',
-            'use_tas',
-            'use_fixed_teams',
-            'role_id'
-        )
+    course_id     = fields.Integer()
+    course_number = fields.String()
+    course_name   = fields.String()
+    year   = fields.Integer()
+    term   = fields.String()
+    active = fields.Boolean()
+    UserCourse_active = fields.Boolean()
+    admin_id = fields.Integer()
+    use_tas  = fields.Boolean()
+    use_fixed_teams = fields.Boolean()
+    role_id  = fields.Integer()
 
 
 course_schema = CourseSchema()

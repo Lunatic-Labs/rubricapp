@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from controller import bp 
 from models.rubric_categories import *
 from controller.Route_response import *
@@ -217,62 +218,51 @@ def delete_rubric():
 
 
 class RatingsSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'rating_id',
-            'rating_description',
-            'rating_json',
-            'category_id'
-        )
+    rating_id          = fields.Integer()
+    rating_description = fields.String()
+    rating_json        = fields.Dict()
+    category_id        = fields.Integer()
 
 
 class ObservableCharacteristicsSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'observable_characteristic_id',
-            'rubric_id',
-            'category_id',
-            'observable_characteristic_text'
-        )
+    observable_characteristic_id   = fields.Integer()
+    rubric_id   = fields.Integer()
+    category_id = fields.Integer()
+    observable_characteristic_text = fields.String()
+
 
 
 class SuggestionsForImprovementSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'suggestion_id',
-            'category_id',
-            'suggestion_text'
-        )
+    suggestion_id   = fields.Integer()
+    category_id     = fields.Integer()
+    suggestion_text = fields.String()
 
 
 class CategorySchema(ma.Schema):
+    category_id    = fields.Integer()
+    category_name  = fields.String()
+    description    = fields.String()
+    rating_json    = fields.Dict()
+    rubric_id      = fields.Integer()
+    rubric_name    = fields.String()
+    default_rubric = fields.String()
+
+    ratings = fields.List(fields.Nested(RatingsSchema))
+    observable_characteristics = fields.List(fields.Nested(ObservableCharacteristicsSchema))
+    suggestions = fields.List(fields.Nested(SuggestionsForImprovementSchema))
+
     class Meta:
-        fields = (
-            'category_id',
-            'category_name',
-            'description',
-            'rating_json', 
-            'rubric_id',
-            'rubric_name',
-            'default_rubric'
-        )
         ordered = True
-    ratings = ma.Nested(RatingsSchema(many=True))
-    observable_characteristics = ma.Nested(
-        ObservableCharacteristicsSchema(many=True))
-    suggestions = ma.Nested(SuggestionsForImprovementSchema(many=True))
 
 
 class RubricSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'rubric_id',
-            'rubric_name',
-            'rubric_description',
-            'category_total',
-            'owner'
-        )
-    categories = ma.Nested(CategorySchema(many=True))
+    rubric_id          = fields.Integer()
+    rubric_name        = fields.String()
+    rubric_description = fields.String()
+    category_total     = fields.Integer()
+    owner              = fields.Integer()
+
+    categories = fields.List(fields.Nested(CategorySchema))
 
 
 rubric_schema = RubricSchema()
