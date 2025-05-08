@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
@@ -350,24 +351,18 @@ def get_all_team_users():
 
 
 class TeamSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'team_id',
-            'team_name',
-            'observer_id',
-            'course_id',
-            'date_created',
-            'active_until'
-        )
+    team_id      = fields.Integer()
+    team_name    = fields.String()
+    observer_id  = fields.Integer()
+    course_id    = fields.Integer()
+    date_created = fields.Date()
+    active_until = fields.DateTime()
 
 
 class TeamUserSchema(ma.Schema):
-    fields.
-    class Meta:
-        fields = (
-            'team_id',
-            'user_id'
-        )
+    team_id = fields.Integer()
+    user_id = fields.Integer()
+
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
 team_user_schema = TeamUserSchema()
