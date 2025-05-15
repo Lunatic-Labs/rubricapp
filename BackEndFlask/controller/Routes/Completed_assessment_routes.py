@@ -103,7 +103,6 @@ def get_all_completed_assessments():
                     'unit_of_assessment': task.unit_of_assessment,
                     'completed_assessments': completed_assessment_schemas.dump(completed_assessments) if completed_assessments else []
                 })
-            
             return create_good_response(result, 200, "completed_assessments")
 
         if request.args and request.args.get("course_id") and request.args.get("role_id"):
@@ -273,7 +272,7 @@ class CompletedAssessmentSchema(ma.Schema):
     done                    = fields.Boolean()
     locked                  = fields.Boolean()
     last_update             = fields.DateTime()
-    rating_observable_characteristics_suggestions_data = fields.String()
+    rating_observable_characteristics_suggestions_data = fields.Dict()
     course_id               = fields.Integer()
     rubric_id               = fields.Integer()
     completed_count         = fields.Integer()

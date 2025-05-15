@@ -1,5 +1,5 @@
 from flask import request
-from marshmallow import fields
+from marshmallow import fields, Schema
 from controller import bp 
 from models.rubric_categories import *
 from controller.Route_response import *
@@ -217,14 +217,14 @@ def delete_rubric():
         return create_bad_response(f"An error occurred deleting a rubric: {e}", "rubrics", 400)
 
 
-class RatingsSchema(ma.Schema):
+class RatingsSchema(Schema):
     rating_id          = fields.Integer()
     rating_description = fields.String()
     rating_json        = fields.Dict()
     category_id        = fields.Integer()
 
 
-class ObservableCharacteristicsSchema(ma.Schema):
+class ObservableCharacteristicsSchema(Schema):
     observable_characteristic_id   = fields.Integer()
     rubric_id   = fields.Integer()
     category_id = fields.Integer()
@@ -232,13 +232,13 @@ class ObservableCharacteristicsSchema(ma.Schema):
 
 
 
-class SuggestionsForImprovementSchema(ma.Schema):
+class SuggestionsForImprovementSchema(Schema):
     suggestion_id   = fields.Integer()
     category_id     = fields.Integer()
     suggestion_text = fields.String()
 
 
-class CategorySchema(ma.Schema):
+class CategorySchema(Schema):
     category_id    = fields.Integer()
     category_name  = fields.String()
     description    = fields.String()
@@ -247,22 +247,22 @@ class CategorySchema(ma.Schema):
     rubric_name    = fields.String()
     default_rubric = fields.String()
 
-    ratings = fields.List(fields.Nested(RatingsSchema))
-    observable_characteristics = fields.List(fields.Nested(ObservableCharacteristicsSchema))
-    suggestions = fields.List(fields.Nested(SuggestionsForImprovementSchema))
+    ratings = fields.Nested(RatingsSchema, many=True)
+    observable_characteristics = fields.Nested(ObservableCharacteristicsSchema, many=True)
+    suggestions = fields.Nested(SuggestionsForImprovementSchema, many=True)
 
     class Meta:
         ordered = True
 
 
-class RubricSchema(ma.Schema):
+class RubricSchema(Schema):
     rubric_id          = fields.Integer()
     rubric_name        = fields.String()
     rubric_description = fields.String()
     category_total     = fields.Integer()
     owner              = fields.Integer()
 
-    categories = fields.List(fields.Nested(CategorySchema))
+    categories = fields.Nested(CategorySchema, many=True)
 
 
 rubric_schema = RubricSchema()
