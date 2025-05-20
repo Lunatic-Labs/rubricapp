@@ -226,10 +226,12 @@ class AdminBulkUpload extends Component {
                                     </Box>
 
                                     <form
-                                        onSubmit={ (e) =>{
-                                            e.preventDefault();
-                                            this.debouncedSubmit(e);
-                                        }}
+                                        onSubmit={ //(e) =>{
+                                            //e.preventDefault();
+                                            //this.debouncedSubmit(e);
+                                        //}
+                                        this.onFormSubmit
+                                    }
                                         className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3"
                                     >
                                         <input
