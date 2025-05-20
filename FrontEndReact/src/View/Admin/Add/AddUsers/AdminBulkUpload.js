@@ -11,7 +11,7 @@ import { Box, Typography, Tooltip, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-
+import debounce from 'debounce';
 
 
 class AdminBulkUpload extends Component {
@@ -45,6 +45,7 @@ class AdminBulkUpload extends Component {
             currentTeamPic: 0,
         }
 
+        this.debouncedSubmit = debounce(this.onFormSubmit.bind(this), 3000);
         this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
     }
 
@@ -225,7 +226,10 @@ class AdminBulkUpload extends Component {
                                     </Box>
 
                                     <form
-                                        onSubmit={ this.onFormSubmit }
+                                        onSubmit={ (e) =>{
+                                            e.preventDefault();
+                                            this.debouncedSubmit(e);
+                                        }}
                                         className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3"
                                     >
                                         <input
