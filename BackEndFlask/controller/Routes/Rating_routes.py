@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from models.feedback import *
 from controller import bp
 from flask import request
@@ -84,13 +85,10 @@ def student_view_feedback():
         return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)
 
 class StudentFeedbackSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'feedback_id',
-            'user_id',
-            'completed_assessment_id',
-            'feedback_time',
-        )
+    feedback_id             = fields.Integer()     
+    user_id                 = fields.Integer() 
+    completed_assessment_id = fields.Integer()                 
+    feedback_time           = fields.DateTime()
 
 student_feedback_schema = StudentFeedbackSchema()
 student_feedbacks_schema = StudentFeedbackSchema(many=True)
