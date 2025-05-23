@@ -11,17 +11,27 @@ from Functions import teamBulkUpload
 from Functions import customExceptions
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
+from controller.throttler.throttle import throttler
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
     admin_check
 )
 
+def output(x, clear=False):
+    flag = 'w' if clear else 'a'
+    import threading
+    current_thread_id = threading.current_thread().ident
+    with open('ap.txt', flag) as out:
+        print(f"{current_thread_id}: {x}", file=out)
+
+
 @bp.route('/team_bulk_upload', methods=['POST'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
 @admin_check()
+@throttler()
 def upload_team_csv():
     try:
         file = request.files['csv_file']
@@ -36,6 +46,8 @@ def upload_team_csv():
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
             user_id = int(request.args.get("user_id"))
+
+            output("hello")            
 
             directory = os.path.join(os.getcwd(), "Test")
             os.makedirs(directory, exist_ok=True)

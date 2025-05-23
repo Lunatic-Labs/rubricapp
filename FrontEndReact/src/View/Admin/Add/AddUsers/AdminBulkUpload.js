@@ -45,7 +45,7 @@ class AdminBulkUpload extends Component {
             currentTeamPic: 0,
         }
 
-        this.debouncedSubmit = debounce(this.onFormSubmit.bind(this), 3000);
+        //this.debouncedSubmit = debounce(this.onFormSubmit.bind(this), 3000);
         this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
     }
 

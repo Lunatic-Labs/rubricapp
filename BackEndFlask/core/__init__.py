@@ -127,6 +127,7 @@ migrate = Migrate(app, db)
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
+request_checker = redis.Redis(host=redis_host, port=6380, db=0, decode_responses=True)
 
 # This gets set in wsgi.py/run.py depending on if we
 # are running locally or on a server.
