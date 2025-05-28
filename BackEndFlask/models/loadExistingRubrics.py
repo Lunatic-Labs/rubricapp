@@ -22,7 +22,23 @@ def load_existing_rubrics():
         # (Latest update is July 19, 2022) Teamwork
         ["Teamwork", "Interacting with others and buliding on each other's individual strengths and skills, working toward a common goal."],
         # (Latest update is November 21, 2024) Metacognition
-        ["Metacognition", "Being able to regulate one's thinking and learning through planning, monitoring, and evaluating one's efforts."]
+        ["Metacognition", "Being able to regulate one's thinking and learning through planning, monitoring, and evaluating one's efforts."],
+        # (Latest update is May 28, 2025) Questions
+        ["Questions", "Questioning aspects of the world around us that can be tested through observation or experimentation (empirical testing)."],        
+        # (Latest update is May 28, 2025) Experimenting
+        ["Experimenting", "Planning and carrying out systematic investigations to test a hypothesis or answer a question that provides evidence in the form of data."],
+        # (Latest update is May 28, 2025) Mathematical
+        ["Mathematical thinking", "Usage of mathematics and computation for establishing qualitative and quantitative relationships among variables."],
+        # (Latest update is May 28, 2025) Modeling
+        ["Modeling", "Usage and construction of models such as diagrams, drawings, physical replicas, mathematical representations, analogies, and computer simulations for representing ideas that have predictive and explanatory powers."],
+        # (Latest update is May 28, 2025) Analyzing data
+        ["Analyzing data", "Usage of tools such as tabulation, graphs, visualization, and statistical analysis to analyze and interpret patterns in data to derive meaning."],
+        # (Latest update is May 28, 2025) Explaining phenomena
+        ["Explaining phenomena", "Explaining a phenomenon of interest with multiple lines of empirical evidence"],
+        # (Latest update is May 28, 2025) Arguing
+        ["Arguing", "Engaging in argumentation by listening to, comparing, critiquing and evaluating competing ideas and claims and making evidence-based conclusions based on the merits of those arguments."],
+        # (Latest update is May 28, 2025) Disseminating findings
+        ["Disseminating findings", "Obtaining and evaluating information critically. Communicating generated ideas/explanations/conclusions clearly and persuasively."]
     ]
     for rubric in rubrics:
         r = {}
@@ -78,6 +94,45 @@ def load_existing_categories():
         [8, "Monitoring", "Paid attention to progress on learning and understanding", completely],
         [8, "Evaluating", "Reviewed learning gains and/or performance and determined strengths and areas to improve", completely],
         [8, "Realistic Self-assessment", "Produced a self-assessment based on previous and current behaviors and circumstances, using reasonable judgment in future planning", completely],
+        # (Latest update is May 28, 2025) Questions Categories 1-3
+        [9,],
+        [9,],
+        [9,],
+        # (Latest update is May 28, 2025) Experimenting Categories 1-8
+        [10,],
+        [10,],
+        [10,],
+        [10,],
+        [10,],
+        [10,],
+        [10,],
+        [10,],
+        # (Latest update is May 28, 2025) Mathematical thinking Categories 1-3
+        [10,],
+        [10,],
+        [10,],
+        # (Latest update is May 28, 2025) Modeling Categories 1-3
+        [11,],
+        [11,],
+        [11,],
+        # (Latest update is May 28, 2025) Analyzing data Categories 1-3
+        [12,],
+        [12,],
+        [12,],
+        # (Latest update is May 28, 2025) Explaining phenomena Categories 1-2
+        [13,],
+        [13,],
+        # (Latest update is May 28, 2025) Arguing Categories 1-5
+        [14,],
+        [14,],
+        [14,],
+        [14,],
+        [14,],
+        # (Latest update is May 28, 2025) Disseminating Categories 1-4
+        [15,],
+        [15,],
+        [15,],
+        [15,]
     ]
     for category in categories:
         c = {} 
