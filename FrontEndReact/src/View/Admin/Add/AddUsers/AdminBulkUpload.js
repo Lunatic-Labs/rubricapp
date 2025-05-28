@@ -45,7 +45,7 @@ class AdminBulkUpload extends Component {
             currentTeamPic: 0,
         }
 
-        //this.debouncedSubmit = debounce(this.onFormSubmit.bind(this), 3000);
+        this.debouncedSubmit = debounce(this.onFormSubmit.bind(this), 3000);
         this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
     }
 
@@ -226,11 +226,10 @@ class AdminBulkUpload extends Component {
                                     </Box>
 
                                     <form
-                                        onSubmit={ //(e) =>{
-                                            //e.preventDefault();
-                                            //this.debouncedSubmit(e);
-                                        //}
-                                        this.onFormSubmit
+                                        onSubmit={ (e) =>{
+                                            e.preventDefault();
+                                            this.debouncedSubmit(e);
+                                        }
                                     }
                                         className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3"
                                     >
