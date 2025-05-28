@@ -11,6 +11,7 @@ from Functions import teamBulkUpload
 from Functions import customExceptions
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
+from core import limiter
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -30,6 +31,7 @@ def output(x, clear=False):
 @bad_token_check()
 @AuthCheck()
 @admin_check()
+@limiter.limit("1 per 3 seconds")
 def upload_team_csv():
     try:
         file = request.files['csv_file']

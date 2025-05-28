@@ -7,6 +7,8 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from models.tests import testing
 from dotenv import load_dotenv
 from flask import Flask
@@ -127,6 +129,16 @@ migrate = Migrate(app, db)
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
 
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
+
+redis.Redis(host=redis_host, port=6379, db=1, decode_responses=True)
+
+# Settting up the request rater limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=["200 per day", "50 per hour"],
+    storage_uri= "redis://"+ str(redis_host) + ":6380/1",
+)
 
 # This gets set in wsgi.py/run.py depending on if we
 # are running locally or on a server.
