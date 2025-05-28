@@ -14,11 +14,6 @@ def start_redis() -> None:
         stdout=subprocess.DEVNULL,
         stderr=subprocess.DEVNULL
     )
-    subprocess.Popen(
-        ['redis-server', '--port', "6380"],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
 
 # Checks if a given token exists in a Redis database and returns True if it is blacklisted
 def is_token_blacklisted(token: str) -> bool:

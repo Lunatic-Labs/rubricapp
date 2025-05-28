@@ -11,7 +11,6 @@ from Functions import teamBulkUpload
 from Functions import customExceptions
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from controller.throttler.throttle import throttler
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -31,7 +30,6 @@ def output(x, clear=False):
 @bad_token_check()
 @AuthCheck()
 @admin_check()
-@throttler()
 def upload_team_csv():
     try:
         file = request.files['csv_file']
