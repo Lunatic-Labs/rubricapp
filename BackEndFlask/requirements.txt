@@ -1,17 +1,17 @@
 # ==Core libs== #
 
 # Flask framework and extentions
-flask == 3.1.0
+flask == 3.1.1
 Werkzeug == 3.1.3
 flask-sqlalchemy == 3.1.1
 Flask-Migrate == 4.1.0
-flask-marshmallow == 1.2.1
+flask-marshmallow == 1.3.0
 flask-jwt-extended == 4.7.1
-flask_cors == 5.0.1
+flask_cors == 6.0.0
 
 # Tools for serialization and validation
-marshmallow == 3.21.2
-marshmallow-sqlalchemy == 1.0.0
+marshmallow == 4.0.0
+marshmallow-sqlalchemy == 1.4.2
 
 # Google API for emails
 google-auth == 2.39.0
@@ -40,8 +40,6 @@ gevent == 25.4.2
 # Testing tools
 pytest == 8.3.5
 postman_api == 3.0.0
-
-
 
 # ==Transitive Dependencies== #
 certifi == 2025.4.26
