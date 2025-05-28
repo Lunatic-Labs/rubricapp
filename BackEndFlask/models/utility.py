@@ -95,7 +95,7 @@ def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
                 {msg}
 
                 {failure}'''
-    send_email(dest_addr, subject, message, "text")
+    send_email(dest_addr, subject, message, 0)
 
 def send_email_for_updated_email(address: str):
     subject = "Your email has been updated."
@@ -104,7 +104,7 @@ def send_email_for_updated_email(address: str):
                 Access the app at this link: skill-builder.net
 
                 Your new username is {address}'''
-    send_email(address, subject, message, "text")
+    send_email(address, subject, message, 0)
 
 def send_new_user_email(address: str, password: str):
     subject = "Welcome to Skillbuilder!"
@@ -118,7 +118,7 @@ def send_new_user_email(address: str, password: str):
 
                 Please change your password after your first login to keep your account secure.'''
 
-    send_email(address, subject, message, "text")
+    send_email(address, subject, message, 0)
 
 def send_reset_code_email(address: str, code: str):
     subject = "Skillbuilder - Reset your password"
@@ -135,7 +135,7 @@ def send_reset_code_email(address: str, code: str):
         <body>
         </html>'''
 
-    send_email(address, subject, message, "html")
+    send_email(address, subject, message, 1)
 
 def email_students_feedback_is_ready_to_view(students: list, notification_message : str):
     for student in students:
@@ -151,15 +151,15 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
                     Cheers,
                     The Skillbuilder Team'''
 
-        send_email(student.email, subject, message, "text")
+        send_email(student.email, subject, message, 0)
 
-def send_email(address: str, subject: str, content: str, type: str):
+def send_email(address: str, subject: str, content: str, type: int):
     if config.rubricapp_running_locally:
         return
 
     try:
         message = EmailMessage()
-        if type == "text":
+        if type == 0:
             message.set_content(content)
         else:
             message.set_content(content, subtype='html')
