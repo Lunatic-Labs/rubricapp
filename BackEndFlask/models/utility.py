@@ -95,7 +95,7 @@ def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
                 {msg}
 
                 {failure}'''
-    send_email(dest_addr, subject, message)
+    send_email(dest_addr, subject, message, 0)
 
 def send_email_for_updated_email(address: str):
     subject = "Your email has been updated."
@@ -104,7 +104,7 @@ def send_email_for_updated_email(address: str):
                 Access the app at this link: skill-builder.net
 
                 Your new username is {address}'''
-    send_email(address, subject, message)
+    send_email(address, subject, message, 0)
 
 def send_new_user_email(address: str, password: str):
     subject = "Welcome to Skillbuilder!"
@@ -118,18 +118,24 @@ def send_new_user_email(address: str, password: str):
 
                 Please change your password after your first login to keep your account secure.'''
 
-    send_email(address, subject, message)
+    send_email(address, subject, message, 0)
 
 def send_reset_code_email(address: str, code: str):
     subject = "Skillbuilder - Reset your password"
-    message = f'''Your reset code is \033[1m{code}\033[0m.
+    message = f'''
+        <!DOCTYPE html>
+        <html>
+        <head></head>
+        <body>
+            <p>Your reset code is <b>{code}</b>.</p>
 
-                go to skill-builder.net to login.
+            <p>go to <a href="https://skill-builder.net" target="_blank">skill-builder.net</a> to login.<p>
 
-                Cheers,
-                The Skillbuilder Team'''
+            <p>Cheers,<br>The Skillbuilder Team<p>
+        <body>
+        </html>'''
 
-    send_email(address, subject, message)
+    send_email(address, subject, message, 1)
 
 def email_students_feedback_is_ready_to_view(students: list, notification_message : str):
     for student in students:
@@ -143,18 +149,20 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
                     {notification_message}
 
                     Cheers,
-                    The Skillbuilder Team
-        '''
+                    The Skillbuilder Team'''
 
-        send_email(student.email, subject, message)
+        send_email(student.email, subject, message, 0)
 
-def send_email(address: str, subject: str, content: str):
+def send_email(address: str, subject: str, content: str, type: int):
     if config.rubricapp_running_locally:
         return
 
     try:
         message = EmailMessage()
-        message.set_content(content)
+        if type == 0:
+            message.set_content(content)
+        else:
+            message.set_content(content, subtype='html')
         message["To"] = address
         message["From"] = "skillbuilder02@gmail.com"
         message["Subject"] = subject
