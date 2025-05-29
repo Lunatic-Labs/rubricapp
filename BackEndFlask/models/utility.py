@@ -129,7 +129,7 @@ def send_reset_code_email(address: str, code: str):
         <body>
             <p>Your reset code is <b>{code}</b>.</p>
 
-            <p>go to <a href="https://skill-builder.net" target="_blank">skill-builder.net</a> to login.<p>
+            <p>Go to <a href="https://skill-builder.net" target="_blank">skill-builder.net</a> to login.<p>
 
             <p>Cheers,<br>The Skillbuilder Team<p>
         <body>
