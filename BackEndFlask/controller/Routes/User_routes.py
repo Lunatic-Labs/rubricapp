@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from controller  import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
@@ -366,24 +367,20 @@ def delete_user():
             return create_bad_response(f"An error occurred deleting a user: {e1}", "users", 400)
 
 class UserSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'user_id',
-            'first_name',
-            'last_name',
-            'email',
-            'team_id',
-            'team_name',
-            'lms_id',
-            'consent',
-            'owner_id',
-            'active',
-            'has_set_password',
-            'is_admin',
-            'role_id',
-            'last_update',
-        )
-
+    user_id     = fields.Integer()
+    first_name  = fields.String()
+    last_name   = fields.String()
+    email       = fields.Email()
+    team_id     = fields.Integer()
+    team_name   = fields.String()
+    lms_id      = fields.Integer()
+    consent     = fields.Boolean()
+    owner_id    = fields.Integer()
+    active      = fields.Boolean()
+    has_set_password = fields.Boolean()
+    is_admin    = fields.Boolean()
+    role_id     = fields.Integer()
+    last_update = fields.DateTime()
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
