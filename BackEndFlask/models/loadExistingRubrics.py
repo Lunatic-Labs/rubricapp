@@ -25,19 +25,19 @@ def load_existing_rubrics():
         ["Metacognition", "Being able to regulate one's thinking and learning through planning, monitoring, and evaluating one's efforts."],
         # (Latest update is May 28, 2025) Questions
         ["Questions", "Questioning aspects of the world around us that can be tested through observation or experimentation (empirical testing)."],        
-        # (Latest update is May 28, 2025) Experimenting
+        # Experimenting
         ["Experimenting", "Planning and carrying out systematic investigations to test a hypothesis or answer a question that provides evidence in the form of data."],
-        # (Latest update is May 28, 2025) Mathematical
+        # Mathematical
         ["Mathematical thinking", "Usage of mathematics and computation for establishing qualitative and quantitative relationships among variables."],
-        # (Latest update is May 28, 2025) Modeling
+        # Modeling
         ["Modeling", "Usage and construction of models such as diagrams, drawings, physical replicas, mathematical representations, analogies, and computer simulations for representing ideas that have predictive and explanatory powers."],
-        # (Latest update is May 28, 2025) Analyzing data
+        # Analyzing data
         ["Analyzing data", "Usage of tools such as tabulation, graphs, visualization, and statistical analysis to analyze and interpret patterns in data to derive meaning."],
-        # (Latest update is May 28, 2025) Explaining phenomena
+        # Explaining phenomena
         ["Explaining phenomena", "Explaining a phenomenon of interest with multiple lines of empirical evidence"],
-        # (Latest update is May 28, 2025) Arguing
+        # Arguing
         ["Arguing", "Engaging in argumentation by listening to, comparing, critiquing and evaluating competing ideas and claims and making evidence-based conclusions based on the merits of those arguments."],
-        # (Latest update is May 28, 2025) Disseminating findings
+        # Disseminating findings
         ["Disseminating findings", "Obtaining and evaluating information critically. Communicating generated ideas/explanations/conclusions clearly and persuasively."]
     ]
     for rubric in rubrics:
@@ -95,44 +95,44 @@ def load_existing_categories():
         [8, "Evaluating", "Reviewed learning gains and/or performance and determined strengths and areas to improve", completely],
         [8, "Realistic Self-assessment", "Produced a self-assessment based on previous and current behaviors and circumstances, using reasonable judgment in future planning", completely],
         # (Latest update is May 28, 2025) Questions Categories 1-3
-        [9,],
-        [9,],
-        [9,],
-        # (Latest update is May 28, 2025) Experimenting Categories 1-8
-        [10,],
-        [10,],
-        [10,],
-        [10,],
-        [10,],
-        [10,],
-        [10,],
-        [10,],
-        # (Latest update is May 28, 2025) Mathematical thinking Categories 1-3
-        [10,],
-        [10,],
-        [10,],
-        # (Latest update is May 28, 2025) Modeling Categories 1-3
-        [11,],
-        [11,],
-        [11,],
-        # (Latest update is May 28, 2025) Analyzing data Categories 1-3
-        [12,],
-        [12,],
-        [12,],
-        # (Latest update is May 28, 2025) Explaining phenomena Categories 1-2
-        [13,],
-        [13,],
-        # (Latest update is May 28, 2025) Arguing Categories 1-5
-        [14,],
-        [14,],
-        [14,],
-        [14,],
-        [14,],
-        # (Latest update is May 28, 2025) Disseminating Categories 1-4
-        [15,],
-        [15,],
-        [15,],
-        [15,]
+        [9, "Generating questions", "Generated a question(s) which, upon answering, explains a phenomenon.", completely],
+        [9, "Generating sub-questions", "Broke down the previously asked question into sub-questions", completely],
+        [9, "Generating hypothesis", "Generated a predictive/explanatory statement (hypothesis) that can be empirically tested.", completely],
+        # Experimenting Categories 1-8
+        [10, "Developing a scientifically sound plan", "Used scientific ideas and theories to plan an investigation to test a hypothesis or answer a question", completely],
+        [10, "Planning for data collection", "Identified the data to be collected.", completely],
+        [10, "Developing a safe plan", "Took all the safety protocols into consideration while planning the investigation.", completely],
+        [10, "Developing an executable plan", "Took practical aspects and limitations into consideration in the planning of the investigation.", completely],
+        [10, "Executing the plan safely", "Carried out the planned investigation in a way that ensures the safety of everyone present in the laboratory.", completely],
+        [10, "Executing the plan", "Carried out the investigation in a systematic way and generated data that can act as evidence to support a claim or explanation.", completely],
+        [10, "Documenting the investigation", "Documented all aspects of investigation such as observations, measurements, calculations, etc. clearly and legibly in a laboratory notebook.", completely],
+        [10, "Planning a future investigation", "Planned a new experiment (or a future iteration of the current experiment) based on the results of the current investigation.", completely],
+        # Mathematical thinking Categories 1-3
+        [10, "Mathematical thinking", "Used any number of mathematical tools such as constructing and solving equations for establishing relationships among variables."],
+        [10, "Preparing for computation", "Identified the problem that can be solved using computation and developed a plan for solving it.", completely],
+        [10, "Preparing computation", "Used any number of computational tools, such as programming, simulation, etc., for modeling data or solving a problem.", completely],
+        # Modeling Categories 1-3
+        [11, "Evaluating models", "Evaluated a set of models for their relevancy before using.", completely],
+        [11, "Using models", "Used existing models to make sense of the observations made or measurements taken.", completely],
+        [11, "Developing models", "Developed new models or revised existing models to make sense of the observations made or measurements taken.", completely],
+        # Analyzing data Categories 1-3
+        [12, "Preparing for data analysis", "Prepared for data analysis by identifying relevant data and method(s)", completely],
+        [12, "Analyzing the data", "Used any number of scientifically accepted tools such as graphs, statistics, etc., and analyzed the generated (or given) data to identify significant patterns and trends.", completely],
+        [12, "Interpreting the data", "Interpreted the analyzed data to derive meaning/construct explanations/answer questions/know implications.", completely],
+        # Explaining phenomena Categories 1-2
+        [13, "Presenting evidence", "Listed the evidence required to support the explanation", ],
+        [13, "Constructing explanations", "Constructed a logically sound explanation to provide explanatory accounts of the phenomenon of interest.", completely],
+        # Arguing Categories 1-5
+        [14, "Making claims", "Made the claim of the argument", completely],
+        [14, "Presenting evidence", "Listed the evidence required to support the claim.", completely],
+        [14, "Forming an argument from evidence", "Constructed a logically sound argument with reasoning that explains how the evidence supports the claim.", completely],
+        [14, "Critiquing arguments", "Engaged in argumentation by critically evaluating competing arguments.", completely],
+        [14, "Engaging in diabolical argumentation", "Engaged in verbal argumentation by articulating one’s argument and questioning competing ones.", completely],
+        # Disseminating Categories 1-4
+        [15, "Obtaining information", "Collected relevant information from multiple sources of scientific knowledge such as books, journal articles, technical databases, etc.", completely],
+        [15, "Evaluating information", "Critically evaluated the reliability of the obtained information.", completely],
+        [15, "Synthesing information", "Combined information obtained from different sources to suit the purpose of the current investigation.", completely],
+        [15, "Communicating information"]
     ]
     for category in categories:
         c = {} 
@@ -365,6 +365,169 @@ def load_existing_observable_characteristics():
         [37, "Identified how circumstances supported or limited the completion of the task"],
         [37, "Made realistic plans (based on previous and current behaviors and circumstances) to improve future performance"],
         [37, "None"],
+        # (Latest update is May 29) Questioning
+        # Generating questions Observable characteristics 1-4
+        [38, "Asked a question that seeks an explanatory account for a phenomenon of interest."],
+        [38, "The question can be answered empirically."],
+        [38, "The question is specific and limited in scope."],
+        [38, "The question can be investigated within the scope of the college laboratory."],
+        [38, "None"],
+        # Generating sub-questions Observable characteristics 1-3
+        [39, "Framed sub-questions that are easier to reliably answer compared to directly answering the question of interest."],
+        [39, "Each sub-question explores the effect of varying one independent variable on one dependent variable."],
+        [39, "If all the sub-questions are answered, they can meaningfully answer the question of interest."],
+        [39, "None"],
+        # Generating hypothesis Observable characteristics 1-4
+        [40, "Generated an empirically testable hypothesis about a phenomenon of interest."],
+        [40, "Justified the rationale behind the hypothesis that is consistent with scientific models/theories."],
+        [40, "The hypothesis is testable within the scope of the college laboratory."],
+        [40, "The hypothesis is specific and limited in scope."],
+        [40, "None"],
+        # Experimenting
+        # Developing a scientifically sound plan Observable characteristics 1-4
+        [41, "Clearly and concisely stated the objective of the investigation."],
+        [41, "Determined if small-scale trial experiments are necessary."],
+        [41, "Described the rationale/theory behind the experimental design."],
+        [41, "Predicted the outcomes of the planned investigation."],
+        [41, "None"],
+        # Planning for data collection Observable characteristics 1-2
+        [42, "Listed the data needed for the small-scale trial study or to answer the research question."],
+        [42, "Prepared data tables that included a title, labeled rows and columns, units of measurement, etc."],
+        [42, "None"],
+        # Developing a safe plan Observable characteristics 1-4
+        [43, "Described the various types of chemical hazards (health, explosion, etc.) and physical hazards (broken glass, hot plate, etc.) associated with the investigation."],
+        [43, "Described the risks associated with chemical (respiratory distress, nausea, etc.) and physical hazards (laceration, skin burns, etc.)"],
+        [43, "Described ways to minimize risks (isolating people from hazards, wearing PPE, etc.) associated with the hazards."],
+        [43, "Described ways to act (using a fire extinguisher, cleaning a chemical spill, etc.) in case of a lab accident/chemical spill."],
+        [43, "None"],
+        # Developing an executable plan Observable characteristics 1-3
+        [44, "Identified the appropriate glassware, reagents, instruments, etc. required for performing the experiment."],
+        [44, "Described the experimental procedure in a comprehensive manner."],
+        [44, "Detailed possible sources of errors and ways to mitigate them."],
+        [44, "None"],
+        # Executing the plan safely Observable characteristics 1-5
+        [45, "Wore all the required PPE during the course of the investigation."],
+        [45, "Followed safe handling of chemicals to minimize risks associated with chemical hazards."],
+        [45, "Followed safe handling of glassware, heavy items etc. to minimize risks associated with physical hazards."],
+        [45, "Correctly disposed of hazardous and non-hazardous materials following lab guidelines"],
+        [45, "In case of an accident/chemical spill, acted following the safety protocols."],
+        [45, "None"],
+        # Executing the plan Observable characteristics 1-3
+        [46, "Executed the investigation systematically by performing the adequate number of trials."],
+        [46, "Used glassware and equipment appropriately such that measurement errors would be minimal."],
+        [46, "Managed time effectively in the laboratory."],
+        [46, "None"],
+        # Documenting the investigation Observable characteristics 1-2
+        [47, "Noted the observations (expected and unexpected), measurements, and outcomes carefully."],
+        [47, "Organized the collected data clearly and systematically."],
+        [47, "None"],
+        # Planning a future investigation Observable characteristics 1-3
+        [48, "Compared the predicted outcome with the actual outcome of the investigation."],
+        [48, "Commented on the significance of the results obtained."],
+        [48, "Developed a new experimental plan informed by the results of the current investigation."],
+        [48, "None"],
+        # Mathematical thinking
+        # Mathematical thinking Observable characteristics 1-4
+        [49, "Constructed equations or appropriate graphs to establish relationships among variables or model data."],
+        [49, "Solved equations correctly to find solutions."],
+        [49, "Used mathematically consistent representations and notations."],
+        [49, "Used units and performed unit conversions accurately."],
+        [49, "None"],
+        # Preparing for computation Observable characteristics 1-2
+        [50, "Broke down a complex problem into smaller, more manageable parts."],
+        [50, "Wrote a meaningful plan that acts as a blueprint for the solution (algorithm)."],
+        [50, "None"],
+        # Performing computation Observable characteristics 1-3
+        [51, "Wrote an executable computer code (program) to model data or solve a problem."],
+        [51, "Modeled a chemical system using computer simulation software with reasonable accuracy."],
+        [51, "Debugged the computational tool when it did not work as intended."],
+        [51, "None"],
+        # Modeling
+        # Evaluating models Observable characteristics 1-3
+        [52, "Considered the assumptions that can limit the usefulness of existing models."],
+        [52, "Evaluated existing models for their utility and limitations."],
+        [52, "Justified the choice of model based on the evaluation."],
+        [52, "None"],
+        # Using models Observable characteristics 1-4
+        [53, "Used models to make predictions."],
+        [53, "Used models to construct explanations or communicate ideas."],
+        [53, "Used models to find the needed information."],
+        [53, "Used models to provide a mechanistic account of the phenomenon under study."],
+        [53, "None"],
+        # Developing models Observable characteristics 1-4
+        [54, "Stated what the developed or revised model needs to accomplish."],
+        [54, "Listed the assumptions made to develop/revise the model."],
+        [54, "Developed a representation/relationship among variables to predict and/or explain phenomena of interest."],
+        [54, "Listed the utility/limitations of the model."],
+        [54, "None"],
+        # Analyzing data
+        # Preparing for data analysis Observable characteristics 1-4
+        [55, "Identified the information required to achieve the objective of the investigation."],
+        [55, "Identified the relevant data for analysis."],
+        [55, "Identified the appropriate method(s) for data analysis."],
+        [55, "Justified the chosen method of data analysis as to why it is useful in the current context."],
+        [55, "None"],
+        # Analyzing the data Observable characteristics 1-3
+        [56, "Plotted an appropriate graph or showed work for a statistical test or performed calculations correctly."],
+        [56, "Extracted useful information in the form of a pattern or a numerical value for data interpretation."],
+        [56, "Highlighted limitations of the analyzed data."],
+        [56, "None"],
+        # Interpreting the data Observable characteristics 1-4
+        [57, "Assigned correct meaning to the results of a graphical plot, statistical test, or calculation."],
+        [57, "Drew relevant implications based on the analyzed data."],
+        [57, "Referenced pieces of analyzed and external data that can act as evidence to justify the derived meaning."],
+        [57, "Commented on the robustness or the trustworthiness of the conclusion."],
+        [57, "None"],
+        # Explaining phenoma
+        # Presenting evidence Observable characteristics 
+        # Constructing explanations Observable characteristics 1-3
+        [58, "Identified the phenomenon that warrants an explanation."],
+        [58, "Constructed an explanation that gives a causal account of the phenomenon at a sub-microscopic level."],
+        [58, "Combined multiple ideas in valid ways to construct the explanation."],
+        [58, "None"],
+        # Arguing
+        # Making claims Observable characteristics 1-3
+        [59, "Stated the claim or the conclusion of the argument."],
+        [59, "Stated possible alternative claims."],
+        [59, "Stated the conditions under which the claim holds true."],
+        [59, "None"],
+        # Presenting evidence Observable characteristics 1-3
+        [60, "Listed valid and reliable evidence to support the claim."],
+        [60, "The evidence listed is necessary."],
+        [60, "The evidence listed is sufficient."],
+        [60, "None"],
+        # Forming an argument from evidence Observable characteristics 1-2
+        [61, "Linked the claim to the evidence with logically sound reasoning rooted in scientific ideas/theories."],
+        [61, "Used multiple pieces of evidence coherently to support the claim."],
+        [61, "None"],
+        # Critiquing arguments Observable characteristics 1-3
+        [62, "Critically evaluated the merits and limitations of competing arguments (usually from peers)."],
+        [62, "Refined one’s own argument in the light of contradictory evidence (usually from peers)."],
+        [62, "Reached an evidence-based conclusion based on the merits of all the arguments presented."],
+        [62, "None"],
+        # Engaging in diabolical argumentation Observable characteristics 1-5
+        [63, "Articulated logically sound argument to justify one’s claims."],
+        [63, "Clarified their argument when requested."],
+        [63, "Responded adequately to the questions and challenges posed."],
+        [63, "Listened to all the arguments made by peers."],
+        [63, "Supported or challenged competing arguments in a meaningful way."],
+        [63, "None"],
+        # Disseminating findings 
+        # Obtaining information Observable characteristics 1-3
+        [64, "Identified source(s) of the information needed for the current investigation/study undertaken."],
+        [64, "Extracted relevant and necessary information from the referenced source(s)."],
+        [64, "Cited the source of information in any of the formats accepted by the scientific community."],
+        [64, "None"],
+        # Evaluating information Observable characteristics 1-2
+        [65, "Obtained information from trustworthy sources."],
+        [65, "Determined the quality and accuracy of the information itself."],
+        [65, "None"],
+        # Synthesing information Observable characteristics 1-2
+        [66, "Combined multiple pieces of information in valid ways."],
+        [66, "Paraphrased the information without copying verbatim from the source."],
+        [66, "None"],
+        # Communicating information Observable characteristics
+
     ]
     for observable in observable_characteristics:
         create_observable_characteristic(observable)
@@ -674,6 +837,202 @@ def load_existing_suggestions():
         [37, "Summarize 2-3 specific strategies you’ve identified to improve your performance on future tasks."],
         [37, "Ask someone who knows you or your work well to review your self-assessment. Ask them if you accurately summarized your past efforts and if they think your future strategies are realistic for you."],
         [37, "Nothing specific at this time"],
+        # (Latest update is May 29, 2025) Questioning
+        # Generating questions Suggestions 1-4
+        [38, "Be curious, observant, and skeptical since these traits are often the basis for generating scientific questions."],
+        [38, "Reflect on whether the question you ask can be answered by collecting evidence through observation or experimentation."],
+        [38, "Have a narrow and specific goal for your question, since a broad question is difficult to answer."],
+        [38, "Reflect on the feasibility of answering the question using the materials and technical support available in the college laboratory."],
+        # Generating sub-questions Suggestions 1-4
+        [39, "Reflect on the scope of the question and identify all the variables at play."],
+        [39, "Divide the question into sub-questions, each of which tackles a part of the question."],
+        [39, "Frame questions that seek a relationship between one dependent and one independent variable while keeping the rest constant."],
+        [39, "Reflect on whether answering the sub-questions establishes relationships between various variables in the question of interest."],
+        # Generating hypothesis Suggestions 1-4
+        [40, "Frame your hypothesis such that it can be tested by collecting data through observation and experimentation."],
+        [40, "Identify the factors that guided your process of hypothesizing such as results from previous work, your observations, etc."],
+        [40, "Reflect on the feasibility of testing the hypothesis using the materials and technical support available in the college laboratory."],
+        [40, "Generate a hypothesis that has a specific goal and is narrow in scope since a generic hypothesis is difficult to test."],
+        # Experimenting
+        # Developing a scientifically sound plan Suggestions 1-6
+        [41, "Reflect on the investigation's purpose."],
+        [41, "State whether you are planning to answer a question, conduct an exploratory experiment, or test a hypothesis."],
+        [41, "Identify a few mock trials to perform that give you a sense of the actual investigation, such as feasibility, possible issues, etc."],
+        [41, "Describe what scientific ideas (theories/equations/relationships/concepts) are related to your aim/objective/question."],
+        [41, "Identify all the possible outcomes based on your theoretical and practical understanding of the investigation."],
+        [41, "Identify the more probable outcomes based on the scientific concepts at work in the investigation."],
+        # Planning for data colleciton Suggestions 1-7
+        [42, "Identify the variables (dependent and independent) and the controls."],
+        [42, "Justify why the data to be collected can be considered as evidence for the investigation."],
+        [42, "Identify the limitations of the instruments/method to be used (e.g. precision of instruments, number of trials)."],
+        [42, "Ensure you have separate tables for each type or phase of the experiment."],
+        [42, "Write a brief description for each table, stating what is being recorded in it."],
+        [42, "Identify what information will be needed such as dependent and independent variables, controls, observations, etc."],
+        [42, "Make enough columns to record all the information and enough rows to record all the trials."],
+        # Developing a safe plan Suggestions 1-7
+        [43, "Familiarize yourself with the RAMP (Recognize hazards, Assess risks, Minimize risks, Prepare for emergencies) framework."],
+        [43, "Identify the chemicals being used and locate SDS (safety data sheet) for them."],
+        [43, "Familiarize yourself with different notations (GHS hazard pictograms, NFPA ratings, etc.) in the SDS."],
+        [43, "Familiarize yourself with different sections (toxicological information, accidental release measures, etc.) in the SDS."],
+        [43, "Identify the tools, instruments, glassware, etc. being used as a part of the investigation."],
+        [43, "Identify the hazards, risks, and ways to minimize those risks associated with the tools, instruments, glassware, etc. being used."],
+        [43, "Consider taking additional training such as fume hood training, chemical spill training, etc. to plan experiments in a safe way."],
+        # Developing an executable plan Suggestions 1-8
+        [44, "Identify all the requirements for the current investigation by reflecting on how to collect the data you plan to collect."],
+        [44, "Consider the precision of the data required while selecting the instruments, since not all instruments are equally precise."],
+        [44, "Consider factors such as the volume and number of glassware items, as well as the concentration and quantity of reagents required"],
+        [44, "Describe every step of the procedure with details such as the duration of each step, data, and observations to be noted, etc."],
+        [44, "Detail the steps of the experiment in a format that is easy to follow, such as bullet points, flowcharts, etc."],
+        [44, "Identify sources of random errors such as inconsistency in measurements between trials, variation in lab conditions over time, etc."],
+        [44, "Identify sources of systematic errors such as incorrect calibration of instruments, incorrect concentration of chemicals, etc."],
+        [44, "Incorporate strategies to mitigate the errors such as taking repeated measurements, routinely calibrating equipment, etc."],
+        # Executing the plan safely Suggestions 1-7
+        [45, "Keep PPE in designated cubbies if allotted. If not, keep them in sealed Ziplock covers in your bag so you don’t forget to get them."],
+        [45, "Learn about proper and improper ways to use PPE."],
+        [45, "Take short breaks during lab if PPE becomes uncomfortable."],
+        [45, "Familiarize yourself with the proper ways to use every chemical, glassware, etc. that is needed for the investigation."],
+        [45, "Call the TA or the instructor if you are uncertain about how to safely operate in the lab."],
+        [45, "Locate correct disposal locations before the lab such as sharps bin, biohazard bin, liquid waste, etc."],
+        [45, "Know how to access eye wash stations, safety showers, chemical spill kit, first aid kit, etc. before the lab."],
+        # Executing the plan Suggestions 1-8
+        [46, "Come in prepared and ready to execute the plan you have developed."],
+        [46, "Monitor the way you are executing is in line with the developed plan."],
+        [46, "Assess the quality of the data as you go – are the values consistent? do they fall within reasonable limits of expected values?"],
+        [46, "Perform more trials if some of your trials must be discarded owing to mistakes during experimentation."],
+        [46, "For efficient use of glassware/instruments, learn about their usage, calibration, precision, and limitations before the lab."],
+        [46, "Create a timeline with checkpoints to complete the experiment within the stipulated time."],
+        [46, "In the case of group work, use strategies like collaborative work, division of labor, etc."],
+        [46, "Stay on task. Take short breaks when you need to refocus on the investigation."],
+        # Documenting the investigation 1-8
+        [47, "Note down the date(s) on which the investigation was carried out."],
+        [47, "Record everything as soon as you measure. Keeping it later results in missing some details."],
+        [47, "Look for any observables and record them such as bubbles, smoke, color change, etc."],
+        [47, "Note all observations/measurements/outcomes with fidelity even if they are unexpected or undesirable."],
+        [47, "Make note of any questions you have during the investigation and try to get them answered with the help of the TA/Instructor."],
+        [47, "Organize the information legibly and neatly so others can read and understand."],
+        [47, "Use different types of representations for organizing data such as tables, figures, graphs, etc."],
+        [47, "Record the file name of your investigation and the location of storage for easy access later."],
+        # Planning a future investigation Suggestions 1-7
+        [48, "For comparison, look for any discrepancy between the predicted and observed outcomes."],
+        [48, "When the actual and predicted outcomes matched, comment on what worked and the key takeaways from the investigation."],
+        [48, "When the actual and predicted outcomes did not match, reflect on why the discrepancy could have arisen. The answer could lie in your theoretical understanding or the execution (inconsistent trials, human error, etc.) of the investigation."],
+        [48, "Planning the next steps: Did your results lead you to come up with a new question? How could you answer it?"],
+        [48, "Planning the next steps: Is there anything that might limit the validity of your data? How to address it?"],
+        [48, "Planning the next steps: What data is missing to answer your overarching question? How can you obtain it?"],
+        # Mathematical thinking
+        # Mathematical thinking Suggestions 1-6
+        [49, "Identify patterns in data that suggest relationships among variables."],
+        [49, "Express the identified relationship in a useful form such as a graph or an equation."],
+        [49, "Identify the nature of your equation such as linear, quadratic, differential etc. and review strategies for solving them."],
+        [49, "Interpret the physical meaning (what do these numbers indicate about the system under consideration?) of the solutions."],
+        [49, "Reflect on the notations (brackets, differential sign, etc.) you have used and ensure they convey the intended meaning."],
+        [49, "Reflect on the units you have used (M/s, mol, K, etc.) and ensure they represent the intended quantities."],
+        # Preparing for computation Suggestions 1-3
+        [50, "Divide the complex problem into smaller problems, each of which tackles a part of the original problem."],
+        [50, "Reflect on whether the solution to the smaller problems addresses every aspect of the original problem in a meaningful way."],
+        [50, "Make a plan that outlines the steps for solving the problem preferably using a pictorial representation such as a flowchart."],
+        # Performing computation Suggestions 1-6
+        [51, "List the programming languages (Java, Python, etc.) that can be used to solve your problem."],
+        [51, "Identify the best-suited language by considering the availability of the language, ease of learning, simplicity of the syntax, etc."],
+        [51, "Write a program for the algorithm that you have developed to accomplish the task at hand."],
+        [51, "List the simulation softwares (phET, ChemCompute, etc.) that can be used to model the chemical system of interest."],
+        [51, "Identify the software that has the required tools to model the system you are interested in."],
+        [51, "Identify the underlying issues and solve them by focusing on the critical issues instead of tackling each bug individually."],
+        # Modeling
+        # Evalutating models Suggestions 1-5
+        [52, "Identify the various types of models available for predicting outcomes or explaining the phenomenon of interest."],
+        [52, "Identify the assumptions, and approximations behind the models that can limit their predictive/explanatory powers."],
+        [52, "Compare and contrast the utility and limitations of the models with a focus on what needs to be accomplished with the model."],
+        [52, "Choose the model whose utility aids in achieving your objective while the limitations do not significantly hamper it."],
+        [52, "Explain your choice based on the utility and limitations of the model, and the effect they have on achieving your objective."],
+        # Using models Suggestions 1-4
+        [53, "Analyze the experiment's course through the lens of the chosen model and predict what would happen."],
+        [53, "Use the utility of the model to construct explanations for the data collected or observations made as a part of the investigation."],
+        [53, "Use the model to find the necessary information to meet your objective, such as a slope from a graph or a value from an equation."],
+        [53, "Use the utility of the model to explain how the phenomenon has occurred (mechanistic explanation)."],
+        # Developing models Suggestions 1-5
+        [54, "Articulate what your developed model is going to achieve by reflecting on the shortcomings of the existing models."],
+        [54, "Explain the assumptions you have made to develop/revise the model by reflecting on why you needed to make them."],
+        [54, "List the various forms models can take, such as analogies, representations, physical replicas, computer simulations, etc."],
+        [54, "Choose the form that is best suited for the model you are developing by reflecting on the objective it needs to meet."],
+        [54, "List the utility of the developed model by reflecting on the conditions under which it is useful or reliable."],
+        # Analyzing data
+        # Preparing for data analysis Suggestions 1-4
+        [55, "Reflect on the investigation's purpose and identify the necessary information to achieve that."],
+        [55, "Organize data such that it reveals any trends or patterns."],
+        [55, "Reflect on all the methods available for data analysis and choose the one that could help answer the question of interest."],
+        [55, "Justify how the chosen method of analysis helps answer the question of interest or test the hypothesis."],
+        # Analyzing the data Suggestions 1-4
+        [56, "Subject the relevant data to the chosen method of analysis."],
+        [56, "Analyze the data with fidelity, as it is not good practice to manipulate the data to obtain the desired results."],
+        [56, "Reflect on whether the data analysis yielded the required information to achieve the investigation’s purpose."],
+        [56, "Explain the limitations of your analysis, if any, which could be due to inadequate number of data points, propagation of errors, etc."],
+        # Interpreting the data Suggestions 1-7
+        [57, "State in your own words what the analyzed data conveys."],
+        [57, "Draw conclusions that logically follow from the analyzed data."],
+        [57, "Identify all the pieces of evidence that emerge from your data analysis."],
+        [57, "Identify relevant data from valid external sources."],
+        [57, "State how these pieces of evidence and external data are interconnected."],
+        [57, "Map out how these interconnected pieces of evidence can be used to justify the derived meaning."],
+        [57, "Refer to aspects of your data analysis such as error margins, limitations, and infer how they affect your conclusion."],
+        # Explaining phenomena
+        # Presenting evidence Suggestions 1-
+        # Constructing explanations Suggestions 1-4
+        [58, "Identify the phenomenon that is observable and takes place at the macroscopic level."],
+        [58, "Explain the phenomenon at a descriptive level (what happens)"],
+        [58, "Identify all the interactions (usually intermolecular) at play at the sub-microscopic level required to explain the phenomenon."],
+        [58, "Link the ideas coherently such that it gives a causal (why it happens) mechanistic (how it happens) account for the phenomenon."],
+        # Arguing
+        # Making claims Suggestions 1-4
+        [59, "Reflect on the investigation's purpose and determine whether you answered the question of interest or tested the hypothesis."],
+        [59, "State the result obtained from your investigation as a claim statement in your own words."],
+        [59, "State alternate claim(s) if you inferred more than one conclusion from your investigation."],
+        [59, "Identify the conditions that could limit the validity of your claim such as temperature, concentration, etc."],
+        # Presenting evidence Suggestions 1-5
+        [60, "Reflect on whether the evidence you presented supports what it is supposed to support (validity)"],
+        [60, "Reflect on whether the evidence you presented can be consistently reproduced under the same conditions (reliability)"],
+        [60, "Present evidence that is obtained by empirical means only (either from your investigation or from previous work)."],
+        [60, "Do not list a particular piece of data if you can adequately support the claim without using it."],
+        [60, "Do not omit any evidence without which the argument is incomplete or has flaws."],
+        # Forming an argument from evidence Suggestions 1-4
+        [61, "Do not merely list the evidence."],
+        [61, "Demonstrate how the evidence supports the claim based on scientifically sound reasoning."],
+        [61, "Familiarize yourself with the CER (Claim-Evidence-Reasoning) approach of argumentation."],
+        [61, "Identify how each piece of evidence supports aspects of your reasoning to form a coherent argument."],
+        # Critiquing arguments Suggestions 1-5
+        [62, "Evaluate competing arguments through the same measures mentioned in the component ‘forming an argument from evidence’."],
+        [62, "Do not stick to your argument in the light of contradictory evidence."],
+        [62, "If the newly presented piece of evidence is valid and reliable, add that to your list of evidence."],
+        [62, "Form a coherent argument with the new list of evidence as mentioned in the component ‘forming an argument from evidence’."],
+        [62, "After evaluating all the arguments presented, choose the most compelling one based on the reasoning provided."],
+        # Engaging in dialogical arguemntation Suggestions 1-6
+        [63, "Think through each of the components of your argument and order them such that you can articulate in a comprehensible way."],
+        [63, "Try to adopt the CER approach of argumentation."],
+        [63, "When requested, provide clarifications about your argument either by restating or summarizing."],
+        [63, "Respond to questions and challenges in an impersonal way by basing your arguments on scientific ideas and evidence."],
+        [63, "Listen carefully and make notes of key points of others’ arguments so that you can support or challenge competing ideas."],
+        [63, "When you challenge others’ arguments, make your points in an impersonal way based on scientific ideas and evidence."],
+        # Disseminating findings
+        # Obtaining information Suggestions 1-5
+        [64, "Explore various sources of information such as textbooks, reference books, research articles from Scopus, Web of Science, etc."],
+        [64, "Shortlist the sources that have the required information for your study."],
+        [64, "Extract information from the shortlisted sources to set the context for the current study or justify the relevance of your work."],
+        [64, "Reference the information obtained from various sources by using accepted formats such as ACS, APA, etc."],
+        [64, "Use reference manager software such as Zotero, Microsoft end note, etc. for referencing extracted information."],
+        # Evaluating information Suggestions 1-7
+        [65, "Vet the sources by considering whether: The author is an expert in the field or not."],
+        [65, "Vet the sources by considering whether: It was published in a reputable peer-reviewed journal such as JACS, Nature, etc."],
+        [65, "Vet the sources by considering whether: It was published by a reputable publishing company such as ACS, RSC, etc."],
+        [65, "Assess the quality of the information by considering whether: The experimental technique used was appropriate to achieve the intended objective."],
+        [65, "Assess the quality of the information by considering whether: There was any bias in the study such as researcher bias, sampling bias, confirmation bias, etc."],
+        [65, "Assess the quality of the information by considering whether: There were unethical practices performed such as data dredging (p-hacking), cherry-picking data, etc. in the analysis."],
+        [65, "Assess the quality of the information by considering whether: The funding sources have a vested interest in the results of the study."],
+        # Synthesizing information Suggestions 1-4
+        [66, "State how the different pieces of information are connected."],
+        [66, "Write out a statement or a paragraph that summarizes the integration of information."],
+        [66, "Map out how the combined information can suit the current investigation's purpose."],
+        [66, "Paraphrase the information in simpler but accurate terms by linking the previous works to the current investigation."],
+        # Communicating information Suggestions
         ]
     for suggestion in suggestions:
         create_suggestion(suggestion)
