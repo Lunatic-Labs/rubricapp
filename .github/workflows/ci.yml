@@ -138,6 +138,9 @@ jobs:
           echo "Disk usage:"
           df -h
 
+      - name: Checkout code
+        uses: actions/checkout@v4
+
       - name: Verify Node.js instalation
         run: node -v
 
