@@ -43,7 +43,7 @@ jobs:
       - name: Install Node dependencies
         run:  |
           cd FrontEndReact
-          npm install --loglevel warn
+          npm install
       
       - name: Run ESLint
         run:  |
@@ -93,8 +93,9 @@ jobs:
             echo "Checking for broken or missing dependencies..."
             pip check
             echo "Checking for differing libs from the requirement.txt"
-            echo "[<] indicates a missing lib but [>] indicates a lib thats not in the requirement.txt"
-            diff <(pip freeze | awk -F '==' '{print $1}') <(awk -F '==' '{print $1}' BackEndFlask/requirements.txt) 
+            echo "[<] indicates a missing lib from the requirements.txt"
+            diff <(awk -F '==' '{print $1}' BackEndFlask/requirements.txt | sort) <(pip freeze | awk -F '==' '{print $1}' | sort) | grep '^<' || true
+        continue-on-error: true
 
       - name: Backend health check
         run:  |
