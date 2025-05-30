@@ -1,89 +1,151 @@
 #-----------------------------------------------------------------------
 # This is a file that is run by Github actions to test certain aspects
-# of our code befor we merge into master.
+# of our code before we merge into master.
 #
-# Date last modified: Fri Apr 25 11:58:27 AM CDT 2025
+# Date last modified: Fri May 30 02:53:22 PM CDT 2025
 #-----------------------------------------------------------------------
+name: Continuous Integration for Rubric App
 
-name: Continuous Integration (CI)
-
-# Specifying the events that will start the workflow. 
-# As of now the workflow is triggered on a pr to merge to master.
+# Specifies to run on PRs set to merge into master
 on:
   pull_request:
   push:
     branches:
-      - "master"
+      - master
 
+# Front-end linting and back-end building are their own jobs
+# since they arent dependent on each other.
 jobs:
-  build:
+  # lint job builds the frontend and runs ESLint.
+  lint:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
+      # Fetch job to see runner info
+      - name: Display system info
+        run:  |
+          echo "CPU info:"
+          lscpu
+          echo "Memory usage:"
+          free -h
+          echo "Disk usage:"
+          df -h
+
+      - name: Checkout code
         uses: actions/checkout@v4
-      
+
       - name: Set up Node.js
         uses: actions/setup-node@v4
-        with:
+        with: 
           node-version: 20
           cache: "npm"
           cache-dependency-path: FrontEndReact/package.json
+        
+      - name: Install Node dependencies
+        run:  |
+          cd FrontEndReact
+          npm install --verbose 
+      
+      - name: Run ESLint
+        run:  |
+          cd FrontEndReact
+          npx eslint --max-warnings=0 .
+
+  backend:
+  # Builds the backend and validates that its running.
+    runs-on: ubuntu-latest
+    steps:
+      # Fetch job to see runner info
+      - name: Display system info
+        run:  |
+          echo "CPU info:"
+          lscpu
+          echo "Memory usage:"
+          free -h
+          echo "Disk usage:"
+          df -h
+
+      - name: Checkout
+        uses: actions/checkout@v4
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
-      
-      #- name: Cache jest cache
-      #  uses: actions/cache@v4
-      #  env:
-      #    cache-name: jest-cache
-      #  with:
-      #    path: /tmp/jest-cache
-      #    key: ${{ runner.os }}-build-${{ env.cache-name }}-${{ hashFiles('FrontEndReact/**/*.js', 'FrontEndReact/package.json') }}
-      #    restore-keys: |
-      #      ${{ runner.os }}-build-${{ env.cache-name }}-
-      
-      # Building the docker image and validating it was made.
+
       - name: Build backend
-        run: | 
-          docker compose build backend --no-cache
-          docker images | grep backend || (echo "Error = Backend image not found" && exit 1)
+        run: docker compose build backend --no-cache
       
-      # TODO: Run pytests here using docker compose run or something
+      - name: Validate backend image
+        run:  |
+          if ! docker image inspect backend >/dev/null 2>&1; then
+            echo "Error: Backend image not found!"
+            exit 1
+          fi
+        # TODO: Run pytests here using docker compose run or something
       
       # Note that any error will immediatly trigger the contianer to be shut down.
-      # Start backend and check it health.
+      # Start backend and check its health.
       - name: Start backend
-        run: |
-            docker compose up --no-build --detach backend
+        run: docker compose up --no-build --detach backend
 
+      - name: Setup logs
+        if: always()
+        run:  |
             docker ps  # Check if container is running
-            docker compose logs backend  # Check backend logs 
+            docker compose logs backend  # Check backend logs
 
-            (pip freeze | sed 's/[>=]//g' | awk -F '==' '{print $1, $2}' | sort) > installed.txt
-            (sed 's/[>=]//g' BackEndFlask/requirements.txt | awk -F '==' '{print $1, $2}' | sort) > expected.txt
-            comm -3 installed.txt expected.txt | column -t
-            rm -f -v installed.txt expected.txt 
+      - name: Dependency check
+        run:  |
+            echo "Checking for broken or missing dependencies..."
+            pip check
+            echo "Checking for differing libs from the requirement.txt"
+            echo "[<] indicates a missing lib but [>] indicates a lib thats not in the requirement.txt"
+            diff <(pip freeze | awk -F '==' '{print $1}') <(awk -F '==' '{print $1}' BackEndFlask/requirements.txt) 
 
-            echo "CHECK STATUS"
-            docker inspect --format='{{json .State.Status}}' $(docker ps -q --filter "name=backend")
+      - name: Backend health check
+        run:  |
+            sleep 7
+            echo "Checking backend health..."
+            for i in {1..5}; do 
+              docker inspect --format='{{json .State.Status}}' $(docker ps -q --filter "name=backend")
+              netstat -tulpn | grep 5050  # Check if port is actually listening
 
-            netstat -tulpn | grep 5050  # Check if port is actually listening
-            sleep 5
-            curl -v 'http://127.0.0.1:5050/api'
-        #Use curl to make sure the backend is up and accessible
-      
-      - name: Install Node dependencies
-        run: |
-          cd FrontEndReact
-          npm install
-      
-      - name: Run ESLint
-        run: |
-          cd FrontEndReact
-          npx eslint --max-warnings=0 .
-      
+              if curl -v 'http://127.0.0.1:5050/api'; then
+                echo "Backend is running and reachable"
+                exit 0
+              fi
+
+              echo "Backend is not ready, retrying..."
+              sleep 3
+            done
+            echo "Failed to reach backend via curl"
+            exit 1
+
+      # Silent shutdown to prevent it from messing with other jobs
+      - name: Cleanup backend on failure
+        if: failure()
+        run: docker compose stop backend
+  
+  validate:
+  # runs the jest tests once everything has show to work as expected.
+    runs-on: ubuntu-latest
+    needs:
+      - lint
+      - backend
+    steps:
+      # Fetch job to see runner info
+      - name: Display system info
+        run:  |
+          echo "CPU info:"
+          lscpu
+          echo "Memory usage:"
+          free -h
+          echo "Disk usage:"
+          df -h
+
+      - name: Verify Node.js instalation
+        run: node -v
+
       - name: Run Jest tests
-        run: |
+        run:  |
           cd FrontEndReact
           npm test -- --all --cacheDirectory /tmp/jest-cache
         # See FrontEndReact/jest-ci-setup.js for the rationale behind the --setupFiles ./jest-ci-setup.js hack
