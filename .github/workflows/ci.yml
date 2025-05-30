@@ -43,7 +43,7 @@ jobs:
       - name: Install Node dependencies
         run:  |
           cd FrontEndReact
-          npm install --verbose 
+          npm install --loglevel warn
       
       - name: Run ESLint
         run:  |
@@ -74,11 +74,7 @@ jobs:
         run: docker compose build backend --no-cache
       
       - name: Validate backend image
-        run:  |
-          if ! docker image inspect backend >/dev/null 2>&1; then
-            echo "Error: Backend image not found!"
-            exit 1
-          fi
+        run:  docker images | grep backend || (echo "Error = Backend image not found" && exit 1)
         # TODO: Run pytests here using docker compose run or something
       
       # Note that any error will immediatly trigger the contianer to be shut down.
