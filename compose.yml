@@ -34,6 +34,7 @@ services:
     networks:
       - app-network
 
+  # This instance is utilized by flask-limiter to make persistent request storage per documentation recommendation for in production use.
   redis-limiter:
     image: redis:7.2.4
     ports: []

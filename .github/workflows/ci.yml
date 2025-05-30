@@ -68,7 +68,7 @@ jobs:
             docker inspect --format='{{json .State.Status}}' $(docker ps -q --filter "name=backend")
 
             netstat -tulpn | grep 5050  # Check if port is actually listening
-            sleep 5
+            sleep 7
             curl -v 'http://127.0.0.1:5050/api'
         #Use curl to make sure the backend is up and accessible
       

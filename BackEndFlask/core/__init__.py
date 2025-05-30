@@ -137,7 +137,7 @@ redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
 limiter = Limiter(
     get_remote_address,
     app=app,
-    default_limits=["200 per day", "50 per hour"],
+    default_limits=None,
     storage_uri= "redis://"+ str(redis_limiter) + ":6380/0",
 )
 
