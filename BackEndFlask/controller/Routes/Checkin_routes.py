@@ -5,6 +5,7 @@ from flask import request, stream_with_context
 from requests import Timeout
 import flask
 import gevent
+from marshmallow import fields
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.checkin import *
@@ -124,13 +125,11 @@ def stream_checked_in_events():
     
 
 class CheckinSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'checkin_id',
-            'assessment_task_id',
-            'team_number',
-            'user_id',
-            'time'
-        )
+    checkin_id          = fields.Integer()        
+    assessement_task_id = fields.Integer()                 
+    team_number         = fields.Integer()         
+    user_id             = fields.Integer()     
+    time                = fields.DateTime()
+
 checkin_schema = CheckinSchema()
 checkins_schema = CheckinSchema(many=True)
