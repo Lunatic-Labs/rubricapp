@@ -32,6 +32,14 @@ jobs:
 
       - name: Checkout code
         uses: actions/checkout@v4
+      
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('FrontEndReact/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
 
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -69,6 +77,15 @@ jobs:
       
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
+
+      # Restore backend Docker cache (Improves `docker compose` speed)
+      - name: Restore Docker layer cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/docker-cache
+          key: ${{ runner.os }}-docker-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
 
       - name: Build backend
         run: docker compose build backend --no-cache
@@ -161,6 +178,16 @@ jobs:
 
       - name: Verify Node.js instalation
         run: node -v
+
+      # Restore backend Docker cache (Improves `docker compose` speed)
+      - name: Restore Docker layer cache
+        uses: actions/cache@v4
+        with:
+          path: /tmp/docker-cache
+          key: ${{ runner.os }}-docker-${{ github.run_id }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+            docker compose backend
 
       - name: Run Jest tests
         run:  |
