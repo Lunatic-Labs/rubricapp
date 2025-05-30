@@ -84,28 +84,45 @@ jobs:
       # Note that any error will immediatly trigger the contianer to be shut down.
       # Start backend and check its health.
       - name: Start backend
-        run:  |
-          docker compose up --no-build --detach backend
+        run: docker compose up --no-build --detach backend
 
+      - name: Setup logs
+        if: always()
+        run:  |
             docker ps  # Check if container is running
             docker compose logs backend  # Check backend logs
 
       - name: Dependency check
         run:  |
-            (pip freeze | sed 's/[>=]//g' | awk -F '==' '{print $1, $2}' | sort) > installed.txt
-            (sed 's/[>=]//g' BackEndFlask/requirements.txt | awk -F '==' '{print $1, $2}' | sort) > expected.txt
-            comm -3 installed.txt expected.txt | column -t
-            rm -f -v installed.txt expected.txt 
+            echo "Checking for broken or missing dependencies..."
+            pip check
+            echo "Checking for differing libs from the requirement.txt"
+            echo "[<] indicates a missing lib but [>] indicates a lib thats not in the requirement.txt"
+            diff <(pip freeze | awk -F '==' '{print $1}') <(awk -F '==' '{print $1}' BackEndFlask/requirements.txt) 
 
       - name: Backend health check
         run:  |
-            echo "CHECK STATUS"
-            docker inspect --format='{{json .State.Status}}' $(docker ps -q --filter "name=backend")
+            sleep 7
+            echo "Checking backend health..."
+            for i in {1..5}; do 
+              docker inspect --format='{{json .State.Status}}' $(docker ps -q --filter "name=backend")
+              netstat -tulpn | grep 5050  # Check if port is actually listening
 
-            netstat -tulpn | grep 5050  # Check if port is actually listening
-            sleep 5
-            curl -v 'http://127.0.0.1:5050/api'
-        #Use curl to make sure the backend is up and accessible
+              if curl -v 'http://127.0.0.1:5050/api'; then
+                echo "Backend is running and reachable"
+                exit 0
+              fi
+
+              echo "Backend is not ready, retrying..."
+              sleep 3
+            done
+            echo "Failed to reach backend via curl"
+            exit 1
+
+      # Silent shutdown to prevent it from messing with other jobs
+      - name: Cleanup backend on failure
+        if: failure()
+        run: docker compose stop backend
   
   validate:
   # runs the jest tests once everything has show to work as expected.
