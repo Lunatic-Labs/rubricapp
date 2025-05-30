@@ -141,6 +141,24 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Restore npm cache
+        uses: actions/cache@v4
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-npm-${{ hashFiles('FrontEndReact/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-npm-
+
+      - name: Install Node dependencies
+        run: |
+          cd FrontEndReact
+          npm install
+
+      - name: Verify React Scripts
+        run: |
+          cd FrontEndReact
+          npm list react-scripts || npm install react-scripts --save-dev
+
       - name: Verify Node.js instalation
         run: node -v
 
