@@ -78,17 +78,17 @@ jobs:
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5
+        with: 
+          context: .
+          push: true
+          tags: user/app:latest
+          cache-from: type=registry,ref=user/app:latest
+          cache-to: type=inline,mode=min
 
       - name: Build backend
-        run: docker build backend --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache -t backend .
-
+        run: docker compose build backend
       
       - name: Validate backend image
         run:  docker images | grep backend || (echo "Error = Backend image not found" && exit 1)
@@ -158,18 +158,26 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
-      - name: Cache Docker layers
-        uses: actions/cache@v3
-        with:
-          path: /tmp/.buildx-cache
-          key: ${{ runner.os }}-docker-${{ github.sha }}
-          restore-keys: |
-            ${{ runner.os }}-docker-
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
 
-      - name: Build backend with cache
-        run: docker build --cache-from=type=local,src=/tmp/.buildx-cache \
-                          --cache-to=type=local,dest=/tmp/.buildx-cache \
-                          -t backend .
+      - name: Build and push Docker images
+        uses: docker/build-push-action@v5
+        with: 
+          context: .
+          push: true
+          tags: user/app:latest
+          cache-from: type=registry,ref=user/app:latest
+          cache-to: type=inline,mode=min
+
+      - name: Build backend
+        run: docker compose build backend      
+
+      - name: Start backend
+        run: docker compose up --no-build --detach backend      
+
+      - name: Pause
+        run: sleep 5
 
       - name: Cache npm dependencies directly
         uses: actions/cache@v3
