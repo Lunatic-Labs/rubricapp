@@ -87,9 +87,7 @@ jobs:
             ${{ runner.os }}-docker-
 
       - name: Build backend
-        run: docker build backend --cache-from=type=local,src=/tmp/.buildx-cache \
-              --cache-to=type=local,dest=/tmp/.buildx-cache \
-              -t backend .
+        run: docker build backend --cache-from=type=local,src=/tmp/.buildx-cache --cache-to=type=local,dest=/tmp/.buildx-cache -t backend .
 
       
       - name: Validate backend image
