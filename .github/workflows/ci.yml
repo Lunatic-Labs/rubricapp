@@ -125,10 +125,14 @@ jobs:
       # Prints out different libs that the runner is working without 
       - name: Dependency check
         run:  |
-            echo "Checking for broken or missing dependencies..."
+            echo "Checking for broken dependencies..."
             pip check
-            echo "Checking for differing libs from the requirement.txt"
+            echo "Generating current dependencies..."
+            pip freeze > temp_dependencies.txt
+            echo "Checking for differing libs from the requirements.txt"
             python3 .github/workflows/workflow_dependencies.py
+            echo "removing temp_dependencies.txt"
+            rm -f temp_dependencies.txt
         continue-on-error: true
         # Note that this is built so that sytnax faliure does not indicate a canceled workflow.
 

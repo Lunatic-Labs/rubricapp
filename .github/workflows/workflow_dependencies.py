@@ -8,14 +8,14 @@
 import difflib
 
 req_file = open('BackEndFlask/requirements.txt')
-current_file = open('test.txt')
+current_file = open('temp_dependencies.txt')
 
 with open('BackEndFlask/requirements.txt', 'r') as req_file:
     req = [line.replace(" ", "").strip() for line in req_file if line.strip() and not line.startswith("#")]
 with open('test.txt', 'r') as current_file:
     current = [line.strip() for line in current_file if line.strip()]
 
-delta = difflib.ndiff(req, current)
-missing_deps = [line[2:] for line in delta if line.startswith('- ')]
+diff = difflib.ndiff(req, current)
+delta = ''.join([x for x in diff if x.startswith('-')])
 
-print(missing_deps)
+print(delta)
