@@ -128,8 +128,7 @@ jobs:
             echo "Checking for broken or missing dependencies..."
             pip check
             echo "Checking for differing libs from the requirement.txt"
-            echo "[<] indicates a missing lib from the requirements.txt"
-            diff <(awk -F '==' '{print $1}' BackEndFlask/requirements.txt | sort) <(pip freeze | awk -F '==' '{print $1}' | sort) | grep '^<' || true
+            python3 .github/workflows/workflow_dependencies.py
         continue-on-error: true
         # Note that this is built so that sytnax faliure does not indicate a canceled workflow.
 
