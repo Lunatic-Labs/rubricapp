@@ -82,6 +82,7 @@ jobs:
         uses: docker/build-push-action@v5
         with: 
           context: .
+          file: Dockerfile.backend
           push: true
           tags: user/app:latest
           cache-from: type=registry,ref=user/app:latest
@@ -165,6 +166,7 @@ jobs:
         uses: docker/build-push-action@v5
         with: 
           context: .
+          file: Dockerfile.backend
           push: true
           tags: user/app:latest
           cache-from: type=registry,ref=user/app:latest
