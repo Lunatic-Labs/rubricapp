@@ -2,7 +2,7 @@
 # This is a file that is run by Github actions to ensure we are running
 # the correct dependencies.
 #
-# Date last modified: Tue Jun  3 12:30:35 PM CDT 2025
+# Date last modified: Tue Jun  3 03:00:58 PM CDT 2025
 #-----------------------------------------------------------------------
 
 import difflib
@@ -15,4 +15,9 @@ with open('temp_dependencies.txt', 'r') as current_file:
 diff = difflib.ndiff(req, current)
 delta = ''.join([x for x in diff if x.startswith('-')])
 
-print(delta)
+if delta:
+    print(delta)
+    print("currently:")
+    print(current)
+else:
+    print("Full match")
