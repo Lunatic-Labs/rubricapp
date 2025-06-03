@@ -2,9 +2,9 @@
 # This is a file that is run by Github actions to test certain aspects
 # of our code before we merge into master.
 #
-# Date last modified: Mon Jun  2 01:11:42 PM CDT 2025
+# Date last modified: Tue Jun  3 12:30:35 PM CDT 2025
 #-----------------------------------------------------------------------
-name: Continuous Integration for Rubric App
+name: Rubric App Continuous Integration
 
 # Specifies to run on PRs set to merge into master
 on:
@@ -23,6 +23,7 @@ jobs:
       # Fetch job to see runner info
       - name: Display system info
         run:  |
+          ls
           echo "CPU info:"
           lscpu
           echo "Memory usage:"
@@ -47,6 +48,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+          retention-days: 7
         
       - name: Install Node dependencies
         run:  |
@@ -85,6 +87,7 @@ jobs:
           key: ${{ runner.os }}-docker-${{ github.ref_name }}
           restore-keys: |
             ${{ runner.os }}-docker-
+          retention-days: 7
 
       - name: Build Docker Image with Cache
         uses: docker/build-push-action@v5
@@ -176,6 +179,7 @@ jobs:
           key: ${{ runner.os }}-docker-${{ github.ref_name }}
           restore-keys: |
             ${{ runner.os }}-docker-
+          retention-days: 7
 
       - name: Build Docker Image with Cache
         uses: docker/build-push-action@v5
@@ -202,6 +206,7 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
+          retention-days: 7
 
       - name: Install Node dependencies
         run: |

@@ -1,0 +1,40 @@
+name: Common Frontend Setup
+on:
+  workflow_call:
+
+jobs:
+  setup:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Display system info
+        run: |
+          echo "CPU info:"
+          lscpu
+          echo "Memory usage:"
+          free -h
+          echo "Disk usage:"
+          df -h
+
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: FrontEndReact/package.json
+
+      - name: Cache npm dependencies directly
+        uses: actions/cache@v3
+        with:
+          path: FrontEndReact/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+          retention-days: 7
+        
+      - name: Install Node dependencies
+        run: |
+          cd FrontEndReact
+          npm install
