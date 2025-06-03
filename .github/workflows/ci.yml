@@ -50,7 +50,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-          retention-days: 7
         
       - name: Install Node dependencies
         run:  |
@@ -93,7 +92,6 @@ jobs:
           key: ${{ runner.os }}-docker-${{ github.ref_name }}
           restore-keys: |
             ${{ runner.os }}-docker-
-          retention-days: 7
 
       # If cache is found, loads it for docker.
       - name: Build Docker Image with Cache
@@ -191,7 +189,6 @@ jobs:
           key: ${{ runner.os }}-docker-${{ github.ref_name }}
           restore-keys: |
             ${{ runner.os }}-docker-
-          retention-days: 7
 
       - name: Build Docker Image with Cache
         uses: docker/build-push-action@v5
@@ -220,7 +217,6 @@ jobs:
           key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
           restore-keys: |
             ${{ runner.os }}-node-
-          retention-days: 7
 
       - name: Install Node dependencies
         run: |
