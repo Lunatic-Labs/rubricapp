@@ -130,6 +130,7 @@ jobs:
             echo "Generating current dependencies..."
             docker exec rubricapp-backend-1 pip freeze  > temp_dependencies.txt
             echo "Checking for differing libs from the requirements.txt"
+            echo "NOTE: difflib is used to figure out dependencies. It does fail sometimes, so compare with the dump."
             python3 .github/workflows/workflow_dependencies.py
             echo "removing temp_dependencies.txt"
             rm -f temp_dependencies.txt
