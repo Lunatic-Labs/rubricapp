@@ -128,7 +128,7 @@ jobs:
             echo "Checking for broken dependencies..."
             pip check
             echo "Generating current dependencies..."
-            docker exec backend pip freeze  > temp_dependencies.txt
+            docker exec rubricapp-backend-1 pip freeze  > temp_dependencies.txt
             echo "Checking for differing libs from the requirements.txt"
             python3 .github/workflows/workflow_dependencies.py
             echo "removing temp_dependencies.txt"
