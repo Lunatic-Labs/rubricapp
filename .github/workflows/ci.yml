@@ -18,19 +18,9 @@ on:
 jobs:
   # lint job builds the frontend and runs ESLint.
   lint:
-    uses: ./.github/workflows/commonFrontend.yml
     runs-on: ubuntu-latest
     steps:
-      - name: Run ESLint
-        run:  |
-          cd FrontEndReact
-          npx eslint --max-warnings=0 .
-
-  backend:
-  # Builds the backend and validates that its running.
-    runs-on: ubuntu-latest
-    steps:
-      # Fetch job to see runner info
+      # Fetchs runner info to see what we are working with.
       - name: Display system info
         run:  |
           echo "CPU info:"
@@ -40,12 +30,62 @@ jobs:
           echo "Disk usage:"
           df -h
 
+      # Loads files for the runner.
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # Sets up node and runner cache.
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with: 
+          node-version: 20
+          cache: "npm"
+          cache-dependency-path: FrontEndReact/package.json
+
+      # Retrives/Setup frontend cache.
+      - name: Cache npm dependencies directly
+        uses: actions/cache@v3
+        with:
+          path: FrontEndReact/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+          retention-days: 7
+        
+      - name: Install Node dependencies
+        run:  |
+          cd FrontEndReact
+          npm install
+      
+      # Main part where frontend independent tests should be added.
+      - name: Run ESLint
+        run:  |
+          cd FrontEndReact
+          npx eslint --max-warnings=0 .
+
+  backend:
+  # Builds the backend and validates that its running and accepting connections.
+    runs-on: ubuntu-latest
+    steps:
+      # Fetchs runner info
+      - name: Display system info
+        run:  |
+          echo "CPU info:"
+          lscpu
+          echo "Memory usage:"
+          free -h
+          echo "Disk usage:"
+          df -h
+
+      # Loads files for runner.
       - name: Checkout
         uses: actions/checkout@v4
       
+      # Sets up the docker builder.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
 
+      # Retrives/Setup backend docker cache.
       - name: Restore Docker Cache
         uses: actions/cache@v3
         with:
@@ -55,6 +95,7 @@ jobs:
             ${{ runner.os }}-docker-
           retention-days: 7
 
+      # If cache is found, loads it for docker.
       - name: Build Docker Image with Cache
         uses: docker/build-push-action@v5
         with:
@@ -67,21 +108,23 @@ jobs:
       - name: Build backend
         run: docker compose build backend
       
+      # Main part where backtend independent tests should be added.
       - name: Validate backend image
         run:  docker images | grep backend || (echo "Error = Backend image not found" && exit 1)
-        # TODO: Run pytests here using docker compose run or something
       
-      # Note that any error will immediatly trigger the contianer to be shut down.
-      # Start backend and check its health.
       - name: Start backend
         run: docker compose up --no-build --detach backend
 
+      # TODO: Run pytests somewhere here in this section in the future.
+
+      # Ensuring that logs are always set up despite any potential startup errors.
       - name: Setup logs
         if: always()
         run:  |
             docker ps  # Check if container is running
             docker compose logs backend  # Check backend logs
 
+      # Prints out different libs that the runner is working without 
       - name: Dependency check
         run:  |
             echo "Checking for broken or missing dependencies..."
@@ -90,7 +133,9 @@ jobs:
             echo "[<] indicates a missing lib from the requirements.txt"
             diff <(awk -F '==' '{print $1}' BackEndFlask/requirements.txt | sort) <(pip freeze | awk -F '==' '{print $1}' | sort) | grep '^<' || true
         continue-on-error: true
+        # Note that this is built so that sytnax faliure does not indicate a canceled workflow.
 
+      # Retries to curl into the backend 3 times.
       - name: Backend health check
         run:  |
             sleep 7
@@ -122,7 +167,7 @@ jobs:
       - lint
       - backend
     steps:
-      # Fetch job to see runner info
+      # Fetchs runner info
       - name: Display system info
         run:  |
           echo "CPU info:"
@@ -132,6 +177,7 @@ jobs:
           echo "Disk usage:"
           df -h
 
+      # Same docker build and start up code as above.
       - name: Checkout code
         uses: actions/checkout@v4
 
@@ -162,9 +208,11 @@ jobs:
       - name: Start backend
         run: docker compose up --no-build --detach backend      
 
+      # Gives the backend time to get fully set up.
       - name: Pause
-        run: sleep 5
+        run: sleep 7
 
+      # Same frontend build/startup code as above.
       - name: Cache npm dependencies directly
         uses: actions/cache@v3
         with:
@@ -186,10 +234,8 @@ jobs:
 
       - name: Verify Node.js instalation
         run: node -v
-
-      - name: Pause
-        run: sleep 5
-
+  
+      # Main section where more testing can be added that requires the frontend and backend running.\
       - name: Run Jest tests
         run:  |
           cd FrontEndReact
