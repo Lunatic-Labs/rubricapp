@@ -428,7 +428,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 title={
                     <>
                         <p>
-                            Notifies all indivuals results are available.
+                            Notifies all individuals results are available.
                         </p>
                     </>
                 }>
