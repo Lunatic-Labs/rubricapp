@@ -18,14 +18,6 @@ from controller.security.CustomDecorators import (
     admin_check
 )
 
-def output(x, clear=False):
-    flag = 'w' if clear else 'a'
-    import threading
-    current_thread_id = threading.current_thread().ident
-    with open('ap.txt', flag) as out:
-        print(f"{current_thread_id}: {x}", file=out)
-
-
 @bp.route('/team_bulk_upload', methods=['POST'])
 @jwt_required()
 @bad_token_check()
@@ -45,9 +37,7 @@ def upload_team_csv():
 
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
-            user_id = int(request.args.get("user_id"))
-
-            output("hello")            
+            user_id = int(request.args.get("user_id"))          
 
             directory = os.path.join(os.getcwd(), "Test")
             os.makedirs(directory, exist_ok=True)
