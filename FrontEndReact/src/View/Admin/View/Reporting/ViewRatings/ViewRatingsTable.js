@@ -26,9 +26,10 @@ class ViewRatingsTable extends Component {
 
       rating["feedback_time_lag"] = currentRating["lag_time"];
 
-      if(currentRating["rating_observable_characteristics_suggestions_data"]) {
-        Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
-          return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
+      if (currentRating["rating_observable_characteristics_suggestions_data"]) {
+        Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).forEach((category) => {
+          const categoryData = currentRating["rating_observable_characteristics_suggestions_data"][category];
+          rating[category] = categoryData && categoryData["rating"] ? categoryData["rating"] : 'N/A';
         });
 
         return allRatings.push(rating);
@@ -53,6 +54,7 @@ class ViewRatingsTable extends Component {
         }
       },
     ]
+    console.log(this.props.ratings);
     // Add in the rest of the columns with the categories that correspond to the chosen rubric
     this.props.categories.map((i) => {
       columns.push({
