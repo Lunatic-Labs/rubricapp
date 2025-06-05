@@ -36,6 +36,10 @@ def error_param_type(param,list):
 def param_singleton(param, correct_param):
     if param is not correct_param:
         raise ValueError("Incorrect Params")
+    
+def param_singleton_not_none(param):
+    if param is None:
+        raise ValueError("Incorrect Params: Should not be None type.")
 
 # Below are parameter and other function checks for mocks.
 #---------------------------------------------------------   
@@ -67,6 +71,11 @@ def email_msg_init(email_policy):
 def sending_email_param_check(x=None, y= None):
     param_check(x, "me")
 
+def send_email_param(x, i, j, l):
+    param_check(l, 0)
+    param_singleton_not_none(x)
+    param_singleton_not_none(i)
+    param_singleton_not_none(j)
 # Below are now the mock object creators.
 #--------------------------------------------------------- 
 
@@ -106,7 +115,7 @@ def build_service_mock(return_mock=False) -> None | MagicMock:
     if return_mock: return mock_service
 
 def mock_email_send_objects()-> None:
-    """Replacing send_email() email objects and anything else that might not run locally."""
+    """Replacing EmailMessage objects and anything else that might not run locally."""
     from email.message import EmailMessage
     mock_email_msg = MagicMock()
     return_self = lambda x=None: (email_msg_init(x), mock_email_msg)[1]
@@ -117,6 +126,16 @@ def mock_email_send_objects()-> None:
     mock_email_msg.set_content = return_self
     sys.modules["email.message.EmailMessage"] = mock_email_msg
 
+def mock_our_functions()-> MagicMock:
+    """
+    Replaces our own built functions like send_email()
+    """
+    mock_send_email = MagicMock()
+    return_self = lambda x, i, j, k: (send_email_param(x, i, j, k),mock_send_email)[1] 
+    mock_send_email.send_email = return_self
+    globals()["send_email"] = mock_send_email
+    
+    return mock_send_email
 
 def create_mock_email_objs() -> bool:
     """Takes commonly used objects and replaces them with the Mocked objects and its respective functions"""

@@ -8,6 +8,7 @@
 #-------------------------------------------------------------------------
 
 from email_test_util import EmailConsts, MockUtil
+import pytest
 from unittest.mock import patch, mock_open
 from core import (
     config, oauth2_credentials, 
@@ -17,6 +18,7 @@ from core import (
 from email_mock import (
     create_mock_email_objs,
     build_service_mock,
+    mock_our_functions,
 )
 from Functions import conftest
 from controller.Routes.User_routes import(
@@ -28,6 +30,11 @@ from models.utility import(
     send_email_for_updated_email,send_bounced_email_notification,
     check_bounced_emails
 )
+
+# Apply the mock globally for all tests
+@pytest.fixture(autouse=True)
+def mock_email():
+    yield mock_our_functions()
 
 #------------------------------------------------------------------------------
 # These next test that certain evn vars are correct to ensure that everything
@@ -88,15 +95,15 @@ def test_008_attempt_to_start_email_service(mock_service) -> None:
 # These next few tests check that the general utitlity functions work as hoped.
 #------------------------------------------------------------------------------
 
-def test_008_test_email_send():
+def test_009_test_email_send():
     # The function calls will be labled 0-max to help identify which failed.
     index = 0
     try:
-        send_email(EmailConsts.FAKE_EMAIL, "TEST", "HELLO, TEST")
+        send_email(EmailConsts.FAKE_EMAIL, "TEST", "HELLO", 0)
         index += 1
-        
     except Exception as e:
         MockUtil.singleton_comparision(False, True, f"You should not get here: ERROR at func {index} due to {e}")
+    MockUtil.singleton_comparision(index, 1, "This should be a higher value to account for every message sent.")
 
 #------------------------------------------------------------------------------
 # These next few test use the more general routes to ensure that routes that
@@ -145,7 +152,7 @@ var body = JSON.stringify({
 """
 
 #------------------------------------------------------------------------------
-# EOF - YOu can add more tests here for thing that you are working on to
+# EOF - You can add more tests here for thing that you are working on to
 # ensure that you are working within the bounds of the email functionality.
 # NOTE: Name the tests {test_[0-9][0-9][0-9]_[a-z0-9*+]} to ensue that it runs
 # before other tests thanks to the naming convention.
