@@ -88,7 +88,7 @@ def load_demo_course():
         create_course({
             "course_number": course["course_number"],
             "course_name": course["course_name"],
-            "year": 2023,
+            "year": 2025,
             "term": course["term"],
             "active": True,
             "admin_id": 2,

@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
@@ -102,7 +103,6 @@ def get_all_completed_assessments():
                     'unit_of_assessment': task.unit_of_assessment,
                     'completed_assessments': completed_assessment_schemas.dump(completed_assessments) if completed_assessments else []
                 })
-            
             return create_good_response(result, 200, "completed_assessments")
 
         if request.args and request.args.get("course_id") and request.args.get("role_id"):
@@ -259,26 +259,23 @@ def update_completed_assessment():
 
 
 class CompletedAssessmentSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'completed_assessment_id',
-            'assessment_task_id',
-            'assessment_task_name',
-            'completed_by',
-            'team_id',
-            'team_name',
-            'user_id',
-            'first_name',
-            'last_name',
-            'initial_time',
-            'done',
-            'locked',
-            'last_update',
-            'rating_observable_characteristics_suggestions_data',
-            'course_id',
-            'rubric_id',
-            'completed_count'
-        )
+    completed_assessment_id = fields.Integer()
+    assessment_task_id      = fields.Integer()
+    assessment_task_name    = fields.String()
+    completed_by            = fields.Integer()
+    team_id                 = fields.Integer()
+    team_name               = fields.String()
+    user_id                 = fields.Integer()
+    first_name              = fields.String()
+    last_name               = fields.String()
+    initial_time            = fields.DateTime()
+    done                    = fields.Boolean()
+    locked                  = fields.Boolean()
+    last_update             = fields.DateTime()
+    rating_observable_characteristics_suggestions_data = fields.Dict()
+    course_id               = fields.Integer()
+    rubric_id               = fields.Integer()
+    completed_count         = fields.Integer()
 
 
 completed_assessment_schema = CompletedAssessmentSchema()

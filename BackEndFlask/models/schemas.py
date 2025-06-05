@@ -37,7 +37,7 @@ class User(db.Model):
     password = db.Column(db.Text, nullable=False)
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
-    owner_id = db.Column(db.Integer, ForeignKey(user_id), nullable=True)
+    owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=True)
     has_set_password = db.Column(db.Boolean, nullable=False)
     reset_code = db.Column(db.Text, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False)

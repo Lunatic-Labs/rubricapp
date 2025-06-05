@@ -1,4 +1,5 @@
 from controller  import bp
+from marshmallow import fields
 from controller.Route_response import *
 from models.role import get_roles, get_role 
 from flask_jwt_extended import jwt_required
@@ -46,11 +47,8 @@ def post_details(role_id):  # Fix: should not have the role_id
 
 
 class RoleSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'role_id',
-            'role_name'
-        )
+    role_id   = fields.Integer()
+    role_name = fields.String()
 
 role_schema = RoleSchema()
 roles_schema = RoleSchema(many=True)

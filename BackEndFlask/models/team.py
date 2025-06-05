@@ -125,7 +125,7 @@ def load_demo_team():
             "team_name": team["team_name"],
             "observer_id": team["observer_id"],
             "course_id": team["course_id"],
-            "date_created": "01/01/2023",
+            "date_created": "08/07/2025",
             "active_until": None
         })
 

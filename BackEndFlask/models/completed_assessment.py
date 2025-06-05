@@ -137,8 +137,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 1,
             "done": True,
             "locked": False,
-            "initial_time": "2024-01-28T21:08:36.376000",
-            "last_update": "2024-02-01T21:01:33.458000",
+            "initial_time": "2027-04-25T08:30:00",
+            "last_update": "2027-04-25T09:30:00",
             "rating_observable_characteristics_suggestions_data": {
                 "Analyzing": {
                     "comments": "ASDFASDFASDFASDFASDF",
@@ -241,8 +241,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 2,
             "done": True,
             "locked": False,
-            "initial_time": "2024-01-28T21:08:55.755000",
-            "last_update": "2024-02-01T21:02:45.652000",
+            "initial_time": "2025-12-25T13:00:00",
+            "last_update": "2025-12-25T14:00:00",
             "rating_observable_characteristics_suggestions_data": {
                 "Audience": {
                     "comments": "hasdfasdf",
@@ -360,8 +360,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 5,
             "done": True,
             "locked": False,
-            "initial_time": "2024-01-28T21:09:24.685000",
-            "last_update": "2024-02-01T21:03:25.208000",
+            "initial_time": "2025-12-25T13:20:00",
+            "last_update": "2025-12-25T14:20:00",
             "rating_observable_characteristics_suggestions_data": {
                 "Coordinating": {
                     "comments": "",
@@ -434,8 +434,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 8,
             "done": True,
             "locked": False,
-            "initial_time": "2024-01-28T21:22:03.218000",
-            "last_update": "2024-02-01T21:04:16.909000",
+            "initial_time": "2026-01-30T21:00:00",
+            "last_update": "2026-01-30T22:00:00",
             "rating_observable_characteristics_suggestions_data": {
                 "Analyzing": {
                     "comments": "",
@@ -538,8 +538,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 9,
             "done": True,
             "locked": False,
-            "initial_time": "2024-01-28T21:26:21.901000",
-            "last_update": "2024-02-01T21:05:39.666000",
+            "initial_time": "2026-01-28T21:25:20.216000",
+            "last_update": "2026-01-28T22:25:20.216000",
             "rating_observable_characteristics_suggestions_data": {
                 "Audience": {
                     "comments": "12341234123412341234",
@@ -657,8 +657,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 10,
             "done": True,
             "locked": False,
-            "initial_time": "2024-01-30T15:11:00.760000",
-            "last_update": "2024-02-01T21:06:49.714000",
+            "initial_time": "2026-01-30T15:10:18.708000",
+            "last_update": "2026-01-30T16:10:18.708000",
             "rating_observable_characteristics_suggestions_data": {
                 "Audience": {
                     "comments": "",
@@ -776,8 +776,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 11,
             "done": True,
             "locked": False,
-            "initial_time": "2024-01-30T15:12:56.525000",
-            "last_update": "2024-02-05T16:26:42.377000",
+            "initial_time": "2026-01-30T15:12:16.247000",
+            "last_update": "2026-01-30T16:12:16.247000",
             "rating_observable_characteristics_suggestions_data": {
                 "Building Community": {
                     "comments": "Abby",
@@ -850,8 +850,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 12,
             "done": True,
             "locked": False,
-            "initial_time": "2024-02-05T17:04:36.368000",
-            "last_update": "2024-02-05T17:04:38.112000",
+            "initial_time": "2026-02-05T17:01:10.164000",
+            "last_update": "2026-02-05T17:02:10.164000",
             "rating_observable_characteristics_suggestions_data": {
                 "Analyzing the situation": {
                     "comments": "",
@@ -939,8 +939,8 @@ def load_demo_completed_assessment():
             "assessment_task_id": 13,
             "done": True,
             "locked": False,
-            "initial_time": "2024-02-05T17:07:57.768000",
-            "last_update": "2024-02-05T17:08:00.783000",
+            "initial_time": "2026-02-05T17:06:49.746000",
+            "last_update": "2026-02-05T18:06:49.746000",
             "rating_observable_characteristics_suggestions_data": {
                 "Analyzing the situation": {
                     "comments": "",

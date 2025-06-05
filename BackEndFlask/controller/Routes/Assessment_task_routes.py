@@ -1,5 +1,6 @@
 from flask import request
 from flask_sqlalchemy import *
+from marshmallow import fields
 from controller import bp
 from models.assessment_task import *
 from models.course import get_course
@@ -340,26 +341,23 @@ def copy_course_assessments():
 
 
 class AssessmentTaskSchema(ma.Schema):
-    class Meta:
-        fields = (
-            "assessment_task_id",
-            "assessment_task_name",
-            "course_id",
-            "rubric_id",
-            "role_id",
-            "due_date",
-            "time_zone",
-            "show_suggestions",
-            "show_ratings",
-            "unit_of_assessment",
-            "create_team_password",
-            "comment",
-            "number_of_teams",
-            "max_team_size",
-            "notification_sent",
-            "locked",
-            "published",
-        )
+    assessment_task_id   = fields.Integer()
+    assessment_task_name = fields.String()
+    course_id            = fields.Integer()
+    rubric_id            = fields.Integer()
+    role_id              = fields.Integer()
+    due_date             = fields.DateTime()
+    time_zone            = fields.String()
+    show_suggestions     = fields.Boolean()
+    show_ratings         = fields.Boolean()
+    unit_of_assessment   = fields.Boolean()
+    create_team_password = fields.String()
+    comment              = fields.String()
+    number_of_teams      = fields.Integer()
+    max_team_size        = fields.Integer()
+    notification_sent    = fields.DateTime()
+    locked               = fields.Boolean()
+    published            = fields.Boolean()
 
 
 assessment_task_schema = AssessmentTaskSchema()
