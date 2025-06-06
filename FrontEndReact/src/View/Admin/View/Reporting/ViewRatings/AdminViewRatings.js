@@ -47,6 +47,7 @@ class AdminViewRatings extends Component {
           `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
           "ratings", this
         );  
+        console.log(chosenCourse);
       }
 
       // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT

@@ -12,6 +12,12 @@ from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
 )
 
+import datetime
+
+def output(x):
+	with open("ap.txt", 'a') as out:
+		print(x, file=out)
+
 @bp.route("/rating", methods=["GET"])
 @jwt_required()
 @bad_token_check()
@@ -25,7 +31,7 @@ def get_ratings():
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
         team_id = request.args.get("team_id")  
-
+        output(f"{datetime.datetime.now()} 1 - Team ID: {team_id}")
         if team_id: 
             ratings = get_team_ratings(assessment_task_id)
             if ratings is None:
@@ -43,6 +49,7 @@ def get_ratings():
                     "rating_observable_characteristics_suggestions_data": team[2],
                     "lag_time": str(lag_time) if lag_time else None,
                 })
+            output(f"{datetime.datetime.now()} 2 - Team ID: {team_id}")
 
         else:
             ratings = get_individual_ratings(assessment_task_id)
@@ -61,7 +68,7 @@ def get_ratings():
                     "rating_observable_characteristics_suggestions_data": rating[2],
                     "lag_time": str(lag_time) if lag_time else None,
                 })
-
+            output(f"{datetime.datetime.now()} 3 - Team ID: {team_id}")
         return create_good_response(result, 200, "ratings")
 
     except Exception as e:
