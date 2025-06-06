@@ -58,6 +58,7 @@ class AdminViewRatings extends Component {
           `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}&team_id=true`, // does not assign a value to team_id for Rating_routes. this results in lines 35-54 being ignored
           "ratings", this
         );  
+        console.log(chosenCourse);
       }
 
       // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
