@@ -133,7 +133,7 @@ def mock_our_functions()-> MagicMock:
     mock_send_email = MagicMock()
     return_self = lambda x, i, j, k: (send_email_param(x, i, j, k),mock_send_email)[1] 
     mock_send_email.send_email = return_self
-    globals()["send_email"] = mock_send_email
+    sys.modules["models.utility"].send_email = mock_send_email
     
     return mock_send_email
 

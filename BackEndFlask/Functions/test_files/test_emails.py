@@ -9,7 +9,8 @@
 
 from email_test_util import EmailConsts, MockUtil
 import pytest
-from unittest.mock import patch, mock_open
+import sys
+from unittest.mock import patch, mock_open, MagicMock
 from core import (
     config, oauth2_credentials, 
     oauth2_service, oauth2_token_fp, 
@@ -32,9 +33,11 @@ from models.utility import(
 )
 
 # Apply the mock globally for all tests
-@pytest.fixture(autouse=True)
-def mock_email():
-    yield mock_our_functions()
+@pytest.fixture(scope="session", autouse=True)
+def send_email():
+    mocked_send_email = mock_our_functions()
+    with patch("models.utility.send_email", mocked_send_email):
+        yield mocked_send_email
 
 #------------------------------------------------------------------------------
 # These next test that certain evn vars are correct to ensure that everything
@@ -95,11 +98,11 @@ def test_008_attempt_to_start_email_service(mock_service) -> None:
 # These next few tests check that the general utitlity functions work as hoped.
 #------------------------------------------------------------------------------
 
-def test_009_test_email_send():
+def test_009_test_email_send(send_email):
     # The function calls will be labled 0-max to help identify which failed.
     index = 0
     try:
-        send_email(EmailConsts.FAKE_EMAIL, "TEST", "HELLO", 0)
+        send_email(EmailConsts.FAKE_EMAIL, "Greetings", "Hello!", 0)
         index += 1
     except Exception as e:
         MockUtil.singleton_comparision(False, True, f"You should not get here: ERROR at func {index} due to {e}")
