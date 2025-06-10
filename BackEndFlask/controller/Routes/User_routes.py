@@ -51,7 +51,7 @@ from models.user import(
     replace_user,
     make_admin,
     unmake_admin,
-    delete_user_by_user_id,
+    delete_user,
     #get_user_by_email,
 )
 
@@ -335,36 +335,26 @@ def update_user():
 @bad_token_check()
 @AuthCheck()
 @admin_check()
-def delete_user():
+def delete_selected_user():
     try:
         if request.args and request.args.get("uid"):
-            user_id = request.args.get("uid")
-            #print(user_id, flush=True)
-            delete_user_by_user_id(user_id)
+            user_id = int(request.args.get("uid"))
+            user = get_user(user_id)
+            if not user:
+                return create_bad_response("User does not exist", "users", 400)
+            
+            associated_task = completed_assessment_team_or_user_exists(team_id=None, user_id=user_id)
+            if associated_task and len(associated_task) > 0:
+                return create_bad_response("Cannot delete user with associated tasks", "users", 400)
+            
+            try:
+                delete_user(user_id)
+                return create_good_response([], 200, "users")
+            except ValueError as ve:
+                return create_bad_response(str(ve), "users", 400)
 
-            return create_good_response([], 200, "")
-    except Exception:
-        #return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
-        try:
-            if request.args and request.args.get("uid"):
-                user_id = int(request.args.get("uid"))
-
-                if request.args.get("role_id") and request.args.get("role_id") == "5":
-                    associated_tasks = completed_assessment_team_or_user_exists(team_id=None, user_id=user_id)
-
-                    if associated_tasks is None or len(associated_tasks) == 0:
-                                            # No tasks associated, safe to delete
-                        delete_user_by_user_id(user_id)
-                        return create_good_response([], 200, "users")
-                    else:
-                                            # User has associated tasks, return error
-                        return create_bad_response("Cannot delete user. There are assessment tasks associated with this user.", "users", 400)
-                else:
-                                        # Standard deletion for users without role_id=5 in request params
-                    delete_user_by_user_id(user_id)
-                    return create_good_response([], 200, "users")
-        except Exception as e1:
-            return create_bad_response(f"An error occurred deleting a user: {e1}", "users", 400)
+    except Exception as e:
+        return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
 class UserSchema(ma.Schema):
     user_id     = fields.Integer()

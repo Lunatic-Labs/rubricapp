@@ -10,14 +10,12 @@ import { genericResourceDELETE } from "../../../../utility.js";
 class ViewUsers extends Component {
   async deleteUser(userId) {
     try {
-      const result = await genericResourceDELETE(`/user?uid=${userId}&role_id=5`, this, {
+      const result = await genericResourceDELETE(`/user?uid=${userId}`, this, {
         dest: "users",
       });
-      console.log(result);
       if (result.errorMessage) {
         throw new Error(result.errorMessage);
       }
-      console.log(result.errorMessage)
       //window.alert("User can be deleted")
       this.props.onSuccess("User deleted successfully");
       setTimeout(() => {

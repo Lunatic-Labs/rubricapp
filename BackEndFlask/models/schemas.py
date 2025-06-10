@@ -42,6 +42,7 @@ class User(db.Model):
     reset_code = db.Column(db.Text, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False)
     last_update = db.Column(DateTime(timezone=True), nullable=True)
+    team = db.relationship('TeamUser', backref='user', cascade='all, delete')
 
 class Rubric(db.Model):
     __tablename__ = "Rubric"

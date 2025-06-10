@@ -1,12 +1,12 @@
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from models.schemas import User, UserCourse
-from sqlalchemy import (
-    and_
-)
+from models.schemas import User, UserCourse, CompletedAssessment
+from sqlalchemy import and_, or_
+from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
+from models.completed_assessment import completed_assessment_team_or_user_exists
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails
 
@@ -376,20 +376,29 @@ def replace_user(user_data, user_id):
 
 @error_log
 def delete_user(user_id):
-    User.query.filter_by(user_id=user_id).delete()
+    try:
+        assessment_total = db.session.query(CompletedAssessment).filter(
+            or_(
+                CompletedAssessment.completed_by == user_id,
+                CompletedAssessment.user_id == user_id
+            )
+        ).count()
 
-    db.session.commit()
-
-    return True
-
-
-@error_log
-def delete_user_by_user_id(user_id: int) -> bool:
-    user = User.query.filter_by(user_id=user_id).first()
-    
-    db.session.delete(user)
-    db.session.commit()
-
-    return True
-
-
+        if assessment_total > 0:
+            raise ValueError("Cannot delete user with associated tasks")
+        
+        user = User.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return True
+        else:
+            raise ValueError("User does not exist")
+    except IntegrityError as e:
+        db.session.rollback()
+        if "foreign key constraint" in str(e).lower():
+            raise ValueError("Cannot delete user with associated tasks")
+        raise
+    except Exception as e:
+        db.session.rollback()
+        raise
