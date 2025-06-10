@@ -58,10 +58,10 @@ def from_authorized_user_file_mock(token_fp, scopes) -> None:
     param_check(token_fp, EmailConsts.CORRECT_PATH_TO_TOKEN)
     param_check(scopes, EmailConsts.CORRECT_SCOPES)
 
-def credentials_class_refresh_method_mock(object) -> None:
-    timeout_param(object)
-    flat_error(object)
-    param_type_is_only_allowed_types(object, [str, int, list])
+def credentials_class_refresh_method_mock(param) -> None:
+    timeout_param(param)
+    flat_error(param)
+    param_type_is_only_allowed_types(param, [object])
 
 def build_param_mock(extension, ver, creds):
     param_check(extension, "email")

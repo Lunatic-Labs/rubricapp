@@ -122,9 +122,27 @@ def test_011_test_email_send(send_email):
         MockUtil.singleton_comparision(False, True, f"You should not get here: ERROR at func {index} due to {e}")
     MockUtil.singleton_comparision(index, 1, "This should be a higher value to account for every message sent.")
     MockUtil.equal(send_email.call_count, 1, "send_file should have been called once.")
+    send_email.reset_mock()
 
-#def test_012_test_send_reset_code():
-#    send_reset_code_email(EmailConsts.FAKE_EMAIL, EmailConsts.FAKED_RESET_CODE)
+def test_012_test_send_reset_code(send_email):
+    send_reset_code_email(EmailConsts.FAKE_EMAIL, EmailConsts.FAKED_RESET_CODE)
+    args = send_email.call_args[0]
+    MockUtil.equal(args[0], EmailConsts.FAKE_EMAIL, "Emails are not identical.")
+    MockUtil.equal(send_email.call_count, 1, "Send email should be called only once.")
+    send_email.reset_mock()
+
+def test_013_test_email_students_feedback_is_ready(send_email):
+    class student:
+        def __init__(self, first_name: str, last_name: str, email:str):
+            self.first_name = first_name
+            self.last_name = last_name
+            self.email = email
+    students = [student(EmailConsts.FIRST_NAME, EmailConsts.LAST_NAME, EmailConsts.FAKE_EMAIL)]
+    email_students_feedback_is_ready_to_view(students, "Fake ready to view")
+    args = send_email.call_args[0]
+    MockUtil.equal(args[0], EmailConsts.FAKE_EMAIL, "Emails are not identical.")
+    MockUtil.equal(1, send_email.call_count, "Send Email should have been called once.")
+    send_email.reset_mock()
 
 #------------------------------------------------------------------------------
 # These next few test use the more general routes to ensure that routes that

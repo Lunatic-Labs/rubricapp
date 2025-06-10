@@ -15,7 +15,8 @@ class EmailConsts:
     FAKE_STUDENT = "KUNG FU PANDA"
     FAKE_EMAIL = "FAKEhkjhkjhkjhkjhkh@gmail.com"
     FAKED_RESET_CODE = "789"
-
+    FIRST_NAME = "TESTER"
+    LAST_NAME = "YEP"
 
 class MockUtil:
     """This class just formats information passed to it for debugging purposes."""
