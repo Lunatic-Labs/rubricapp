@@ -17,6 +17,9 @@ class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
 
+        console.log('VAT:')
+        console.log(this);  
+        
         this.state = {
             isLoaded: null,
             errorMessage: null,
