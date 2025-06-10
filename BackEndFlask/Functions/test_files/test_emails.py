@@ -17,9 +17,9 @@ from core import (
     oauth2_scopes, get_oauth2_credentials,
 )
 from email_mock import (
-    create_mock_email_objs,
+    create_send_email_mock,
+    create_google_mock_email_objs,
     build_service_mock,
-    mock_our_functions,
 )
 from Functions import conftest
 from controller.Routes.User_routes import(
@@ -32,15 +32,18 @@ from models.utility import(
     check_bounced_emails
 )
 
-# Apply the mock globally for all tests
+#------------------------------------------------------------------------------
+# These fixtures will override the emailing features and functions for the
+# current running session.
+#------------------------------------------------------------------------------
 @pytest.fixture(scope="session", autouse=True)
 def send_email():
-    mocked_send_email = mock_our_functions()
+    mocked_send_email = create_send_email_mock()
     with patch("models.utility.send_email", mocked_send_email):
         yield mocked_send_email
 
 #------------------------------------------------------------------------------
-# These next test that certain evn vars are correct to ensure that everything
+# These next test that certain env vars are correct to ensure that everything
 # works in prod. They also repalce the google objects/functions along the way.
 #------------------------------------------------------------------------------
 
@@ -61,19 +64,29 @@ def test_004_scopes_are_correct() -> None:
 def test_005_token_file_path() -> None:
     MockUtil.equal(oauth2_token_fp, EmailConsts.CORRECT_PATH_TO_TOKEN, "Ensure both paths are correctly typed.")
 
-def test_006_create_mock_objects() -> None:
-    success = create_mock_email_objs()
+def test_007_check_fixtures_are_running(send_email) -> None:
+    success = isinstance(send_email, MagicMock)
     MockUtil.singleton_comparision(success, True, "Must have objects running for everything else. If not possible then comment out the config changes in the setupEnv.py for testing.")
 
+#------------------------------------------------------------------------------
+# These next tests override our testing credentials and email object provided
+# by Google.
+#------------------------------------------------------------------------------
+
+# NOTE: This overrides the google objects that run once in init.
+def test_008_create_google_mock_objects() -> None:
+    success = create_google_mock_email_objs()
+    MockUtil.singleton_comparision(success, True, "Must have objects running for everything else. If not possible then comment out the config changes in the setupEnv.py for testing.")
+    
 # Forcing moduels to read the mock objects for only this tests scope.
-@patch('builtins.open', new_callable=mock_open)
+@patch("builtins.open", new_callable=mock_open)
 @patch('os.path.exists', return_value=True)
-def test_007_attempt_to_fetch_creds(mock_exists, mock_open_func) -> None:
+def test_009_attempt_to_fetch_creds(mock_exists, mock_open_func) -> None:
     creds = None
-    try:    
+    try:   
         creds = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
         exists_called = mock_exists.call_count == 1
-        open_called = mock_open_func.call_count == 1
+        open_called = mock_open_func.call_count == 1 
         MockUtil.singleton_comparision(exists_called, True, f"Exists should be called once; was called {mock_exists.call_count}")
         MockUtil.singleton_comparision(open_called, True, f"open should be called once; called {mock_open_func.call_count}")
     except Exception as e:
@@ -83,7 +96,7 @@ def test_007_attempt_to_fetch_creds(mock_exists, mock_open_func) -> None:
 
 # Patching here is need to force the function to look elsewhere.
 @patch('googleapiclient.discovery.build', new_callable=build_service_mock(True))
-def test_008_attempt_to_start_email_service(mock_service) -> None:
+def test_010_attempt_to_start_email_service(mock_service) -> None:
     oauth2_service = None
     try:
         from googleapiclient.discovery import build
@@ -96,9 +109,10 @@ def test_008_attempt_to_start_email_service(mock_service) -> None:
 
 #------------------------------------------------------------------------------
 # These next few tests check that the general utitlity functions work as hoped.
+# The past service objects and the functions that built them should not see 
+# use in any other test.
 #------------------------------------------------------------------------------
-
-def test_009_test_email_send(send_email):
+def test_011_test_email_send(send_email):
     # The function calls will be labled 0-max to help identify which failed.
     index = 0
     try:
@@ -107,6 +121,10 @@ def test_009_test_email_send(send_email):
     except Exception as e:
         MockUtil.singleton_comparision(False, True, f"You should not get here: ERROR at func {index} due to {e}")
     MockUtil.singleton_comparision(index, 1, "This should be a higher value to account for every message sent.")
+    MockUtil.equal(send_email.call_count, 1, "send_file should have been called once.")
+
+#def test_012_test_send_reset_code():
+#    send_reset_code_email(EmailConsts.FAKE_EMAIL, EmailConsts.FAKED_RESET_CODE)
 
 #------------------------------------------------------------------------------
 # These next few test use the more general routes to ensure that routes that

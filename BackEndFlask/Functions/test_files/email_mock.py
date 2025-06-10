@@ -23,23 +23,26 @@ def timeout_param(param):
     if param == "TIMEOUT":
         time.sleep(5)
         raise TimeoutError("Timed Out")
-def param_check(param, correct_param):
-    if param != correct_param:
+def param_check(param, expected_param):
+    if param != expected_param:
         raise ValueError("Incorrect Params")
 def flat_error(param):
     if param == "ERROR":
         raise Exception("Forced exception")
-def error_param_type(param,list):
-    for i in list:
-        if isinstance(param,i):
-            raise ValueError("Invalid type recived")
-def param_singleton(param, correct_param):
-    if param is not correct_param:
-        raise ValueError("Incorrect Params")
-    
-def param_singleton_not_none(param):
-    if param is None:
-        raise ValueError("Incorrect Params: Should not be None type.")
+#def error_param_type(param, disallowed_types:list):
+#    for disallowed in disallowed_types:
+#        if isinstance(param,disallowed):
+#            raise ValueError("Invalid type recived")
+def param_type_is_only_allowed_types(param, allowed_types:list):
+    if not isinstance(param, tuple(allowed_types)):
+        raise ValueError("Paramater is not an allowed type.")
+def param_singleton(param, expected_param):
+    if param is not expected_param:
+        raise ValueError("Incorrect Params")  
+def param_is_email_simple(param:str):
+    if '@' not in param:
+        raise ValueError("Expected an email but got something else.")
+
 
 # Below are parameter and other function checks for mocks.
 #---------------------------------------------------------   
@@ -58,7 +61,7 @@ def from_authorized_user_file_mock(token_fp, scopes) -> None:
 def credentials_class_refresh_method_mock(object) -> None:
     timeout_param(object)
     flat_error(object)
-    error_param_type(object, [str, int, list])
+    param_type_is_only_allowed_types(object, [str, int, list])
 
 def build_param_mock(extension, ver, creds):
     param_check(extension, "email")
@@ -73,9 +76,11 @@ def sending_email_param_check(x=None, y= None):
 
 def send_email_param(x, i, j, l):
     param_check(l, 0)
-    param_singleton_not_none(x)
-    param_singleton_not_none(i)
-    param_singleton_not_none(j)
+    allowed = [str]
+    param_type_is_only_allowed_types(x, allowed)
+    param_type_is_only_allowed_types(i, allowed)
+    param_type_is_only_allowed_types(j, allowed)
+    param_is_email_simple(x)
 # Below are now the mock object creators.
 #--------------------------------------------------------- 
 
@@ -126,9 +131,10 @@ def mock_email_send_objects()-> None:
     mock_email_msg.set_content = return_self
     sys.modules["email.message.EmailMessage"] = mock_email_msg
 
-def mock_our_functions()-> MagicMock:
+def create_send_email_mock()-> MagicMock:
     """
-    Replaces our own built functions like send_email()
+    Descripition:
+        Replaces our own built function send_email()
     """
     mock_send_email = MagicMock()
     return_self = lambda x, i, j, k: (send_email_param(x, i, j, k),mock_send_email)[1] 
@@ -137,7 +143,7 @@ def mock_our_functions()-> MagicMock:
     
     return mock_send_email
 
-def create_mock_email_objs() -> bool:
+def create_google_mock_email_objs() -> bool:
     """Takes commonly used objects and replaces them with the Mocked objects and its respective functions"""
     try:
         credentials_mock()

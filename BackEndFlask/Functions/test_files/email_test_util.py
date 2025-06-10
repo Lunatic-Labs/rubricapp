@@ -14,6 +14,7 @@ class EmailConsts:
     MOCKED_REFRESH = "MOCKED REFRESH"
     FAKE_STUDENT = "KUNG FU PANDA"
     FAKE_EMAIL = "FAKEhkjhkjhkjhkjhkh@gmail.com"
+    FAKED_RESET_CODE = "789"
 
 
 class MockUtil:
