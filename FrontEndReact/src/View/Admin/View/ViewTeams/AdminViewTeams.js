@@ -21,6 +21,7 @@ class AdminViewTeams extends Component {
       successMessage: null,
       filtered: false,
     };
+    console.log(this)
   }
 
 
