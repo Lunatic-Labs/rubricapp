@@ -30,9 +30,11 @@ def get_student_individual_ratings():
     """
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        team_id = request.args.get("team_id")  
+        team_id = request.args.get("team_id") # what is team_id supposed to be? the actual team_id for the requested teams or a checker to see if a team exists or not.
+        
         output(f"{datetime.datetime.now()} 1 - Team ID: {team_id}")
         if team_id: 
+            output(f"{datetime.datetime.now()} 2 - Team ID: {team_id}")
             ratings = get_team_ratings(assessment_task_id)
             if ratings is None:
                 return create_good_response([], 200, "ratings")
@@ -49,7 +51,7 @@ def get_student_individual_ratings():
                     "rating_observable_characteristics_suggestions_data": team[2],
                     "lag_time": str(lag_time) if lag_time else None,
                 })
-            output(f"{datetime.datetime.now()} 2 - Team ID: {team_id}")
+                output(f"Ratings: {ratings}")
 
         else:
             ratings = get_individual_ratings(assessment_task_id)
@@ -68,6 +70,7 @@ def get_student_individual_ratings():
                     "rating_observable_characteristics_suggestions_data": rating[2],
                     "lag_time": str(lag_time) if lag_time else None,
                 })
+            output(f"Ratings: {ratings}")
             output(f"{datetime.datetime.now()} 3 - Team ID: {team_id}")
         return create_good_response(result, 200, "ratings")
 
