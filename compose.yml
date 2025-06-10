@@ -20,6 +20,7 @@ services:
       - app-network
     environment:
       - REDIS_HOST=redis
+      - REDIS_LIMITER=redis-limiter
       - FLASK_DEBUG=1
       - MYSQL_HOST=mysql
       - MYSQL_USER=skillbuilder
@@ -30,6 +31,14 @@ services:
     image: redis:7.2.4
     ports: [] # Disable exposed port so that Redis can run inside of the container and not be exposed to host machine.
     #- "127.0.0.1:6379:6379" # Remove [] next to ports and uncomemnt this line to expose redis to the system again
+    networks:
+      - app-network
+
+  # This instance is utilized by flask-limiter to make persistent request storage per documentation recommendation for in production use.
+  redis-limiter:
+    image: redis:7.2.4
+    ports: []
+    command: ["redis-server", "--port", "6380"]  # Override default port
     networks:
       - app-network
 
