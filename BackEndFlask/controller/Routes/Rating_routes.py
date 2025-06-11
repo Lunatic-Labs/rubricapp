@@ -70,6 +70,7 @@ def get_ratings():
                     "rating_observable_characteristics_suggestions_data": rating[2],
                     "lag_time": str(lag_time) if lag_time else None,
                 })
+
             output(f"Ratings: {ratings}")
             output(f"{datetime.datetime.now()} 3 - Team ID: {team_id}")
         return create_good_response(result, 200, "ratings")
