@@ -37,7 +37,8 @@ services:
   # This instance is utilized by flask-limiter to make persistent request storage per documentation recommendation for in production use.
   redis-limiter:
     image: redis:7.2.4
-    ports: []
+    ports:
+      - "6380:6380"
     command: ["redis-server", "--port", "6380"]  # Override default port
     networks:
       - app-network

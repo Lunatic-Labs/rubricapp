@@ -131,7 +131,7 @@ redis_limiter = os.environ.get('REDIS_LIMITER', 'localhost')
 
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 
-redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
+redis_limiter_con = redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
 
 # Settting up the request rater limiter
 limiter = Limiter(
