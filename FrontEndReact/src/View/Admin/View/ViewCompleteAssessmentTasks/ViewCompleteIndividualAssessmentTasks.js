@@ -335,7 +335,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       },
       {
         name: "Student/Team Id",
-        label: "Message",
+        label: "Notify",
         options: {
           filter: false,
           sort: false,
@@ -347,14 +347,25 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
             if (completedAssessmentId !== null) {
               return (
-                <CustomButton
-                onClick={() => this.handleDialog(true, completedAssessmentId)}
-                label="Message"
-                align="center"
-                isOutlined={true}
-                disabled={notificationSent}
-                aria-label="Send individual messages"
-                />
+                <Tooltip
+                    title={
+                        <>
+                            <p>
+                                Notifies one individual.
+                            </p>
+                        </>
+                    }>
+                    <span>
+                        <CustomButton
+                        onClick={() => this.handleDialog(true, completedAssessmentId)}
+                        label="Notify"
+                        align="center"
+                        isOutlined={true}
+                        disabled={notificationSent}
+                        aria-label="Send individual messages"
+                        />
+                    </span>
+                </Tooltip>
               )
             }else{
               return(
@@ -413,14 +424,24 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             >
                 <LockIcon />
             </IconButton>
-
-            <CustomButton
-              label="Send Notification"
-              onClick={() => this.handleDialog(false)}
-              isOutlined={false}
-              disabled={notificationSent}
-              aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
-            />
+            <Tooltip
+                title={
+                    <>
+                        <p>
+                            Notifies all individuals results are available.
+                        </p>
+                    </>
+                }>
+                <span>
+                    <CustomButton
+                    label="Send Notification"
+                    onClick={() => this.handleDialog(false)}
+                    isOutlined={false}
+                    disabled={notificationSent}
+                    aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
+                    />
+                </span>
+            </Tooltip>
           </Box>
         </Box>
 
