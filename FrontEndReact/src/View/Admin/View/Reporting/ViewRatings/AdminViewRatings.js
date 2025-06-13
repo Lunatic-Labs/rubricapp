@@ -6,7 +6,7 @@ import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
 import { Box, Button, Tooltip } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
-
+import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 
 class AdminViewRatings extends Component {
@@ -25,7 +25,6 @@ class AdminViewRatings extends Component {
      * @property {object} downloadedAssessment: Set to trigger a browser download. 
      * @property {number} lastSeenCsvType: Int representing the clicked button.
      */
-
     this.state = {
         errorMessage: null,
         isLoaded: null,
@@ -36,17 +35,25 @@ class AdminViewRatings extends Component {
         exportButtonId: {},
         downloadedAssessment: null,
         lastSeenCsvType:null,
-    }
+    } 
 
     this.fetchData = () => {
       var chosenCourse = this.props.navbar.state.chosenCourse;
 
       if(this.props.chosenAssessmentId !== "") {
         // Fetch student ratings for the chosen assessment task
-        genericResourceGET(
-          `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`,
-          "ratings", this
-        );  
+        
+        var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
+        const url = `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`;
+        const urlFinal = assessmentIsTeam[this.props.chosenAssessmentId] ? `${url}&team_id=true` : url;
+        
+        genericResourceGET(urlFinal, "ratings", this);
+        
+        // plan to check for team: set up another genericResoruceGet() to retrieve the team_id for the chosenAssessment maybe?
+        // genericResourceGET(
+        //   `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, // does not assign a value to team_id for Rating_routes. this results in lines 35-54 being ignored
+        //   "ratings", this
+        // ); 
       }
 
       // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
@@ -73,11 +80,13 @@ class AdminViewRatings extends Component {
 
   componentDidMount() {
     this.fetchData();
+    console.log("Did mount:",this.state.ratings);
   }
 
   componentDidUpdate() {
     if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
         this.fetchData();
+      console.log("Did update:",this.state);
     }
 
     /**
@@ -233,6 +242,8 @@ class AdminViewRatings extends Component {
           
           <Box>
             <ViewRatingsTable
+              assessmentTasks={this.props.assessmentTasks}
+              chosenAssessmentId={this.props.chosenAssessmentId}
               ratings={ratings ? ratings : []}
               categories={categories}
             />

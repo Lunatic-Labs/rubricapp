@@ -38,6 +38,7 @@ def create_new_feedback():
 class StudentFeedbackSchema(ma.Schema):
     feedback_id             = fields.Integer()    
     user_id                 = fields.Integer()
+    team_id                 = fields.Integer()
     completed_assessment_id = fields.Integer()                
     feedback_time           = fields.DateTime()      
     lag_time                = fields.DateTime()
