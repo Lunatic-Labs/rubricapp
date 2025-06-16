@@ -1,5 +1,5 @@
 from core import db
-from sqlalchemy import and_, func
+from sqlalchemy import and_, func, or_
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
 from datetime import datetime
@@ -55,13 +55,31 @@ def completed_assessment_exists(team_id, assessment_task_id, user_id):
         return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
 
 @error_log
-def completed_assessment_team_or_user_exists(team_id, user_id):
+def completed_assessment_team_or_user_exists(team_id=None, user_id=None):
     if team_id is not None:
         return CompletedAssessment.query.filter_by(team_id=team_id).all()
     elif user_id is not None:
         return CompletedAssessment.query.filter_by(user_id=user_id).all()
     else:
         return []
+
+@error_log 
+def delete_completed_assessment_tasks(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    try:
+        db.session.delete(one_completed_assessment)
+        db.session.commit()
+        return True 
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        error_log(f"Error deleting completed assessment task {completed_assessment_id}: {str(e)}")
+        return False
+
+    return one_completed_assessment
 
 @error_log
 def create_completed_assessment(completed_assessment_data):

@@ -485,6 +485,22 @@ def replace_assessment_task(assessment_task, assessment_task_id):
 
     return one_assessment_task
 
+@error_log 
+def delete_assessment_task(assessment_task_id):
+    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+
+    if one_assessment_task is None:
+        raise InvalidAssessmentTaskID(assessment_task_id)
+    try:
+        db.session.delete(one_assessment_task)
+        db.session.commit()
+        return True
+    except SQLAlchemyError as e:
+        db.session.rollback()
+        error_log(f"Error deleting assessment task {assessment_task_id}: {str(e)}")
+        return False
+
+    return one_assessment_task
 @error_log
 def toggle_notification_sent_to_true(assessment_task_id, date):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
