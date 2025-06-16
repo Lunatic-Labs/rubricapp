@@ -78,7 +78,7 @@ def create_one_admin_course(use_tas):
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_course(result):
-    user = delete_user(result["user_id"])
+    # user = delete_user(result["user_id"])
     course = delete_course(result["course_id"])
     user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
 
@@ -114,7 +114,7 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
-    teacher["email"] = f"testteacher@gmail.com"
+    teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
 
@@ -133,7 +133,7 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
         ta = template_user
         ta["first_name"] = "Test TA"
         ta["last_name"] = "1"
-        ta["email"] = f"testta@gmail.com"
+        ta["email"] = f"testta{get_users().__len__()}@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
         if not unenroll_ta:
@@ -147,7 +147,7 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     student = template_user
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
-    student["email"] = f"teststudent@gmail.com"
+    student["email"] = f"teststudent{get_users().__len__()}@gmail.com"
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
@@ -171,7 +171,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
-    teacher["email"] = f"testteacher@gmail.com"
+    teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
 
@@ -190,7 +190,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
         ta = template_user
         ta["first_name"] = "Test TA 1"
         ta["last_name"] = "1"
-        ta["email"] = f"testta1@gmail.com"
+        ta["email"] = f"testta{get_users().__len__()}@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
         if not unenroll_ta:
@@ -203,7 +203,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
         ta2 = template_user
         ta2["first_name"] = "Test TA 2"
         ta2["last_name"] = "2"
-        ta2["email"] = f"testta2@gmail.com"
+        ta2["email"] = f"testta{get_users().__len__()}@gmail.com"
         ta2["owner_id"] = new_teacher.user_id
         new_ta2 = create_user(ta2)
         if not unenroll_ta:
@@ -217,7 +217,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
     student = template_user
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
-    student["email"] = f"teststudent@gmail.com"
+    student["email"] = f"teststudent{get_users().__len__()}@gmail.com"
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
