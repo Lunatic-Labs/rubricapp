@@ -1,6 +1,8 @@
 from core import db
 from models.utility import error_log
 from models.schemas import *
+from sqlalchemy.sql import text
+from sqlalchemy import func
 
 from models.team_user import (
     create_team_user,
@@ -30,7 +32,10 @@ from models.team import (
 from sqlalchemy import (
     and_,
     or_,
-    union
+    union,
+    select,
+    case,
+    literal_column
 )
 
 import sqlalchemy
@@ -187,6 +192,7 @@ def get_role_in_course(user_id: int, course_id: int):
     return role
 
 
+# WIP
 @error_log
 def get_team_by_course_id_and_user_id(course_id, user_id):
     """
@@ -210,6 +216,103 @@ def get_team_by_course_id_and_user_id(course_id, user_id):
     ).all()
 
     return teams
+
+def get_adHoc_team_by_course_id_and_user_id(course_id, user_id):
+    """
+    Description:
+    Gets the ad hoc teams for the given user in the given course.
+    Returns None if the given user is not in the given course.
+
+    Parameters:
+    user_id: int (The id of a user logged in)
+    course_id: int (The id of a course)
+    """
+    teams = db.session.query(
+        Team
+    ).join(
+        Checkin, Checkin.team_number == Team.team_id
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            Checkin.user_id == user_id
+        )
+    ).all()
+
+    return teams
+
+def get_all_adhoc_teams_from_AT(assessment_task_id):
+    """
+    DESCRIPTION:
+        Returns all adhoc teams for a particular AT that have students checkedin.
+    PARAMETERS:
+        assessment_task_id: <class 'int'> (desired AT's id)
+    RETURNS:
+        query object
+    EXCEPTIONS:
+        None except what the database may raise.
+    """
+    course_id = get_course_from_at(assessment_task_id)
+    course_id = 0 if course_id == None else course_id[0]
+
+    number_of_teams = db.session.query(
+        AssessmentTask.number_of_teams
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id
+    ).all()
+
+    number_of_teams = 0 if number_of_teams== None else number_of_teams[0][0]
+
+    pattern = '^Team [0-9]+$'
+
+    teams = db.session.query(
+        Team
+    ).join(
+        Checkin,
+        and_(
+            Checkin.assessment_task_id == assessment_task_id,
+            Checkin.team_number == Team.team_id,
+        )
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            Team.team_name.op('REGEXP')(pattern)
+        )
+    ).order_by(Team.team_name).limit(number_of_teams).all()
+    
+    return teams
+
+# HERE
+@error_log
+def get_team_users(course_id: int, team_id: int, user_id: int):
+    """
+    Description:
+    Gets all users associated with the given team in the given course.
+
+    Parameters:
+    course_id: int (The id of the course)
+    team_id: int (The id of the team)
+    user_id: int (The id of the logged-in user)
+    """
+    users_in_team = db.session.query(
+        User.user_id,
+        User.first_name,
+        User.last_name,
+        User.email,
+        Team.team_id,
+        Team.team_name
+    ).join(
+        TeamUser, TeamUser.team_id == Team.team_id
+    ).join(
+        User, User.user_id == TeamUser.user_id
+    ).filter(
+        and_(
+            Team.course_id == course_id,
+            Team.team_id == team_id
+        )
+    ).all()
+
+    # Return the users in the team
+    return users_in_team
 
 @error_log
 def get_team_by_course_id_and_observer_id(course_id, observer_id):
@@ -501,19 +604,15 @@ def get_individual_ratings(assessment_task_id):
         CompletedAssessment.last_update,
         Feedback.feedback_id
     ).join(
-        User,
-        CompletedAssessment.user_id == User.user_id
-    ).join(
         Feedback,
-        User.user_id == Feedback.user_id
-        and
         CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
         isouter=True # allows to still get students who haven't viewed their feedback yet
+    ).join(
+        User,
+        CompletedAssessment.user_id == User.user_id
     ).filter(
-        and_(
-            CompletedAssessment.team_id == None,
-            CompletedAssessment.assessment_task_id == assessment_task_id
-        )
+        CompletedAssessment.team_id == None,
+        CompletedAssessment.assessment_task_id == assessment_task_id
     ).all()
 
 
@@ -717,6 +816,29 @@ def get_all_checkins_for_assessment(assessment_task_id):
 
     return checkins
 
+@error_log
+def get_course_from_at(assessment_task_id):
+    """
+    Description:
+    Returns course_id.
+
+    Parameters:
+    assessment_task_id: <class 'int'> (The id of an assessment task)
+
+    Return:
+    <class 'object'> (teams)
+
+    Exceptions:
+    None except what the database is allowed to raise.
+    """
+    course_id=db.session.query(
+        AssessmentTask.course_id
+    ).filter(
+        AssessmentTask.assessment_task_id == assessment_task_id,
+    )
+
+    return course_id[0]
+
 # This query was written by ChatGPT
 @error_log
 def get_all_nonfull_adhoc_teams(assessment_task_id):
@@ -759,8 +881,14 @@ def get_all_nonfull_adhoc_teams(assessment_task_id):
     # Generate a list of all team numbers up to number_of_teams
     all_team_numbers = set(range(1, number_of_teams + 1))
 
-    # Return only those team numbers that are not invalid
-    return list(all_team_numbers - invalid_team_numbers)
+    valid_team_numbers = list(all_team_numbers - invalid_team_numbers)
+    
+    valid_teams = db.session.query(
+        Team
+    ).filter(
+        Team.team_name.in_([f"Team {num}" for num in valid_team_numbers])
+    ).all()
+    return valid_teams  
 
 @error_log
 def get_completed_assessment_with_team_name(assessment_task_id):
@@ -782,6 +910,7 @@ def get_completed_assessment_with_team_name(assessment_task_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         Team.team_name
     ).join(
         Team, Team.team_id == CompletedAssessment.team_id
@@ -811,6 +940,7 @@ def get_completed_assessment_with_user_name(assessment_task_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         User.first_name,
         User.last_name
     ).join(
@@ -866,6 +996,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
         AssessmentTask.unit_of_assessment
@@ -889,6 +1020,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
         AssessmentTask.unit_of_assessment
@@ -899,9 +1031,38 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         CompletedAssessment.user_id == user_id,
     )
 
-    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
+    complete_assessments_adhoc = db.session.query(
+        CompletedAssessment.completed_assessment_id,
+        CompletedAssessment.assessment_task_id,
+        CompletedAssessment.team_id,
+        CompletedAssessment.user_id,
+        CompletedAssessment.completed_by,
+        CompletedAssessment.initial_time,
+        CompletedAssessment.last_update,
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.done,
+        CompletedAssessment.locked,
+        AssessmentTask.assessment_task_name,
+        AssessmentTask.rubric_id,
+        AssessmentTask.unit_of_assessment
+    ).join(
+        AssessmentTask,
+        AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).filter(
+        AssessmentTask.course_id == course_id
+    ).join(
+        Checkin,
+        and_(
+            CompletedAssessment.team_id == Checkin.team_number,
+            Checkin.user_id == user_id,
+            CompletedAssessment.assessment_task_id == Checkin.assessment_task_id
+        )
+    )
 
-    return complete_assessments
+    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
+    final_result = complete_assessments.union(complete_assessments_adhoc)
+
+    return final_result
 
 @error_log
 def get_completed_assessment_by_ta_user_id(course_id, user_id):
@@ -924,6 +1085,7 @@ def get_completed_assessment_by_ta_user_id(course_id, user_id):
         CompletedAssessment.last_update,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         CompletedAssessment.done,
+        CompletedAssessment.locked,
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
         AssessmentTask.unit_of_assessment
@@ -950,21 +1112,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     at_id: int (The id of an assessment task)
 
     Return:
-    list[dict][str]
-    """
-
-    """
-    Note that the current plan sqlite3 seems to execute is:
-        QUERY PLAN
-    |--SCAN CompletedAssessment
-    |--SEARCH AssessmentTask USING INTEGER PRIMARY KEY (rowid=?)
-    |--SEARCH Role USING INTEGER PRIMARY KEY (rowid=?)
-    |--SEARCH Team USING INTEGER PRIMARY KEY (rowid=?)
-    `--SEARCH User USING INTEGER PRIMARY KEY (rowid=?)
-    Untested but assume other tables are also runing a search instead of a scan
-    everywhere where there is no index to scan by.
-    The problem lies in the search the others are doing. Future speed optimications
-    can be reached by implementing composite indices.
+    list[dict][str]: (List of dicts: Each list is another individual in the AT and the dict is there related data.)
     """
     pertinent_assessments = db.session.query(
         AssessmentTask.assessment_task_name,
@@ -972,13 +1120,18 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
         AssessmentTask.rubric_id,
         Rubric.rubric_name,
         Role.role_name,
+        Team.team_id,
         Team.team_name,
+        CompletedAssessment.user_id,
         User.first_name,
         User.last_name,
         CompletedAssessment.last_update,
         Feedback.feedback_time,
         AssessmentTask.notification_sent,
-        CompletedAssessment.rating_observable_characteristics_suggestions_data
+        CompletedAssessment.rating_observable_characteristics_suggestions_data,
+        CompletedAssessment.completed_assessment_id,
+        User.user_id,
+        Feedback.feedback_id,
     ).join(
         Role,
         AssessmentTask.role_id == Role.role_id,
@@ -988,7 +1141,7 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
     ).outerjoin(
         Team,
         CompletedAssessment.team_id == Team.team_id
-    ).join(
+    ).outerjoin(
         User,
         CompletedAssessment.user_id == User.user_id
     ).join(
@@ -1002,18 +1155,23 @@ def get_csv_data_by_at_id(at_id: int) -> list[dict[str]]:
         )
     ).filter(
         AssessmentTask.assessment_task_id == at_id
+    ).order_by(
+        User.user_id,
     ).all()
 
     return pertinent_assessments
 
-
-def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
+def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, category_name: str) -> tuple[dict[str],dict[str]]:
     """
     Description:
     Returns the sfi and the oc data to fill out the csv file.
     
     Parameters:
     rubric_id : int (The id of a rubric)
+    user_id : int (The id of the current logged student user)
+    team_id: int (The id of a team)
+    at_id: int (The id of an assessment task)
+    category_name : str (The category that the ocs and sfis must relate to.)
 
     Return: tuple two  Dict [Dict] [str] (All of the sfi and oc data)
     """
@@ -1023,54 +1181,236 @@ def get_csv_categories(rubric_id: int) -> tuple[dict[str],dict[str]]:
     for performance reasons later down the road. The decision depends on how the
     database evolves from now.
     """
-    sfi_data = db.session.query(
-        RubricCategory.rubric_id,
-        SuggestionsForImprovement.suggestion_text
-    ).join(
-        Category,
-        Category.category_id == RubricCategory.rubric_category_id
-    ).outerjoin(
-        SuggestionsForImprovement,
-        Category.category_id == SuggestionsForImprovement.category_id
-    ).filter(
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        RubricCategory.rubric_id
-    ).all()
 
-    oc_data = db.session.query(
-        RubricCategory.rubric_id,
-        ObservableCharacteristic.observable_characteristic_text
-    ).join(
-        Category,
-        Category.category_id == RubricCategory.rubric_category_id
-    ).outerjoin(
-        ObservableCharacteristic,
-        Category.category_id == ObservableCharacteristic.category_id
-    ).filter(
-        RubricCategory.rubric_id == rubric_id
-    ).order_by(
-        RubricCategory.rubric_id
-    ).all()
+    ocs_sfis_query = [None, None]
+    
+    for i in range(0, 2):
+        ocs_sfis_query[i] = db.session.query(
+            ObservableCharacteristic.observable_characteristic_text if i == 0 else SuggestionsForImprovement.suggestion_text,
+            ObservableCharacteristic.observable_characteristics_id if i == 0 else SuggestionsForImprovement.suggestion_id,
+        ).join(
+            Category,
+            (ObservableCharacteristic.category_id if i == 0 else SuggestionsForImprovement.category_id) == Category.category_id 
+        ).join(
+            RubricCategory,
+            RubricCategory.category_id == Category.category_id
+        ).join(
+            AssessmentTask,
+            AssessmentTask.rubric_id == RubricCategory.rubric_id
+        ).join(
+            CompletedAssessment,
+            CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id
+        ).filter(
+            Category.category_name == category_name,
+            CompletedAssessment.user_id == user_id,
+            AssessmentTask.assessment_task_id == at_id,
+            RubricCategory.rubric_id == rubric_id,
+        ).order_by(
+            ObservableCharacteristic.observable_characteristics_id if i == 0 else SuggestionsForImprovement.suggestion_id
+        )
 
-    return sfi_data,oc_data
+        if team_id is not None : ocs_sfis_query[i].filter(CompletedAssessment.team_id == team_id)
+    
+    # Executing the query
+    ocs = ocs_sfis_query[0].distinct(ObservableCharacteristic.observable_characteristics_id).all()
+    sfis = ocs_sfis_query[1].distinct(SuggestionsForImprovement.suggestion_id).all()
 
+    return ocs,sfis
 
-def get_completed_assessment_ratio(course_id: int, assessment_task_id: int) -> int:
+def get_course_name_by_at_id(at_id:int) -> str :
     """
     Description:
-    Returns the ratio of users who have completed an assessment task
+    Returns a string of the course name associated to the assessment_task_id.
+
+    Parameters:
+    at_id: int (The assessment_task_id that you want the course name of.)
+
+    Returns:
+    Course name as a string.
+
+    Exceptions:
+    None except the ones sqlalchemy + flask may raise. 
+    """
+
+    course_name = db.session.query(
+        Course.course_name
+    ).join(
+        AssessmentTask,
+        AssessmentTask.course_id == Course.course_id
+    ).filter(
+        AssessmentTask.assessment_task_id == at_id
+    ).all()
+
+    return course_name[0][0]
+
+def get_course_total_students(course_id: int, assessment_task_id: int) -> int:
+    """
+    Description:
+    Returns the total number of students or teams in a course.
     
     Parameters:
     course_id : int (The id of a course)
     assessment_task_id : int (The id of an assessment task)
 
-    Return: int (Ratio of users who have completed an assessment task rounded to the nearest whole number)
+    Return: int (The total number of students or teams in a course.)
     """
+    course_total = 0
+
     all_usernames_for_completed_task = get_completed_assessment_with_user_name(assessment_task_id)
-    all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
-    ratio = (len(all_usernames_for_completed_task) / len(all_students_in_course)) * 100
 
-    ratio_rounded = round(ratio)
+    if all_usernames_for_completed_task:
+        all_students_in_course = get_users_by_course_id_and_role_id(course_id, 5)
+        course_total = len(all_students_in_course) 
+    else:
+        all_teams_in_course = get_team_members_in_course(course_id)  
+        course_total =  len(all_teams_in_course) 
 
-    return ratio_rounded
+    return course_total
+
+def is_admin_by_user_id(user_id: int) -> bool:
+    """
+    Description:
+    Returns whether a certain user_id is a admin.
+
+    Parameters:
+    user_id: int (User id)
+    
+    Returns:
+    <class 'bool'> (if the user_id is an admin)
+
+    Exceptions: None other than what the db may raise.
+    """
+
+    is_admin = db.session.query(
+        User.is_admin
+    ).filter(
+        User.user_id == user_id
+    ).all()
+
+    if is_admin[0][0]:
+        return True
+    return False
+
+def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id: int = None) -> tuple[dict[str],dict[str]]:
+    """
+    Description:
+    Returns the needed data for emailing students who should be reciving the notification from
+    their professors. Note that it can also work for it you have a at_id or completed_at_id.
+
+    Parameters:
+    is_teams: <class 'bool'> (are we looking for students associated to a team?)
+    at_id: <class 'int'> (assessment Id)
+    completed_at_id: <class 'int'> (Completed assessment Id)
+    
+    Returns:
+    tuple[dict[str],dict[str]] (The students information such as first_name, last_name, last_update, and email)
+
+    Exceptions:
+    TypeError if completed_id and at_id are None.
+    """
+    # Note a similar function exists but its a select * query which hinders prefomance.
+
+    if at_id is None and completed_at_id is None:
+        raise TypeError("Both at_id and completed_at_id can not be <class 'NoneType'>.")
+
+    student_info = db.session.query(
+        CompletedAssessment.last_update,
+        User.first_name,
+        User.last_name,
+        User.email
+    )
+
+    if is_teams:
+        student_info = student_info.join(
+            TeamUser,
+            TeamUser.team_id == CompletedAssessment.team_id
+        ).join(
+            User,
+            User.user_id == TeamUser.user_id
+        )
+    else:
+        student_info = student_info.join(
+            User,
+            User.user_id == CompletedAssessment.user_id
+        )
+
+    if at_id is not None:
+        student_info = student_info.filter(
+            CompletedAssessment.assessment_task_id == at_id
+        )
+    else:
+        student_info = student_info.filter(
+            CompletedAssessment.completed_assessment_id == completed_at_id
+        )
+
+    return student_info.all() 
+
+def does_team_user_exist(user_id:int, team_id:int):
+    """
+    Description:
+    Returns true or false if the (user_id,team_id) entry exists in TeamUser table.
+
+    Paramaters:
+    user_id: <class 'int'> (User Id)
+    team_id: <class 'int'> (Team Id)
+
+    Returns:
+    <class 'bool'> (If a (user_id, team_id) entry is present in TeamUser table)
+
+    Exceptions:
+    None except what the db or oem may raise.
+    """
+    is_entry = db.session.query(
+        TeamUser.team_user_id
+    ).filter(
+        TeamUser.user_id == user_id,
+        TeamUser.team_id == team_id
+    ).all()
+
+    if len(is_entry) == 0:
+        return False
+    return True
+
+def get_num_of_adhocs(course_id:int):
+    """
+    Description:
+    Returns the number of adhoc teams found.
+
+    Paramaters:
+    course_id: <class 'int'> (User Id)
+
+    Returns:
+    <class 'int'> (number of adhoc teams)
+
+    Exceptions:
+    None except what the db or oem may raise.
+    """
+
+    pattern = '^Team [0-9]+$'
+    count = db.session.query(func.count(Team.team_id)).filter(Team.team_name.op('REGEXP')(pattern)).scalar()
+    return count
+
+def get_adhoc_team_users(team_id):
+    """
+    Description:
+    Returns the users of the particular ad hoc team.
+
+    Parameters:
+    team_id : <class 'int'> (specific team.)
+
+    Returns:
+    <class 'list'> (the users of the given team)
+
+    Exceptions:
+    None except what the db or oem raise.
+    """
+    users = db.session.query(
+        User.first_name
+    ).join(
+        Checkin,
+        Checkin.user_id == User.user_id,
+    ).filter(
+        Checkin.team_number == team_id,
+    ).all()
+
+    return users

@@ -1,3 +1,5 @@
+import traceback
+import datetime
 from flask import request
 from core  import app
 from jwt   import ExpiredSignatureError
@@ -18,10 +20,10 @@ from flask_jwt_extended import (
 # jwt expires in 15mins; refresh token expires in 30days
 def create_tokens(user_i_d: any) -> 'tuple[str, str]':
     with app.app_context():
-        jwt = create_access_token([user_i_d])
+        jwt = create_access_token(str(user_i_d), fresh=datetime.timedelta(minutes=60), expires_delta=datetime.timedelta(minutes=60))
         refresh = request.args.get('refresh_token')
         if not refresh:
-            refresh = create_refresh_token(user_i_d)
+            refresh = create_refresh_token(str(user_i_d))
     return jwt, refresh
 
 # Takes away jwt and refresh tokens from response
@@ -52,8 +54,7 @@ def token_expired(thing: str) -> bool:
 # Function returns the user_id from the sub of the jwt
 def token_user_id(thing: str, refresh: bool = False) -> int:
     with app.app_context():
-        if refresh: return decode_token(thing)['sub']
-        return decode_token(thing)['sub'][0]
+        return int(decode_token(thing)['sub'])
 
 # Handles conversion issues and warns front end of problems
 def to_int(thing: str , subject: str) -> int:

@@ -7,9 +7,9 @@ class ViewRatingsTable extends Component {
   render() {
     var allRatings = [];
 
-    var rating = {};
-
     this.props.ratings.map((currentRating) => {
+      var rating = {};
+
       rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
 
       rating["feedback_time_lag"] = currentRating["lag_time"];

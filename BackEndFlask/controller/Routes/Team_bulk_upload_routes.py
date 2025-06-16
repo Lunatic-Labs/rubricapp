@@ -1,4 +1,5 @@
 import os
+import uuid
 import json
 import shutil
 import pandas as pd
@@ -9,9 +10,18 @@ from controller import bp
 from Functions import teamBulkUpload
 from Functions import customExceptions
 from controller.Route_response import *
+from flask_jwt_extended import jwt_required
 
+from controller.security.CustomDecorators import (
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 @bp.route('/team_bulk_upload', methods=['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
 def upload_team_csv():
     try:
         file = request.files['csv_file']
@@ -29,7 +39,8 @@ def upload_team_csv():
 
             directory = os.path.join(os.getcwd(), "Test")
             os.makedirs(directory, exist_ok=True)
-            file_path = os.path.join(directory, file.filename)
+            unique_filename = extension[0] + uuid.uuid4().hex + extension[1]
+            file_path = os.path.join(directory, unique_filename)
             file.save(file_path)
 
             teamBulkUpload.team_bulk_upload(file_path, user_id, course_id)

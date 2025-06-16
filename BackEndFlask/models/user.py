@@ -1,19 +1,20 @@
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
+from datetime import datetime
 from models.schemas import User, UserCourse
 from sqlalchemy import (
     and_
 )
 from models.utility import generate_random_password, send_new_user_email
+from models.email_validation import create_validation
 from dotenv import load_dotenv
+from Functions.threads import spawn_thread, validate_pending_emails
 
 load_dotenv()
 
 from models.utility import error_log
 
 import os
-
-
 
 class InvalidUserID(Exception):
     def __init__(self, id):
@@ -34,10 +35,6 @@ class EmailAlreadyExists(Exception):
 @error_log
 def get_users():
     return User.query.all()
-
-@error_log
-def get_users_by_role_id(role_id):
-    return User.query.filter_by(role_id=role_id).all()
 
 
 @error_log
@@ -142,7 +139,7 @@ def update_password(user_id, password) -> str:
 
 
 @error_log
-def set_reset_code(user_id, code_hash): 
+def set_reset_code(user_id, code_hash):
     user = User.query.filter_by(user_id=user_id).first()
 
     setattr(user, 'reset_code', code_hash)
@@ -164,19 +161,18 @@ def user_already_exists(user_data):
 
 
 @error_log
-def create_user(user_data):
+def create_user(user_data, validate_emails=True):
     if "password" in user_data:
         password = user_data["password"]
-
         has_set_password = True # for demo users, avoid requirement to choose new password
     else:
         password = generate_random_password(6)
-
         send_new_user_email(user_data["email"], password)
 
         has_set_password = False
 
     password_hash = generate_password_hash(password)
+    last_update = datetime.now()
 
     user_data = User(
         first_name=user_data["first_name"],
@@ -186,16 +182,21 @@ def create_user(user_data):
         lms_id=user_data["lms_id"],
         consent=user_data["consent"],
         owner_id=user_data["owner_id"],
-        is_admin="role_id" in user_data.keys() and user_data["role_id"]==3,
+        is_admin="role_id" in user_data.keys() and user_data["role_id"] in [1,2,3],
         has_set_password=has_set_password,
-        reset_code=None
+        reset_code=None,
+        last_update=last_update,
     )
 
     db.session.add(user_data)
-
     db.session.commit()
-    return user_data
 
+    # Avoid adding validation to demo users.
+    if validate_emails and not has_set_password:
+        create_validation(user_data.user_id, user_data.email)
+        spawn_thread(validate_pending_emails)
+
+    return user_data
 
 @error_log
 def make_admin(user_id):
@@ -241,8 +242,9 @@ def load_SuperAdminUser():
         "password": str(os.environ.get('SUPER_ADMIN_PASSWORD')),
         "lms_id": 0,
         "consent": None,
-        "owner_id": 0,
-        "role_id": None
+        "owner_id": None,
+        "role_id": 2,
+        "is_admin": True
     })
 
 # user_id = 2
@@ -349,6 +351,9 @@ def replace_user(user_data, user_id):
 
     if one_user is None:
         raise InvalidUserID
+
+    if one_user.email != user_data["email"]:
+        spawn_thread(validate_pending_emails)
 
     one_user.first_name = user_data["first_name"]
 

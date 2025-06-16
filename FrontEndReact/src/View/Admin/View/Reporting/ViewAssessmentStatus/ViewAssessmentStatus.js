@@ -61,12 +61,17 @@ export default function ViewAssessmentStatus(props) {
       {'rating': 5, 'number': 0},
     ]
   };
-
   var allRatings = [];
   var avg = 0;
   var stdev = 0;
-  var progress = props.completedAssessmentsPercentage;
-
+  var finished = 0;
+  var total = props.courseTotalStudents;  //total teams or students
+  for (let i = 0; i < props.completedAssessments.length; i++) {
+    if (props.completedAssessments[i].done) {
+      finished++;
+    }
+  }
+  var progress = +((finished / total) * 100).toFixed(2);
   if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
     // Iterate through each completed assessment for chosen assessment task
     for (var i = 0; i < props.completedAssessments.length; i++) {
@@ -107,17 +112,18 @@ export default function ViewAssessmentStatus(props) {
 
     // add percentage to each JSON object in improvement/characteristics
     for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
-      let percent = characteristicsData['characteristics'][i]['number'] / (props.completedAssessments !== null ? props.completedAssessments.length : 1) * 100;
-
-      characteristicsData['characteristics'][i]['percentage'] = percent + "%";
+      let percent = total === 0 ? 0 : 
+        (characteristicsData['characteristics'][i]['number'] / total * 100);
+      characteristicsData['characteristics'][i]['percentage'] = +percent.toFixed(2);
     }
-
+ 
     for (let i = 0; i < improvementsData['improvements'].length; i++) {
-      let percent = improvementsData['improvements'][i]['number'] / (props.completedAssessments !== null ? props.completedAssessments.length : 1) * 100;
-
-      improvementsData['improvements'][i]['percentage'] = percent  + "%";
+      let percent = total === 0 ? 0 : 
+        (improvementsData['improvements'][i]['number'] / total * 100);
+      improvementsData['improvements'][i]['percentage'] = +percent.toFixed(2);
     }
   }
+  
   const innerGridStyle = {
     borderRadius: '1px',
     height: '100%',
@@ -194,7 +200,6 @@ export default function ViewAssessmentStatus(props) {
                         categories={categoryList}
                         chosenCategoryId={chosenCategoryId}
                         setChosenCategoryId={handleChosenCategoryIdChange}
-                        disabled={props.completedAssessments !== null && props.completedAssessments.length === 0}
                       />
                     </Grid>
                   </Grid>
@@ -203,25 +208,31 @@ export default function ViewAssessmentStatus(props) {
                 <div style={{
                   ...innerGridStyle,
                   padding: '20px',
-                  marginTop: '16px',
-                  
+                  marginTop: '16px',  
                 }}>
                   <h3 style={{ fontWeight: 'normal', textAlign: 'center'}}>
                     <u>Assessment Tasks Completed:</u>
                   </h3>
                   <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px' }}>
-                    <div 
-                      className="progress-bar" 
-                      role="progressbar" 
+                    <div
+                      className="progress-bar"
+                      role="progressbar"
                       style={{ width: `${progress}%`, backgroundColor: '#2e8bef' }}
-                      aria-valuenow={progress} 
-                      aria-valuemin={0} 
+                      aria-valuenow={progress}
+                      aria-valuemin={0}
                       aria-valuemax={100}
                     >
-                      <h5>
-                        <b style={{ float: 'right', padding: '10px 10px 0 0' }}>{progress}%</b>
-                      </h5>
+                      {progress >= 20 && (
+                        <h5>
+                          <b style={{ float: 'right', padding: '10px 5px 0 0' }}>{progress}%</b>
+                        </h5>
+                      )}
                     </div>
+                    {progress < 20 && (
+                      <h5 style={{ padding: '0 0 0 5px', lineHeight:'30px'}}>
+                        <b style={{ color: '#2e8bef'}}>{progress}%</b>
+                      </h5>
+                    )}
                   </div>
                 </div>
               </div>

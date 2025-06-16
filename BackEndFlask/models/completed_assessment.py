@@ -4,6 +4,7 @@ from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
 from datetime import datetime
 from models.utility import error_log
+from Functions.time import *
 
 # new function to read number of records for a particular assessment task id, if 0 disable the export button, ask how many get_completed_assessment_by_course
 # get total assessments by course id and return it to assessment taks cancatenate that to the 
@@ -49,46 +50,93 @@ def get_completed_assessment_count(assessment_task_id):
 @error_log
 def completed_assessment_exists(team_id, assessment_task_id, user_id):
     if (user_id == -1):   # Team assessment, otherwise individual assessment
-        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id, user_id=user_id).first()
+        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id).first()
     else:   
         return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
 
+@error_log
+def completed_assessment_team_or_user_exists(team_id, user_id):
+    if team_id is not None:
+        return CompletedAssessment.query.filter_by(team_id=team_id).all()
+    elif user_id is not None:
+        return CompletedAssessment.query.filter_by(user_id=user_id).all()
+    else:
+        return []
 
 @error_log
 def create_completed_assessment(completed_assessment_data):
-    if "." not in completed_assessment_data["initial_time"]:
-        completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + ".000"
+    assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=completed_assessment_data["assessment_task_id"]).first()
+    
+    #isoformat() is used to return a string of date, time, and UTC offset to the corresponding time zone.
 
-    if "Z" not in completed_assessment_data["initial_time"]:
-        completed_assessment_data["initial_time"] = completed_assessment_data["initial_time"] + "Z"
+    # Default to current time in UTC if no initial time provided
+    if not completed_assessment_data.get("initial_time"):
+        completed_assessment_data["initial_time"] = datetime.utcnow().isoformat() + "Z"
+    
+    # Default to current time in UTC if no last update provided
+    if not completed_assessment_data.get("last_update"):
+        completed_assessment_data["last_update"] = datetime.utcnow().isoformat() + "Z"
+    
 
-    if "." not in completed_assessment_data["last_update"]:
-        completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000"
-
-    if "Z" not in completed_assessment_data["last_update"]:
-        completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + "Z"
-
-    completed_assessment_data = CompletedAssessment(
+    completed_assessment = CompletedAssessment(
         assessment_task_id=completed_assessment_data["assessment_task_id"],
         completed_by=completed_assessment_data["completed_by"],
         team_id=completed_assessment_data["team_id"],
         user_id=completed_assessment_data["user_id"],
-        initial_time=datetime.strptime(completed_assessment_data["initial_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
-        last_update=None if completed_assessment_data["last_update"] is None else datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ'),
+        initial_time=parse_and_convert_timezone(completed_assessment_data["initial_time"],assessment_task),
+        last_update=parse_and_convert_timezone(completed_assessment_data["last_update"],assessment_task),
         rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"],
-        done=completed_assessment_data["done"]
+        done=completed_assessment_data["done"],
+        locked=False,
     )
+    
+    db.session.add(completed_assessment)
+    db.session.commit()
+    
+    return completed_assessment
 
-    db.session.add(completed_assessment_data)
+@error_log
+def toggle_lock_status(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = not one_completed_assessment.locked
     db.session.commit()
 
-    return completed_assessment_data
+    return one_completed_assessment
+
+@error_log
+def make_complete_assessment_locked(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = True
+    db.session.commit()
+
+    return one_completed_assessment
+
+@error_log
+def make_complete_assessment_unlocked(completed_assessment_id):
+    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+
+    if one_completed_assessment is None:
+        raise InvalidCRID(completed_assessment_id)
+
+    one_completed_assessment.locked = False
+    db.session.commit()
+
+    return one_completed_assessment
 
 def load_demo_completed_assessment():
     list_of_completed_assessments = [
         {    # Completed Assessment id 1
             "assessment_task_id": 1,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:08:36.376000",
             "last_update": "2024-02-01T21:01:33.458000",
             "rating_observable_characteristics_suggestions_data": {
@@ -192,6 +240,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 2
             "assessment_task_id": 2,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:08:55.755000",
             "last_update": "2024-02-01T21:02:45.652000",
             "rating_observable_characteristics_suggestions_data": {
@@ -310,6 +359,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 3
             "assessment_task_id": 5,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:09:24.685000",
             "last_update": "2024-02-01T21:03:25.208000",
             "rating_observable_characteristics_suggestions_data": {
@@ -383,6 +433,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 4
             "assessment_task_id": 8,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:22:03.218000",
             "last_update": "2024-02-01T21:04:16.909000",
             "rating_observable_characteristics_suggestions_data": {
@@ -486,6 +537,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 5
             "assessment_task_id": 9,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-28T21:26:21.901000",
             "last_update": "2024-02-01T21:05:39.666000",
             "rating_observable_characteristics_suggestions_data": {
@@ -604,6 +656,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 6
             "assessment_task_id": 10,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-30T15:11:00.760000",
             "last_update": "2024-02-01T21:06:49.714000",
             "rating_observable_characteristics_suggestions_data": {
@@ -722,6 +775,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 7
             "assessment_task_id": 11,
             "done": True,
+            "locked": False,
             "initial_time": "2024-01-30T15:12:56.525000",
             "last_update": "2024-02-05T16:26:42.377000",
             "rating_observable_characteristics_suggestions_data": {
@@ -795,6 +849,7 @@ def load_demo_completed_assessment():
         {   # Completed Assessment id 8
             "assessment_task_id": 12,
             "done": True,
+            "locked": False,
             "initial_time": "2024-02-05T17:04:36.368000",
             "last_update": "2024-02-05T17:04:38.112000",
             "rating_observable_characteristics_suggestions_data": {
@@ -883,6 +938,7 @@ def load_demo_completed_assessment():
         {  # Completed Assessment id 9
             "assessment_task_id": 13,
             "done": True,
+            "locked": False,
             "initial_time": "2024-02-05T17:07:57.768000",
             "last_update": "2024-02-05T17:08:00.783000",
             "rating_observable_characteristics_suggestions_data": {
@@ -980,24 +1036,25 @@ def load_demo_completed_assessment():
             "last_update": comp_assessment["last_update"],
             "rating_observable_characteristics_suggestions_data": comp_assessment["rating_observable_characteristics_suggestions_data"],
             "done": comp_assessment["done"],
+            "locked": comp_assessment["locked"],
         })
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
-    if "." not in completed_assessment_data["last_update"]:
-        completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + ".000"
-
-    if "Z" not in completed_assessment_data["last_update"]:
-        completed_assessment_data["last_update"] = completed_assessment_data["last_update"] + "Z"
-
     one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
 
     if one_completed_assessment is None:
         raise InvalidCRID
 
+    assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=one_completed_assessment.assessment_task_id).first()
+    
+    if not completed_assessment_data.get("last_update"):
+        completed_assessment_data["last_update"] = datetime.utcnow().isoformat() + "Z"
+    
+    
     one_completed_assessment.assessment_task_id = completed_assessment_data["assessment_task_id"]
     one_completed_assessment.team_id = completed_assessment_data["team_id"]
     one_completed_assessment.user_id = completed_assessment_data["user_id"]
-    one_completed_assessment.last_update = datetime.strptime(completed_assessment_data["last_update"], '%Y-%m-%dT%H:%M:%S.%fZ')
+    one_completed_assessment.last_update = parse_and_convert_timezone(completed_assessment_data["last_update"], assessment_task)
     one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
     one_completed_assessment.done = completed_assessment_data["done"]
 

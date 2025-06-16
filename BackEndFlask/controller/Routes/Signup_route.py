@@ -3,7 +3,6 @@ from controller  import bp
 from models.user import get_user_by_email
 from controller.Route_response import *
 from controller.Routes.User_routes import UserSchema
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 @bp.route('/signup', methods=['POST'])
 def register_user():

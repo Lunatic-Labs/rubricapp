@@ -5,11 +5,9 @@ import { Box, Button } from '@mui/material';
 import { getHumanReadableDueDate } from '../../../../utility';
 
 
-
 class ViewAssessmentTasks extends Component {
     constructor(props) {
         super(props);
-
 
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments;
@@ -36,7 +34,7 @@ class ViewAssessmentTasks extends Component {
                 if (assessmentTasks["number_of_teams"] !== null)  // If the number of teams is specified, use that
                 {
                     count = assessmentTasks["number_of_teams"]
-                } else {                                          // Otherwise, use the number of fixed teams    
+                } else {                                          // Otherwise, use the number of fixed teams
                     count = this.props.counts[1];
                 }
             } else {
@@ -72,6 +70,7 @@ class ViewAssessmentTasks extends Component {
         if (role["role_id"] === 5) {
             chosenCAT = this.props.completedAssessments;
         }
+
         var assessmentTasks = this.props.assessmentTasks;
 
         const columns = [
@@ -83,6 +82,22 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { width:"300x"}},
                     setCellProps: () => { return { width:"300px"} },
                 }
+            },
+            {
+                name: "unit_of_assessment",
+                label: "Unit of Assessment",
+                options: {
+                    filter: true,
+                    setCellHeaderProps: () => { return { width:"270px"}},
+                    setCellProps: () => { return { width:"270px"} },
+                    customBodyRender: (isTeam) => {
+                        return (
+                            <p className='mt-3' variant="contained">
+                                {isTeam ? "Team" : "Individual"}
+                            </p>
+                        )
+                    }
+                },
             },
             {
                 name: "due_date",
@@ -127,6 +142,10 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
+                        // let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
+                        // let filledByStudent = at.completed_by_role_id === 5;
+                        let filledByStudent = true;
+
                         return (
                             <Box
                                 style={{
@@ -148,7 +167,7 @@ class ViewAssessmentTasks extends Component {
 
                                         onClick={() => {
                                             if (!fixedTeams && navbar.state.team === null) {
-                                                navbar.setSelectCurrentTeam(assessmentTasks, atId)
+                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
                                             } else {
                                                 navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
                                             }
@@ -167,11 +186,11 @@ class ViewAssessmentTasks extends Component {
                                     }}
 
                                     variant='contained'
-                                    
-                                    disabled={role["role_id"] === 5 ? 
-                                        (this.props.checkin.indexOf(atId) === -1 && 
-                                        (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) || 
-                                        this.isObjectFound(atId) === true 
+
+                                    disabled={role["role_id"] === 5 ?
+                                        ((this.props.checkin.indexOf(atId) === -1 &&
+                                        (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) ||
+                                        this.isObjectFound(atId) === true || !filledByStudent)
                                     :
                                         this.areAllATsComplete(atId) === true
                                     }
@@ -185,7 +204,6 @@ class ViewAssessmentTasks extends Component {
                                 </Button>
                             </Box>
                         )
-                        
                     }
                 }
             }

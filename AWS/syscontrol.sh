@@ -145,15 +145,15 @@ function usage() {
     echo "Usage:"
     echo "  ./syscontrol <OPTION>"
     echo "  where OPTION is one of:"
-    echo "    $HELP      :: prints this message"
-    echo "    $FRESH     :: sets up the initial root project"
-    echo "    $INIT      :: inits the project by calling $INSTALL and $CONFIGURE"
-    echo "    $INSTALL   :: only installs dependencies"
-    echo "    $CONFIGURE :: configure gunicorn and nginx"
-    echo "    $SERVE     :: serve the application"
-    echo "    $UPDATE    :: updates the repository and calls $SERVE"
-    echo "    $STATUS    :: shows the status of everything running"
-    echo "    $KILL      :: kills running processes"
+    echo "    $HELP             :: prints this message"
+    echo "    $FRESH            :: sets up the initial root project"
+    echo "    $INIT             :: inits the project by calling $INSTALL and $CONFIGURE"
+    echo "    $INSTALL          :: only installs dependencies"
+    echo "    $CONFIGURE        :: configure gunicorn and nginx"
+    echo "    $SERVE <dev|prod> :: serve the application with either development environment or production environment"
+    echo "    $UPDATE           :: updates the repository and calls $SERVE"
+    echo "    $STATUS           :: shows the status of everything running"
+    echo "    $KILL             :: kills running processes"
     echo "If this is a brand new AWS instance, run with $FRESH, change to root proj directory, then $INIT"
     exit 1
 }
@@ -216,6 +216,11 @@ function kill_procs() {
     kill_pids 5000
     kill_pids 5001
     kill_pids 3000
+
+    cd ../
+    find . -type d -name "*.pyc" -exec rm -r {} +
+    find . -type d -name "__pycache__" -exec rm -r {} +
+    cd - > /dev/null
 
     log "done"
 }
@@ -392,8 +397,8 @@ function setup_proj_root() {
 
     log "done"
 
-    log "The project has been successfully setup. 
-The main project has been cloned into: $PROJ_DIR. 
+    log "The project has been successfully setup.
+The main project has been cloned into: $PROJ_DIR.
 Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
 }
 
@@ -404,6 +409,8 @@ Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
 # Serve the rubricapp app. Starts all
 # relevant services needed.
 function serve_rubricapp() {
+    local environment="$1"
+
     assure_proj_dir
     enter_venv
 
@@ -421,7 +428,7 @@ function serve_rubricapp() {
     # Start gunicorn
     log "Starting gunicorn"
     cd "$PROJ_DIR/BackEndFlask"
-    gunicorn --bind unix:rubricapp.sock wsgi:app &
+    # gunicorn --reload --bind unix:rubricapp.sock wsgi:app &
     sudo systemctl start rubricapp.service
 
     # Start nginx
@@ -434,7 +441,9 @@ function serve_rubricapp() {
     # Start react
     log "serving front-end"
     cd "$PROJ_DIR/FrontEndReact"
+
     npm run build
+
     serve -s -l tcp://0.0.0.0:3000 build &
     cd -
 
@@ -512,12 +521,11 @@ case "$1" in
         configure
         ;;
     "$SERVE")
-        serve_rubricapp
+        serve_rubricapp "$2"
         ;;
     "$UPDATE")
         kill_procs
         update_repo
-        serve
         ;;
     "$STATUS")
         show_status

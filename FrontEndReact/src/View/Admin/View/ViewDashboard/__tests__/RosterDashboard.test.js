@@ -128,9 +128,11 @@ test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking t
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
-
-        clickFirstElementWithAriaLabel(eub);
     });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(eub);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(eut);
@@ -149,9 +151,11 @@ test("RosterDashboard.test.js Test 7: Should drop a user when clicking on the dr
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(rt);
-
-        clickFirstElementWithAriaLabel(eub);
     });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(eub);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(eut);

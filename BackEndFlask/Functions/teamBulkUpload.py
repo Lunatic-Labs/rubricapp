@@ -5,11 +5,12 @@ from models.team import *
 from models.team_user import *
 from models.user_course import *
 from models.course import *
+from models.queries import does_team_user_exist
 from Functions.test_files.PopulationFunctions import xlsx_to_csv
 
 from datetime import date
 import csv
-
+    
 
 class TBUStudent:
     def __init__(self, fname: str, lname: str, email: str, lms_id: None|str = None) -> None:
@@ -33,83 +34,94 @@ def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     matches the expected `cols`. It will then pop off
     that head element and return it back. This, in turn,
     will modify the original list passed.
-
-    Parameters:
-    lst: list[list[str]]: The list of strings that it takes from.
-    cols: int|None: The number of expected columns. None if we are
-                    not expecting anything.
-
-    Returns:
-    list[str]: The head of the `lst` variable.
     """
     hd: list[str] = lst.pop(0)
-    # If the last column in a row is empty, remove it
-    if hd[-1] == "Unnamed: 1" or hd[-1] == '':
-        hd.pop()
-    if cols is not None and len(hd) != cols:
-        assert False, f'len(list[list[str]])[0] does not match cols expected. Namely: {len(hd)} =/= {cols}'
-    return hd
+ 
+    # Clean the row - specifically handle 'Unnamed:' columns and empty strings
+    cleaned = []
+    for x in hd:
+        stripped = x.strip()
+        if stripped and not stripped.startswith('Unnamed:'):
+            cleaned.append(stripped)
 
+    if cols is not None and len(cleaned) != cols:
+        raise TooManyColumns(1, cols, len(cleaned))
+    return cleaned
 
 def __parse(lst: list[list[str]]) -> list[TBUTeam]:
     teams: list[TBUTeam] = []
     students: list[TBUStudent] = []
     ta: str = ""
     team_name: str = ""
-    newline: bool = True
-
-    while True:
-        if len(lst) == 0:
-            break
-
+    current_row = 0
+    
+    # State to track what type of row we expect next
+    EXPECT_TA = 0
+    EXPECT_TEAM = 1
+    EXPECT_STUDENT = 2
+    current_state = EXPECT_TA
+    
+    while len(lst) > 0:
         hd = __expect(lst)
-
-        # Decide on what to do base on the num of columns.
-        match len(hd):
-            # Newline, add current info to a team.
-            case 0:
-                if len(students) == 0:
-                    raise EmptyTeamMembers
-                if ta == "":
-                    raise EmptyTAEmail
-                if team_name == "":
-                    raise EmptyTeamName
-
+        current_row += 1
+        
+        # Skip empty rows, they signal end of current team
+        if not hd:
+            if len(students) > 0:
+                if ta == "" or team_name == "":
+                    raise EmptyTeamName if team_name == "" else EmptyTAEmail
                 teams.append(TBUTeam(team_name, ta, students))
                 students = []
-                newline = True
 
-            # Either TA email or a team name.
-            case 1:
-                # TA email (because of newline)
-                if newline:
-                    newline = False
-                    ta = hd[0]
-                    hd = __expect(lst, 1)  # Expect a team name.
-                    team_name = hd[0]
+                multiple_observers = True
+                if len(lst) >= 2:
+                    hd = __expect(lst)
+                    lookAhead = __expect(lst)
+                    lst.insert(0, lookAhead)
+                    lst.insert(0, hd)   
+                    multiple_observers = len(hd) == len(lookAhead) == 1
 
-                # Team name, use the previous TA email for the next team.
-                else:
-                    teams.append(TBUTeam(team_name, ta, students))
-                    students = []
-                    team_name = hd[0]
+                current_state = EXPECT_TA if multiple_observers else EXPECT_TEAM 
+            continue
 
-            # Student with either an LMS ID or not.
-            case 2 | 3:
+        # Process based on what type of row we're expecting
+        if current_state == EXPECT_TA:
+            if len(hd) != 1:
+                raise TooManyColumns(current_row, 1, len(hd))
+            ta = hd[0]
+            current_state = EXPECT_TEAM
+            
+        elif current_state == EXPECT_TEAM:
+            if len(hd) != 1:
+                raise TooManyColumns(current_row, 1, len(hd))
+            team_name = hd[0]
+            current_state = EXPECT_STUDENT
+            
+        elif current_state == EXPECT_STUDENT:
+            # Student row should have 2 or 3 columns
+            if len(hd) > 3:
+                raise TooManyColumns(current_row, 3, len(hd))
+            elif len(hd) < 2:
+                raise NotEnoughColumns(current_row, 2, len(hd))
+            
+            try:
                 lname, fname = hd[0].split(',')
                 fname = fname.strip()
                 lname = lname.strip()
                 email = hd[1]
                 lms_id = None if len(hd) == 2 else hd[2]
                 students.append(TBUStudent(fname, lname, email, lms_id))
+            except ValueError:
+                raise InvalidNameFormat(current_row, hd[0])
 
-            # Too many columns expected.
-            case _:
-                raise TooManyColumns
-
-    # If there is no newline at EOF...
+    # Handle the last team if there are students
     if len(students) > 0:
+        if ta == "" or team_name == "":
+            raise EmptyTeamName if team_name == "" else EmptyTAEmail
         teams.append(TBUTeam(team_name, ta, students))
+
+    if len(teams) == 0:
+        raise EmptyTeamMembers
 
     return teams
 
@@ -178,7 +190,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         if course_uses_tas:
             ta = get_user_by_email(ta_email)
             if ta is None:
-                raise UserDoesNotExist
+                raise UserDoesNotExist(ta_email)
 
             missing_ta = False
             ta_id = get_user_user_id_by_email(ta_email)
@@ -188,7 +200,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         else:
             user = get_user(owner_id)
             if user is None:
-                raise UserDoesNotExist
+                raise UserDoesNotExist(owner_id)  
 
             course = get_course(course_id)
             courses = get_courses_by_admin_id(owner_id)
@@ -200,7 +212,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
                     break
 
             if not course_found:
-                raise OwnerIDDidNotCreateTheCourse
+                raise OwnerIDDidNotCreateTheCourse(owner_id, course_id)
 
         return (ta_id, missing_ta, course_uses_tas)
 
@@ -261,10 +273,12 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
         else:
             set_inactive_status_of_user_to_active(user_course.user_course_id)
 
-        create_team_user({
-            "team_id": team_id,
-            "user_id": user_id
-        })
+        # Prevents duplicaition in the team user table.
+        if not does_team_user_exist(user_id, team_id):
+            create_team_user({
+                "team_id": team_id,
+                "user_id": user_id
+            })
 
     tainfo = __handle_ta()
 
@@ -302,7 +316,7 @@ def __verify_information(teams: list[TBUTeam]):
             if not helper_verify_email_syntax(student.email):
                 raise SuspectedMisformatting
 
-
+# First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
     try:
         xlsx: bool = filepath.endswith('.xlsx')

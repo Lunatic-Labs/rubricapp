@@ -5,7 +5,20 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 
-
+/**
+ * @description Renders the my assessment section of the website.
+ * 
+ * @prop {object} navbar - Passed navbar.
+ * @prop {object} role - Object with role_id and role_name.
+ * @prop {object} filteredAssessments - Filtered ATs.
+ * @prop {object} CompleteAssessments - CATs.
+ * 
+ * @property {object} errorMessage - Any errors encountered.
+ * @property {bool} isLoaded - Did requests complete without issues.
+ * @property {object} checkin - Server response to saving a student checking in.
+ * @property {object} rubrics - Rubrics for the current user.
+ * 
+ */
 
 class StudentViewAssessmentTask extends Component {
     constructor(props) {
@@ -14,10 +27,8 @@ class StudentViewAssessmentTask extends Component {
         this.state = {
             errorMessage: null,
             isLoaded: false,
-            assessmentTasks: null,
             checkin: null,
             rubrics: null,
-            completedAssessments: null,
         }
     }
 
@@ -28,49 +39,24 @@ class StudentViewAssessmentTask extends Component {
 
         var chosenCourseID = state.chosenCourse["course_id"];
 
-        var userRole = this.props.role["role_id"];
+        genericResourceGET(`/checkin?course_id=${chosenCourseID}`,"checkin", this);
 
-        if (userRole === 5) {       // If the user is a student, this returns completed assessments for the student
- 
-            genericResourceGET(
-                `/assessment_task?course_id=${chosenCourseID}`, 
-                "assessmentTasks", this);
+        genericResourceGET(`/rubric?all=${true}`, "rubrics", this);
 
-            genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourseID}`, 
-                "completedAssessments", this);
-        } else {            // If the user is a TA, this returns assessments completed by the TA
-            genericResourceGET(
-                `/assessment_task?course_id=${chosenCourseID}&role_id=${userRole}`, 
-                "assessmentTasks", this);
-
-                genericResourceGET(
-                `/completed_assessment?course_id=${chosenCourseID}&role_id=${userRole}`, 
-                "completedAssessments", this);
-        }
-
-        genericResourceGET(
-            `/checkin?course_id=${chosenCourseID}`, 
-            "checkin", this);
-
-        genericResourceGET(
-            `/rubric?all=${true}`, "rubrics", this);
-
-        genericResourceGET(
-            `/course?course_id=${chosenCourseID}`, 
-            "counts", this);
-        }
+        genericResourceGET(`/course?course_id=${chosenCourseID}`, "course_count", this, {dest: "counts"});
+    }
 
     render() {
         const {
             errorMessage,
             isLoaded,
-            assessmentTasks,
-            completedAssessments,
             checkin,
             rubrics,
-            counts
+            counts,
         } = this.state;
+
+        const filteredATs = this.props.filteredAssessments;
+        const filteredCATs = this.props.CompleteAssessments;
 
         var navbar = this.props.navbar;
 
@@ -85,21 +71,19 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-
-        } else if (!isLoaded || !assessmentTasks || !checkin || !rubrics || !counts || !completedAssessments) {
+        } else if (!isLoaded || !checkin || !rubrics || !counts) {
             return(
                 <Loading />
             )
 
         } else {
-
             return(
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
                         role={role}
-                        assessmentTasks={assessmentTasks}
-                        completedAssessments={completedAssessments}
+                        assessmentTasks={filteredATs}
+                        completedAssessments={filteredCATs}
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
                         counts={counts}

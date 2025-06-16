@@ -29,7 +29,9 @@ import StudentNavigation from '../Components/StudentNavigation.js';
 import ReportingDashboard from '../Admin/View/Reporting/ReportingDashboard.js';
 import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRubric.js';
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
-import UserAccount from './UserAccount.js'
+import UserAccount from './UserAccount.js';
+import PrivacyPolicy from './PrivacyPolicy.js';
+import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 
 
 class AppState extends Component {
@@ -71,6 +73,7 @@ class AppState extends Component {
             successMessageTimeout: undefined,
 
             addCustomRubric: null,
+            jumpToSection: null,
         }
 
         this.setNewTab = (newTab) => {
@@ -130,7 +133,8 @@ class AppState extends Component {
         }
 
         this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
-            readOnly = false
+            readOnly = false,
+            skipInstructions = false
         }={}) => { // wip
             var completedAssessment = null;
 
@@ -138,13 +142,14 @@ class AppState extends Component {
                completedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId) ?? null;
             }
             const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
-            
+
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
                 unitOfAssessment: assessmentTask["unit_of_assessment"],
                 chosenCompleteAssessmentTaskIsReadOnly: readOnly,
+                skipInstructions: skipInstructions
             });
         }
 
@@ -217,7 +222,6 @@ class AppState extends Component {
                 });
             }
         }
-
         this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
             var newTeam = null;
 
@@ -243,13 +247,20 @@ class AppState extends Component {
             })
         }
 
+        // Use this as a callback Function to prevent jump data from being sticky.
+        this.resetJump = () => {
+            this.setState({
+                jumpToSection: null,
+            })
+        };
+
         // The ===null section of the next line is not permanent. 
         // The only purpose was to test to see if we could see the "My Assessment Task" 
         // on the student dashboard
         // When you click "complete" on the "TO DO" column the completed fields were null 
         // thus it would not display anything
         // By adding === null as a test case, we were able to have it populate.
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask) => {
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask, jumpId=null) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
@@ -257,7 +268,13 @@ class AppState extends Component {
                     unitOfAssessment: null,
                     chosenCompleteAssessmentTask: null,
                     chosenCompleteAssessmentTaskIsReadOnly: false,
-                });
+                    jumpToSection: jumpId,
+                }, () =>{
+                    if(jumpId !== null){
+                        this.resetJump();
+                    }
+                }
+            );
 
             } else {
                 var newCompletedAssessmentTask = null;
@@ -272,10 +289,16 @@ class AppState extends Component {
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
                     chosenCompleteAssessmentTaskIsReadOnly: false,
                     chosenAssessmentTask: chosenAssessmentTask,
-                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"]
-                });
+                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"],
+                    jumpToSection: jumpId,
+                }, () => {
+                    if(jumpId !== null){
+                        this.resetJump();
+                    }
+                }
+            );
             }
-        }
+        }; 
 
         this.ViewCTwithAT = (assessmentTasks, atId) => {
             var selectedAssessment = null;
@@ -469,22 +492,37 @@ class AppState extends Component {
                             <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
-
-                            <Button
-                                className="primary-color"
-                                variant='contained'
-                                onClick={() => {
-                                    this.setState({
-                                        activeTab: "AddUser",
-                                        user: null,
-                                        addUser: true
-                                    });
-                                }}
-                            >
-                                Add User
-                            </Button>
+                            <Box>
+                                <div style={{display:"flex", gap:"20px"}}>
+                                    <Button
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "AddUser",
+                                                user: null,
+                                                addUser: true
+                                            });
+                                        }}
+                                    >
+                                        Add User
+                                    </Button>
+                                    <Button 
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "ViewNotification",
+                                                user: null,
+                                                addUser: true
+                                            });
+                                        }}
+                                    >
+                                        View Notifications
+                                    </Button>
+                                </div>
+                            </Box>
                         </div>
-
                         <AdminViewUsers
                             navbar={this}
                         />
@@ -605,10 +643,9 @@ class AppState extends Component {
                 }
 
                 {this.state.activeTab==="Teams" &&
-                    <Box className="page-spacing">
+                    <Box className="page-spacing" aria-label="teamDashboard">
                         <TeamDashboard
                             navbar={this}
-                            aria-label="teamDashboard"
                         />
                     </Box>
                 }
@@ -669,10 +706,9 @@ class AppState extends Component {
                 }
 
                 {this.state.activeTab==="AssessmentTasks" &&
-                    <Box className="page-spacing">
+                    <Box className="page-spacing" aria-label="assessmentDashboard">
                         <AssessmentDashboard
                             navbar={this}
-                            aria-label="assessmentDashboard"
                         />
                     </Box>
                 }
@@ -800,10 +836,9 @@ class AppState extends Component {
                 }
 
                 {this.state.activeTab==="Reporting" &&
-                    <Box className="page-spacing">
+                    <Box className="page-spacing" aria-label="reportingDashboard">
                         <ReportingDashboard
                             navbar={this}
-                            aria-label="reportingDashboard"
                         />
                     </Box>
                 }
@@ -831,6 +866,30 @@ class AppState extends Component {
                         />
 
                         <UserAccount
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="PrivacyPolicy" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                            aria-label="UserAccountBackButton"
+                        />
+
+                        <PrivacyPolicy
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="ViewNotification" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"User"}
+                        />
+                        <ViewNotification
                             navbar={this}
                         />
                     </Box>

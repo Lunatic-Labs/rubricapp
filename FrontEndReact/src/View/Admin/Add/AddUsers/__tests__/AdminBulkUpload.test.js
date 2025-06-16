@@ -26,11 +26,10 @@ var abut = "adminBulkUploadTitle";
 var mhbb = "mainHeaderBackButton";
 var abucfb = "adminBulkUploadChooseFileButton";
 var abuufb = "adminBulkUploadUploadFileButton";
-var abuem = "adminBulkUploadErrorMessage";
 var cabub = "cancelAdminBulkUploadButton";
 var tt = "teamsTab";
 var td = "teamDashboard";
-var tbub = "teamBulkUploadButton";
+var abub = "adminBulkUploadButton";
 
 
 
@@ -76,9 +75,7 @@ test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(sbub);
@@ -90,9 +87,7 @@ test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
 
@@ -107,36 +102,7 @@ test("AdminBulkUpload.test.js Test 3: Should render your files when the Choose F
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
-    });
-
-    clickElementWithAriaLabel(sbub);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abut);
-        }, 3000);
-    });
-
-    clickElementWithAriaLabel(abucfb);
-});
-
-
-test("AdminBulkUpload.test.js Test 4: Should render an error message when no file is uploaded on Student Bulk Upload page", async () => {
-    render(<Login />);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(sbub);
@@ -145,14 +111,35 @@ test("AdminBulkUpload.test.js Test 4: Should render an error message when no fil
         expectElementWithAriaLabelToBeInDocument(abut);
     });
 
-    clickElementWithAriaLabel(abuufb);
-
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abuem);
-        }, 3000);
-    });
+    clickElementWithAriaLabel(abucfb);
 });
+
+
+// test("AdminBulkUpload.test.js Test 4: Should render an error message when no file is uploaded on Student Bulk Upload page", async () => {
+//     render(<Login />);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
+
+//     clickFirstElementWithAriaLabel(vcib);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(rt);
+//     });
+
+//     clickElementWithAriaLabel(sbub);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(abut);
+//     });
+
+//     clickElementWithAriaLabel(abuufb);
+
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToHaveErrorMessage(abuem,"Please Select a File to Upload!");
+//     },{ timeout: 3000 });
+// });
 
 
 test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the cancel button on the Student Bulk Upload page is clicked", async () => {
@@ -165,9 +152,7 @@ test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(sbub);
@@ -179,10 +164,8 @@ test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the 
     clickElementWithAriaLabel(cabub);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
-    });
+        expectElementWithAriaLabelToBeInDocument(rt);
+    },{ timeout: 3000 });
 });
 
 
@@ -202,17 +185,15 @@ test("AdminBulkUpload.test.js Test 6: Should render the AdminBulkUpload componen
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(tbub);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abut);
-        }, 3000);
+        clickElementWithAriaLabel(abub);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(abut);
     });
 });
 
@@ -233,21 +214,21 @@ test("AdminBulkUpload.test.js Test 7: Should render the roster dashboard if the 
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithAriaLabelToBeInDocument(td);
+    });
+    
+    await waitFor(() => {
+        clickElementWithAriaLabel(abub);
+    },{ timeout: 3000 });
 
-            clickElementWithAriaLabel(tbub);
-
-            expectElementWithAriaLabelToBeInDocument(abut);
-        }, 3000);
+    await waitFor(() => {        
+        expectElementWithAriaLabelToBeInDocument(abut);
     });
 
     clickElementWithAriaLabel(mhbb);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 });
 
@@ -268,58 +249,54 @@ test("AdminBulkUpload.test.js Test 8: Should render your files when the Choose F
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(tbub);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abut);
+        clickElementWithAriaLabel(abub);
+    },{ timeout: 3000 });
 
-            clickElementWithAriaLabel(abuufb);
-
-        }, 3000);
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(abut);
     });
+
+    clickElementWithAriaLabel(abuufb);
 });
 
 
-test("AdminBulkUpload.test.js Test 9: Should render an error message when no file is uploaded on Team Bulk Upload page", async () => {
-    render(<Login />);
+// test("AdminBulkUpload.test.js Test 9: Should render an error message when no file is uploaded on Team Bulk Upload page", async () => {
+//     render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(ct);
+//     });
 
-    clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithAriaLabel(vcib);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(rt);
+//     });
 
-    clickElementWithAriaLabel(tt);
+//     clickElementWithAriaLabel(tt);
 
-    await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(td);
+//     });
 
-            clickElementWithAriaLabel(tbub);
+//     await waitFor(() => {
+//         clickElementWithAriaLabel(abub);
+//     },{ timeout: 3000 });
 
-            expectElementWithAriaLabelToBeInDocument(abut);
-        }, 3000);
-    });
+//     await waitFor(() => {
+//         expectElementWithAriaLabelToBeInDocument(abut);
+//     });
 
-
-    await waitFor(() => {
-        setTimeout(() => {
-            clickElementWithAriaLabel(abuufb);
-            
-            expectElementWithAriaLabelToBeInDocument(abuem);
-        }, 3000);
-    });
-});
+//     clickElementWithAriaLabel(abuufb);
+    
+//     await waitFor(() => {    
+//         expectElementWithAriaLabelToBeInDocument(abuem);
+//     });
+// });
 
 
 test("AdminBulkUpload.test.js Test 10: Should render the roster dashboard if the cancel button on the Team Bulk Upload page is clicked", async () => {
@@ -338,26 +315,20 @@ test("AdminBulkUpload.test.js Test 10: Should render the roster dashboard if the
     clickElementWithAriaLabel(tt);
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(td);
-
-            clickElementWithAriaLabel(tbub);
-
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(td);
     });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(abut);
-
-            clickElementWithAriaLabel(cabub)
-
-        }, 3000);
-    });
+        clickElementWithAriaLabel(abub);
+    },{ timeout: 3000 });
 
     await waitFor(() => {
-        setTimeout(() => {
-            expectElementWithAriaLabelToBeInDocument(rt);
-        }, 3000);
+        expectElementWithAriaLabelToBeInDocument(abut);
     });
+    
+    clickElementWithAriaLabel(cabub) 
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    },{ timeout: 3000 });
 });

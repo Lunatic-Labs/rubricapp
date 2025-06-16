@@ -6,10 +6,14 @@ from flask_jwt_extended import jwt_required
 from models.rubric   import get_rubric, get_rubrics, create_rubric, delete_rubric_by_id
 from models.category import get_categories_per_rubric, get_categories, get_ratings_by_category
 from models.suggestions import get_suggestions_per_category
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.observable_characteristics import get_observable_characteristic_per_category
 from models.queries import get_rubrics_and_total_categories, get_rubrics_and_total_categories_for_user_id, get_categories_for_user_id
 from models.user import get_user
+
+from controller.security.CustomDecorators import( 
+    AuthCheck, bad_token_check,
+    admin_check
+)
 
 @bp.route('/rubric', methods = ['GET'])
 @jwt_required()
@@ -103,6 +107,7 @@ def get_all_rubrics():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def add_rubric(): 
     # expects to recieve a json object with all two fields.
     # one named 'rubric' holds all the fields for a rubric (except rubric_id)
@@ -161,6 +166,7 @@ def get_all_categories():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def edit_rubric():
     try: 
         if request.args and request.args.get("rubric_id"):
@@ -197,6 +203,7 @@ def edit_rubric():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def delete_rubric():
     try:
         if request.args and request.args.get("rubric_id"):

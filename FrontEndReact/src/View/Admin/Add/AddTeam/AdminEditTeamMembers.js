@@ -2,10 +2,8 @@ import React, { Component } from "react";
 import Button from "@mui/material/Button";
 import "bootstrap/dist/css/bootstrap.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
-import AddCircleOutlineIcon from "@mui/icons-material/AddCircleOutline";
-import RemoveCircleOutlineIcon from "@mui/icons-material/RemoveCircleOutline";
 import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
-import { IconButton, Typography } from "@mui/material";
+import { Checkbox, Typography } from "@mui/material";
 
 
 
@@ -55,16 +53,20 @@ class AdminEditTeamMembers extends Component {
             var team = state.team;
 
             var url = `/user?team_id=${team["team_id"]}&user_ids=${users}`;
+            
+            let promise;
 
             if (this.props.addTeamAction === "Add") {
-                genericResourcePOST(url, this, users);
+                promise = genericResourcePOST(url, this, users);
             } else {
-                genericResourcePUT(url, this, users);
+                promise = genericResourcePUT(url, this, users);
             }
 
-            setTimeout(() => {
-                confirmCreateResource("TeamMembers");
-            }, 1000);
+            promise.then(result => {
+                if (result !== undefined && result.errorMessage === null) {
+                    confirmCreateResource("TeamMembers");
+                }
+            });
         };
     }
 
@@ -163,27 +165,13 @@ class AdminEditTeamMembers extends Component {
                     },
                     customBodyRender: (userId) => {
                         return (
-                            <IconButton
-                                onClick={() => {
+                            <Checkbox
+                                checked={this.state.userEdits[userId] !== undefined}
+                                onChange={() => {
                                     this.saveUser(userId);
                                 }}
-                            >
-                                {this.state.userEdits[userId] === undefined ?
-                                    this.props.addTeamAction === "Add" ? (
-                                        <AddCircleOutlineIcon sx={{ color: "black" }} />
-                                    ) : (
-                                        <RemoveCircleOutlineIcon sx={{ color: "black" }} />
-                                    )
-
-                                    :
-
-                                    this.props.addTeamAction !== "Add" ? (
-                                        <AddCircleOutlineIcon sx={{ color: "black" }} />
-                                    ) : (
-                                        <RemoveCircleOutlineIcon sx={{ color: "black" }} />
-                                    )
-                                }
-                            </IconButton>
+                                sx={{ color: "black" }}
+                            />
                         );
                     },
                 },
@@ -209,7 +197,7 @@ class AdminEditTeamMembers extends Component {
                         variant="h5"
                         aria-label={this.props.addTeamAction + "TeamMembersTitle"}
                     >
-                        {this.props.addTeamAction} Members
+                        {this.props.addTeamAction} Members {this.props.addTeamAction === "Add" ? "to" : "from"} Team {this.props.navbar.state.team.team_name}
                     </Typography>
 
                     <Button

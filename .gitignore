@@ -3,7 +3,7 @@
 *.log
 *.sql
 *.sqlite
- 
+
 # OS generated files #
 ######################
 .DS_Store?
@@ -15,18 +15,18 @@ Thumbs.db
 # IDE
 *.idea
 *.iml
- 
+
 # Generated files
 /web-app/WEB-INF
 build/
 *.[oa]
 *.pyc
- 
+
 # Other source repository archive directories (protects when importing)
 .hg
 .svn
 CVS
- 
+
 # automatic backup files
 *~.nib
 *.swp
@@ -40,7 +40,11 @@ FrontEndReact/package-lock.json
 package-lock.json
 BackEndFlask/logs/all.log
 BackEndFlask/models/hidden.py
+BackEndFlask/oauth2_creds.json
 BackEndFlask/logs/all.log
+BackEndFlask/*.env*
+FrontEndReact/*.env*
+FrontEndReact/.env.production
 .vscode
 
 # Nginx configuration files
@@ -49,3 +53,7 @@ BackEndFlask/logs/all.log
 
 # SSL/TLS certificate files
 /etc/letsencrypt/live/*
+
+# Misc
+BackEndFlask/core/.cron_setup_done
+BackEndFlask/token.json

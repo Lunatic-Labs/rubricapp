@@ -43,7 +43,7 @@ class InvalidCredentialsException(Exception):
     
     def __str__(self) -> str:
         return self.message
-    
+
 """
 Description:
 Returns the exception with the message of
@@ -55,6 +55,6 @@ None
 class EmailFailureException(Exception):
     def __init__(self) -> None:
         self.message = "Email failure"
-    
+
     def __str__(self) -> str:
         return self.message
