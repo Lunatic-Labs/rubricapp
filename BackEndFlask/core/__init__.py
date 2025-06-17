@@ -27,10 +27,6 @@ def get_oauth2_credentials(token_fp, scopes):
         if not os.path.exists(token_fp):
             return None
         creds = Credentials.from_authorized_user_file(token_fp, scopes)
-<<<<<<< HEAD
-        return None
-=======
->>>>>>> master
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         if not creds or not creds.valid:
@@ -135,8 +131,6 @@ redis_limiter = os.environ.get('REDIS_LIMITER', 'localhost')
 
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 
-<<<<<<< HEAD
-=======
 redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
 
 # Settting up the request rater limiter
@@ -155,7 +149,6 @@ class Config:
 
 config = Config()
 
->>>>>>> master
 # Initialize Gmail OAuth2 service
 try:
     oauth2_scopes = [
@@ -167,12 +160,8 @@ try:
     oauth2_credentials = None
     oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
     oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
-<<<<<<< HEAD
-except Exception:
-=======
 except Exception as e:
     config.logger.error(str(e))
->>>>>>> master
     oauth2_credentials = None
     oauth2_service = None
 
