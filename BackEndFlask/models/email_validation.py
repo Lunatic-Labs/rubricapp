@@ -15,15 +15,6 @@ def create_validation(user_id, email):
 
 def get_emails_need_checking():
     return EmailValidation.query.filter_by(status="pending").all()
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> master
-=======
->>>>>>> master
 
 def update_email_to_pending(user_id):
     email_validation = EmailValidation.query.filter_by(user_id=user_id).first()
@@ -52,15 +43,3 @@ def mark_emails_as_pending(emails):
     )
 
     db.session.commit()
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> 86ce120c4 (add threading, local runtime detection, EmailValidation table)
-=======
->>>>>>> 86ce120c4 (add threading, local runtime detection, EmailValidation table)
-=======
->>>>>>> 86ce120c4 (add threading, local runtime detection, EmailValidation table)
-=======
->>>>>>> master
-=======
->>>>>>> master
