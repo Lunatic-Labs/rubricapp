@@ -10,6 +10,8 @@
 from email_test_util import EmailConsts, MockUtil
 import pytest
 import sys
+import random
+import re
 from unittest.mock import patch, mock_open, MagicMock
 from core import (
     config, oauth2_credentials, 
@@ -20,6 +22,7 @@ from email_mock import (
     create_send_email_mock,
     create_google_mock_email_objs,
     build_service_mock,
+    create_check_bounced_emails
 )
 from Functions import conftest
 from controller.Routes.User_routes import(
@@ -41,6 +44,12 @@ def send_email():
     mocked_send_email = create_send_email_mock()
     with patch("models.utility.send_email", mocked_send_email):
         yield mocked_send_email
+
+@pytest.fixture(scope="session", autouse=True)
+def check_bounced_emails():
+    mocked_check_bounced_emails = create_check_bounced_emails()
+    with patch("models.utility.check_bounced_emails", mocked_check_bounced_emails):
+        yield mocked_check_bounced_emails
 
 #------------------------------------------------------------------------------
 # These next test that certain env vars are correct to ensure that everything
@@ -131,7 +140,7 @@ def test_012_test_send_reset_code(send_email):
     MockUtil.equal(send_email.call_count, 1, "Send email should be called only once.")
     send_email.reset_mock()
 
-def test_013_test_email_students_feedback_is_ready(send_email):
+def test_013_test_email_students_feedback_is_ready_to_view(send_email):
     class student:
         def __init__(self, first_name: str, last_name: str, email:str):
             self.first_name = first_name
@@ -144,29 +153,67 @@ def test_013_test_email_students_feedback_is_ready(send_email):
     MockUtil.equal(1, send_email.call_count, "Send Email should have been called once.")
     send_email.reset_mock()
 
+def test_014_send_new_user_email(send_email):
+    random_int = str(random.randint(10*10, 10*20))
+    send_new_user_email(EmailConsts.FAKE_EMAIL, random_int)
+    MockUtil.equal(send_email.call_count, 1, "There should be one call to send_email()")
+    args = send_email.call_args.args
+    found_match = re.search(random_int, args[2])
+    found_match = True if found_match else False
+    MockUtil.singleton_comparision(found_match, True, "The password should be here")
+    MockUtil.equal(args[0], EmailConsts.FAKE_EMAIL, "Emails should be the same.")
+    send_email.reset_mock()
+
+def test_015_send_email_for_updated_email(send_email):
+    send_email_for_updated_email(EmailConsts.FAKE_EMAIL)
+    MockUtil.equal(send_email.call_count, 1, "Should be called once.")
+    args = send_email.call_args.args
+    MockUtil.equal(args[0], EmailConsts.FAKE_EMAIL, "Emails should be the same")
+    MockUtil.equal(args[3], 0, "Call int is expected to be 0")
+    send_email.reset_mock()
+
+def test_016_test_send_bounced_email_notifiction(send_email):
+    msg = "TESTING_BOUNCE"
+    error_msg = "TESTING"
+    send_bounced_email_notification(EmailConsts.FAKE_EMAIL, msg, error_msg)
+    MockUtil.equal(send_email.call_count, 1, "send_email shoudl be called once")
+    args = send_email.call_args.args
+    MockUtil.equal(args[0], EmailConsts.FAKE_EMAIL, "Addresses should match.")
+    data_matches = [bool(re.search(i, args[2])) for i in [msg, error_msg]] 
+    correct_data = [True, True]
+    MockUtil.list_comparision(data_matches, correct_data, MockUtil.equal)
+    send_email.reset_mock()
+
+def test_017_test_check_bounced_emails_are_responding(check_bounced_emails):
+    implicit_return_val = check_bounced_emails()
+    MockUtil.instance_comparision(implicit_return_val, MagicMock, "Function is setup to return none for now.")
+    MockUtil.equal(check_bounced_emails.call_count, 1, "Function should have been called once.")
+    MockUtil.equal(check_bounced_emails.call_args.args, (), "Should respond to empty function call.")
+    check_bounced_emails.reset_mock()
+
 #------------------------------------------------------------------------------
 # These next few test use the more general routes to ensure that routes that
 # depend on these functions are still working as intended.
 #------------------------------------------------------------------------------
-#def test_009_test_add_user_route(flask_app_mock):
-#    undecorated_func = add_user.__wrapped__.__wrapped__.__wrapped__.__wrapped__
-#    mock_json = {
-#        "first_name": "KUNG FU PANDA",
-#        "last_name": "KUNG FU PANDA",
-#        "email": "FAKEhkjhkjhkjhkjhkh@gmail.com",
-#        "lms_id": None,  # Use `None` instead of "null"
-#        "consent": None,
-#        "owner_id": 2,
-#        "role_id": 5,
-#        "user_id": 1,
-#        "email_consts": EmailConsts.FAKE_EMAIL
-#    }
-#    with flask_app_mock.test_request_context('/user', method='POST', json=mock_json):
-#        reponse = undecorated_func()
-#        print(reponse)
-#        assert reponse.status_code == 780
-#
-#
+def test_018_test_add_user_route(flask_app_mock):
+    undecorated_func = add_user.__wrapped__.__wrapped__.__wrapped__.__wrapped__
+    mock_json = {
+        "first_name": "KUNG FU PANDA",
+        "last_name": "KUNG FU PANDA",
+        "email": "FAKEhkjhkjhkjhkjhkh@gmail.com",
+        "lms_id": None,  # Use `None` instead of "null"
+        "consent": None,
+        "owner_id": 2,
+        "role_id": 5,
+        "user_id": 1,
+        "email_consts": EmailConsts.FAKE_EMAIL
+    }
+    with flask_app_mock.test_request_context('/user', method='POST', json=mock_json):
+        reponse = undecorated_func()
+        print(reponse)
+        assert reponse.status_code == 780
+
+
 
 """
 var body = JSON.stringify({

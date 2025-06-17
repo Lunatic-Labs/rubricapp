@@ -17,6 +17,7 @@ class EmailConsts:
     FAKED_RESET_CODE = "789"
     FIRST_NAME = "TESTER"
     LAST_NAME = "YEP"
+    FAKE_MSG = "HELLO, THIS IS A FAKE MSG."
 
 class MockUtil:
     """This class just formats information passed to it for debugging purposes."""
@@ -49,7 +50,12 @@ class MockUtil:
         assert i is not j, MockUtil.dynamic_msg(i, j, "is", expected)
 
     @staticmethod
-    def list_comparision(list_a, list_b, func, none_comparison=False, expected = None):
+    def instance_comparision(i, j, expected=None):
+        """Assertion test for comparing class instances."""
+        assert isinstance(i, j) is True, MockUtil.dynamic_msg(i, j, "isinstance()", expected)
+
+    @staticmethod
+    def list_comparision(list_a, list_b, func, none_comparison=False, expected = ""):
         """Usage: give it two lists and a MockUtil function to compare things faster.
             It is possible to give it one list and an empty list if none_comparision is true.
         """

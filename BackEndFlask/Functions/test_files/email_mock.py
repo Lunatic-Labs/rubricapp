@@ -81,6 +81,11 @@ def send_email_param(x, i, j, l):
     param_type_is_only_allowed_types(i, allowed)
     param_type_is_only_allowed_types(j, allowed)
     param_is_email_simple(x)
+
+def check_bounced_emails(param):
+    param_singleton(param, None)
+    # NOTE: timestamp is not fully implemented to be able to check it correctly
+    # Will need future work here to ensure that we are correcting mocking the function.
 # Below are now the mock object creators.
 #--------------------------------------------------------- 
 
@@ -142,6 +147,16 @@ def create_send_email_mock()-> MagicMock:
     sys.modules["models.utility"].send_email = mock_send_email
     
     return mock_send_email
+
+def create_check_bounced_emails() -> MagicMock:
+    """
+    Descripiton:
+        Replaces our own built in function check_bounced_emails
+    """
+    mock_check_bounced_emails =  MagicMock()
+    return_self = lambda from_timestamp=None:(send_email_param, mock_check_bounced_emails)[1]
+    mock_check_bounced_emails.check_bounced_emails = return_self
+    return mock_check_bounced_emails
 
 def create_google_mock_email_objs() -> bool:
     """Takes commonly used objects and replaces them with the Mocked objects and its respective functions"""
