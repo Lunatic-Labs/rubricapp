@@ -41,19 +41,13 @@ class AdminViewRatings extends Component {
       var chosenCourse = this.props.navbar.state.chosenCourse;
 
       if(this.props.chosenAssessmentId !== "") {
-        // Fetch student ratings for the chosen assessment task
-        
+        // Fetch ratings for the chosen assessment task. Checks if assessment belongs to a team or not. The variable 'team_id' is not an identifier,
+        // orginal author of team ratings code, hmnur3636, used it as a boolean value
         var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
         const url = `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`;
         const urlFinal = assessmentIsTeam[this.props.chosenAssessmentId] ? `${url}&team_id=true` : url;
         
         genericResourceGET(urlFinal, "ratings", this);
-        
-        // plan to check for team: set up another genericResoruceGet() to retrieve the team_id for the chosenAssessment maybe?
-        // genericResourceGET(
-        //   `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, // does not assign a value to team_id for Rating_routes. this results in lines 35-54 being ignored
-        //   "ratings", this
-        // ); 
       }
 
       // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
