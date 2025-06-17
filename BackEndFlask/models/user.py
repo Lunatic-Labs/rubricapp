@@ -6,10 +6,7 @@ from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
-<<<<<<< HEAD
-=======
 from models.completed_assessment import completed_assessment_team_or_user_exists
->>>>>>> master
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails
 
