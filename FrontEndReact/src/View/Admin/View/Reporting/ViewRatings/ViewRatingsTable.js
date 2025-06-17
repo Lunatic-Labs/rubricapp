@@ -1,16 +1,27 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
-
-
+import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 class ViewRatingsTable extends Component {
   render() {
     var allRatings = [];
 
+    let nameLabel = "";
+    var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
+    // Determines if it is students or teams
+    if (assessmentIsTeam[this.props.chosenAssessmentId] === false) {
+        nameLabel = "Student Name";
+      } else {
+        nameLabel = "Team Name";
+      }
     this.props.ratings.map((currentRating) => {
       var rating = {};
 
-      rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
+      if (currentRating["first_name"] && currentRating["last_name"]) {
+        rating["name"] = currentRating["first_name"] + " " + currentRating["last_name"];
+      } else if (currentRating["team_name"]) {
+        rating["name"] = currentRating["team_name"];
+      }
 
       rating["feedback_time_lag"] = currentRating["lag_time"];
 
@@ -27,8 +38,8 @@ class ViewRatingsTable extends Component {
 
     const columns = [
       {
-        name: "student_name",
-        label: "Student Name",
+        name: "name",
+        label: nameLabel,
         options: {
           filter: true,
         }
@@ -45,8 +56,8 @@ class ViewRatingsTable extends Component {
     // Add in the rest of the columns with the categories that correspond to the chosen rubric
     this.props.categories.map((i) => {
       columns.push({
-        name: i['category_name'],
-        label: i['category_name'], 
+        name: i["category_name"],
+        label: i["category_name"],
         options: {
           filter: true,
         }

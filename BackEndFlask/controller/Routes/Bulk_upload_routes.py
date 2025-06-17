@@ -11,6 +11,7 @@ import shutil
 from controller.Route_response import create_bad_response, create_good_response
 from flask_jwt_extended import jwt_required
 import uuid
+from core import limiter
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -22,6 +23,7 @@ from controller.security.CustomDecorators import (
 @bad_token_check()
 @AuthCheck()
 @admin_check()
+@limiter.limit("1 per 3 seconds")
 def upload_CSV():
     try:
         file = request.files['csv_file']

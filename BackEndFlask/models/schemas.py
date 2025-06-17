@@ -42,6 +42,7 @@ class User(db.Model):
     reset_code = db.Column(db.Text, nullable=True)
     is_admin = db.Column(db.Boolean, nullable=False)
     last_update = db.Column(DateTime(timezone=True), nullable=True)
+    team = db.relationship('TeamUser', backref='user', cascade='all, delete')
 
 class Rubric(db.Model):
     __tablename__ = "Rubric"
@@ -96,7 +97,7 @@ class UserCourse(db.Model):
     __tablename__ = "UserCourse"
     __table_args__ = {'sqlite_autoincrement': True}
     user_course_id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id,ondelete='CASCADE'), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     active = db.Column(db.Boolean)
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id), nullable=False)
