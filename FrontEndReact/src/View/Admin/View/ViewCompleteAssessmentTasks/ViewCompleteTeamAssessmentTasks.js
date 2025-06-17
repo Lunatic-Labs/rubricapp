@@ -10,6 +10,7 @@ import { genericResourcePUT, genericResourcePOST } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
 import { getHumanReadableDueDate } from "../../../../utility";
+import { Tooltip } from '@mui/material';
 
 class ViewCompleteTeamAssessmentTasks extends Component {
     constructor(props) {
@@ -240,7 +241,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
       },
       {
         name: "Student/Team Id",
-        label: "Message",
+        label: "Notify",
         options: {
           filter: false,
           sort: false,
@@ -252,14 +253,25 @@ class ViewCompleteTeamAssessmentTasks extends Component {
             completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
             if (completedAssessmentId !== null) {
               return (
-                <CustomButton
-                onClick={() => this.handleDialog(true, completedAssessmentId)}
-                label="Message"
-                align="center"
-                isOutlined={true}
-                disabled={notificationSent}
-                aria-label="Send individual messages"
-                />
+                <Tooltip
+                  title={
+                    <>
+                      <p>
+                        Notify individual team.
+                      </p>
+                    </>
+                  }>
+                  <span>
+                    <CustomButton
+                    onClick={() => this.handleDialog(true, completedAssessmentId)}
+                    label="Notify"
+                    align="center"
+                    isOutlined={true}
+                    disabled={notificationSent}
+                    aria-label="Send individual messages"
+                    />
+                  </span>
+                </Tooltip>
               )
             }else{
               return(
@@ -304,14 +316,25 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                             notes={this.state.notes}
                             error={this.state.errors}
                         />
-
-            <CustomButton
-              label="Send Notification"
-              onClick={() => this.handleDialog(false)}
-              isOutlined={false}
-              disabled={notificationSent}
-              aria-label="viewCompletedAssessmentTeamSendNotificationButton"
-            />
+            <Tooltip
+              title={
+                  <>
+                      <p> 
+                        Notifies all teams results are available.
+                      </p>
+                        
+                  </>
+                }>
+              <span>
+                <CustomButton
+                  label="Send Notification"
+                  onClick={() => this.handleDialog(false)}
+                  isOutlined={false}
+                  disabled={notificationSent}
+                  aria-label="viewCompletedAssessmentTeamSendNotificationButton"
+                />
+              </span>
+            </Tooltip>
           </Box>
         </Box>
 
