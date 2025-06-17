@@ -80,13 +80,11 @@ class AdminViewRatings extends Component {
 
   componentDidMount() {
     this.fetchData();
-    console.log("Did mount:",this.state.ratings);
   }
 
   componentDidUpdate() {
     if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
         this.fetchData();
-      console.log("Did update:",this.state);
     }
 
     /**
