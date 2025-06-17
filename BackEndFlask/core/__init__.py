@@ -1,5 +1,5 @@
 import google.auth
-# from googleapiclient.discovery import build
+from googleapiclient.discovery import build
 import googleapiclient.discovery
 from google.auth.transport.requests import Request
 from google.oauth2.credentials import Credentials
@@ -7,6 +7,8 @@ from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
+from flask_limiter import Limiter
+from flask_limiter.util import get_remote_address
 from models.tests import testing
 from dotenv import load_dotenv
 from flask import Flask
@@ -18,13 +20,17 @@ import os
 import re
 import redis
 #import logging
+from models.logger import Logger
 
 def get_oauth2_credentials(token_fp, scopes):
     try:
         if not os.path.exists(token_fp):
             return None
         creds = Credentials.from_authorized_user_file(token_fp, scopes)
+<<<<<<< HEAD
         return None
+=======
+>>>>>>> master
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         if not creds or not creds.valid:
@@ -125,9 +131,31 @@ ma = Marshmallow(app)
 migrate = Migrate(app, db)
 
 redis_host = os.environ.get('REDIS_HOST', 'localhost')
+redis_limiter = os.environ.get('REDIS_LIMITER', 'localhost')
 
 red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 
+<<<<<<< HEAD
+=======
+redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
+
+# Settting up the request rater limiter
+limiter = Limiter(
+    get_remote_address,
+    app=app,
+    default_limits=None,
+    storage_uri= "redis://"+ str(redis_limiter) + ":6380/0",
+)
+
+# This gets set in wsgi.py/run.py depending on if we
+# are running locally or on a server.
+class Config:
+    rubricapp_running_locally = False
+    logger = Logger("init-config-logger")
+
+config = Config()
+
+>>>>>>> master
 # Initialize Gmail OAuth2 service
 try:
     oauth2_scopes = [
@@ -139,7 +167,12 @@ try:
     oauth2_credentials = None
     oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
     oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
+<<<<<<< HEAD
 except Exception:
+=======
+except Exception as e:
+    config.logger.error(str(e))
+>>>>>>> master
     oauth2_credentials = None
     oauth2_service = None
 

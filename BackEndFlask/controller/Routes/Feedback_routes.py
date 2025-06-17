@@ -3,6 +3,7 @@ from controller import bp
 from controller.Route_response import *
 from datetime import datetime
 from flask_jwt_extended import jwt_required
+from marshmallow import fields
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 
@@ -35,14 +36,11 @@ def create_new_feedback():
 
 
 class StudentFeedbackSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'feedback_id',
-            'user_id',
-            'completed_assessment_id',
-            'feedback_time',
-            'lag_time'
-        )
+    feedback_id             = fields.Integer()    
+    user_id                 = fields.Integer()
+    completed_assessment_id = fields.Integer()                
+    feedback_time           = fields.DateTime()      
+    lag_time                = fields.DateTime()
 
 student_feedback_schema = StudentFeedbackSchema()
 student_feedbacks_schema = StudentFeedbackSchema(many=True)

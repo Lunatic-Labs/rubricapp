@@ -19,6 +19,9 @@ def get_emails_need_checking():
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
+=======
+>>>>>>> master
 =======
 >>>>>>> master
 
@@ -50,11 +53,14 @@ def mark_emails_as_pending(emails):
 
     db.session.commit()
 <<<<<<< HEAD
+<<<<<<< HEAD
 =======
 >>>>>>> 86ce120c4 (add threading, local runtime detection, EmailValidation table)
 =======
 >>>>>>> 86ce120c4 (add threading, local runtime detection, EmailValidation table)
 =======
 >>>>>>> 86ce120c4 (add threading, local runtime detection, EmailValidation table)
+=======
+>>>>>>> master
 =======
 >>>>>>> master
