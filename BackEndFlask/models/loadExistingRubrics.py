@@ -128,11 +128,17 @@ def load_existing_categories():
         [14, "Forming an argument from evidence", "Constructed a logically sound argument with reasoning that explains how the evidence supports the claim.", completely],
         [14, "Critiquing arguments", "Engaged in argumentation by critically evaluating competing arguments.", completely],
         [14, "Engaging in diabolical argumentation", "Engaged in verbal argumentation by articulating one’s argument and questioning competing ones.", completely],
-        # Disseminating Categories 1-4
+        # (Latest update is June 17, 2025) Disseminating findings Categories 1-10
         [15, "Obtaining information", "Collected relevant information from multiple sources of scientific knowledge such as books, journal articles, technical databases, etc.", completely],
         [15, "Evaluating information", "Critically evaluated the reliability of the obtained information.", completely],
         [15, "Synthesing information", "Combined information obtained from different sources to suit the purpose of the current investigation.", completely],
-        [15, "Communicating information"]
+        [15, "Intent", "Clearly conveys the purpose, and the content is well-aligned towards this intent", completely],
+        [15, "Audience", "Uses language and delivery style that is consistent with the norms of the subject area and suitable for the audience", consistently],
+        [15, "Organization", "Presents ideas in a logical and cohesive manner", consistently],
+        [15, "Visual Representations", "Constructs and uses visual representations effectively and appropriately", consistently],
+        [15, "Format and Style", "Selects a format and style that enhances the effectiveness of the communication", consistently],
+        [15, "Mechanics (written words)", "Uses expected writing conventions for the form of communication", consistently],
+        [15, "Delivery (oral)", "Uses voice and body language to convey the intended message in a clear and engaging manner", consistently]
     ]
     for category in categories:
         c = {} 
@@ -478,55 +484,96 @@ def load_existing_observable_characteristics():
         [57, "Referenced pieces of analyzed and external data that can act as evidence to justify the derived meaning."],
         [57, "Commented on the robustness or the trustworthiness of the conclusion."],
         [57, "None"],
-        # Explaining phenoma
-        # Presenting evidence Observable characteristics 
-        # Constructing explanations Observable characteristics 1-3
-        [58, "Identified the phenomenon that warrants an explanation."],
-        [58, "Constructed an explanation that gives a causal account of the phenomenon at a sub-microscopic level."],
-        [58, "Combined multiple ideas in valid ways to construct the explanation."],
+        # Explaining phenomena
+        # Presenting evidence Observable characteristics 1-3
+        [58, "Listed valid and reliable evidence to support the claim."],
+        [58, "The evidence listed is necessary."],
+        [58, "The evidence listed is sufficient."],
         [58, "None"],
+        # Constructing explanations Observable characteristics 1-3
+        [59, "Identified the phenomenon that warrants an explanation."],
+        [59, "Constructed an explanation that gives a causal account of the phenomenon at a sub-microscopic level."],
+        [59, "Combined multiple ideas in valid ways to construct the explanation."],
+        [59, "None"],
         # Arguing
         # Making claims Observable characteristics 1-3
-        [59, "Stated the claim or the conclusion of the argument."],
-        [59, "Stated possible alternative claims."],
-        [59, "Stated the conditions under which the claim holds true."],
-        [59, "None"],
-        # Presenting evidence Observable characteristics 1-3
-        [60, "Listed valid and reliable evidence to support the claim."],
-        [60, "The evidence listed is necessary."],
-        [60, "The evidence listed is sufficient."],
+        [60, "Stated the claim or the conclusion of the argument."],
+        [60, "Stated possible alternative claims."],
+        [60, "Stated the conditions under which the claim holds true."],
         [60, "None"],
-        # Forming an argument from evidence Observable characteristics 1-2
-        [61, "Linked the claim to the evidence with logically sound reasoning rooted in scientific ideas/theories."],
-        [61, "Used multiple pieces of evidence coherently to support the claim."],
+        # Presenting evidence Observable characteristics 1-3
+        [61, "Listed valid and reliable evidence to support the claim."],
+        [61, "The evidence listed is necessary."],
+        [61, "The evidence listed is sufficient."],
         [61, "None"],
-        # Critiquing arguments Observable characteristics 1-3
-        [62, "Critically evaluated the merits and limitations of competing arguments (usually from peers)."],
-        [62, "Refined one’s own argument in the light of contradictory evidence (usually from peers)."],
-        [62, "Reached an evidence-based conclusion based on the merits of all the arguments presented."],
+        # Forming an argument from evidence Observable characteristics 1-2
+        [62, "Linked the claim to the evidence with logically sound reasoning rooted in scientific ideas/theories."],
+        [62, "Used multiple pieces of evidence coherently to support the claim."],
         [62, "None"],
-        # Engaging in diabolical argumentation Observable characteristics 1-5
-        [63, "Articulated logically sound argument to justify one’s claims."],
-        [63, "Clarified their argument when requested."],
-        [63, "Responded adequately to the questions and challenges posed."],
-        [63, "Listened to all the arguments made by peers."],
-        [63, "Supported or challenged competing arguments in a meaningful way."],
+        # Critiquing arguments Observable characteristics 1-3
+        [63, "Critically evaluated the merits and limitations of competing arguments (usually from peers)."],
+        [63, "Refined one’s own argument in the light of contradictory evidence (usually from peers)."],
+        [63, "Reached an evidence-based conclusion based on the merits of all the arguments presented."],
         [63, "None"],
+        # Engaging in diabolical argumentation Observable characteristics 1-5
+        [64, "Articulated logically sound argument to justify one’s claims."],
+        [64, "Clarified their argument when requested."],
+        [64, "Responded adequately to the questions and challenges posed."],
+        [64, "Listened to all the arguments made by peers."],
+        [64, "Supported or challenged competing arguments in a meaningful way."],
+        [64, "None"],
         # Disseminating findings 
         # Obtaining information Observable characteristics 1-3
-        [64, "Identified source(s) of the information needed for the current investigation/study undertaken."],
-        [64, "Extracted relevant and necessary information from the referenced source(s)."],
-        [64, "Cited the source of information in any of the formats accepted by the scientific community."],
-        [64, "None"],
-        # Evaluating information Observable characteristics 1-2
-        [65, "Obtained information from trustworthy sources."],
-        [65, "Determined the quality and accuracy of the information itself."],
+        [65, "Identified source(s) of the information needed for the current investigation/study undertaken."],
+        [65, "Extracted relevant and necessary information from the referenced source(s)."],
+        [65, "Cited the source of information in any of the formats accepted by the scientific community."],
         [65, "None"],
-        # Synthesing information Observable characteristics 1-2
-        [66, "Combined multiple pieces of information in valid ways."],
-        [66, "Paraphrased the information without copying verbatim from the source."],
+        # Evaluating information Observable characteristics 1-2
+        [66, "Obtained information from trustworthy sources."],
+        [66, "Determined the quality and accuracy of the information itself."],
         [66, "None"],
-        # Communicating information Observable characteristics
+        # Synthesing information Observable characteristics 1-2
+        [67, "Combined multiple pieces of information in valid ways."],
+        [67, "Paraphrased the information without copying verbatim from the source."],
+        [67, "None"],
+        # Communicating information Observable characteristics# Intent Observable Characteristics 1-3
+        [68, "Clearly stated what the audience should gain from the communication"],
+        [68, "Used each part of the communication to convey or support the main message"],
+        [68, "Concluded by summarizing what was to be learned"],
+        [68, "None"],
+        # Audience Observable Characteristic 1-3
+        [69, "Communicated to the full range of the audience, including novices and those with expertise"],
+        [69, "Aligned the communication with the interests and background of the particular audience"],
+        [69, "Used vocabulary that aligned with the discipline and was understood by the audience"],
+        [69, "None"],
+        # Organization Observable Characteristics 1-3
+        [70, "There was a clear story arc that moved the communication forward"],
+        [70, "Organizational cues and transitions clearly indicated the structure of the communication"],
+        [70, "Sequence of ideas flowed in an order that was easy to follow"],
+        [70, "None"],
+        # Visual Representations Observable Characteristics 1-3
+        [71, "Each figure conveyed a clear message"],
+        [71, "Details of the visual representation were easily interpreted by the audience"],
+        [71, "The use of the visual enhanced understanding by the audience"],
+        [71, "None"],
+        # Format and Style Observable Characteristics 1-3
+        [72, "Stylistic elements were aesthetically pleasing and did not distract from the message"],
+        [72, "Stylistic elements were designed to make the communication accessbile to the audience (size, colors, contrasts, etc.)"],
+        [72, "The level of formality of the communication aligns with the setting, context, and purpose"],
+        [72, "None"],
+        # Mechanics Written Word Observable Characteristics 1-4
+        [73, "Writing contained correct spelling, word choice, punctuation, and capitalization"],
+        [73, "All phrases and sentences were grammatically correct"],
+        [73, "All paragraphs (or slides) were well constructed around a central idea"],
+        [73, "All figures and tables were called out in the narrative, and sources were correctly cited"],
+        [73, "None"],
+        # Delivery Oral Observable Characteristics 1-4
+        [74, "Spoke loudly and clearly with a tone that indicated confidence and interest in the subject"],
+        [74, "Vocal tone and pacing helped maintain audience interest"],
+        [74, "Gestures and visual cues further oriented the audience to focus on particular items or messages"],
+        [74, "Body language directed the delivery toward the audience and indicated the speaker was open to engagement"],
+        [74, "None"],
+
 
     ]
     for observable in observable_characteristics:
@@ -976,63 +1023,122 @@ def load_existing_suggestions():
         [57, "Map out how these interconnected pieces of evidence can be used to justify the derived meaning."],
         [57, "Refer to aspects of your data analysis such as error margins, limitations, and infer how they affect your conclusion."],
         # Explaining phenomena
-        # Presenting evidence Suggestions 1-
+        # Presenting evidence Suggestions 1-5
+        [58, "Reflect on whether the evidence you presented supports what it is supposed to support (validity)"],
+        [58, "Reflect on whether the evidence you presented can be consistently reproduced under the same conditions (reliability)"],
+        [58, "Present evidence that is obtained by empirical means only (either from your investigation or from previous work)."],
+        [58, "Do not list a particular piece of data if you can adequately support the claim without using it."],
+        [58, "Do not omit any evidence without which the argument is incomplete or has flaws."],
         # Constructing explanations Suggestions 1-4
-        [58, "Identify the phenomenon that is observable and takes place at the macroscopic level."],
-        [58, "Explain the phenomenon at a descriptive level (what happens)"],
-        [58, "Identify all the interactions (usually intermolecular) at play at the sub-microscopic level required to explain the phenomenon."],
-        [58, "Link the ideas coherently such that it gives a causal (why it happens) mechanistic (how it happens) account for the phenomenon."],
+        [59, "Identify the phenomenon that is observable and takes place at the macroscopic level."],
+        [59, "Explain the phenomenon at a descriptive level (what happens)"],
+        [59, "Identify all the interactions (usually intermolecular) at play at the sub-microscopic level required to explain the phenomenon."],
+        [59, "Link the ideas coherently such that it gives a causal (why it happens) mechanistic (how it happens) account for the phenomenon."],
         # Arguing
         # Making claims Suggestions 1-4
-        [59, "Reflect on the investigation's purpose and determine whether you answered the question of interest or tested the hypothesis."],
-        [59, "State the result obtained from your investigation as a claim statement in your own words."],
-        [59, "State alternate claim(s) if you inferred more than one conclusion from your investigation."],
-        [59, "Identify the conditions that could limit the validity of your claim such as temperature, concentration, etc."],
+        [60, "Reflect on the investigation's purpose and determine whether you answered the question of interest or tested the hypothesis."],
+        [60, "State the result obtained from your investigation as a claim statement in your own words."],
+        [60, "State alternate claim(s) if you inferred more than one conclusion from your investigation."],
+        [60, "Identify the conditions that could limit the validity of your claim such as temperature, concentration, etc."],
         # Presenting evidence Suggestions 1-5
-        [60, "Reflect on whether the evidence you presented supports what it is supposed to support (validity)"],
-        [60, "Reflect on whether the evidence you presented can be consistently reproduced under the same conditions (reliability)"],
-        [60, "Present evidence that is obtained by empirical means only (either from your investigation or from previous work)."],
-        [60, "Do not list a particular piece of data if you can adequately support the claim without using it."],
-        [60, "Do not omit any evidence without which the argument is incomplete or has flaws."],
+        [61, "Reflect on whether the evidence you presented supports what it is supposed to support (validity)"],
+        [61, "Reflect on whether the evidence you presented can be consistently reproduced under the same conditions (reliability)"],
+        [61, "Present evidence that is obtained by empirical means only (either from your investigation or from previous work)."],
+        [61, "Do not list a particular piece of data if you can adequately support the claim without using it."],
+        [61, "Do not omit any evidence without which the argument is incomplete or has flaws."],
         # Forming an argument from evidence Suggestions 1-4
-        [61, "Do not merely list the evidence."],
-        [61, "Demonstrate how the evidence supports the claim based on scientifically sound reasoning."],
-        [61, "Familiarize yourself with the CER (Claim-Evidence-Reasoning) approach of argumentation."],
-        [61, "Identify how each piece of evidence supports aspects of your reasoning to form a coherent argument."],
+        [62, "Do not merely list the evidence."],
+        [62, "Demonstrate how the evidence supports the claim based on scientifically sound reasoning."],
+        [62, "Familiarize yourself with the CER (Claim-Evidence-Reasoning) approach of argumentation."],
+        [62, "Identify how each piece of evidence supports aspects of your reasoning to form a coherent argument."],
         # Critiquing arguments Suggestions 1-5
-        [62, "Evaluate competing arguments through the same measures mentioned in the component ‘forming an argument from evidence’."],
-        [62, "Do not stick to your argument in the light of contradictory evidence."],
-        [62, "If the newly presented piece of evidence is valid and reliable, add that to your list of evidence."],
-        [62, "Form a coherent argument with the new list of evidence as mentioned in the component ‘forming an argument from evidence’."],
-        [62, "After evaluating all the arguments presented, choose the most compelling one based on the reasoning provided."],
+        [63, "Evaluate competing arguments through the same measures mentioned in the component ‘forming an argument from evidence’."],
+        [63, "Do not stick to your argument in the light of contradictory evidence."],
+        [63, "If the newly presented piece of evidence is valid and reliable, add that to your list of evidence."],
+        [63, "Form a coherent argument with the new list of evidence as mentioned in the component ‘forming an argument from evidence’."],
+        [63, "After evaluating all the arguments presented, choose the most compelling one based on the reasoning provided."],
         # Engaging in dialogical arguemntation Suggestions 1-6
-        [63, "Think through each of the components of your argument and order them such that you can articulate in a comprehensible way."],
-        [63, "Try to adopt the CER approach of argumentation."],
-        [63, "When requested, provide clarifications about your argument either by restating or summarizing."],
-        [63, "Respond to questions and challenges in an impersonal way by basing your arguments on scientific ideas and evidence."],
-        [63, "Listen carefully and make notes of key points of others’ arguments so that you can support or challenge competing ideas."],
-        [63, "When you challenge others’ arguments, make your points in an impersonal way based on scientific ideas and evidence."],
+        [64, "Think through each of the components of your argument and order them such that you can articulate in a comprehensible way."],
+        [64, "Try to adopt the CER approach of argumentation."],
+        [64, "When requested, provide clarifications about your argument either by restating or summarizing."],
+        [64, "Respond to questions and challenges in an impersonal way by basing your arguments on scientific ideas and evidence."],
+        [64, "Listen carefully and make notes of key points of others’ arguments so that you can support or challenge competing ideas."],
+        [64, "When you challenge others’ arguments, make your points in an impersonal way based on scientific ideas and evidence."],
         # Disseminating findings
         # Obtaining information Suggestions 1-5
-        [64, "Explore various sources of information such as textbooks, reference books, research articles from Scopus, Web of Science, etc."],
-        [64, "Shortlist the sources that have the required information for your study."],
-        [64, "Extract information from the shortlisted sources to set the context for the current study or justify the relevance of your work."],
-        [64, "Reference the information obtained from various sources by using accepted formats such as ACS, APA, etc."],
-        [64, "Use reference manager software such as Zotero, Microsoft end note, etc. for referencing extracted information."],
+        [65, "Explore various sources of information such as textbooks, reference books, research articles from Scopus, Web of Science, etc."],
+        [65, "Shortlist the sources that have the required information for your study."],
+        [65, "Extract information from the shortlisted sources to set the context for the current study or justify the relevance of your work."],
+        [65, "Reference the information obtained from various sources by using accepted formats such as ACS, APA, etc."],
+        [65, "Use reference manager software such as Zotero, Microsoft end note, etc. for referencing extracted information."],
         # Evaluating information Suggestions 1-7
-        [65, "Vet the sources by considering whether: The author is an expert in the field or not."],
-        [65, "Vet the sources by considering whether: It was published in a reputable peer-reviewed journal such as JACS, Nature, etc."],
-        [65, "Vet the sources by considering whether: It was published by a reputable publishing company such as ACS, RSC, etc."],
-        [65, "Assess the quality of the information by considering whether: The experimental technique used was appropriate to achieve the intended objective."],
-        [65, "Assess the quality of the information by considering whether: There was any bias in the study such as researcher bias, sampling bias, confirmation bias, etc."],
-        [65, "Assess the quality of the information by considering whether: There were unethical practices performed such as data dredging (p-hacking), cherry-picking data, etc. in the analysis."],
-        [65, "Assess the quality of the information by considering whether: The funding sources have a vested interest in the results of the study."],
+        [66, "Vet the sources by considering whether: The author is an expert in the field or not."],
+        [66, "Vet the sources by considering whether: It was published in a reputable peer-reviewed journal such as JACS, Nature, etc."],
+        [66, "Vet the sources by considering whether: It was published by a reputable publishing company such as ACS, RSC, etc."],
+        [66, "Assess the quality of the information by considering whether: The experimental technique used was appropriate to achieve the intended objective."],
+        [66, "Assess the quality of the information by considering whether: There was any bias in the study such as researcher bias, sampling bias, confirmation bias, etc."],
+        [66, "Assess the quality of the information by considering whether: There were unethical practices performed such as data dredging (p-hacking), cherry-picking data, etc. in the analysis."],
+        [66, "Assess the quality of the information by considering whether: The funding sources have a vested interest in the results of the study."],
         # Synthesizing information Suggestions 1-4
-        [66, "State how the different pieces of information are connected."],
-        [66, "Write out a statement or a paragraph that summarizes the integration of information."],
-        [66, "Map out how the combined information can suit the current investigation's purpose."],
-        [66, "Paraphrase the information in simpler but accurate terms by linking the previous works to the current investigation."],
-        # Communicating information Suggestions
+        [67, "State how the different pieces of information are connected."],
+        [67, "Write out a statement or a paragraph that summarizes the integration of information."],
+        [67, "Map out how the combined information can suit the current investigation's purpose."],
+        [67, "Paraphrase the information in simpler but accurate terms by linking the previous works to the current investigation."],
+        # Intent Suggestions 1-5
+        [68, "Decide if your main purpose is to inform, to persuade, to argue, to summarize, to entertain, to inspire, etc."],
+        [68, "Write out the intent of the communication you are creating and refer back to it as you generate your material."],
+        [68, "Make sure the purpose of the communication is presented early to orient your audience to the focus of the communication."],
+        [68, "Check that the focus of each segment is clearly linked to the main message or intent of the communication."],
+        [68, "Summarize the main ideas to wrap up the presentation (refer back to the initial statement(s) of what was to be learned)."],
+        [68, "Nothing specific at this time"],
+        # Audience Suggestions 1-6
+        [69, "Identify the range and level of expertise and interest your audience has for the topic and design your communication to have aspects that will engage all members of the audience."],
+        [69, "Identify what the audience needs to know to understand the narrative."],
+        [69, "Plan how you will interpret key data or details in a meaningful way for non-experts."],
+        [69, "Only use jargon when it is understood readily by most members of your audience, and it makes the communication more effective and succinct."],
+        [69, "Check that the vocabulary, sentence structure, and tone used in your communication is aligned with the level of your audience."],
+        [69, "Collect feedback from others on drafts to make sure the core message of the communication is easily understood."],
+        [69, "Nothing specific at this time"],
+        # Organization Suggestions 1-6
+        [70, "Consider the 'story' that you want to tell. Ask yourself what's the main message you want the audience to leave with."],
+        [70, "Identify the critical points for the story (do this before you prepare the actual communication) and map out the key points."],
+        [70, "Summarize sections before transitioning to the next topic."],
+        [70, "Repeat key ideas to ensure the audience can follow the main idea."],
+        [70, "Make sure that you introduce prerequisite information early in the communication."],
+        [70, "Try more than one order for the topics, to see if overall flow is improved."],
+        [70, "Nothing specific at this time"],
+        # Visual Representations Suggestions 1-6
+        [71, "Plan what types of figures are needed to support the narrative - consider writing out a figure description before you construct it."],
+        [71, "Avoid including unnecessary details that detract from the intended message."],
+        [71, "Consider how many messages each visual is trying to convey and divide up if the complexity or density is overwhelming."],
+        [71, "Be sure labels, text, and small details can be easily read."],
+        [71, "Provide a caption that helps interpret the key aspects of the visual."],
+        [71, "Seek feedback on visuals to gauge initial reaction and ease of interpretation."],
+        [71, "Nothing specific at this time"],
+        # Format Style Suggestions 1-6
+        [72, "Use titles (headers) and subtitles (subheaders) to orient the audience and help them follow the narrative."],
+        [72, "Look at pages or slides as a whole for an easy-to-read layout, such as white space, headers, line spacing, etc."],
+        [72, "Use emphases where needed to direct audience attention to important aspects."],
+        [72, "Use colors to carefully highlight or call attention to key elements to enhance your narrative without distracting from your message."],
+        [72, "Make sure that text, figures, and colors are readable and accessible for all."],
+        [72, "Seek feedback to confirm that the language, tone, and style of your communication match the level of formality needed for your context and purpose."],
+        [72, "Nothing specific at this time"],
+        # Mechanics Written Words Suggestions 1-7
+        [73, "Proofread your writing for spelling errors, punctuation, autocorrects, etc."],
+        [73, "Review sentence structure for subject-verb agreement, consistent tense, run on sentences, and other structural problems."],
+        [73, "Verify that items in lists are parallel."],
+        [73, "List the themes of each paragraph (or slide).  If there are more than 2, consider starting a new paragraph (or slide)."],
+        [73, "Confirm that each figure, table, etc has been numbered consecutively and has been called out and discussed further in the narrative."],
+        [73, "Confirm that all work that has been published elsewhere or ideas/data that were not generated by the author(s) has been properly cited using appropriate conventions."],
+        [73, "Ask someone else to review and provide feedback on your work."],
+        [73, "Nothing specific at this time"],
+        # Delivery Oral Suggestions 1-5
+        [74, "Practice for others or record your talk; i. be sure that your voice can be heard, and your word pronunciations are clear. ii. listen for “ums”, “like”, or other verbal tics/filler words that can detract from your message. iii. observe your natural body language, gestures, and stance in front of the audience to be sure that they express confidence and enhance your message."],
+        [74, "Add variety to your speed or vocal tone to emphasize key points or transitions."],
+        [74, "Try to communicate/engage as if telling a story or having a conversation with the audience."],
+        [74, "Face the audience and do not look continuously at the screen or notes."],
+        [74, "Make eye contact with multiple members of the audience."],
+        [74, "Nothing specific at this time"],        
         ]
     for suggestion in suggestions:
         create_suggestion(suggestion)
