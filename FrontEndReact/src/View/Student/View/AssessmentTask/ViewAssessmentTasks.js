@@ -142,9 +142,8 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
-                        // let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
-                        // let filledByStudent = at.completed_by_role_id === 5;
-                        let filledByStudent = true;
+                        let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
+                        let filledByStudent = at.role_id === 5;
 
                         return (
                             <Box
