@@ -573,8 +573,6 @@ def load_existing_observable_characteristics():
         [74, "Gestures and visual cues further oriented the audience to focus on particular items or messages"],
         [74, "Body language directed the delivery toward the audience and indicated the speaker was open to engagement"],
         [74, "None"],
-
-
     ]
     for observable in observable_characteristics:
         create_observable_characteristic(observable)
