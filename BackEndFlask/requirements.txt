@@ -88,7 +88,7 @@ six == 1.17.0
 tzdata == 2025.2
 typing_extensions == 4.13.2
 uritemplate == 4.1.1
-urllib3 == 2.4.0
+urllib3 == 2.5.0
 wrapt == 1.17.2
 zope.event == 5.0
 zope.interface == 7.2
