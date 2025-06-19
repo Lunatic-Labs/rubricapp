@@ -195,23 +195,24 @@ def test_017_test_check_bounced_emails_are_responding(check_bounced_emails):
 # These next few test use the more general routes to ensure that routes that
 # depend on these functions are still working as intended.
 #------------------------------------------------------------------------------
-def test_018_test_add_user_route(flask_app_mock):
+def test_018_test_add_user_route(flask_app_mock, send_email):
     undecorated_func = add_user.__wrapped__.__wrapped__.__wrapped__.__wrapped__
-    mock_json = {
-        "first_name": "KUNG FU PANDA",
-        "last_name": "KUNG FU PANDA",
-        "email": "FAKEhkjhkjhkjhkjhkh@gmail.com",
-        "lms_id": None,  # Use `None` instead of "null"
-        "consent": None,
-        "owner_id": 2,
-        "role_id": 5,
-        "user_id": 1,
-        "email_consts": EmailConsts.FAKE_EMAIL
-    }
-    with flask_app_mock.test_request_context('/user', method='POST', json=mock_json):
-        reponse = undecorated_func()
-        print(reponse)
-        assert reponse.status_code == 780
+
+    with flask_app_mock.app_context():
+        db = flask_app_mock.db
+        if MockUtil.is_fake_user_added():
+            MockUtil.manually_remove_fake_user(db, True)
+
+    with flask_app_mock.test_request_context('/user', method='POST', json=EmailConsts.MOCK_JSON):
+        response = undecorated_func()
+        MockUtil.equal(response[0]['status'], 201, "Successful creation of user is needed.")
+
+    MockUtil.equal(send_email.call_count, 1, "Should have triggered a new user email send.")
+    send_email.reset_mock()
+    
+    with flask_app_mock.app_context():
+        db = flask_app_mock.db
+        MockUtil.manually_remove_fake_user(db, True)
 
 
 
