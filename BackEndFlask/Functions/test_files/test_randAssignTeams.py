@@ -1,4 +1,4 @@
-""" from Functions.customExceptions import *
+from Functions.customExceptions import *
 from Functions.test_files.PopulationFunctions import *
 from models.team import *
 from models.user import *
@@ -220,4 +220,4 @@ def test_no_students_in_course_error(flask_app_mock):
             delete_all_teams_team_members(result["course_id"])
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_ta_student_course(result)
-            raise """
+            raise

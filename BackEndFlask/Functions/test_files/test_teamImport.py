@@ -1,4 +1,4 @@
-""" from Functions.customExceptions import *
+from Functions.customExceptions import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
@@ -353,4 +353,4 @@ def test_student_not_enrolled_in_this_course(flask_app_mock):
         except Exception as e:
             delete_all_teams_team_members(result["course_id"])
             delete_one_admin_ta_student_course(result)
-            raise e """
+            raise e

@@ -19,27 +19,23 @@ import models
 
 # Building blocks for checks on mock objects
 #---------------------------------------------------------
-def timeout_param(param):
+def timeout_param(param) -> None:
     if param == "TIMEOUT":
         time.sleep(5)
         raise TimeoutError("Timed Out")
-def param_check(param, expected_param):
+def param_check(param, expected_param) -> None:
     if param != expected_param:
         raise ValueError("Incorrect Params")
-def flat_error(param):
+def flat_error(param) -> None:
     if param == "ERROR":
         raise Exception("Forced exception")
-#def error_param_type(param, disallowed_types:list):
-#    for disallowed in disallowed_types:
-#        if isinstance(param,disallowed):
-#            raise ValueError("Invalid type recived")
-def param_type_is_only_allowed_types(param, allowed_types:list):
+def param_type_is_only_allowed_types(param, allowed_types:list) -> None:
     if not isinstance(param, tuple(allowed_types)):
         raise ValueError("Paramater is not an allowed type.")
-def param_singleton(param, expected_param):
+def param_singleton(param, expected_param) -> None:
     if param is not expected_param:
         raise ValueError("Incorrect Params")  
-def param_is_email_simple(param:str):
+def param_is_email_simple(param:str) -> None:
     if '@' not in param:
         raise ValueError("Expected an email but got something else.")
 
@@ -63,18 +59,18 @@ def credentials_class_refresh_method_mock(param) -> None:
     flat_error(param)
     param_type_is_only_allowed_types(param, [object])
 
-def build_param_mock(extension, ver, creds):
+def build_param_mock(extension, ver, creds) -> None:
     param_check(extension, "email")
     param_check(ver, "ve1")
     param_check(creds.creds, EmailConsts.MOCKED_CREDS)
 
-def email_msg_init(email_policy):
+def email_msg_init(email_policy) -> None:
     param_singleton(email_policy, None)
 
-def sending_email_param_check(x=None, y= None):
+def sending_email_param_check(x=None, y= None) -> None:
     param_check(x, "me")
 
-def send_email_param(x, i, j, l):
+def send_email_param(x, i, j, l) -> None:
     param_check(l, 0)
     allowed = [str]
     param_type_is_only_allowed_types(x, allowed)
@@ -82,7 +78,7 @@ def send_email_param(x, i, j, l):
     param_type_is_only_allowed_types(j, allowed)
     param_is_email_simple(x)
 
-def check_bounced_emails(param):
+def check_bounced_emails(param) -> None:
     param_singleton(param, None)
     # NOTE: timestamp is not fully implemented to be able to check it correctly
     # Will need future work here to ensure that we are correcting mocking the function.

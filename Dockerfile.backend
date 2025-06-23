@@ -29,4 +29,4 @@ EXPOSE 5000
 
 # Start the Flask server
 # Restore -t to -ds before the pr
-CMD ["python", "setupEnv.py", "-t"] 
+CMD ["python", "setupEnv.py", "-ds"] 

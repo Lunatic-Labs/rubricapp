@@ -121,7 +121,7 @@ def test_010_attempt_to_start_email_service(mock_service) -> None:
 # The past service objects and the functions that built them should not see 
 # use in any other test.
 #------------------------------------------------------------------------------
-def test_011_test_email_send(send_email):
+def test_011_test_email_send(send_email) -> None:
     # The function calls will be labled 0-max to help identify which failed.
     index = 0
     try:
@@ -133,14 +133,14 @@ def test_011_test_email_send(send_email):
     MockUtil.equal(send_email.call_count, 1, "send_file should have been called once.")
     send_email.reset_mock()
 
-def test_012_test_send_reset_code(send_email):
+def test_012_test_send_reset_code(send_email) -> None:
     send_reset_code_email(EmailConsts.FAKE_EMAIL, EmailConsts.FAKED_RESET_CODE)
     args = send_email.call_args[0]
     MockUtil.equal(args[0], EmailConsts.FAKE_EMAIL, "Emails are not identical.")
     MockUtil.equal(send_email.call_count, 1, "Send email should be called only once.")
     send_email.reset_mock()
 
-def test_013_test_email_students_feedback_is_ready_to_view(send_email):
+def test_013_test_email_students_feedback_is_ready_to_view(send_email) -> None:
     class student:
         def __init__(self, first_name: str, last_name: str, email:str):
             self.first_name = first_name
@@ -153,7 +153,7 @@ def test_013_test_email_students_feedback_is_ready_to_view(send_email):
     MockUtil.equal(1, send_email.call_count, "Send Email should have been called once.")
     send_email.reset_mock()
 
-def test_014_send_new_user_email(send_email):
+def test_014_send_new_user_email(send_email) -> None:
     random_int = str(random.randint(10*10, 10*20))
     send_new_user_email(EmailConsts.FAKE_EMAIL, random_int)
     MockUtil.equal(send_email.call_count, 1, "There should be one call to send_email()")
@@ -164,7 +164,7 @@ def test_014_send_new_user_email(send_email):
     MockUtil.equal(args[0], EmailConsts.FAKE_EMAIL, "Emails should be the same.")
     send_email.reset_mock()
 
-def test_015_send_email_for_updated_email(send_email):
+def test_015_send_email_for_updated_email(send_email) -> None:
     send_email_for_updated_email(EmailConsts.FAKE_EMAIL)
     MockUtil.equal(send_email.call_count, 1, "Should be called once.")
     args = send_email.call_args.args
@@ -172,7 +172,7 @@ def test_015_send_email_for_updated_email(send_email):
     MockUtil.equal(args[3], 0, "Call int is expected to be 0")
     send_email.reset_mock()
 
-def test_016_test_send_bounced_email_notifiction(send_email):
+def test_016_test_send_bounced_email_notifiction(send_email) -> None:
     msg = "TESTING_BOUNCE"
     error_msg = "TESTING"
     send_bounced_email_notification(EmailConsts.FAKE_EMAIL, msg, error_msg)
@@ -184,7 +184,7 @@ def test_016_test_send_bounced_email_notifiction(send_email):
     MockUtil.list_comparision(data_matches, correct_data, MockUtil.equal)
     send_email.reset_mock()
 
-def test_017_test_check_bounced_emails_are_responding(check_bounced_emails):
+def test_017_test_check_bounced_emails_are_responding(check_bounced_emails) -> None:
     implicit_return_val = check_bounced_emails()
     MockUtil.instance_comparision(implicit_return_val, MagicMock, "Function is setup to return none for now.")
     MockUtil.equal(check_bounced_emails.call_count, 1, "Function should have been called once.")
@@ -195,7 +195,7 @@ def test_017_test_check_bounced_emails_are_responding(check_bounced_emails):
 # These next few test use the more general routes to ensure that routes that
 # depend on these functions are still working as intended.
 #------------------------------------------------------------------------------
-def test_018_test_add_user_route(flask_app_mock, send_email):
+def test_018_test_add_user_route(flask_app_mock, send_email) -> None:
     undecorated_func = add_user.__wrapped__.__wrapped__.__wrapped__.__wrapped__
 
     with flask_app_mock.app_context():
@@ -213,31 +213,6 @@ def test_018_test_add_user_route(flask_app_mock, send_email):
     with flask_app_mock.app_context():
         db = flask_app_mock.db
         MockUtil.manually_remove_fake_user(db, True)
-
-
-
-"""
-var body = JSON.stringify({
-            "first_name": firstName,
-            "last_name": lastName,
-            "email": email,
-            "lms_id": lmsId !== "" ? lmsId : null,
-            "consent": null,
-            "owner_id": cookies.get('user')['user_id'],
-            "role_id": navbar.props.isSuperAdmin ? 3 : role
-        });
-
-        let promise;
-        let owner_id = cookies.get('user')['user_id'];
-
-        if(user === null && addUser === false) {
-            if(navbar.props.isSuperAdmin) {
-                promise = genericResourcePOST(`/user`, this, body);
-            } else {
-                promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}&owner_id=${owner_id}`, this, body);
-            }
-"""
-
 #------------------------------------------------------------------------------
 # EOF - You can add more tests here for thing that you are working on to
 # ensure that you are working within the bounds of the email functionality.
