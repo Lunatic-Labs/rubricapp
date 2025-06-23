@@ -28,5 +28,4 @@ COPY BackEndFlask/ /app/
 EXPOSE 5000
 
 # Start the Flask server
-# Restore -t to -ds before the pr
 CMD ["python", "setupEnv.py", "-ds"] 
