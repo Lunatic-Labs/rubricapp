@@ -109,10 +109,10 @@ class MockUtil:
             db: Database instance provided from the flask_mock_app.
             casscade: Used if a removal from the EmailValidation table is needed as well.
         """
-        from models.user import get_user_user_id_by_email, delete_user_by_user_id
+        from models.user import get_user_user_id_by_email, delete_user
         from models.email_validation import EmailValidation
         user_id = get_user_user_id_by_email(EmailConsts.FAKE_EMAIL)
         if casscade:
             db.session.query(EmailValidation).filter_by(user_id=user_id).delete()
             db.session.commit()
-        delete_user_by_user_id(user_id)
+        delete_user(user_id)
