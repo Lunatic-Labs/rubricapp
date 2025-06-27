@@ -44,6 +44,7 @@ def get_feedback_per_id(feedback_id):
 def create_feedback(feedback_data):
     new_feedback = Feedback(
         user_id=feedback_data["user_id"],
+        team_id=feedback_data["team_id"],
         completed_assessment_id=feedback_data["completed_assessment_id"],
         feedback_time=datetime.strptime(feedback_data["feedback_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
     )
