@@ -7,11 +7,11 @@
 # Date Updated: Fri 11 Apr 2025 02:27:01 PM CDT
 #-------------------------------------------------------------------------
 
-from email_test_util import EmailConsts, MockUtil
 import pytest
 import sys
 import random
 import re
+from email_test_util import EmailConsts, MockUtil
 from unittest.mock import patch, mock_open, MagicMock
 from core import (
     config, oauth2_credentials, 

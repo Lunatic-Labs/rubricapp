@@ -28,4 +28,4 @@ COPY BackEndFlask/ /app/
 EXPOSE 5000
 
 # Start the Flask server
-CMD ["python", "setupEnv.py", "-ds"] 
+CMD ["python", "setupEnv.py", "-dt"] 

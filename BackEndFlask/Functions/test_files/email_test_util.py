@@ -1,10 +1,14 @@
 #-------------------------------------------------------------------------
 # The purpose of this file is useful email testing functions and classes.
 #
-# Date Updated: Tue 08 Apr 2025 01:43:42 PM CDT
+# Date Updated: Mon Jun 30 01:38:34 PM CDT 2025
 #-------------------------------------------------------------------------
 
 class EmailConsts:
+    """
+    Description:
+        Basic consts for email testing. No methods exist to this Class.
+    """
     CORRECT_SCOPES = [
         "https://www.googleapis.com/auth/gmail.compose",
         "https://www.googleapis.com/auth/gmail.readonly",
@@ -18,6 +22,9 @@ class EmailConsts:
     FIRST_NAME = "SCOOBY"
     LAST_NAME = "DOO"
     FAKE_MSG = "HELLO, THIS IS A FAKE MSG."
+    
+    def __new__(cls, *args, **kargs):
+        raise TypeError(str(cls) + " may not be instantiated.")
 
 EmailConsts.MOCK_JSON = {
     "first_name": EmailConsts.FIRST_NAME,

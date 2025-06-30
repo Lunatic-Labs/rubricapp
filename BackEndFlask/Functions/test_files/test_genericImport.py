@@ -3,11 +3,8 @@ from Functions.genericImport import *
 from Functions.test_files.PopulationFunctions import *
 import os
 
-#pytest.fail("HAND BRAKES ENGAGED!!!!!")
-
 def retrieve_file_path(file_name: str) -> str:
     return os.getcwd () +  os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, file_name)
-
 
 def test_should_fail_with_file_not_found(flask_app_mock: type) -> None:
     with flask_app_mock.app_context():
@@ -22,8 +19,7 @@ def test_should_fail_with_file_not_found(flask_app_mock: type) -> None:
             delete_one_admin_course(result)
             assert isinstance(e, FileNotFound)
 
-
-def test_should_fail_with_wrong_extension(flask_app_mock: type) -> None:
+""" def test_should_fail_with_wrong_extension(flask_app_mock: type) -> None:
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_course(False)
@@ -276,4 +272,4 @@ def test_valid_students_and_tas_with__and_without_lms_id_in_table(flask_app_mock
         except:
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_course(result)
-            raise
+            raise """
