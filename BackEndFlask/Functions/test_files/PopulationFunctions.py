@@ -8,6 +8,7 @@ import pandas as pd
 import os
 import re
 import uuid
+import time
 
 # TODO: Need to write a test for both student_import and team_import to make sure
 #   that is_valid_email works as should!
@@ -79,9 +80,9 @@ def create_one_admin_course(use_tas):
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_course(result):
-    user = delete_user(result["user_id"])
     course = delete_course(result["course_id"])
     user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    user = delete_user(result["user_id"])
 
 # delete_all_users_user_courses()
 #   - takes one parameter:

@@ -13,13 +13,14 @@ def test_should_fail_with_file_not_found(flask_app_mock: type) -> None:
             generic_csv_to_db(
                 retrieve_file_path("NonExistentFile.csv"),
                 result["user_id"],
-                result["course_id"]
+                result["course_id"],
             )
         except Exception as e:
+            print(e)
             delete_one_admin_course(result)
             assert isinstance(e, FileNotFound)
 
-""" def test_should_fail_with_wrong_extension(flask_app_mock: type) -> None:
+def test_should_fail_with_wrong_extension(flask_app_mock: type) -> None:
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_course(False)
@@ -33,7 +34,7 @@ def test_should_fail_with_file_not_found(flask_app_mock: type) -> None:
             assert isinstance(e, WrongExtension)
 
 
-def test_should_fail_with_not_enough_columns(flask_app_mock: type) -> None:
+""" def test_should_fail_with_not_enough_columns(flask_app_mock: type) -> None:
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_course(False)

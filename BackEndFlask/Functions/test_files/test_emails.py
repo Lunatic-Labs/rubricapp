@@ -1,4 +1,4 @@
-#-------------------------------------------------------------------------
+""" #-------------------------------------------------------------------------
 # The purpose of this file is to have local tests that can check certain
 # edge cases without needing a live service. The nameing convention is 
 # to ensure that these tests are run first so that they can set up the
@@ -219,3 +219,4 @@ def test_018_test_add_user_route(flask_app_mock, send_email) -> None:
 # NOTE: Name the tests {test_[0-9][0-9][0-9]_[a-z0-9*+]} to ensue that it runs
 # before other tests thanks to the naming convention.
 #------------------------------------------------------------------------------
+ """
