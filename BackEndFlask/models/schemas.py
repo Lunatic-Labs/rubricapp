@@ -184,13 +184,13 @@ class EmailValidation(db.Model):
     __tablename__ = "EmailValidation"
 
     email_validation_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete="CASCADE"), nullable=False)
     email = db.Column(db.String(254), nullable=False)
     status = db.Column(db.String(50), nullable=False)
     validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
     validation_error = db.Column(db.String(500), nullable=True)
 
-    user = db.relationship('User', backref=db.backref('email_validations', lazy=True))
+    user = db.relationship('User', backref=db.backref('email_validations', lazy=True, passive_deletes=True))
 
     def __repr__(self):
         return f"<EmailValidation {self.email} - {self.status}>"

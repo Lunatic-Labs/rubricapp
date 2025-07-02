@@ -27,6 +27,7 @@ def get_oauth2_credentials(token_fp, scopes):
         if not os.path.exists(token_fp):
             return None
         creds = Credentials.from_authorized_user_file(token_fp, scopes)
+        
         if creds and creds.expired and creds.refresh_token:
             creds.refresh(Request())
         if not creds or not creds.valid:
@@ -146,6 +147,7 @@ limiter = Limiter(
 class Config:
     rubricapp_running_locally = False
     logger = Logger("init-config-logger")
+    testing_mode = False
 
 config = Config()
 
