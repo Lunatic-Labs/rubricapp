@@ -106,21 +106,6 @@ class UserCourse(db.Model):
         Index('idx_active', 'active'),
     )
 
-class Team(db.Model): # keeps track of default teams for a fixed team scenario
-    __tablename__ = "Team"
-    team_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    team_name = db.Column(db.Text, nullable=False)
-    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
-    observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
-    date_created = db.Column(db.Date, nullable=False)
-    active_until = db.Column(db.Date, nullable=True)
-
-class TeamUser(db.Model):
-    __tablename__ = "TeamUser"
-    team_user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-
 class AssessmentTask(db.Model):
     __tablename__ = "AssessmentTask"
     assessment_task_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
@@ -144,6 +129,22 @@ class AssessmentTask(db.Model):
     __table_args__ = (
         Index('idx_team_due_date', 'course_id', 'due_date'),
     )
+
+class Team(db.Model): # keeps track of default teams for a fixed team scenario
+    __tablename__ = "Team"
+    team_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    team_name = db.Column(db.Text, nullable=False)
+    course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
+    assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=True)
+    observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
+    date_created = db.Column(db.Date, nullable=False)
+    active_until = db.Column(db.Date, nullable=True)
+
+class TeamUser(db.Model):
+    __tablename__ = "TeamUser"
+    team_user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"
