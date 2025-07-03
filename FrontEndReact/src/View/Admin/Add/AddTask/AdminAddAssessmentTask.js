@@ -249,10 +249,10 @@ class AdminAddAssessmentTask extends Component {
                 if (result !== undefined && result.success === true) {
                     confirmCreateResource("AssessmentTask");
 
-                    const assessment_task_id = navbar.state.addAssessmentTask ? result?.["content"]?.["assessment_task"]?.[0]?.["assessment_task_id"] : assessmentTask["assessment_task_id"];
+                    const assessmentTaskId = navbar.state.addAssessmentTask ? result?.["content"]?.["assessment_task"]?.[0]?.["assessment_task_id"] : assessmentTask["assessment_task_id"];
 
                     if(usingTeams && !chosenCourse.use_fixed_teams){
-                        genericResourceGET(`/adhoc_amount?assessment_task_id=${assessment_task_id}`,"teams",this).then(amountOfExistingAdhocs =>{
+                        genericResourceGET(`/adhoc_amount?assessment_task_id=${assessmentTaskId}`,"teams",this).then(amountOfExistingAdhocs =>{
                             if(amountOfExistingAdhocs.teams === undefined || amountOfExistingAdhocs.teams === null){
                                 return;
                             }
@@ -267,7 +267,7 @@ class AdminAddAssessmentTask extends Component {
                                     team_name: "Team "+ (i+1),
                                     observer_id: chosenCourse.admin_id,
                                     course_id: chosenCourse.course_id,
-                                    assessment_task_id: assessment_task_id,
+                                    assessment_task_id: assessmentTaskId,
                                     date_created: `${month}/${date}/${year}`,
                                     active_until: null,
                                 });
