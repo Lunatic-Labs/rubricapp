@@ -117,9 +117,13 @@ class ViewCompletedAssessmentTasks extends Component {
                                 this,
                                 JSON.stringify({
                                     "user_id" : singularCompletedAssessment.user_id,
+                                    "team_id" : singularCompletedAssessment.team_id, 
                                     "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
                                 }),
                               );
+
+                              console.log(singularCompletedAssessment)
+                              
                               this.props.navbar.setAssessmentTaskInstructions(
                                   assessmentTasks,
                                   atId,

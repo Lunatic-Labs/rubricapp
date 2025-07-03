@@ -605,7 +605,7 @@ def get_individual_ratings(assessment_task_id):
         Feedback.feedback_id
     ).join(
         Feedback,
-        CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
+        Feedback.completed_assessment_id == CompletedAssessment.completed_assessment_id,
         isouter=True # allows to still get students who haven't viewed their feedback yet
     ).join(
         User,
@@ -643,12 +643,29 @@ def get_team_ratings(assessment_task_id):
         CompletedAssessment.team_id != None,
         CompletedAssessment.assessment_task_id == assessment_task_id
     ).all()
-    
-    
-    # .group_by(
-    #     Team.team_id,
-    #     Team.team_name
-    # ).all()
+
+@error_log
+def get_team_members(assessment_task_id):
+    """
+    Description:
+    Gets all team students' first and last names 
+    and their feedback times of a particular assessment task 
+    and groups them by their respective teams.
+    Parameters:
+    assessment_task_id: int (The id of an assessment task)
+    """
+    return db.session.query(
+        Team.team_id,
+        Team.team_name,
+        User.first_name,
+        User.last_name,
+        Feedback.feedback_time,
+        CompletedAssessment.last_update,
+        Feedback.feedback_id
+    ).join(
+        Feedback,
+
+    )
 
 @error_log
 def get_all_checkins_for_student_for_course(user_id, course_id):

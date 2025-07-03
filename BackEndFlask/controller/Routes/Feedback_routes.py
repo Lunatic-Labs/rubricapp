@@ -6,6 +6,11 @@ from flask_jwt_extended import jwt_required
 from marshmallow import fields
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
+from core import db
+
+def output(x):
+	with open("bp.txt", 'a') as out:
+		print(x, file=out)
 
 @bp.route("/feedback", methods=["POST"])
 @jwt_required()
@@ -13,23 +18,46 @@ from controller.security.CustomDecorators import AuthCheck, bad_token_check
 @AuthCheck()
 def create_new_feedback():
     try:
-        user_id = request.json["user_id"]
 
-        completed_assessment_id = request.json["completed_assessment_id"]
+        output(request.json)
 
-        exists = check_feedback_exists(user_id, completed_assessment_id)
-        if exists: 
-            return create_bad_response(f"Feedback already exists", "feedbacks", 409)
+        if (team_id is not None):
+            team_id = request.json["team_id"]
 
-        feedback_data = request.json
+            completed_assessment_id = request.json["completed_assessment_id"]
 
-        feedback_data["lag_time"] = None
+            exists = check_feedback_exists(team_id, completed_assessment_id)
+            if exists:
+                return create_bad_response(f"Feedback already exists", "feedbacks", 409)
 
-        feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
-        
-        feedback = create_feedback(request.json)
+            feedback_data = request.json
 
-        return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
+            feedback_data["lag_time"] = None
+
+            feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+            
+            feedback = create_feedback(request.json)
+
+            return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
+
+        else:
+            user_id = request.json["user_id"]
+
+            completed_assessment_id = request.json["completed_assessment_id"]
+
+            exists = check_feedback_exists(user_id, completed_assessment_id)
+            if exists: 
+                return create_bad_response(f"Feedback already exists", "feedbacks", 409)
+
+            feedback_data = request.json
+
+            feedback_data["lag_time"] = None
+
+            feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+            
+            feedback = create_feedback(request.json)
+
+            return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
 
     except Exception as e:
         return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)

@@ -76,6 +76,8 @@ class AdminViewRatings extends Component {
         loadedAssessmentId: this.props.chosenAssessmentId,
     });
     }
+    console.log(this);
+    
   }
 
   componentDidMount() {

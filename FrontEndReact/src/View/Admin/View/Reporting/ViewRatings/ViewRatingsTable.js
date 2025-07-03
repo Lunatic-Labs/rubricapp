@@ -44,13 +44,6 @@ class ViewRatingsTable extends Component {
           filter: true,
         }
       },
-      {
-        name: "feedback_time_lag",
-        label: "Feedback Time Lag",
-        options: {
-          filter: true,
-        }
-      },
     ]
 
     // Add in the rest of the columns with the categories that correspond to the chosen rubric
@@ -65,6 +58,24 @@ class ViewRatingsTable extends Component {
 
       return i;
     });
+
+    if (assessmentIsTeam[this.props.chosenAssessmentId] === false) {
+      columns.splice(1, 0, {
+        name: "feedback_time_lag",
+        label: "Feedback Time Lag",
+        options: {
+          filter: true,
+        }
+      });
+    } else {
+      columns.push({
+        name:"feedback_time_lag",
+        label:"Feedback Time Lag",
+        options: {
+          filter: true,
+        }
+      });
+    }
 
     const options = {
       onRowsDelete: false,
