@@ -14,6 +14,9 @@ Flask-Limiter[redis] == 3.12
 marshmallow == 4.0.0
 marshmallow-sqlalchemy == 1.4.2
 
+# SendGrid API for Emails
+sendgrid == 6.12.4
+
 # Google API for emails
 google-auth == 2.39.0
 google-auth-oauthlib == 1.2.2

@@ -7,6 +7,7 @@ import os
 from core import config
 import pytest 
 from dependency_check import dependency_check
+from one_run import this_should_only_be_used_once
 
 FILENAME = ""
 
@@ -208,6 +209,7 @@ def start_tests():
 
 if __name__ == "__main__":
     dependency_check()
+    #this_should_only_be_used_once()
     if SYSTEM == "Windows":
         err("Windows is no longer supported for development. :((")
 

@@ -18,16 +18,40 @@ from google_auth_oauthlib.flow import InstalledAppFlow
 from models.logger import logger
 from controller.Routes.RouteExceptions import EmailFailureException
 
+from sendgrid.helpers.mail import Mail
+from core import sendgrid_client
+
 from core import oauth2_service, config
 
 def check_bounced_emails(from_timestamp=None):
-    if config.rubricapp_running_locally:
-        return
+    #if config.rubricapp_running_locally:
+    #    return
 
     max_fetched_emails = 32
 
     try:
-        # Fetch the emails
+        bounced_emails = []
+        headers = {"Accept": "application/json"}
+        params = {"limit": max_fetched_emails}
+        sender = "avera-espinoza@acm.org"        
+
+        response = sendgrid_client.client.suppression.bounces.get(
+            request_headers = headers,
+            query_params = params,
+        )
+
+        if response.status_code == 200 and response.body:
+            email_json = response.body
+            for entry in email_json:
+                bounced_emails.append({
+                    'id': entry['created'],
+                    'to': entry['email'],
+                    'msg': entry['status'],
+                    'sender': sender,
+                    'main_failure': entry['reason'],
+                })
+
+        """ # Fetch the emails
         query, messages_result = (None, None)
 
         # TODO: handle timestamp correctly
@@ -80,9 +104,10 @@ def check_bounced_emails(from_timestamp=None):
                         'msg': snippet.split('LEARN')[0],
                         'sender': sender,
                         'main_failure': main_failure.strip(),
-                    })
+                    }) """
 
-            return bounced_emails if len(bounced_emails) != 0 else None
+        # Tab the next line; moded due to sendgrid trial
+        return bounced_emails if len(bounced_emails) != 0 else None
 
     except Exception as e:
         config.logger.error("Could not check for bounced email: " + str(e))
@@ -154,11 +179,30 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
         send_email(student.email, subject, message, 0)
 
 def send_email(address: str, subject: str, content: str, type: int):
-    if config.rubricapp_running_locally:
-        return
+    #if config.rubricapp_running_locally:
+    #    return  REmoved to allow sendgrid to run locally
 
     try:
-        message = EmailMessage()
+
+        _ = address
+        _ = type
+
+        message = Mail(
+            from_email = 'avera-espinoza@acm.org',
+            to_emails  = 'avera-espinoza@acm.org',
+            subject    = subject,
+            html_content = content,
+        )
+
+        response = sendgrid_client.send(message)
+
+        # print(response.status_code)
+        # print(respone.headers,response.body)
+
+        _ = response
+
+
+        """ message = EmailMessage()
         if type == 0:
             message.set_content(content)
         else:
@@ -172,7 +216,7 @@ def send_email(address: str, subject: str, content: str, type: int):
                 "raw": encoded_message,
         }   
         send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
-
+ """
     except Exception as e:
         config.logger.error("Could not send email: " + str(e))
         raise EmailFailureException()

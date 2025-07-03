@@ -22,6 +22,10 @@ import redis
 #import logging
 from models.logger import Logger
 
+from sendgrid import SendGridAPIClient
+
+from deprecated import deprecated
+@deprecated(reason="Use SendGrid.")
 def get_oauth2_credentials(token_fp, scopes):
     try:
         if not os.path.exists(token_fp):
@@ -166,6 +170,10 @@ except Exception as e:
     config.logger.error(str(e))
     oauth2_credentials = None
     oauth2_service = None
+
+sendgrid_env_path = os.path.join(os.path.dirname(__file__), "..", "sendgrid.env")
+load_dotenv(dotenv_path=sendgrid_env_path)
+sendgrid_client = SendGridAPIClient(os.environ.get('SENDGRID_API_KEY'))
 
 # Register blueprints
 from controller import bp
