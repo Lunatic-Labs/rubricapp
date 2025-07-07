@@ -108,37 +108,37 @@ def load_existing_categories():
         [10, "Documenting the investigation", "Documented all aspects of investigation such as observations, measurements, calculations, etc. clearly and legibly in a laboratory notebook.", completely],
         [10, "Planning a future investigation", "Planned a new experiment (or a future iteration of the current experiment) based on the results of the current investigation.", completely],
         # Mathematical thinking Categories 1-3
-        [10, "Mathematical thinking", "Used any number of mathematical tools such as constructing and solving equations for establishing relationships among variables."],
-        [10, "Preparing for computation", "Identified the problem that can be solved using computation and developed a plan for solving it.", completely],
-        [10, "Preparing computation", "Used any number of computational tools, such as programming, simulation, etc., for modeling data or solving a problem.", completely],
+        [11, "Mathematical thinking", "Used any number of mathematical tools such as constructing and solving equations for establishing relationships among variables.", completely],
+        [11, "Preparing for computation", "Identified the problem that can be solved using computation and developed a plan for solving it.", completely],
+        [11, "Preparing computation", "Used any number of computational tools, such as programming, simulation, etc., for modeling data or solving a problem.", completely],
         # Modeling Categories 1-3
-        [11, "Evaluating models", "Evaluated a set of models for their relevancy before using.", completely],
-        [11, "Using models", "Used existing models to make sense of the observations made or measurements taken.", completely],
-        [11, "Developing models", "Developed new models or revised existing models to make sense of the observations made or measurements taken.", completely],
+        [12, "Evaluating models", "Evaluated a set of models for their relevancy before using.", completely],
+        [12, "Using models", "Used existing models to make sense of the observations made or measurements taken.", completely],
+        [12, "Developing models", "Developed new models or revised existing models to make sense of the observations made or measurements taken.", completely],
         # Analyzing data Categories 1-3
-        [12, "Preparing for data analysis", "Prepared for data analysis by identifying relevant data and method(s)", completely],
-        [12, "Analyzing the data", "Used any number of scientifically accepted tools such as graphs, statistics, etc., and analyzed the generated (or given) data to identify significant patterns and trends.", completely],
-        [12, "Interpreting the data", "Interpreted the analyzed data to derive meaning/construct explanations/answer questions/know implications.", completely],
+        [13, "Preparing for data analysis", "Prepared for data analysis by identifying relevant data and method(s)", completely],
+        [13, "Analyzing the data", "Used any number of scientifically accepted tools such as graphs, statistics, etc., and analyzed the generated (or given) data to identify significant patterns and trends.", completely],
+        [13, "Interpreting the data", "Interpreted the analyzed data to derive meaning/construct explanations/answer questions/know implications.", completely],
         # Explaining phenomena Categories 1-2
-        [13, "Presenting evidence", "Listed the evidence required to support the explanation", ],
-        [13, "Constructing explanations", "Constructed a logically sound explanation to provide explanatory accounts of the phenomenon of interest.", completely],
+        [14, "Presenting evidence", "Listed the evidence required to support the explanation", completely],
+        [14, "Constructing explanations", "Constructed a logically sound explanation to provide explanatory accounts of the phenomenon of interest.", completely],
         # Arguing Categories 1-5
-        [14, "Making claims", "Made the claim of the argument", completely],
-        [14, "Presenting evidence", "Listed the evidence required to support the claim.", completely],
-        [14, "Forming an argument from evidence", "Constructed a logically sound argument with reasoning that explains how the evidence supports the claim.", completely],
-        [14, "Critiquing arguments", "Engaged in argumentation by critically evaluating competing arguments.", completely],
-        [14, "Engaging in diabolical argumentation", "Engaged in verbal argumentation by articulating one’s argument and questioning competing ones.", completely],
+        [15, "Making claims", "Made the claim of the argument", completely],
+        [15, "Presenting evidence", "Listed the evidence required to support the claim.", completely],
+        [15, "Forming an argument from evidence", "Constructed a logically sound argument with reasoning that explains how the evidence supports the claim.", completely],
+        [15, "Critiquing arguments", "Engaged in argumentation by critically evaluating competing arguments.", completely],
+        [15, "Engaging in diabolical argumentation", "Engaged in verbal argumentation by articulating one’s argument and questioning competing ones.", completely],
         # (Latest update is June 17, 2025) Disseminating findings Categories 1-10
-        [15, "Obtaining information", "Collected relevant information from multiple sources of scientific knowledge such as books, journal articles, technical databases, etc.", completely],
-        [15, "Evaluating information", "Critically evaluated the reliability of the obtained information.", completely],
-        [15, "Synthesing information", "Combined information obtained from different sources to suit the purpose of the current investigation.", completely],
-        [15, "Intent", "Clearly conveys the purpose, and the content is well-aligned towards this intent", completely],
-        [15, "Audience", "Uses language and delivery style that is consistent with the norms of the subject area and suitable for the audience", consistently],
-        [15, "Organization", "Presents ideas in a logical and cohesive manner", consistently],
-        [15, "Visual Representations", "Constructs and uses visual representations effectively and appropriately", consistently],
-        [15, "Format and Style", "Selects a format and style that enhances the effectiveness of the communication", consistently],
-        [15, "Mechanics (written words)", "Uses expected writing conventions for the form of communication", consistently],
-        [15, "Delivery (oral)", "Uses voice and body language to convey the intended message in a clear and engaging manner", consistently]
+        [16, "Obtaining information", "Collected relevant information from multiple sources of scientific knowledge such as books, journal articles, technical databases, etc.", completely],
+        [16, "Evaluating information", "Critically evaluated the reliability of the obtained information.", completely],
+        [16, "Synthesing information", "Combined information obtained from different sources to suit the purpose of the current investigation.", completely],
+        [16, "Intent", "Clearly conveys the purpose, and the content is well-aligned towards this intent", completely],
+        [16, "Audience", "Uses language and delivery style that is consistent with the norms of the subject area and suitable for the audience", consistently],
+        [16, "Organization", "Presents ideas in a logical and cohesive manner", consistently],
+        [16, "Visual Representations", "Constructs and uses visual representations effectively and appropriately", consistently],
+        [16, "Format and Style", "Selects a format and style that enhances the effectiveness of the communication", consistently],
+        [16, "Mechanics (written words)", "Uses expected writing conventions for the form of communication", consistently],
+        [16, "Delivery (oral)", "Uses voice and body language to convey the intended message in a clear and engaging manner", consistently]
     ]
     for category in categories:
         c = {} 
