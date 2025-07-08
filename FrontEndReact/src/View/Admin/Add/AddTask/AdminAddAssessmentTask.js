@@ -233,48 +233,53 @@ class AdminAddAssessmentTask extends Component {
             if (navbar.state.addAssessmentTask) {
                 promise = genericResourcePOST(
                     "/assessment_task",
-                    this, body
+                    this, body,
+                    { rawResponse: true }
                 );
 
             } else {
                 promise = genericResourcePUT(
                     `/assessment_task?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
-                    this, body
+                    this, body,
+                    { rawResponse: true }
                 );
             }
 
-            if(usingTeams && !chosenCourse.use_fixed_teams){
-                genericResourceGET(`/adhoc_amount?course_id=${chosenCourse.course_id}`,"teams",this).then(amountOfExistingAdhocs =>{
-                    if(amountOfExistingAdhocs.teams === undefined || amountOfExistingAdhocs.teams === null){
-                        return;
-                    }
-                    amountOfExistingAdhocs = amountOfExistingAdhocs.teams;
-                    
-                    const date = new Date().getDate();
-                    const month = new Date().getMonth() + 1;
-                    const year = new Date().getFullYear();
-
-                    for (let i=amountOfExistingAdhocs; i < numberOfTeams; ++i){
-                        const body = JSON.stringify({
-                            team_name: "Team "+ (i+1),
-                            observer_id: chosenCourse.admin_id,
-                            course_id: chosenCourse.course_id,
-                            date_created: `${month}/${date}/${year}`,
-                            active_until: null,
-                        });
-                        genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body).catch(
-                            error =>{
-                                return;
-                            });
-                    }
-                    }).catch(error => {
-                        return;
-                    });
-            }
-
             promise.then(result => {
-                if (result !== undefined && result.errorMessage === null) {
+                if (result !== undefined && result.success === true) {
                     confirmCreateResource("AssessmentTask");
+
+                    const assessmentTaskId = navbar.state.addAssessmentTask ? result?.["content"]?.["assessment_task"]?.[0]?.["assessment_task_id"] : assessmentTask["assessment_task_id"];
+
+                    if(usingTeams && !chosenCourse.use_fixed_teams){
+                        genericResourceGET(`/adhoc_amount?assessment_task_id=${assessmentTaskId}`,"teams",this).then(amountOfExistingAdhocs =>{
+                            if(amountOfExistingAdhocs.teams === undefined || amountOfExistingAdhocs.teams === null){
+                                return;
+                            }
+                            amountOfExistingAdhocs = amountOfExistingAdhocs.teams;
+
+                            const date = new Date().getDate();
+                            const month = new Date().getMonth() + 1;
+                            const year = new Date().getFullYear();
+
+                            for (let i=amountOfExistingAdhocs; i < numberOfTeams; ++i){
+                                const body = JSON.stringify({
+                                    team_name: "Team "+ (i+1),
+                                    observer_id: chosenCourse.admin_id,
+                                    course_id: chosenCourse.course_id,
+                                    assessment_task_id: assessmentTaskId,
+                                    date_created: `${month}/${date}/${year}`,
+                                    active_until: null,
+                                });
+                                genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body).catch(
+                                    error =>{
+                                        return;
+                                    });
+                            }
+                        }).catch(error => {
+                            return;
+                        });
+                    }
                 }
             });
         }

@@ -37,7 +37,7 @@ def checkin_user():
 
         if already_checked_in(user_id, assessment_task_id): 
             update_checkin(new_checkin)
-        else: 
+        else:
             create_checkin(new_checkin)
         
         red.publish(CHECK_IN_REDIS_CHANNEL, assessment_task_id)
