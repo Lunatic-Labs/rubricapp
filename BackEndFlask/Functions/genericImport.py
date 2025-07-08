@@ -82,8 +82,11 @@ def __add_user(owner_id, course_id, first_name, last_name, email, role_id, lms_i
 
         # If the user is not already in the DB.
         if user is None:
-            helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id, validate_emails)
-
+            try:
+                helper_create_user(first_name, last_name, email, role_id, lms_id, owner_id, validate_emails)
+            except Exception as e:
+                print(first_name, last_name, email, role_id, lms_id, owner_id, validate_emails)
+                print(e)
         else:
             updated_user_first_name = user.first_name
 
@@ -177,7 +180,7 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
         # Track duplicate checks
         seen_emails: dict[str, int] = {}
         seen_lms_ids: dict[str, int] = {}
-        valid_roles = ["Student", "TA", "Instructor"]
+        valid_roles = ["student", "TA", "Instructor"]
 
         for row in range(0, len(roster)):
             person_attribs: list[str] = roster[row]

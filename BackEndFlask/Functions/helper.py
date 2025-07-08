@@ -101,7 +101,7 @@ def helper_create_user(
         consent=None,
         validate_emails=True,
     ):
-
+    
     return create_user({
         "first_name": fname,
         "last_name":  lname,
