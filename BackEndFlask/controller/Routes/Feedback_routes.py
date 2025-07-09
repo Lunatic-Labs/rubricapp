@@ -8,63 +8,63 @@ from controller.security.CustomDecorators import AuthCheck, bad_token_check
 
 from core import db
 
-@bp.route("/feedback", methods=["POST"])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-def create_new_feedback():
-    try:
+# @bp.route("/feedback", methods=["POST"])
+# @jwt_required()
+# @bad_token_check()
+# @AuthCheck()
+# def create_new_feedback():
+#     try:
 
-        if (request.json.get("team_id") is not None):
-            team_id = request.json.get("team_id")
+#         if (request.json.get("team_id") is not None):
+#             team_id = request.json.get("team_id")
 
-            user_id = request.args.get("user_id")
+#             user_id = request.args.get("user_id")
 
-            completed_assessment_id = request.json.get("completed_assessment_id")
+#             completed_assessment_id = request.json.get("completed_assessment_id")
 
-            exists = check_feedback_exists(user_id, completed_assessment_id)
-            if exists:
-                return create_bad_response(f"Feedback already exists", "feedbacks", 409)
+#             exists = check_feedback_exists(user_id, completed_assessment_id)
+#             if exists:
+#                 return create_bad_response(f"Feedback already exists", "feedbacks", 409)
 
-            feedback_data = request.json
+#             feedback_data = request.json
 
-            feedback_data["team_id"] = team_id
+#             feedback_data["team_id"] = team_id
 
-            feedback_data["user_id"] = user_id
+#             feedback_data["user_id"] = user_id
 
-            feedback_data["lag_time"] = None
+#             feedback_data["lag_time"] = None
 
-            feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+#             feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
             
-            feedback = create_feedback(request.json)
+#             feedback = create_feedback(request.json)
 
-            return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
+#             return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
 
-        else:
-            user_id = request.args.get("user_id")
+#         else:
+#             user_id = request.args.get("user_id")
 
-            completed_assessment_id = request.json.get("completed_assessment_id")
+#             completed_assessment_id = request.json.get("completed_assessment_id")
 
-            exists = check_feedback_exists(user_id, completed_assessment_id)
-            if exists: 
-                return create_bad_response(f"Feedback already exists", "feedbacks", 409)
+#             exists = check_feedback_exists(user_id, completed_assessment_id)
+#             if exists: 
+#                 return create_bad_response(f"Feedback already exists", "feedbacks", 409)
 
-            feedback_data = request.json
+#             feedback_data = request.json
 
-            feedback_data["user_id"] = user_id
+#             feedback_data["user_id"] = user_id
             
-            feedback_data["team_id"] = None
+#             feedback_data["team_id"] = None
             
-            feedback_data["lag_time"] = None
+#             feedback_data["lag_time"] = None
 
-            feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
+#             feedback_data["feedback_time"] = datetime.now().strftime('%Y-%m-%dT%H:%M:%S.%f')[:-3] + 'Z'
             
-            feedback = create_feedback(request.json)
+#             feedback = create_feedback(request.json)
 
-            return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
+#             return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
 
-    except Exception as e:
-        return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)
+#     except Exception as e:
+#         return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)
 
 
 class StudentFeedbackSchema(ma.Schema):
