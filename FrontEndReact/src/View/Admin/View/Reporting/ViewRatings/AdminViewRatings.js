@@ -48,12 +48,6 @@ class AdminViewRatings extends Component {
         const urlFinal = assessmentIsTeam[this.props.chosenAssessmentId] ? `${url}&team_id=true` : url;
         
         genericResourceGET(urlFinal, "ratings", this);
-        
-        // plan to check for team: set up another genericResoruceGet() to retrieve the team_id for the chosenAssessment maybe?
-        // genericResourceGET(
-        //   `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, // does not assign a value to team_id for Rating_routes. this results in lines 35-54 being ignored
-        //   "ratings", this
-        // ); 
       }
 
       // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
@@ -76,8 +70,6 @@ class AdminViewRatings extends Component {
         loadedAssessmentId: this.props.chosenAssessmentId,
     });
     }
-    console.log(this);
-    
   }
 
   componentDidMount() {

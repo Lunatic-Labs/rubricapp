@@ -12,12 +12,6 @@ from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
 )
 
-from core import db
-
-def output(x):
-	with open("ap.txt", 'a') as out:
-		print(x, file=out)
-
 @bp.route("/rating", methods=["GET"])
 @jwt_required()
 @bad_token_check()
@@ -33,22 +27,10 @@ def get_ratings():
         team_id = request.args.get("team_id")  
         if team_id: 
             ratings = get_team_ratings(assessment_task_id)
-            
-            # output(f"\nTeam: {ratings}")
-
             if ratings is None:
                 return create_good_response([], 200, "ratings")
             result = []
             for team in ratings:
-                
-                # output(f"Ratings: {ratings}")
-                # output(f"\nTeam ID: {team[0]}")
-                # output(f"\nTeam Name: {team[1]}")
-                # output(f"\nData: {team[2]}")
-                # output(f"\nFeedback Time: {team[3]}")
-                # output(f"\nLast Update: {team[4]}")
-                # output(f"\nFeedback ID: {team[5]}")
-
                 feedback_time = team[3]
                 submission_time = team[4]
                 lag_time = feedback_time - submission_time if feedback_time and submission_time else None
@@ -57,36 +39,14 @@ def get_ratings():
                     "team_name": team[1],
                     "rating_observable_characteristics_suggestions_data": team[2],
                     "lag_time": str(lag_time) if lag_time else None,
+                    "student": team[6] + " " + team[7]
                 })
-            
-            # feedback_count = db.session.query(Feedback).join(
-            #     CompletedAssessment,
-            #     Feedback.completed_assessment_id == CompletedAssessment.completed_assessment_id
-            # ).filter(
-            #     CompletedAssessment.assessment_task_id == assessment_task_id
-            # ).count()
-            # output(f"\nFeedback Count: {feedback_count}")
-        
         else:
             ratings = get_individual_ratings(assessment_task_id)
-        
-            output(f"\nIndividual: {ratings}")
-            test_feedback = get_feedback()
-            output(f"\nTest Feedback: {test_feedback}")
-
             if ratings is None:
                 return create_good_response([], 200, "ratings")
-
             result = []
             for rating in ratings:
-                
-                # output(f"\nFirst Name: {rating[0]}")
-                # output(f"\nLast Name: {rating[1]}")
-                # output(f"\nData: {rating[2]}")
-                # output(f"\nFeedback Time: {rating[3]}")
-                # output(f"\nLast Update: {rating[4]}")
-                # output(f"\nFeedback ID: {rating[5]}")
-                
                 feedback_time = rating[3]
                 submission_time = rating[4]
                 lag_time = feedback_time - submission_time if feedback_time and submission_time else None
@@ -119,41 +79,34 @@ def student_view_feedback():
     try:
         if(request.json.get("team_id") is not None):
             team_id = request.json.get("team_id")
+            user_id = request.args.get("user_id")
             completed_assessment_id = request.json.get("completed_assessment_id")
-            exists = check_feedback_exists(team_id, completed_assessment_id)
+            exists = check_feedback_exists(user_id, completed_assessment_id)
             if exists:
                 return create_bad_response(f"Using server's existing data as source of truth.", "feedbacks", 409)
             feedback_data = request.json
             feedback_data["team_id"] = team_id
-            feedback_data["user_id"] = request.args.get("user_id")
+            feedback_data["user_id"] = user_id
             string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
             feedback_data["feedback_time"] = datetime.now().strftime(string_format)
-            
-            output(f"team_id value: {feedback_data.get('team_id')}")
-            output(f"user_id value: {feedback_data.get('user_id')}")
-            output(f"completed_assessment_id value: {feedback_data.get('completed_assessment_id')}")
-            output(f"feedback_time value: {feedback_data.get('feedback_time')}")
-
             feedback = create_feedback(feedback_data)
-            output(feedback)
-            output("9")
             return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
 
         else:
-            output("hello2")
-            user_id = request.json.get("user_id")
-            output(f"User ID: {user_id}")
+            user_id = request.args.get("user_id")
             completed_assessment_id = request.json.get("completed_assessment_id")
+
             exists = check_feedback_exists(user_id, completed_assessment_id)
             if exists:
                 return create_bad_response(f"Using server's existing data as source of truth.", "feedbacks", 409)    
+            
             feedback_data = request.json
             feedback_data["user_id"] = user_id
             feedback_data["team_id"] = None
             string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
             feedback_data["feedback_time"] = datetime.now().strftime(string_format)
-            output(f"Feedback Data: {feedback_data}")
             feedback = create_feedback(feedback_data)
+            
             return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
     except Exception as e:
         return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)

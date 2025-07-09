@@ -21,6 +21,7 @@ class ViewRatingsTable extends Component {
         rating["name"] = currentRating["first_name"] + " " + currentRating["last_name"];
       } else if (currentRating["team_name"]) {
         rating["name"] = currentRating["team_name"];
+        rating["student"] = currentRating["student"]
       }
 
       rating["feedback_time_lag"] = currentRating["lag_time"];
@@ -69,6 +70,12 @@ class ViewRatingsTable extends Component {
       });
     } else {
       columns.push({
+        name:"student",
+        label:"Student",
+        options: {
+          filter: true,
+        }
+      },{
         name:"feedback_time_lag",
         label:"Feedback Time Lag",
         options: {
