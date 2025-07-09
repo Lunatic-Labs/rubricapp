@@ -80,9 +80,9 @@ def create_one_admin_course(use_tas):
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_course(result):
-    course = delete_course(result["course_id"])
-    user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
-    user = delete_user(result["user_id"])
+    delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    delete_course(result["course_id"])
+    delete_user(result["user_id"])
 
 # delete_all_users_user_courses()
 #   - takes one parameter:
@@ -96,8 +96,8 @@ def delete_all_users_user_courses(course_id):
     user_courses = get_user_courses_by_course_id(course_id)
     
     for user_course in user_courses:
-        user = delete_user(user_course.user_id)
-        deleted_user_course = delete_user_course_by_user_id_course_id(user_course.user_id, course_id)
+        delete_user_course_by_user_id_course_id(user_course.user_id, course_id)
+        delete_user(user_course.user_id)
 
 # create_one_admin_ta_student_course()
 #   - takes three parameters:

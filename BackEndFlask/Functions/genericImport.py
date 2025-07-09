@@ -180,7 +180,7 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
         # Track duplicate checks
         seen_emails: dict[str, int] = {}
         seen_lms_ids: dict[str, int] = {}
-        valid_roles = ["student", "TA", "Instructor"]
+        valid_roles = ["student", "ta", "Instructor"]
 
         for row in range(0, len(roster)):
             person_attribs: list[str] = roster[row]

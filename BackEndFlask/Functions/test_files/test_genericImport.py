@@ -15,6 +15,7 @@ def test_should_fail_with_file_not_found(flask_app_mock: type) -> None:
                 result["user_id"],
                 result["course_id"],
             )
+            assert False
         except Exception as e:
             print(e)
             delete_one_admin_course(result)
@@ -29,6 +30,7 @@ def test_should_fail_with_wrong_extension(flask_app_mock: type) -> None:
                 result["user_id"],
                 result["course_id"]
             )
+            assert False
         except Exception as e:
             delete_one_admin_course(result)
             assert isinstance(e, WrongExtension)
@@ -38,12 +40,15 @@ def test_should_fail_with_not_enough_columns(flask_app_mock: type) -> None:
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_course(False)
+            print(retrieve_file_path("notEnoughColumns.csv"))
             generic_csv_to_db(
                 retrieve_file_path("notEnoughColumns.csv"),
                 result["user_id"],
                 result["course_id"]
             )
+            assert False
         except Exception as e:
+            print(f"type:{type(e)}; {e}")
             delete_one_admin_course(result)
             assert isinstance(e, NotEnoughColumns)
 
@@ -57,17 +62,16 @@ def test_should_fail_with_misformatted_student_email(flask_app_mock: type) -> No
                 result["user_id"],
                 result["course_id"],
             )
+            assert False
         except Exception as e:
             delete_one_admin_course(result)
-            assert isinstance(e, SuspectedMisformatting)
+            assert isinstance(e, InvalidEmail)
 
 
 def test_valid_student_with_no_lms_id_in_table(flask_app_mock: type) -> None:
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_course(False)
-            gen_user_id, gen_course_id = result['user_id'], result['course_id']
-            print(gen_user_id)
             message = generic_csv_to_db(
                 retrieve_file_path("oneStudentNoLMSID.csv"),
                 result["user_id"],
@@ -82,23 +86,22 @@ def test_valid_student_with_no_lms_id_in_table(flask_app_mock: type) -> None:
             assert user is not None, error_message
 
             user_id = get_user_user_id_by_email("teststudent1@gmail.com")
-            print(user_id)
             user_courses = get_user_courses_by_user_id(user_id)
 
             error_message = "generic_csv_to_db() did not correctly enroll the valid test student in the test course"
-            assert user_courses[1]['user_id'] == gen_user_id and user_courses[1]['course_id'] == gen_course_id, error_message
             
-            print("deletion error")
+            assert (len(user_courses) == 1)
 
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_course(result)
-        except:
+        except Exception as e:
+            print(e)
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_course(result)
             raise
 
 
-""" def test_valid_student_with_lms_id_in_table(flask_app_mock: type) -> None:
+def test_valid_student_with_lms_id_in_table(flask_app_mock: type) -> None:
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_course(False)
@@ -245,6 +248,7 @@ def test_valid_students_and_tas_with__and_without_lms_id_in_table(flask_app_mock
                 result["user_id"],
                 result["course_id"]
             )
+            print("Got out of making it")
             assert message is None, message # generic_csv_to_db() returns none when successful
             user = get_user_by_email("testTA1@gmail.com")
 
@@ -279,4 +283,4 @@ def test_valid_students_and_tas_with__and_without_lms_id_in_table(flask_app_mock
         except:
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_course(result)
-            raise """
+            raise 
