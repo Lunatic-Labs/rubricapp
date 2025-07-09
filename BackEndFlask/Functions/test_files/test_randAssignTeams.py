@@ -1,4 +1,4 @@
-""" from Functions.customExceptions import *
+from Functions.customExceptions import *
 from Functions.test_files.PopulationFunctions import *
 from models.team import *
 from models.user import *
@@ -47,13 +47,11 @@ def test_one_ta_ten_students(flask_app_mock: type) -> None:
             assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
             
             delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_ta_student_course(result)
 
         except Exception as e:
             delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_ta_student_course(result)
             raise e
@@ -98,13 +96,10 @@ def test_no_ta_ten_students(flask_app_mock: type) -> None:
             assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
 
             delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_ta_student_course(result, False)
-
         except Exception as e:
             delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_ta_student_course(result, False)
             raise e
@@ -150,17 +145,12 @@ def test_ten_tas_ten_students(flask_app_mock: type) -> None:
             assert total_team_users == 10, error_message
 
             delete_all_teams_team_members(result["course_id"])
-            delete_users(tas)
-            delete_users(students)
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_ta_student_course(result)
-
         except Exception as e:
             delete_all_teams_team_members(result["course_id"])
-            delete_users(tas)
-            delete_users(students)
             delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
+            delete_one_admin_ta_student_course(result, False)
             raise e
 
 ## test_TA_true_but_no_TAs_recorded_error()
@@ -222,4 +212,4 @@ def test_no_students_in_course_error(flask_app_mock):
             delete_all_teams_team_members(result["course_id"])
             delete_all_users_user_courses(result["course_id"])
             delete_one_admin_ta_student_course(result)
-            raise """
+            raise

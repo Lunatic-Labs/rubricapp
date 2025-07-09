@@ -9,6 +9,7 @@ import os
 import re
 import uuid
 import time
+import random
 
 # TODO: Need to write a test for both student_import and team_import to make sure
 #   that is_valid_email works as should!
@@ -251,13 +252,20 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_ta_student_course(result, use_tas=True):
-    delete_user(result["user_id"])
-    if use_tas:
-        delete_user(result["observer_id"])
+    def safe_deletion(x:object, value:object) -> None:
+        try:
+            x(value)
+        except Exception as e:
+            if not isinstance(e, ValueError):
+                raise e
 
-    delete_user(result["admin_id"])
+    safe_deletion(delete_user, result["user_id"])
+    if use_tas:
+        safe_deletion(delete_user, result["observer_id"])
+
     delete_course(result["course_id"])
-    
+    delete_user(result["admin_id"])
+
     delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
     
     if use_tas:
