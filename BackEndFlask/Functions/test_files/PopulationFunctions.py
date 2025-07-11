@@ -263,13 +263,13 @@ def delete_one_admin_ta_student_course(result, use_tas=True):
     if use_tas:
         safe_deletion(delete_user, result["observer_id"])
 
-    delete_course(result["course_id"])
-    delete_user(result["admin_id"])
-
     delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
-    
+
     if use_tas:
         delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
+
+    delete_course(result["course_id"])
+    delete_user(result["admin_id"])
 
 # create_users()
 #   - takes four parameters:
