@@ -12,6 +12,11 @@ from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
 )
 
+def output(x):
+	with open("ap.txt", 'a') as out:
+		print(x, file=out)
+
+
 @bp.route("/rating", methods=["GET"])
 @jwt_required()
 @bad_token_check()
@@ -22,6 +27,43 @@ def get_ratings():
         Given an the id of an individual assessment task, gets all the students who completed it, their ratings,
         and the lag time for them to view their feedback. 
     """
+    """
+        To-Do:
+        Find out a way to create an array within the corresonding result array item that pairs team members with 
+        corresponding Feedback Time Lag. 
+            Pseudo-Code for adding a team_member's feedback_time:
+            # To be inserted after line 65 at the beginning of the "for team in ratings" loop
+                if team already exists in result[]:
+                    feedback_info.append(student_name, lag_time)
+                    continue
+                else:
+                    result.append({
+                        "team_id": team[0],
+                        "team_name": team[1],
+                        "rating_observable_characteristics_suggestions_data": team[2]
+                    })
+                    feedback_info.append(student_name, lag_time)
+                    result.append(feedback_info)
+        
+        For the front-end in ViewRatingsTable.js, feedback_info will be one column that contains the students' names
+        and lag times.
+
+        The figma found on the Jira skill requires that it shows missing students and assigns the corresponding lag
+        times as NULL. In models/queries.py, get_team_ratings() will need to be modified to retrieve each teams members
+        regardless of null-ness of lag time.
+            Pseudo-Code for that in rating_routes.py aftert line 65 at loop start:
+                if team already exists in result[]:
+                    feedback_info[team[student][lag_time]] = lag_time
+                    continue
+                else:
+                    result.append({
+                        "team_id": team[0],
+                        "team_name": team[1],
+                        "rating_observable_characteristics_suggestions_data": team[2]
+                    })
+                    feedback_info.append(student_name, lag_time)
+                    result.append(feedback_info)
+    """
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
         team_id = request.args.get("team_id")  
@@ -30,10 +72,12 @@ def get_ratings():
             if ratings is None:
                 return create_good_response([], 200, "ratings")
             result = []
+            i = 0
             for team in ratings:
                 feedback_time = team[3]
                 submission_time = team[4]
                 lag_time = feedback_time - submission_time if feedback_time and submission_time else None
+                feedback_info = []
                 result.append({
                     "team_id": team[0],
                     "team_name": team[1],
@@ -41,6 +85,8 @@ def get_ratings():
                     "lag_time": str(lag_time) if lag_time else None,
                     "student": team[6] + " " + team[7]
                 })
+                output(result[i]['student'])
+                i += 1
         else:
             ratings = get_individual_ratings(assessment_task_id)
             if ratings is None:

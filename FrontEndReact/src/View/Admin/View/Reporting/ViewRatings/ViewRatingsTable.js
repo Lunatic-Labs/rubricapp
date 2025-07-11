@@ -43,21 +43,72 @@ class ViewRatingsTable extends Component {
         label: nameLabel,
         options: {
           filter: true,
+          setCellHeaderProps: () => ({
+            style: {
+              width: '10%'
+            }
+          }),
+          setCellProps: () => ({
+            style: {
+              width: '10%'
+            }
+          })
         }
       },
     ]
 
     // Add in the rest of the columns with the categories that correspond to the chosen rubric
     this.props.categories.map((i) => {
-      columns.push({
-        name: i["category_name"],
-        label: i["category_name"],
-        options: {
-          filter: true,
-        }
-      });
+      if (assessmentIsTeam[this.props.chosenAssessmentId] === false){
+        columns.push({
+          name: i["category_name"],
+          label: i["category_name"],
+          options: {
+            filter: true,
+          }
+        });
 
-      return i;
+        return i;
+
+      } else {
+        columns.push({
+          name: i["category_name"],
+          label: i["category_name"],
+          options: {
+            filter: true,
+            customHeadLabelRender: (columnMeta) => {
+              return (
+                <div 
+                  style={{
+                    transform: 'rotate(45deg)',
+                    transformOrigin: 'center',
+                    whiteSpace: 'wrap',
+                    height: '150px', 
+                    width: '80px',  
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'left'
+                  }}
+                >
+                  {columnMeta.label}
+                </div>
+              );
+            },
+            setCellHeaderProps: () => ({
+              style: {
+                minWidth: '40px',
+                maxWidth: '40px',
+                padding: '0',      
+                margin: '0',       
+                height: 'auto', 
+                verticalAlign: 'middle'
+              }
+            })
+          }
+        });
+
+        return i;
+      }
     });
 
     if (assessmentIsTeam[this.props.chosenAssessmentId] === false) {
@@ -69,6 +120,12 @@ class ViewRatingsTable extends Component {
         }
       });
     } else {
+      /*
+      To-Do:
+        Combine student_name and lag_time columns into one as seen in concept art in Jira SKIL-639. Somehow make the 
+        feedback_info data from rating_routes.py fit. When Student name has a time lag associated with it set 
+        text-color to green . If Student's Lag Time is null, set Lag time value to '-' and Student name text-color to red. 
+      */ 
       columns.push({
         name:"student",
         label:"Student",
