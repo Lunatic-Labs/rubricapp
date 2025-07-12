@@ -9,6 +9,16 @@ import os
 def retrieve_file_path(file_name):
     return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, file_name)
 
+def pop_data_from_team_and_user_course(flask_app_mock:object):
+    from sqlalchemy import create_engine, text
+    flask_app_mock.db.session.execute(text("SET FOREIGN_KEY_CHECKS = 0"))
+    flask_app_mock.db.session.execute(text("DELETE FROM UserCourse"))
+    flask_app_mock.db.session.execute(text("DELETE FROM Team"))
+    flask_app_mock.db.session.execute(text("DELETE FROM CompletedAssessment"))
+    flask_app_mock.db.session.execute(text("SET FOREIGN_KEY_CHECKS = 1"))
+    flask_app_mock.db.session.flush()
+    flask_app_mock.db.session.commit()    
+
 # test_valid_file_w_tas_records_all_data()
 #   - calls create_one_admin_ta_student_course() with one parameter:
 #       - the course does use TAs (True)
@@ -65,17 +75,15 @@ def test_valid_file_w_tas_records_all_data(flask_app_mock):
             error_message = "teams_csv_to_db() did not correctly assign the test student to the test team!"
             assert team_users.__len__() == 2, error_message
 
-            print("error at deletion")
-
+            pop_data_from_team_and_user_course(flask_app_mock)
             delete_one_admin_ta_student_course(result)
-            print("got past first delete")
             delete_all_teams_team_members(result["course_id"])
             find_test_user = get_user_by_email('teststudent@gmail.com')
             if find_test_user:
                 delete_user(find_test_user.user_id)
 
         except Exception as e:
-            print(e)
+            pop_data_from_team_and_user_course(flask_app_mock)
             delete_all_teams_team_members(result["course_id"])
             delete_one_admin_ta_student_course(result)
             raise e
@@ -91,38 +99,66 @@ def test_valid_file_w_tas_records_all_data(flask_app_mock):
 ##   - asserts
 ##       - 1 team was created and assigned to the test course
 ##       - 1 user, a student, was assigned to the team
-#def test_valid_file_wo_tas_records_all_data(flask_app_mock):
-#    with flask_app_mock.app_context():
-#        try:
-#            result = create_one_admin_ta_student_course(False)
-#            message = teamImport.team_csv_to_db(
-#                retrieve_file_path("oneTeamStudent.csv"),
-#                result["admin_id"],
-#                result["course_id"]
-#            )
-#            
-#            error_message = "team_csv_to_db() did not return the expected success message!"
-#            assert message == "Upload successful!", error_message
-#            
-#            teams = get_team_by_course_id(result["course_id"])
-#
-#            error_message = "team_csv_to_db() did not correctly assign the test team to the test course!"
-#            assert teams.__len__() == 1, error_message
-#
-#            teams = get_team_by_course_id(result["course_id"])
-#            team_users = get_team_users_by_team_id(teams[0].team_id)
-#
-#            error_message = "team_csv_to_db() did not correctly assign the test student to the test team!"
-#            assert team_users.__len__() == 1, error_message
-#
-#            delete_all_teams_team_members(result["course_id"])
-#            delete_one_admin_ta_student_course(result)
-#
-#        except Exception as e:
-#            delete_all_teams_team_members(result["course_id"])
-#            delete_one_admin_ta_student_course(result)
-#            raise
-#
+def test_valid_file_wo_tas_records_all_data(flask_app_mock):
+    with flask_app_mock.app_context():
+        try:
+            print("in the function")
+            found_test_user = get_user_by_email("teststudent@gmail.com")
+            if found_test_user is None:
+                create_user({
+                    "first_name": 'test',
+                    "last_name": 'student',
+                    "email": 'teststudent@gmail.com',
+                    "password": 'random',
+                    "lms_id": '4394839',
+                    "consent": None,
+                    "owner_id": None,
+                    "role_id": 4
+                })
+                found_test_user = get_user_by_email("teststudent@gmail.com")
+            result = create_one_admin_ta_student_course()
+            message = teamImport.team_csv_to_db(
+                retrieve_file_path("oneTeamStudent.csv"),
+                result["admin_id"],
+                result["course_id"]
+            )
+            print("created user course")
+            
+            error_message = "team_csv_to_db() did not return the expected success message!"
+            assert message == "Upload successful!", error_message
+            
+            teams = get_team_by_course_id(result["course_id"])
+
+            error_message = "team_csv_to_db() did not correctly assign the test team to the test course!"
+            assert teams.__len__() == 1, error_message
+
+            print("got past two asserts")
+
+            teams = get_team_by_course_id(result["course_id"])
+            team_users = get_team_users_by_team_id(teams[0].team_id)
+
+            error_message = "team_csv_to_db() did not correctly assign the test student to the test team!"
+            assert team_users.__len__() == 1, error_message
+
+            print("issue is at deletion")
+
+            pop_data_from_team_and_user_course(flask_app_mock)
+            delete_all_teams_team_members(result["course_id"])
+            delete_one_admin_ta_student_course(result)
+            find_test_user = get_user_by_email('teststudent@gmail.com')
+            if find_test_user:
+                delete_user(find_test_user.user_id)
+
+        except Exception as e:
+            print(e)
+            pop_data_from_team_and_user_course(flask_app_mock)
+            delete_all_teams_team_members(result["course_id"])
+            delete_one_admin_ta_student_course(result)
+            find_test_user = get_user_by_email('teststudent@gmail.com')
+            if find_test_user:
+                delete_user(find_test_user.user_id)
+            raise
+
 ## test_wrong_file_type_error()
 ##   - calls teams_csv_to_db() with three parameters:
 ##       - the retrieved file path to the WrongFileType.pdf file

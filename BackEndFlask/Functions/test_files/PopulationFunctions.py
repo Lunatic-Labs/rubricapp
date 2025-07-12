@@ -263,13 +263,20 @@ def delete_one_admin_ta_student_course(result, use_tas=True):
     if use_tas:
         safe_deletion(delete_user, result["observer_id"])
 
-    delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    def safe_deletion_hotfix(x:object, y:object, z:object):
+        try:
+            x(y, z)
+        except Exception as e:
+            if not isinstance(e, ValueError):
+                raise e 
+
+    safe_deletion_hotfix(delete_user_course_by_user_id_course_id,result["user_id"], result["course_id"])
 
     if use_tas:
-        delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
+        safe_deletion_hotfix(delete_user_course_by_user_id_course_id, result["observer_id"], result["course_id"])
 
-    delete_course(result["course_id"])
-    delete_user(result["admin_id"])
+    safe_deletion(delete_course, result["course_id"])
+    safe_deletion(delete_user, result["admin_id"])
 
 # create_users()
 #   - takes four parameters:
