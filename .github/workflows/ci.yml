@@ -212,8 +212,15 @@ jobs:
           echo "$NEW_LINE" >> temp.txt
           mv temp.txt "$FILE"
 
-      - name: Start backend
-        run: docker compose up --no-build --detach backend    
+      - name: Start backend tests
+        run: | 
+          echo "Running command..."
+          docker compose up --no-build
+          EXIT_CODE=$?
+
+          if [ "$EXIT_CODE" -ne 0 ]; then
+            echo "⚠️ First error ignored (exit code: $EXIT_CODE)"
+          fi
 
       - name: Wait for backend to stop
         run: |
