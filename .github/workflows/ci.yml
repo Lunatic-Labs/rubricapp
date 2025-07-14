@@ -206,7 +206,7 @@ jobs:
       - name: Replace dockerfile backend to tigger testing
         run: |
           FILE="Dockerfile.backend"
-          NEW_LINE ="CMD ["python", "setupEnv.py", "-dt"]"
+          NEW_LINE ='CMD ["python", "setupEnv.py", "-dt"]'
           sed '$d' "$FILE" > temp.txt && echo "$NEW_LINE" >> temp.txt && mv temp.txt "$FILE"
 
       - name: Start backend
