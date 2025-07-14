@@ -213,7 +213,7 @@ jobs:
           mv temp.txt "$FILE"
 
       - name: Start backend
-        run: docker compose up --no-build --detach backend      
+        run: docker compose up --no-build    
 
   
   validate_frontEnd_works_with_backend:
