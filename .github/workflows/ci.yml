@@ -204,10 +204,13 @@ jobs:
         run: docker compose build backend      
 
       - name: Replace dockerfile backend to tigger testing
+        shell: bash
         run: |
           FILE="Dockerfile.backend"
-          NEW_LINE ='CMD ["python", "setupEnv.py", "-dt"]'
-          sed '$d' "$FILE" > temp.txt && echo "$NEW_LINE" >> temp.txt && mv temp.txt "$FILE"
+          NEW_LINE='CMD ["python", "setupEnv.py", "-dt"]'
+          sed '$d' "$FILE" > temp.txt
+          echo "$NEW_LINE" >> temp.txt
+          mv temp.txt "$FILE"
 
       - name: Start backend
         run: docker compose up --no-build --detach backend      
