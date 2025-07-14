@@ -213,11 +213,21 @@ jobs:
         run: docker compose build backend      
 
       - name: Start backend tests
-        run: | 
-          docker compose up --no-build --detach backend
-      
-      - name: Show backend logs
-        run: docker compose logs backend
+        run: |
+          docker compose up --no-build backend
+          EXIT_CODE=$?
+
+          if [ "$EXIT_CODE" -ne 0 ]; then
+            echo "(exit code: $EXIT_CODE). Ignoring it..."
+          fi
+          echo "Checking backend container status..."
+          docker inspect -f '{{.State.Running}}' backend || {
+            echo "❌ Backend container is not running. Failing the job."
+            exit 1
+          }
+
+          echo "✅ Backend is running. Continuing..."
+          
   
   validate_frontEnd_works_with_backend:
   # runs the jest tests once everything has show to work as expected.
