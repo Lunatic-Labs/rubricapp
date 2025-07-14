@@ -207,7 +207,7 @@ def start_tests():
 
 
 if __name__ == "__main__":
-    #dependency_check()
+    dependency_check()
     if SYSTEM == "Windows":
         err("Windows is no longer supported for development. :((")
 
