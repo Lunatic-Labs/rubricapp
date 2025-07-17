@@ -37,9 +37,9 @@ from models.course import (
     get_course
 )
 
-""" from models.utility import (
+from models.utility import (
     send_email_for_updated_email,
-) """
+)
 
 from models.user import(
     get_users,
@@ -317,6 +317,7 @@ def update_user():
         # The email was updated, update the email validation table for that entry.
         if new_email is not None and owner_id is not None:
             update_email_to_pending(user_id)
+            send_email_for_updated_email(new_email)            
 
         user = replace_user(request.json, user_id)
 
