@@ -106,6 +106,7 @@ class AdminAddTeam extends Component {
                 team_name: teamName,
                 observer_id: observerId,
                 course_id: chosenCourse.course_id,
+                assessment_task_id: null,
                 date_created: `${month}/${date}/${year}`,
                 active_until: null,
             });
