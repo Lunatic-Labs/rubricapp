@@ -92,12 +92,12 @@ def fetch_average():
         {
             "rating": "TW",
             "averages": {
-              'TASK_1': 4,
-              'TASK_2': 3,
-              'TASK_3': 4.5,
-              'TASK_4': 3,
-              'TASK_5': 3,
-              'TASK_6': 2,
+              "TASK_1": 4,
+              "TASK_2": 3,
+              "TASK_3": 4.5,
+              "TASK_4": 3,
+              "TASK_5": 3,
+              "TASK_6": 2,
             }
         },
         {
@@ -106,12 +106,12 @@ def fetch_average():
         {
             "rating": "IP",
             "averages": {
-                'TASK_1': 4,
-                'TASK_2': 3,
-                'TASK_3': 4.5,
-                'TASK_4': 3,
-                'TASK_5': 3,
-                'TASK_6': 2,
+                "TASK_1": 4,
+                "TASK_2": 3,
+                "TASK_3": 4.5,
+                "TASK_4": 3,
+                "TASK_5": 3,
+                "TASK_6": 2,
             }
         }
     ]

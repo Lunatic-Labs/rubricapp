@@ -223,11 +223,10 @@ def delete_rubric():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-@admin_check()
 def get_average():
     average = fetch_average()
 
-    return create_good_response(jsonify(average), 200, "average")
+    return create_good_response(average, 200, "average")
 
 class RatingsSchema(Schema):
     rating_id          = fields.Integer()
