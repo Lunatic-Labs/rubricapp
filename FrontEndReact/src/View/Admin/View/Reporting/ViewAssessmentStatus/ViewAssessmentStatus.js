@@ -134,7 +134,7 @@ export default function ViewAssessmentStatus(props) {
   };
 
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
-  
+
   return (
     <Container>
       <Box sx={{ maxHeight:"135vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >

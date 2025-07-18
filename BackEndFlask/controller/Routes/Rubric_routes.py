@@ -1,10 +1,10 @@
-from flask import request
+from flask import request, jsonify
 from marshmallow import fields, Schema
 from controller import bp 
 from models.rubric_categories import *
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from models.rubric   import get_rubric, get_rubrics, create_rubric, delete_rubric_by_id
+from models.rubric   import get_rubric, get_rubrics, create_rubric, delete_rubric_by_id, fetch_average
 from models.category import get_categories_per_rubric, get_categories, get_ratings_by_category
 from models.suggestions import get_suggestions_per_category
 from models.observable_characteristics import get_observable_characteristic_per_category
@@ -216,6 +216,18 @@ def delete_rubric():
         db.session.rollback()
         return create_bad_response(f"An error occurred deleting a rubric: {e}", "rubrics", 400)
 
+#----------------------------------
+# gets the average of ratings
+#----------------------------------
+@bp.route('/average', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def get_average():
+    average = fetch_average()
+
+    return create_good_response(jsonify(average), 200, "average")
 
 class RatingsSchema(Schema):
     rating_id          = fields.Integer()

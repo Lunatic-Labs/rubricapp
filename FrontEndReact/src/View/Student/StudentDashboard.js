@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams.js';
 import TAViewTeams from './View/TAViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
+import Grid from '@mui/material/Grid';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
@@ -23,6 +25,7 @@ import Loading from '../Loading/Loading.js';
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
  *  @property {Array}  filteredCATs - All valid CATs for the course and user.
+ *  @property {Array}  averageData  - Averages for all completed assessment task rubrics.
  * 
  */
 
@@ -44,6 +47,7 @@ class StudentDashboard extends Component {
             completedAssessments: null,
             filteredATs: null,
             filteredCATs: null,
+            averageData: null,
         }
     }
 
@@ -66,6 +70,11 @@ class StudentDashboard extends Component {
         genericResourceGET(
             routeToCall,
             "completed_assessments", this, { dest: "completedAssessments" }
+        );
+
+        genericResourceGET(
+            `/average`,
+            "average", this, { dest: "averageData" }
         );
     }
 
@@ -125,7 +134,8 @@ class StudentDashboard extends Component {
             assessmentTasks,
             completedAssessments,
             filteredATs,
-            filteredCATs, 
+            filteredCATs,
+            averageData,
         } = this.state; 
 
         // Wait for information to be filtered.
@@ -140,6 +150,24 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
 
+        console.log(averageData);
+        //const transformedData = averageData.map(entry => ({
+        //  rating: entry.rating,
+        //  ...entry.averages,
+        //}));
+//
+        //const taskKeys = Object.keys(averageData[0].averages);
+//
+        //const innerGridStyle = {
+        //  borderRadius: '1px',
+        //  height: '100%',
+        //  border: "#7F7F7F", 
+        //  padding: 0,
+        //  margin: 0,
+        //  boxShadow: "0.3em 0.3em 1em #d6d6d6"
+        //};
+//
+        //const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
 
         // Note: The [My Assessment Tasks] & [Completed Assessments] each require exactly one of of the filtered objects.
         //      The reason stems from them needing an original list to properly bind data.
@@ -222,9 +250,67 @@ class StudentDashboard extends Component {
                         }
                     </Box>
                 </Box>
+
+                {roles["role_id"] === 5 &&
+                    <Box className="page-spacing">
+                        <Box sx={{
+                            display: "flex",
+                            justifyContent: "space-between",
+                            alignItems: "center",
+                            alignSelf: "stretch"
+                        }}>
+                            <Box sx={{ width: "100%" }} className="content-spacing">
+                                <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="averageRatings">
+                                    Average Ratings
+                                </Typography>
+                            </Box>
+                        </Box>
+
+                    </Box>
+                }
             </>
         )
     }
 }
 
 export default StudentDashboard;
+
+                        //<Grid item xs={12} md={6}>
+                        //    <div className={innerDivClassName} style={{
+                        //        ...innerGridStyle,
+                        //        minHeight: '250px'
+                        //    }}>
+                        //        <h6 style={{ margin: '0', padding: '1px', lineHeight: '1' }}>
+                        //            <u>Distribution of Ratings</u>
+                        //        </h6>
+                        //        <div style={{ width: '100%', height: '210px', flexGrow: 1 }}>
+                        //            <ResponsiveContainer>
+                        //                <BarChart
+                        //                    layout="horizontal"
+                        //                    data={transformedData}
+                        //                    barCategoryGap={0.5}
+                        //                    margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
+                        //                >
+                        //                    <XAxis
+                        //                        dataKey="rating"
+                        //                        type="category"
+                        //                        style={{ fontSize: '0.75rem' }}
+                        //                        tickLine={false}
+                        //                    />
+                        //                    <YAxis
+                        //                        type="number"
+                        //                        style={{ fontSize: '0.75rem' }}
+                        //                        domain={[0, 5]}
+                        //                        ticks={[0, 1, 2, 3, 4, 5]}
+                        //                    />
+                        //                    <CartesianGrid vertical={false} />
+                        //                    {taskKeys.map((task) =>{
+                        //                        return <Bar dataKey={task} fill="#2e8bef">
+                        //                            <LabelList dataKey={task} fill="#ffffff" position="inside" />
+                        //                        </Bar>
+                        //                    })}
+                        //                </BarChart>
+                        //            </ResponsiveContainer>
+                        //        </div>
+                        //    </div>
+                        //</Grid>
