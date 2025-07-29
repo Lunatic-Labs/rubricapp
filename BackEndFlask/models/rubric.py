@@ -80,38 +80,3 @@ def delete_rubric_by_id(rubric_id):
     db.session.commit()
 
     return one_rubric
-
-#----------------------------------
-# Get the rubric based on rubric_i
-# Get the average of all ratings
-# return the average
-#----------------------------------
-@error_log
-def fetch_average():
-    return [
-        {
-            "rating": "TW",
-            "averages": {
-              "TASK_1": 4,
-              "TASK_2": 3,
-              "TASK_3": 4.5,
-              "TASK_4": 3,
-              "TASK_5": 3,
-              "TASK_6": 2,
-            }
-        },
-        {
-            "rating": "",
-        },
-        {
-            "rating": "IP",
-            "averages": {
-                "TASK_1": 4,
-                "TASK_2": 3,
-                "TASK_3": 4.5,
-                "TASK_4": 3,
-                "TASK_5": 3,
-                "TASK_6": 2,
-            }
-        }
-    ]

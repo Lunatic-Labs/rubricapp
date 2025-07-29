@@ -149,6 +149,42 @@ def make_complete_assessment_unlocked(completed_assessment_id):
 
     return one_completed_assessment
 
+#----------------------------------------
+# Get the average of all ratings
+# based on the completed assessment task
+# returns the average, name, team id,
+# assessment task id, and rubric id
+#----------------------------------------
+@error_log
+def fetch_average(assessment_tasks, completed_assessment_tasks):
+    result = []
+    for task in assessment_tasks:
+        completed_assessments = [ca for ca in completed_assessment_tasks if ca.assessment_task_id == task.assessment_task_id]
+
+        for ca in completed_assessments:
+            data = ca.rating_observable_characteristics_suggestions_data
+
+            if not data:
+                continue
+
+            ratings = [
+                value['rating']
+                for value in data.values()
+                if isinstance(value, dict) and 'rating' in value and isinstance(value['rating'], (int, float))
+            ]
+
+            if ratings:
+                average = sum(ratings) / len(ratings)
+                result.append({
+                    "assessment_task_id": task.assessment_task_id,
+                    "name": task.assessment_task_name,
+                    "team": ca.team_id,
+                    "rubric_id": task.rubric_id,
+                    "average": round(average, 2)
+                })
+
+    return result
+
 def load_demo_completed_assessment():
     list_of_completed_assessments = [
         {    # Completed Assessment id 1

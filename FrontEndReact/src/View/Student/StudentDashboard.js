@@ -48,6 +48,7 @@ class StudentDashboard extends Component {
             filteredATs: null,
             filteredCATs: null,
             averageData: null,
+            filteredAverageData: null,
         }
     }
 
@@ -73,7 +74,7 @@ class StudentDashboard extends Component {
         );
 
         genericResourceGET(
-            `/average`,
+            `/average?course_id=${chosenCourse}`,
             "average", this, { dest: "averageData" }
         );
     }
@@ -84,25 +85,30 @@ class StudentDashboard extends Component {
             roles,
             assessmentTasks,
             completedAssessments,
+            averageData,
         } = this.state;
 
-        const filterATsAndCATs = roles && assessmentTasks && completedAssessments && (filteredATs === null);
+        const filterATsAndCATs = roles && assessmentTasks && completedAssessments && averageData && (filteredATs === null);
 
         if (filterATsAndCATs) {
             // Remove ATs where the ID matches one of the IDs
             // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
-            let filteredCompletedAsseessments = [];
-            
+            let filteredCompletedAssessments = [];
+            let filteredAvgData = [];
+
             const CATmap = new Map();
+            const AVGmap = new Map();
             const roleId = roles["role_id"];
             completedAssessments.forEach(cat => {CATmap.set(cat.assessment_task_id, cat)});
-            
+            averageData.forEach(cat => {AVGmap.set(cat.assessment_task_id, cat)});
+
             const currentDate = new Date();
             const isATDone = (cat) => cat !== undefined && cat.done;
             const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
 
             let filteredAssessmentTasks = assessmentTasks.filter(task => {
                 const cat =  CATmap.get(task.assessment_task_id);
+                const avg = AVGmap.get(task.assessment_task_id);
                 
                 // Qualites for if an AT is viewable.
                 const done = isATDone(cat);
@@ -115,15 +121,36 @@ class StudentDashboard extends Component {
                 const CATviewable = correctUser===false && done===false;
                 
                 if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
-                    filteredCompletedAsseessments.push(cat); 
+                    filteredCompletedAssessments.push(cat);
+                    filteredAvgData.push(avg);
                 }
 
                 return viewable;
             });
 
+            // Sorting the average data by rubric id
+            filteredAvgData.sort((a,b) => a.rubric_id - b.rubric_id);
+
+            // use this as the base for the data to be used in the graph
+            //let rating_average = [
+            //    {
+            //        "rating": "TW",
+            //        "averages": {}
+            //    },
+            //    {
+            //        "rating": "",
+            //    },
+            //    {
+            //        "rating": "IP",
+            //        "averages": {}
+            //    }
+            //]
+            // Find a way to put the sorted average data into the format above
+
             this.setState({
                 filteredATs: filteredAssessmentTasks,
-                filteredCATs: filteredCompletedAsseessments,
+                filteredCATs: filteredCompletedAssessments,
+                filteredAverageData: filteredAvgData,
             });
         }
     }
@@ -136,10 +163,11 @@ class StudentDashboard extends Component {
             filteredATs,
             filteredCATs,
             averageData,
+            filteredAverageData,
         } = this.state; 
 
         // Wait for information to be filtered.
-        if (filteredATs === null || filteredCATs === null) {
+        if (filteredATs === null || filteredCATs === null || filteredAverageData === null) {
             return <Loading />
         }
 
@@ -149,13 +177,18 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.team = null;
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
+        
+        console.log(filteredAverageData);
 
-        const transformedData = averageData.map(entry => ({
-          rating: entry.rating,
-          ...entry.averages,
-        }));
+        // This will put the average data into the recomended format
+        // can change if there are better options
+        //const transformedData = averageData.map(entry => ({
+        //  rating: entry.rating,
+        //  ...entry.averages,
+        //}));
 
-        const taskKeys = Object.keys(averageData[0].averages);
+        // This will be used to get the averages from the transformed data
+        //const taskKeys = Object.keys(averageData[0].averages);
 
         const innerGridStyle = {
           borderRadius: '1px',
@@ -265,6 +298,7 @@ class StudentDashboard extends Component {
                             </Box>
                         </Box>
 
+{/*                     This is the bar graph for the average data, reformat it to look nicer/cleaner
                         <Grid item xs={12} md={6}>
                             <div className={innerDivClassName} style={{
                                 ...innerGridStyle,
@@ -304,6 +338,7 @@ class StudentDashboard extends Component {
                                 </div>
                             </div>
                         </Grid>
+*/}
                     </Box>
                 }
             </>
