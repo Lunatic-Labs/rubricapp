@@ -15,10 +15,11 @@ from models.assessment_task import *
 from models.completed_assessment import * 
 from controller.security.blacklist import start_redis
 from models.feedback import *
-from sqlalchemy import text
+from sqlalchemy import text, inspect
 import time
 import os
 import sys
+import subprocess
 
 sleep_time = 0
 
@@ -42,7 +43,15 @@ with app.app_context():
             print("[dbcreate] exiting...")
     time.sleep(sleep_time)
     try:
-        db.create_all()
+        inspector = inspect(db.get_engine())
+        table_names = inspector.get_table_names()
+        if table_names:
+            subprocess.run(["flask db upgrade"], shell=True, check=True)
+        else:
+            db.create_all()
+            subprocess.run(["flask db stamp head"], shell=True, check=True)
+
+
         is_docker = os.getenv('DOCKER_BUILD', 'false').lower() == 'true'
         if not is_docker:
             start_redis()
