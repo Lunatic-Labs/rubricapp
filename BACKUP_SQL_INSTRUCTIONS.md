@@ -6,6 +6,30 @@ mysqldump --no-create-db --no-create-info --no-tablespaces --verbose [DATABASE_N
 
 This should create a file named backup_[DATE_OF_CREATION].sql in the same directory.
 That file will contain only the inserts to restore each tables data.
+Now delete all data in the tables including the tables themselves.
+Now run the application. Once it is working stop it. 
+Go into the database and execute the following (copy and paste it in):
+```sql
+SET FOREIGN_KEY_CHECKS = 0;
+TRUNCATE TABLE AssessmentTask;
+TRUNCATE TABLE Category;
+TRUNCATE TABLE Checkin;
+TRUNCATE TABLE CompletedAssessment;
+TRUNCATE TABLE Course;
+TRUNCATE TABLE EmailValidation;
+TRUNCATE TABLE Feedback;
+TRUNCATE TABLE ObservableCharacteristic;
+TRUNCATE TABLE Role;
+TRUNCATE TABLE Rubric;
+TRUNCATE TABLE RubricCategories;
+TRUNCATE TABLE SuggestionsForImprovement;
+TRUNCATE TABLE Team;
+TRUNCATE TABLE TeamUser;
+TRUNCATE TABLE User;
+TRUNCATE TABLE UserCourse;
+SET FOREIGN_KEY_CHECKS = 1;
+```
+That code was run to clear all data in the tables out so there is no conflict with the backup data.
 Next run the following command and use the generated sql file from before:
 
 ```bash
