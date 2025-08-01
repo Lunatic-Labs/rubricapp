@@ -231,9 +231,9 @@ def get_nonfull_adhoc():
 @admin_check()
 def get_how_many_adhocs_teams_exist():
     try:
-        if request.args and request.args.get("course_id"):
-            course_id = int(request.args.get("course_id"))
-            return create_good_response(get_num_of_adhocs(course_id), 200, "teams")
+        if request.args and request.args.get("assessment_task_id"):
+            assessment_task_id = int(request.args.get("assessment_task_id"))
+            return create_good_response(get_num_of_adhocs(assessment_task_id), 200, "teams")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
@@ -355,6 +355,7 @@ class TeamSchema(ma.Schema):
     team_name    = fields.String()
     observer_id  = fields.Integer()
     course_id    = fields.Integer()
+    assessment_task_id = fields.Integer()
     date_created = fields.Date()
     active_until = fields.DateTime()
 
