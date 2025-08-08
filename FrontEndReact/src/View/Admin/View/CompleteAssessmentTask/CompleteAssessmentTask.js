@@ -141,6 +141,9 @@ class CompleteAssessmentTask extends Component {
         //this.setState({
         //    checkinEventSource: checkinEventSource,
         //});
+        this.setState({
+            checkinEventSource: null,
+        })
     }
     
     componentWillUnmount() {
