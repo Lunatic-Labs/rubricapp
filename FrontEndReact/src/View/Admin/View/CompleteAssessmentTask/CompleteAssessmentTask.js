@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
-import { genericResourceGET, createEventSource } from '../../../../utility.js';
+//import { genericResourceGET, createEventSource } from '../../../../utility.js'; Removed to unhook /checkin_events
+import { genericResourceGET} from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
