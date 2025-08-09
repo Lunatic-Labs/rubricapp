@@ -176,8 +176,8 @@ class CompletedAssessment(db.Model):
 class Feedback(db.Model):
     __tablename__ = "Feedback"
     feedback_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
-    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
+    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
     feedback_time = db.Column(DateTime(timezone=True), nullable=True) # time the student viewed their feedback
 

@@ -43,7 +43,7 @@ with app.app_context():
             print("[dbcreate] exiting...")
     time.sleep(sleep_time)
     try:
-        inspector = inspect(db.get_engine())
+        inspector = inspect(db.engine)
         table_names = inspector.get_table_names()
         if table_names:
             subprocess.run(["flask db upgrade"], shell=True, check=True)
