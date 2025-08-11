@@ -67,7 +67,7 @@ def load_demo_feedback():
     create_feedback({
         "completed_assessment_id": 1,
         "user_id": 3,
-        "feedback_time": "2027-04-25T09:30:00",
+        "feedback_time": "2027-04-25T09:30:00.000000Z",
     })
 
 @error_log
