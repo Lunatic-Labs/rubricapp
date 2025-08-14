@@ -1,35 +1,21 @@
-import os
 import re
-import sys
-import time
-import string, secrets
+import string
+import secrets
 import html
-
-import base64
-from email.message import EmailMessage
-
-import google.auth
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-
 from models.logger import logger
+from core import sendgrid_client, config
+from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
 
-from core import oauth2_service, config
-
+# NOTE: MARKED FOR EDITING
 def check_bounced_emails(from_timestamp=None):
     if config.rubricapp_running_locally:
         return
 
     max_fetched_emails = 32
+    query, messages_result = (None, None)
 
     try:
-        # Fetch the emails
-        query, messages_result = (None, None)
-
         # TODO: handle timestamp correctly
         # if from_timestamp is not None:
         #     query = f"after:{int(from_timestamp.timestamp())}"
@@ -153,26 +139,38 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
         send_email(student.email, subject, message, 0)
 
-def send_email(address: str, subject: str, content: str, type: int):
+def send_email(address: str, subject: str, content: str, type: int) -> None:
+    """
+    Sends an email.
+    
+    Args:
+        address (str): Recipient address.
+        subject (str): Email subject.
+        content (str): Email content.
+        type    (int): Is the content html: 1 indicates html, 0 plain text. 
+
+    Raises:
+        Email errors from connecting and sending via SendGrid.
+    """
     if config.rubricapp_running_locally:
         return
 
+    kwargs = {
+        'from_email' : 'no-reply@skill-builder.net',
+        'subject'    : subject,
+        'to_emails'  : address,
+    }
+
+    if type == 1:
+        kwargs['html_content'] = content
+    elif type == 2:
+        kwargs['amp_html_content'] = content
+    else:# 0 is plain text and works as a catch all.
+        kwargs['plain_text_content'] = content
+
     try:
-        message = EmailMessage()
-        if type == 0:
-            message.set_content(content)
-        else:
-            message.set_content(content, subtype='html')
-        message["To"] = address
-        message["From"] = "skillbuilder02@gmail.com"
-        message["Subject"] = subject
-
-        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-        create_message = {
-                "raw": encoded_message,
-        }   
-        send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
-
+        message = Mail(**kwargs)
+        sendgrid_client.send(message)
     except Exception as e:
         config.logger.error("Could not send email: " + str(e))
         raise EmailFailureException()
