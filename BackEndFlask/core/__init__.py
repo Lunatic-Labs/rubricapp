@@ -1,8 +1,4 @@
-import google.auth
-from googleapiclient.discovery import build
-import googleapiclient.discovery
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
+from sendgrid import SendGridAPIClient
 from flask_jwt_extended import JWTManager
 from flask_migrate import Migrate
 from flask_marshmallow import Marshmallow
@@ -21,22 +17,6 @@ import re
 import redis
 #import logging
 from models.logger import Logger
-
-def get_oauth2_credentials(token_fp, scopes):
-    try:
-        if not os.path.exists(token_fp):
-            return None
-        creds = Credentials.from_authorized_user_file(token_fp, scopes)
-        
-        if creds and creds.expired and creds.refresh_token:
-            creds.refresh(Request())
-        if not creds or not creds.valid:
-            return None
-        with open(token_fp, 'w') as token:
-            token.write(creds.to_json())
-        return creds
-    except:
-        return None
 
 def setup_cron_jobs():
     # Check if we've already set up cron
@@ -151,21 +131,23 @@ class Config:
 
 config = Config()
 
-# Initialize Gmail OAuth2 service
+# Setting up email service.
+sendgrid_client = None
 try:
-    oauth2_scopes = [
-        "https://www.googleapis.com/auth/gmail.compose",
-        "https://www.googleapis.com/auth/gmail.readonly",
-    ]
-    oauth2_token_fp = "/home/ubuntu/private/token.json"
-    oauth2_service = None
-    oauth2_credentials = None
-    oauth2_credentials = get_oauth2_credentials(oauth2_token_fp, oauth2_scopes)
-    oauth2_service = googleapiclient.discovery.build("gmail", "v1", credentials=oauth2_credentials)
+    sendgrid_env_path = os.path.join(os.path.dirname(__file__), "..", "sendgrid.env")
+    found_sendgrid_env_file = load_dotenv(dotenv_path=sendgrid_env_path, override=True)
+
+    if not found_sendgrid_env_file:
+        raise FileNotFoundError("sendgrid.env not found")
+
+    sendgrid_key = os.environ.get('SENDGRID_API_KEY')
+
+    if sendgrid_key is None:
+        ValueError("sendgrid key not in env")
+
+    sendgrid_client = SendGridAPIClient(sendgrid_key)
 except Exception as e:
     config.logger.error(str(e))
-    oauth2_credentials = None
-    oauth2_service = None
 
 # Register blueprints
 from controller import bp

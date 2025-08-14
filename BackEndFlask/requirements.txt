@@ -20,6 +20,9 @@ google-auth-oauthlib == 1.2.2
 google-auth-httplib2 == 0.2.0
 google-api-python-client == 2.169.0
 
+# SendGrid API for emails
+sendgrid == 6.12.4
+
 # Database and ORM tools
 sqlalchemy == 2.0.40
 pymysql == 1.1.1
