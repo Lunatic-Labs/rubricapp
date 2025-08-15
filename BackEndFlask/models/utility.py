@@ -199,7 +199,6 @@ def send_email(address: str, subject: str, content: str, type: EmailContentType)
         config.logger.error("Could not send email: " + str(e))
         raise EmailFailureException()
 
-
 def generate_random_password(length: int) -> str:
     """
     Generates random password of the desired length.
