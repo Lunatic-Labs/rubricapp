@@ -1,0 +1,1 @@
+DEFAULT_SENDER_EMAIL = 'no-reply@skill-builder.net'

@@ -2,71 +2,55 @@ import re
 import string
 import secrets
 import html
+from time import time
 from models.logger import logger
 from core import sendgrid_client, config
 from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
+from constants.Email import DEFAULT_SENDER_EMAIL
 
 # NOTE: MARKED FOR EDITING
 def check_bounced_emails(from_timestamp=None):
+    """
+    This function returns a list of all bounced emails.
+
+    Args:
+        from_timestamp(int): Unix timestamp from where to start considering emails (inclusive).
+    """
+
     if config.rubricapp_running_locally:
         return
 
-    max_fetched_emails = 32
-    query, messages_result = (None, None)
+    MAX_FETCHED_EMAILS = 32
+    DEFAULT_LOOKBACK_DAYS  = 30
+
+    if from_timestamp is None:
+        from_timestamp = int(time.time()) - DEFAULT_LOOKBACK_DAYS * 86400 
 
     try:
-        # TODO: handle timestamp correctly
-        # if from_timestamp is not None:
-        #     query = f"after:{int(from_timestamp.timestamp())}"
+        bounced_emails = []
+        headers = {"Accept": "application/json"}
+        params = {
+            'start_time': from_timestamp,
+            "limit": MAX_FETCHED_EMAILS
+        }
+        sender = DEFAULT_SENDER_EMAIL
 
-        if query is not None:
-            messages_result = oauth2_service.users().messages().list(
-                userId="me", maxResults=max_fetched_emails, q=query
-            ).execute()
-        else:
-            messages_result = oauth2_service.users().messages().list(
-                userId="me", maxResults=max_fetched_emails
-            ).execute()
+        response = sendgrid_client.client.suppression.bounces.get(
+            request_headers = headers,
+            query_params = params,
+        )
 
-        messages, bounced_emails = (messages_result.get("messages", []), [])
-
-        if messages:
-            for msg in messages:
-                msg_detail = oauth2_service.users().messages().get(userId="me", id=msg["id"]).execute()
-                headers = msg_detail.get("payload", {}).get("headers", [])
-                sender = next(
-                    (header["value"] for header in headers if header["name"] == "From"),
-                    None,
-                )
-
-                # Parse the sender
-                if sender:
-                    parts = sender.split("<")
-                    if len(parts) > 1:
-                        sender = parts[1][0:-1]
-
-                if sender and sender == "mailer-daemon@googlemail.com":
-                    snippet = msg_detail.get("snippet", "No snippet available")
-                    snippet = html.unescape(snippet)
-                    main_failure = snippet[0]
-                    to_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', snippet)
-                    to_ = None
-                    if to_match:
-                        to_ = to_match.group()
-
-                    for i in range(1, len(snippet)):
-                        if snippet[i].isupper():
-                            break
-                        main_failure += snippet[i]
-
-                    bounced_emails.append({
-                        'id': msg['id'],
-                        'to': to_,
-                        'msg': snippet.split('LEARN')[0],
-                        'sender': sender,
-                        'main_failure': main_failure.strip(),
-                    })
+        if response.status_code == 200 and response.body:
+            email_json = response.body
+            for entry in email_json:
+                bounced_emails.append({
+                    'id': entry['created'],
+                    'to': entry['email'],
+                    'msg': entry['status'],
+                    'sender': sender,
+                    'main_failure': entry['reason'],
+                })
 
             return bounced_emails if len(bounced_emails) != 0 else None
 
@@ -156,7 +140,7 @@ def send_email(address: str, subject: str, content: str, type: int) -> None:
         return
 
     kwargs = {
-        'from_email' : 'no-reply@skill-builder.net',
+        'from_email' : DEFAULT_SENDER_EMAIL,
         'subject'    : subject,
         'to_emails'  : address,
     }
