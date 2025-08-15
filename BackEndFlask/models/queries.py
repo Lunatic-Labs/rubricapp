@@ -822,7 +822,7 @@ def send_teams_and_students_email_to_view_completed_assessment_feedback(assessme
                 get_students_by_team_id(
                     one_assessment_task.course_id, 
                     get_team(completed.team_id)
-                )
+                ),""
             )
 
 

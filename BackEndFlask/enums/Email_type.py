@@ -1,3 +1,7 @@
+#---------------------------------------------------
+# Contains system-wide email enums.
+#---------------------------------------------------
+
 import enum
 
 class EmailContentType(enum):

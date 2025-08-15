@@ -1,21 +1,32 @@
-import re
 import string
 import secrets
-import html
 from time import time
+from typing import Any
 from models.logger import logger
 from core import sendgrid_client, config
 from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
 from constants.Email import DEFAULT_SENDER_EMAIL
+from enums.Email_type import EmailContentType
 
-# NOTE: MARKED FOR EDITING
-def check_bounced_emails(from_timestamp=None):
+def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     """
-    This function returns a list of all bounced emails.
+    Returns a list of all bounced emails.
 
+    Note:
+        None default for the timestamp means that the system will retrive bounced emails as old as
+        30 days from when the function runs.
+    
     Args:
         from_timestamp(int): Unix timestamp from where to start considering emails (inclusive).
+
+    Returns:
+        dict|None: A dictionary full of bounced emails if any are found else it is None.
+            - id (int)     : Also a unix timestamp from when it was created used as an id.
+            - to (str)     : Intended reciver of the email.
+            - msg (str)    : Enhanced SMTP bounce response.
+            - sender (str) : Who sent the bounced email.
+            - main_failure (str) : Reason for the bounced email.
     """
 
     if config.rubricapp_running_locally:
@@ -58,39 +69,67 @@ def check_bounced_emails(from_timestamp=None):
         config.logger.error("Could not check for bounced email: " + str(e))
         raise EmailFailureException()
 
-def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
+def send_bounced_email_notification(dest_addr: str, msg: str, failure: str) -> None:
+    """
+    Sends bounced email notification to the user.
+
+    Args:
+        dest_addr (str): Recipient of the email.
+        msg (str)      : Human-friendly reason for the failure.
+        failure (str)  : Specific error from the system.
+    """
     subject = "Student's email failed to send."
     message = f'''The email could not sent due to:
 
                 {msg}
 
                 {failure}'''
-    send_email(dest_addr, subject, message, 0)
+    send_email(dest_addr, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_email_for_updated_email(address: str):
+def send_email_for_updated_email(to_address: str) -> None:
+    """
+    Sends update email.
+
+    Args:
+        to_address (str): Recipient of email.
+    """
     subject = "Your email has been updated."
     message = f'''Your email has been updated by an admin.
 
                 Access the app at this link: skill-builder.net
 
-                Your new username is {address}'''
-    send_email(address, subject, message, 0)
+                Your new username is {to_address}'''
+    send_email(to_address, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_new_user_email(address: str, password: str):
+def send_new_user_email(to_address: str, password: str) -> None:
+    """
+    Sends new user an email.
+
+    Args:
+        to_address (str): Recipent of the email.
+        password   (str): Users temporary password.
+    """
     subject = "Welcome to Skillbuilder!"
     message = f'''Welcome to SkillBuilder, a tool to enhance your learning experience this semester! This app will be our hub for assessing and providing feedback on transferable skills (these are also referred to as process skills, professional skills, durable skills).
 
                 Access the app at this link: skill-builder.net
 
-                Login Information: Your Username is {address}
+                Login Information: Your Username is {to_address}
 
                 Temporary Password: {password}
 
                 Please change your password after your first login to keep your account secure.'''
 
-    send_email(address, subject, message, 0)
+    send_email(to_address, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_reset_code_email(address: str, code: str):
+def send_reset_code_email(to_address: str, code: str) -> None:
+    """
+    Sends reset code.
+
+    Args:
+        to_address (str): Recipent address.
+        code       (str): Rest code.
+    """
     subject = "Skillbuilder - Reset your password"
     message = f'''
         <!DOCTYPE html>
@@ -105,9 +144,16 @@ def send_reset_code_email(address: str, code: str):
         <body>
         </html>'''
 
-    send_email(address, subject, message, 1)
+    send_email(to_address, subject, message, EmailContentType.HTML_CONTENT)
 
-def email_students_feedback_is_ready_to_view(students: list, notification_message : str):
+def email_students_feedback_is_ready_to_view(students: list, notification_message : str) -> None:
+    """
+    Emails batch of students that their feedback is ready.
+
+    Args:
+        students (list): List of students.
+        notification_message (str): Message to be included in the email.
+    """
     for student in students:
         subject = "Skillbuilder - Your Feedback is ready to view!"
 
@@ -121,9 +167,9 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
                     Cheers,
                     The Skillbuilder Team'''
 
-        send_email(student.email, subject, message, 0)
+        send_email(student.email, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_email(address: str, subject: str, content: str, type: int) -> None:
+def send_email(address: str, subject: str, content: str, type: EmailContentType) -> None:
     """
     Sends an email.
     
@@ -131,7 +177,7 @@ def send_email(address: str, subject: str, content: str, type: int) -> None:
         address (str): Recipient address.
         subject (str): Email subject.
         content (str): Email content.
-        type    (int): Is the content html: 1 indicates html, 0 plain text. 
+        type    (EmailContentType): What type of email content is desired. EX: plain-text or html. 
 
     Raises:
         Email errors from connecting and sending via SendGrid.
@@ -143,14 +189,8 @@ def send_email(address: str, subject: str, content: str, type: int) -> None:
         'from_email' : DEFAULT_SENDER_EMAIL,
         'subject'    : subject,
         'to_emails'  : address,
+        type.value   : content,
     }
-
-    if type == 1:
-        kwargs['html_content'] = content
-    elif type == 2:
-        kwargs['amp_html_content'] = content
-    else:# 0 is plain text and works as a catch all.
-        kwargs['plain_text_content'] = content
 
     try:
         message = Mail(**kwargs)
@@ -160,18 +200,28 @@ def send_email(address: str, subject: str, content: str, type: int) -> None:
         raise EmailFailureException()
 
 
-def generate_random_password(length: int):
+def generate_random_password(length: int) -> str:
+    """
+    Generates random password of the desired length.
+
+    Args:
+        length (int): Desired size of the password.
+    
+    Returns:
+        str : Generated password.
+    """
     letters = string.ascii_letters + string.digits
 
     return ''.join(secrets.choice(letters) for i in range(length))
 
-def error_log(f):
+def error_log(f:Any) -> Any:
     '''
     Custom decorator to automatically log errors and than raise
     them.
 
-    Use as a decorator: @error_log above functions you want to have
-    error logging
+    Note:
+        Use as a decorator @error_log above functions you want to have
+        error logging
     '''
     def wrapper(*args, **kwargs):
         try:
