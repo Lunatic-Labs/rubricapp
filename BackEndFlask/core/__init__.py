@@ -161,6 +161,7 @@ try:
 
     sendgrid_client = SendGridAPIClient(sendgrid_key)
 except Exception as e:
+    sendgrid_client = None
     config.logger.error(str(e))
 
 # Register blueprints
