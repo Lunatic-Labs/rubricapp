@@ -1,3 +1,4 @@
+from core import app, db
 from models.rubric import create_rubric
 from models.category import create_category
 from models.observable_characteristics import create_observable_characteristic
@@ -5,6 +6,7 @@ from models.suggestions import create_suggestion
 from models.rubric_categories import create_rubric_category
 from models.ratings_numbers import *
 
+  
 def load_existing_rubrics():
     rubrics = [
         # (Latest update is May 28, 2025) Questions
@@ -559,3 +561,9 @@ def load_existing_suggestions():
         ]
     for suggestion in suggestions:
         create_suggestion(suggestion)
+
+with app.app_context():
+    print("attempting to add Science Stanards to db...")
+
+    load_existing_rubrics()
+          
