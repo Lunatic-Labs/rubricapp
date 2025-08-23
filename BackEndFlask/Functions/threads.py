@@ -5,6 +5,7 @@ import time
 
 from models.email_validation import *
 from models.logger import logger
+from datetime import datetime
 
 def spawn_thread(f, *args, **kwargs):
     threading.Thread(
@@ -53,7 +54,7 @@ def validate_pending_emails():
                 # to update these.
                 mark_emails_as_checked(all_pending_emails)
 
-                bounced = check_bounced_emails(oldest_time)
+                bounced = check_bounced_emails(int(oldest_time.timestamp()))
 
                 if bounced is None:
                     return
