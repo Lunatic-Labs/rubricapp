@@ -234,6 +234,8 @@ docker rm -v $(docker ps -aq) # Getting rid of the containers so they do not aut
 ```bash
 docker-compose down --rmi all --volumes
 ```
+7. How do I run the tests?
+    * Go to Dockerfile.backend and change the flags from -ds to -t for the moment. Likewise change the cmd line in the fontend docker file to get the front end to run through its tests.
 
 It is recommended to make these commands into aliases. Here is how to on [Ubuntu](https://www.hostingadvice.com/how-to/set-command-aliases-linuxubuntudebian/). You do not have to use vim; use your favorite text editor.
 
