@@ -1,7 +1,7 @@
 Run the following command in the terminal after connecting to the server. 
 
 ```bash
-mysqldump --no-create-db --no-create-info --no-tablespaces --complete-insert --verbose --ignore-table=rubricapp.Feedback rubricapp -u [USERNAME] -p > "backup_$(date +"%F_%T").sql"
+mysqldump --no-create-db --no-create-info --no-tablespaces --complete-insert --verbose --compatible=rds --ignore-table=rubricapp.Feedback rubricapp -u [USERNAME] -p > "backup_$(date +"%F_%T").sql"
 ```
 This should create a file named *backup_[DATE_OF_CREATION].sql* in the same directory.
 That file will contain only the inserts to restore each tables data.
