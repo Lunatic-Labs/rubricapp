@@ -328,3 +328,5 @@ Because there is a lot of output from Jest tests, I recommend running:
 docker compose up > jestTests.txt 2>&1
 ```
 This will keep your termianl uncluttered and log things in the `jestTests.txt` file.
+
+Now we will talk about how to create a backend test. Go to `BackEndFlask/Functions/test_files/test_genericImport.py`. We will be looking at `def test_should_fail_with_file_not_found`. The first thing to notice is that the function names will start with the word test followed by a brief description of what is being tested in snake case. The function needs to take the object `flask_mock_object` to be able to connect to the application. Use the same `with` line there in your function to use the applications context. If ever you want to use the database connection itself, then you can use `flask_mock_object.db`. Make sure to clean up any data that your function input to the database, so that the next test is working with a clean database.
