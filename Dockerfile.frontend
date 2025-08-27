@@ -15,5 +15,5 @@ COPY FrontEndReact/ /app/
 EXPOSE 3000
 
 # Start the Frontend server
-CMD ["sh", "-c", "sleep 30 && npm test"]
+CMD ["npm", "start"]
 
