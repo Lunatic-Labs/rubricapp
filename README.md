@@ -285,3 +285,48 @@ Run this script with:
 
 Run this and follow the on-screen instructions.
 
+### Testing 
+
+This will first explain how to launch the tests as if you do not use Docker. The logic for this is so that you understand why certain docker lines are bing altered.
+
+To launch the backend tests, run the following in the `BackEndFlask/` directory:
+```bash
+setupEnv.py -t # The -t flag runs pytests for us.
+```
+**Note that for this to work you need to have built things up having used -ds or some variation.**
+
+To launch the frontend Jest tests, run the following:
+```bash
+npm test
+``` 
+**Note that for this to work you need to have have the backend running and serving connections.**
+
+Now we swap over to getting tests to run in our Docker containers. 
+
+To get the backend tests going, navigate to `rubricapp/Dockerfile.backend`. Notice that the last line is what is starting up the back end code. It is running `setupEnv.py -ds`. Change
+```bash
+-ds
+# To
+-t
+```
+Now build fresh without the cache and run Docker compose up. The container will now run through the tests. Do not forget to change this back once you are done testing.
+
+To get the frontend tests going, navigate to `rubricapp/Dockerfile.frontend`. Like the backend, we are only concerned with the very last line that starts the backend. The line we see is:
+```bash
+CMD ["npm", "start"]
+```
+Change it to:
+```bash
+CMD ["sh", "-c", "sleep 35 && npm start"]
+```
+Do not forget to change it back. One key difference is that there is a sleep before the command is ran. This is to allow the backend setup since Jest tests make hits to the backend. You can adjust the timer to more or less depending on how fast the backend is ready on your system.
+
+**Note that running the Jest tests are not fast. It will look like it is frozen. It will then dump a lot of errors and warnings. Cleaning this up is still in progress.**
+
+Because there is a lot of output from Jest tests, I recommend running:
+```bash
+docker compose up > jestTests.txt 2>&1
+```
+This will keep your termianl uncluttered and log things in the `jestTests.txt` file.
+
+Now we will talk about how to create a backend test. Go to `BackEndFlask/Functions/test_files/test_genericImport.py`. We will be looking at `def test_should_fail_with_file_not_found`. The first thing to notice is that the function names will start with the word test followed by a brief description of what is being tested in snake case. The function needs to take the object `flask_mock_object` to be able to connect to the application. Use the same `with` line there in your function to use the applications context. If ever you want to use the database connection itself, then you can use `flask_mock_object.db`. Make sure to clean up any data that your function input to the database, so that the next test is working with a clean database.
