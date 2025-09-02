@@ -27,14 +27,14 @@ class SelectTeam extends Component {
         this.checkInUser = () => {
             var navbar = this.props.navbar; 
 	        var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
-            
+
             if (this.state.teamID === '') {
                 this.setState({
                     error: true
                 });
                 return;
             }
-            
+
 	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {}).then((result) => {
                 if (result !== undefined && result.errorMessage === null) {
                     navbar.setNewTab("StudentDashboard");
@@ -47,7 +47,6 @@ class SelectTeam extends Component {
         let course = this.props.navbar.state.chosenCourse;
         
         if (course["use_fixed_teams"]) {
-            
             let courseID = course["course_id"];
             genericResourceGET(
                 `/team?course_id=${courseID}`, 

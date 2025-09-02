@@ -1,86 +1,67 @@
-import os
-import re
-import sys
-import time
-import string, secrets
-import html
-
-import base64
-from email.message import EmailMessage
-
-import google.auth
-from googleapiclient.discovery import build
-from googleapiclient.errors import HttpError
-from google.auth.transport.requests import Request
-from google.oauth2.credentials import Credentials
-from google_auth_oauthlib.flow import InstalledAppFlow
-
+import string
+import secrets
+from time import time
+from typing import Any
 from models.logger import logger
+from core import sendgrid_client, config
+from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
+from constants.Email import DEFAULT_SENDER_EMAIL
+from enums.Email_type import EmailContentType
 
-from core import oauth2_service, config
+def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
+    """
+    Returns a list of all bounced emails.
 
-def check_bounced_emails(from_timestamp=None):
+    Note:
+        None default for the timestamp means that the system will retrive bounced emails as old as
+        30 days from when the function runs.
+    
+    Args:
+        from_timestamp(int): Unix timestamp from where to start considering emails (inclusive).
+
+    Returns:
+        dict|None: A dictionary full of bounced emails if any are found else it is None.
+            - id (int)     : Also a unix timestamp from when it was created used as an id.
+            - to (str)     : Intended reciver of the email.
+            - msg (str)    : Enhanced SMTP bounce response.
+            - sender (str) : Who sent the bounced email.
+            - main_failure (str) : Reason for the bounced email.
+    """
+
     if config.rubricapp_running_locally:
         return
 
-    max_fetched_emails = 32
+    MAX_FETCHED_EMAILS = 32
+    DEFAULT_LOOKBACK_DAYS  = 30
+
+    if from_timestamp is None:
+        from_timestamp = int(time.time()) - DEFAULT_LOOKBACK_DAYS * 86400 
 
     try:
-        # Fetch the emails
-        query, messages_result = (None, None)
+        bounced_emails = []
+        headers = {"Accept": "application/json"}
+        params = {
+            'start_time': from_timestamp,
+            "limit": MAX_FETCHED_EMAILS
+        }
+        sender = DEFAULT_SENDER_EMAIL
 
-        # TODO: handle timestamp correctly
-        # if from_timestamp is not None:
-        #     query = f"after:{int(from_timestamp.timestamp())}"
+        response = sendgrid_client.client.suppression.bounces.get(
+            request_headers = headers,
+            query_params = params,
+        )
 
-        if query is not None:
-            messages_result = oauth2_service.users().messages().list(
-                userId="me", maxResults=max_fetched_emails, q=query
-            ).execute()
-        else:
-            messages_result = oauth2_service.users().messages().list(
-                userId="me", maxResults=max_fetched_emails
-            ).execute()
-
-        messages, bounced_emails = (messages_result.get("messages", []), [])
-
-        if messages:
-            for msg in messages:
-                msg_detail = oauth2_service.users().messages().get(userId="me", id=msg["id"]).execute()
-                headers = msg_detail.get("payload", {}).get("headers", [])
-                sender = next(
-                    (header["value"] for header in headers if header["name"] == "From"),
-                    None,
-                )
-
-                # Parse the sender
-                if sender:
-                    parts = sender.split("<")
-                    if len(parts) > 1:
-                        sender = parts[1][0:-1]
-
-                if sender and sender == "mailer-daemon@googlemail.com":
-                    snippet = msg_detail.get("snippet", "No snippet available")
-                    snippet = html.unescape(snippet)
-                    main_failure = snippet[0]
-                    to_match = re.search(r'[\w\.-]+@[\w\.-]+\.\w+', snippet)
-                    to_ = None
-                    if to_match:
-                        to_ = to_match.group()
-
-                    for i in range(1, len(snippet)):
-                        if snippet[i].isupper():
-                            break
-                        main_failure += snippet[i]
-
-                    bounced_emails.append({
-                        'id': msg['id'],
-                        'to': to_,
-                        'msg': snippet.split('LEARN')[0],
-                        'sender': sender,
-                        'main_failure': main_failure.strip(),
-                    })
+        if response.status_code == 200 and response.body:
+            email_json = response.body
+            for entry in email_json:
+                bounced_emails.append({
+                    'id': entry['created'],
+                    'to': entry['email'],
+                    'msg': entry['status'],
+                    'sender': sender,
+                    'main_failure': entry['reason'],
+                })
 
             return bounced_emails if len(bounced_emails) != 0 else None
 
@@ -88,39 +69,67 @@ def check_bounced_emails(from_timestamp=None):
         config.logger.error("Could not check for bounced email: " + str(e))
         raise EmailFailureException()
 
-def send_bounced_email_notification(dest_addr: str, msg: str, failure: str):
+def send_bounced_email_notification(dest_addr: str, msg: str, failure: str) -> None:
+    """
+    Sends bounced email notification to the user.
+
+    Args:
+        dest_addr (str): Recipient of the email.
+        msg (str)      : Human-friendly reason for the failure.
+        failure (str)  : Specific error from the system.
+    """
     subject = "Student's email failed to send."
     message = f'''The email could not sent due to:
 
                 {msg}
 
                 {failure}'''
-    send_email(dest_addr, subject, message, 0)
+    send_email(dest_addr, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_email_for_updated_email(address: str):
+def send_email_for_updated_email(to_address: str) -> None:
+    """
+    Sends update email.
+
+    Args:
+        to_address (str): Recipient of email.
+    """
     subject = "Your email has been updated."
     message = f'''Your email has been updated by an admin.
 
                 Access the app at this link: skill-builder.net
 
-                Your new username is {address}'''
-    send_email(address, subject, message, 0)
+                Your new username is {to_address}'''
+    send_email(to_address, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_new_user_email(address: str, password: str):
+def send_new_user_email(to_address: str, password: str) -> None:
+    """
+    Sends new user an email.
+
+    Args:
+        to_address (str): Recipent of the email.
+        password   (str): Users temporary password.
+    """
     subject = "Welcome to Skillbuilder!"
     message = f'''Welcome to SkillBuilder, a tool to enhance your learning experience this semester! This app will be our hub for assessing and providing feedback on transferable skills (these are also referred to as process skills, professional skills, durable skills).
 
                 Access the app at this link: skill-builder.net
 
-                Login Information: Your Username is {address}
+                Login Information: Your Username is {to_address}
 
                 Temporary Password: {password}
 
                 Please change your password after your first login to keep your account secure.'''
 
-    send_email(address, subject, message, 0)
+    send_email(to_address, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_reset_code_email(address: str, code: str):
+def send_reset_code_email(to_address: str, code: str) -> None:
+    """
+    Sends reset code.
+
+    Args:
+        to_address (str): Recipent address.
+        code       (str): Rest code.
+    """
     subject = "Skillbuilder - Reset your password"
     message = f'''
         <!DOCTYPE html>
@@ -135,9 +144,16 @@ def send_reset_code_email(address: str, code: str):
         <body>
         </html>'''
 
-    send_email(address, subject, message, 1)
+    send_email(to_address, subject, message, EmailContentType.HTML_CONTENT)
 
-def email_students_feedback_is_ready_to_view(students: list, notification_message : str):
+def email_students_feedback_is_ready_to_view(students: list, notification_message : str) -> None:
+    """
+    Emails batch of students that their feedback is ready.
+
+    Args:
+        students (list): List of students.
+        notification_message (str): Message to be included in the email.
+    """
     for student in students:
         subject = "Skillbuilder - Your Feedback is ready to view!"
 
@@ -151,46 +167,60 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
                     Cheers,
                     The Skillbuilder Team'''
 
-        send_email(student.email, subject, message, 0)
+        send_email(student.email, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
-def send_email(address: str, subject: str, content: str, type: int):
+def send_email(address: str, subject: str, content: str, type: EmailContentType) -> None:
+    """
+    Sends an email.
+    
+    Args:
+        address (str): Recipient address.
+        subject (str): Email subject.
+        content (str): Email content.
+        type    (EmailContentType): What type of email content is desired. EX: plain-text or html. 
+
+    Raises:
+        Email errors from connecting and sending via SendGrid.
+    """
     if config.rubricapp_running_locally:
         return
 
+    kwargs = {
+        'from_email' : DEFAULT_SENDER_EMAIL,
+        'subject'    : subject,
+        'to_emails'  : address,
+        type.value   : content,
+    }
+
     try:
-        message = EmailMessage()
-        if type == 0:
-            message.set_content(content)
-        else:
-            message.set_content(content, subtype='html')
-        message["To"] = address
-        message["From"] = "skillbuilder02@gmail.com"
-        message["Subject"] = subject
-
-        encoded_message = base64.urlsafe_b64encode(message.as_bytes()).decode()
-        create_message = {
-                "raw": encoded_message,
-        }
-
-        send_message = oauth2_service.users().messages().send(userId="me", body=create_message).execute()
-
+        message = Mail(**kwargs)
+        sendgrid_client.send(message)
     except Exception as e:
         config.logger.error("Could not send email: " + str(e))
         raise EmailFailureException()
 
+def generate_random_password(length: int) -> str:
+    """
+    Generates random password of the desired length.
 
-def generate_random_password(length: int):
+    Args:
+        length (int): Desired size of the password.
+    
+    Returns:
+        str : Generated password.
+    """
     letters = string.ascii_letters + string.digits
 
     return ''.join(secrets.choice(letters) for i in range(length))
 
-def error_log(f):
+def error_log(f:Any) -> Any:
     '''
     Custom decorator to automatically log errors and than raise
     them.
 
-    Use as a decorator: @error_log above functions you want to have
-    error logging
+    Note:
+        Use as a decorator @error_log above functions you want to have
+        error logging
     '''
     def wrapper(*args, **kwargs):
         try:

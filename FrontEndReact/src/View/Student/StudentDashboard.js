@@ -97,7 +97,7 @@ class StudentDashboard extends Component {
                 
                 // Qualites for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUser = (roleId === task.role_id);
+                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id ===4));
                 const locked = task.locked;                                
                 const published = task.published;
                 const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate) ; //short-circuit

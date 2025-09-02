@@ -827,7 +827,7 @@ def send_teams_and_students_email_to_view_completed_assessment_feedback(assessme
                 get_students_by_team_id(
                     one_assessment_task.course_id, 
                     get_team(completed.team_id)
-                )
+                ),""
             )
 
 
@@ -919,9 +919,10 @@ def get_all_nonfull_adhoc_teams(assessment_task_id):
     valid_teams = db.session.query(
         Team
     ).filter(
-        Team.team_name.in_([f"Team {num}" for num in valid_team_numbers])
+        Team.team_name.in_([f"Team {num}" for num in valid_team_numbers]),
+        Team.assessment_task_id == assessment_task_id
     ).all()
-    return valid_teams  
+    return valid_teams
 
 @error_log
 def get_completed_assessment_with_team_name(assessment_task_id):
@@ -1404,13 +1405,13 @@ def does_team_user_exist(user_id:int, team_id:int):
         return False
     return True
 
-def get_num_of_adhocs(course_id:int):
+def get_num_of_adhocs(assessment_task_id:int):
     """
     Description:
     Returns the number of adhoc teams found.
 
     Paramaters:
-    course_id: <class 'int'> (User Id)
+    assessment_task_id: <class 'int'> (User Id)
 
     Returns:
     <class 'int'> (number of adhoc teams)
@@ -1420,7 +1421,10 @@ def get_num_of_adhocs(course_id:int):
     """
 
     pattern = '^Team [0-9]+$'
-    count = db.session.query(func.count(Team.team_id)).filter(Team.team_name.op('REGEXP')(pattern)).scalar()
+    count = db.session.query(func.count(Team.team_id)).filter(
+        Team.team_name.op('REGEXP')(pattern),
+        Team.assessment_task_id == assessment_task_id
+    ).scalar()
     return count
 
 def get_adhoc_team_users(team_id):
