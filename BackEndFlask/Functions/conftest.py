@@ -5,6 +5,7 @@ from core import app
 from Functions.test_files.PopulationFunctions import *
 from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
+from sqlalchemy import create_engine, text
 
 @pytest.fixture
 def flask_app_mock():
@@ -18,21 +19,18 @@ def flask_app_mock():
 
     MYSQL_DATABASE="TestDB"
 
-    connection = pymysql.connect(
-        host=MYSQL_HOST,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD
-    )
+    # Create engine without specifying a database
+    base_uri = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}"
+    engine = create_engine(base_uri)
 
-    # Make temp db
-    with connection.cursor() as cursor:
-        cursor.execute(f"CREATE DATABASE {MYSQL_DATABASE}")
-    connection.commit()
-    connection.close()
+    # Create the test database
+    with engine.connect() as conn:
+        conn.execute(text(f"CREATE DATABASE IF NOT EXISTS `{MYSQL_DATABASE}'"))
 
-    db_uri = (f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}")
-
+    # Configure Flask app to use the test database
+    db_uri = f"{base_uri}/{MYSQL_DATABASE}"
     mock_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+
     with mock_app.app_context():
         db.create_all()
         if(get_users().__len__()==0):
@@ -42,18 +40,11 @@ def flask_app_mock():
     mock_app.db = db
     yield mock_app
 
-    connection = pymysql.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD
-        )
-    with connection.cursor() as cursor:
-        cursor.execute(f"DROP DATABASE IF EXISTS `{MYSQL_DATABASE}`")
-    connection.commit()
-    connection.close()
+    # Drop the test database
+    with engine.connect() as conn:
+        conn.execute(text(f"DROP DATABASE IF EXISTS `{MYSQL_DATABASE}`"))
 
-    with mock_app.app_context():
+    with app.app_context():
         db.session.close()
-        engine_container = db.engine
-        engine_container.dispose()
+        db.engine.dispose()
     close_all_sessions()
