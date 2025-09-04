@@ -400,7 +400,7 @@ class AdminAddUser extends Component {
                                     
                                     {/* Color is currently hardcoded */}
                                     <div style={{color:"#2e8bef"}}>
-                                        Important: Make sure students check their junk email
+                                        Important: Make sure students check their junk/spam folder for the invitation!
                                     </div>
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
