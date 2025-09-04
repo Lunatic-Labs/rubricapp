@@ -13,12 +13,19 @@ export default function AssessmentTaskDropdown(props) {
     return assessmentTaskList.push(
       <MenuItem key={assessmentTask["assessment_task_id"]} value={assessmentTask["assessment_task_id"]}>
         {assessmentTask["assessment_task_name"]}
+        title={assessmentTask["assessment_task_name"]}
+        sx={{
+          maxWidth: '250px',
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap'
+        }}
       </MenuItem>
     );
   });
 
   return (
-    <FormControl sx={{ m: 3, minWidth: 300 }}>
+    <FormControl sx={{ m: 3, minWidth: 300, maxWidth: 300 }}>
       <InputLabel id="demo-simple-select-autowidth-label">Assessment Task</InputLabel>
 
       <Select
@@ -26,8 +33,16 @@ export default function AssessmentTaskDropdown(props) {
         id="demo-simple-select-autowidth"
         value={props.chosenAssessmentId}
         onChange={props.setChosenAssessmentId}
-        autoWidth
+        autoWidth={false}
         label="Assessment Task"
+        sx={{
+          '& .MuiSelect-select': {
+            maxWidth: '250px',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }
+        }}
       >
         { assessmentTaskList }
       </Select>
