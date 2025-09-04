@@ -399,7 +399,7 @@ class AdminAddUser extends Component {
                                     />
                                     
                                     {/* Color is currently hardcoded */}
-                                    <div style={{color:"#2e8bef"}}>
+                                    <div className= "junkReminder" style={{color:"#2e8bef"}}>
                                         Important: Make sure students check their junk/spam folder for the invitation!
                                     </div>
 
