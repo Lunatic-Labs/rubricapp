@@ -9,7 +9,7 @@ import Select from '@mui/material/Select';
 export default function CategoryDropdown(props) {
   var categoryList = [];
 
-  const categoryList = props.categories.map((category) => {
+  props.categories.map((category) => {
     return categoryList.push(
       <MenuItem key={category} value={category}>
         {category}
