@@ -14,11 +14,8 @@ Flask-Limiter[redis] == 3.12
 marshmallow == 4.0.0
 marshmallow-sqlalchemy == 1.4.2
 
-# Google API for emails
-google-auth == 2.39.0
-google-auth-oauthlib == 1.2.2
-google-auth-httplib2 == 0.2.0
-google-api-python-client == 2.169.0
+# SendGrid API for emails
+sendgrid == 6.12.4
 
 # Database and ORM tools
 sqlalchemy == 2.0.40
@@ -71,7 +68,7 @@ ordered-set == 4.1.0
 packaging == 25.0
 pluggy == 1.5.0
 proto-plus == 1.26.1
-protobuf == 6.30.2
+protobuf == 6.31.1
 pyasn1 == 0.6.1
 pyasn1_modules == 0.4.2
 pycparser == 2.22
@@ -88,7 +85,7 @@ six == 1.17.0
 tzdata == 2025.2
 typing_extensions == 4.13.2
 uritemplate == 4.1.1
-urllib3 == 2.4.0
+urllib3 == 2.5.0
 wrapt == 1.17.2
 zope.event == 5.0
 zope.interface == 7.2
