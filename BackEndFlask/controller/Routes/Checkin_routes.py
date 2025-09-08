@@ -1,9 +1,5 @@
-import json
-import gevent.exceptions
-from flask import request, stream_with_context
-from requests import Timeout
-import flask
-import gevent
+from datetime import datetime
+from flask import request
 from marshmallow import fields
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check, admin_check
@@ -82,14 +78,33 @@ def checkin_to_assessmet():
     Called by student/TA views to log that they are checked into a specific assessement task.
 
     Args:
-        user_id (int): The user who called the route.
         assessment_task_id (int): Assessment task that they are logged into.
+        is_team (bool): Is the caller a team member or a single user for the assessment task.
+        user_id (int): The user id who made the call.
+        team_number (int|None): The team id.
     """
     try:
         user_id = int(request.args.get("user_id"))
         assessment_task_id = int(request.args.get("assessment_task_id"))
+        is_team = bool(request.args.get("is_team"))
+        team_number= int(request.args.get("team_number")) if is_team else 0
 
+        filters = {
+            'assessment_task_id':assessment_task_id,
+            'is_team':is_team
+        }
+        filters['team_or_user_id'] = team_number if is_team else user_id
 
+        checkin_record = find_latest_team_user_checkin(**filters)
+
+        if checkin_record:
+            update_checkin_to_server_time(checkin_record)
+        else:
+            create_checkin({
+                'assessment_task_id': assessment_task_id,
+                'user_id': user_id,
+                'team_number': team_number,
+            })
 
         return create_good_response("Ping", "checkin", HttpStatus.CREATED.value)
     except Exception as e:
@@ -105,16 +120,14 @@ def check_checkedin():
     Called by Admins/teachers views to get who is logged in for a specific requested assessment task.
 
     Args:
-        user_id (int): The user who called the route.
         assessment_task_id (int): Assessment task that the client wishes to get info of.
     """
     try:
-        user_id = int(request.args.get("user_id"))
         assessment_task_id = int(request.args.get("assessment_task_id"))
+        
+        records = fetch_checkins_for_at_within_hr(assessment_task_id)
 
-
-
-        return create_good_response("Ping", "checkin", HttpStatus.OK.value)
+        return create_good_response(checkins_polling(records), "checkin", HttpStatus.OK.value)
     except Exception as e:
         return create_bad_response(f"Error with polling: {e}", "checkin", HttpStatus.BAD_REQUEST.value)
 
@@ -126,5 +139,10 @@ class CheckinSchema(ma.Schema):
     user_id             = fields.Integer()     
     time                = fields.DateTime()
 
+class CheckedinUserTeam(ma.Schema):
+    user_id     = fields.Integer()
+    team_number = fields.Integer()
+
 checkin_schema = CheckinSchema()
 checkins_schema = CheckinSchema(many=True)
+checkins_polling = CheckedinUserTeam(many=True)

@@ -1,6 +1,6 @@
 from core import db
 from models.schemas import Checkin
-from datetime import datetime
+from datetime import datetime, timedelta
 from models.utility import error_log
 
 @error_log
@@ -74,3 +74,62 @@ def delete_latest_checkins_over_team_size(assessment_task_id, max_team_size):
                 break
             
     db.session.commit()
+
+@error_log
+def find_latest_team_user_checkin(assessment_task_id:int, team_or_user_id:int, is_team:bool) -> object|None:
+    """
+    Returns the latest corresponding checkin record if it exists.
+
+    Args:
+        assessment_task_id (int): Assessment task id associated to specific checkin(s).
+        team_or_user_id (int): Number litteral representing either a team number or user id.
+        is_team (bool): True indicates that *team_or_user_id* is a team number and a false flags it as a user id. 
+
+    Returns:
+        Returns the full database record or None if it is not found.
+
+    """
+    filters = {
+        'assessment_task_id':assessment_task_id
+    }
+    if is_team:
+        filters['team_number'] = team_or_user_id
+    else:
+        filters['user_id'] = team_or_user_id
+
+    return (
+        Checkin.query.
+        filter_by(**filters).
+        order_by(Checkin.time.desc()).
+        first()
+    )
+    
+@error_log
+def update_checkin_to_server_time(checkin_record:object) -> None:
+    """
+    Updates the time for a given record.
+
+    Args:
+        checkin_record (object): Checkin sqlalchemy record.
+    """
+    checkin_record.time = datetime.now()
+    db.session.commit()
+
+@error_log
+def fetch_checkins_for_at_within_hr(assessment_task_id:int) -> object:
+    """
+    Returns all records that are related to the assessment task within 1 hr of calling this function.
+
+    Args:
+        assessment_task_id (int): The id of the assessment task to fetch checkins from.
+
+    Returns:
+        Object: Sqlalchemy fetched records containint checkin *user_id* and checkin *team_number*.
+    """
+    hr_ago = datetime.now() - timedelta(hours=1)
+    return (
+        Checkin.query.
+        with_entities(Checkin.user_id, Checkin.team_number).
+        filter_by(assessment_task_id==assessment_task_id, Checkin.time>=hr_ago).
+        all()
+    )
