@@ -250,7 +250,6 @@ class AdminAddUser extends Component {
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
         var addUser = state.addUser;
-
         return (
             <React.Fragment>
                 { errorMessage &&
@@ -398,6 +397,11 @@ class AdminAddUser extends Component {
                                         onChange={this.handleChange}
                                         sx={{mb: 3}}
                                     />
+                                    
+                                    {/* Color is currently hardcoded */}
+                                    <div className= "junkReminder" style={{color:"#2e8bef"}}>
+                                        Important: Make sure students check their junk/spam folder for the invitation!
+                                    </div>
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                         <Button onClick={() => { confirmCreateResource("User"); }} id="" className="" aria-label="cancelAddUserButton">
