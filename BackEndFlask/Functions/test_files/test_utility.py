@@ -12,7 +12,7 @@ class TestDoesTeamUserExist:
     belongs to a team by checking the TeamUser table in the database.
     """
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_user_exists_in_team(self, mock_query):
         """
         Test the happy path where a user is found in the team.
@@ -43,7 +43,7 @@ class TestDoesTeamUserExist:
         assert str(args[1]) == str(TeamUser.team_id == 2)
         mock_filter.all.assert_called_once()
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_user_does_not_exist_in_team(self, mock_query):
         """
         Test the case where a user is not found in the team.
@@ -68,7 +68,7 @@ class TestDoesTeamUserExist:
         mock_query.return_value.filter.assert_called_once()
         mock_filter.all.assert_called_once()
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_multiple_entries_for_same_user_team(self, mock_query):
         """
         Test the case where multiple entries exist for the same user-team pair.
@@ -91,7 +91,7 @@ class TestDoesTeamUserExist:
         # Assert - Function should return True if any entries exist
         assert result is True
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_with_zero_user_id(self, mock_query):
         """
         Test with edge case input: user_id = 0
@@ -114,7 +114,7 @@ class TestDoesTeamUserExist:
         args, _ = mock_query.return_value.filter.call_args
         assert str(args[0]) == str(TeamUser.user_id == 0)
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_with_negative_team_id(self, mock_query):
         """
         Test with edge case input: negative team_id
@@ -137,7 +137,7 @@ class TestDoesTeamUserExist:
         args, _ = mock_query.return_value.filter.call_args
         assert str(args[1]) == str(TeamUser.team_id == -5)
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_with_type_error_user_id(self, mock_query):
         """
         Test handling of type errors for user_id parameter.
@@ -155,7 +155,7 @@ class TestDoesTeamUserExist:
             does_team_user_exist(user_id="invalid", team_id=2)
         assert "Invalid type for user_id" in str(excinfo.value)
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_with_database_connection_error(self, mock_query):
         """
         Test handling of database connection errors.
@@ -173,7 +173,7 @@ class TestDoesTeamUserExist:
             does_team_user_exist(user_id=1, team_id=2)
         assert "Connection refused" in str(excinfo.value)
     
-    @patch('team_service.db.session.query')
+    @patch('models.queries.db.session.query')
     def test_with_sqlalchemy_error(self, mock_query):
         """
         Test handling of general SQLAlchemy errors.

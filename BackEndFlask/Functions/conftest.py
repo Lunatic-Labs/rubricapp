@@ -25,7 +25,7 @@ def flask_app_mock():
 
     # Create the test database
     with engine.connect() as conn:
-        conn.execute(text(f"CREATE DATABASE IF NOT EXISTS `{MYSQL_DATABASE}'"))
+        conn.execute(text(f"CREATE DATABASE IF NOT EXISTS `{MYSQL_DATABASE}`"))
 
     # Configure Flask app to use the test database
     db_uri = f"{base_uri}/{MYSQL_DATABASE}"
