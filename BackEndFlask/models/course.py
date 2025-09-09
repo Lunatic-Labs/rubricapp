@@ -1,5 +1,7 @@
 from core import db
 from models.schemas import Course
+from models.user import User # To create test student
+from models.user_course import UserCourse # To assign test student to course
 from models.utility import error_log
 
 class InvalidCourseID(Exception):
@@ -44,6 +46,31 @@ def create_course(course_data):
     )
 
     db.session.add(course_data)
+    db.session.commit()
+
+    # Goal: create a demo student for each course. Admin are able to access test student
+    # to see the view of student.
+    # Test Student is created after a course is created.
+
+    test_student = User ({
+        "first_name": "Test",
+        "last_name": "Student",
+        "email": f"teststudent_{course_data.course_id}@skillbuilder.edu",
+        "password": "some_password",  # Make a password(!)
+        "owner_id": course_data.admin_id
+    })
+
+    db.session.add(test_student)
+    db.session.commit()
+
+    # Assign the test student to the course
+    test_user_course = UserCourse (
+        user_id = test_student.user_id,
+        course_id = course_data.course_id,
+        role_id = 5
+    )
+
+    db.session.add(test_user_course)
     db.session.commit()
 
     return course_data
