@@ -9,27 +9,39 @@ export default function AssessmentTaskDropdown(props) {
   var assessmentTaskList = [];
 
   props.assessmentTasks.map((assessmentTask) => {
-    // new code here
 
-    // This new code shortens the name of assessment task when it is displayed on the page
-    // this prevents the text from 'overflowing' and causing miss-alignment with other elements on the page.
-    // However this is a fixed size and thus cannot be altered, should a solution be made to automatically truncate the text?
-    // It also seems to affect the name in the drop-down menu, that might require fixing...
-    const truncatedName = assessmentTask["assessment_task_name"].length > 30 
-    ? assessmentTask["assessment_task_name"].substring(0, 30) + "..."
-    : assessmentTask["assessment_task_name"];
-
-    // {assessmentTask["assessment_task_name"]} was in place of {truncatedName}
+    const taskName = assessmentTask["assessment_task_name"];
 
     return assessmentTaskList.push(
-      <MenuItem key={assessmentTask["assessment_task_id"]} value={assessmentTask["assessment_task_id"]}>
-        {truncatedName}
+      <MenuItem
+          key = {assessmentTask["assessment_task_id"]}
+          value = {assessmentTask["assessment_task_id"]}
+          sx={{
+          // sx -> system extensions (writes css directly as Java Script).
+          // The code here handles the 'text overflow' when re-sizing the page and/or creating a very long
+          // assessment task name.
+          //
+          // The 'nowrap' prevents the text from wrapping around (more than 1 line of text)
+          // The 'ellipsis' ends the truncated text with ...
+          overflow: 'hidden',
+          textOverflow: 'ellipsis',
+          whiteSpace: 'nowrap',
+          maxWidth: '100%'
+        }}
+      >
+        {taskName}
       </MenuItem>
     );
   });
 
   return (
-    <FormControl sx={{ m: 3, minWidth: 300 }}>
+    <FormControl 
+    // controlls the way the 'dropdown' is displayed.
+      sx={{ 
+        m: 3,           // margin
+        width: '95%'    // width
+      }}
+    >
       <InputLabel id="demo-simple-select-autowidth-label">Assessment Task</InputLabel>
 
       <Select
@@ -37,8 +49,16 @@ export default function AssessmentTaskDropdown(props) {
         id="demo-simple-select-autowidth"
         value={props.chosenAssessmentId}
         onChange={props.setChosenAssessmentId}
-        autoWidth
+        autoWidth={"false"}
         label="Assessment Task"
+        sx={{
+          // This handles the text overflow
+          '& .MuiSelect-select': {
+            overflow: 'hidden',
+            textOverflow: 'ellipsis',
+            whiteSpace: 'nowrap'
+          }
+        }}
       >
         { assessmentTaskList }
       </Select>
