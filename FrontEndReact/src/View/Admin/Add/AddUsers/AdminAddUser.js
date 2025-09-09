@@ -108,29 +108,52 @@ class AdminAddUser extends Component {
     }
 
     handleChange = (e) => {
-        const { id, value } = e.target;
+    const { id, value } = e.target;
 
-        var formatString = "";
+    var formatString = "";
 
-        for (let i = 0; i < id.length; i++) {
-            if (i === 0) {
-                formatString += id.charAt(0).toUpperCase();
-            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
-                formatString += (" " + id.charAt(i).toLowerCase()); 
-            } else {
-                formatString += id.charAt(i);
-            }
+    for (let i = 0; i < id.length; i++) {
+        if (i === 0) {
+            formatString += id.charAt(0).toUpperCase();
+        } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
+            formatString += (" " + id.charAt(i).toLowerCase()); 
+        } else {
+            formatString += id.charAt(i);
         }
+    }
 
+    // Special handling for LMS ID field
+    if (id === 'lmsId') {
+        // Check if the input contains alphabetic characters
+        if (/[^0-9]/.test(value)) {
+            this.setState({
+                errors: {
+                    ...this.state.errors,
+                    [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.'
+                },
+            });
+            return; // Don't update the field value
+        } else {
+            // Valid input - update the field and clear any error
+            this.setState({
+                [id]: value,
+                errors: {
+                    ...this.state.errors,
+                    [id]: '', // Clear error
+                },
+            });
+        }
+    } else {
+        // Handle other fields as before
         this.setState({
-          [id]: value,
-          errors: {
-            ...this.state.errors,
-            [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
-          },
+            [id]: value,
+            errors: {
+                ...this.state.errors,
+                [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
+            },
         });
-    };
-
+    }
+};
     handleSelect = (event) => {
         this.setState({
             role: event.target.value
