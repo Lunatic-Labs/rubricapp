@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
-//import { genericResourceGET, createEventSource } from '../../../../utility.js'; Removed to unhook /checkin_events
 import { genericResourceGET} from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
@@ -39,8 +38,8 @@ import { CheckinsTracker } from './cat_utils.js';
  * @property {boolean} state.usingTeams - Indicates whether the assessment task is using teams.
  * @property {boolean} state.usingAdHoc - Indicates if we are using adHoc teams. Note usingteams truth affects this var.
  * @property {Object|null} state.checkins - The CheckinsTracker object.
- * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
  * @property {Array|null} state.unitList - The list of units for the assessment task.
+ * @property {int} state.intervalId - The id of the polling function if it is set up.
  * @property {int|null} state.jumpId - What team or student to open first.
  */ 
 
@@ -65,8 +64,8 @@ class CompleteAssessmentTask extends Component {
             usingAdHoc: !this.props.navbar.state.chosenCourse.use_fixed_teams && this.props.navbar.state.unitOfAssessment,
             checkins: new CheckinsTracker(JSON.parse("[]")), // Null does not work since we get stuck in a loop in prod.
                                                              // The loop happens due to server caching as per testing.
-            checkinEventSource: null,
             unitList: null,
+            intervalId: null, 
 
             jumpId: this.props.navbar.state.jumpToSection // The desired jump location student assessment tasks.
         };
@@ -130,6 +129,20 @@ class CompleteAssessmentTask extends Component {
             "completed_assessments", this, { dest: "completedAssessments" }
         );
         
+        //if (cookies.get("user")["isAdmin"]){
+        //    this.intervalId = setInterval(() => {
+        //        console.log("yep");
+        //    }, 5000);//60000 for a min
+        //}
+
+        this.intervalId = setInterval(() => {
+          try {
+            console.log("yep");
+          } catch (err) {
+            console.error("Interval error:", err);
+          }
+        }, 5000);
+
         //const checkinEventSource = createEventSource(
         //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
         //    ({data}) => {
@@ -142,13 +155,11 @@ class CompleteAssessmentTask extends Component {
         //this.setState({
         //    checkinEventSource: checkinEventSource,
         //});
-        this.setState({
-            checkinEventSource: null,
-        })
     }
     
     componentWillUnmount() {
-        this.state.checkinEventSource?.close();
+        console.log("I got called");
+        clearInterval(this.intervalId);
     }
     
     componentDidUpdate() { 
