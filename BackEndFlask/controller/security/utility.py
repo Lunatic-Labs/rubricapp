@@ -18,11 +18,6 @@ from flask_jwt_extended import (
 
 # Creates both a jwt and refresh token
 # jwt expires in 15mins; refresh token expires in 30days
-from flask import request
-from flask_jwt_extended import create_access_token, create_refresh_token
-import datetime
-from your_flask_app import app  # replace with your actual app import
-
 def create_tokens(user_id: any) -> tuple[str, str]:
     with app.app_context():
         # Create access token (short-lived)

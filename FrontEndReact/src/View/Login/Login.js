@@ -24,7 +24,7 @@ class Login extends Component {
             resettingPassword: null,
             email: '',
             password: '',
-            showPassword: '',
+            showPassword:'',
 
             errors: {
                 email: '',
@@ -36,11 +36,11 @@ class Login extends Component {
             const { id, value } = e.target;
 
             this.setState({
-                [id]: value,
-                errors: {
-                    ...this.state.errors,
-                    [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
-                },
+              [id]: value,
+              errors: {
+                ...this.state.errors,
+                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+              },
             });
         };
 
@@ -83,99 +83,98 @@ class Login extends Component {
                         }),
                     }
                 )
-                    .then(res => res.json())
-                    .then(
-                        (result) => {
-                            const cookies = new Cookies();
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        const cookies = new Cookies();
 
-                            if (result["success"]) {
-                                cookies.set('access_token', result['headers']['access_token'], { sameSite: 'strict' });
-                                cookies.set('refresh_token', result['headers']['refresh_token'], { sameSite: 'strict' });
-                                cookies.set('user', result['content']['login'][0], { sameSite: 'strict' });
+                        if(result["success"]) {
+                            cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
+                            cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
+                            cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
 
-                                this.setState(() => ({
-                                    isLoaded: true,
-                                    loggedIn: true,
-                                    hasSetPassword: result['content']['login'][0]['has_set_password']
-                                }));
+                            this.setState(() => ({
+                                isLoaded: true,
+                                loggedIn: true,
+                                hasSetPassword: result['content']['login'][0]['has_set_password']
+                            }));
 
-                            } else {
-                                cookies.remove('access_token');
-                                cookies.remove('refresh_token');
-                                cookies.remove('user');
-
-                                this.setState(() => ({
-                                    isLoaded: true,
-                                    errorMessage: result["message"]
-                                }));
-                            }
-                        },
-                        (error) => {
-                            const cookies = new Cookies();
-
+                        } else {
                             cookies.remove('access_token');
                             cookies.remove('refresh_token');
                             cookies.remove('user');
 
                             this.setState(() => ({
                                 isLoaded: true,
-                                errorMessage: error
+                                errorMessage: result["message"]
                             }));
                         }
-                    )
+                    },
+                    (error) => {
+                        const cookies = new Cookies();
+
+                        cookies.remove('access_token');
+                        cookies.remove('refresh_token');
+                        cookies.remove('user');
+
+                        this.setState(() => ({
+                            isLoaded: true,
+                            errorMessage: error
+                        }));
+                    }
+                )
             }
         };
 
         this.handleNewAccessToken = () => {
             const cookies = new Cookies();
+
             const refreshToken = cookies.get('refresh_token');
-            const user = cookies.get('user');
+            const userId = cookies.get('user')["user_id"];
 
-            if (!refreshToken || !user) {
-                // No refresh token → force login
-                cookies.remove('access_token');
-                cookies.remove('refresh_token');
-                cookies.remove('user');
-                window.location.href = '/login';
-                return;
-            }
-
-            const userId = user["user_id"];
-
-            fetch(`${apiUrl}/refresh?user_id=${userId}`, {
-                method: 'POST',
-                headers: {
-                    'Authorization': 'Bearer ' + refreshToken
+            fetch(
+                apiUrl + `/refresh?user_id=${userId}`,
+                {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': 'Bearer ' + refreshToken
+                    }
                 }
-            })
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if (result["success"]) {
-                            // Save new access token
-                            cookies.set('access_token', result['headers']['access_token'], { sameSite: 'strict' });
+            )
+            .then(res => res.json())
+            .then(
+                (result) => {
 
-                            this.setState({
-                                loggedIn: null  // or true if you want
-                            });
-                        } else {
-                            // Refresh failed → clear cookies and redirect to login
-                            cookies.remove('access_token');
-                            cookies.remove('refresh_token');
-                            cookies.remove('user');
-                            window.location.href = '/login';
-                        }
-                    },
-                    (error) => {
-                        // Fetch failed → clear cookies and redirect
+                    if(result["success"]) {
+                        cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
+
+                        this.setState({
+                            loggedIn: null
+                        });
+                    } else {
                         cookies.remove('access_token');
                         cookies.remove('refresh_token');
                         cookies.remove('user');
-                        window.location.href = '/login';
-                    }
-                );
-        }
 
+                        this.setState(() => ({
+                            isLoaded: true,
+                            errorMessage: result["message"]
+                        }));
+                    }
+                },
+                (error) => {
+                    cookies.remove('user');
+                    cookies.remove('access_token');
+                    cookies.remove('refresh_token');
+
+                    this.setState(() => ({
+                        isLoaded: true,
+                        errorMessage: error
+                    }));
+
+                }
+            )
+        }
 
         this.resetPassword = () => {
             this.setState(() => ({
@@ -215,14 +214,14 @@ class Login extends Component {
 
         const cookies = new Cookies();
 
-        if (resettingPassword) {
-            return (<ValidateReset />)
+        if (resettingPassword){
+            return (<ValidateReset/>)
         }
 
-        else if (!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
-            return (
+        else if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
+            return(
                 <>
-                    {isLoaded && errorMessage &&
+                    { isLoaded && errorMessage &&
                         <>
                             {/* A response has been received and an error occurred */}
                             <Box>
@@ -231,7 +230,7 @@ class Login extends Component {
                         </>
                     }
 
-                    <Box sx={{ justifyContent: "center", minHeight: "100vh", width: "100%" }} className="card-spacing">
+                    <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
@@ -241,17 +240,17 @@ class Login extends Component {
                                                 color: "#2E8BEF",
                                                 fontFeatureSettings: "'clig' off, 'liga' off",
                                                 fontFamily: "Roboto",
-                                                fontSize: { xs: "24px", md: "30px" },
+                                                fontSize: {xs:"24px", md:"30px"},
                                                 fontStyle: "normal",
                                                 fontWeight: "500",
                                                 lineHeight: "160%",
                                                 letterSpacing: "0.15px",
-                                                textAlign: "center"
+                                                textAlign:"center"
                                             }}
                                         >
                                             SkillBuilder
                                         </Typography>
-
+            
                                         <Box>
                                             <TextField
                                                 margin="normal"
@@ -287,24 +286,24 @@ class Login extends Component {
                                                 aria-label="passwordInput"
                                                 InputProps={{
                                                     endAdornment: (
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                                aria-label="toggle password visibility"
-                                                                onClick={this.handleTogglePasswordVisibility}
-                                                                edge="end"
-                                                            >
-                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                            </IconButton>
-                                                        </InputAdornment>
+                                                      <InputAdornment position="end">
+                                                        <IconButton
+                                                          aria-label="toggle password visibility"
+                                                          onClick={this.handleTogglePasswordVisibility}
+                                                          edge="end"
+                                                        >
+                                                          {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                      </InputAdornment>
                                                     ),
                                                 }}
                                             />
 
-                                            <Grid sx={{ textAlign: 'right', mb: 1 }}>
+                                            <Grid sx={{textAlign:'right', mb:1}}>
                                                 <Grid>
                                                     <Link
-                                                        href="#"
-                                                        sx={{ color: "#2E8BEF" }}
+                                                        href= "#"
+                                                        sx={{color: "#2E8BEF"}}
                                                         onClick={this.resetPassword}
                                                         aria-label='resetPasswordButton'
                                                     >
@@ -337,15 +336,14 @@ class Login extends Component {
         else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user'))) {
             this.handleNewAccessToken();
 
-            return (
-
+            return(
                 <Loading />
             )
         }
 
         else {
             if (hasSetPassword === false) {
-                return (
+                return(
                     <SetNewPassword
                         email={email}
                     />
@@ -353,7 +351,7 @@ class Login extends Component {
             }
 
             else {
-                return (
+                return(
                     <AppState
                         userName={cookies.get('user')['user_name']}
                         isSuperAdmin={cookies.get('user')['isSuperAdmin']}
