@@ -23,7 +23,7 @@ class ImageModal extends React.Component {
                         width: "auto",
                         height: "auto",
                         backgroundColor: "white",
-                        border: "2px solid #0b0e6eff",
+                        border: "2px solid #099e4cff",
                         boxShadow: 24,
                         p: 4,
                     }}
@@ -36,7 +36,7 @@ class ImageModal extends React.Component {
                     <img
                         src={imageUrl2}
                         alt="Rubric2"
-                        style={{ maxWidth: "75rem", maxHeight: "75rem" }}
+                        style={{ maxWidth: "80rem", maxHeight: "75rem" }}
                     />
                 </div>
             </Modal>
