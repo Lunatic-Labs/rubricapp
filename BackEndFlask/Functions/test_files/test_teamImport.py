@@ -24,7 +24,7 @@ def test_valid_file_w_tas_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_ta_student_course()
-            message = teamImport.team_csv_to_db(
+            message = team_csv_to_db(
                 retrieve_file_path("oneTeamTAStudent.csv"),
                 result["admin_id"],
                 result["course_id"]
@@ -68,7 +68,7 @@ def test_valid_file_wo_tas_records_all_data(flask_app_mock):
     with flask_app_mock.app_context():
         try:
             result = create_one_admin_ta_student_course(False)
-            message = teamImport.team_csv_to_db(
+            message = team_csv_to_db(
                 retrieve_file_path("oneTeamStudent.csv"),
                 result["admin_id"],
                 result["course_id"]
@@ -107,7 +107,7 @@ def test_wrong_file_type_error(flask_app_mock):
         try:
             result = create_one_admin_ta_student_course()
             try: 
-                message = teamImport.team_csv_to_db(
+                message = team_csv_to_db(
                     retrieve_file_path(
                         "WrongFileType.pdf"
                     ),
@@ -141,7 +141,7 @@ def test_file_not_found_error(flask_app_mock):
         try:
             result = create_one_admin_ta_student_course()
             try: 
-                message = teamImport.team_csv_to_db(
+                message = team_csv_to_db(
                     retrieve_file_path(
                         "NonExistentFile.csv"
                     ),
@@ -178,7 +178,7 @@ def test_misformatting_TA_email_error(flask_app_mock):
         try:
             result = create_one_admin_ta_student_course()
             try:
-                message = teamImport.team_csv_to_db(
+                message = team_csv_to_db(
                     retrieve_file_path(
                         "oneTeamMisformattedTAStudent.csv"
                     ),
@@ -215,7 +215,7 @@ def test_misformatting_student_email_error(flask_app_mock):
         try:
             result = create_one_admin_ta_student_course(False)
             try: 
-                message = teamImport.team_csv_to_db(
+                message = team_csv_to_db(
                     retrieve_file_path(
                         "oneTeamMisformattedStudent.csv"
                     ),
@@ -252,7 +252,7 @@ def test_users_do_not_exist_error(flask_app_mock):
         try:
             result = create_one_admin_ta_student_course()
             try:
-                message = teamImport.team_csv_to_db(
+                message = team_csv_to_db(
                     retrieve_file_path(
                         "oneTeamNonExistingTAStudent.csv"
                     ),
@@ -292,7 +292,7 @@ def test_ta_not_yet_added_error(flask_app_mock):
             result = create_one_admin_ta_student_course(True, True)
 
             try:
-                message = teamImport.team_csv_to_db(
+                message = team_csv_to_db(
                     retrieve_file_path(
                         "oneTeamTAStudent.csv"
                     ),
@@ -329,10 +329,11 @@ def test_ta_not_yet_added_error(flask_app_mock):
 #   - asserts Student Not Enrolled In This Course error is returned because the test student is not enrolled in the course
 def test_student_not_enrolled_in_this_course(flask_app_mock):
     with flask_app_mock.app_context():
+        result = None
         try:
             result = create_one_admin_ta_student_course(True, False, True)
             try: 
-                message = teamImport.team_csv_to_db(
+                message = team_csv_to_db(
                     retrieve_file_path(
                         "oneTeamTAStudent.csv"
                     ),
@@ -351,6 +352,7 @@ def test_student_not_enrolled_in_this_course(flask_app_mock):
             delete_one_admin_ta_student_course(result)
 
         except Exception as e:
-            delete_all_teams_team_members(result["course_id"])
-            delete_one_admin_ta_student_course(result)
+            if result is not None:
+                delete_all_teams_team_members(result["course_id"])
+                delete_one_admin_ta_student_course(result)
             raise e

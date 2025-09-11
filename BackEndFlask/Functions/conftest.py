@@ -9,6 +9,8 @@ from sqlalchemy import create_engine, text
 
 @pytest.fixture
 def flask_app_mock():
+    import uuid
+    
     mock_app = app
 
     MYSQL_HOST=os.getenv('MYSQL_HOST')
@@ -17,7 +19,9 @@ def flask_app_mock():
 
     MYSQL_PASSWORD="rootpassword"
 
-    MYSQL_DATABASE="TestDB"
+    # Create unique database name for each test run to ensure isolation
+    unique_id = uuid.uuid4().hex[:8]
+    MYSQL_DATABASE=f"TestDB_{unique_id}"
 
     # Create engine without specifying a database
     base_uri = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}"
@@ -40,11 +44,17 @@ def flask_app_mock():
     mock_app.db = db
     yield mock_app
 
-    # Drop the test database
-    with engine.connect() as conn:
-        conn.execute(text(f"DROP DATABASE IF EXISTS `{MYSQL_DATABASE}`"))
+    # Clean up: Drop the test database
+    try:
+        with engine.connect() as conn:
+            conn.execute(text(f"DROP DATABASE IF EXISTS `{MYSQL_DATABASE}`"))
+    except Exception as e:
+        print(f"Warning: Could not drop test database {MYSQL_DATABASE}: {e}")
 
-    with app.app_context():
-        db.session.close()
-        db.engine.dispose()
-    close_all_sessions()
+    try:
+        with app.app_context():
+            db.session.close()
+            db.engine.dispose()
+        close_all_sessions()
+    except Exception as e:
+        print(f"Warning: Could not clean up database connections: {e}")

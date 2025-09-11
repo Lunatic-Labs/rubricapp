@@ -31,16 +31,17 @@ def delete_xlsx(student_file, is_xlsx):
     if is_xlsx:
         os.remove(student_file)
 
-# template_user
-#   - is a json object that holds the keys and default values needed to create a new test user
-template_user = {
-    "first_name": "",
-    "last_name": "",
-    "email": "",
-    "password": "Skillbuilder",
-    "consent": None,
-    "lms_id": None
-}
+# get_template_user()
+#   - returns a fresh copy of the template user object to avoid dictionary reuse issues
+def get_template_user():
+    return {
+        "first_name": "",
+        "last_name": "",
+        "email": "",
+        "password": "Skillbuilder",
+        "consent": None,
+        "lms_id": None
+    }
 
 # create_one_admin_course()
 #   - takes one parameter:
@@ -48,10 +49,11 @@ template_user = {
 #   - creates a test teacher and a test course
 #   - returns a json object containing the id of the test teacher and test course
 def create_one_admin_course(use_tas):
-    teacher = template_user
+    import uuid
+    teacher = get_template_user()
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
-    teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
+    teacher["email"] = f"testteacher{uuid.uuid4().hex[:8]}@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
     new_course = create_course({
@@ -78,10 +80,11 @@ def create_one_admin_course(use_tas):
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_course(result):
-    # user = delete_user(result["user_id"])
-    course = delete_course(result["course_id"])
+    # Delete in correct order to avoid foreign key constraint violations
     user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
-
+    course = delete_course(result["course_id"])  # Delete course before user
+    user = delete_user(result["user_id"])
+    
 # delete_all_users_user_courses()
 #   - takes one parameter:
 #       - the id of the test course
@@ -111,10 +114,11 @@ def delete_all_users_user_courses(course_id):
 #       - unless an error occurs
 #           - returns the error message
 def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll_student=False):
-    teacher = template_user
+    import uuid
+    teacher = get_template_user()
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
-    teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
+    teacher["email"] = f"testteacher{uuid.uuid4().hex[:8]}@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
 
@@ -130,10 +134,10 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     })
     
     if use_tas:
-        ta = template_user
+        ta = get_template_user()
         ta["first_name"] = "Test TA"
         ta["last_name"] = "1"
-        ta["email"] = f"testta{get_users().__len__()}@gmail.com"
+        ta["email"] = f"testta{uuid.uuid4().hex[:8]}@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
         if not unenroll_ta:
@@ -144,10 +148,10 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
                 "role_id": 4
             })
 
-    student = template_user
+    student = get_template_user()
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
-    student["email"] = f"teststudent{get_users().__len__()}@gmail.com"
+    student["email"] = f"teststudent{uuid.uuid4().hex[:8]}@gmail.com"
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
@@ -168,10 +172,11 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     return result
 
 def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unenroll_student=False):
-    teacher = template_user
+    import uuid
+    teacher = get_template_user()
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
-    teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
+    teacher["email"] = f"testteacher{uuid.uuid4().hex[:8]}@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
 
@@ -187,10 +192,10 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
     })
 
     if use_tas:
-        ta = template_user
+        ta = get_template_user()
         ta["first_name"] = "Test TA 1"
         ta["last_name"] = "1"
-        ta["email"] = f"testta{get_users().__len__()}@gmail.com"
+        ta["email"] = f"testta{uuid.uuid4().hex[:8]}@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
         if not unenroll_ta:
@@ -200,10 +205,10 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
                 # role_id of 4 is a "TA"
                 "role_id": 4
             })
-        ta2 = template_user
+        ta2 = get_template_user()
         ta2["first_name"] = "Test TA 2"
         ta2["last_name"] = "2"
-        ta2["email"] = f"testta{get_users().__len__()}@gmail.com"
+        ta2["email"] = f"testta2_{uuid.uuid4().hex[:8]}@gmail.com"
         ta2["owner_id"] = new_teacher.user_id
         new_ta2 = create_user(ta2)
         if not unenroll_ta:
@@ -214,10 +219,10 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
                 "role_id": 4
             })
 
-    student = template_user
+    student = get_template_user()
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
-    student["email"] = f"teststudent{get_users().__len__()}@gmail.com"
+    student["email"] = f"teststudent{uuid.uuid4().hex[:8]}@gmail.com"
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
@@ -250,17 +255,20 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_ta_student_course(result, use_tas=True):
-    delete_user(result["user_id"])
-    if use_tas:
-        delete_user(result["observer_id"])
-
-    delete_user(result["admin_id"])
-    delete_course(result["course_id"])
-    
+    # Delete user_course relationships first
     delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
     
     if use_tas:
         delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
+    
+    # Delete course before users to avoid foreign key constraints
+    delete_course(result["course_id"])
+    
+    # Delete users after course is deleted
+    delete_user(result["user_id"])
+    if use_tas:
+        delete_user(result["observer_id"])
+    delete_user(result["admin_id"])
 
 # create_users()
 #   - takes four parameters:
@@ -276,12 +284,13 @@ def delete_one_admin_ta_student_course(result, use_tas=True):
 #       - unless an error occurs
 #           - returns the error message
 def create_users(course_id, teacher_id, number_of_users, role_id=5):
+    import uuid
     users = []
     for index in range(1, number_of_users):
-        user = template_user
+        user = get_template_user()
         user["first_name"] = "Test " + (lambda: (lambda: "", lambda: "TA")[role_id==4](), lambda: "Student")[role_id==5]()
         user["last_name"] = f"{index}"
-        user["email"] = f"test{(lambda: (lambda: '', lambda: 'TA')[role_id==4](), lambda: 'Student')[role_id==5]()}{index}@gmail.com"
+        user["email"] = f"test{(lambda: (lambda: '', lambda: 'TA')[role_id==4](), lambda: 'Student')[role_id==5]()}{index}_{uuid.uuid4().hex[:8]}@gmail.com"
         user["owner_id"] = teacher_id
         new_user = create_user(user)
         
