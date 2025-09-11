@@ -648,7 +648,6 @@ def get_team_ratings(assessment_task_id):
         CompletedAssessment.team_id != None,
         CompletedAssessment.assessment_task_id == assessment_task_id
     ).all()
-
 @error_log
 def get_all_checkins_for_student_for_course(user_id, course_id):
     """
