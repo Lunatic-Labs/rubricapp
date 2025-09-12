@@ -9,6 +9,10 @@
   background-color: #2E8BEF !important;
 }
 
+.primary-color-text {
+  color: #2E8BEF !important;
+}
+
 .primary-color:disabled {
   background-color: #E0E0E0 !important;
 }
