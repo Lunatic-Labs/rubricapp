@@ -379,7 +379,7 @@ class AdminAddUser extends Component {
 
                                                 <MenuItem value={4} aria-label="addUserRoleDropDownTAOrInstructorOption">TA/Instructor</MenuItem>
 
-                                                {/* <MenuItem value={3}>Admin</MenuItem> */}
+                                                { <MenuItem value={3}>Admin</MenuItem> }
                                             </Select>
                                             <FormHelperText>{errors.role}</FormHelperText>
                                         </FormControl>

@@ -5,7 +5,10 @@ import './SBStyles.css';
 function App() {
   return (
     <div className='app-body'>
-      <BrowserRouter>
+      <BrowserRouter future={{ 
+        v7_startTransition: true,   // enables React 18 startTransition
+        v7_relativeSplatPath: true, // enables relative routing with splats
+      }}>
         <Routes>
           <Route path='*' element={<Navigate to='/'/>} />
           <Route path='/' element={<Login/>} />
