@@ -128,7 +128,6 @@ class Login extends Component {
 
         this.handleNewAccessToken = () => {
             const cookies = new Cookies();
-
             const refreshToken = cookies.get('refresh_token');
             const userId = cookies.get('user')["user_id"];
 
@@ -158,7 +157,6 @@ class Login extends Component {
 
                         this.setState(() => ({
                             isLoaded: true,
-                            errorMessage: result["message"]
                         }));
                     }
                 },
@@ -169,7 +167,7 @@ class Login extends Component {
 
                     this.setState(() => ({
                         isLoaded: true,
-                        errorMessage: error
+                        errorMessage: "Session expired. Please log in again.",
                     }));
 
                 }
@@ -333,7 +331,8 @@ class Login extends Component {
             )
         }
 
-        else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user'))) {
+        else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) && !this.state.isRefreshing) {
+            this.setState({isRefreshing: true});
             this.handleNewAccessToken();
 
             return(
