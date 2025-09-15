@@ -86,7 +86,7 @@ def checkin_to_assessmet():
     try:
         user_id = int(request.args.get("user_id"))
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        is_team = bool(request.args.get("is_team"))
+        is_team = True if request.args.get("is_team") == "true" else False
         team_number= int(request.args.get("team_number")) if is_team else 0
 
         filters = {
@@ -106,9 +106,9 @@ def checkin_to_assessmet():
                 'team_number': team_number,
             })
 
-        return create_good_response("Ping", "checkin", HttpStatus.CREATED.value)
+        return create_good_response("Checkin Created/Updated", HttpStatus.CREATED.value, "checkin")
     except Exception as e:
-        return create_bad_response(f"Error with checkin: {e}", "checkin", HttpStatus.BAD_REQUEST.value)
+        return create_bad_response(f"Error with checkin: {e}", HttpStatus.BAD_REQUEST.value, "checkin")
 
 @bp.route('/checkin_events', methods = ['GET']) 
 @jwt_required()
@@ -127,9 +127,9 @@ def check_checkedin():
         
         records = fetch_checkins_for_at_within_hr(assessment_task_id)
 
-        return create_good_response(checkins_polling(records), "checkin", HttpStatus.OK.value)
+        return create_good_response(checkins_polling.dump(records), HttpStatus.OK.value, "checkin")
     except Exception as e:
-        return create_bad_response(f"Error with polling: {e}", "checkin", HttpStatus.BAD_REQUEST.value)
+        return create_bad_response(f"Error with polling: {e}", HttpStatus.BAD_REQUEST.value, "checkin")
 
 
 class CheckinSchema(ma.Schema):

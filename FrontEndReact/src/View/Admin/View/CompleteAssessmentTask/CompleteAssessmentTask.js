@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
-import { genericResourceGET} from '../../../../utility.js';
+import { genericResourceGET, genericResourcePOST} from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
@@ -71,13 +71,6 @@ class CompleteAssessmentTask extends Component {
         };
     }
 
-    /**
-     * The fuction calls the proper checkin_events route and stores the data in the CheckinsTracker object.
-     */
-    teacherCheckin(){
-        return;
-    }
-
     componentDidMount() {
         const navbar = this.props.navbar;
         const state = navbar.state;
@@ -136,11 +129,20 @@ class CompleteAssessmentTask extends Component {
             "completed_assessments", this, { dest: "completedAssessments" }
         );
         
+        const isTeams = this.state.usingTeams;
         if (cookies.get("user")["isAdmin"]){
-            this.intervalId = setInterval(this.teacherCheckin, 8000);
+            this.intervalId = setInterval(() => {
+                genericResourceGET(
+                    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
+                    this, "checkin"
+                );
+            }, 8000);
         }
         else {
-            return
+            genericResourcePOST(
+                `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
+                this, "checkin"
+            );
         }
 
         //const checkinEventSource = createEventSource(
