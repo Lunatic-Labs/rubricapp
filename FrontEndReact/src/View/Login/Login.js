@@ -401,7 +401,7 @@ class Login extends Component {
             )
         }
 
-        // User is authenticated - show appropriate content
+        // User is authenticated
         else {
             if (hasSetPassword === false) {
                 return (
