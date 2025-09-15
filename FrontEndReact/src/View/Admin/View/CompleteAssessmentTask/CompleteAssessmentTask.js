@@ -71,6 +71,13 @@ class CompleteAssessmentTask extends Component {
         };
     }
 
+    /**
+     * The fuction calls the proper checkin_events route and stores the data in the CheckinsTracker object.
+     */
+    teacherCheckin(){
+        return;
+    }
+
     componentDidMount() {
         const navbar = this.props.navbar;
         const state = navbar.state;
@@ -129,19 +136,12 @@ class CompleteAssessmentTask extends Component {
             "completed_assessments", this, { dest: "completedAssessments" }
         );
         
-        //if (cookies.get("user")["isAdmin"]){
-        //    this.intervalId = setInterval(() => {
-        //        console.log("yep");
-        //    }, 5000);//60000 for a min
-        //}
-
-        this.intervalId = setInterval(() => {
-          try {
-            console.log("yep");
-          } catch (err) {
-            console.error("Interval error:", err);
-          }
-        }, 5000);
+        if (cookies.get("user")["isAdmin"]){
+            this.intervalId = setInterval(this.teacherCheckin, 8000);
+        }
+        else {
+            return
+        }
 
         //const checkinEventSource = createEventSource(
         //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
@@ -158,8 +158,8 @@ class CompleteAssessmentTask extends Component {
     }
     
     componentWillUnmount() {
-        console.log("I got called");
         clearInterval(this.intervalId);
+        this.intervalId = null;
     }
     
     componentDidUpdate() { 
