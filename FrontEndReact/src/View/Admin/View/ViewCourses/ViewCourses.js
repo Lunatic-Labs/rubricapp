@@ -62,7 +62,7 @@ class ViewCourses extends Component {
       },
       {
         name: "use_tas",
-        label: "Use TA's",
+        label: "Use T.A's",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
