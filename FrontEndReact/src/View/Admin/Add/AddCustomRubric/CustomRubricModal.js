@@ -15,29 +15,27 @@ class ImageModal extends React.Component {
             >
                 <div
                     style={{
-                        display: "flex",
-                        position: "absolute",
-                        top: "50%",
-                        left: "50%",
-                        transform: "translate(-50%, -50%)",
-                        width: "auto",
-                        height: "auto",
-                        backgroundColor: "white",
-                        border: "2px solid #099e4cff",
-                        boxShadow: 24,
-                        p: 4,
+                            display: "block",
+                            position: "absolute",
+                            top: "50%",
+                            left: "50%",
+                            transform: "translate(-50%, -50%)",
+                            width: "60%",    // fixed width
+                            height: "96%",   // fixed height
+                            backgroundColor: "white",
+                            border: "2px solid #099e4cff",
+                            boxShadow: 24,
+                            overflow: "auto",  // enable both x and y scrolling 
                     }}
                 >
                     <img
                         src={imageUrl}
                         alt="Rubric"
-                        style={{ maxWidth: "50rem", maxHeight: "50rem" }}
-                    />
+                        style={{ width: "100%", marginBottom: "16px" }}/>
                     <img
                         src={imageUrl2}
                         alt="Rubric2"
-                        style={{ maxWidth: "80rem", maxHeight: "75rem" }}
-                    />
+                        style={{ width: "100%", marginBottom: "16px", }}/>
                 </div>
             </Modal>
         );
