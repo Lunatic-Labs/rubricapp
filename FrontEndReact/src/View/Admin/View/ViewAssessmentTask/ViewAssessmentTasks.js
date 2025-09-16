@@ -121,9 +121,16 @@ class ViewAssessmentTasks extends Component {
     componentDidMount() {
         const cookies = new Cookies();
         const user = cookies.get('user');
-        const isViewingAsStudent = user?.viewingAsStudent || false;
+        //const isViewingAsStudent = user?.viewingAsStudent || false;
         
         const courseId = this.props.navbar.state.chosenCourse.course_id;
+        const isViewingAsStudent = this.props.isViewingAsStudent !== undefined 
+        ? this.props.isViewingAsStudent 
+        : (() => {
+            const cookies = new Cookies();
+            const user = cookies.get('user');
+            return user?.viewingAsStudent || false;
+        })();
     
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
@@ -138,6 +145,7 @@ class ViewAssessmentTasks extends Component {
             this,
             {dest: "completedAssessments"}
         );
+        
     
         const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
         const initialLockStatus = {};
