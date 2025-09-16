@@ -15,7 +15,6 @@ import Loading from '../Loading/Loading.js';
 // StudentCompletedAssessmentTasks, and depending on the role, either the StudentViewTeams or
 // the TAViewTeams components.
 
-
 /**
  *  @description This component pulls the CATs & ATs, filters them, then sends them
  *                  to its children components.
@@ -49,7 +48,9 @@ class StudentDashboard extends Component {
             filteredCATs: null,
             averageData: null,
             filteredAverageData: null,
-        }
+        
+            chartData: null,
+}
     }
 
     componentDidMount() {
@@ -127,31 +128,54 @@ class StudentDashboard extends Component {
 
                 return viewable;
             });
+            const computeAvg = (avgObj) => {
+                if (avgObj == null) return null;
+                if (typeof avgObj === 'number') return avgObj;
+                if (typeof avgObj?.average === 'number') return avgObj.average;
+                if (typeof avgObj?.avg === 'number') return avgObj.avg;
+                if (typeof avgObj?.overall_average === 'number') return avgObj.overall_average;
+                if (avgObj?.averages && typeof avgObj.averages === 'object') {
+                    const vals = Object.values(avgObj.averages).map(Number).filter(v => !Number.isNaN(v));
+                    if (vals.length) return vals.reduce((a, b) => a + b, 0) / vals.length;
+                }
+                if (typeof avgObj?.value === 'number') return avgObj.value;
+                return null;
+            };
 
-            // Sorting the average data by rubric id
-            filteredAvgData.sort((a,b) => a.rubric_id - b.rubric_id);
+            const fmtDate = (ts) => {
+                try {
+                    const d = new Date(ts);
+                    if (!isNaN(d)) return d.toLocaleDateString();
+                } catch (e) {}
+                return 'N/A';
+            };
 
-            // use this as the base for the data to be used in the graph
-            //let rating_average = [
-            //    {
-            //        "rating": "TW",
-            //        "averages": {}
-            //    },
-            //    {
-            //        "rating": "",
-            //    },
-            //    {
-            //        "rating": "IP",
-            //        "averages": {}
-            //    }
-            //]
-            // Find a way to put the sorted average data into the format above
+            const chartData = filteredCompletedAssessments
+                .map((cat, i) => {
+                    const avgObj = filteredAvgData[i];
+                    const at = assessmentTasks.find(a => a.assessment_task_id === cat.assessment_task_id);
+                    const avg = computeAvg(avgObj);
+                    const ts = cat.last_update || cat.initial_time || (at && at.due_date);
+                    const dateObj = ts ? new Date(ts) : new Date(0);
+                    return {
+                        key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
+                        name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
+                        date: dateObj,
+                        dateLabel: fmtDate(ts),
+                        avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
+                    };
+                })
+                .filter(d => d.avg !== null)
+                ;
 
             this.setState({
+
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAssessments,
                 filteredAverageData: filteredAvgData,
-            });
+            
+                chartData,
+});
         }
     }
 
@@ -179,16 +203,6 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.users = null;
         
         console.log(filteredAverageData);
-
-        // This will put the average data into the recomended format
-        // can change if there are better options
-        //const transformedData = averageData.map(entry => ({
-        //  rating: entry.rating,
-        //  ...entry.averages,
-        //}));
-
-        // This will be used to get the averages from the transformed data
-        //const taskKeys = Object.keys(averageData[0].averages);
 
         const innerGridStyle = {
           borderRadius: '1px',
@@ -298,47 +312,34 @@ class StudentDashboard extends Component {
                             </Box>
                         </Box>
 
-{/*                     This is the bar graph for the average data, reformat it to look nicer/cleaner
-                        <Grid item xs={12} md={6}>
-                            <div className={innerDivClassName} style={{
-                                ...innerGridStyle,
-                                minHeight: '250px'
-                            }}>
-                                <h6 style={{ margin: '0', padding: '1px', lineHeight: '1' }}>
-                                    <u>Distribution of Ratings</u>
-                                </h6>
-                                <div style={{ width: '100%', height: '210px', flexGrow: 1 }}>
-                                    <ResponsiveContainer>
-                                        <BarChart
-                                            layout="horizontal"
-                                            data={transformedData}
-                                            barCategoryGap={0.5}
-                                            margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-                                        >
-                                            <XAxis
-                                                dataKey="rating"
-                                                type="category"
-                                                style={{ fontSize: '0.75rem' }}
-                                                tickLine={false}
-                                            />
-                                            <YAxis
-                                                type="number"
-                                                style={{ fontSize: '0.75rem' }}
-                                                domain={[0, 5]}
-                                                ticks={[0, 1, 2, 3, 4, 5]}
-                                            />
-                                            <CartesianGrid vertical={false} />
-                                            {taskKeys.map((task) =>{
-                                                return <Bar dataKey={task} fill="#2e8bef">
-                                                    <LabelList dataKey={task} fill="#ffffff" position="inside" />
-                                                </Bar>
-                                            })}
-                                        </BarChart>
-                                    </ResponsiveContainer>
-                                </div>
-                            </div>
-                        </Grid>
-*/}
+{
+      <div className={innerDivClassName} style={{ ...innerGridStyle, minHeight: '300px' }}>
+        <h6 style={{ margin: 0, padding: '1px', lineHeight: 1 }}>
+          <u>Completed Task Average Ratings</u>
+        </h6>
+        <div style={{ width: '100%', height: '260px', flexGrow: 1 }}>
+          {this.state.chartData && this.state.chartData.length ? (
+            <ResponsiveContainer>
+              <BarChart
+                data={this.state.chartData}
+                margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+                barSize={40}
+              >
+                <CartesianGrid vertical={false} />
+                <XAxis dataKey="name" hide />
+                <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} style={{ fontSize: '0.75rem' }} />
+                <Tooltip formatter={(v) => [typeof v === 'number' ? v.toFixed(2) : v, 'Avg Rating']} labelFormatter={(label, payload) => payload?.[0]?.payload?.name || label} />
+                <Bar dataKey="avg" fill="#2e8bef">
+                  <LabelList dataKey="avg" position="top" formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          ) : (
+            <Typography variant="body2" sx={{ mt: 2 }}>No completed task ratings yet.</Typography>
+          )}
+        </div>
+      </div>
+}
                     </Box>
                 }
             </>
