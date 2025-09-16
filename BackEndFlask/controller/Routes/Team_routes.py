@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
@@ -230,9 +231,9 @@ def get_nonfull_adhoc():
 @admin_check()
 def get_how_many_adhocs_teams_exist():
     try:
-        if request.args and request.args.get("course_id"):
-            course_id = int(request.args.get("course_id"))
-            return create_good_response(get_num_of_adhocs(course_id), 200, "teams")
+        if request.args and request.args.get("assessment_task_id"):
+            assessment_task_id = int(request.args.get("assessment_task_id"))
+            return create_good_response(get_num_of_adhocs(assessment_task_id), 200, "teams")
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
@@ -350,23 +351,19 @@ def get_all_team_users():
 
 
 class TeamSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'team_id',
-            'team_name',
-            'observer_id',
-            'course_id',
-            'date_created',
-            'active_until'
-        )
+    team_id      = fields.Integer()
+    team_name    = fields.String()
+    observer_id  = fields.Integer()
+    course_id    = fields.Integer()
+    assessment_task_id = fields.Integer()
+    date_created = fields.Date()
+    active_until = fields.DateTime()
 
 
 class TeamUserSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'team_id',
-            'user_id'
-        )
+    team_id = fields.Integer()
+    user_id = fields.Integer()
+
 team_schema = TeamSchema()
 teams_schema = TeamSchema(many=True)
 team_user_schema = TeamUserSchema()

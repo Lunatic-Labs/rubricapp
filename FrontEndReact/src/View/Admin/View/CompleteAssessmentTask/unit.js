@@ -148,7 +148,6 @@ function getOrGenerateUnitData(cat, rubric) {
 	
 	if (cat && Object.keys(cat).length > 0) {
 		// The unit already has a complete AT entry (it has been completed before)
-		
 		rocsData = cat["rating_observable_characteristics_suggestions_data"];
 		isDone = cat["done"];
 	} else {

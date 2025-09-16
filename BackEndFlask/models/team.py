@@ -88,10 +88,11 @@ def create_team(team_data):
     new_observer_id = team_data["observer_id"]
     new_date_created = team_data["date_created"]
     course_id = team_data["course_id"]
+    assessment_task_id = team_data["assessment_task_id"]
 
     date_obj = datetime.strptime(new_date_created, '%m/%d/%Y').date()
 
-    new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, course_id=course_id, active_until=None)
+    new_team = Team(team_name=new_team_name, observer_id=new_observer_id, date_created=date_obj, course_id=course_id, assessment_task_id=assessment_task_id, active_until=None)
 
     db.session.add(new_team)
     db.session.commit()
@@ -125,7 +126,8 @@ def load_demo_team():
             "team_name": team["team_name"],
             "observer_id": team["observer_id"],
             "course_id": team["course_id"],
-            "date_created": "01/01/2023",
+            "assessment_task_id": None,
+            "date_created": "08/07/2025",
             "active_until": None
         })
 

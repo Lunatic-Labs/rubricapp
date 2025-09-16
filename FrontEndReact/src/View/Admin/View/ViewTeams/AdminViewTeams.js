@@ -11,7 +11,7 @@ import SuccessMessage from "../../../Success/SuccessMessage.js";
 class AdminViewTeams extends Component {
   constructor(props) {
     super(props);
-
+    
     this.state = {
       errorMessage: null,
       isLoaded: false,

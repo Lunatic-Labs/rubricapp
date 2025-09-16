@@ -1,4 +1,5 @@
 from flask import request
+from marshmallow import fields
 from controller  import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
@@ -36,9 +37,9 @@ from models.course import (
     get_course
 )
 
-""" from models.utility import (
+from models.utility import (
     send_email_for_updated_email,
-) """
+)
 
 from models.user import(
     get_users,
@@ -50,7 +51,7 @@ from models.user import(
     replace_user,
     make_admin,
     unmake_admin,
-    delete_user_by_user_id,
+    delete_user,
     #get_user_by_email,
 )
 
@@ -64,6 +65,7 @@ from models.queries import (
     add_user_to_team,
     remove_user_from_team
 )
+from models.completed_assessment import completed_assessment_team_or_user_exists
 
 
 
@@ -100,7 +102,7 @@ def get_all_users():
             get_team(team_id)  # Trigger an error if not exists.
 
             course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
-            
+
             # We are going to add students by default!
             # Return students that are not in the team!
             all_users = get_active_students_not_in_a_team(course_id, team_id)
@@ -148,7 +150,7 @@ def get_all_users():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_all_team_members(): 
+def get_all_team_members():
     try:
         if request.args and request.args.get("course_id") and request.args.get("observer_id"):
             course_id=request.args.get("course_id")
@@ -315,6 +317,7 @@ def update_user():
         # The email was updated, update the email validation table for that entry.
         if new_email is not None and owner_id is not None:
             update_email_to_pending(user_id)
+            send_email_for_updated_email(new_email)            
 
         user = replace_user(request.json, user_id)
 
@@ -333,38 +336,42 @@ def update_user():
 @bad_token_check()
 @AuthCheck()
 @admin_check()
-def delete_user():
+def delete_selected_user():
     try:
         if request.args and request.args.get("uid"):
-            user_id = request.args.get("uid")
-
-            delete_user_by_user_id(user_id)
-
-            return create_good_response([], 200, "")
+            user_id = int(request.args.get("uid"))
+            user = get_user(user_id)
+            if not user:
+                return create_bad_response("User does not exist", "users", 400)
+            
+            associated_task = completed_assessment_team_or_user_exists(team_id=None, user_id=user_id)
+            if associated_task and len(associated_task) > 0:
+                return create_bad_response("Cannot delete user with associated tasks", "users", 400)
+            
+            try:
+                delete_user(user_id)
+                return create_good_response([], 200, "users")
+            except ValueError as ve:
+                return create_bad_response(str(ve), "users", 400)
 
     except Exception as e:
-        return create_bad_response(f"An error occurred replacing a user_id: {e}", "", 400)
-
+        return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
 class UserSchema(ma.Schema):
-    class Meta:
-        fields = (
-            'user_id',
-            'first_name',
-            'last_name',
-            'email',
-            'team_id',
-            'team_name',
-            'lms_id',
-            'consent',
-            'owner_id',
-            'active',
-            'has_set_password',
-            'is_admin',
-            'role_id',
-            'last_update',
-        )
-
+    user_id     = fields.Integer()
+    first_name  = fields.String()
+    last_name   = fields.String()
+    email       = fields.Email()
+    team_id     = fields.Integer()
+    team_name   = fields.String()
+    lms_id      = fields.Integer()
+    consent     = fields.Boolean()
+    owner_id    = fields.Integer()
+    active      = fields.Boolean()
+    has_set_password = fields.Boolean()
+    is_admin    = fields.Boolean()
+    role_id     = fields.Integer()
+    last_update = fields.DateTime()
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
