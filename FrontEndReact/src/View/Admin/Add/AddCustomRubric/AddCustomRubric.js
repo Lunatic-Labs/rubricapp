@@ -9,7 +9,7 @@ import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
-import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
+import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview002.png";
 import Loading from '../../../Loading/Loading.js';
 import FormHelperText from '@mui/material/FormHelperText';
 
