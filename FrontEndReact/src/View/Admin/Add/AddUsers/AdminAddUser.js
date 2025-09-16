@@ -9,7 +9,7 @@ import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, 
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 
-
+const MAX_LMS_ID_LENGTH = 10;
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -107,59 +107,60 @@ class AdminAddUser extends Component {
         })
     }
 
+   
     handleChange = (e) => {
-    const { id, value } = e.target;
-
-    var formatString = "";
-
-    for (let i = 0; i < id.length; i++) {
-        if (i === 0) {
-            formatString += id.charAt(0).toUpperCase();
-        } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
-            formatString += (" " + id.charAt(i).toLowerCase()); 
-        } else {
-            formatString += id.charAt(i);
+        const { id, value } = e.target;
+      
+        let formatString = "";
+        for (let i = 0; i < id.length; i++) {
+          if (i === 0) formatString += id.charAt(0).toUpperCase();
+          else if (id.charAt(i) === id.charAt(i).toUpperCase()) formatString += (" " + id.charAt(i).toLowerCase());
+          else formatString += id.charAt(i);
         }
-    }
-
-    // Special handling for LMS ID field
-    if (id === 'lmsId') {
-        // Check if the input contains alphabetic characters
-        if (/[^0-9]/.test(value)) {
+      
+        if (id === 'lmsId') {
+          // non-digit?
+          if (/[^0-9]/.test(value)) {
             this.setState({
-                errors: {
-                    ...this.state.errors,
-                    [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.'
-                },
+              errors: { ...this.state.errors, [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.' }
             });
-            return; // Don't update the field value
-        } else {
-            // Valid input - update the field and clear any error
+            return; // don't update value
+          }
+      
+          // too long?
+          if (value.length > MAX_LMS_ID_LENGTH) {
             this.setState({
-                [id]: value,
-                errors: {
-                    ...this.state.errors,
-                    [id]: '', // Clear error
-                },
+              errors: { ...this.state.errors, [id]: `Max ${MAX_LMS_ID_LENGTH} digits.` }
             });
-        }
-    } else {
-        // Handle other fields as before
-        this.setState({
+            return; // don't update value
+          }
+      
+          const atMax = value.length === MAX_LMS_ID_LENGTH;
+          this.setState({
             [id]: value,
-            errors: {
-                ...this.state.errors,
-                [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
-            },
+            errors: { ...this.state.errors, [id]: atMax ? `Max ${MAX_LMS_ID_LENGTH} digits reached.` : '' }
+          });
+          return;
+        }
+      
+        // other fields
+        this.setState({
+          [id]: value,
+          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
         });
-    }
-};
+      };
+
+    
+    
+
+
     handleSelect = (event) => {
         this.setState({
             role: event.target.value
         });
       };
 
+      
     handleSubmit = () => {
         const {
             firstName,
@@ -169,6 +170,18 @@ class AdminAddUser extends Component {
             role,
             lmsId,
         } = this.state;
+
+        if (lmsId) {
+            if (!/^\d+$/.test(lmsId) || lmsId.length > MAX_LMS_ID_LENGTH) {
+                this.setState({
+                    errors: { 
+                        ...this.state.errors, 
+                        lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` 
+                    }
+                });
+                return; // ⭐ CHANGED: stop here — do NOT hit backend
+            }
+        }
 
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -418,6 +431,20 @@ class AdminAddUser extends Component {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
+                                       onPaste={(e) => {
+                                            const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                                            if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
+                                                e.preventDefault();
+                                                this.setState({
+                                                    errors: { ...this.state.errors, lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` }
+                                                });
+                                            }
+                                        }}
+                                        inputProps={{
+                                            inputMode: 'numeric',
+                                            pattern: '[0-9]*',
+                                
+                                        }}
                                         sx={{mb: 3}}
                                     />
                                     
@@ -443,6 +470,6 @@ class AdminAddUser extends Component {
             </React.Fragment>
         )
     }
-}
 
+}
 export default AdminAddUser;
