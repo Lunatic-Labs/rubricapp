@@ -3,7 +3,8 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
-import { Typography, Box } from "@mui/material";
+import { Typography, Box, Button } from "@mui/material";
+import Cookies from 'universal-cookie';
 
 class ViewCourses extends Component {
   render() {
@@ -12,6 +13,9 @@ class ViewCourses extends Component {
     var courses = adminViewCourses.courses;
     var courseRoles = adminViewCourses.courseRoles;
     var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
+    
+    // Initialize cookies here
+    const cookies = new Cookies();
 
     const columns = [
       {
@@ -91,42 +95,14 @@ class ViewCourses extends Component {
 
       // If the logged in user is an Admin of at least one course then the edit column will show.
       // Otherwise the edit column will not be shown!
-      if (navbar.props.isAdmin) {
+    if (navbar.props.isAdmin) {
         columns.push(
         {
           // If the logged in user is an Admin in the course, they can edit the course.
           // Otherwise the edit button is disabled because they did not make the course
           // and are either a TA/Instructor or Student in the course!
-          name: "course_id",
-          label: "EDIT",
-          options: {
-            filter: false,
-            sort: false,
-            setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-            setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-            customBodyRender: (courseId) => {
-              return (
-                <IconButton id={courseId}
-                  className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
-                  onClick={() => {
-                    if(courseRoles[courseId]===3) {
-                      setAddCourseTabWithCourse(courses, courseId, "AddCourse")
-                    }
-                }}
-                  aria-label='editCourseIconButton'
-                 >
-                  <EditIcon sx={{color:"black"}}/>
-                </IconButton>
-              )
-            },
-          }
-        });
-      }
-
-      columns.push(
-      {
         name: "course_id",
-        label: "VIEW",
+        label: "EDIT",
         options: {
           filter: false,
           sort: false,
@@ -134,23 +110,51 @@ class ViewCourses extends Component {
           setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
-                <IconButton id={courseId}
-                   onClick={() => {
-                    // The logged in user is an Admin in the course
-                    if(courseRoles[courseId] === 3) {
-                      setAddCourseTabWithCourse(courses, courseId, "Users");
-
-                    // The logged in user is a TA/Instructor or Student in the course
-                    } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
-                      navbar.setStudentDashboardWithCourse(courseId, courses);
-                    }
+              <IconButton id={courseId}
+                className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
+                onClick={() => {
+                  if(courseRoles[courseId]===3) {
+                    setAddCourseTabWithCourse(courses, courseId, "AddCourse")
+                  }
                 }}
-                aria-label="viewCourseIconButton">
-                  <VisibilityIcon sx={{color:"black"}} />
-                </IconButton>
+                aria-label='editCourseIconButton'
+              >
+                <EditIcon sx={{color:"black"}}/>
+              </IconButton>
             )
           },
         }
+      });
+    }
+
+      columns.push(
+      {
+      name: "course_id",
+      label: "VIEW",
+      options: {
+        filter: false,
+        sort: false,
+        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        customBodyRender: (courseId) => {
+          return (
+            <IconButton id={courseId}
+              onClick={() => {
+                    // The logged in user is an Admin in the course
+                if(courseRoles[courseId] === 3) {
+                  setAddCourseTabWithCourse(courses, courseId, "Users");
+
+                    // The logged in user is a TA/Instructor or Student in the course
+                } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
+                  navbar.setStudentDashboardWithCourse(courseId, courses);
+                }
+              }}
+              aria-label="viewCourseIconButton">
+              <VisibilityIcon sx={{color:"black"}} />
+            </IconButton>
+          )
+        },
+      }
     });
 
     const options = {
@@ -169,6 +173,36 @@ class ViewCourses extends Component {
 
     return (
       <Box aria-label="viewCourseDiv">
+        {/* Add the Switch Back button at the top if viewing as student */}
+        {cookies.get('user')?.viewingAsStudent && (
+          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+            <Button
+              className='secondary-color'
+              variant='contained'
+              onClick={() => {
+                // Retrieve admin credentials from sessionStorage
+                const adminCredentials = JSON.parse(sessionStorage.getItem('adminCredentials'));
+                
+                if (adminCredentials) {
+                  // Restore admin credentials
+                  cookies.set('user', adminCredentials.user, {sameSite: 'strict'});
+                  cookies.set('access_token', adminCredentials.access_token, {sameSite: 'strict'});
+                  cookies.set('refresh_token', adminCredentials.refresh_token, {sameSite: 'strict'});
+                  
+                  // Clear temporary storage
+                  sessionStorage.removeItem('adminCredentials');
+                  
+                  // Force re-render
+                  window.location.reload();
+                }
+              }}
+              aria-label='switch back to admin'
+            >
+              Switch Back to Admin
+            </Button>
+          </Box>
+        )}
+
         <Box className="page-spacing">
           <Box sx={{
             display: "flex",

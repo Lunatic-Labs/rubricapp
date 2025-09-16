@@ -6,6 +6,7 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseCourseRoles } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
+import Cookies from 'universal-cookie';
 
 // AdminViewCourses is a component that displays the courses that are available to the admin.
 // The admin can add a course by clicking the "Add Course" button.
@@ -85,12 +86,39 @@ class AdminViewCourses extends Component {
                                     className='primary-color'
                                     variant='contained'
                                     onClick={async () => {
-                                        //Put log in code here...
+                                        const cookies = new Cookies();
+                                        
+                                        // Store the admin credentials temporarily
+                                        const adminUser = cookies.get('user');
+                                        const adminAccessToken = cookies.get('access_token');
+                                        const adminRefreshToken = cookies.get('refresh_token');
+                                        
+                                        // Store admin state in sessionStorage for switching back
+                                        sessionStorage.setItem('adminCredentials', JSON.stringify({
+                                            user: adminUser,
+                                            access_token: adminAccessToken,
+                                            refresh_token: adminRefreshToken
+                                        }));
+                                        
+                                        // Create a student view by modifying the user object
+                                        const studentViewUser = {
+                                            ...adminUser,
+                                            isAdmin: false,
+                                            isSuperAdmin: false,
+                                            viewingAsStudent: true
+                                        };
+                                        
+                                        // Update cookies with student view
+                                        cookies.set('user', studentViewUser, {sameSite: 'strict'});
+                                        
+                                        // Force re-render of the entire app
+                                        window.location.reload();
                                     }}
                                     aria-label='view as student'
                                 >
                                     View as Student
                                 </Button>
+                                
                             </>
                         }
                 </Box>
