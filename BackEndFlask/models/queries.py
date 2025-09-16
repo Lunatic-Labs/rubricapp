@@ -619,6 +619,7 @@ def get_individual_ratings(assessment_task_id):
         CompletedAssessment.team_id == None,
         CompletedAssessment.assessment_task_id == assessment_task_id
     ).all()
+    return indiv_rating
 
 
 @error_log
