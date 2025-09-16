@@ -112,7 +112,7 @@ def verify_admin(refresh: bool) -> None:
         # Figuring out the user_id from token.
         # Assumes authcheck() has already concluded token_user_id == user_id from parameters.
         token = request.headers.get('Authorization').split()[1]
-        decoded_id = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+        decoded_id = decode_token(token)['sub'] if not refresh else decode_token(token)['sub'][0]
         if is_admin_by_user_id(decoded_id) == False:
             course_redis_out("\nI am: is_admin_by_user_id in verify_admin")
             course_redis_out("\nI saw the user was not an admin in the db\n")
