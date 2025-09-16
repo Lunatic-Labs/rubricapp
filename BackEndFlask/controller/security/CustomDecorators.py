@@ -22,6 +22,11 @@ from flask_jwt_extended.exceptions import (
 # https://github.com/vimalloc/flask-jwt-extended/blob/master/flask_jwt_extended/view_decorators.py#L125
 #-----------------------------------------------------
 
+# NOTE: THIS FUNCTION SHOULD BE DELETED AFTER THE COURSE PROBLEM IS RESOLVED.
+def course_redis_out(data:str) -> None:
+    with open("redis_course_issue.txt", 'a') as out:
+        print(data, file=out)
+
 # Adding a decorator to act as middleware to block bad tokens
 def bad_token_check() -> any:
     def wrapper(fn):
@@ -34,9 +39,19 @@ def bad_token_check() -> any:
 
 # Checks if a token obtained from the request headers is present in the blacklist, and raises a NoAuthorizationError exception if it is, otherwise it returns None.
 def verify_against_blacklist() -> any:
-    token = request.headers.get('Authorization').split()[1]
-    if is_token_blacklisted(token):
-        raise NoAuthorizationError('BlackListed')
+    redis_feature = False
+    try:
+        token = request.headers.get('Authorization').split()[1]
+        if is_token_blacklisted(token):
+            redis_feature = True
+            raise NoAuthorizationError('BlackListed')
+    except Exception as e:
+        course_redis_out(e)
+        course_redis_out("\nI am: Verify_against_blacklist.")
+        course_redis_out("\nI failed a to connect to a redis instance for tokens.\n")
+        course_redis_out(redis_feature)
+        course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        raise e
     return
 
 # Another decorator to verify the user_id is also the same in the token
@@ -56,10 +71,18 @@ def verify_token(refresh: bool):
     token = request.headers.get('Authorization').split()[1]
     try:
         decoded_id = int(decode_token(token)['sub'])
-    except:
+    except Exception as e:
+        course_redis_out(e)
+        course_redis_out("\nI am: verify_token")
+        course_redis_out("\nI failed to decode the token and see if it was valid\n")
+        course_redis_out(id, decoded_id, token)
+        course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
         raise NoAuthorizationError("No Authorization")
     id = to_int(id, "user_id")
     if id == decoded_id : return
+    course_redis_out("\n I am: verify_token")
+    course_redis_out("\nI do not match the id recived to the token id.\n")
+    course_redis_out(id, decoded_id)
     raise NoAuthorizationError("No Authorization")
 
 def admin_check(refresh: bool = False) -> Callable:
@@ -89,8 +112,15 @@ def verify_admin(refresh: bool) -> None:
         # Figuring out the user_id from token.
         # Assumes authcheck() has already concluded token_user_id == user_id from parameters.
         token = request.headers.get('Authorization').split()[1]
-        decoded_id = decode_token(token)['sub'] if refresh else decode_token(token)['sub'][0]
+        decoded_id = decode_token(token)['sub'] if not refresh else decode_token(token)['sub'][0]
         if is_admin_by_user_id(decoded_id) == False:
+            course_redis_out("\nI am: is_admin_by_user_id in verify_admin")
+            course_redis_out("\nI saw the user was not an admin in the db\n")
+            course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
-    except:
+    except Exception as e:
+        course_redis_out(e)
+        course_redis_out("\nI am: verify_admin")
+        course_redis_out("\nIf the other inner function is not present then i failed to decode.")
+        course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
         raise NoAuthorizationError("No Authorization")
