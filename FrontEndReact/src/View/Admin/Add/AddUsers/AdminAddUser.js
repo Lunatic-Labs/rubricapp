@@ -398,10 +398,11 @@ class AdminAddUser extends Component {
                                         sx={{mb: 3}}
                                     />
                                     
-                                    {/* Color is currently hardcoded */}
-                                    <div className= "junkReminder" style={{color:"#2e8bef"}}>
-                                        Important: Make sure students check their junk/spam folder for the invitation!
-                                    </div>
+                                    <Box id="junkReminder" sx={{mb: 3}}>
+                                        <b className="primary-color-text">
+                                            Make sure students check their junk/spam folder for the invitation!
+                                        </b>
+                                    </Box>
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                         <Button onClick={() => { confirmCreateResource("User"); }} id="" className="" aria-label="cancelAddUserButton">
