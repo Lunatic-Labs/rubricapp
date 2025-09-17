@@ -127,6 +127,26 @@ class StudentDashboard extends Component {
 
                 return viewable;
             });
+
+            // Sorting the average data by rubric id
+            // filteredAvgData.sort((a,b) => a.rubric_id - b.rubric_id); // keep CAT<->avg pairing; sort happens chronologically in chartData
+
+            // use this as the base for the data to be used in the graph
+            //let rating_average = [
+            //    {
+            //        "rating": "TW",
+            //        "averages": {}
+            //    },
+            //    {
+            //        "rating": "",
+            //    },
+            //    {
+            //        "rating": "IP",
+            //        "averages": {}
+            //    }
+            //]
+
+            // Build chart data: pair each completed assessment with its average and sort chronologically
             const computeAvg = (avgObj) => {
                 if (avgObj == null) return null;
                 if (typeof avgObj === 'number') return avgObj;
@@ -185,6 +205,7 @@ class StudentDashboard extends Component {
             completedAssessments,
             filteredATs,
             filteredCATs,
+            averageData,
             filteredAverageData,
         } = this.state; 
 
@@ -201,6 +222,16 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.users = null;
         
         console.log(filteredAverageData);
+
+        // This will put the average data into the recomended format
+        // can change if there are better options
+        //const transformedData = averageData.map(entry => ({
+        //  rating: entry.rating,
+        //  ...entry.averages,
+        //}));
+
+        // This will be used to get the averages from the transformed data
+        //const taskKeys = Object.keys(averageData[0].averages);
 
         const innerGridStyle = {
           borderRadius: '1px',
