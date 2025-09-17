@@ -43,6 +43,7 @@ BackEndFlask/models/hidden.py
 BackEndFlask/oauth2_creds.json
 BackEndFlask/logs/all.log
 BackEndFlask/*.env*
+BackEndFlask/*.*
 FrontEndReact/*.env*
 FrontEndReact/.env.production
 .vscode

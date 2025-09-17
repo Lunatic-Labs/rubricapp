@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
-import { genericResourceGET, createEventSource } from '../../../../utility.js';
+//import { genericResourceGET, createEventSource } from '../../../../utility.js'; Removed to unhook /checkin_events
+import { genericResourceGET} from '../../../../utility.js';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import Cookies from 'universal-cookie';
@@ -129,18 +130,21 @@ class CompleteAssessmentTask extends Component {
             "completed_assessments", this, { dest: "completedAssessments" }
         );
         
-        const checkinEventSource = createEventSource(
-            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-            ({data}) => {
-                this.setState({
-                    checkins: new CheckinsTracker(JSON.parse(data)),
-                });
-            }
-        );
-        
+        //const checkinEventSource = createEventSource(
+        //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+        //    ({data}) => {
+        //        this.setState({
+        //            checkins: new CheckinsTracker(JSON.parse(data)),
+        //        });
+        //    }
+        //);
+        //
+        //this.setState({
+        //    checkinEventSource: checkinEventSource,
+        //});
         this.setState({
-            checkinEventSource: checkinEventSource,
-        });
+            checkinEventSource: null,
+        })
     }
     
     componentWillUnmount() {
