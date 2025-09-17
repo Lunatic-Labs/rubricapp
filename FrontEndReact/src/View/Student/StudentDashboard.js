@@ -205,7 +205,6 @@ class StudentDashboard extends Component {
             completedAssessments,
             filteredATs,
             filteredCATs,
-            averageData,
             filteredAverageData,
         } = this.state; 
 
