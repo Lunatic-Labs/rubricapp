@@ -71,6 +71,41 @@ class CompleteAssessmentTask extends Component {
         };
     }
 
+    callPollingFunction = () => {
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const isTeams = this.state.usingTeams;
+        genericResourceGET(
+            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
+            'checkin', this
+        ).then(data => {
+            let checkinData = new CheckinsTracker(data['checkin']);
+            this.setState({
+                checkins: checkinData,
+            });
+        }).catch(error => {
+            console.warn(error);
+        });
+    }
+
+    figureOutCheckins = () => {
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const isTeams = this.state.usingTeams;
+        if (this.state.currentUserRole.role_id >= 4){
+            this.callPollingFunction();
+            this.intervalId = setInterval(this.callPollingFunction, 10000);
+        }
+        else {
+            genericResourcePOST(
+                `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
+                this, "checkin"
+            );
+        }
+    }
+
     componentDidMount() {
         const navbar = this.props.navbar;
         const state = navbar.state;
@@ -128,35 +163,6 @@ class CompleteAssessmentTask extends Component {
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
             "completed_assessments", this, { dest: "completedAssessments" }
         );
-        
-        const isTeams = this.state.usingTeams;
-        if (cookies.get("user")["isAdmin"]){
-            this.intervalId = setInterval(() => {
-                genericResourceGET(
-                    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
-                    this, "checkin"
-                );
-            }, 8000);
-        }
-        else {
-            genericResourcePOST(
-                `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
-                this, "checkin"
-            );
-        }
-
-        //const checkinEventSource = createEventSource(
-        //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-        //    ({data}) => {
-        //        this.setState({
-        //            checkins: new CheckinsTracker(JSON.parse(data)),
-        //        });
-        //    }
-        //);
-        //
-        //this.setState({
-        //    checkinEventSource: checkinEventSource,
-        //});
     }
     
     componentWillUnmount() {
@@ -175,8 +181,8 @@ class CompleteAssessmentTask extends Component {
                 currentUserRole,
                 completedAssessments,
                 checkins
-            } = this.state; 
-            
+            } = this.state;
+            if(currentUserRole){this.figureOutCheckins();}
             if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
 
                 const navbar = this.props.navbar;

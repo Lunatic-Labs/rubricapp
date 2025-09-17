@@ -114,7 +114,6 @@ def checkin_to_assessmet():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-@admin_check()
 def check_checkedin():
     """
     Called by Admins/teachers views to get who is logged in for a specific requested assessment task.
@@ -124,10 +123,9 @@ def check_checkedin():
     """
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        
-        records = fetch_checkins_for_at_within_hr(assessment_task_id)
+        checkins = fetch_checkins_for_at_within_hr(assessment_task_id)
 
-        return create_good_response(checkins_polling.dump(records), HttpStatus.OK.value, "checkin")
+        return create_good_response(checkins_schema.dump(checkins), HttpStatus.OK.value, "checkin")
     except Exception as e:
         return create_bad_response(f"Error with polling: {e}", HttpStatus.BAD_REQUEST.value, "checkin")
 
@@ -139,10 +137,5 @@ class CheckinSchema(ma.Schema):
     user_id             = fields.Integer()     
     time                = fields.DateTime()
 
-class CheckedinUserTeam(ma.Schema):
-    user_id     = fields.Integer()
-    team_number = fields.Integer()
-
 checkin_schema = CheckinSchema()
 checkins_schema = CheckinSchema(many=True)
-checkins_polling = CheckedinUserTeam(many=True)

@@ -129,7 +129,6 @@ def fetch_checkins_for_at_within_hr(assessment_task_id:int) -> object:
     hr_ago = datetime.now() - timedelta(hours=1)
     return (
         Checkin.query.
-        with_entities(Checkin.user_id, Checkin.team_number).
-        filter(assessment_task_id==assessment_task_id, Checkin.time>=hr_ago).
+        filter(Checkin.assessment_task_id==assessment_task_id, Checkin.time>=hr_ago).
         all()
     )
