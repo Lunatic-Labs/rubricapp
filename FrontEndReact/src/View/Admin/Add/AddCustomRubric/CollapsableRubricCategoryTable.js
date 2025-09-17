@@ -5,7 +5,7 @@ import React, { useState } from "react";
 import  Button from "@mui/material/Button";
 
 
-// NOTE: Custom Theme for the Collapsible table
+// NOTE: Custom Theme for the Collapsible categories
 const customTheme = createTheme({
   components: {
     // NOTE: Style for the table  head
