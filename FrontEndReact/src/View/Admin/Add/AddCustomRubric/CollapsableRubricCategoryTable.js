@@ -8,7 +8,7 @@ import  Button from "@mui/material/Button";
 // NOTE: Custom Theme for the Collapsible table
 const customTheme = createTheme({
   components: {
-    // NOTE: Style for the table head
+    // NOTE: Style for the table  head
     MuiTableCell: { 
       styleOverrides: {
         head: { 
