@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams.js';
 import TAViewTeams from './View/TAViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
-import Grid from '@mui/material/Grid';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Typography } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
@@ -186,7 +185,6 @@ class StudentDashboard extends Component {
             completedAssessments,
             filteredATs,
             filteredCATs,
-            averageData,
             filteredAverageData,
         } = this.state; 
 
