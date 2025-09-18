@@ -31,11 +31,11 @@ class ImageModal extends React.Component {
                     <img
                         src={imageUrl}
                         alt="Rubric"
-                        style={{ width: "100%", marginBottom: "16px" }}/>
+                        style={{ width: "100%" }}/>
                     <img
                         src={imageUrl2}
                         alt="Rubric2"
-                        style={{ width: "100%", marginBottom: "16px", }}/>
+                        style={{ width: "100%"}}/>
                 </div>
             </Modal>
         );
