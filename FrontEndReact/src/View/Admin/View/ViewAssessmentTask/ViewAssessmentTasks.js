@@ -547,7 +547,7 @@ class ViewAssessmentTasks extends Component {
                         const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === atId);
                         const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
-                        if (completedCount === 0) {
+                        if (completedCount === 0) { // preferance for old look?
                             return (
                                 <Tooltip title="No completed assessments to export">
                                     <span>
@@ -557,6 +557,12 @@ class ViewAssessmentTasks extends Component {
                                             variant='contained'
                                             disabled
                                             aria-label='exportAssessmentTaskButton'
+                                            sx={{
+                                                '&.Mui-disabled': {
+                                                backgroundColor: '#bcbcbc !important',
+                                                color: '#4b4b4b !important',
+                                                }
+                                            }}
                                             >
                                             EXPORT
                                         </Button>
