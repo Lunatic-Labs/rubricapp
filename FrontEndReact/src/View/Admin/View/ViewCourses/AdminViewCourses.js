@@ -88,32 +88,33 @@ class AdminViewCourses extends Component {
                                     onClick={async () => {
                                         const cookies = new Cookies();
                                         
-                                        // Store the admin credentials temporarily
+                                        // Get current admin user from cookie
                                         const adminUser = cookies.get('user');
-                                        const adminAccessToken = cookies.get('access_token');
-                                        const adminRefreshToken = cookies.get('refresh_token');
-
-
                                         
-                                        // Store admin state in sessionStorage for switching back
+                                        // Store admin credentials in sessionStorage for switching back
                                         sessionStorage.setItem('adminCredentials', JSON.stringify({
                                             user: adminUser,
-                                            access_token: adminAccessToken,
-                                            refresh_token: adminRefreshToken
+                                            access_token: cookies.get('access_token'),
+                                            refresh_token: cookies.get('refresh_token')
                                         }));
                                         
-                                        // Create a student view by modifying the user object
+                                        // Create a modified user object for student view
                                         const studentViewUser = {
-                                            ...adminUser,
-                                            isAdmin: false,
-                                            isSuperAdmin: false,
-                                            viewingAsStudent: true
+                                            ...adminUser,  // Keep all original user data
+                                            isAdmin: false,  // Override admin flag
+                                            isSuperAdmin: false,  // Override super admin flag
+                                            viewingAsStudent: true  // Add flag to indicate viewing as student
                                         };
                                         
-                                        // Update cookies with student view
-                                        cookies.set('user', studentViewUser, {sameSite: 'strict'});
+                                        // Update the user cookie with student view data
+                                        cookies.set('user', studentViewUser, {
+                                            path: '/',  // Make sure it's accessible throughout the app
+                                            sameSite: 'strict',
+                                            // Optional: set expiry
+                                            // expires: new Date(Date.now() + 3600000) // 1 hour
+                                        });
                                         
-                                        // Force re-render of the entire app
+                                        // Force reload to apply new permissions
                                         window.location.reload();
                                     }}
                                     aria-label='view as student'
