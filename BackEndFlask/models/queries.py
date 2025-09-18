@@ -621,8 +621,8 @@ def get_individual_ratings(assessment_task_id):
     ).all()
     return indiv_rating
 
-@error_log
 
+@error_log
 def get_team_ratings(assessment_task_id):
     """
     Description:
@@ -649,6 +649,29 @@ def get_team_ratings(assessment_task_id):
         CompletedAssessment.team_id != None,
         CompletedAssessment.assessment_task_id == assessment_task_id
     ).all()
+    
+@error_log
+def get_all_checkins_for_student_for_course(user_id, course_id):
+    """
+    Description:
+    Gets all of the assessment task ids the given user has
+    already checked in. Ensures the assessment tasks are in
+    the given course.
+    
+    Parameters:
+    user_id: int (The id of a user)
+    course_id: int (The id of a course)
+    """
+    assessment_task_ids = db.session.query(Checkin.assessment_task_id).\
+        join(AssessmentTask, AssessmentTask.assessment_task_id == Checkin.assessment_task_id).\
+        filter(
+            and_(
+                AssessmentTask.course_id == course_id),
+                Checkin.user_id == user_id
+    ).all()
+
+    return [x[0] for x in assessment_task_ids]
+
 
 @error_log
 def get_rubrics_and_total_categories(user_id):
