@@ -191,6 +191,7 @@ class ViewCourses extends Component {
                   
                   // Clear temporary storage
                   sessionStorage.removeItem('adminCredentials');
+                  // sessionStorage.removeItem('viewingAsStudent');
                   
                   // Force re-render
                   window.location.reload();

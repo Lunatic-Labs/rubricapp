@@ -1,8 +1,11 @@
-from flask import request
+from flask import request, Blueprint, jsonify
 from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
+from models import db
+from models.user import create_user, User
+from models.course import Course
 
 from controller.security.CustomDecorators import( 
     AuthCheck, bad_token_check,
@@ -115,6 +118,54 @@ def update_course():
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a course{e}", "courses", 400)
+
+
+# This endpoint is to retreive test student's information for 
+# view as student feature.
+# GET /api/courses/<course_id>/test_student_token
+@bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
+@jwt_required()
+def get_test_student_token(course_id):
+    admin_id = get_jwt_identity()
+    
+    # only admin can access this endpoint
+    course = Course.query.get(course_id)
+
+    # find test student for the course
+    test_email = f"teststudent{course_id}@skillbuilder.edu"
+    test_student = User.query.filter_by(email=test_email).first()
+
+    # create demo student if it doesn't exist
+    if not test_student:
+        payload = {
+            "first_name": "Test",
+            "last_name": "Student",
+            "email": f"teststudent{course_id}@skillbuilder.edu",
+            "password": "some_password",  # Make a password(!)
+            "owner_id": admin_id
+    }
+
+    created = create_user(payload)
+    test_student = User.query.filter_by(email=test_email).first()
+    
+    # Assign the test student to the course
+    check_existing = get_user_course_student_count_by_course_id(test_student.user_id, course_id)
+    if not check_existing: 
+        create_user_course ({
+            "user_id" : test_student.user_id,
+            "course_id" : course_id,
+            "role_id" : 5
+        })
+
+    # issue tokens for demo user
+    access_token = create_access_token(identity=test_student.user_id)
+    refresh_token = create_refresh_token(identity=test_student.user_id)
+
+    return jsonify({
+        "user": test_student,
+        "access_token": access_token,
+        "refresh_token": refresh_token
+    }), 200
 
 
 class CourseSchema(ma.Schema):

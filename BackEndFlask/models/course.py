@@ -55,7 +55,7 @@ def create_course(course_data):
     test_student = User ({
         "first_name": "Test",
         "last_name": "Student",
-        "email": f"teststudent_{course_data.course_id}@skillbuilder.edu",
+        "email": f"teststudent{course_data.course_id}@skillbuilder.edu",
         "password": "some_password",  # Make a password(!)
         "owner_id": course_data.admin_id
     })

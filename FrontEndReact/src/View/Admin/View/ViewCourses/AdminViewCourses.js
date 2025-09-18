@@ -92,6 +92,8 @@ class AdminViewCourses extends Component {
                                         const adminUser = cookies.get('user');
                                         const adminAccessToken = cookies.get('access_token');
                                         const adminRefreshToken = cookies.get('refresh_token');
+
+
                                         
                                         // Store admin state in sessionStorage for switching back
                                         sessionStorage.setItem('adminCredentials', JSON.stringify({
