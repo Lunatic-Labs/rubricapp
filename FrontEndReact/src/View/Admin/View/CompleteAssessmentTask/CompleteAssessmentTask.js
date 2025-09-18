@@ -41,6 +41,7 @@ import { CheckinsTracker } from './cat_utils.js';
  * @property {Array|null} state.unitList - The list of units for the assessment task.
  * @property {int} state.intervalId - The id of the polling function if it is set up.
  * @property {int|null} state.jumpId - What team or student to open first.
+ * @property {boolean} state.isPollingSetUp - Indicates if the polling function interval has been setup and called.
  */ 
 
 class CompleteAssessmentTask extends Component {
@@ -67,10 +68,14 @@ class CompleteAssessmentTask extends Component {
             unitList: null,
             intervalId: null, 
 
-            jumpId: this.props.navbar.state.jumpToSection // The desired jump location student assessment tasks.
+            jumpId: this.props.navbar.state.jumpToSection, // The desired jump location student assessment tasks.
+            isPollingSetUp: false, 
         };
     }
 
+    /**
+     * This function calls the polling version of checkin_events. 
+     */
     callPollingFunction = () => {
         const navbar = this.props.navbar;
         const state = navbar.state;
@@ -89,12 +94,15 @@ class CompleteAssessmentTask extends Component {
         });
     }
 
+    /**
+     * This function sets up the polling function if the user is a TA role or above.
+     */
     figureOutCheckins = () => {
         const navbar = this.props.navbar;
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
         const isTeams = this.state.usingTeams;
-        if (this.state.currentUserRole.role_id >= 4){
+        if (this.state.currentUserRole.role_id <= 4){
             this.callPollingFunction();
             this.intervalId = setInterval(this.callPollingFunction, 10000);
         }
@@ -180,9 +188,16 @@ class CompleteAssessmentTask extends Component {
                 teamsUsers,
                 currentUserRole,
                 completedAssessments,
-                checkins
+                checkins,
+                isPollingSetUp,
             } = this.state;
-            if(currentUserRole){this.figureOutCheckins();}
+            
+            if(!isPollingSetUp && currentUserRole){
+                this.figureOutCheckins();
+                this.setState({
+                    isPollingSetUp: true,
+                });
+            }
             if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
 
                 const navbar = this.props.navbar;
