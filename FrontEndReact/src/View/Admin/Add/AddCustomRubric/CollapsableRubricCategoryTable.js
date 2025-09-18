@@ -1,9 +1,8 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse, IconButton } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import React, { useState } from "react";
-import  Button from "@mui/material/Button";
-
+import Button from "@mui/material/Button";
 
 // NOTE: Custom Theme for the Collapsible table
 const customTheme = createTheme({
@@ -53,7 +52,6 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
     readOnly ? [] : selectedCategories.map(category => category.category_id)
   );
 
-
   const handleCheckboxChange = (categoryId) => {
     const isChecked = checkedCategories.includes(categoryId);
 
@@ -71,6 +69,21 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
       // Call onCategorySelect with isSelected set to true
       onCategorySelect(categoryId, true);
     }
+  };
+
+  // Handle keyboard events for the chevron button
+  const handleChevronKeyDown = (event, rubricId) => {
+    if (event.key === 'Enter' || event.key === ' ') {
+      event.preventDefault();
+      event.stopPropagation(); // Prevent the TableRow click event
+      handleRubricClick(rubricId);
+    }
+  };
+
+  // Handle chevron click separately from row click
+  const handleChevronClick = (event, rubricId) => {
+    event.stopPropagation(); // Prevent the TableRow click event
+    handleRubricClick(rubricId);
   };
 
   return (
@@ -92,30 +105,58 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                 <React.Fragment key={rubric["rubric_id"]}>
                   <TableRow onClick={() => handleRubricClick(rubric["rubric_id"])}>
                     <TableCell>
-                      {rubric["rubric_name"]}
-                      {openRubric === rubric["rubric_id"] ? (
-                        <KeyboardArrowUp />
-                      ) : (
-                          <KeyboardArrowDown />
-                        )}
+                      <div style={{ 
+                        display: 'flex', 
+                        alignItems: 'center', 
+                        justifyContent: 'space-between' 
+                      }}>
+                        <div style={{ display: 'flex', alignItems: 'center' }}>
+                          <span>{rubric["rubric_name"]}</span>
+                          <IconButton
+                            onClick={(event) => handleChevronClick(event, rubric["rubric_id"])}
+                            onKeyDown={(event) => handleChevronKeyDown(event, rubric["rubric_id"])}
+                            aria-label={`${openRubric === rubric["rubric_id"] ? 'Collapse' : 'Expand'} ${rubric["rubric_name"]} categories`}
+                            aria-expanded={openRubric === rubric["rubric_id"]}
+                            tabIndex={0}
+                            size="small"
+                            sx={{
+                              marginLeft: 1,
+                              '&:focus': {
+                                outline: '2px solid #1976d2',
+                                outlineOffset: '2px',
+                              },
+                              '&:focus-visible': {
+                                outline: '2px solid #1976d2',
+                                outlineOffset: '2px',
+                              }
+                            }}
+                          >
+                            {openRubric === rubric["rubric_id"] ? (
+                              <KeyboardArrowUp />
+                            ) : (
+                              <KeyboardArrowDown />
+                            )}
+                          </IconButton>
+                        </div>
+                        
                         {showEditButton && (
                           <Button
                             variant="contained"
                             label="Edit Custom Rubric"
                             isOutlined={false}
-                            onClick={() => {
+                            onClick={(event) => {
+                              event.stopPropagation(); // Prevent row click
                               navbar.rubricId = rubric["rubric_id"];
                               navbar.setAddCustomRubric(false)
                             }}
                             style={{
-                              marginLeft: '380px',
                               fontSize: '14px',       
                               minWidth: '70px',
-                              spacing: '80px'
                             }}
                             aria-label="myCustomRubricsEditCustomRubricButton"
                           >Edit</Button>
                         )}
+                      </div>
                     </TableCell>
                   </TableRow>
                   <TableRow>
