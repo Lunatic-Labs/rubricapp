@@ -24,8 +24,15 @@ RUN pip install --no-cache-dir --upgrade pip \
 # Copy the rest of the backend code
 COPY BackEndFlask/ /app/
 
+# Set Python path explicitly
+ENV PYTHONPATH=/app:$PYTHONPATH
+
+# Create an empty sendgrid.env to prevent the error (optional)
+RUN touch /app/sendgrid.env
+
+
 # Expose the Backend port
 EXPOSE 5000
 
 # Start the Flask server
-CMD ["python", "setupEnv.py", "-ds"] 
+CMD ["python", "setupEnv.py", "-t"] 
