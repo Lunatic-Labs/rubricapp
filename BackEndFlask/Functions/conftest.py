@@ -5,10 +5,14 @@ from Functions.test_files.PopulationFunctions import *
 from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
 from sqlalchemy import create_engine, text
+from core import config
 
 @pytest.fixture
 def flask_app_mock():
     mock_app = app
+
+    # Disable email sending in tests
+    config.rubricapp_running_locally = True
 
     MYSQL_HOST = "localhost"
     MYSQL_USER = "rubricapp_test"  
