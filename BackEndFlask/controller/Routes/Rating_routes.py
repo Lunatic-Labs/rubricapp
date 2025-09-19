@@ -55,6 +55,7 @@ def get_ratings():
                     "last_name": rating[1],
                     "rating_observable_characteristics_suggestions_data": rating[2],
                     "lag_time": str(lag_time) if lag_time else None,
+                    "notification_sent": rating[3]
                 })
         return create_good_response(result, 200, "ratings")
 
