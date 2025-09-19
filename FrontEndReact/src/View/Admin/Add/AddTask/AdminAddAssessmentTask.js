@@ -10,6 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
+import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
 
 
@@ -397,6 +398,7 @@ class AdminAddAssessmentTask extends Component {
                                             isOpen={isHelpOpen}
                                             handleClose={this.toggleHelp}
                                             imageUrl={RubricDescriptionsImage}
+                                            imageUrl2={RubricDescriptionsImage2}
                                         />
                                     </div>
                                     <FormControl>
