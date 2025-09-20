@@ -107,6 +107,7 @@ class AdminAddUser extends Component {
         })
     }
 
+    // handleChange has been altered to account for the 50 character limit for first / last names
     handleChange = (e) => {
         const { id, value } = e.target;
 
@@ -122,11 +123,20 @@ class AdminAddUser extends Component {
             }
         }
 
+        // This will create an error message if first_name or last_name is empty and/or exceeding
+        // the 50 character limit
+        let errorMessage = '';
+        if (value.trim() === '') {
+            errorMessage = `${formatString} cannot be empty`;
+        } else if ((id === 'firstName' || id === 'lastName') && value.length > 50) {
+            errorMessage = `${formatString} cannot exceed 50 characters`;
+        }
+
         this.setState({
           [id]: value,
           errors: {
             ...this.state.errors,
-            [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
+            [id]: errorMessage,
           },
         });
     };
@@ -137,6 +147,7 @@ class AdminAddUser extends Component {
         });
       };
 
+    // handleSubmit has been altered to account for the 50 character limit on first / last name
     handleSubmit = () => {
         const {
             firstName,
@@ -161,11 +172,16 @@ class AdminAddUser extends Component {
             "role": ""
         };
 
+        // validation checks have been altered
         if (firstName.trim() === '')
-            newErrors["firstName"] = "First name cannot be empty";
+            newErrors["firstName"] = "First name cannot be empty";              // this is an error check to see if first_name is not empty
+        else if (firstName.length > 50)
+            newErrors["firstName"] = "First name cannot exceed 50 characters";  // this is an error check to see if first_name is not exceeding 50 characters
 
         if (lastName.trim() === '')
-            newErrors["lastName"] = "Last name cannot be empty";
+            newErrors["lastName"] = "Last name cannot be empty";                // this is an error check to see if last_name is not empty
+        else if (lastName.length > 50)
+            newErrors["lastName"] = "Last name cannot exceed 50 characters";    // this is an error check to see if last_name is not exceeding 50 characters
 
         if (email.trim() === '')
             newErrors["email"] = "Email cannot be empty";
@@ -325,6 +341,7 @@ class AdminAddUser extends Component {
                                         error={!!errors.firstName}
                                         helperText={errors.firstName}
                                         onChange={this.handleChange}
+                                        inputProps={{ maxLength: 51 }}      // the maximum character length of first_name has been changed to __
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userFirstNameInput"
@@ -340,6 +357,7 @@ class AdminAddUser extends Component {
                                         error={!!errors.lastName}
                                         helperText={errors.lastName}
                                         onChange={this.handleChange}
+                                        inputProps={{ maxLength: 51 }}      // the maximum character length of last_name has been changed to 50
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userLastNameInput"

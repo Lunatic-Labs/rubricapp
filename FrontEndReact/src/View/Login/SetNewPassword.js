@@ -33,14 +33,30 @@ class SetNewPassword extends Component {
             }
         }
 
+        // handleChange has been altered to account for the 20 character limit for password
         this.handleChange = (e) => {
             const { id, value } = e.target;
 
+            // This will create an error message if password is empty and/or exceeding the 20 character limit
+            let errorMessage = '';
+            if(value.trim() === '') {
+                errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
+            } else if(id === 'password' && value.length > 20) {
+                errorMessage = 'Password cannot exceed 20 characters';                          // checks if password is not exceeding 20 characters
+            } else if(id === 'confirmationPassword' && value.length > 20) {
+                errorMessage = 'Password cannot exceed 20 characters';                          // checks if confirmationPassword is not exceeding 20 characters
+            }
+
+            // this.setState() used to contain the code below.
+            //
+            //[id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+            //
+            // part of it was moved to errrorMessage and replaced with [id]: errorMessage,
             this.setState({
                 [id]: value,
                 errors: {
                     ...this.state.errors,
-                    [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                    [id]: errorMessage,
                 },
             });
         };
@@ -113,6 +129,7 @@ class SetNewPassword extends Component {
         }
         
 
+        //
         this.setPassword = () => {
             var pass1 = this.state.password;
 
@@ -129,6 +146,24 @@ class SetNewPassword extends Component {
             if (pass2 === '') {
                 this.setState({
                     errorMessage: "Confirm Password cannot be empty"
+                });
+
+                return;
+            }
+
+            //
+            if (pass1.length > 20) {
+                this.setState({
+                    errorMessage: "Password cannot exceed 20 characters"
+                });
+
+                return;
+            }
+
+            //
+            if (pass2.length > 20) {
+                this.setState({
+                    errorMessage: "Password cannot exceed 20 characters"
                 });
 
                 return;
@@ -253,6 +288,7 @@ class SetNewPassword extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
+                                                inputProps={{ maxLength: 20 }}      //
                                                 aria-label="setNewPasswordInput"
                                                 InputProps={{
                                                         endAdornment: (
@@ -310,6 +346,7 @@ class SetNewPassword extends Component {
                                             error={!!errors.confirmationPassword}
                                             helperText={errors.confirmationPassword}
                                             onChange={this.handleChange}
+                                            inputProps={{ maxLength: 20 }}          //
                                             aria-label="setNewPasswordConfirmInput"
                                         />
 
