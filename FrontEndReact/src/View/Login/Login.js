@@ -319,6 +319,7 @@ class Login extends Component {
                                                 onChange={this.handleChange}
                                                 onKeyDown={this.keyPress}
                                                 aria-label="passwordInput"
+                                                inputProps={{ maxLength: 21 }}      // the maximum character length of password has been changed to __
                                                 InputProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">

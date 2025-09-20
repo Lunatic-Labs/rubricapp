@@ -129,7 +129,8 @@ class SetNewPassword extends Component {
         }
         
 
-        //
+        // 2 new 'validation' / error handling statemetns where added below
+        // both check that character length does not exceed 20
         this.setPassword = () => {
             var pass1 = this.state.password;
 
@@ -151,7 +152,7 @@ class SetNewPassword extends Component {
                 return;
             }
 
-            //
+            // this is an error check to see if password is not exceeding 20 characters
             if (pass1.length > 20) {
                 this.setState({
                     errorMessage: "Password cannot exceed 20 characters"
@@ -160,7 +161,7 @@ class SetNewPassword extends Component {
                 return;
             }
 
-            //
+            // this is an error check to see if confirmationPassword is not exceeding 20 characters
             if (pass2.length > 20) {
                 this.setState({
                     errorMessage: "Password cannot exceed 20 characters"
@@ -288,7 +289,7 @@ class SetNewPassword extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
-                                                inputProps={{ maxLength: 20 }}      //
+                                                inputProps={{ maxLength: 21 }}      // the maximum character length of password has been changed to __
                                                 aria-label="setNewPasswordInput"
                                                 InputProps={{
                                                         endAdornment: (
@@ -346,7 +347,7 @@ class SetNewPassword extends Component {
                                             error={!!errors.confirmationPassword}
                                             helperText={errors.confirmationPassword}
                                             onChange={this.handleChange}
-                                            inputProps={{ maxLength: 20 }}          //
+                                            inputProps={{ maxLength: 21 }}          // the maximum character length of confirmationPassword has been changed to __
                                             aria-label="setNewPasswordConfirmInput"
                                         />
 
