@@ -8,7 +8,7 @@ import pytest
 import os
 
 def retrieve_file_path(file_name):
-    return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, file_name)
+    return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "teamImport-files") + os.path.join(os.path.sep, file_name)
 
 # test_valid_file_w_tas_records_all_data()
 #   - calls create_one_admin_ta_student_course() with one parameter:
