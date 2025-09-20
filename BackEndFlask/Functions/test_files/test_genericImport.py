@@ -6,7 +6,7 @@ import os
 
 
 def retrieve_file_path(file_name):
-    return os.getcwd () +  os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, file_name)
+    return os.getcwd () +  os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "genericImport-files") + os.path.join(os.path.sep, file_name)
 
 
 def test_should_fail_with_file_not_found(flask_app_mock):

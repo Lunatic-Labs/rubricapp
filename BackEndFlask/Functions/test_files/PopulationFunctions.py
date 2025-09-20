@@ -220,7 +220,7 @@ def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, s
     }
     return result
 
-def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unenroll_student=False):
+def create_two_admin_two_ta_student_course(use_tas=True, skip_ta_unenroll=False, skip_student_unenroll=False):
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
@@ -246,7 +246,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
         ta["email"] = f"testta1@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
-        if not unenroll_ta:
+        if not skip_ta_unenroll:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
@@ -259,7 +259,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
         ta2["email"] = f"testta2@gmail.com"
         ta2["owner_id"] = new_teacher.user_id
         new_ta2 = create_user(ta2)
-        if not unenroll_ta:
+        if not skip_ta_unenroll:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta2.user_id,
@@ -274,7 +274,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
-    if not unenroll_student:
+    if not skip_student_unenroll:
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
             "user_id": new_student.user_id,

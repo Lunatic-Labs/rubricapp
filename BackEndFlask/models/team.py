@@ -88,7 +88,7 @@ def create_team(team_data):
     new_observer_id = team_data["observer_id"]
     new_date_created = team_data["date_created"]
     course_id = team_data["course_id"]
-    assessment_task_id = team_data["assessment_task_id"]
+    assessment_task_id = team_data.get("assessment_task_id", None)  # Returns None if key doesn't exist
 
     date_obj = datetime.strptime(new_date_created, '%m/%d/%Y').date()
 
