@@ -7,7 +7,6 @@ from models.checkin import *
 from controller import bp
 from controller.Route_response import *
 from enums.http_status_codes import HttpStatus
-from models.queries import is_admin_by_user_id
 from core import red, app
 
 from models.queries import (
@@ -81,13 +80,12 @@ def checkin_to_assessmet():
         assessment_task_id (int): Assessment task that they are logged into.
         is_team (bool): Is the caller a team member or a single user for the assessment task.
         user_id (int): The user id who made the call.
-        team_number (int|None): The team id.
     """
     try:
         user_id = int(request.args.get("user_id"))
         assessment_task_id = int(request.args.get("assessment_task_id"))
         is_team = True if request.args.get("is_team") == "true" else False
-        team_number= int(request.args.get("team_number")) if is_team else 0
+        team_number = find_checkin_team_number(assessment_task_id, user_id) if is_team else 0
 
         filters = {
             'assessment_task_id':assessment_task_id,

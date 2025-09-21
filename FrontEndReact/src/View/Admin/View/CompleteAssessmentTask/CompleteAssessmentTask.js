@@ -80,9 +80,9 @@ class CompleteAssessmentTask extends Component {
         const navbar = this.props.navbar;
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
-        const isTeams = this.state.usingTeams;
+        
         genericResourceGET(
-            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
+            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
             'checkin', this
         ).then(data => {
             let checkinData = new CheckinsTracker(data['checkin']);
@@ -108,7 +108,7 @@ class CompleteAssessmentTask extends Component {
         }
         else {
             genericResourcePOST(
-                `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}&team_number=${0}`,
+                `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}`,
                 this, "checkin"
             );
         }
@@ -192,7 +192,7 @@ class CompleteAssessmentTask extends Component {
                 isPollingSetUp,
             } = this.state;
             
-            if(!isPollingSetUp && currentUserRole){
+            if(!isPollingSetUp && currentUserRole && teams){
                 this.figureOutCheckins();
                 this.setState({
                     isPollingSetUp: true,

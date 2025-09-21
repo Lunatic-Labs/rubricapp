@@ -132,3 +132,21 @@ def fetch_checkins_for_at_within_hr(assessment_task_id:int) -> object:
         filter(Checkin.assessment_task_id==assessment_task_id, Checkin.time>=hr_ago).
         all()
     )
+
+@error_log
+def find_checkin_team_number(assessment_task_id:int, user_id:int) -> int:
+    """
+    Returns an int of the users team_number.
+
+    Args:
+        assessment_task_id (int): Specific team_number for a assessment_task.
+        user_id (int): Whos team_number we are looking for.
+    
+    Returns:
+        int: Will return a team_number or 0 if nothing.
+    """
+    result = (Checkin.query.
+        with_entities(Checkin.team_number).
+        filter(Checkin.assessment_task_id == assessment_task_id, Checkin.user_id == user_id).
+        first())
+    return result.team_number if result else 0 
