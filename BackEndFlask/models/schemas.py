@@ -139,12 +139,14 @@ class Team(db.Model): # keeps track of default teams for a fixed team scenario
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
+    team_users = db.relationship('TeamUser', back_populates='team', cascade='all, delete-orphan')
 
 class TeamUser(db.Model):
     __tablename__ = "TeamUser"
     team_user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey('Team.team_id', ondelete = 'CASCADE'), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    team = db.relationship('Team', back_populates='team_users')
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"

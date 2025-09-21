@@ -250,7 +250,6 @@ class AdminAddUser extends Component {
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
         var addUser = state.addUser;
-
         return (
             <React.Fragment>
                 { errorMessage &&
@@ -380,7 +379,7 @@ class AdminAddUser extends Component {
 
                                                 <MenuItem value={4} aria-label="addUserRoleDropDownTAOrInstructorOption">TA/Instructor</MenuItem>
 
-                                                {/* <MenuItem value={3}>Admin</MenuItem> */}
+                                                { <MenuItem value={3}>Admin</MenuItem> }
                                             </Select>
                                             <FormHelperText>{errors.role}</FormHelperText>
                                         </FormControl>
@@ -398,6 +397,12 @@ class AdminAddUser extends Component {
                                         onChange={this.handleChange}
                                         sx={{mb: 3}}
                                     />
+                                    
+                                    <Box id="junkReminder" sx={{mb: 3}}>
+                                        <b className="primary-color-text">
+                                            Make sure students check their junk/spam folder for the invitation!
+                                        </b>
+                                    </Box>
 
                                     <Box sx={{display:"flex", justifyContent:"flex-end", alignItems:"center", gap: "20px"}}>
                                         <Button onClick={() => { confirmCreateResource("User"); }} id="" className="" aria-label="cancelAddUserButton">

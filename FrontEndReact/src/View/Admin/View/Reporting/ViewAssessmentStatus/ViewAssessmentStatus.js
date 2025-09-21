@@ -9,8 +9,8 @@ import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements.js';
 
 export default function ViewAssessmentStatus(props) {
-  var categoryList = Object.keys(props.rubrics.category_json);
-
+  var categoryList = Object.keys(props.rubrics.category_json)
+  .sort((a,b) => props.rubrics.category_json[a].index - props.rubrics.category_json[b].index);
   var [chosenCategoryId, setChosenCategoryId] = useState(categoryList[0]);
 
   const handleChosenCategoryIdChange = (event) => {
