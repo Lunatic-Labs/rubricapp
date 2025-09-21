@@ -494,13 +494,14 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	}
 
 	getCheckedInTooltip(checkinsTracker) {
-		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
-		
-		const checkedInMembers = teamMembersArray.filter(user => {
+		console.log(checkinsTracker );
+		//const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
+		const checkedInMembers = Array.from(checkinsTracker.checkinsByUserId); /* teamMembersArray.filter(user => {
 			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
-			
-			return checkin && checkin["team_number"] === this.teamId;
-		});
+			return checkin && checkin["team_number"] === this.team.team_id;
+		}); Check why we see undefined */
+
+		console.log(checkedInMembers);
 		
 		if (checkedInMembers.length !== 0) {
 			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
