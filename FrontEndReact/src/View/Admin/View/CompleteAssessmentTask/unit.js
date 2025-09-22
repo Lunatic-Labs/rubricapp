@@ -495,13 +495,22 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 
 	getCheckedInTooltip(checkinsTracker) {
 		console.log(checkinsTracker );
-		//const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
-		const checkedInMembers = Array.from(checkinsTracker.checkinsByUserId); /* teamMembersArray.filter(user => {
+		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
+		const checkedInMembers = teamMembersArray.filter(user => {
 			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
 			return checkin && checkin["team_number"] === this.team.team_id;
-		}); Check why we see undefined */
+		});
 
-		console.log(checkedInMembers);
+		/**
+		 * If we do:
+		 * const checkedInMembers = Array.from(checkinsTracker.checkinsByUserId);
+		 * Then we can by pass the issue but everything is undefined. 
+		 * The error exists for the ta/teacher views when viewing who is checked in on adhoc teams.
+		 * In that situation, the checkedInMembers will always be an empty array in part due to line 500.
+		 * If bypassed and checkins are directly given to the next lines, you will get undefineds since data is not binding correctly.
+		 * Checkin data sent by the backend and in the frontend object are stored correctly. - Aldo Vera-Espinoza
+		 */
+
 		
 		if (checkedInMembers.length !== 0) {
 			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
