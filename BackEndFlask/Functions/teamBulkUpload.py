@@ -347,3 +347,31 @@ def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
         return "Success"
     except Exception as e:
         raise e
+
+def team_bulk_upload1(filepath:str, owner_id:int, course_id:int) -> str:
+    """
+    The function takes either a xlsx or csv file and bulk uploads teams to the DB.
+
+    Args:
+        filepath  (str): Path to the file containing the teams and related users.
+        owner_id  (int): Client admin who is creating the teams.
+        course_id (int): The course that the teams will belong to.
+
+    Returns:
+        str: "Success" string litteral will be returned upon successful completion.
+    
+    Exceptions:
+        Formating errors or/and DB errors when creating the teams and populating them.
+    """
+    try:
+        is_xlsx, is_csv = filepath.endswith('.xlsx'), filepath.endswith('.csv')
+        is_valid_extension = is_xlsx or is_csv
+        if not is_valid_extension:
+            raise WrongExtension()
+        if is_xlsx:
+            filepath = xlsx_to_csv(filepath)
+
+        
+
+    except Exception as e:
+        raise e
