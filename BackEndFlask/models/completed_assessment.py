@@ -86,11 +86,11 @@ def create_completed_assessment(completed_assessment_data):
     
     # Default to current time in UTC if no initial time provided
     if not completed_assessment_data.get("initial_time"):
-        completed_assessment_data["initial_time"] = datetime.utcnow().isoformat() + "Z"
+        completed_assessment_data["initial_time"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
     
     # Default to current time in UTC if no last update provided
     if not completed_assessment_data.get("last_update"):
-        completed_assessment_data["last_update"] = datetime.utcnow().isoformat() + "Z"
+        completed_assessment_data["last_update"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
     
     # Convert times to UTC before saving
     initial_time_utc = ensure_utc_datetime(completed_assessment_data["initial_time"])
