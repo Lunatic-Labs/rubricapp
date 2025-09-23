@@ -20,22 +20,22 @@ class ImageModal extends React.Component {
                             top: "50%",
                             left: "50%",
                             transform: "translate(-50%, -50%)",
-                            width: "60%",    // fixed width
+                            width: "70%",    // fixed width
                             height: "96%",   // fixed height
                             backgroundColor: "white",
                             border: "2px solid #099e4cff",
-                            boxShadow: 24,
+                            boxShadow: 24, 
                             overflow: "auto",  // enable both x and y scrolling 
                     }}
                 >
                     <img
                         src={imageUrl}
                         alt="Rubric"
-                        style={{ width: "100%", marginBottom: "16px" }}/>
+                        style={{ width: "100%" }}/>
                     <img
                         src={imageUrl2}
                         alt="Rubric2"
-                        style={{ width: "100%", marginBottom: "16px", }}/>
+                        style={{ width: "100%" }}/>
                 </div>
             </Modal>
         );
