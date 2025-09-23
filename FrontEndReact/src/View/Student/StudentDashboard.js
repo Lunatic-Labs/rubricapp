@@ -5,7 +5,7 @@ import TAViewTeams from './View/TAViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
 import { Box, Typography } from '@mui/material';
-import { genericResourceGET } from '../../utility.js';
+import { genericResourceGET, parseRubricNames } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 import Loading from '../Loading/Loading.js';
 
@@ -43,13 +43,18 @@ class StudentDashboard extends Component {
             roles: null, 
             assessmentTasks: null,
             completedAssessments: null,
+            averageData: null,
+
             filteredATs: null,
             filteredCATs: null,
-            averageData: null,
             filteredAverageData: null,
-        
+
+            // Added for rubric grouping
+            rubrics: null,
+            rubricNames: null,
+
             chartData: null,
-}
+        }
     }
 
     componentDidMount() {
@@ -58,25 +63,16 @@ class StudentDashboard extends Component {
         const chosenCourse = state.chosenCourse["course_id"];
         const userRole = state.chosenCourse.role_id;
 
-        genericResourceGET( `/role?course_id=${chosenCourse}`, 'roles', this);
-        
-        genericResourceGET(
-            `/assessment_task?course_id=${chosenCourse}`,
-            "assessment_tasks", this, { dest: "assessmentTasks" }
-        );
+        genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
+        genericResourceGET(`/assessment_task?course_id=${chosenCourse}`, "assessment_tasks", this, { dest: "assessmentTasks" });
 
         // For a student, the role_id is not added calling a different route.
         const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
-        
-        genericResourceGET(
-            routeToCall,
-            "completed_assessments", this, { dest: "completedAssessments" }
-        );
+        genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" });
 
-        genericResourceGET(
-            `/average?course_id=${chosenCourse}`,
-            "average", this, { dest: "averageData" }
-        );
+        genericResourceGET(`/average?course_id=${chosenCourse}`, "average", this, { dest: "averageData" });
+
+        genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
     }
 
     componentDidUpdate() {
@@ -86,21 +82,26 @@ class StudentDashboard extends Component {
             assessmentTasks,
             completedAssessments,
             averageData,
+            rubrics,
+            rubricNames,
         } = this.state;
 
-        const filterATsAndCATs = roles && assessmentTasks && completedAssessments && averageData && (filteredATs === null);
+        // Wait until everything we need is present (including rubrics), and only compute once
+        const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
 
-        if (filterATsAndCATs) {
-            // Remove ATs where the ID matches one of the IDs
-            // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
+        if (canFilter) {
+            // Build rubric name map once
+            const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
+
+            // Remove ATs where the ID matches one of the IDs in the CATs (ATs that are completed/locked/past due are shifted to CATs).
             let filteredCompletedAssessments = [];
             let filteredAvgData = [];
 
             const CATmap = new Map();
             const AVGmap = new Map();
             const roleId = roles["role_id"];
-            completedAssessments.forEach(cat => {CATmap.set(cat.assessment_task_id, cat)});
-            averageData.forEach(cat => {AVGmap.set(cat.assessment_task_id, cat)});
+            completedAssessments.forEach(cat => { CATmap.set(cat.assessment_task_id, cat) });
+            averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
             const currentDate = new Date();
             const isATDone = (cat) => cat !== undefined && cat.done;
@@ -109,17 +110,17 @@ class StudentDashboard extends Component {
             let filteredAssessmentTasks = assessmentTasks.filter(task => {
                 const cat =  CATmap.get(task.assessment_task_id);
                 const avg = AVGmap.get(task.assessment_task_id);
-                
-                // Qualites for if an AT is viewable.
+
+                // Qualities for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id ===4));
+                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
                 const locked = task.locked;                                
                 const published = task.published;
-                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate) ; //short-circuit
+                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate); // short-circuit
 
                 const viewable = !done && correctUser && !locked && published && !pastDue;
-                const CATviewable = correctUser===false && done===false;
-                
+                const CATviewable = correctUser === false && done === false;
+
                 if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
                     filteredCompletedAssessments.push(cat);
                     filteredAvgData.push(avg);
@@ -128,25 +129,7 @@ class StudentDashboard extends Component {
                 return viewable;
             });
 
-            // Sorting the average data by rubric id
-            // filteredAvgData.sort((a,b) => a.rubric_id - b.rubric_id); // keep CAT<->avg pairing; sort happens chronologically in chartData
-
-            // use this as the base for the data to be used in the graph
-            //let rating_average = [
-            //    {
-            //        "rating": "TW",
-            //        "averages": {}
-            //    },
-            //    {
-            //        "rating": "",
-            //    },
-            //    {
-            //        "rating": "IP",
-            //        "averages": {}
-            //    }
-            //]
-
-            // Build chart data: pair each completed assessment with its average and sort chronologically
+            // Helpers for chart data
             const computeAvg = (avgObj) => {
                 if (avgObj == null) return null;
                 if (typeof avgObj === 'number') return avgObj;
@@ -169,32 +152,76 @@ class StudentDashboard extends Component {
                 return 'N/A';
             };
 
-            const chartData = filteredCompletedAssessments
+            // helper: pick the *created* timestamp for the AT (fallbacks just in case)
+            const getCreatedDate = (at, cat) => {
+              const raw =
+                at?.created_at ||
+                at?.created_time ||
+                at?.created ||
+                at?.initial_time || // fallback if your schema didn't store created; remove if not desired
+                cat?.initial_time || // ultra fallback
+                at?.due_date;        // absolute last resort: due date
+
+              const d = raw ? new Date(raw) : new Date(0);
+              return isNaN(d) ? new Date(0) : d;
+            };
+
+            let chartDataCore = filteredCompletedAssessments
                 .map((cat, i) => {
                     const avgObj = filteredAvgData[i];
                     const at = assessmentTasks.find(a => a.assessment_task_id === cat.assessment_task_id);
                     const avg = computeAvg(avgObj);
-                    const ts = cat.last_update || cat.initial_time || (at && at.due_date);
-                    const dateObj = ts ? new Date(ts) : new Date(0);
+
+                    const createdDate = getCreatedDate(at, cat); // creation date for ordering
+                    const lastUpdatedTs = cat.last_update || cat.initial_time || at?.due_date;
+                    const rubric_id = at?.rubric_id ?? null;
+                    const rubricName = rubric_id != null ? rubricNameMap?.[rubric_id] : undefined;
+
                     return {
                         key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
                         name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
-                        date: dateObj,
-                        dateLabel: fmtDate(ts),
+                        dateLabel: fmtDate(lastUpdatedTs),
                         avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
+
+                        // grouping + ordering fields
+                        rubric_id,
+                        rubricName,
+                        createdDate,
                     };
                 })
-                .filter(d => d.avg !== null)
-                ;
+                .filter(d => d.avg !== null);
+
+            // === Group by rubric, then by created (oldest → newest) ===
+            chartDataCore.sort((a, b) => {
+                const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);
+                if (r !== 0) return r;
+                return (a.createdDate?.getTime?.() ?? 0) - (b.createdDate?.getTime?.() ?? 0);
+            });
+
+            const chartData = [];
+            for (let i = 0; i < chartDataCore.length; i++) {
+              const cur = chartDataCore[i];
+              const prev = chartDataCore[i - 1];
+
+              if (i > 0 && prev?.rubric_id !== cur?.rubric_id) {
+                chartData.push({
+                  key: `spacer-${cur.rubric_id}-${i}`,
+                  name: '',
+                  avg: null,
+                  isSpacer: true,
+                });
+              }
+              chartData.push(cur);
+            }
 
             this.setState({
-
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAssessments,
                 filteredAverageData: filteredAvgData,
-            
+
+                rubricNames: rubricNameMap,
                 chartData,
-});
+            });
         }
     }
 
@@ -219,18 +246,6 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.team = null;
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
-        
-        console.log(filteredAverageData);
-
-        // This will put the average data into the recomended format
-        // can change if there are better options
-        //const transformedData = averageData.map(entry => ({
-        //  rating: entry.rating,
-        //  ...entry.averages,
-        //}));
-
-        // This will be used to get the averages from the transformed data
-        //const taskKeys = Object.keys(averageData[0].averages);
 
         const innerGridStyle = {
           borderRadius: '1px',
@@ -243,8 +258,6 @@ class StudentDashboard extends Component {
 
         const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
 
-        // Note: The [My Assessment Tasks] & [Completed Assessments] each require exactly one of of the filtered objects.
-        //      The reason stems from them needing an original list to properly bind data.
         return (
             <>
                 <Box className="page-spacing">
@@ -340,34 +353,60 @@ class StudentDashboard extends Component {
                             </Box>
                         </Box>
 
-{
-      <div className={innerDivClassName} style={{ ...innerGridStyle, minHeight: '300px' }}>
-        <h6 style={{ margin: 0, padding: '1px', lineHeight: 1 }}>
-          <u>Completed Task Average Ratings</u>
-        </h6>
-        <div style={{ width: '100%', height: '260px', flexGrow: 1 }}>
-          {this.state.chartData && this.state.chartData.length ? (
-            <ResponsiveContainer>
-              <BarChart
-                data={this.state.chartData}
-                margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
-                barSize={40}
-              >
-                <CartesianGrid vertical={false} />
-                <XAxis dataKey="name" hide />
-                <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} style={{ fontSize: '0.75rem' }} />
-                <Tooltip formatter={(v) => [typeof v === 'number' ? v.toFixed(2) : v, 'Avg Rating']} labelFormatter={(label, payload) => payload?.[0]?.payload?.name || label} />
-                <Bar dataKey="avg" fill="#2e8bef">
-                  <LabelList dataKey="avg" position="top" formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)} />
-                </Bar>
-              </BarChart>
-            </ResponsiveContainer>
-          ) : (
-            <Typography variant="body2" sx={{ mt: 2 }}>No completed task ratings yet.</Typography>
-          )}
-        </div>
-      </div>
-}
+                        {
+                          <div className={innerDivClassName} style={{ ...innerGridStyle, minHeight: '300px' }}>
+                            <h6 style={{ margin: 0, padding: '1px', lineHeight: 1 }}>
+                              <u>Completed Task Average Ratings</u>
+                            </h6>
+                            <div style={{ width: '100%', height: '260px', flexGrow: 1 }}>
+                              {this.state.chartData && this.state.chartData.length ? (
+                                <ResponsiveContainer>
+                                  <BarChart
+                                    data={this.state.chartData}
+                                    margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+                                    barSize={40}
+                                    barCategoryGap="0%"   // bars within the same rubric touch each other
+                                  >
+                                    <CartesianGrid vertical={false} />
+                                    {/* Names can be long; hide X labels. Grouping is via sort by rubric_id + spacers. */}
+                                    <XAxis dataKey="name" hide />
+                                    <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} style={{ fontSize: '0.75rem' }} />
+                                    <Tooltip
+                                      content={({ active, payload }) => {
+                                        if (active && payload && payload.length) {
+                                          const p = payload[0].payload;
+                                          if (p.isSpacer) return null; // don't show tooltip on spacer
+                                          return (
+                                            <div
+                                              style={{
+                                                background: 'white',
+                                                border: '1px solid #d0d0d0',
+                                                padding: '8px 10px',
+                                                borderRadius: 4,
+                                                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                                                fontSize: '0.85rem'
+                                              }}
+                                            >
+                                              <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
+                                              <div><strong>Rubric:</strong> {p.rubricName || 'N/A'}</div>
+                                              <div><strong>Last updated:</strong> {p.dateLabel || 'N/A'}</div>
+                                            </div>
+                                          );
+                                        }
+                                        return null;
+                                      }}
+                                    />
+                                    <Bar dataKey="avg" fill="#2e8bef">
+                                      <LabelList dataKey="avg" position="top" formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)} />
+                                    </Bar>
+                                  </BarChart>
+                                </ResponsiveContainer>
+                              ) : (
+                                <Typography variant="body2" sx={{ mt: 2 }}>No completed task ratings yet.</Typography>
+                              )}
+                            </div>
+                          </div>
+                        }
                     </Box>
                 }
             </>
