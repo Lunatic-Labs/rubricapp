@@ -169,7 +169,7 @@ def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, s
     teacher["email"] = f"testteacher@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
-    
+ 
     new_course = create_course({
         "course_number": "CRS001",
         "course_name": "Summer Internship",
@@ -180,7 +180,7 @@ def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, s
         "use_tas": use_tas,
         "use_fixed_teams": False
     })
-    
+    print(f"use_tas: {new_course.use_tas}")
     if use_tas:
         ta = template_user
         ta["first_name"] = "Test TA"
