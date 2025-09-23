@@ -983,7 +983,6 @@ def get_completed_assessment_with_user_name(assessment_task_id):
     ). filter(
         CompletedAssessment.assessment_task_id == assessment_task_id,
     ).all()
-    print(f"Completed at:{complete_assessments}", end="\n\n") 
     return complete_assessments
 
 @error_log
