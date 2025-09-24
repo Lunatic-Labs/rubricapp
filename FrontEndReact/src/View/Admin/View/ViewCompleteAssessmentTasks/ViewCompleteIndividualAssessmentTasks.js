@@ -38,22 +38,22 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         const initialLockStatus = {};
 
         completedAssessmentTasks.forEach((task) => {
-            initialLockStatus[task.assessment_task_id] = task.locked;
+            initialLockStatus[task.completed_assessment_id] = task.locked;
         });
 
         this.setState({ lockStatus: initialLockStatus });
     }
 
-    handleLockToggle = (assessmentTaskId, task) => {
+    handleLockToggle = (completedAssessmentId, task) => {
         this.setState((prevState) => {
             const newLockStatus = { ...prevState.lockStatus };
-            newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
+            newLockStatus[completedAssessmentId] = !newLockStatus[completedAssessmentId];
             return { lockStatus: newLockStatus };
         }, () => {
-            const lockStatus = this.state.lockStatus[assessmentTaskId];
+            const lockStatus = this.state.lockStatus[completedAssessmentId];
 
             genericResourcePUT(
-                `/completed_assessment_toggle_lock?assessment_task_id=${assessmentTaskId}&locked=${lockStatus}`,
+                `/completed_assessment_toggle_lock?completed_assessment_id=${completedAssessmentId}&locked=${lockStatus}`,
                 this,
                 JSON.stringify({ locked: lockStatus })
             );
@@ -61,15 +61,15 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     };
 
     handleUnlockAllCats = (assessmentTaskIds) => {
-        assessmentTaskIds.forEach((assessmentTaskId) => {
+        assessmentTaskIds.forEach((completedAssessmentId) => {
             this.setState((prevState) => {
                 const newLockStatus = { ...prevState.lockStatus };
-                newLockStatus[assessmentTaskId] = false;
+                newLockStatus[completedAssessmentId] = false;
                 return { lockStatus: newLockStatus };
             }, () => {
-                const lockStatus = this.state.lockStatus[assessmentTaskId];
+                const lockStatus = this.state.lockStatus[completedAssessmentId];
                 genericResourcePUT(
-                    `/completed_assessment_unlock?assessment_task_id=${assessmentTaskId}`,
+                    `/completed_assessment_unlock?completed_assessment_id=${completedAssessmentId}`,
                     this,
                     JSON.stringify({ locked: lockStatus })
                 );
@@ -78,16 +78,16 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     };
 
     handleLockAllCats = (assessmentTaskIds) => {
-        assessmentTaskIds.forEach((assessmentTaskId) => {
+        assessmentTaskIds.forEach((completedAssessmentId) => {
             this.setState((prevState) => {
                 const newLockStatus = { ...prevState.lockStatus };
-                newLockStatus[assessmentTaskId] = true;
+                newLockStatus[completedAssessmentId] = true;
                 return { lockStatus: newLockStatus };
             }, () => {
-                const lockStatus = this.state.lockStatus[assessmentTaskId];
+                const lockStatus = this.state.lockStatus[completedAssessmentId];
 
                 genericResourcePUT(
-                    `/completed_assessment_lock?assessment_task_id=${assessmentTaskId}`,
+                    `/completed_assessment_lock?completed_assessment_id=${completedAssessmentId}`,
                     this,
                     JSON.stringify({ locked: lockStatus })
                 );
@@ -268,13 +268,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 },
             },
             {
-                name: "assessment_task_id",
+                name: "completed_assessment_id",
                 label: "Lock",
                 options: {
                     filter: true,
-                    customBodyRender: (catId) => {
-                        const task = completedAssessmentTasks.find((task) => task["assessment_task_id"] === catId);
-                        const isLocked = this.state.lockStatus[catId] !== undefined ? this.state.lockStatus[catId] : (task ? task.locked : false);
+                    customBodyRender: (completedAssessmentId) => {
+                        const task = completedAssessmentTasks.find((task) => task["completed_assessment_id"] === completedAssessmentId);
+                        const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
 
                             return (
                                 <Tooltip
@@ -287,7 +287,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                                     }>
                                     <IconButton
                                         aria-label={isLocked ? "unlock" : "lock"}
-                                        onClick={() => this.handleLockToggle(catId, task)}
+                                        onClick={() => this.handleLockToggle(completedAssessmentId, task)}
                                     >
                                         {isLocked ? <LockIcon /> : <LockOpenIcon />}
                                     </IconButton>
