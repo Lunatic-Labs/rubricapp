@@ -9,7 +9,10 @@ import Select from '@mui/material/Select';
 export default function CategoryDropdown(props) {
   var categoryList = [];
 
-  props.categories.map((category) => {
+  // Check if categories exists and is not empty to prevent null reference errors
+  if (props.categories && props.categories.length > 0) {
+    props.categories.map((category) => {
+
     return categoryList.push(
       <MenuItem 
         key={category} 
@@ -31,6 +34,14 @@ export default function CategoryDropdown(props) {
       </MenuItem>
     )
   });
+  } else {
+    // Display placeholder when no categories are available
+    categoryList.push(
+      <MenuItem key="no-categories" value="" disabled>
+        No categories available
+      </MenuItem>
+    );
+  }
 
   return (
     <FormControl 
