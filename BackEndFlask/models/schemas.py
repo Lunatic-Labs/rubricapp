@@ -84,10 +84,10 @@ class SuggestionsForImprovement(db.Model):
 class Course(db.Model):
     __tablename__ = "Course"
     course_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    course_number = db.Column(db.Text, nullable=False)
-    course_name = db.Column(db.Text, nullable=False)
+    course_number = db.Column(db.String(20), nullable=False)
+    course_name = db.Column(db.String(50), nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    term = db.Column(db.Text, nullable=False)
+    term = db.Column(db.String(20), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
     admin_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
