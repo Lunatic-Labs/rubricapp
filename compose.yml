@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "127.0.0.1:5050:5000"
+      - "127.0.0.1:5050:5050"
     depends_on:
       redis:
         condition: service_started
