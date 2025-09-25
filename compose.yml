@@ -26,7 +26,11 @@ services:
       - MYSQL_USER=skillbuilder
       - MYSQL_PASSWORD=WasPogil1#
       - MYSQL_DATABASE=account
-
+    healthcheck:
+    test: ["CMD", "curl", "-f", "http://localhost:5050/api"]
+    interval: 10s
+    timeout: 5s
+    retries: 5
   redis:
     image: redis:7.2.4
     ports: [] # Disable exposed port so that Redis can run inside of the container and not be exposed to host machine.
