@@ -6,6 +6,10 @@ from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
 from sqlalchemy import create_engine, text
 from core import config
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  
 
 @pytest.fixture
 def flask_app_mock():
@@ -13,22 +17,17 @@ def flask_app_mock():
 
     # Disable email sending in tests
     config.rubricapp_running_locally = True
-
-    MYSQL_HOST = "localhost"
-    MYSQL_USER = "rubricapp_test"  
-    MYSQL_PASSWORD = 'TestPass123!'
-    MYSQL_DATABASE = "TestDB"
-
-    MYSQL_PASSWORD_ENC = quote_plus(MYSQL_PASSWORD)
-    base_uri = f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD_ENC}@{MYSQL_HOST}"
+  
+    MYSQL_PASSWORD_ENC = quote_plus(os.getenv('MYSQL_PASSWORD'))
+    base_uri = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{MYSQL_PASSWORD_ENC}@{os.getenv('MYSQL_HOST')}"
     engine = create_engine(base_uri)
 
     # Create database safely
     with engine.connect() as conn:
-        conn.execute(text(f"CREATE DATABASE IF NOT EXISTS `{MYSQL_DATABASE}`"))
+        conn.execute(text(f"CREATE DATABASE IF NOT EXISTS `{os.getenv('MYSQL_DATABASE')}`"))
 
     # Configure Flask app to use the test database
-    db_uri = f"{base_uri}/{MYSQL_DATABASE}"
+    db_uri = f"{base_uri}/{os.getenv('MYSQL_DATABASE')}"
     mock_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
     with mock_app.app_context():
@@ -43,7 +42,7 @@ def flask_app_mock():
 
     # Drop the database after test
     with engine.connect() as conn:
-        conn.execute(text(f"DROP DATABASE IF EXISTS `{MYSQL_DATABASE}`"))
+        conn.execute(text(f"DROP DATABASE IF EXISTS `{os.getenv('MYSQL_DATABASE')}`"))
 
     with app.app_context():
         db.session.close()
