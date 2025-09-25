@@ -3,7 +3,6 @@ from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
-from models import db
 from models.user import create_user, User
 from models.course import Course
 
@@ -122,47 +121,62 @@ def update_course():
 
 # This endpoint is to retreive test student's information for 
 # view as student feature.
-# GET /api/courses/<course_id>/test_student_token
 @bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
 @jwt_required()
+@bad_token_check()
+@admin_check()
 def get_test_student_token(course_id):
     admin_id = get_jwt_identity()
     
     # only admin can access this endpoint
     course = Course.query.get(course_id)
-
+    if not course:
+            return create_bad_response("Course not found", "courses", 404)
+    
     # find test student for the course
     test_email = f"teststudent{course_id}@skillbuilder.edu"
     test_student = User.query.filter_by(email=test_email).first()
+
 
     # create demo student if it doesn't exist
     if not test_student:
         payload = {
             "first_name": "Test",
             "last_name": "Student",
-            "email": f"teststudent{course_id}@skillbuilder.edu",
+            "email": test_email,
             "password": "some_password",  # Make a password(!)
             "owner_id": admin_id
     }
 
-    created = create_user(payload)
+    create_user(payload)
     test_student = User.query.filter_by(email=test_email).first()
+    if not test_student:
+        return create_bad_response("Failed to create demo student", "courses", 500)
+    
+    test_id = test_student.user_id
     
     # Assign the test student to the course
-    check_existing = get_user_course_student_count_by_course_id(test_student.user_id, course_id)
-    if not check_existing: 
+    existing = get_user_course_student_count_by_course_id(test_id, course)
+    if not existing: 
         create_user_course ({
-            "user_id" : test_student.user_id,
+            "user_id" : test_id,
             "course_id" : course_id,
             "role_id" : 5
         })
 
     # issue tokens for demo user
-    access_token = create_access_token(identity=test_student.user_id)
-    refresh_token = create_refresh_token(identity=test_student.user_id)
+    access_token = create_access_token(identity=test_id)
+    refresh_token = create_refresh_token(identity=test_id)
 
+    user_payload = {
+        "user_id": test_student.user_id,
+        "first_name": getattr(test_student, "first_name", ""),
+        "last_name": getattr(test_student, "last_name", ""),
+        "email": getattr(test_student, "email", "")
+        }
+    
     return jsonify({
-        "user": test_student,
+        "user": user_payload,
         "access_token": access_token,
         "refresh_token": refresh_token
     }), 200

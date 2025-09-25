@@ -297,4 +297,32 @@ const modules = {
     genericResourceFetch
 };
 
+export function saveAdminCredentialsToSession(cookies) {
+    const adminCreds = {
+        user: cookies.get('user'),
+        access_token: cookies.get('access_token'),
+        refresh_token: cookies.get('refresh_token')
+    };
+    sessionStorage.setItem('adminCredentials', JSON.stringify(adminCreds));
+}
+
+export function restoreAdminCredentialsFromSession() {
+    const cookies = new Cookies();
+    const stored = JSON.parse(sessionStorage.getItem('adminCredentials') || '{}');
+    if (stored.user) cookies.set('user', stored.user, { path: '/' });
+    if (stored.access_token) cookies.set('access_token', stored.access_token, { path: '/' });
+    if (stored.refresh_token) cookies.set('refresh_token', stored.refresh_token, { path: '/' });
+    sessionStorage.removeItem('adminCredentials');
+    sessionStorage.removeItem('viewingAsStudent');
+    window.location.reload();
+}
+
+export function setTestStudentCookies(data) {
+    const cookies = new Cookies();
+    cookies.set('user', data.user, { path: '/' });
+    cookies.set('access_token', data.access_token, { path: '/' });
+    cookies.set('refresh_token', data.refresh_token, { path: '/' });
+    sessionStorage.setItem('viewingAsStudent', 'true');
+}
+
 export default modules;
