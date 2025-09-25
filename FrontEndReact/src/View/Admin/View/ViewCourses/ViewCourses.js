@@ -4,7 +4,9 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { Typography, Box, Button } from "@mui/material";
+import SchoolIcon from '@mui/icons-material/School';
 import Cookies from 'universal-cookie';
+import { apiUrl } from '../../../../App.js';
 
 class ViewCourses extends Component {
   render() {
@@ -16,6 +18,8 @@ class ViewCourses extends Component {
     
     // Initialize cookies here
     const cookies = new Cookies();
+    const user = cookies.get('user');
+    const isViewingAsStudent = user?.viewingAsStudent || false;
 
     const columns = [
       {
@@ -91,16 +95,12 @@ class ViewCourses extends Component {
             )
           }
         }
-      }];
+      }
+    ];
 
-      // If the logged in user is an Admin of at least one course then the edit column will show.
-      // Otherwise the edit column will not be shown!
-    if (navbar.props.isAdmin) {
-        columns.push(
-        {
-          // If the logged in user is an Admin in the course, they can edit the course.
-          // Otherwise the edit button is disabled because they did not make the course
-          // and are either a TA/Instructor or Student in the course!
+    // EDIT column - only show for admins not in student view
+    if (navbar.props.isAdmin && !isViewingAsStudent) {
+      columns.push({
         name: "course_id",
         label: "EDIT",
         options: {
@@ -127,8 +127,8 @@ class ViewCourses extends Component {
       });
     }
 
-      columns.push(
-      {
+    // VIEW column - always show
+    columns.push({
       name: "course_id",
       label: "VIEW",
       options: {
@@ -140,13 +140,16 @@ class ViewCourses extends Component {
           return (
             <IconButton id={courseId}
               onClick={() => {
-                    // The logged in user is an Admin in the course
-                if(courseRoles[courseId] === 3) {
-                  setAddCourseTabWithCourse(courses, courseId, "Users");
-
-                    // The logged in user is a TA/Instructor or Student in the course
-                } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
+                // If viewing as student, always go to student dashboard
+                if (isViewingAsStudent) {
                   navbar.setStudentDashboardWithCourse(courseId, courses);
+                } else {
+                  // Normal behavior based on role
+                  if(courseRoles[courseId] === 3) {
+                    setAddCourseTabWithCourse(courses, courseId, "Users");
+                  } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
+                    navbar.setStudentDashboardWithCourse(courseId, courses);
+                  }
                 }
               }}
               aria-label="viewCourseIconButton">
@@ -156,6 +159,113 @@ class ViewCourses extends Component {
         },
       }
     });
+
+    // STUDENT VIEW column - only for admins
+    if (navbar.props.isAdmin) {
+      columns.push({
+        name: "course_id",
+        label: "STUDENT VIEW",
+        options: {
+          filter: false,
+          sort: false,
+          setCellHeaderProps: () => { 
+            return { 
+              align: "center", 
+              width: "10%", 
+              className: "button-column-alignment" 
+            } 
+          },
+          setCellProps: () => { 
+            return { 
+              align: "center", 
+              width: "10%", 
+              className: "button-column-alignment" 
+            } 
+          },
+          customBodyRender: (courseId) => {
+            // Only show active button for courses where user is admin and not already in student view
+            if (courseRoles[courseId] === 3 && !isViewingAsStudent) {
+              return (
+                <IconButton
+                  // In the STUDENT VIEW button onClick handler
+                  onClick={async () => {
+                    try {
+                        console.log('Switching to student view for course:', courseId);
+                        
+                        // Store admin credentials
+                        const adminCredentials = {
+                            user: cookies.get('user'),
+                            access_token: cookies.get('access_token'),
+                            refresh_token: cookies.get('refresh_token')
+                        };
+                        sessionStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
+                        
+                        // Get test student token
+                        const response = await fetch(`${apiUrl}/courses/${courseId}/test_student_token`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${cookies.get('access_token')}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to get test student token');
+                        }
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Find course name
+                            const courseName = courses.find(c => c.course_id === courseId)?.course_name || '';
+                            
+                            // Mark the user as viewing as student
+                            const testUser = {
+                                ...data.user,
+                                viewingAsStudent: true,
+                                originalCourseId: courseId,
+                                viewingCourseName: courseName
+                            };
+                            
+                            // Set test student credentials
+                            cookies.set('user', testUser, { path: '/', sameSite: 'strict' });
+                            cookies.set('access_token', data.access_token, { path: '/', sameSite: 'strict' });
+                            cookies.set('refresh_token', data.refresh_token, { path: '/', sameSite: 'strict' });
+                            
+                            // Navigate directly to student dashboard instead of reloading
+                            // This avoids the course fetch issue
+                            navbar.setStudentDashboardWithCourse(courseId, courses);
+                            
+                        } else {
+                            throw new Error(data.error || 'Failed to switch to student view');
+                        }
+                    } catch (error) {
+                        console.error('Error switching to student view:', error);
+                        alert(`Failed to switch to student view: ${error.message}`);
+                    }
+                }}
+                  aria-label="view as student"
+                  title="View this course as a student"
+                >
+                  <SchoolIcon sx={{ color: "#2196f3" }} />
+                </IconButton>
+              );
+            } else if (isViewingAsStudent) {
+              // Show disabled icon when already in student view
+              return (
+                <IconButton disabled>
+                  <SchoolIcon sx={{ color: "rgba(0, 0, 0, 0.26)" }} />
+                </IconButton>
+              );
+            } else {
+              // Not an admin in this course
+              return null;
+            }
+          }
+        }
+      });
+    }
 
     const options = {
       onRowsDelete: false,
@@ -173,9 +283,22 @@ class ViewCourses extends Component {
 
     return (
       <Box aria-label="viewCourseDiv">
-        {/* Add the Switch Back button at the top if viewing as student */}
-        {cookies.get('user')?.viewingAsStudent && (
-          <Box sx={{ mb: 2, display: 'flex', justifyContent: 'flex-end' }}>
+        {/* Switch Back button - shows when viewing as student */}
+        {isViewingAsStudent && (
+          <Box sx={{ 
+            mb: 2, 
+            p: 2,
+            backgroundColor: '#e3f2fd',
+            borderRadius: 1,
+            display: 'flex', 
+            justifyContent: 'space-between',
+            alignItems: 'center'
+          }}>
+            <Typography sx={{ color: '#1565c0' }}>
+              <SchoolIcon sx={{ verticalAlign: 'middle', mr: 1 }} />
+              Viewing as Test Student
+              {user?.viewingCourseName && ` for ${user.viewingCourseName}`}
+            </Typography>
             <Button
               className='secondary-color'
               variant='contained'
@@ -185,16 +308,27 @@ class ViewCourses extends Component {
                 
                 if (adminCredentials) {
                   // Restore admin credentials
-                  cookies.set('user', adminCredentials.user, {sameSite: 'strict'});
-                  cookies.set('access_token', adminCredentials.access_token, {sameSite: 'strict'});
-                  cookies.set('refresh_token', adminCredentials.refresh_token, {sameSite: 'strict'});
+                  cookies.set('user', adminCredentials.user, {
+                    path: '/',
+                    sameSite: 'strict'
+                  });
+                  cookies.set('access_token', adminCredentials.access_token, {
+                    path: '/',
+                    sameSite: 'strict'
+                  });
+                  cookies.set('refresh_token', adminCredentials.refresh_token, {
+                    path: '/',
+                    sameSite: 'strict'
+                  });
                   
                   // Clear temporary storage
                   sessionStorage.removeItem('adminCredentials');
-                  // sessionStorage.removeItem('viewingAsStudent');
                   
                   // Force re-render
                   window.location.reload();
+                } else {
+                  alert('Unable to switch back. Please log in again.');
+                  window.location.href = '/login';
                 }
               }}
               aria-label='switch back to admin'
@@ -204,6 +338,7 @@ class ViewCourses extends Component {
           </Box>
         )}
 
+        {/* Active Courses Section */}
         <Box className="page-spacing">
           <Box sx={{
             display: "flex",
@@ -227,7 +362,8 @@ class ViewCourses extends Component {
           </Box>
         </Box>
 
-        {navbar.props.isAdmin && (
+        {/* Inactive Courses Section - only show for admins not in student view */}
+        {navbar.props.isAdmin && !isViewingAsStudent && (
           <Box className="page-spacing">
             <Box sx={{
               display: "flex",

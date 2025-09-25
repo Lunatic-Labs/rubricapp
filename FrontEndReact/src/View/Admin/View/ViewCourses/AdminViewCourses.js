@@ -6,7 +6,6 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseCourseRoles } from '../../../../utility.js';
 import { Box, Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
-import Cookies from 'universal-cookie';
 
 // AdminViewCourses is a component that displays the courses that are available to the admin.
 // The admin can add a course by clicking the "Add Course" button.
@@ -81,8 +80,7 @@ class AdminViewCourses extends Component {
                                     aria-label='addCourse'
                                 >   
                                     Add Course
-                                </Button>
-                                
+                                </Button>   
                             </>
                         }
                 </Box>
