@@ -107,11 +107,7 @@ class AdminAddCourse extends Component {
             errors: {
                 ...this.state.errors,
 
-                [id]:
-
-                    value.trim() === ""
-                        ? `${formatString} cannot be empty`
-                        : "",
+                [id]: errorMessage,
             },
         });
     };
