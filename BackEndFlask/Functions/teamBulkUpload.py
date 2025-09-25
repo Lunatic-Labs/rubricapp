@@ -361,15 +361,17 @@ def team_bulk_upload1(filepath:str, owner_id:int, course_id:int) -> str:
         str: "Success" string litteral will be returned upon successful completion.
     
     Exceptions:
-        Formating errors or/and DB errors when creating the teams and populating them.
+        WrongExtension : This function can only work with .xlsx or .csv files. 
     """
     try:
         is_xlsx, is_csv = filepath.endswith('.xlsx'), filepath.endswith('.csv')
-        is_valid_extension = is_xlsx or is_csv
-        if not is_valid_extension:
+        if not (is_xlsx or is_csv):
             raise WrongExtension()
         if is_xlsx:
             filepath = xlsx_to_csv(filepath)
+
+        # Load file into memory as a list[list[str]]
+            
 
         
 
