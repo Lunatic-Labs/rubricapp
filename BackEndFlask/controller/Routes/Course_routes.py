@@ -42,6 +42,12 @@ from models.team import (
 @AuthCheck()
 def get_all_courses():
     try:
+        user_id = request.args.get("user_id")
+        
+        print(f"\n=== GET_ALL_COURSES CALLED ===")
+        print(f"user_id parameter: {user_id}")
+        print(f"JWT identity: {get_jwt_identity()}")
+        
         if request.args and request.args.get("admin_id"):
             admin_id = request.args.get("admin_id")
             all_courses = get_courses_by_admin_id(admin_id)
@@ -54,27 +60,99 @@ def get_all_courses():
             student_count.append(get_team_count_by_course_id(course_id))
             return create_good_response(student_count, 200, "course_count")
 
-        # Make sure user_id is converted to int and handle potential errors
-        user_id = request.args.get("user_id")
         if not user_id:
+            print("ERROR: user_id is required")
             return create_bad_response("user_id is required", "courses", 400)
         
         try:
             user_id = int(user_id)
-        except ValueError:
-            return create_bad_response(f"Invalid user_id: {user_id}", "courses", 400)
-        
-        all_courses = get_courses_by_user_courses_by_user_id(user_id)
-        
-        # If no courses found, return empty list instead of error
-        if all_courses is None:
-            all_courses = []
-        
-        return create_good_response(courses_schema.dump(all_courses), 200, "courses")
+            print(f"Converted user_id to int: {user_id}")
+            
+            # Check if this is a test student
+            from models.user import User
+            from models.course import Course
+            
+            user = User.query.get(user_id)
+            
+            if not user:
+                print(f"ERROR: User {user_id} not found in database")
+                return create_bad_response(f"User {user_id} not found", "courses", 404)
+            
+            print(f"Found user: {user.email}")
+            
+            # Check if this is a test student
+            if user.email and user.email.startswith("teststudent"):
+                print(f"This is a test student - handling specially")
+                
+                # Get enrollments for test student
+                enrollments = UserCourse.query.filter_by(
+                    user_id=user_id,
+                    active=True
+                ).all()
+                
+                print(f"Found {len(enrollments)} enrollments for test student")
+                
+                courses_data = []
+                for enrollment in enrollments:
+                    course = Course.query.get(enrollment.course_id)
+                    if course:
+                        # Build course data matching expected format
+                        course_dict = {
+                            "course_id": course.course_id,
+                            "course_name": course.course_name,
+                            "course_number": course.course_number,
+                            "year": course.year,
+                            "term": course.term,
+                            "active": course.active,
+                            "admin_id": course.admin_id,
+                            "use_tas": course.use_tas if hasattr(course, 'use_tas') else False,
+                            "use_fixed_teams": course.use_fixed_teams if hasattr(course, 'use_fixed_teams') else False,
+                            "role_id": enrollment.role_id,
+                            "UserCourse_active": enrollment.active
+                        }
+                        courses_data.append(course_dict)
+                        print(f"Added course: {course.course_name} (ID: {course.course_id})")
+                
+                print(f"Returning {len(courses_data)} courses for test student")
+                return create_good_response(courses_data, 200, "courses")
+            
+            # Normal user - use existing function
+            print(f"Normal user, calling get_courses_by_user_courses_by_user_id")
+            
+            try:
+                all_courses = get_courses_by_user_courses_by_user_id(user_id)
+                
+                if all_courses is None:
+                    print("No courses found, returning empty list")
+                    all_courses = []
+                else:
+                    print(f"Found {len(all_courses)} courses")
+                
+                return create_good_response(courses_schema.dump(all_courses), 200, "courses")
+                
+            except Exception as func_error:
+                print(f"ERROR in get_courses_by_user_courses_by_user_id: {str(func_error)}")
+                
+                # If it's a test student that somehow got here, return empty courses
+                if user.email and user.email.startswith("teststudent"):
+                    print("Returning empty courses for test student due to function error")
+                    return create_good_response([], 200, "courses")
+                
+                raise func_error
+            
+        except Exception as e:
+            print(f"ERROR processing user_id {user_id}: {str(e)}")
+            import traceback
+            print(f"Traceback:\n{traceback.format_exc()}")
+            
+            # Return 422 with detailed error
+            return create_bad_response(f"Error processing user {user_id}: {str(e)}", "courses", 422)
 
     except Exception as e:
-        print(f"Error in get_all_courses for user_id {request.args.get('user_id')}: {str(e)}")
-        return create_bad_response(f"An error occurred fetching all courses: {e}", "courses", 400)
+        print(f"UNEXPECTED ERROR in get_all_courses: {str(e)}")
+        import traceback
+        print(f"Traceback:\n{traceback.format_exc()}")
+        return create_bad_response(f"An error occurred fetching all courses: {e}", "courses", 500)
 
 
 @bp.route('/course/<int:course_id>', methods=['GET'])
@@ -126,7 +204,6 @@ def update_course():
         return create_bad_response(f"An error occurred replacing a course{e}", "courses", 400)
 
 
-# KEEP ONLY THIS ONE VERSION OF THE FUNCTION
 @bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
 @jwt_required()
 def get_test_student_token(course_id):

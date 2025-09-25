@@ -187,68 +187,64 @@ class ViewCourses extends Component {
             if (courseRoles[courseId] === 3 && !isViewingAsStudent) {
               return (
                 <IconButton
+                  // In the STUDENT VIEW button onClick handler
                   onClick={async () => {
-                    // Store admin credentials
-                    const adminCredentials = {
-                      user: cookies.get('user'),
-                      access_token: cookies.get('access_token'),
-                      refresh_token: cookies.get('refresh_token')
-                    };
-                    sessionStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
-                    
                     try {
-                      // Get test student for this specific course
-                      const response = await fetch(
-                        `${apiUrl}/courses/${courseId}/test_student_token`, 
-                        {
-                          method: 'GET',
-                          headers: {
-                            'Authorization': `Bearer ${cookies.get('access_token')}`,
-                            'Content-Type': 'application/json'
-                          }
+                        console.log('Switching to student view for course:', courseId);
+                        
+                        // Store admin credentials
+                        const adminCredentials = {
+                            user: cookies.get('user'),
+                            access_token: cookies.get('access_token'),
+                            refresh_token: cookies.get('refresh_token')
+                        };
+                        sessionStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
+                        
+                        // Get test student token
+                        const response = await fetch(`${apiUrl}/courses/${courseId}/test_student_token`, {
+                            method: 'GET',
+                            headers: {
+                                'Authorization': `Bearer ${cookies.get('access_token')}`,
+                                'Content-Type': 'application/json'
+                            }
+                        });
+                        
+                        if (!response.ok) {
+                            const errorData = await response.json();
+                            throw new Error(errorData.error || 'Failed to get test student token');
                         }
-                      );
-                      
-                      if (!response.ok) {
-                        throw new Error('Failed to get test student credentials');
-                      }
-                      
-                      const data = await response.json();
-                      
-                      // Find course name for display
-                      const courseName = courses.find(c => c.course_id === courseId)?.course_name || '';
-                      
-                      // Add metadata to track viewing state
-                      const testStudentUser = {
-                        ...data.user,
-                        viewingAsStudent: true,
-                        originalAdminId: adminCredentials.user.user_id,
-                        viewingCourseId: courseId,
-                        viewingCourseName: courseName
-                      };
-                      
-                      // Set test student credentials
-                      cookies.set('user', testStudentUser, { 
-                        path: '/',
-                        sameSite: 'strict' 
-                      });
-                      cookies.set('access_token', data.access_token, { 
-                        path: '/',
-                        sameSite: 'strict' 
-                      });
-                      cookies.set('refresh_token', data.refresh_token, { 
-                        path: '/',
-                        sameSite: 'strict' 
-                      });
-                      
-                      // Reload to apply student view
-                      window.location.reload();
-                      
+                        
+                        const data = await response.json();
+                        
+                        if (data.success) {
+                            // Find course name
+                            const courseName = courses.find(c => c.course_id === courseId)?.course_name || '';
+                            
+                            // Mark the user as viewing as student
+                            const testUser = {
+                                ...data.user,
+                                viewingAsStudent: true,
+                                originalCourseId: courseId,
+                                viewingCourseName: courseName
+                            };
+                            
+                            // Set test student credentials
+                            cookies.set('user', testUser, { path: '/', sameSite: 'strict' });
+                            cookies.set('access_token', data.access_token, { path: '/', sameSite: 'strict' });
+                            cookies.set('refresh_token', data.refresh_token, { path: '/', sameSite: 'strict' });
+                            
+                            // Navigate directly to student dashboard instead of reloading
+                            // This avoids the course fetch issue
+                            navbar.setStudentDashboardWithCourse(courseId, courses);
+                            
+                        } else {
+                            throw new Error(data.error || 'Failed to switch to student view');
+                        }
                     } catch (error) {
-                      console.error('Error switching to student view:', error);
-                      alert('Failed to switch to student view. Please try again.');
+                        console.error('Error switching to student view:', error);
+                        alert(`Failed to switch to student view: ${error.message}`);
                     }
-                  }}
+                }}
                   aria-label="view as student"
                   title="View this course as a student"
                 >
