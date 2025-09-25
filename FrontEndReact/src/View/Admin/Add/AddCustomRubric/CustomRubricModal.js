@@ -35,7 +35,7 @@ class ImageModal extends React.Component {
                     <img
                         src={imageUrl2}
                         alt="Rubric2"
-                        style={{ width: "100%", transform: 'scale(1.3)', height: "140%" }}/>
+                        style={{ width: "100%" }}/>
                 </div>
             </Modal>
         );
