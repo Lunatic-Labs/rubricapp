@@ -16,6 +16,18 @@ const customTheme = createTheme({
         },
       },
     },
+    MUIDataTableBodyRow: {                // This code creates an alternating background color for indivual rows.
+      styleOverrides: {
+        root: {
+          '&:nth-of-type(even)': {
+            backgroundColor: '#e8e8e8', // Light gray for even rows
+          },
+          '&:nth-of-type(odd)': {
+            backgroundColor: 'white',     // White for odd rows
+          },
+        },
+      },
+    },
     MUIDataTableToolbar: {
       styleOverrides: {
         root: {
