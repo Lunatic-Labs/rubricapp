@@ -30,7 +30,7 @@ services:
       test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/api"]
       interval: 10s
       timeout: 5s
-      retries: 5
+      retries: 10
   redis:
     image: redis:7.2.4
     ports: [] # Disable exposed port so that Redis can run inside of the container and not be exposed to host machine.
