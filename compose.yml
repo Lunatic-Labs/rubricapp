@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "5050:5000"
+      - "127.0.0.1:5050:5000"
     depends_on:
       redis:
         condition: service_started
@@ -26,12 +26,7 @@ services:
       - MYSQL_USER=skillbuilder
       - MYSQL_PASSWORD=WasPogil1#
       - MYSQL_DATABASE=account
-    healthcheck:
-      test: ["CMD", "curl", "-f", "http://127.0.0.1:5000/api"]
-      interval: 10s
-      timeout: 10s
-      retries: 5
-      start_period: 60s
+
   redis:
     image: redis:7.2.4
     ports: [] # Disable exposed port so that Redis can run inside of the container and not be exposed to host machine.
