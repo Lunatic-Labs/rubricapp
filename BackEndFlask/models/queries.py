@@ -962,7 +962,7 @@ def get_completed_assessment_with_user_name(assessment_task_id):
     Gets all of the completed assessments with user names
     for the given assessment task.
 
-    Parameters: 
+    Parameters:
     assessment_task_id: int (The id of an assessment task)
     """
     complete_assessments=db.session.query(
