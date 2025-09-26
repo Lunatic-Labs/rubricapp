@@ -22,7 +22,10 @@ def get_course(course_id):
 
 @error_log
 def get_course_use_tas(course_id):
-    return Course.query.filter_by(course_id=course_id).first()
+    course = Course.query.filter_by(course_id=course_id).first()
+    if course:
+        return course.use_tas
+    return None
 
 
 @error_log

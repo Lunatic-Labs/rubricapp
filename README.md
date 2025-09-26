@@ -285,31 +285,51 @@ Run this script with:
 
 Run this and follow the on-screen instructions.
 
-### Testing 
+## Testing 
+### Backend
+#### Local Testing (without Docker)
 
-This will first explain how to launch the tests as if you do not use Docker. The logic for this is so that you understand why certain docker lines are bing altered.
+Before running tests locally, you need to set up your environment:
+1. **MySQL Setup**: Install and configure MySQL on your local machine
+2. **Database Configuration**: 
+   - Create a MySQL user matching `MYSQL_USER` in `BackEndFlask/.env`
+   - Set the password to match `MYSQL_PASSWORD` in `BackEndFlask/.env`
+   - Create a database matching `MYSQL_DATABASE` in `BackEndFlask/.env`
 
-To launch the backend tests, run the following in the `BackEndFlask/` directory:
+3. **Run Tests**:
 ```bash
-setupEnv.py -t # The -t flag runs pytests for us.
+   cd BackEndFlask/
+   
+   # Run all tests
+   python3 -m pytest
+   
+   # Run tests with verbose output
+   python3 -m pytest -v
+   
+   # Run specific test file
+   python3 -m pytest -k test_specific_file.py
 ```
-**Note that for this to work you need to have built things up having used -ds or some variation.**
+#### Docker Testing  
 
+To get the backend tests going, navigate to `rubricapp/Dockerfile.backend`. 
+Notice that the last line is what is starting up the back end code. It is running `setupEnv.py -ds`. 
+Change
+```bash
+    -ds
+    # To
+    -t
+```
+Now build fresh without the cache and run `docker compose build` then `docker compose up`. 
+The container will now run through the tests. Do not forget to change `-t` back to `-ds` once you are done testing.
+
+### Frontend
 To launch the frontend Jest tests, run the following:
 ```bash
 npm test
 ``` 
 **Note that for this to work you need to have have the backend running and serving connections.**
 
-Now we swap over to getting tests to run in our Docker containers. 
 
-To get the backend tests going, navigate to `rubricapp/Dockerfile.backend`. Notice that the last line is what is starting up the back end code. It is running `setupEnv.py -ds`. Change
-```bash
--ds
-# To
--t
-```
-Now build fresh without the cache and run Docker compose up. The container will now run through the tests. Do not forget to change this back once you are done testing.
 
 To get the frontend tests going, navigate to `rubricapp/Dockerfile.frontend`. Like the backend, we are only concerned with the very last line that starts the backend. The line we see is:
 ```bash
