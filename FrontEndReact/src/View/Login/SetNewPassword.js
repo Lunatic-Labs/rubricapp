@@ -289,7 +289,7 @@ class SetNewPassword extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
-                                                inputProps={{ maxLength: 21 }}      // the maximum character length of password has been changed to __
+                                                inputProps={{ maxLength: 21 }}      // the maximum character length of password has been changed to 21, this accounts for browsers handling characters differently
                                                 aria-label="setNewPasswordInput"
                                                 InputProps={{
                                                         endAdornment: (
@@ -347,7 +347,7 @@ class SetNewPassword extends Component {
                                             error={!!errors.confirmationPassword}
                                             helperText={errors.confirmationPassword}
                                             onChange={this.handleChange}
-                                            inputProps={{ maxLength: 21 }}          // the maximum character length of confirmationPassword has been changed to __
+                                            inputProps={{ maxLength: 21 }}          // the maximum character length of confirmationPassword has been changed to 21, this accounts for browsers handling characters differently
                                             aria-label="setNewPasswordConfirmInput"
                                         />
 

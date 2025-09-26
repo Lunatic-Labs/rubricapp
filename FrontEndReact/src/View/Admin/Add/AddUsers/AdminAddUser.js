@@ -341,7 +341,7 @@ class AdminAddUser extends Component {
                                         error={!!errors.firstName}
                                         helperText={errors.firstName}
                                         onChange={this.handleChange}
-                                        inputProps={{ maxLength: 51 }}      // the maximum character length of first_name has been changed to __
+                                        inputProps={{ maxLength: 51 }}      // the maximum character length of first_name has been changed to 51, this accounts for browsers handling characters differently
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userFirstNameInput"
@@ -357,7 +357,7 @@ class AdminAddUser extends Component {
                                         error={!!errors.lastName}
                                         helperText={errors.lastName}
                                         onChange={this.handleChange}
-                                        inputProps={{ maxLength: 51 }}      // the maximum character length of last_name has been changed to __
+                                        inputProps={{ maxLength: 51 }}      // the maximum character length of last_name has been changed to 51, this accounts for browsers handling characters differently
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userLastNameInput"
