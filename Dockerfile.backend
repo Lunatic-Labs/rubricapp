@@ -32,7 +32,7 @@ RUN touch /app/sendgrid.env
 
 
 # Expose the Backend port
-EXPOSE 5000
+EXPOSE 5050
 
 # Start the Flask server
 # -t for test mode. Make sure to change 
