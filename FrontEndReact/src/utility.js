@@ -107,6 +107,9 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
     }
 }
 
+/**
+* @deprecated This function is used for SSE connections which the web app should not use at the moment.
+ */
 export function createEventSource(fetchURL, onMessage) {
     const cookies = new Cookies();
 
