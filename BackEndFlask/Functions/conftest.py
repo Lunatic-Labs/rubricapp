@@ -1,6 +1,7 @@
 import pytest
 from urllib.parse import quote_plus
 from core import app, db
+from urllib.parse import quote_plus
 from Functions.test_files.PopulationFunctions import *
 from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
@@ -37,6 +38,7 @@ def flask_app_mock():
         if len(get_roles()) == 0:
             load_existing_roles()
 
+
     mock_app.db = db
     yield mock_app
 
@@ -48,3 +50,4 @@ def flask_app_mock():
         db.session.close()
         db.engine.dispose()
     close_all_sessions()
+

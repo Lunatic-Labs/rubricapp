@@ -196,7 +196,7 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
                 delete_one_admin_ta_student_course(result)
 
             except Exception as e:
-                print(f"Cleanup skipped: {e}")                 
+                print(f"Cleanup skipped: {e}")                               
 
 
 # test_no_students_in_course_error()
@@ -215,6 +215,7 @@ def test_no_students_in_course_error(flask_app_mock):
             )
         
         # Clean up
+        # Cleanup
         if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
