@@ -49,13 +49,13 @@ def test_valid_file_w_tas_records_all_data(flask_app_mock):
             assert team_users.__len__() == 2, error_message
         
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
                     delete_one_admin_ta_student_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
 
 # test_valid_file_wo_tas_records_all_data()
 #   - calls create_one_admin_ta_student_course() with one parameter:
@@ -94,13 +94,13 @@ def test_valid_file_wo_tas_records_all_data(flask_app_mock):
             assert team_users.__len__() == 1, error_message
 
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
                     delete_one_admin_ta_student_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
 
 # test_wrong_file_type_error()
 #   - calls teams_csv_to_db() with three parameters:
@@ -132,8 +132,7 @@ def test_wrong_file_type_error(flask_app_mock):
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"⚠️ Cleanup skipped: {e}")
-        
+                print(f"Cleanup skipped: {e}")
 
 # test_file_not_found_error()
 #   - calls teams_csv_to_db() with three parameters:
@@ -166,7 +165,7 @@ def test_file_not_found_error(flask_app_mock):
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
 
 # test_misformatting_TA_email_error()
 #   - calls create_one_admin_ta_student_course() with one parameter:
@@ -202,7 +201,7 @@ def test_misformatting_TA_email_error(flask_app_mock):
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
 
 # test_misformatting_student_email_error()
 #   - calls create_one_admin_ta_student_course() with one parameter:
@@ -229,14 +228,14 @@ def test_misformatting_student_email_error(flask_app_mock):
         # Now check that no teams were created (outside the exception block)
         teams = get_team_by_course_id(result["course_id"])
         assert teams.__len__() == 0, "team_csv_to_db() should not assign a test team to a test course!"
-        
-        # Cleanup
+
+        # Clean up
         if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
 
 # test_users_do_not_exist_error()
 #   - calls create_one_admin_ta_student_course() with one parameter:
@@ -266,14 +265,13 @@ def test_users_do_not_exist_error(flask_app_mock):
         teams = get_team_by_course_id(result["course_id"])
         assert teams.__len__() == 0, "team_csv_to_db() should not assign a test team to a test course!"
 
-        # Cleanup after test
+        # Clean up after test
         if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"⚠️ Cleanup skipped: {e}")
-
+                print(f"Cleanup skipped: {e}")
 
 # test_ta_not_yet_added_error()
 #   - calls create_one_admin_ta_student_course() with two parameter:
@@ -304,13 +302,12 @@ def test_ta_not_yet_added_error(flask_app_mock):
         teams = get_team_by_course_id(result["course_id"])
         assert len(teams) == 0, "team_csv_to_db() should not assign a test team to a test course!"
 
-        # Cleanup after test
+        # Clean up after test
         if result:
             try:
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"⚠️ Cleanup skipped: {e}")
-
+                print(f"Cleanup skipped: {e}")
 
 # test_student_not_enrolled_in_this_course()
 #   - calls create_one_admin_ta_student_course() with three parameter:
@@ -337,7 +334,7 @@ def test_student_not_enrolled_in_this_course_debug(flask_app_mock):
                 result["course_id"]
             )
 
-        print(f"✅ Exception captured: {excinfo.value}")
+        print(f"Exception captured: {excinfo.value}")
 
         # Cleanup after test
         if result:
@@ -345,4 +342,5 @@ def test_student_not_enrolled_in_this_course_debug(flask_app_mock):
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
+

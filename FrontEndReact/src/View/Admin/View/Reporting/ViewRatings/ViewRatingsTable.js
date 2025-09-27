@@ -23,7 +23,11 @@ class ViewRatingsTable extends Component {
         rating["name"] = currentRating["team_name"];
       }
 
-      rating["feedback_time_lag"] = currentRating["lag_time"];
+      if (currentRating["notification_sent"]) {
+        rating["feedback_time_lag"] = currentRating["lag_time"];
+      } else {
+        rating["feedback_time_lag"] = "Not notified";
+      }
 
       if(currentRating["rating_observable_characteristics_suggestions_data"]) {
         Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {

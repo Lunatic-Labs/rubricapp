@@ -21,11 +21,12 @@ def test_should_fail_with_file_not_found(flask_app_mock):
                 result["course_id"]
             )
         
+        # Clean up
         if result:
             try:
                 delete_one_admin_course(result)
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
 
 
 def test_should_fail_with_wrong_extension(flask_app_mock):
@@ -41,11 +42,12 @@ def test_should_fail_with_wrong_extension(flask_app_mock):
                 result["course_id"]
             )
 
+        # Clean up
         if result:
             try:
                 delete_one_admin_course(result)
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
 
 
 def test_should_fail_with_not_enough_columns(flask_app_mock):
@@ -60,11 +62,12 @@ def test_should_fail_with_not_enough_columns(flask_app_mock):
                 result["course_id"]
             )
 
+        # Clean up
         if result:
             try:
                 delete_one_admin_course(result)
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
 
 
 def test_should_fail_with_misformatted_student_email(flask_app_mock):
@@ -79,11 +82,12 @@ def test_should_fail_with_misformatted_student_email(flask_app_mock):
                 result["course_id"]
             )
 
+        # Clean up
         if result:
             try:
                 delete_one_admin_course(result)
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
 
 
 def test_valid_student_with_no_lms_id_in_table(flask_app_mock):
@@ -110,12 +114,14 @@ def test_valid_student_with_no_lms_id_in_table(flask_app_mock):
             assert user_courses.__len__() == 1, error_message
         
         finally:
+            # Clean up
             if result:
                 try:
                     delete_all_users_user_courses(result["course_id"])
                     delete_one_admin_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
+
 
 
 def test_valid_student_with_lms_id_in_table(flask_app_mock):
@@ -146,12 +152,14 @@ def test_valid_student_with_lms_id_in_table(flask_app_mock):
             assert user_courses.__len__() == 1, error_message
 
         finally:
+            # Clean up
             if result:
                 try:
                     delete_all_users_user_courses(result["course_id"])
                     delete_one_admin_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
+
 
 
 def test_valid_ta_with_no_lms_id_in_table(flask_app_mock):
@@ -182,12 +190,14 @@ def test_valid_ta_with_no_lms_id_in_table(flask_app_mock):
             assert user_courses.__len__() == 1, error_message
 
         finally:
+            # Clean up
             if result:
                 try:
                     delete_all_users_user_courses(result["course_id"])
                     delete_one_admin_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
+
 
 
 def test_valid_ta_with_lms_id_in_table(flask_app_mock):
@@ -216,12 +226,14 @@ def test_valid_ta_with_lms_id_in_table(flask_app_mock):
             assert user_courses.__len__() == 1, error_message
 
         finally:
+            # Clean up
             if result:
                 try:
                     delete_all_users_user_courses(result["course_id"])
                     delete_one_admin_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
+
 
 
 def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
@@ -259,12 +271,14 @@ def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
             assert user_courses.__len__() == 1, error_message
 
         finally:
+            # Clean up
             if result:
                 try:
                     delete_all_users_user_courses(result["course_id"])
                     delete_one_admin_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
+
 
 def test_valid_students_and_tas_with_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
@@ -307,9 +321,11 @@ def test_valid_students_and_tas_with_lms_id_in_table(flask_app_mock):
             assert user_courses.__len__() == 1, error_message
 
         finally:
+            # Clean up
             if result:
                 try:
                     delete_all_users_user_courses(result["course_id"])
                     delete_one_admin_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
+

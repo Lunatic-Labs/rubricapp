@@ -47,7 +47,7 @@ def test_one_ta_ten_students(flask_app_mock):
             assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
         
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
@@ -55,7 +55,7 @@ def test_one_ta_ten_students(flask_app_mock):
                     delete_all_users_user_courses(result["course_id"])
                     delete_one_admin_ta_student_course(result)
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}") 
+                    print(f"Cleanup skipped: {e}") 
                 
 
 # test_no_ta_ten_students()
@@ -100,7 +100,7 @@ def test_no_ta_ten_students(flask_app_mock):
             assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
         
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
@@ -109,7 +109,7 @@ def test_no_ta_ten_students(flask_app_mock):
                     delete_one_admin_ta_student_course(result, False)
 
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}") 
+                    print(f"Cleanup skipped: {e}") 
 
 
 # test_ten_tas_ten_students()
@@ -155,7 +155,7 @@ def test_ten_tas_ten_students(flask_app_mock):
             assert total_team_users == 10, error_message
         
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
@@ -165,7 +165,7 @@ def test_ten_tas_ten_students(flask_app_mock):
                     delete_one_admin_ta_student_course(result)
 
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}") 
+                    print(f"Cleanup skipped: {e}") 
                     
 
 # test_TA_true_but_no_TAs_recorded_error()
@@ -188,7 +188,7 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
         error_message = "RandomAssignTeams() should not have made and enrolled any test teams in the test course!"
         assert teams.__len__() == 0, error_message
         
-        # Cleanup
+        # Clean up
         if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
@@ -196,7 +196,7 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
                 delete_one_admin_ta_student_course(result)
 
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")                 
+                print(f"Cleanup skipped: {e}")                               
 
 
 # test_no_students_in_course_error()
@@ -214,6 +214,7 @@ def test_no_students_in_course_error(flask_app_mock):
                 result["course_id"]
             )
         
+        # Clean up
         # Cleanup
         if result:
             try:
@@ -222,5 +223,5 @@ def test_no_students_in_course_error(flask_app_mock):
                 delete_one_admin_ta_student_course(result)
 
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
                 

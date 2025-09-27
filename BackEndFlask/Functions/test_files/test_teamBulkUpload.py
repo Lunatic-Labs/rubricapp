@@ -31,15 +31,14 @@ def test_should_fail_with_non_existant_ta_email(flask_app_mock):
                 result["course_id"]
             )
 
-        # Cleanup
+        # Clean up
         if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
                 delete_all_users_user_courses(result["course_id"])
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
-
+                print(f"Cleanup skipped: {e}")
 
 def test_should_fail_with_suspected_misformatting_error_given_misformatted_ta_email(flask_app_mock):
     with flask_app_mock.app_context():
@@ -53,15 +52,14 @@ def test_should_fail_with_suspected_misformatting_error_given_misformatted_ta_em
                 result["course_id"]
             )
         
-        # Cleanup
+        # Clean up
         if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
                 delete_all_users_user_courses(result["course_id"])
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
-
+                print(f"Cleanup skipped: {e}")
 
 def test_should_fail_with_empty_team_members(flask_app_mock):
     with flask_app_mock.app_context():
@@ -76,14 +74,15 @@ def test_should_fail_with_empty_team_members(flask_app_mock):
                 result["course_id"]
             )
         
-        # Cleanup
+        # Clean up
         if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
                 delete_all_users_user_courses(result["course_id"])
             except Exception as e:
-                print(f"⚠️ Cleanup skipped: {e}")
+                print(f"Cleanup skipped: {e}")
+
                 
 
 def test_should_fail_with_file_not_found_error_given_non_existent_file(flask_app_mock):
@@ -103,14 +102,14 @@ def test_should_fail_with_file_not_found_error_given_non_existent_file(flask_app
         error_message = "team_csv_to_db() should not assign a test team to a test course!"
         assert teams.__len__() == 0, error_message
 
-        # Cleanup
+        # Clean up
         if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
                     delete_one_admin_ta_student_course(result)
                     delete_all_users_user_courses(result["course_id"])
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
                     
 
 def test_should_pass_when_given_one_team(flask_app_mock):
@@ -135,14 +134,14 @@ def test_should_pass_when_given_one_team(flask_app_mock):
             assert user.first_name == "fname1", error_message
         
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
                     delete_one_admin_ta_student_course(result)
                     delete_all_users_user_courses(result["course_id"])
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
                     
 
 def test_should_pass_when_given_two_teams_one_ta(flask_app_mock):
@@ -163,14 +162,14 @@ def test_should_pass_when_given_two_teams_one_ta(flask_app_mock):
             assert teams.__len__() == 2, error_message
 
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
                     delete_one_admin_ta_student_course(result)
                     delete_all_users_user_courses(result["course_id"])
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
                     
 
 
@@ -192,15 +191,14 @@ def test_should_pass_when_given_three_teams_one_ta(flask_app_mock):
             assert teams.__len__() == 3, error_message
             
         finally:
-            # Cleanup
+            # Clean up
             if result:
                 try:
                     delete_all_teams_team_members(result["course_id"])
                     delete_one_admin_ta_student_course(result)
                     delete_all_users_user_courses(result["course_id"])
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
-                    
+                    print(f"Cleanup skipped: {e}")
 
 
 def test_should_pass_when_given_2_teams_2_tas(flask_app_mock):
@@ -228,4 +226,4 @@ def test_should_pass_when_given_2_teams_2_tas(flask_app_mock):
                     delete_one_admin_ta_student_course(result)
                     delete_all_users_user_courses(result["course_id"])
                 except Exception as e:
-                    print(f"⚠️ Cleanup skipped: {e}")
+                    print(f"Cleanup skipped: {e}")
