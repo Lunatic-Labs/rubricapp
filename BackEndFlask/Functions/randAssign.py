@@ -76,7 +76,6 @@ def RandomAssignTeams(observer_id, course_id, team_size=4):
     use_tas = get_course_use_tas(course_id)
     user_courses = get_user_courses_by_course_id(course_id)
     tas = filter_users_by_role(user_courses, 4)
-    
     if use_tas and tas.__len__() == 0:
         raise NoTAsListed
     
