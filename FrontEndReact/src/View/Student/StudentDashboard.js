@@ -23,6 +23,7 @@ import Loading from '../Loading/Loading.js';
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
  *  @property {Array}  filteredCATs - All valid CATs for the course and user.
+ *  @property {Array}  userTeamIds -Figured out user teams.
  * 
  */
 
@@ -44,7 +45,16 @@ class StudentDashboard extends Component {
             completedAssessments: null,
             filteredATs: null,
             filteredCATs: null,
+            userTeamIds: null,
         }
+    }
+
+    /**
+     * Upates the team ids that the user is a part of.
+     * @param {array} teamIds - Team ids that the user is a part of.
+     */
+    updateUserTeamsIds = (teamIds) => {
+        this.setState({userTeamIds:teamIds});
     }
 
     componentDidMount() {
@@ -75,18 +85,23 @@ class StudentDashboard extends Component {
             roles,
             assessmentTasks,
             completedAssessments,
+            userTeamIds,
         } = this.state;
-
         const filterATsAndCATs = roles && assessmentTasks && completedAssessments && (filteredATs === null);
 
-        if (filterATsAndCATs) {
+        if (filterATsAndCATs && userTeamIds) {
             // Remove ATs where the ID matches one of the IDs
             // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
             let filteredCompletedAsseessments = [];
             
             const CATmap = new Map();
             const roleId = roles["role_id"];
-            completedAssessments.forEach(cat => {CATmap.set(cat.assessment_task_id, cat)});
+            completedAssessments.forEach(cat => {
+                const team_id = cat.team_id;
+                if (team_id === null || userTeamIds.includes(team_id)){
+                    CATmap.set(cat.assessment_task_id, cat);
+                }
+            });
             
             const currentDate = new Date();
             const isATDone = (cat) => cat !== undefined && cat.done;
@@ -129,7 +144,7 @@ class StudentDashboard extends Component {
         } = this.state; 
 
         // Wait for information to be filtered.
-        if (filteredATs === null || filteredCATs === null) {
+        if (!roles) {
             return <Loading />
         }
 
@@ -213,6 +228,7 @@ class StudentDashboard extends Component {
                         {roles["role_id"] === 5 &&
                             <StudentViewTeams
                                 navbar={navbar}
+                                updateUserTeamsIds={this.updateUserTeamsIds}
                             />
                         }
                         {roles["role_id"] === 4 &&
