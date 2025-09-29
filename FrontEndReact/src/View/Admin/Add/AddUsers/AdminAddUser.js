@@ -119,20 +119,18 @@ class AdminAddUser extends Component {
         }
       
         if (id === 'lmsId') {
-          // non-digit?
           if (/[^0-9]/.test(value)) {
             this.setState({
               errors: { ...this.state.errors, [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.' }
             });
-            return; // don't update value
+            return;
           }
       
-          // too long?
           if (value.length > MAX_LMS_ID_LENGTH) {
             this.setState({
               errors: { ...this.state.errors, [id]: `Max ${MAX_LMS_ID_LENGTH} digits.` }
             });
-            return; // don't update value
+            return;
           }
       
           const atMax = value.length === MAX_LMS_ID_LENGTH;
@@ -143,7 +141,6 @@ class AdminAddUser extends Component {
           return;
         }
       
-        // other fields
         this.setState({
           [id]: value,
           errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
@@ -156,7 +153,8 @@ class AdminAddUser extends Component {
 
     handleSelect = (event) => {
         this.setState({
-            role: event.target.value
+            role: event.target.value,
+            errors: { ...this.state.errors, role: '' }
         });
       };
 
@@ -179,7 +177,7 @@ class AdminAddUser extends Component {
                         lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` 
                     }
                 });
-                return; // ⭐ CHANGED: stop here — do NOT hit backend
+                return;
             }
         }
 
@@ -249,16 +247,24 @@ class AdminAddUser extends Component {
         } else {
             promise = (email !== originalEmail)
 
-                // The email has been updated, pass the new email
                 ? genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}&new_email=${email}&owner_id=${owner_id}`, this, body)
 
-                // The email has not been updated, no need to pass the new email
                 : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
         promise.then(result => {
             if (result !== undefined && result.errorMessage === null) {
                 confirmCreateResource("User");
+            } else if (result !== undefined && result.errorMessage !== null) {
+                if (result.errorMessage.includes("Admin users cannot be enrolled as students or instructors")) {
+                    this.setState({
+                        errors: {
+                            ...this.state.errors,
+                            role: "Admin users cannot be enrolled as students or instructors"
+                        },
+                        errorMessage: null
+                    });
+                }
             }
         });
     }
