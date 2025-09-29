@@ -89,7 +89,7 @@ class StudentDashboard extends Component {
         } = this.state;
         const filterATsAndCATs = roles && assessmentTasks && completedAssessments && (filteredATs === null);
 
-        if (filterATsAndCATs && userTeamIds) {
+        if (filterATsAndCATs && (userTeamIds || roles.role_id === 4)) {
             // Remove ATs where the ID matches one of the IDs
             // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
             let filteredCompletedAsseessments = [];
@@ -98,7 +98,7 @@ class StudentDashboard extends Component {
             const roleId = roles["role_id"];
             completedAssessments.forEach(cat => {
                 const team_id = cat.team_id;
-                if (team_id === null || userTeamIds.includes(team_id)){
+                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){
                     CATmap.set(cat.assessment_task_id, cat);
                 }
             });
