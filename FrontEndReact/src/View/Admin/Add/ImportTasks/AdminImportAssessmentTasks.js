@@ -91,7 +91,7 @@ class AdminImportAssessmentTask extends Component {
                                 <Box className="form-input">
                                     <Box sx={{mb: 3}}>
                                         <Box>
-                                            Please select the course you would like to import assesments tasks from.
+                                            Please select the course you would like to import assessments tasks from.
                                         </Box>
                                     </Box>
 
