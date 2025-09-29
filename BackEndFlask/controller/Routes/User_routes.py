@@ -52,6 +52,7 @@ from models.user import(
     make_admin,
     unmake_admin,
     delete_user,
+    #get_user_by_email,
 )
 
 from models.queries import (
@@ -84,7 +85,7 @@ def get_all_users():
             teams_and_team_members = {}
 
             for team_id in team_ids:
-                get_team(team_id)
+                get_team(team_id) # Trigger an error if not exists.
 
                 all_users = []
 
@@ -98,13 +99,17 @@ def get_all_users():
         if(request.args and request.args.get("course_id") and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
-            get_team(team_id)
+            get_team(team_id) # Trigger an error if not exists.
 
             course_id = get_team(team_id).course_id if not request.args.get("course_id") else request.args.get("course_id")
 
+            # We are going to add students by default!
+            # Return students that are not in the team!
             all_users = get_active_students_not_in_a_team(course_id, team_id)
 
             if request.args.get("assign") == 'true':
+                # We are going to remove students!
+                # Return students that are in the team!
                 all_users = get_students_by_team_id(course_id, team_id)
 
             return create_good_response(users_schema.dump(all_users), 200, "users")
@@ -112,12 +117,12 @@ def get_all_users():
         if(request.args and request.args.get("course_id")):
             course_id = request.args.get("course_id")
 
-            get_course(course_id)
+            get_course(course_id) # Trigger an error if not exists.
 
             if(request.args.get("role_id")):
                 role_id = request.args.get("role_id")
 
-                get_role(role_id)
+                get_role(role_id) # Trigger an error if not exists.
 
                 all_users = get_users_by_course_id_and_role_id(course_id, role_id)
 
@@ -127,9 +132,9 @@ def get_all_users():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("uid")):
-            user_id = request.args.get("uid")
+            user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system
 
-            user = get_user(user_id)
+            user = get_user(user_id) # Trigger an error if not exists.
 
             return create_good_response(user_schema.dump(user), 200, "users")
 
@@ -203,12 +208,12 @@ def add_user():
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
-            course_id = get_team(team_id).course_id
+            course_id = get_team(team_id).course_id # Trigger an error if not exists.
 
             user_ids = request.args.get("user_ids").split(",")
 
             for user_id in user_ids:
-                get_user(user_id)
+                get_user(user_id) # Trigger an error if not exists.
 
                 add_user_to_team(course_id, user_id, team_id)
 
@@ -223,7 +228,7 @@ def add_user():
                 owner = get_user(owner_id)
                 owner_email = owner.email
 
-            get_course(course_id)
+            get_course(course_id) # Trigger an error if not exists.
 
             user_exists = user_already_exists(request.json)
 
@@ -274,11 +279,11 @@ def update_user():
         if(request.args and request.args.get("uid") and request.args.get("course_id")):
             uid = request.args.get("uid")
 
-            user = get_user(uid)
+            user = get_user(uid) # Trigger an error if not exists.
 
             course_id = request.args.get("course_id")
 
-            get_course(course_id)
+            get_course(course_id) # Trigger an error if not exists.
 
             if request.args.get("unenroll_user"):
                 set_active_status_of_user_to_inactive(uid, course_id)
@@ -286,7 +291,7 @@ def update_user():
 
             role_id = request.json["role_id"]
 
-            get_role(role_id)
+            get_role(role_id) # Trigger an error if not exists.
 
             if user.is_admin and role_id in [4, 5]:
                 raise Exception("Admin users cannot be enrolled as students or instructors")
@@ -296,12 +301,12 @@ def update_user():
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
 
-            get_team(team_id)
+            get_team(team_id) # Trigger an error if not exists.
 
             user_ids = request.args.get("user_ids").split(",")
 
             for user_id in user_ids:
-                get_user(user_id)
+                get_user(user_id) # Trigger an error if not exists.
 
                 remove_user_from_team(user_id, team_id)
 
@@ -311,10 +316,11 @@ def update_user():
         new_email = request.args.get("new_email")
         owner_id = request.args.get("owner_id")
 
-        get_user(user_id)
+        get_user(user_id) # Trigger an error if not exists.
 
         request.json["password"] = get_user_password(user_id)
 
+        # The email was updated, update the email validation table for that entry.
         if new_email is not None and owner_id is not None:
             update_email_to_pending(user_id)
             send_email_for_updated_email(new_email)            

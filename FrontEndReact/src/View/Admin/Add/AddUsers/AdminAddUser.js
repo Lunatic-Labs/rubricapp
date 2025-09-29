@@ -119,18 +119,20 @@ class AdminAddUser extends Component {
         }
       
         if (id === 'lmsId') {
+            // non-digit?
           if (/[^0-9]/.test(value)) {
             this.setState({
               errors: { ...this.state.errors, [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.' }
             });
-            return;
+            return; // don't update value
           }
-      
+
+          // too long?
           if (value.length > MAX_LMS_ID_LENGTH) {
             this.setState({
               errors: { ...this.state.errors, [id]: `Max ${MAX_LMS_ID_LENGTH} digits.` }
             });
-            return;
+            return; // don't update value
           }
       
           const atMax = value.length === MAX_LMS_ID_LENGTH;
@@ -140,7 +142,8 @@ class AdminAddUser extends Component {
           });
           return;
         }
-      
+
+        // other fields
         this.setState({
           [id]: value,
           errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
@@ -176,7 +179,7 @@ class AdminAddUser extends Component {
                         ...this.state.errors, 
                         lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` 
                     }
-                });
+                }); ; // ⭐ CHANGED: stop here — do NOT hit backend
                 return;
             }
         }
@@ -246,9 +249,10 @@ class AdminAddUser extends Component {
             promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
         } else {
             promise = (email !== originalEmail)
-
+                // The email has been updated, pass the new email
                 ? genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}&new_email=${email}&owner_id=${owner_id}`, this, body)
 
+                // The email has not been updated, no need to pass the new email
                 : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
