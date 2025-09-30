@@ -84,10 +84,10 @@ class SuggestionsForImprovement(db.Model):
 class Course(db.Model):
     __tablename__ = "Course"
     course_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    course_number = db.Column(db.Text, nullable=False)
-    course_name = db.Column(db.Text, nullable=False)
+    course_number = db.Column(db.String(20), nullable=False)
+    course_name = db.Column(db.String(50), nullable=False)
     year = db.Column(db.Integer, nullable=False)
-    term = db.Column(db.Text, nullable=False)
+    term = db.Column(db.String(20), nullable=False)
     active = db.Column(db.Boolean, nullable=False)
     admin_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
@@ -139,12 +139,14 @@ class Team(db.Model): # keeps track of default teams for a fixed team scenario
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     date_created = db.Column(db.Date, nullable=False)
     active_until = db.Column(db.Date, nullable=True)
+    team_users = db.relationship('TeamUser', back_populates='team', cascade='all, delete-orphan')
 
 class TeamUser(db.Model):
     __tablename__ = "TeamUser"
     team_user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=False)
+    team_id = db.Column(db.Integer, db.ForeignKey('Team.team_id', ondelete = 'CASCADE'), nullable=False)
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    team = db.relationship('Team', back_populates='team_users')
 
 class Checkin(db.Model): # keeps students checking to take a specific AT
     __tablename__ = "Checkin"

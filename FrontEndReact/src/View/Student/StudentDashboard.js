@@ -1,4 +1,4 @@
-
+// StudentDashboard.js
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams.js';
@@ -9,32 +9,6 @@ import { Box, Typography } from '@mui/material';
 import { genericResourceGET, parseRubricNames } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 import Loading from '../Loading/Loading.js';
-
-// StudentDashboard is used for both students and TAs.
-// StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
-// StudentCompletedAssessmentTasks, and depending on the role, either the StudentViewTeams or
-// the TAViewTeams components.
-
-/**
- *  @description This component pulls the CATs & ATs, filters them, then sends them
- *                  to its children components.
- * 
- *  @property {object} roles - Possess the current users role_id and role_name;
- *  @property {Array}  assessmentTasks - All the related ATs to this course & user.
- *  @property {Array}  completedAssessments - All the related CATs to this course & user.
- *  @property {Array}  filteredATs - All valid ATs for the course and user.
- *  @property {Array}  filteredCATs - All valid CATs for the course and user.
- *  @property {Array}  averageData  - Averages for all completed assessment task rubrics.
- * 
- */
-
-/**
- * TODO:
- * Noticed that the front-end student views utilize .find() a lot. It is not inherently wrong; the time 
- *  complexity, however, is O(N) so converting to these [object, Map, Set] might be more useful in the
- *  long run. Because the creation of those data structs is independent, then we could leverage 
- *  the power of awaiting [Promise.all].
- */
 
 /**
  * EXPLICIT rubric-color mapping for ALL rubrics provided.
@@ -63,7 +37,7 @@ class StudentDashboard extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      roles: null, 
+      roles: null,
       assessmentTasks: null,
       completedAssessments: null,
       averageData: null,
@@ -71,12 +45,22 @@ class StudentDashboard extends Component {
       filteredATs: null,
       filteredCATs: null,
       filteredAverageData: null,
+
+      // rubric grouping + colors
       rubrics: null,
       rubricNames: null,
       chartData: null,
       rubricColorsByName: {},
+
+      // teammate’s addition: capture user’s team ids
+      userTeamIds: null,
     };
   }
+
+  // teammate’s addition: callback to capture team IDs from StudentViewTeams
+  updateUserTeamsIds = (teamIds) => {
+    this.setState({ userTeamIds: teamIds });
+  };
 
   componentDidMount() {
     const navbar = this.props.navbar;
@@ -87,32 +71,33 @@ class StudentDashboard extends Component {
     genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
     genericResourceGET(`/assessment_task?course_id=${chosenCourse}`, "assessment_tasks", this, { dest: "assessmentTasks" });
 
-    const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
+    const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`;
     genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" });
 
     genericResourceGET(`/average?course_id=${chosenCourse}`, "average", this, { dest: "averageData" });
 
+    // rubric metadata for name & color mapping
     genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
   }
 
   componentDidUpdate() {
     const {
-      filteredATs, 
+      filteredATs,
       roles,
       assessmentTasks,
       completedAssessments,
       averageData,
       rubrics,
       rubricNames,
+      userTeamIds,
     } = this.state;
 
+    // compute once when all data is present
     const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
 
-    if (canFilter) {
-      // Build rubric id -> name map once
+    // teammate’s constraint: wait for userTeamIds (unless TA role 4)
+    if (canFilter && (userTeamIds || (roles && roles.role_id === 4))) {
       const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
-
-      // Build color dictionary from explicit mapping; assign fallbacks in order as needed.
       const rubricColorsByName = { ...RUBRIC_COLOR_MAP };
 
       let filteredCompletedAssessments = [];
@@ -120,28 +105,36 @@ class StudentDashboard extends Component {
 
       const CATmap = new Map();
       const AVGmap = new Map();
+
       const roleId = roles["role_id"];
-      completedAssessments.forEach(cat => { CATmap.set(cat.assessment_task_id, cat) });
-      averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
+
+      // teammate’s CAT filtering by team: if TA (role 4) include all; otherwise include only CATs for user’s teams or no team (null)
+      completedAssessments.forEach(cat => {
+        const team_id = cat.team_id;
+        if (roleId === 4 || team_id === null || (Array.isArray(userTeamIds) && userTeamIds.includes(team_id))) {
+          CATmap.set(cat.assessment_task_id, cat);
+        }
+      });
+      averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat); });
 
       const currentDate = new Date();
       const isATDone = (cat) => cat !== undefined && cat.done;
-      const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
+      const isATPastDue = (at, today) => (new Date(at.due_date)) < today;
 
-      let filteredAssessmentTasks = assessmentTasks.filter(task => {
-        const cat =  CATmap.get(task.assessment_task_id);
+      const filteredAssessmentTasks = assessmentTasks.filter(task => {
+        const cat = CATmap.get(task.assessment_task_id);
         const avg = AVGmap.get(task.assessment_task_id);
 
         const done = isATDone(cat);
         const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
-        const locked = task.locked;                                
+        const locked = task.locked;
         const published = task.published;
         const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
         const viewable = !done && correctUser && !locked && published && !pastDue;
         const CATviewable = correctUser === false && done === false;
 
-        if (!viewable && !CATviewable && cat !== undefined) {    
+        if (!viewable && !CATviewable && cat !== undefined) {
           filteredCompletedAssessments.push(cat);
           filteredAvgData.push(avg);
         }
@@ -149,7 +142,7 @@ class StudentDashboard extends Component {
         return viewable;
       });
 
-      // Helpers for chart data
+      // helpers
       const computeAvg = (avgObj) => {
         if (avgObj == null) return null;
         if (typeof avgObj === 'number') return avgObj;
@@ -207,7 +200,7 @@ class StudentDashboard extends Component {
         })
         .filter(d => d.avg !== null);
 
-      // Group by rubric name, then by created (oldest → newest)
+      // group by rubric NAME (alpha), then oldest → newest within each group
       chartDataCore.sort((a, b) => {
         const an = (a.rubricName || '').localeCompare(b.rubricName || '');
         if (an !== 0) return an;
@@ -218,7 +211,6 @@ class StudentDashboard extends Component {
       for (let i = 0; i < chartDataCore.length; i++) {
         const cur = chartDataCore[i];
         const prev = chartDataCore[i - 1];
-
         if (i > 0 && prev?.rubricName !== cur?.rubricName) {
           chartData.push({
             key: `spacer-${cur.rubricName}-${i}`,
@@ -234,7 +226,6 @@ class StudentDashboard extends Component {
         filteredATs: filteredAssessmentTasks,
         filteredCATs: filteredCompletedAssessments,
         filteredAverageData: filteredAvgData,
-
         rubricNames: rubricNameMap,
         chartData,
         rubricColorsByName,
@@ -252,13 +243,14 @@ class StudentDashboard extends Component {
       filteredAverageData,
       chartData,
       rubricColorsByName,
-    } = this.state; 
+    } = this.state;
 
+    // wait for filtering
     if (filteredATs === null || filteredCATs === null || filteredAverageData === null) {
-      return <Loading />
+      return <Loading />;
     }
 
-    var navbar = this.props.navbar;
+    const navbar = this.props.navbar;
     navbar.studentViewTeams = {};
     navbar.studentViewTeams.show = "ViewTeams";
     navbar.studentViewTeams.team = null;
@@ -268,7 +260,7 @@ class StudentDashboard extends Component {
     const innerGridStyle = {
       borderRadius: '1px',
       height: '100%',
-      border: "#7F7F7F", 
+      border: "#7F7F7F",
       padding: 0,
       margin: 0,
       boxShadow: "0.3em 0.3em 1em #d6d6d6"
@@ -329,7 +321,11 @@ class StudentDashboard extends Component {
 
           <Box>
             {roles["role_id"] === 5 &&
-              <StudentViewTeams navbar={navbar} />
+              <StudentViewTeams
+                navbar={navbar}
+                // teammate’s addition: wire team-id callback so CAT filtering respects membership
+                updateUserTeamsIds={this.updateUserTeamsIds}
+              />
             }
             {roles["role_id"] === 4 &&
               <TAViewTeams navbar={navbar} />
@@ -342,7 +338,7 @@ class StudentDashboard extends Component {
             <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", alignSelf: "stretch" }}>
               <Box sx={{ width: "100%" }} className="content-spacing">
                 <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="averageRatings">
-                  Skill Developement Progress
+                  Skill Development Progress
                 </Typography>
               </Box>
             </Box>
@@ -389,7 +385,13 @@ class StudentDashboard extends Component {
                         }}
                       />
                       <Bar dataKey="avg">
-                        <LabelList dataKey="avg" position="top" fill="#000" stroke="none" formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)} />
+                        <LabelList
+                          dataKey="avg"
+                          position="top"
+                          fill="#000"
+                          stroke="none"
+                          formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)}
+                        />
                         {chartData.map((entry, index) => (
                           <Cell
                             key={`cell-${index}`}

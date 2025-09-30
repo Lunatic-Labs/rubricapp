@@ -596,13 +596,14 @@ def get_individual_ratings(assessment_task_id):
     Parameters:
     assessment_task_id: int (The id of an assessment task)
     """
-    return db.session.query(
+    indiv_rating = db.session.query(
         User.first_name,
         User.last_name,
         CompletedAssessment.rating_observable_characteristics_suggestions_data,
         Feedback.feedback_time,
+        AssessmentTask.notification_sent,
         CompletedAssessment.last_update,
-        Feedback.feedback_id
+        Feedback.feedback_id, 
     ).join(
         Feedback,
         CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
@@ -610,11 +611,16 @@ def get_individual_ratings(assessment_task_id):
     ).join(
         User,
         CompletedAssessment.user_id == User.user_id
+    ).join(
+        AssessmentTask,
+        CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id,
+        isouter=True
     ).filter(
         CompletedAssessment.team_id == None,
         CompletedAssessment.assessment_task_id == assessment_task_id
     ).all()
-    
+    return indiv_rating
+
 
 @error_log
 def get_team_ratings(assessment_task_id):
@@ -977,7 +983,6 @@ def get_completed_assessment_with_user_name(assessment_task_id):
     ). filter(
         CompletedAssessment.assessment_task_id == assessment_task_id,
     ).all()
-
     return complete_assessments
 
 @error_log
