@@ -319,9 +319,16 @@ export function restoreAdminCredentialsFromSession() {
 
 export function setTestStudentCookies(data) {
     const cookies = new Cookies();
-    cookies.set('user', data.user, { path: '/' });
-    cookies.set('access_token', data.access_token, { path: '/' });
-    cookies.set('refresh_token', data.refresh_token, { path: '/' });
+    
+    // Make sure we're setting the user object with the viewingAsStudent flag
+    const userWithFlag = {
+        ...data.user,
+        viewingAsStudent: true
+    };
+    
+    cookies.set('user', userWithFlag, { path: '/', sameSite: 'strict' });
+    cookies.set('access_token', data.access_token, { path: '/', sameSite: 'strict' });
+    cookies.set('refresh_token', data.refresh_token, { path: '/', sameSite: 'strict' });
     sessionStorage.setItem('viewingAsStudent', 'true');
 }
 
