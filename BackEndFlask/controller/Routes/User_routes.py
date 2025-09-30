@@ -297,6 +297,8 @@ def update_user():
 
             if not user.is_admin and role_id == 3:
                 raise Exception("Non-admin users cannot be enrolled as admins")
+            elif user.is_admin and role_id in [4, 5]:
+                raise Exception("Admin users cannot be enrolled as students or instructors")
             
             replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
 
