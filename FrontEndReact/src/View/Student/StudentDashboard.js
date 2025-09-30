@@ -247,7 +247,6 @@ class StudentDashboard extends Component {
             completedAssessments,
             filteredATs,
             filteredCATs,
-            filteredAverageData,
         } = this.state; 
 
         // Wait for information to be filtered.
