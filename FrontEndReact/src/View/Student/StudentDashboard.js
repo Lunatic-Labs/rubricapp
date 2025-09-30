@@ -23,6 +23,7 @@ import Loading from '../Loading/Loading.js';
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
  *  @property {Array}  filteredCATs - All valid CATs for the course and user.
+ *  @property {Array}  userTeamIds -Figured out user teams.
  *  @property {Array}  averageData  - Averages for all completed assessment task rubrics.
  * 
  */
@@ -47,6 +48,7 @@ class StudentDashboard extends Component {
 
             filteredATs: null,
             filteredCATs: null,
+            userTeamIds: null,
             filteredAverageData: null,
 
             // Added for rubric grouping
@@ -55,6 +57,14 @@ class StudentDashboard extends Component {
 
             chartData: null,
         }
+    }
+
+    /**
+     * Upates the team ids that the user is a part of.
+     * @param {array} teamIds - Team ids that the user is a part of.
+     */
+    updateUserTeamsIds = (teamIds) => {
+        this.setState({userTeamIds:teamIds});
     }
 
     componentDidMount() {
@@ -81,15 +91,15 @@ class StudentDashboard extends Component {
             roles,
             assessmentTasks,
             completedAssessments,
+            userTeamIds,
             averageData,
             rubrics,
             rubricNames,
         } = this.state;
-
         // Wait until everything we need is present (including rubrics), and only compute once
         const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
 
-        if (canFilter) {
+        if (canFilter && (userTeamIds || roles.role_id === 4)) {
             // Build rubric name map once
             const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
 
@@ -100,7 +110,12 @@ class StudentDashboard extends Component {
             const CATmap = new Map();
             const AVGmap = new Map();
             const roleId = roles["role_id"];
-            completedAssessments.forEach(cat => { CATmap.set(cat.assessment_task_id, cat) });
+            completedAssessments.forEach(cat => {
+                const team_id = cat.team_id;
+                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){
+                     CATmap.set(cat.assessment_task_id, cat);
+                }
+             });
             averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
             const currentDate = new Date();
@@ -236,7 +251,8 @@ class StudentDashboard extends Component {
         } = this.state; 
 
         // Wait for information to be filtered.
-        if (filteredATs === null || filteredCATs === null || filteredAverageData === null) {
+        if (!roles) {
+
             return <Loading />
         }
 
@@ -328,6 +344,7 @@ class StudentDashboard extends Component {
                         {roles["role_id"] === 5 &&
                             <StudentViewTeams
                                 navbar={navbar}
+                                updateUserTeamsIds={this.updateUserTeamsIds}
                             />
                         }
                         {roles["role_id"] === 4 &&
