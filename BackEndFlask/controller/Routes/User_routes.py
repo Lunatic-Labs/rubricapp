@@ -233,6 +233,9 @@ def add_user():
             user_exists = user_already_exists(request.json)
 
             if user_exists is not None:
+                if not user_exists.is_admin and request.json["role_id"] == 3:
+                    raise Exception("Non-admin users cannot be enrolled as admins")
+    
                 user_course_exists = get_user_course_by_user_id_and_course_id(
                     user_exists.user_id, course_id)
 
@@ -276,7 +279,7 @@ def update_user():
         if(request.args and request.args.get("uid") and request.args.get("course_id")):
             uid = request.args.get("uid")
 
-            get_user(uid)  # Trigger an error if not exists.
+            user = get_user(uid)  # Trigger an error if not exists.
 
             course_id = request.args.get("course_id")
 
@@ -290,6 +293,9 @@ def update_user():
 
             get_role(role_id)  # Trigger an error if not exists.
 
+            if not user.is_admin and role_id == 3:
+                raise Exception("Non-admin users cannot be enrolled as admins")
+            
             replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
 
         if(request.args and request.args.get("team_id")):
