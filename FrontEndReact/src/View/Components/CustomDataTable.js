@@ -20,11 +20,15 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           '&:nth-of-type(even)': {
-            backgroundColor: '#e8e8e8', // Light gray for even rows
+            backgroundColor: 'var(--light_grey_ADA)', // Light gray for even rows
+            '&:hover': {
+              backgroundColor: 'var(--light_grey_hover) !important',
+            },
           },
           '&:nth-of-type(odd)': {
             backgroundColor: 'white',     // White for odd rows
           },
+          
         },
       },
     },

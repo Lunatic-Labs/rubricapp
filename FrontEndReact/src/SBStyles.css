@@ -10,7 +10,7 @@
 }
 
 .primary-color:disabled {
-  background-color: #E0E0E0 !important;
+  background-color: #bcbcbc !important;
 }
 
 /* Table aligment */
@@ -182,4 +182,25 @@ h4, h5 {
   align-items: center;
   height: .1rem;
   padding: 0.15rem;
+}
+
+/* these colors regulate the display for custom data table and the text inside the 'disabled' export button. */
+:root {
+  --light_grey_ADA: #e8e8e8;
+  --light_grey_hover: #d0d0d0;
+  --export_disabled_text: #4b4b4b;
+}
+
+/* used in line 23 of CustomDataTable.js */
+.light_grey_ADA {
+  background-color: var(--light_grey_ADA);
+}
+
+.light_grey_ADA_hover {
+  background-color: var(--light_grey_hover);
+}
+
+/* used in line 562 of ViewAssessmentTasks.js */
+.export_disabled_text {
+  color: var(--export_disabled_text) !important;
 }
