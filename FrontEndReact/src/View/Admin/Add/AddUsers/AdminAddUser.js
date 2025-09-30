@@ -221,10 +221,14 @@ class AdminAddUser extends Component {
         }
 
         promise.then(result => {
-            if (result !== undefined && result.errorMessage === null) {
-                confirmCreateResource("User");
-            }
+    if (result !== undefined && result.errorMessage === null) {
+        confirmCreateResource("User");
+    } else if (result && result.errorMessage && result.errorMessage.includes("Duplicate entry")) {
+        this.setState({
+            errorMessage: "This email address is already registered. Please use a different email."
         });
+    }
+});
     }
 
     hasErrors = () => {
