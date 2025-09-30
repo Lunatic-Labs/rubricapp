@@ -235,6 +235,8 @@ def add_user():
             if user_exists is not None:
                 if not user_exists.is_admin and request.json["role_id"] == 3:
                     raise Exception("Non-admin users cannot be enrolled as admins")
+                elif user_exists.is_admin and request.json["role_id"] in [4, 5]:
+                    raise Exception("Admin users cannot be enrolled as students or instructors")
     
                 user_course_exists = get_user_course_by_user_id_and_course_id(
                     user_exists.user_id, course_id)
