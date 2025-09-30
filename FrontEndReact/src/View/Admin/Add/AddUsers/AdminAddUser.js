@@ -264,6 +264,14 @@ handleSubmit = () => {
                     },
                     errorMessage: null  // Error under role field, not in the red box
                 });
+            } else if (result.errorMessage.includes("Admin users cannot be enrolled as students or instructors")) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        role: "Admin users cannot be enrolled as students or instructors"
+                    },
+                    errorMessage: null  // Error under role field, not in the red box
+                });
             }
         }
     });
