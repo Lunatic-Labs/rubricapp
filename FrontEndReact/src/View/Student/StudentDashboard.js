@@ -3,16 +3,16 @@ import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams.js';
 import TAViewTeams from './View/TAViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button, Alert } from '@mui/material';
 import { genericResourceGET } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 import Loading from '../Loading/Loading.js';
+import Cookies from 'universal-cookie';
 
 // StudentDashboard is used for both students and TAs.
 // StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
 // StudentCompletedAssessmentTasks, and depending on the role, either the StudentViewTeams or
 // the TAViewTeams components.
-
 
 /**
  *  @description This component pulls the CATs & ATs, filters them, then sends them
@@ -119,6 +119,53 @@ class StudentDashboard extends Component {
         }
     }
 
+    // Add method to handle switching back to admin
+    handleSwitchBack = () => {
+        console.log('=== SWITCHING BACK TO ADMIN ===');
+        
+        const cookies = new Cookies();
+        const adminCredentialsStr = sessionStorage.getItem('adminCredentials');
+        
+        if (!adminCredentialsStr) {
+            console.error('No admin credentials found!');
+            alert('Admin credentials not found. Please login again.');
+            window.location.href = '/login';
+            return;
+        }
+        
+        const adminCredentials = JSON.parse(adminCredentialsStr);
+        console.log('Restoring admin:', adminCredentials.user);
+        
+        // Clear test student cookies
+        cookies.remove('access_token', { path: '/' });
+        cookies.remove('refresh_token', { path: '/' });
+        cookies.remove('user', { path: '/' });
+        
+        // Restore admin cookies
+        cookies.set('access_token', adminCredentials.access_token, { 
+            path: '/', 
+            sameSite: 'strict' 
+        });
+        cookies.set('refresh_token', adminCredentials.refresh_token, { 
+            path: '/', 
+            sameSite: 'strict' 
+        });
+        cookies.set('user', adminCredentials.user, { 
+            path: '/', 
+            sameSite: 'strict' 
+        });
+        
+        // Clear saved data from sessionStorage
+        sessionStorage.removeItem('adminCredentials');
+        sessionStorage.removeItem('chosenCourse');
+        sessionStorage.removeItem('testStudentCourse');
+        
+        console.log('Admin cookies restored');
+        
+        // Reload to apply changes
+        window.location.reload();
+    };
+
     render() {
         const {
             roles,
@@ -127,6 +174,11 @@ class StudentDashboard extends Component {
             filteredATs,
             filteredCATs, 
         } = this.state; 
+
+        // Check if viewing as test student
+        const cookies = new Cookies();
+        const user = cookies.get('user');
+        const isViewingAsStudent = user?.viewingAsStudent;
 
         // Wait for information to be filtered.
         if (filteredATs === null || filteredCATs === null) {
@@ -140,11 +192,46 @@ class StudentDashboard extends Component {
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
 
-
         // Note: The [My Assessment Tasks] & [Completed Assessments] each require exactly one of of the filtered objects.
         //      The reason stems from them needing an original list to properly bind data.
         return (
             <>
+                {/* Switch Back Alert - Only shows when viewing as test student */}
+                {isViewingAsStudent && (
+                    <Alert 
+                        severity="info"
+                        sx={{ 
+                            mb: 3,
+                            mx: 2,
+                            alignItems: 'center'
+                        }}
+                        action={
+                            <Button 
+                                color="inherit" 
+                                size="small"
+                                variant="outlined"
+                                onClick={this.handleSwitchBack}
+                                sx={{ 
+                                    fontWeight: 'bold',
+                                    borderColor: 'currentColor',
+                                    '&:hover': {
+                                        backgroundColor: 'rgba(255, 255, 255, 0.1)'
+                                    }
+                                }}
+                            >
+                                Switch Back to Admin
+                            </Button>
+                        }
+                    >
+                        <Typography variant="body1" sx={{ fontWeight: 'bold' }}>
+                            Viewing as Test Student
+                        </Typography>
+                        <Typography variant="body2">
+                            ID: {user.user_id} | Email: {user.email}
+                        </Typography>
+                    </Alert>
+                )}
+
                 <Box className="page-spacing">
                     <Box sx={{
                         display: "flex",
