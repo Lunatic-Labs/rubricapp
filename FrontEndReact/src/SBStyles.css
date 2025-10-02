@@ -208,3 +208,38 @@ h4, h5 {
 .export_disabled_text {
   color: var(--export_disabled_text) !important;
 }
+
+/* THIS IS FOR TESTING PURPOSES! */
+/* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
+body.mode .primary-color {
+  background-color: #D17410 !important; /* Inverted color of #2E8BEF */
+}
+
+body.mode .primary-color-text {
+  color: #D17410 !important;
+}
+
+body.mode .card-style {
+  display: flex;
+  width: 50%;
+  padding: var(--3, 20px);
+  border-radius: 10px;
+  border-top: 3px solid #D17410 ;
+  background:#FFF;
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+body.mode .assessment-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--2, 4px) ;
+  border-radius: px;
+  border-top: 3px solid #D17410 ;
+  background:#FFF;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+}

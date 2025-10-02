@@ -14,7 +14,7 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 // import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
-// import Settings from '@mui/icons-material/Settings';
+import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout.js';
 import Logo from "./sbText.png";
 
@@ -118,6 +118,15 @@ export default function ButtonAppBar(props) {
                 props.setNewTab("PrivacyPolicy");
               }}>
                 Privacy Policy
+              </MenuItem>
+
+              <Divider />
+
+              <MenuItem  onClick={() => {
+                props.setNewTab("Settings");
+              }}>
+                <Settings />
+                Settings
               </MenuItem>
 
               <Divider />

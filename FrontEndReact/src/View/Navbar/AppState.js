@@ -32,6 +32,7 @@ import AdminAddCustomRubric from '../Admin/Add/AddCustomRubric/AdminAddCustomRub
 import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCustomRubrics.js';
 import UserAccount from './UserAccount.js';
 import PrivacyPolicy from './PrivacyPolicy.js';
+import Settings from './Settings.js';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 
 
@@ -888,6 +889,19 @@ class AppState extends Component {
                         />
 
                         <PrivacyPolicy
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="Settings" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                            aria-label="UserAccountBackButton"
+                        />
+
+                        <Settings
                             navbar={this}
                         />
                     </Box>
