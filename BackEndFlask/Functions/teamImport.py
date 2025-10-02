@@ -51,15 +51,18 @@ def team_csv_to_db(team_file, owner_id, course_id):
             for row in reader:
                 row_list = list(row)
                 team_name = row_list[0].strip()
-                ta_email = row_list[1].strip()
-                missing_ta = False
-                if not is_valid_email(ta_email):
-                    raise SuspectedMisformatting
+                ta_email = 0
+                missing_ta = True
+                
                 if course_uses_tas:
+                    ta_email = row_list[1].strip()
+                    missing_ta = False
+                    if not is_valid_email(ta_email):
+                        raise SuspectedMisformatting(ta_email)
+        
                     user = get_user_by_email(ta_email)
-
                     if user is None:
-                        return UserDoesNotExist
+                        raise UserDoesNotExist(ta_email)
 
 
                     user_id = get_user_user_id_by_email(
@@ -71,7 +74,7 @@ def team_csv_to_db(team_file, owner_id, course_id):
                     )
 
                     if user_course is None:
-                        raise TANotYetAddedToCourse
+                        raise TANotYetAddedToCourse(ta_email)
 
                     if user_course.role_id == 5:
                         missing_ta = True
@@ -89,13 +92,13 @@ def team_csv_to_db(team_file, owner_id, course_id):
                             course_found = True
                     if not course_found:
                         raise OwnerIDDidNotCreateTheCourse
-
+            
                 students = []
                 lower_bound = 1 if course_uses_tas == 0 else 2
                 for index in range(lower_bound, len(row_list)):
                     student_email = row_list[index].strip()
                     if not is_valid_email(student_email):
-                        raise SuspectedMisformatting
+                        raise SuspectedMisformatting(student_email)
 
                     user = get_user_by_email(student_email)
 
@@ -106,8 +109,9 @@ def team_csv_to_db(team_file, owner_id, course_id):
                     user_course = get_user_course_by_user_id_and_course_id(
                         user_id, course_id
                     )
+                  
                     if user_course is None:
-                        raise StudentNotEnrolledInThisCourse
+                        raise StudentNotEnrolledInThisCourse(student_email)
 
                     students.append(user_id)
 
@@ -123,6 +127,7 @@ def team_csv_to_db(team_file, owner_id, course_id):
                         "date_created": str(date.today().strftime("%m/%d/%Y")),
                         "active_until": None,
                         "course_id": course_id,
+                        "assessment_task_id": None, 
                     }
                 )
 
