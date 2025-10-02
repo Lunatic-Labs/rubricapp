@@ -33,12 +33,10 @@ from models.team import (
     get_team_count_by_course_id
 )
 
-
-# ONLY ONE DEFINITION OF THIS ROUTE
 @bp.route('/course', methods=['GET'])
 @jwt_required()
-# @bad_token_check()  # Commented out to allow test students
-# @AuthCheck()  # Commented out to allow test students
+@bad_token_check()
+@AuthCheck()
 def get_all_courses():
     try:
         user_id = request.args.get("user_id")
@@ -199,6 +197,9 @@ def update_course():
 # Important: The JWT identity must be a STRING to avoid "Subject must be a string" error.
 @bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
 @jwt_required()
+# These wehn commented out allow the test student to work. DO WE NEED THEM???
+#@bad_token_check()
+#@AuthCheck()
 def get_test_student_token(course_id):
     try:
         admin_id = get_jwt_identity()
