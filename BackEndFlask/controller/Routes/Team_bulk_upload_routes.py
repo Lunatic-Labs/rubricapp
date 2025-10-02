@@ -7,7 +7,7 @@ from io import BytesIO
 from flask import request
 from controller import bp
 # from Functions import team_import
-from Functions import teamBulkUpload
+from Functions.teamBulkUpload import team_bulk_upload
 from Functions import customExceptions
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
@@ -45,7 +45,7 @@ def upload_team_csv():
             file_path = os.path.join(directory, unique_filename)
             file.save(file_path)
 
-            teamBulkUpload.team_bulk_upload(file_path, user_id, course_id)
+            team_bulk_upload(file_path, user_id, course_id)
 
             shutil.rmtree(directory)
 
