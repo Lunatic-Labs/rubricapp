@@ -33,8 +33,8 @@ class NotEnoughColumns(Exception):
         return self.message
 
 class SuspectedMisformatting(Exception):
-    def __init__(self):
-        self.message = "Raised when the submitted file has an unexpected value, type, or format for a column other than the header"
+    def __init__(self, email):
+        self.message = f"Raised when the submitted file has an unexpected value of {email}, type, or format for a column other than the header"
     def __str__(self):
         return self.message
 
