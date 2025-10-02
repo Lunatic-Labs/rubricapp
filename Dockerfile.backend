@@ -38,4 +38,4 @@ EXPOSE 5000
 
 # Start the Flask server
 # -t for test mode. Make sure to change it back to -ds
-CMD ["python", "setupEnv.py", "-ds"] 
+CMD ["python", "setupEnv.py", "-tds"] 
