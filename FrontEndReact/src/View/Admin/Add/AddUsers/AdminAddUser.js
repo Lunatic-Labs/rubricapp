@@ -109,7 +109,19 @@ class AdminAddUser extends Component {
 
     handleChange = (e) => {
         const { id, value } = e.target;
-
+        if (id === 'email') {
+            this.setState(prev => ({
+              email: value,
+              errors: {
+                ...prev.errors,
+                email:
+                  value.trim() === '' ? 'Email cannot be empty'
+                  : validator.isEmail(value) ? '' 
+                  : 'Please enter a valid email address',
+              },
+            }));
+            return;
+          }
         var formatString = "";
 
         for (let i = 0; i < id.length; i++) {
@@ -220,15 +232,40 @@ class AdminAddUser extends Component {
                 : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
-        promise.then(result => {
-    if (result !== undefined && result.errorMessage === null) {
-        confirmCreateResource("User");
-    } else if (result && result.errorMessage && result.errorMessage.includes("Duplicate entry")) {
-        this.setState({
-            errorMessage: "This email address is already registered. Please use a different email."
+        promise
+        .then((result) => {
+          if (result && result.errorMessage == null) {
+            // success: ensure any old email error is cleared
+            this.setState(prev => ({ errors: { ...prev.errors, email: '' } }));
+            confirmCreateResource("User");
+            return;
+          }
+      
+          // Duplicate email → inline field error (no global toast)
+          if (result && typeof result.errorMessage === 'string') {
+            const msg = result.errorMessage;
+            const isDup =
+              /\b1062\b.*duplicate entry/i.test(msg) && /email/i.test(msg) ||     // MySQL
+              /duplicate key value/i.test(msg) && /unique constraint/i.test(msg) && /email/i.test(msg) || // Postgres
+              /UNIQUE constraint failed/i.test(msg) && /email/i.test(msg);        // SQLite
+      
+            if (isDup || /duplicate entry/i.test(msg) && /email/i.test(msg)) {
+              this.setState(prev => ({
+                errors: { ...prev.errors, email: 'Email is already in use.' },
+                errorMessage: null, // suppress big red toast
+              }));
+              return;
+            }
+          }
+      
+          // Other backend errors → keep your existing toast
+          if (result && result.errorMessage) {
+            this.setState({ errorMessage: result.errorMessage });
+          }
+        })
+        .catch(() => {
+          this.setState({ errorMessage: 'Unable to save right now. Please try again.' });
         });
-    }
-});
     }
 
     hasErrors = () => {
