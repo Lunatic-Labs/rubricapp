@@ -107,13 +107,13 @@ class ViewCourses extends Component {
             customBodyRender: (courseId) => {
               return (
                 <IconButton id={courseId}
+                  role = "img" aria-label="editCourseIconButton"
                   className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
                   onClick={() => {
                     if(courseRoles[courseId]===3) {
                       setAddCourseTabWithCourse(courses, courseId, "AddCourse")
                     }
                 }}
-                  aria-label='editCourseIconButton'
                  >
                   <EditIcon sx={{color:"black"}}/>
                 </IconButton>
@@ -135,6 +135,7 @@ class ViewCourses extends Component {
           customBodyRender: (courseId) => {
             return (
                 <IconButton id={courseId}
+                role = "img" aria-label="viewCourseIconButton"
                    onClick={() => {
                     // The logged in user is an Admin in the course
                     if(courseRoles[courseId] === 3) {
@@ -145,7 +146,7 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                aria-label="viewCourseIconButton">
+                >
                   <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>
             )

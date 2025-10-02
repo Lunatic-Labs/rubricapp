@@ -4,13 +4,12 @@ html, body {
   min-width: 320px; /*to prevent extreme squashing*/
 }
 
-.app-body { 
+.app-body {
   background-color: #F8F8F8;
   min-height: 100vh;
   min-width: 100%; /*allow expand beyond viewport*/
   overflow-x: auto;
 }
-
 
 /* Primary Color */
 .primary-color {
@@ -66,7 +65,6 @@ h4, h5 {
 }
 
 /* Secondary elements alignment */
-
 .content-spacing,
 .subcontent-spacing {
   display: flex;
@@ -92,7 +90,7 @@ h4, h5 {
 
 /* Form Alignment and Position */
 .card-spacing {
-  display: flex; 
+  display: flex;
   flex-direction: column;
   gap: 20px;
   padding: var(--2, 0px) var(--6, 48px);
@@ -107,7 +105,7 @@ h4, h5 {
 }
 
 .form-spacing {
-  width: 100%; 
+  width: 100%;
   gap: 20px;
 /* to avoid shrinking too much*/
 min-width:280px;
@@ -120,7 +118,7 @@ min-width:280px;
   display: flex;
   flex-direction: column;
   width: 100%;
-  min-width: 200px; 
+  min-width: 200px;
 }
 
 .card-style {
@@ -204,7 +202,7 @@ min-width:280px;
 
 .MuiSlider-markLabel {
     font-size: 1.3rem !important;
-    /*prevents slider labels from unwrapping*/
+    /*prevents slider labels from wrapping*/
     white-space: nowrap;
 }
 
@@ -249,7 +247,7 @@ min-width:280px;
 }
 
 .MuiTable-root {
-  min-width: 600px !important; /* Reduced from 800px to make table narrower */
+  min-width: 800px !important; /* Increased to force horizontal scroll */
   width: auto !important;
   table-layout: auto !important;
 }
@@ -267,14 +265,22 @@ min-width:280px;
   pointer-events: none !important;
 }
 
-/* Responsive table adjustments */
-@media screen and (max-width: 959px) {
+/* Responsive table adjustments - only apply nowrap on larger screens */
+@media screen and (min-width: 960px) {
+  .MuiTableCell-root {
+    white-space: nowrap !important;
+  }
+}
+
+/* For medium screens, allow some wrapping but maintain table structure */
+@media screen and (max-width: 959px) and (min-width: 481px) {
   .MuiTableRow-root { display: table-row !important; }
   .MuiTableCell-root {
     display: table-cell !important;
     border-bottom: 1px solid rgba(224,224,224,1) !important;
-    white-space: nowrap !important;
-    min-width: max-content !important;
+    white-space: normal !important; /* Allow wrapping to prevent overlap */
+    min-width: 80px !important; /* Smaller min-width */
+    padding: 8px 12px !important;
   }
   .MuiTableRow-root .MuiTableCell-root[data-colindex] {
     display: table-cell !important;
@@ -283,14 +289,21 @@ min-width:280px;
 
 .MuiTable-root .MuiTableBody-root .MuiTableRow-root {
   display: table-row !important;
-  width: max-content !important;
 }
+
 .MuiTable-root .MuiTableBody-root .MuiTableRow-root .MuiTableCell-root,
 .MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root {
   display: table-cell !important;
-  white-space: nowrap !important;
-  min-width: max-content !important;
   padding: 8px 16px !important;
+}
+
+/* Only apply nowrap and max-content on larger screens to prevent overlap */
+@media screen and (min-width: 960px) {
+  .MuiTable-root .MuiTableBody-root .MuiTableRow-root .MuiTableCell-root,
+  .MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root {
+    white-space: nowrap !important;
+    min-width: max-content !important;
+  }
 }
 
 /* Table rows (custom) */
@@ -302,6 +315,50 @@ min-width:280px;
   padding: 0.15rem;
   flex-wrap: nowrap;
   min-width: max-content;
+}
+
+/* Mobile styles for regular phones */
+@media only screen and (max-width: 480px) {
+  .MuiTableRow-root {
+    display: flex !important;
+    flex-direction: column !important;
+    border: 1px solid #ddd !important;
+    margin-bottom: 10px !important;
+    background: white !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+  }
+  .MuiTableCell-root {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid #eee !important;
+    padding: 8px 0 !important;
+    white-space: normal !important;
+    min-width: unset !important;
+  }
+  .MuiTableCell-root:last-child { border-bottom: none !important; }
+  .MuiTableCell-root::before {
+    content: attr(data-label) ": " !important;
+    font-weight: bold !important;
+    color: #2E8BEF !important;
+    margin-right: 10px !important;
+  }
+  .MuiTableHead-root { display: none !important; }
+
+  /* remove scrollbars on mobile */
+  .MuiTableContainer-root,
+  .MuiPaper-root,
+  .MUIDataTable-paper,
+  .MUIDataTable-tableRoot,
+  .MUIDataTable-responsiveBase {
+    overflow-x: visible !important;
+    max-height: none !important;
+  }
+  .MuiTable-root {
+    min-width: unset !important;
+    width: 100% !important;
+  }
 }
 
 /* Mobile zoom detection (phones @175%+) */
