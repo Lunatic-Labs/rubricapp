@@ -39,6 +39,7 @@ def get_ratings():
                     "team_name": team[1],
                     "rating_observable_characteristics_suggestions_data": team[2],
                     "lag_time": str(lag_time) if lag_time else None,
+                    "notification_sent": team[3]
                 })
         else:
             ratings = get_individual_ratings(assessment_task_id)
@@ -47,14 +48,18 @@ def get_ratings():
 
             result = []
             for rating in ratings:
-                feedback_time = rating[3]
-                submission_time = rating[4]
-                lag_time = feedback_time - submission_time if feedback_time and submission_time else None
-                result.append({
+               # get_individual_ratings returns:
+               # 0:first_name, 1:last_name, 2:rating_data, 3:Feedback.feedback_time,
+               # 4:AssessmentTask.notification_sent, 5:CompletedAssessment.last_update, 6:Feedback.feedback_id
+               feedback_time = rating[3]
+               submission_time = rating[5]
+               lag_time = feedback_time - submission_time if feedback_time and submission_time else None
+               result.append({
                     "first_name": rating[0],
                     "last_name": rating[1],
                     "rating_observable_characteristics_suggestions_data": rating[2],
                     "lag_time": str(lag_time) if lag_time else None,
+                    "notification_sent": rating[3]  # presence of feedback_time => show lag
                 })
         return create_good_response(result, 200, "ratings")
 
@@ -86,7 +91,7 @@ def student_view_feedback():
             feedback_data = request.json
             feedback_data["team_id"] = team_id
             string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
-            feedback_data["feedback_time"] = datetime.now().strftime(string_format)
+            feedback_data["feedback_time"] = datetime.utcnow().strftime(string_format)
             feedback = create_feedback(feedback_data)
             return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
 
@@ -99,7 +104,7 @@ def student_view_feedback():
             feedback_data = request.json
             feedback_data["user_id"] = user_id
             string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
-            feedback_data["feedback_time"] = datetime.now().strftime(string_format)
+            feedback_data["feedback_time"] = datetime.utcnow().strftime(string_format)
             feedback = create_feedback(feedback_data)
             return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
     except Exception as e:

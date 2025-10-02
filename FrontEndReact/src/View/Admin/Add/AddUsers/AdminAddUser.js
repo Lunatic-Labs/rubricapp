@@ -9,7 +9,7 @@ import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, 
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 
-
+const MAX_LMS_ID_LENGTH = 10;
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -110,9 +110,8 @@ class AdminAddUser extends Component {
     // handleChange has been altered to account for the 50 character limit for first / last names
     handleChange = (e) => {
         const { id, value } = e.target;
-
-        var formatString = "";
-
+      
+        let formatString = "";
         for (let i = 0; i < id.length; i++) {
             if (i === 0) {
                 formatString += id.charAt(0).toUpperCase();
@@ -139,7 +138,11 @@ class AdminAddUser extends Component {
             [id]: errorMessage,
           },
         });
-    };
+      };
+
+    
+    
+
 
     handleSelect = (event) => {
         this.setState({
@@ -157,6 +160,18 @@ class AdminAddUser extends Component {
             role,
             lmsId,
         } = this.state;
+
+        if (lmsId) {
+            if (!/^\d+$/.test(lmsId) || lmsId.length > MAX_LMS_ID_LENGTH) {
+                this.setState({
+                    errors: { 
+                        ...this.state.errors, 
+                        lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` 
+                    }
+                });
+                return; // ⭐ CHANGED: stop here — do NOT hit backend
+            }
+        }
 
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -413,6 +428,20 @@ class AdminAddUser extends Component {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
+                                       onPaste={(e) => {
+                                            const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                                            if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
+                                                e.preventDefault();
+                                                this.setState({
+                                                    errors: { ...this.state.errors, lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` }
+                                                });
+                                            }
+                                        }}
+                                        inputProps={{
+                                            inputMode: 'numeric',
+                                            pattern: '[0-9]*',
+                                
+                                        }}
                                         sx={{mb: 3}}
                                     />
                                     
@@ -439,6 +468,6 @@ class AdminAddUser extends Component {
             </React.Fragment>
         )
     }
-}
 
+}
 export default AdminAddUser;
