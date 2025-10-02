@@ -1,7 +1,7 @@
 """Changed team_name to string
 
 Revision ID: 0d58fa9b8925
-Revises: 9e451a7f31df
+Revises: 6ba5a8670ef1
 Create Date: 2025-10-02 15:22:04.487119
 
 """
