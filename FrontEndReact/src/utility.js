@@ -320,16 +320,30 @@ export function restoreAdminCredentialsFromSession() {
 export function setTestStudentCookies(data) {
     const cookies = new Cookies();
     
-    // Make sure we're setting the user object with the viewingAsStudent flag
+    console.log('setTestStudentCookies called with:', data);
+    
+    // Clear old cookies
+    cookies.remove('access_token', { path: '/' });
+    cookies.remove('refresh_token', { path: '/' });
+    cookies.remove('user', { path: '/' });
+    
+    // Check if data has the expected structure
+    if (!data.access_token || !data.user) {
+        console.error('Invalid data structure for setTestStudentCookies:', data);
+        throw new Error('Invalid test student data');
+    }
+    
+    // Set new cookies exactly like Login.js does
+    cookies.set('access_token', data.access_token, {sameSite: 'strict'});
+    cookies.set('refresh_token', data.refresh_token, {sameSite: 'strict'});
+    
     const userWithFlag = {
         ...data.user,
         viewingAsStudent: true
     };
+    cookies.set('user', userWithFlag, {sameSite: 'strict'});
     
-    cookies.set('user', userWithFlag, { path: '/', sameSite: 'strict' });
-    cookies.set('access_token', data.access_token, { path: '/', sameSite: 'strict' });
-    cookies.set('refresh_token', data.refresh_token, { path: '/', sameSite: 'strict' });
-    sessionStorage.setItem('viewingAsStudent', 'true');
+    console.log('Test student cookies set successfully');
 }
 
 export default modules;

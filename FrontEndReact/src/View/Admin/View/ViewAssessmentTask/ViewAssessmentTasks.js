@@ -119,8 +119,6 @@ class ViewAssessmentTasks extends Component {
     }
 
     componentDidMount() {
-        const cookies = new Cookies();
-        const user = cookies.get('user');
         //const isViewingAsStudent = user?.viewingAsStudent || false;
         
         const courseId = this.props.navbar.state.chosenCourse.course_id;

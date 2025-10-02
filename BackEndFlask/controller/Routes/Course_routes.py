@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_tok
 from core import db
 from models.user import User
 from models.user_course import UserCourse, get_user_course
-from models.course import get_course
+from models.course import Course, get_course
 
 from controller.security.CustomDecorators import( 
     AuthCheck, bad_token_check,
@@ -15,7 +15,6 @@ from controller.security.CustomDecorators import(
 )
 
 from models.course import(
-    get_course,
     create_course,
     replace_course,
     get_courses_by_admin_id
@@ -23,8 +22,7 @@ from models.course import(
 
 from models.user_course import (
     create_user_course,
-    get_user_course_student_count_by_course_id,
-    get_user_course
+    get_user_course_student_count_by_course_id
 )
 
 from models.queries import (
@@ -36,14 +34,12 @@ from models.team import (
 )
 
 
+# ONLY ONE DEFINITION OF THIS ROUTE
 @bp.route('/course', methods=['GET'])
 @jwt_required()
-# @bad_token_check()
-# @AuthCheck()  # REMOVE OR COMMENT OUT THIS LINE
+# @bad_token_check()  # Commented out to allow test students
+# @AuthCheck()  # Commented out to allow test students
 def get_all_courses():
-    print(f"\n!!! Get ALL COURSES FUNCTION CALLED - FIRST LINE !!!")
-    print(f"Request args: {request.args}")
-    print(f"Request headers: {dict(request.headers)}")
     try:
         user_id = request.args.get("user_id")
         jwt_identity = get_jwt_identity()
@@ -52,20 +48,13 @@ def get_all_courses():
         print(f"user_id parameter: {user_id}")
         print(f"JWT identity: {jwt_identity}")
         
-        # Manual auth check that allows test students
+        # Allow test students to access their own data
         if str(jwt_identity) != str(user_id):
-            print(f"JWT identity ({jwt_identity}) doesn't match user_id ({user_id})")
-            
-            # Check if this is a test student accessing their own data
-            from models.user import User
-            requesting_user = User.query.get(jwt_identity)
-            target_user = User.query.get(user_id)
-            
-            # Allow if the JWT user is an admin OR if it's a test student
-            if not (requesting_user and (requesting_user.is_admin or 
-                   (target_user and target_user.email and target_user.email.startswith("teststudent")))):
-                print(f"Access denied: Not admin and not test student")
-                return create_bad_response("Unauthorized access", "courses", 403)
+            # Check if it's a test student
+            user = User.query.get(user_id)
+            if not (user and user.email and user.email.startswith("teststudent")):
+                print(f"Access denied: JWT {jwt_identity} != user_id {user_id}")
+                return create_bad_response("Unauthorized", "courses", 403)
         
         if request.args and request.args.get("admin_id"):
             admin_id = request.args.get("admin_id")
@@ -86,10 +75,6 @@ def get_all_courses():
         try:
             user_id = int(user_id)
             print(f"Converted user_id to int: {user_id}")
-            
-            # Check if this is a test student
-            from models.user import User
-            from models.course import Course
             
             user = User.query.get(user_id)
             
@@ -181,9 +166,7 @@ def get_one_course(course_id):
 @admin_check()
 def add_course():
     try:
-        # create_course already creates the test student
         new_course = create_course(request.json)
-        
         user_id = int(request.args.get("user_id"))
         
         create_user_course({
@@ -213,18 +196,13 @@ def update_course():
 
 @bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
 @jwt_required()
-# add in secrity decorators once working removed to find problems.
-def get_test_student_token(**kwargs):  # Accept all arguments as kwargs
-    print(f"\n!!! TEST STUDENT FUNCTION CALLED - FIRST LINE !!!")
-    course_id = kwargs.get('course_id')  # Extract course_id from kwargs
-    
-    print(f"=== TEST STUDENT TOKEN ENDPOINT CALLED ===")
+def get_test_student_token(course_id):
+    print(f"\n=== TEST STUDENT TOKEN ENDPOINT CALLED ===")
     print(f"Course ID received: {course_id}")
-    print(f"All kwargs received: {kwargs}")  # Debug to see what's being passed
     
     try:
         admin_id = get_jwt_identity()
-        print(f"Admin ID from token: {admin_id}")
+        print(f"Admin ID from token: {admin_id} (type: {type(admin_id)})")
         
         # Verify the course exists
         print(f"Looking for course {course_id}...")
@@ -273,7 +251,7 @@ def get_test_student_token(**kwargs):  # Accept all arguments as kwargs
                 if test_student:
                     print(f"Test student retrieved, ID: {test_student.user_id}")
                     
-                    # Check if already enrolled
+                    # Check if already enrolled - using direct query
                     existing = UserCourse.query.filter_by(
                         user_id=test_student.user_id,
                         course_id=course_id
@@ -308,14 +286,36 @@ def get_test_student_token(**kwargs):  # Accept all arguments as kwargs
                 }), 500
         else:
             print(f"Test student found: {test_student.first_name} {test_student.last_name}")
+            
+            # Check enrollment for existing test student too
+            existing = UserCourse.query.filter_by(
+                user_id=test_student.user_id,
+                course_id=course_id
+            ).first()
+            
+            if not existing:
+                print(f"Test student exists but not enrolled, enrolling now...")
+                test_user_course = UserCourse(
+                    user_id=test_student.user_id,
+                    course_id=course_id,
+                    role_id=5,  # Student role
+                    active=True
+                )
+                db.session.add(test_user_course)
+                db.session.commit()
+                print(f"Test student enrolled successfully")
+            else:
+                print(f"Test student already enrolled in course")
         
-        # Create tokens for the test student
+        # Create tokens for the test student - IMPORTANT: Use STRING identity
         print(f"Creating tokens for user ID: {test_student.user_id}")
         
         try:
-            access_token = create_access_token(identity=test_student.user_id)
-            refresh_token = create_refresh_token(identity=test_student.user_id)
-            print(f"Tokens created successfully")
+            # CRITICAL FIX: Convert user_id to string for JWT identity
+            # This fixes the "Subject must be a string" error
+            access_token = create_access_token(identity=str(test_student.user_id))
+            refresh_token = create_refresh_token(identity=str(test_student.user_id))
+            print(f"Tokens created successfully with string identity: '{test_student.user_id}'")
         except Exception as token_error:
             print(f"Error creating tokens: {str(token_error)}")
             return jsonify({
@@ -327,7 +327,7 @@ def get_test_student_token(**kwargs):  # Accept all arguments as kwargs
         response_data = {
             "success": True,
             "user": {
-                "user_id": test_student.user_id,
+                "user_id": test_student.user_id,  # Keep as integer in response
                 "user_name": f"{test_student.first_name} {test_student.last_name}",
                 "first_name": test_student.first_name,
                 "last_name": test_student.last_name,
@@ -341,6 +341,7 @@ def get_test_student_token(**kwargs):  # Accept all arguments as kwargs
         }
         
         print(f"Returning success response")
+        print(f"Response user_id: {test_student.user_id} (type: {type(test_student.user_id)})")
         print(f"=== END TEST STUDENT TOKEN ENDPOINT ===")
         
         return jsonify(response_data), 200
