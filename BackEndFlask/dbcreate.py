@@ -14,6 +14,7 @@ from models.team_user import *
 from models.assessment_task import *
 from models.completed_assessment import * 
 from controller.security.blacklist import start_redis
+from sqlalchemy import create_engine, text
 from models.feedback import *
 from sqlalchemy import text, inspect
 import time
@@ -25,6 +26,19 @@ sleep_time = 0
 
 print("[dbcreate] starting...")
 time.sleep(sleep_time)
+
+MYSQL_HOST = os.getenv('MYSQL_HOST')
+MYSQL_USER = os.getenv('MYSQL_USER')
+MYSQL_PASSWORD = os.getenv('MYSQL_PASSWORD')
+MYSQL_DATABASE = os.getenv('MYSQL_DATABASE')
+
+# Connect without specifying DB
+engine = create_engine(f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/")
+
+with engine.connect() as conn:
+    conn.execute(text(f"CREATE DATABASE IF NOT EXISTS {MYSQL_DATABASE}"))
+    conn.commit()
+
 
 with app.app_context():
     print("[dbcreate] attempting to create new db...")
