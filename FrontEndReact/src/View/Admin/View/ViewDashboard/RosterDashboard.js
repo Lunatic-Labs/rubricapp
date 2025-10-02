@@ -32,15 +32,10 @@ class RosterDashboard extends Component {
                         <Button
                             className='primary-color'
                             variant='contained'
-                            // In RosterDashboard.js or wherever your View as Student button is:
-                            onClick={async () => {
+                            onClick={async () => { // STUDENT VIEW BUTTON
                                 const cookies = new Cookies();
                                 
-                                try {
-                                    console.log('=== SWITCHING TO STUDENT VIEW ===');
-                                    console.log('Course ID:', courseId);
-                                    console.log('Course object:', course);
-                                    
+                                try {  
                                     if (!courseId) {
                                         alert('No course selected');
                                         return;
@@ -62,10 +57,7 @@ class RosterDashboard extends Component {
                                             'Content-Type': 'application/json'
                                         }
                                     });
-                                    
-                                    console.log('Response status:', response.status);
-                                    console.log('Response ok:', response.ok);
-                                    
+                                                                       
                                     if (!response.ok) {
                                         const errorData = await response.json();
                                         console.error('Error response:', errorData);
@@ -74,12 +66,8 @@ class RosterDashboard extends Component {
                                     
                                     const data = await response.json();
                                     console.log('Test student data received:', data);
-                                    
-                                    // The backend returns {success: true, user: {...}, access_token: ..., refresh_token: ...}
-                                    // OR it might just return the data directly without a success field
-                                    // Let's handle both cases
-                                    
-                                    if (data.access_token && data.user) {  // Check for actual data instead of success field
+
+                                    if (data.access_token && data.user) {  // Check for data
                                         // Clear old cookies
                                         cookies.remove('access_token', { path: '/' });
                                         cookies.remove('refresh_token', { path: '/' });
@@ -106,10 +94,6 @@ class RosterDashboard extends Component {
                                             path: '/', 
                                             sameSite: 'strict' 
                                         });
-                                        
-                                        console.log('Test student cookies set');
-                                        console.log('New user:', cookies.get('user'));
-                                        console.log('New token exists:', !!cookies.get('access_token'));
                                         
                                         // Store course info for navigation
                                         const courseData = {

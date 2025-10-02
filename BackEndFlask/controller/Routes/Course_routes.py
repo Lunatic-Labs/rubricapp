@@ -193,19 +193,15 @@ def update_course():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a course{e}", "courses", 400)
 
-
+# New Endpooint: get_test_student_token
+# This code creates or retrieves the test student information for a course.
+# Used for: "View as Student" feature.
+# Important: The JWT identity must be a STRING to avoid "Subject must be a string" error.
 @bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
 @jwt_required()
 def get_test_student_token(course_id):
-    print(f"\n=== TEST STUDENT TOKEN ENDPOINT CALLED ===")
-    print(f"Course ID received: {course_id}")
-    
     try:
         admin_id = get_jwt_identity()
-        print(f"Admin ID from token: {admin_id} (type: {type(admin_id)})")
-        
-        # Verify the course exists
-        print(f"Looking for course {course_id}...")
         course = get_course(course_id)
         
         if not course:
@@ -215,14 +211,10 @@ def get_test_student_token(course_id):
                 "error": f"Course {course_id} not found"
             }), 404
         
-        print(f"Course found: {course.course_name if hasattr(course, 'course_name') else 'course object'}")
-        
-        # The test student email
-        test_email = f"teststudent{course_id}@skillbuilder.edu"
-        print(f"Looking for test student with email: {test_email}")
-        
+        test_email = f"teststudent{course_id}@skillbuilder.edu"         
         test_student = User.query.filter_by(email=test_email).first()
         
+        # Ceck if test student exists in DB
         if not test_student:
             print(f"Test student not found, creating one...")
             
@@ -232,7 +224,7 @@ def get_test_student_token(course_id):
                     first_name="Test",
                     last_name="Student",
                     email=test_email,
-                    password="TestPassword123!",
+                    password="TestPassword123!", # TODO: Change to a secure random password
                     owner_id=course.admin_id if hasattr(course, 'admin_id') else admin_id,
                     has_set_password=True,
                     is_admin=False,
@@ -241,51 +233,40 @@ def get_test_student_token(course_id):
                     reset_code=None
                 )
                 
+                # Add and commit to DB
                 db.session.add(test_student)
                 db.session.commit()
-                print(f"Test student created successfully")
                 
-                # Get the newly created user
+                # Store new test student
                 test_student = User.query.filter_by(email=test_email).first()
                 
-                if test_student:
-                    print(f"Test student retrieved, ID: {test_student.user_id}")
-                    
-                    # Check if already enrolled - using direct query
+                if test_student: # Check if enrolled
                     existing = UserCourse.query.filter_by(
                         user_id=test_student.user_id,
                         course_id=course_id
                     ).first()
                     
-                    if not existing:
-                        print(f"Enrolling test student in course...")
+                    if not existing: # Enroll if not already enrolled
                         test_user_course = UserCourse(
                             user_id=test_student.user_id,
                             course_id=course_id,
-                            role_id=5,  # Student role
+                            role_id=5,
                             active=True
                         )
                         db.session.add(test_user_course)
                         db.session.commit()
-                        print(f"Test student enrolled successfully")
-                    else:
-                        print(f"Test student already enrolled")
                 else:
-                    print(f"Failed to retrieve created test student")
                     return jsonify({
                         "success": False,
                         "error": "Failed to create test student"
                     }), 500
                     
             except Exception as create_error:
-                print(f"Error creating test student: {str(create_error)}")
                 db.session.rollback()
                 return jsonify({
                     "success": False,
                     "error": f"Failed to create test student: {str(create_error)}"
                 }), 500
-        else:
-            print(f"Test student found: {test_student.first_name} {test_student.last_name}")
             
             # Check enrollment for existing test student too
             existing = UserCourse.query.filter_by(
@@ -294,7 +275,6 @@ def get_test_student_token(course_id):
             ).first()
             
             if not existing:
-                print(f"Test student exists but not enrolled, enrolling now...")
                 test_user_course = UserCourse(
                     user_id=test_student.user_id,
                     course_id=course_id,
@@ -303,19 +283,13 @@ def get_test_student_token(course_id):
                 )
                 db.session.add(test_user_course)
                 db.session.commit()
-                print(f"Test student enrolled successfully")
-            else:
-                print(f"Test student already enrolled in course")
         
-        # Create tokens for the test student - IMPORTANT: Use STRING identity
-        print(f"Creating tokens for user ID: {test_student.user_id}")
-        
+        # Create tokens for the test student   
         try:
             # CRITICAL FIX: Convert user_id to string for JWT identity
             # This fixes the "Subject must be a string" error
             access_token = create_access_token(identity=str(test_student.user_id))
             refresh_token = create_refresh_token(identity=str(test_student.user_id))
-            print(f"Tokens created successfully with string identity: '{test_student.user_id}'")
         except Exception as token_error:
             print(f"Error creating tokens: {str(token_error)}")
             return jsonify({
@@ -339,10 +313,6 @@ def get_test_student_token(course_id):
             "access_token": access_token,
             "refresh_token": refresh_token
         }
-        
-        print(f"Returning success response")
-        print(f"Response user_id: {test_student.user_id} (type: {type(test_student.user_id)})")
-        print(f"=== END TEST STUDENT TOKEN ENDPOINT ===")
         
         return jsonify(response_data), 200
         
