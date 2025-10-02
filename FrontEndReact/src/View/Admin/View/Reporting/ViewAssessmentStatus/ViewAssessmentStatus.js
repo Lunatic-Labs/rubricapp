@@ -9,9 +9,19 @@ import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements.js';
 
 export default function ViewAssessmentStatus(props) {
-  var categoryList = Object.keys(props.rubrics.category_json)
-  .sort((a,b) => props.rubrics.category_json[a].index - props.rubrics.category_json[b].index);
-  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList[0]);
+  // Check if rubrics and category_json exist to prevent null reference errors when no tasks are available
+  var categoryList = (props.rubrics && props.rubrics.category_json) 
+    ? Object.keys(props.rubrics.category_json)
+        .sort((a,b) => props.rubrics.category_json[a].index - props.rubrics.category_json[b].index)
+    : [];
+
+    // Ensure chosenAssessmentId is valid when no assessment tasks are available
+  const validAssessmentId = (props.assessmentTasks && props.assessmentTasks.length > 0) 
+  ? props.chosenAssessmentId 
+  : '';
+
+  // Set initial category ID, defaulting to empty string if no categories available
+  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] : '');
 
   const handleChosenCategoryIdChange = (event) => {
     setChosenCategoryId(event.target.value);
@@ -66,62 +76,65 @@ export default function ViewAssessmentStatus(props) {
   var stdev = 0;
   var finished = 0;
   var total = props.courseTotalStudents;  //total teams or students
-  for (let i = 0; i < props.completedAssessments.length; i++) {
-    if (props.completedAssessments[i].done) {
-      finished++;
+  if (props.completedAssessments && props.completedAssessments.length > 0) {
+      for (let i = 0; i < props.completedAssessments.length; i++) {
+      if (props.completedAssessments[i].done) {
+        finished++;
+      }
     }
-  }
-  var progress = +((finished / total) * 100).toFixed(2);
-  if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
-    // Iterate through each completed assessment for chosen assessment task
-    for (var i = 0; i < props.completedAssessments.length; i++) {
-      // Only collect data from completed assessment tasks
-      if (!props.completedAssessments[i]['done']) 
-        continue;
+    var progress = +((finished / total) * 100).toFixed(2);
+    if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
+      // Iterate through each completed assessment for chosen assessment task
+      for (var i = 0; i < props.completedAssessments.length; i++) {
+        // Only collect data from completed assessment tasks
+        if (!props.completedAssessments[i]['done']) 
+          continue;
 
-      if (props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'].hasOwnProperty(chosenCategoryId)) {
-        // Collect the ratings data
-        var oneRating = props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['rating'];
+        if (props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'].hasOwnProperty(chosenCategoryId)) {
+          // Collect the ratings data
+          var oneRating = props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['rating'];
 
-        allRatings.push(oneRating);
+          allRatings.push(oneRating);
 
-        ratingsData['ratings'][oneRating]['number'] += 1; 
+          ratingsData['ratings'][oneRating]['number'] += 1; 
 
-        // Iterate through each observable characteristic within the category and see whether the user checked the box
-        for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'].length; j++) {
-          let oc_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'][j]);
+          // Iterate through each observable characteristic within the category and see whether the user checked the box
+          for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'].length; j++) {
+            let oc_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'][j]);
 
-          characteristicsData['characteristics'][j]['number'] += oc_data;
-        }
+            characteristicsData['characteristics'][j]['number'] += oc_data;
+          }
 
-        // Iterate through each suggestion for improvement within the category and see whether the user checked the box
-        for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'].length; j++) {
-          let sugg_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'][j]);
+          // Iterate through each suggestion for improvement within the category and see whether the user checked the box
+          for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'].length; j++) {
+            let sugg_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'][j]);
 
-          improvementsData['improvements'][j]['number'] += sugg_data;
-        }
-      } 
-    }
+            improvementsData['improvements'][j]['number'] += sugg_data;
+          }
+        } 
+      }
+    } // End of completedAssessments processing
 
-    // calc avg/stdev using allRatings
-    if (allRatings.length > 0) {
-      avg = (allRatings.reduce((a, b) => a + b) / allRatings.length).toFixed(2);
+    
+      // calc avg/stdev using allRatings
+      if (allRatings.length > 0) {
+        avg = (allRatings.reduce((a, b) => a + b) / allRatings.length).toFixed(2);
 
-      stdev = (Math.sqrt(allRatings.map(x => (x - avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
-    }
+        stdev = (Math.sqrt(allRatings.map(x => (x - avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
+      }
 
-    // add percentage to each JSON object in improvement/characteristics
-    for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
-      let percent = total === 0 ? 0 : 
-        (characteristicsData['characteristics'][i]['number'] / total * 100);
-      characteristicsData['characteristics'][i]['percentage'] = +percent.toFixed(2);
-    }
- 
-    for (let i = 0; i < improvementsData['improvements'].length; i++) {
-      let percent = total === 0 ? 0 : 
-        (improvementsData['improvements'][i]['number'] / total * 100);
-      improvementsData['improvements'][i]['percentage'] = +percent.toFixed(2);
-    }
+      // add percentage to each JSON object in improvement/characteristics
+      for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
+        let percent = total === 0 ? 0 : 
+          (characteristicsData['characteristics'][i]['number'] / total * 100);
+        characteristicsData['characteristics'][i]['percentage'] = +percent.toFixed(2);
+      }
+  
+      for (let i = 0; i < improvementsData['improvements'].length; i++) {
+        let percent = total === 0 ? 0 : 
+          (improvementsData['improvements'][i]['number'] / total * 100);
+        improvementsData['improvements'][i]['percentage'] = +percent.toFixed(2);
+      }
   }
   
   const innerGridStyle = {
@@ -190,8 +203,8 @@ export default function ViewAssessmentStatus(props) {
                   <Grid container spacing={2}>
                     <Grid item xs={12} md={6}>
                       <AssessmentTaskDropdown
-                        assessmentTasks={props.assessmentTasks}
-                        chosenAssessmentId={props.chosenAssessmentId}
+                        assessmentTasks={props.assessmentTasks || []}
+                        chosenAssessmentId={validAssessmentId}
                         setChosenAssessmentId={props.setChosenAssessmentId}
                       />
                     </Grid>

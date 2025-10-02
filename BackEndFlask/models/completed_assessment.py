@@ -80,34 +80,34 @@ def delete_completed_assessment_tasks(completed_assessment_id):
         return False
 
     return one_completed_assessment
-
 @error_log
 def create_completed_assessment(completed_assessment_data):
     assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=completed_assessment_data["assessment_task_id"]).first()
     
-    #isoformat() is used to return a string of date, time, and UTC offset to the corresponding time zone.
-
     # Default to current time in UTC if no initial time provided
     if not completed_assessment_data.get("initial_time"):
-        completed_assessment_data["initial_time"] = datetime.utcnow().isoformat() + "Z"
+        completed_assessment_data["initial_time"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
     
     # Default to current time in UTC if no last update provided
     if not completed_assessment_data.get("last_update"):
-        completed_assessment_data["last_update"] = datetime.utcnow().isoformat() + "Z"
+        completed_assessment_data["last_update"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
     
+    # Convert times to UTC before saving
+    initial_time_utc = ensure_utc_datetime(completed_assessment_data["initial_time"])
+    last_update_utc = ensure_utc_datetime(completed_assessment_data["last_update"])
 
     completed_assessment = CompletedAssessment(
         assessment_task_id=completed_assessment_data["assessment_task_id"],
         completed_by=completed_assessment_data["completed_by"],
         team_id=completed_assessment_data["team_id"],
         user_id=completed_assessment_data["user_id"],
-        initial_time=parse_and_convert_timezone(completed_assessment_data["initial_time"],assessment_task),
-        last_update=parse_and_convert_timezone(completed_assessment_data["last_update"],assessment_task),
+        initial_time=initial_time_utc,
+        last_update=last_update_utc,
         rating_observable_characteristics_suggestions_data=completed_assessment_data["rating_observable_characteristics_suggestions_data"],
         done=completed_assessment_data["done"],
         locked=False,
     )
-    
+
     db.session.add(completed_assessment)
     db.session.commit()
     
@@ -1068,11 +1068,13 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
     if not completed_assessment_data.get("last_update"):
         completed_assessment_data["last_update"] = datetime.utcnow().isoformat() + "Z"
     
+    # Convert to UTC
+    last_update_utc = ensure_utc_datetime(completed_assessment_data["last_update"])
     
     one_completed_assessment.assessment_task_id = completed_assessment_data["assessment_task_id"]
     one_completed_assessment.team_id = completed_assessment_data["team_id"]
     one_completed_assessment.user_id = completed_assessment_data["user_id"]
-    one_completed_assessment.last_update = parse_and_convert_timezone(completed_assessment_data["last_update"], assessment_task)
+    one_completed_assessment.last_update = last_update_utc
     one_completed_assessment.rating_observable_characteristics_suggestions_data = completed_assessment_data["rating_observable_characteristics_suggestions_data"]
     one_completed_assessment.done = completed_assessment_data["done"]
 
