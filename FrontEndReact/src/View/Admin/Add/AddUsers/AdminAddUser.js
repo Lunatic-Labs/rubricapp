@@ -142,6 +142,20 @@ class AdminAddUser extends Component {
           });
           return;
         }
+
+        if (id === 'email') {
+          let emailError = '';
+          if (value.trim() === '') {
+            emailError = 'Email cannot be empty';
+          } else if (!validator.isEmail(value)) {
+            emailError = 'Please enter a valid email address';
+          }
+          this.setState({
+            [id]: value,
+            errors: { ...this.state.errors, [id]: emailError }
+          });
+          return;
+        }
       
         // other fields
         this.setState({
