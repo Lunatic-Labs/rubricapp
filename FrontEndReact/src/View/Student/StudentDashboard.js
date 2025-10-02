@@ -68,7 +68,6 @@ class StudentDashboard extends Component {
             filteredATs: null,
             filteredCATs: null,
             userTeamIds: null,
-            filteredAverageData: null,
 
             // Added for rubric grouping
             rubrics: null,
@@ -250,7 +249,6 @@ class StudentDashboard extends Component {
             this.setState({
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAssessments,
-                filteredAverageData: filteredAvgData,
 
                 rubricNames: rubricNameMap,
                 chartData,
@@ -265,7 +263,6 @@ class StudentDashboard extends Component {
             completedAssessments,
             filteredATs,
             filteredCATs,
-            filteredAverageData,
         } = this.state; 
 
         // Wait for information to be filtered.
