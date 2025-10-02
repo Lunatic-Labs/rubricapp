@@ -380,7 +380,7 @@ class StudentDashboard extends Component {
                         }}>
                             <Box sx={{ width: "100%" }} className="content-spacing">
                                 <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="averageRatings">
-                                    Average Ratings
+                                    Skill Development Process
                                 </Typography>
                             </Box>
                         </Box>
@@ -388,7 +388,7 @@ class StudentDashboard extends Component {
                         {
                           <div className={innerDivClassName} style={{ ...innerGridStyle, minHeight: '300px' }}>
                             <h6 style={{ margin: 0, padding: '1px', lineHeight: 1 }}>
-                              <u>Completed Task Average Ratings</u>
+                              <u>Completed Task Average Over Time</u>
                             </h6>
                             <div style={{ width: '100%', height: '260px', flexGrow: 1 }}>
                               {this.state.chartData && this.state.chartData.length ? (
