@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, jsonify
 from marshmallow import fields, Schema
 from controller import bp 
 from models.rubric_categories import *
@@ -215,7 +215,6 @@ def delete_rubric():
     except Exception as e:
         db.session.rollback()
         return create_bad_response(f"An error occurred deleting a rubric: {e}", "rubrics", 400)
-
 
 class RatingsSchema(Schema):
     rating_id          = fields.Integer()
