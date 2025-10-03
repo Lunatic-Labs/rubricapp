@@ -196,11 +196,16 @@ def eat(args, argc):
 def start_tests():
     log("Starting tests...")
 
-    config.rubricapp_running_locally = False
-    config.testing_mode = True
+    #config.rubricapp_running_locally = False
+    #config.testing_mode = True
 
-    # NOTE: Testing is now running in the same process.
-    pytest.main(["--disable-warnings"])
+    # Run pytest in an isolated subprocess with custom environment flags.
+    # Using a subprocess avoids race conditions and global state leaks
+    # that would occur if pytest.main() were called directly in this process.
+    # These env vars signal "test mode" without mutating shared config.
+    env = {**os.environ, "RUBRICAPP_RUNNING_LOCALLY": "0", "TESTING_MODE": "1"}
+    subprocess.run(["pytest", "--disable-warnings"], env=env)
+
 
 
     log("Finished tests")
