@@ -252,15 +252,13 @@ if __name__ == "__main__":
 
         if single:
             for c in arg:
-                try:
-                    funclst[c]()
-
-                except:
-                    err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
+                if c not in funclst:
+                    err(f"Invalid argument: `{c}`. See -h for help.")
+                    sys.exit(1)
+                funclst[c]()
 
         else:
-            try:
-                funclst[arg]()
-
-            except:
-                err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
+            if arg not in funclst:
+                err(f"Invalid argument: `{arg}`. See -h for help.")
+                sys.exit(1)
+            funclst[arg]()
