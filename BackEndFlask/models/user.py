@@ -387,7 +387,7 @@ def delete_user(user_id):
         if assessment_total > 0:
             raise ValueError("Cannot delete user with associated tasks")
         
-        user = User.query.get(user_id)
+        user = db.session.get(User, user_id)
         if user:
             db.session.delete(user)
             db.session.commit()
