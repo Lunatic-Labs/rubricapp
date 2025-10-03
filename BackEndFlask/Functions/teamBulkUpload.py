@@ -11,7 +11,7 @@ from enum import Enum
 
 from datetime import date
 import csv
-    
+
 class ParseState(Enum):
     TA = 0
     TEAM = 1
@@ -70,7 +70,7 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
         current_row += 1
         
         # Handles the end of one team
-        if current_state == ParseState.STUDENT and len(hd) == 1:
+        if current_state == ParseState.STUDENT and (len(hd) == 0 or len(hd) == 1):
             if len(students) > 0:
                 if ta == "" or team_name == "":
                     raise EmptyTeamName if team_name == "" else EmptyTAEmail
@@ -78,14 +78,19 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
                 students = []
 
                 multiple_observers = True
+                empty_space = False
+
                 if len(lst) >= 1:
                     lookAhead = __expect(lst)
+                    if len(hd) == 0:
+                        empty_space = True
+                        hd = lookAhead
+                        lookAhead = __expect(lst)
                     lst.insert(0, lookAhead)
                     lst.insert(0, hd)
-                    multiple_observers = not (len(hd) == len(lookAhead) == 1)
-                    current_row -= 1
-
-                current_state = ParseState.TEAM if multiple_observers else ParseState.TA 
+                    multiple_observers = (len(hd) == len(lookAhead) == 1)
+                    current_row -= 1 if not empty_space else 0
+                current_state = ParseState.TA if multiple_observers else ParseState.TEAM 
             continue
 
         # Process based on what type of row we're expecting
