@@ -91,8 +91,8 @@ class AdminAddTeam extends Component {
     
         if (teamName.trim() === "") {
             errors.teamName = "Team name cannot be empty";
-        } else if (teamName.length > 15) {
-            errors.teamName = "Team name cannot be more than 15 characters";
+        } else if (teamName.length > 50) {
+            errors.teamName = "Team name cannot be more than 50 characters";
         }
     
         if (observerId === "") {
@@ -130,13 +130,24 @@ class AdminAddTeam extends Component {
     handleChange = (e) => {
         const { id, value } = e.target;
 
+        //Define max length for teamName
+        const maxLength = 50;
+
+        //Check for validation
+        let errorMessage = '';
+        if (value.trim() === '') {
+            errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;
+        } else if (id === 'teamName' && value.length > maxLength) {
+            errorMessage = `Team name cannot be more than ${maxLength} characters`;
+        }
+
         this.setState({
             [id]: value,
 
             errors: {
                 ...this.state.errors,
 
-                [id]: value.trim() === "" ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : "",
+                [id]: errorMessage,
             },
         });
     };
@@ -217,6 +228,7 @@ class AdminAddTeam extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        inputProps={{ maxLength: 50 }}
                                         aria-label="userTeamNameInput"
                                     />
 

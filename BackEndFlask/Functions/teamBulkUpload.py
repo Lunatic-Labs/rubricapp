@@ -257,6 +257,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id": course_id,
                 "assessment_task_id": None,
+                
             })
 
         team_id = team.team_id
@@ -310,7 +311,7 @@ def __verify_information(teams: list[TBUTeam]):
         if len(team.students) == 0:
             raise EmptyTeamMembers
         if not helper_verify_email_syntax(team.ta_email):
-            raise SuspectedMisformatting
+            raise SuspectedMisformatting(team.ta_email)
 
         for student in team.students:
             if student.fname == "":

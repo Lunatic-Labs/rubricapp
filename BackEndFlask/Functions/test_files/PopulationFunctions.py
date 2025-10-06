@@ -10,11 +10,13 @@ import uuid
 
 # TODO: Need to write a test for both student_import and team_import to make sure
 #   that is_valid_email works as should!
-def is_valid_email(email):
-    return re.fullmatch(
-        r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,7}\b',
-        email
-    ) and not ' ' in email and '@' in email
+
+def is_valid_email(email: str) -> bool:
+    return bool(re.fullmatch(
+        r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}",
+        email.strip()
+    ))
+
 
 # TODO: Need to write a test for both student_import and team_import to make sure
 #   that xlsx file is converted to csv
@@ -41,6 +43,56 @@ template_user = {
     "consent": None,
     "lms_id": None
 }
+
+# from models import User, Course, db
+
+def cleanup_test_users(session=None):
+    if session is None:
+        session = db.session
+
+    # Identify all test users
+    test_users = session.query(User).filter(User.email.like("test%@gmail.com")).all()
+    if not test_users:
+        return
+
+    # Map of parent -> child users
+    parent_to_children = {}
+    for u in test_users:
+        if u.owner_id:
+            parent_to_children.setdefault(u.owner_id, []).append(u.user_id)
+
+    # Delete child users first recursively
+    deleted_ids = set()
+
+    def delete_user_recursive(user_id):
+        # Delete children first
+        children = parent_to_children.get(user_id, [])
+        for cid in children:
+            if cid not in deleted_ids:
+                delete_user_recursive(cid)
+
+        # Delete UserCourse entries
+        session.query(UserCourse).filter_by(user_id=user_id).delete(synchronize_session=False)
+
+        # Delete Teams and TeamUsers owned by this user
+        user_courses = session.query(Course).filter_by(admin_id=user_id).all()
+        for course in user_courses:
+            session.query(TeamUser).filter(TeamUser.team_id.in_(
+                session.query(Team.team_id).filter_by(course_id=course.course_id)
+            )).delete(synchronize_session=False)
+            session.query(Team).filter_by(course_id=course.course_id).delete(synchronize_session=False)
+            session.delete(course)
+
+        # Finally delete the user
+        session.query(User).filter_by(user_id=user_id).delete(synchronize_session=False)
+        deleted_ids.add(user_id)
+
+    for u in test_users:
+        if u.user_id not in deleted_ids:
+            delete_user_recursive(u.user_id)
+
+    session.commit()
+
 
 # create_one_admin_course()
 #   - takes one parameter:
@@ -110,14 +162,14 @@ def delete_all_users_user_courses(course_id):
 #       - test course
 #       - unless an error occurs
 #           - returns the error message
-def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll_student=False):
+def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, skip_student_enrollment=False):
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
-
+ 
     new_course = create_course({
         "course_number": "CRS001",
         "course_name": "Summer Internship",
@@ -128,7 +180,7 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
         "use_tas": use_tas,
         "use_fixed_teams": False
     })
-    
+    print(f"use_tas: {new_course.use_tas}")
     if use_tas:
         ta = template_user
         ta["first_name"] = "Test TA"
@@ -136,14 +188,15 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
         ta["email"] = f"testta@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
-        if not unenroll_ta:
+        
+        if not skip_ta_enrollment:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
                 # role_id of 4 is a "TA"
                 "role_id": 4
             })
-
+    
     student = template_user
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
@@ -151,14 +204,14 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
-    if not unenroll_student:
+    if not skip_student_enrollment:
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
             "user_id": new_student.user_id,
             # role_id of 5 is a "Student"
             "role_id": 5
         })
-        
+    
     result = {
         "course_id": new_course.course_id,
         "admin_id": new_teacher.user_id,
@@ -167,7 +220,7 @@ def create_one_admin_ta_student_course(use_tas=True, unenroll_ta=False, unenroll
     }
     return result
 
-def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unenroll_student=False):
+def create_two_admin_two_ta_student_course(use_tas=True, skip_ta_unenroll=False, skip_student_unenroll=False):
     teacher = template_user
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
@@ -193,7 +246,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
         ta["email"] = f"testta1@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
-        if not unenroll_ta:
+        if not skip_ta_unenroll:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
@@ -206,7 +259,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
         ta2["email"] = f"testta2@gmail.com"
         ta2["owner_id"] = new_teacher.user_id
         new_ta2 = create_user(ta2)
-        if not unenroll_ta:
+        if not skip_ta_unenroll:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta2.user_id,
@@ -221,7 +274,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, unenroll_ta=False, unen
     student["owner_id"] = new_teacher.user_id
     new_student = create_user(student)
     
-    if not unenroll_student:
+    if not skip_student_unenroll:
         new_user_course = create_user_course({
             "course_id": new_course.course_id,
             "user_id": new_student.user_id,
