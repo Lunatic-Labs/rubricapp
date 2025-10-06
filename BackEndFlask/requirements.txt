@@ -1,14 +1,14 @@
 # >=Core libs>= #
 
 # Flask framework and extentions
-flask == 3.1.2
-Werkzeug == 3.1.3
-flask-sqlalchemy == 3.1.1
-Flask-Migrate == 4.1.0
-flask-marshmallow == 1.3.0
-flask-jwt-extended == 4.7.1
-flask_cors == 6.0.1
-Flask-Limiter[redis] == 3.12
+flask >= 3.1.2
+Werkzeug >= 3.1.3
+flask-sqlalchemy >= 3.1.1
+Flask-Migrate >= 4.1.0
+flask-marshmallow >= 1.3.0
+flask-jwt-extended >= 4.7.1
+flask_cors >= 6.0.1
+Flask-Limiter >= 4.0.0
 
 # Tools for serialization and validation
 marshmallow == 4.0.1
@@ -49,7 +49,7 @@ click >= 8.3.0
 cffi >= 2.0.0
 Deprecated >= 1.2.18
 et_xmlfile >= 2.0.0
-google-api-core >= 2.25.1
+google-api-core >= 2.25.2
 googleapis-common-protos >= 1.70.0
 greenlet >= 3.2.4
 httplib2 >= 0.31.0
