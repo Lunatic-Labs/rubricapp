@@ -133,7 +133,7 @@ class AssessmentTask(db.Model):
 class Team(db.Model): # keeps track of default teams for a fixed team scenario
     __tablename__ = "Team"
     team_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    team_name = db.Column(db.Text, nullable=False)
+    team_name = db.Column(db.String(50), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=True)
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
