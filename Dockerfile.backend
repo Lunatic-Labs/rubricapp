@@ -37,5 +37,12 @@ RUN touch /app/sendgrid.env
 EXPOSE 5000
 
 # Start the Flask server
-# -t for test mode. Make sure to change it back to -ds
+# -h or --help for usage
+# -i or --install for installing requirements
+# -r or --r for database reset
+# -d or --demo for loading demo data
+# -t or --test for test mode
+# -s or --start for starting the server
+# Always use "-ds" to start the server
+# Or "-tds" for testing & starting the server
 CMD ["python", "setupEnv.py", "-ds"] 

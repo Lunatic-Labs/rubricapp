@@ -2,6 +2,7 @@ from Functions.customExceptions import *
 from Functions.genericImport import *
 from Functions.test_files.PopulationFunctions import *
 import pytest
+import pytest
 import os
 
 
@@ -123,7 +124,6 @@ def test_valid_student_with_no_lms_id_in_table(flask_app_mock):
                     print(f"Cleanup skipped: {e}")
 
 
-
 def test_valid_student_with_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
        
@@ -159,7 +159,6 @@ def test_valid_student_with_lms_id_in_table(flask_app_mock):
                     delete_one_admin_course(result)
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
-
 
 
 def test_valid_ta_with_no_lms_id_in_table(flask_app_mock):
@@ -199,7 +198,6 @@ def test_valid_ta_with_no_lms_id_in_table(flask_app_mock):
                     print(f"Cleanup skipped: {e}")
 
 
-
 def test_valid_ta_with_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
         try:
@@ -233,7 +231,6 @@ def test_valid_ta_with_lms_id_in_table(flask_app_mock):
                     delete_one_admin_course(result)
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
-
 
 
 def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
@@ -278,7 +275,6 @@ def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
                     delete_one_admin_course(result)
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
-
 
 def test_valid_students_and_tas_with_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
@@ -328,4 +324,3 @@ def test_valid_students_and_tas_with_lms_id_in_table(flask_app_mock):
                     delete_one_admin_course(result)
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
-

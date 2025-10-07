@@ -44,8 +44,6 @@ template_user = {
     "lms_id": None
 }
 
-# from models import User, Course, db
-
 def cleanup_test_users(session=None):
     if session is None:
         session = db.session
