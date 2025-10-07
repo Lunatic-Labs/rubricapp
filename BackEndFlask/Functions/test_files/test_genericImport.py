@@ -1,87 +1,99 @@
 from Functions.customExceptions import *
 from Functions.genericImport import *
 from Functions.test_files.PopulationFunctions import *
+import pytest
+import pytest
 import os
 
 
 def retrieve_file_path(file_name):
-    return os.getcwd () +  os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, file_name)
+    return os.getcwd () +  os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "genericImport-files") + os.path.join(os.path.sep, file_name)
 
 
 def test_should_fail_with_file_not_found(flask_app_mock):
     with flask_app_mock.app_context():
-        try:
-            result = create_one_admin_course(False)
+            
+        result = create_one_admin_course(False)
+
+        with pytest.raises(FileNotFound):
             generic_csv_to_db(
                 retrieve_file_path("NonExistentFile.csv"),
                 result["user_id"],
                 result["course_id"]
             )
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert isinstance(e, FileNotFound)
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert False, f'Unexpected exception: {e}. Expected: FileNotFound'
-            raise e
+        
+        # Clean up
+        if result:
+            try:
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
 
 
 def test_should_fail_with_wrong_extension(flask_app_mock):
     with flask_app_mock.app_context():
-        try:
-            result = create_one_admin_course(False)
+        cleanup_test_users(db.session)
+
+        result = create_one_admin_course(False)
+
+        with pytest.raises(WrongExtension):
             generic_csv_to_db(
                 retrieve_file_path("wrongExtension.txt"),
                 result["user_id"],
                 result["course_id"]
             )
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert isinstance(e, WrongExtension)
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert False, f'Unexpected exception: {e}. Expected: WrongExtension'
-            raise e
+
+        # Clean up
+        if result:
+            try:
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
 
 
 def test_should_fail_with_not_enough_columns(flask_app_mock):
     with flask_app_mock.app_context():
-        try:
-            result = create_one_admin_course(False)
+
+        result = create_one_admin_course(False)
+
+        with pytest.raises(NotEnoughColumns):
             generic_csv_to_db(
                 retrieve_file_path("notEnoughColumns.csv"),
                 result["user_id"],
                 result["course_id"]
             )
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert isinstance(e, NotEnoughColumns)
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert False, f'Unexpected exception: {e}. Expected: NotEnoughColumns'
-            raise e
+
+        # Clean up
+        if result:
+            try:
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
 
 
 def test_should_fail_with_misformatted_student_email(flask_app_mock):
     with flask_app_mock.app_context():
-        try:
-            result = create_one_admin_course(False)
+
+        result = create_one_admin_course(False)
+
+        with pytest.raises(InvalidEmail): 
             generic_csv_to_db(
                 retrieve_file_path("invalidStudentEmail.csv"),
                 result["user_id"],
                 result["course_id"]
             )
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert isinstance(e, SuspectedMisformatting)
-        except Exception as e:
-            delete_one_admin_course(result)
-            assert False, f'Unexpected exception: {e}. Expected: SuspectedMisformatting'
-            raise e
+
+        # Clean up
+        if result:
+            try:
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
 
 
 def test_valid_student_with_no_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
+        
         try:
             result = create_one_admin_course(False)
             message = generic_csv_to_db(
@@ -101,17 +113,20 @@ def test_valid_student_with_no_lms_id_in_table(flask_app_mock):
 
             error_message = "generic_csv_to_db() did not correctly enroll the valid test student in the test course"
             assert user_courses.__len__() == 1, error_message
-
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-        except:
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-            raise
+        
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
 
 
 def test_valid_student_with_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
+       
         try:
             result = create_one_admin_course(False)
             message = generic_csv_to_db(
@@ -136,18 +151,19 @@ def test_valid_student_with_lms_id_in_table(flask_app_mock):
             error_message = "generic_csv_to_db() did not correctly enroll the valid test student in the test course"
             assert user_courses.__len__() == 1, error_message
 
-            delete_all_users_user_courses(result["course_id"])
-            error_message = "delete_one_admin_course() encountered an unexpected error!"
-            delete_one_admin_course(result)
-
-        except:
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-            raise
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
 
 
 def test_valid_ta_with_no_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
+       
         try:
             result = create_one_admin_course(True)
             message = generic_csv_to_db(
@@ -161,18 +177,25 @@ def test_valid_ta_with_no_lms_id_in_table(flask_app_mock):
             error_message = "generic_csv_to_db() did not correctly create the valid test TA"
             assert user is not None, error_message
 
+            error_message = "upload failed to assign lms_id attribute to student when expected."
+            assert user.lms_id is None, error_message
+
             user_id = get_user_user_id_by_email("testTA1@gmail.com")
             user_courses = get_user_courses_by_user_id(user_id)
+
+            
 
             error_message = "generic_csv_to_db() did not correctly enroll the valid test TA in the test course"
             assert user_courses.__len__() == 1, error_message
 
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-        except:
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-            raise
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
 
 
 def test_valid_ta_with_lms_id_in_table(flask_app_mock):
@@ -200,16 +223,20 @@ def test_valid_ta_with_lms_id_in_table(flask_app_mock):
             error_message = "generic_csv_to_db() did not correctly enroll the valid test TA in the test course"
             assert user_courses.__len__() == 1, error_message
 
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-        except:
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-            raise
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
 
 
 def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        
         try:
             result = create_one_admin_course(True)
             message = generic_csv_to_db(
@@ -240,16 +267,19 @@ def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
             error_message = "generic_csv_to_db() did not correctly enroll the valid test student in the test course"
             assert user_courses.__len__() == 1, error_message
 
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-        except:
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-            raise
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
 
-
-def test_valid_students_and_tas_with__and_without_lms_id_in_table(flask_app_mock):
+def test_valid_students_and_tas_with_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+     
         try:
             result = create_one_admin_course(True)
             message = generic_csv_to_db(
@@ -286,9 +316,11 @@ def test_valid_students_and_tas_with__and_without_lms_id_in_table(flask_app_mock
             error_message = "generic_csv_to_db() did not correctly enroll the valid test student in the test course"
             assert user_courses.__len__() == 1, error_message
 
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-        except:
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_course(result)
-            raise
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")

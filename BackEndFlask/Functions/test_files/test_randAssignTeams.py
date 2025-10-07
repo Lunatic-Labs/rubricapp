@@ -4,6 +4,7 @@ from models.team import *
 from models.user import *
 from models.team_user import *
 from Functions.randAssign import RandomAssignTeams
+import pytest
 
 # test_one_ta_ten_students()
 #   - ensures that RandomAssignTeams():
@@ -13,6 +14,8 @@ from Functions.randAssign import RandomAssignTeams
 #       - assigns the test ta to all the teams
 def test_one_ta_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
         try:
             result = create_one_admin_ta_student_course()
             students = create_users(result["course_id"], result["admin_id"], 10)
@@ -42,18 +45,18 @@ def test_one_ta_ten_students(flask_app_mock):
 
             error_message = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
             assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
-            
-            delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-
-        except Exception as e:
-            delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-            raise e
+        
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_teams_team_members(result["course_id"])
+                    delete_users(students)
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_ta_student_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}") 
+                
 
 # test_no_ta_ten_students()
 #   - ensures that RandomAssignTeams():
@@ -63,6 +66,8 @@ def test_one_ta_ten_students(flask_app_mock):
 #   - assigns the test teacher to all the teams
 def test_no_ta_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
         try:
             result = create_one_admin_ta_student_course(False)
             students = create_users(result["course_id"], result["admin_id"], 10)
@@ -93,18 +98,19 @@ def test_no_ta_ten_students(flask_app_mock):
 
             error_message = "RandomAssignTeams() did not correctly assing the test ta to all the 3 teams!"
             assert user_is_only_assigned_to_teams(result["observer_id"], teams), error_message
+        
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_teams_team_members(result["course_id"])
+                    delete_users(students)
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_ta_student_course(result, False)
 
-            delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result, False)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}") 
 
-        except Exception as e:
-            delete_all_teams_team_members(result["course_id"])
-            delete_users(students)
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result, False)
-            raise e
 
 # test_ten_tas_ten_students()
 #   - ensures that RandomAssignTeams():
@@ -114,6 +120,8 @@ def test_no_ta_ten_students(flask_app_mock):
 #       - assigns all of the 10 students to a team
 def test_ten_tas_ten_students(flask_app_mock):
     with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
         try:
             result = create_one_admin_ta_student_course()
             tas = create_users(result["course_id"], result["admin_id"], 10, 4)
@@ -145,20 +153,20 @@ def test_ten_tas_ten_students(flask_app_mock):
 
             error_message = "RandomAssignTeams() did not correctly assign all 10 test students to 10 teams!"
             assert total_team_users == 10, error_message
+        
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_teams_team_members(result["course_id"])
+                    delete_users(tas)
+                    delete_users(students)
+                    delete_all_users_user_courses(result["course_id"])
+                    delete_one_admin_ta_student_course(result)
 
-            delete_all_teams_team_members(result["course_id"])
-            delete_users(tas)
-            delete_users(students)
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-
-        except Exception as e:
-            delete_all_teams_team_members(result["course_id"])
-            delete_users(tas)
-            delete_users(students)
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-            raise e
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}") 
+                    
 
 # test_TA_true_but_no_TAs_recorded_error()
 #   - ensures that RandomAssignTeams():
@@ -166,32 +174,30 @@ def test_ten_tas_ten_students(flask_app_mock):
 #           because no test tas where enrolled in the test course
 def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
     with flask_app_mock.app_context():
-        try:
-            result = create_one_admin_ta_student_course(True, True)
-            try: 
-                random = RandomAssignTeams(
-                    result["observer_id"],
-                    result["course_id"]
-                )
-                assert False, "Should not reach this line"
+        cleanup_test_users(db.session)
+        result = create_one_admin_ta_student_course(True, True)
+        
+        with pytest.raises(NoTAsListed):
+            random = RandomAssignTeams(
+                result["observer_id"],
+                result["course_id"]
+            )
+                
+        teams = get_team_by_course_id(result["course_id"])
 
-            except Exception as e: 
-                assert isinstance(e, NoTAsListed), f"Expected NoTAsListed, got {e}"
+        error_message = "RandomAssignTeams() should not have made and enrolled any test teams in the test course!"
+        assert teams.__len__() == 0, error_message
+        
+        # Clean up
+        if result:
+            try:
+                delete_all_teams_team_members(result["course_id"])
+                delete_all_users_user_courses(result["course_id"])
+                delete_one_admin_ta_student_course(result)
 
-            teams = get_team_by_course_id(result["course_id"])
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")        
 
-            error_message = "RandomAssignTeams() should not have made and enrolled any test teams in the test course!"
-            assert teams.__len__() == 0, error_message
-
-            delete_all_teams_team_members(result["course_id"])
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-
-        except Exception as e:
-            delete_all_teams_team_members(result["course_id"])
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-            raise e
 
 # test_no_students_in_course_error()
 #   - ensures that RandomAssignTeams():
@@ -199,25 +205,21 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
 #           because no students where enrolled in the test course
 def test_no_students_in_course_error(flask_app_mock):
     with flask_app_mock.app_context():
-        try:
-            result = create_one_admin_ta_student_course(True, False, True)
+        cleanup_test_users(db.session)
+        result = create_one_admin_ta_student_course(True, False, True)
 
+        with pytest.raises(NoStudentsInCourse):
+            random = RandomAssignTeams(
+                result["observer_id"],
+                result["course_id"]
+            )
+        
+        # Clean up
             try:
-                random = RandomAssignTeams(
-                    result["observer_id"],
-                    result["course_id"]
-                )
-                assert False, "Should not reach this line"
+                delete_all_teams_team_members(result["course_id"])
+                delete_all_users_user_courses(result["course_id"])
+                delete_one_admin_ta_student_course(result)
 
-            except Exception as e: 
-                assert isinstance(e, NoStudentsInCourse), f"Expected NoStudentsInCourse but got {e}"
-
-            delete_all_teams_team_members(result["course_id"])
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-
-        except:
-            delete_all_teams_team_members(result["course_id"])
-            delete_all_users_user_courses(result["course_id"])
-            delete_one_admin_ta_student_course(result)
-            raise
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+                

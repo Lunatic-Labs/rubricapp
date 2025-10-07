@@ -9,7 +9,7 @@ import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, 
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 
-
+const MAX_LMS_ID_LENGTH = 10;
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -107,125 +107,175 @@ class AdminAddUser extends Component {
         })
     }
 
+   
     handleChange = (e) => {
         const { id, value } = e.target;
-
-        var formatString = "";
-
+      
+        let formatString = "";
         for (let i = 0; i < id.length; i++) {
-            if (i === 0) {
-                formatString += id.charAt(0).toUpperCase();
-            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
-                formatString += (" " + id.charAt(i).toLowerCase()); 
-            } else {
-                formatString += id.charAt(i);
-            }
+          if (i === 0) formatString += id.charAt(0).toUpperCase();
+          else if (id.charAt(i) === id.charAt(i).toUpperCase()) formatString += (" " + id.charAt(i).toLowerCase());
+          else formatString += id.charAt(i);
+        }
+      
+        if (id === 'lmsId') {
+            // non-digit?
+          if (/[^0-9]/.test(value)) {
+            this.setState({
+              errors: { ...this.state.errors, [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.' }
+            });
+            return; // don't update value
+          }
+
+          // too long?
+          if (value.length > MAX_LMS_ID_LENGTH) {
+            this.setState({
+              errors: { ...this.state.errors, [id]: `Max ${MAX_LMS_ID_LENGTH} digits.` }
+            });
+            return; // don't update value
+          }
+      
+          const atMax = value.length === MAX_LMS_ID_LENGTH;
+          this.setState({
+            [id]: value,
+            errors: { ...this.state.errors, [id]: atMax ? `Max ${MAX_LMS_ID_LENGTH} digits reached.` : '' }
+          });
+          return;
         }
 
+        // other fields
         this.setState({
           [id]: value,
-          errors: {
-            ...this.state.errors,
-            [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
-          },
-        });
-    };
-
-    handleSelect = (event) => {
-        this.setState({
-            role: event.target.value
+          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
         });
       };
 
-    handleSubmit = () => {
-        const {
-            firstName,
-            lastName,
-            email,
-            originalEmail,
-            role,
-            lmsId,
-        } = this.state;
+    
+    
 
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var user = state.user;
-        var addUser = state.addUser;
-        var confirmCreateResource = navbar.confirmCreateResource;
-        var chosenCourse = state.chosenCourse;
 
-        var newErrors = {
-            "firstName": "",
-            "lastName": "",
-            "email": "",
-            "role": ""
-        };
+    handleSelect = (event) => {
+        this.setState({
+            role: event.target.value,
+            errors: { ...this.state.errors, role: '' }
+        });
+      };
 
-        if (firstName.trim() === '')
-            newErrors["firstName"] = "First name cannot be empty";
+      
+handleSubmit = () => {
+    const {
+        firstName,
+        lastName,
+        email,
+        originalEmail,
+        role,
+        lmsId,
+    } = this.state;
 
-        if (lastName.trim() === '')
-            newErrors["lastName"] = "Last name cannot be empty";
-
-        if (email.trim() === '')
-            newErrors["email"] = "Email cannot be empty";
-
-        if (!navbar.props.isSuperAdmin && role === '')
-            newErrors["role"] = "Role cannot be empty";
-
-        if (!validator.isEmail(email) && newErrors["email"] === '')
-            newErrors["email"] = "Please enter a valid email address";
-
-        if (newErrors["firstName"] !== '' || newErrors["lastName"] !== '' || newErrors["email"] !== '' || newErrors["role"] !== '') {
+    if (lmsId) {
+        if (!/^\d+$/.test(lmsId) || lmsId.length > MAX_LMS_ID_LENGTH) {
             this.setState({
-                errors: newErrors
+                errors: { 
+                    ...this.state.errors, 
+                    lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` 
+                }
             });
-
             return;
         }
-
-        const cookies = new Cookies();
-
-        var body = JSON.stringify({
-            "first_name": firstName,
-            "last_name": lastName,
-            "email": email,
-            "lms_id": lmsId !== "" ? lmsId : null,
-            "consent": null,
-            "owner_id": cookies.get('user')['user_id'],
-            "role_id": navbar.props.isSuperAdmin ? 3 : role
-        });
-
-        let promise;
-        let owner_id = cookies.get('user')['user_id'];
-
-        if(user === null && addUser === false) {
-            if(navbar.props.isSuperAdmin) {
-                promise = genericResourcePOST(`/user`, this, body);
-            } else {
-                promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}&owner_id=${owner_id}`, this, body);
-            }
-
-        } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
-            promise = genericResourcePOST(`/user`, this, body);
-        } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
-            promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
-        } else {
-            promise = (email !== originalEmail)
-
-                // The email has been updated, pass the new email
-                ? genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}&new_email=${email}&owner_id=${owner_id}`, this, body)
-
-                // The email has not been updated, no need to pass the new email
-                : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
-        }
-
-        promise.then(result => {
-            if (result !== undefined && result.errorMessage === null) {
-                confirmCreateResource("User");
-            }
-        });
     }
+
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var user = state.user;
+    var addUser = state.addUser;
+    var confirmCreateResource = navbar.confirmCreateResource;
+    var chosenCourse = state.chosenCourse;
+
+    var newErrors = {
+        "firstName": "",
+        "lastName": "",
+        "email": "",
+        "role": ""
+    };
+
+    if (firstName.trim() === '')
+        newErrors["firstName"] = "First name cannot be empty";
+
+    if (lastName.trim() === '')
+        newErrors["lastName"] = "Last name cannot be empty";
+
+    if (email.trim() === '')
+        newErrors["email"] = "Email cannot be empty";
+
+    if (!navbar.props.isSuperAdmin && role === '')
+        newErrors["role"] = "Role cannot be empty";
+
+    if (!validator.isEmail(email) && newErrors["email"] === '')
+        newErrors["email"] = "Please enter a valid email address";
+
+    if (newErrors["firstName"] !== '' || newErrors["lastName"] !== '' || newErrors["email"] !== '' || newErrors["role"] !== '') {
+        this.setState({
+            errors: newErrors
+        });
+        return;
+    }
+
+    const cookies = new Cookies();
+
+    var body = JSON.stringify({
+        "first_name": firstName,
+        "last_name": lastName,
+        "email": email,
+        "lms_id": lmsId !== "" ? lmsId : null,
+        "consent": null,
+        "owner_id": cookies.get('user')['user_id'],
+        "role_id": navbar.props.isSuperAdmin ? 3 : role
+    });
+
+    let promise;
+    let owner_id = cookies.get('user')['user_id'];
+
+    if(user === null && addUser === false) {
+        if(navbar.props.isSuperAdmin) {
+            promise = genericResourcePOST(`/user`, this, body);
+        } else {
+            promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}&owner_id=${owner_id}`, this, body);
+        }
+    } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
+        promise = genericResourcePOST(`/user`, this, body);
+    } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
+        promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
+    } else {
+        promise = (email !== originalEmail)
+            ? genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}&new_email=${email}&owner_id=${owner_id}`, this, body)
+            : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
+    }
+
+    promise.then(result => {
+        if (result !== undefined && result.errorMessage === null) {
+            confirmCreateResource("User");
+        } else if (result !== undefined && result.errorMessage !== null) {
+            // Check for the specific admin role error
+            if (result.errorMessage.includes("Non-admin users cannot be enrolled as admins")) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        role: "Non-admin users cannot be enrolled as admins"
+                    },
+                    errorMessage: null  // Error under role field, not in the red box
+                });
+            } else if (result.errorMessage.includes("Admin users cannot be enrolled as students or instructors")) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        role: "Admin users cannot be enrolled as students or instructors"
+                    },
+                    errorMessage: null  // Error under role field, not in the red box
+                });
+            }
+        }
+    });
+}   
 
     hasErrors = () => {
         const { errors } = this.state;
@@ -395,6 +445,20 @@ class AdminAddUser extends Component {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
+                                       onPaste={(e) => {
+                                            const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                                            if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
+                                                e.preventDefault();
+                                                this.setState({
+                                                    errors: { ...this.state.errors, lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` }
+                                                });
+                                            }
+                                        }}
+                                        inputProps={{
+                                            inputMode: 'numeric',
+                                            pattern: '[0-9]*',
+                                
+                                        }}
                                         sx={{mb: 3}}
                                     />
                                     
@@ -421,6 +485,6 @@ class AdminAddUser extends Component {
             </React.Fragment>
         )
     }
-}
 
+}
 export default AdminAddUser;

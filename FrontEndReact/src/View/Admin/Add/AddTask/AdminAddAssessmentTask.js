@@ -10,6 +10,7 @@ import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
+import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
 
 
@@ -131,11 +132,26 @@ class AdminAddAssessmentTask extends Component {
             }
         }
 
+        //Define max lengths for fields
+        const maxLengths = {
+            taskName: 50,
+            timeZone: 5,
+            password: 20,
+        };
+
+            // Check for validation
+        let errorMessage = '';
+        if (value.trim() === '') {
+            errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;
+        } else if (maxLengths[id] && value.length > maxLengths[id]) {
+            errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot exceed ${maxLengths[id]} characters`;
+        }
+
         this.setState({
             [id]: value,
             errors: {
                 ...this.state.errors,
-                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                [id]: errorMessage,
             },
         });
     };
@@ -200,9 +216,9 @@ class AdminAddAssessmentTask extends Component {
         if (taskName === '' || timeZone === '' || roleId === '' || rubricId === '' || notes === '') {
             this.setState({
                 errors: {
-                    taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : '',
+                    taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : taskName.length > 50 ? 'Task Name cannot exceed 50 characters' : '',
                     dueDate: dueDate === '' ? 'Due Date cannot be empty' : '',
-                    timeZone: timeZone === '' ? 'Time Zone cannot be empty' : '',
+                    timeZone: timeZone === '' ? 'Time Zone cannot be empty' : timeZone.length > 5 ? 'Time Zone cannot exceed 5 characters' : '',
                     roleId: roleId === '' ? 'Completed By cannot be empty' : '',
                     rubricId: rubricId === '' ? 'Rubric cannot be empty' : '',
                     notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
@@ -210,6 +226,18 @@ class AdminAddAssessmentTask extends Component {
             });
 
         } else {
+
+            // Add password length check here at the top of the else block
+            if (password && password.length > 20) {
+                this.setState({
+                    errors: {
+                        ...this.state.errors,
+                        password: 'Password cannot exceed 20 characters',
+                    },
+                });
+                return;
+            }
+
             const adhoc = this.props.navbar.state.chosenCourse.use_fixed_teams;
             const fixTeamData = (i) => this.state.usingTeams && !adhoc ? i : null;
             var body = JSON.stringify({
@@ -367,6 +395,7 @@ class AdminAddAssessmentTask extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 2 }}
+                                        inputProps={{ maxLength: 50 }}
                                         aria-label="addAssessmentTaskName"
                                     />
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
@@ -397,6 +426,7 @@ class AdminAddAssessmentTask extends Component {
                                             isOpen={isHelpOpen}
                                             handleClose={this.toggleHelp}
                                             imageUrl={RubricDescriptionsImage}
+                                            imageUrl2={RubricDescriptionsImage2}
                                         />
                                     </div>
                                     <FormControl>
@@ -576,6 +606,7 @@ class AdminAddAssessmentTask extends Component {
                                         helperText={errors.password}
                                         onChange={this.handleChange}
                                         sx={{ mb: 2 }}
+                                        inputProps={{ maxLength: 20 }}
                                         aria-label="addAssessmentTeamPassword"
                                     />
 
