@@ -114,14 +114,29 @@ class AddCustomRubric extends React.Component {
                 }
             });
         };
-        
-        this.handleDeleteRubric = (rubricId) => {
-            var navbar = this.props.navbar;
 
-            genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
+        this.handleDeleteRubric = async (rubricId) => {
 
-            navbar.confirmCreateResource("MyCustomRubrics");
+            try {
+                const result = await genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
+                if (result && result.errorMessage) {
+                throw new Error(result.errorMessage); }
+            
+                this.props.navbar.confirmCreateResource("MyCustomRubrics");
+
+            } catch (error) {
+                // fall back to a sensible message if the backend didn't provide one
+                const errorMessage = "An error occurred: Cannot delete custom rubric with associated tasks";
+                window.alert(errorMessage);
+                // also surface through the existing inline error UI for consistency
+                this.setState({ isLoaded: true, errorMessage });
+                 setTimeout(() => {
+                    if (typeof this.props.refreshData === "function") {
+                        this.props.fetchData();
+                    } }, 1000);
+            }
         };
+
     }
 
     handleCategorySelect = (categoryId, isSelected) => {
