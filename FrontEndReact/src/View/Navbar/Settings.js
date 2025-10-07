@@ -69,7 +69,7 @@ class Settings extends Component {
                 </Box>
                 {user && (
                     <Box>
-                        <Typography variant="body1" color="text.secondary">
+                        <Typography variant="body1" className="primary-color-text">
                             Settings content will be added here.
                         </Typography>
                         <Box>
