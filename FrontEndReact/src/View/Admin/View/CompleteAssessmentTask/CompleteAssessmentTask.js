@@ -103,6 +103,8 @@ class CompleteAssessmentTask extends Component {
             `/${adHocMode ? 'team/adhoc':'team'}?${adHocMode ?`assessment_task_id=${chosenAssessmentTask.assessment_task_id}`:`course_id=${chosenCourse["course_id"]}`}`,
             "teams", this
         ).then((result) => {
+            console.log("Ad-hoc teams result:", result);
+            console.log("Teams array:", result.teams);
             if (this.state.usingTeams && result.teams && result.teams.length > 0) {
                 const teamIds = result.teams.map(team => team.team_id);
                 if(!adHocMode){
@@ -173,7 +175,7 @@ class CompleteAssessmentTask extends Component {
 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeamss && !userFixedTeam) return;
+                if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam) return;
                 if (this.state.usingTeams && !teamsUsers) return;
                 
                 const userSort = [...users].sort((firstUser,secondUser) => {
@@ -194,6 +196,12 @@ class CompleteAssessmentTask extends Component {
 
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
+                                                         
+                console.log("Debug info:");
+                console.log("chosenCompleteAssessmentTask:", navbar.state.chosenCompleteAssessmentTask);
+                console.log("userFixedTeam:", userFixedTeam);
+                console.log("completedAssessments:", completedAssessments);
+                console.log("teams:", teams);
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
@@ -264,7 +272,7 @@ class CompleteAssessmentTask extends Component {
 
         const roleName = currentUserRole["role_name"];
 
-        if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
+        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam){
             return (
                 <Loading />
             );
