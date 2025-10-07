@@ -256,6 +256,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
                 "observer_id": observer_id,
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id": course_id,
+                "assessment_task_id": None,
                 
             })
 
