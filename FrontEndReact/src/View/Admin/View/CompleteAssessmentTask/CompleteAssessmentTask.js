@@ -111,7 +111,7 @@ class CompleteAssessmentTask extends Component {
                         "teams_users", this, { dest: "teamsUsers" }
                     );
                 } else {
-                    // Ffetch checkins and users to map them for adhoc mode
+                    // Fetch checkins and users to map them for adhoc mode
                     Promise.all([
                         genericResourceGET(
                             `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
@@ -126,7 +126,7 @@ class CompleteAssessmentTask extends Component {
                         const teamsUsersMap = {};
                         const checkins = checkinResponse.checkin || [];
                         const users = userResponse.users || [];
-                        
+
                         result.teams.forEach(team => {
                             teamsUsersMap[team.team_id] = [];
                         });
