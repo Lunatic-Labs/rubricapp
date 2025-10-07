@@ -103,8 +103,6 @@ class CompleteAssessmentTask extends Component {
             `/${adHocMode ? 'team/adhoc':'team'}?${adHocMode ?`assessment_task_id=${chosenAssessmentTask.assessment_task_id}`:`course_id=${chosenCourse["course_id"]}`}`,
             "teams", this
         ).then((result) => {
-            console.log("Ad-hoc teams result:", result);
-            console.log("Teams array:", result.teams);
             if (this.state.usingTeams && result.teams && result.teams.length > 0) {
                 const teamIds = result.teams.map(team => team.team_id);
                 if(!adHocMode){
@@ -112,38 +110,56 @@ class CompleteAssessmentTask extends Component {
                         `/user?team_ids=${teamIds}`,
                         "teams_users", this, { dest: "teamsUsers" }
                     );
+                } else {
+                    // Ffetch checkins and users to map them for adhoc mode
+                    Promise.all([
+                        genericResourceGET(
+                            `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
+                            "checkin", this
+                        ),
+                        genericResourceGET(
+                            `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
+                            "users", this
+                        )
+                    ]).then(([checkinResponse, userResponse]) => {
+                        // Map users to teams based on checkins
+                        const teamsUsersMap = {};
+                        const checkins = checkinResponse.checkin || [];
+                        const users = userResponse.users || [];
+                        
+                        result.teams.forEach(team => {
+                            teamsUsersMap[team.team_id] = [];
+                        });
+                    
+                        // Add users to teams based on their checkins
+                        checkins.forEach(checkin => {
+                            const userId = checkin.user_id;
+                            const teamId = checkin.team_number;
+                            const user = users.find(u => u.user_id === userId);
+                        
+                            if (user && teamsUsersMap[teamId]) {
+                                teamsUsersMap[teamId].push(user);
+                            }
+                        });
+                    
+                        this.setState({
+                            teamsUsers: teamsUsersMap,
+                        });
+                    });
                 }
             }
         });
-    
+
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
             "users", this
-        ).then(response => {
-            if(adHocMode){
-                this.setState({
-                    teamsUsers: response.users,
-                })
-            }
-        });
+        );
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
             "completed_assessments", this, { dest: "completedAssessments" }
         );
-        
-        //const checkinEventSource = createEventSource(
-        //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-        //    ({data}) => {
-        //        this.setState({
-        //            checkins: new CheckinsTracker(JSON.parse(data)),
-        //        });
-        //    }
-        //);
-        //
-        //this.setState({
-        //    checkinEventSource: checkinEventSource,
-        //});
+    
         this.setState({
             checkinEventSource: null,
         })
@@ -197,11 +213,6 @@ class CompleteAssessmentTask extends Component {
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
                                                          
-                console.log("Debug info:");
-                console.log("chosenCompleteAssessmentTask:", navbar.state.chosenCompleteAssessmentTask);
-                console.log("userFixedTeam:", userFixedTeam);
-                console.log("completedAssessments:", completedAssessments);
-                console.log("teams:", teams);
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,

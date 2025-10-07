@@ -45,7 +45,7 @@ class StudentDashboard extends Component {
             completedAssessments: null,
             filteredATs: null,
             filteredCATs: null,
-            userTeamIds: null,
+            userTeamIds: [],
         }
     }
 
@@ -90,8 +90,6 @@ class StudentDashboard extends Component {
         const filterATsAndCATs = roles && assessmentTasks && completedAssessments && (filteredATs === null);
 
         if (filterATsAndCATs && (userTeamIds || roles.role_id === 4)) {
-            // Remove ATs where the ID matches one of the IDs
-            // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
             let filteredCompletedAsseessments = [];
             
             const CATmap = new Map();
@@ -108,19 +106,19 @@ class StudentDashboard extends Component {
             const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
 
             let filteredAssessmentTasks = assessmentTasks.filter(task => {
-                const cat =  CATmap.get(task.assessment_task_id);
-                
-                // Qualites for if an AT is viewable.
+                const cat = CATmap.get(task.assessment_task_id);
+    
+                // Qualities for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id ===4));
+                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
                 const locked = task.locked;                                
                 const published = task.published;
-                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate) ; //short-circuit
+                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
                 const viewable = !done && correctUser && !locked && published && !pastDue;
-                const CATviewable = correctUser===false && done===false;
-                
-                if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                const CATviewable = correctUser === false && done === false;
+    
+                if (!viewable && !CATviewable && cat !== undefined) {
                     filteredCompletedAsseessments.push(cat); 
                 }
 

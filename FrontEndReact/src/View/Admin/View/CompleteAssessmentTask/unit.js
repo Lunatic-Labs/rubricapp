@@ -373,11 +373,26 @@ export class IndividualUnit extends ATUnit {
 	}
 
 	getCheckedInTooltip(checkinsTracker) {
-		if (checkinsTracker.hasCheckInForUser(this.userId)) {
-			return [ <Box key={0}>Checked In</Box> ];
-		} else {
-			return [];
-		}
+    	console.log("FixedTeamUnit getCheckedInTooltip called:");
+    	console.log("  this.teamMembers:", this.teamMembers);
+    
+    	if (!this.teamMembers || !Array.isArray(this.teamMembers)) {
+        	return [ <Box key={0}>No Team Members</Box> ];
+    	}
+    
+    	const checkedInMembers = this.teamMembers.filter(user => {
+        	const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
+        
+        	return checkin && checkin["team_number"] === this.teamId;
+    	});
+    
+    	console.log("  checkedInMembers:", checkedInMembers);
+    
+    	if (checkedInMembers.length !== 0) {
+        	return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
+    	} else {
+        	return [ <Box key={0}>No Team Members Checked In</Box> ];
+    	}
 	}
 	
 	shallowClone() {
@@ -494,18 +509,37 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	}
 
 	getCheckedInTooltip(checkinsTracker) {
-		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
-		
-		const checkedInMembers = teamMembersArray.filter(user => {
-			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
-			
-			return checkin && checkin["team_number"] === this.teamId;
-		});
-		
-		if (checkedInMembers.length !== 0) {
-			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
-		} else {
-			return [ <Box key={0}>No Team Members Checked In</Box> ];
-		}
+    	console.log("AdHocTeamUnit getCheckedInTooltip called:");
+    	console.log("  this.teamMembers:", this.teamMembers);
+    	console.log("  this.teamId:", this.teamId);
+    	console.log("  checkinsTracker:", checkinsTracker);
+    
+    	// Handle case where teamMembers might be undefined or not an array
+    	if (!this.teamMembers) {
+        	console.log("  Returning: No Team Members");
+        	return [ <Box key={0}>No Team Members</Box> ];
+    	}
+    
+    	const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
+    	console.log("  teamMembersArray:", teamMembersArray);
+    
+    	const checkedInMembers = teamMembersArray.filter(user => {
+        	if (!user || !user.user_id) return false;
+        
+        	const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
+        
+        	return checkin && checkin["team_number"] === this.teamId;
+    	});
+    
+    	console.log("  checkedInMembers:", checkedInMembers);
+    
+    	if (checkedInMembers.length !== 0) {
+        	const result = checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
+        	console.log("  Returning checked in members:", result);
+        	return result;
+    	} else {
+        	console.log("  Returning: No Team Members Checked In");
+        	return [ <Box key={0}>No Team Members Checked In</Box> ];
+    	}
 	}
 }
