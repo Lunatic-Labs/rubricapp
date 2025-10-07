@@ -168,17 +168,6 @@ class AdminAddUser extends Component {
           errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
         });
       };
-      
-        // other fields
-        this.setState({
-          [id]: value,
-          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
-        });
-      };
-
-    
-    
-
 
     handleSelect = (event) => {
         this.setState({
