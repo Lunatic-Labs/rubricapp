@@ -109,17 +109,17 @@ class UserCourse(db.Model):
 class AssessmentTask(db.Model):
     __tablename__ = "AssessmentTask"
     assessment_task_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    assessment_task_name = db.Column(db.Text)
+    assessment_task_name = db.Column(db.String(50), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id))
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id)) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id))
     due_date = db.Column(db.DateTime, nullable=False)
-    time_zone = db.Column(db.Text, nullable=False)
+    time_zone = db.Column(db.String(5), nullable=False)
     show_suggestions = db.Column(db.Boolean, nullable=False)
     show_ratings = db.Column(db.Boolean, nullable=False)
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
     comment = db.Column(db.Text, nullable=True)
-    create_team_password = db.Column(db.Text, nullable=True)
+    create_team_password = db.Column(db.String(20), nullable=True)
     number_of_teams = db.Column(db.Integer, nullable=True)
     max_team_size = db.Column(db.Integer, nullable=True)
     notification_sent = db.Column(DateTime(timezone=True), nullable=True)
@@ -133,7 +133,7 @@ class AssessmentTask(db.Model):
 class Team(db.Model): # keeps track of default teams for a fixed team scenario
     __tablename__ = "Team"
     team_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    team_name = db.Column(db.Text, nullable=False)
+    team_name = db.Column(db.String(50), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=True)
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)

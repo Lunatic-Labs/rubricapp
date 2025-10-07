@@ -196,11 +196,16 @@ def eat(args, argc):
 def start_tests():
     log("Starting tests...")
 
-    config.rubricapp_running_locally = False
-    config.testing_mode = True
+    #config.rubricapp_running_locally = False
+    #config.testing_mode = True
 
-    # NOTE: Testing is now running in the same process.
-    pytest.main(["--disable-warnings"])
+    # Run pytest in an isolated subprocess with custom environment flags.
+    # Using a subprocess avoids race conditions and global state leaks
+    # that would occur if pytest.main() were called directly in this process.
+    # These env vars signal "test mode" without mutating shared config.
+    env = {**os.environ, "RUBRICAPP_RUNNING_LOCALLY": "0", "TESTING_MODE": "1"}
+    subprocess.run(["pytest", "--disable-warnings"], env=env)
+
 
 
     log("Finished tests")
@@ -252,15 +257,13 @@ if __name__ == "__main__":
 
         if single:
             for c in arg:
-                try:
-                    funclst[c]()
-
-                except:
-                    err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
+                if c not in funclst:
+                    err(f"Invalid argument: `{c}`. See -h for help.")
+                    sys.exit(1)
+                funclst[c]()
 
         else:
-            try:
-                funclst[arg]()
-
-            except:
-                err(f"could not read argument: `{arg}` either because a previous command failed, or it is invalid. See -h for help.")
+            if arg not in funclst:
+                err(f"Invalid argument: `{arg}`. See -h for help.")
+                sys.exit(1)
+            funclst[arg]()

@@ -19,6 +19,7 @@ from models.completed_assessment import (
     toggle_lock_status,
     make_complete_assessment_locked,
     make_complete_assessment_unlocked,
+    fetch_average,
 )
 
 from models.queries import (
@@ -90,12 +91,12 @@ def get_all_completed_assessments():
             course_id = int(request.args.get("course_id"))
             all_completed_assessments = get_completed_assessment_by_course_id(course_id)
             assessment_tasks = get_assessment_tasks_by_course_id(course_id)
-            
+
             result = []
             for task in assessment_tasks:
                 completed_count = get_completed_assessment_count(task.assessment_task_id)
                 completed_assessments = [ca for ca in all_completed_assessments if ca.assessment_task_id == task.assessment_task_id]
-                
+
                 result.append({
                     'assessment_task_id': task.assessment_task_id,
                     'assessment_task_name': task.assessment_task_name,
@@ -119,7 +120,7 @@ def get_all_completed_assessments():
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
             if request.args.get("assessment_id"):
                 course_id = request.args.get("course_id")
-                
+
                 assessment_id = request.args.get("assessment_id")
 
                 course_total = get_course_total_students(course_id, assessment_id)
@@ -160,7 +161,7 @@ def get_all_completed_assessments():
 
             if not completed_assessments:
                 completed_assessments = get_completed_assessment_with_user_name(assessment_task_id)
-            
+
             completed_count = get_completed_assessment_count(assessment_task_id)
             result = [
                 {**completed_assessment_schema.dump(assessment), 'completed_count': completed_count}
@@ -256,6 +257,26 @@ def update_completed_assessment():
 
     except Exception as e:
         return create_bad_response(f"An error occurred replacing completed_assessment {e}", "completed_assessments", 400)
+
+#----------------------------------------
+# gets the average of all completed
+# assessment task into an array
+#----------------------------------------
+@bp.route('/average', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_average():
+    try:
+        if request.args and request.args.get("course_id"):
+            course_id = int(request.args.get("course_id"))
+            all_completed_assessments = get_completed_assessment_by_course_id(course_id)
+            assessment_tasks = get_assessment_tasks_by_course_id(course_id)
+
+            result = fetch_average(assessment_tasks, all_completed_assessments)
+            return create_good_response(result, 200, "average")
+    except Exception as e:
+        return create_bad_response(f"An error occurred when gathering the average: {e}", "average", 400)
 
 
 class CompletedAssessmentSchema(ma.Schema):
