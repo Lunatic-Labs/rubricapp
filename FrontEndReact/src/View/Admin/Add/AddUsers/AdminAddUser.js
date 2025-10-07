@@ -162,13 +162,7 @@ class AdminAddUser extends Component {
           return;
         }
       
-        // Generic fields
-        this.setState({
-          [id]: value,
-          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
-        });
-      };
-      
+
         // other fields
         this.setState({
           [id]: value,
