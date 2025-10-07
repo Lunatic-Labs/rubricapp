@@ -219,6 +219,10 @@ body.mode .primary-color-text {
   color: #D17410 !important;
 }
 
+body.mode .primary-color:disabled {
+  background-color: #bcbcbc !important;
+}
+
 body.mode .card-style {
   display: flex;
   width: 50%;
