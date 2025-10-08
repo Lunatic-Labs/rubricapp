@@ -62,7 +62,7 @@ class ViewCourses extends Component {
       },
       {
         name: "use_tas",
-        label: "Use TA's",
+        label: "Use TAs",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
@@ -106,15 +106,17 @@ class ViewCourses extends Component {
             setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
             customBodyRender: (courseId) => {
               return (
-                <IconButton id={courseId}
-                  className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
+                <IconButton
+                  id={courseId}
+                  aria-label={`Edit course ${courseId}`}
+                  className={"editCourseButton btn btn-primary"}
+                  disabled={courseRoles[courseId] !== 3}
                   onClick={() => {
-                    if(courseRoles[courseId]===3) {
-                      setAddCourseTabWithCourse(courses, courseId, "AddCourse")
+                    if (courseRoles[courseId] === 3) {
+                      setAddCourseTabWithCourse(courses, courseId, "AddCourse");
                     }
-                }}
-                  aria-label='editCourseIconButton'
-                 >
+                  }}
+                >
                   <EditIcon sx={{color:"black"}}/>
                 </IconButton>
               )
@@ -134,8 +136,10 @@ class ViewCourses extends Component {
           setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
-                <IconButton id={courseId}
-                   onClick={() => {
+                <IconButton
+                  id={courseId}
+                  aria-label={`View course ${courseId}`}
+                  onClick={() => {
                     // The logged in user is an Admin in the course
                     if(courseRoles[courseId] === 3) {
                       setAddCourseTabWithCourse(courses, courseId, "Users");
@@ -145,7 +149,7 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                aria-label="viewCourseIconButton">
+                >
                   <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>
             )
