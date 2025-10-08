@@ -49,7 +49,7 @@ def cleanup_log_file(filepath, retention_days=90):
     Clean up a log file by removing entries older than retention_days.
     """
     if not os.path.exists(filepath):
-        print(f"  ⚠️  Skipping {os.path.basename(filepath)} (not found)")
+        print(f" Skipping {os.path.basename(filepath)} (not found)")
         return
 
     now = datetime.now()
@@ -60,7 +60,7 @@ def cleanup_log_file(filepath, retention_days=90):
             lines = f.readlines()
 
             if not lines:
-                print(f"  ⚠️  {os.path.basename(filepath)} is empty")
+                print(f"  {os.path.basename(filepath)} is empty")
                 return
 
             f.seek(0)
@@ -93,7 +93,7 @@ def cleanup_log_file(filepath, retention_days=90):
                         lines_removed += 1
 
             f.truncate()
-            print(f"  ✅ {os.path.basename(filepath)}: kept {lines_kept}, removed {lines_removed}")
+            print(f" {os.path.basename(filepath)}: kept {lines_kept}, removed {lines_removed}")
 
     except Exception as e:
         print(f"  ❌ Error processing {os.path.basename(filepath)}: {e}")
@@ -112,7 +112,7 @@ def main():
     cutoff_date = datetime.now() - timedelta(days=retention_days)
 
     print("="*60)
-    print("🧹 Cleaning Up Logs")
+    print("Cleaning Up Logs")
     print("="*60)
     print(f"Retention: {retention_days} days")
     print(f"Cutoff date: {cutoff_date.strftime('%Y-%m-%d %H:%M:%S')}")
@@ -125,7 +125,7 @@ def main():
 
     print()
     print("="*60)
-    print("✅ Cleanup complete!")
+    print("Cleanup complete!")
     print("="*60)
 
 
