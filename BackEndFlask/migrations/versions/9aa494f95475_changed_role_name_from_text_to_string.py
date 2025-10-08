@@ -17,8 +17,15 @@ depends_on = None
 
 
 def upgrade():
-    pass
-
+    # Change role_name from Text to String(20)
+    op.alter_column('Role', 'role_name',
+                   existing_type=sa.Text(),
+                   type_=sa.String(20),
+                   existing_nullable=False)
 
 def downgrade():
-    pass
+    # Reverse the change - String back to Text
+    op.alter_column('Role', 'role_name',
+                   existing_type=sa.String(20),
+                   type_=sa.Text(),
+                   existing_nullable=False)
