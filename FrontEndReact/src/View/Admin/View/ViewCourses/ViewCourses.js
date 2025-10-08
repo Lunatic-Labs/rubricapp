@@ -62,7 +62,7 @@ class ViewCourses extends Component {
       },
       {
         name: "use_tas",
-        label: "Use TAs",
+        label: "Use T.A.s",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
@@ -108,7 +108,7 @@ class ViewCourses extends Component {
               return (
                 <IconButton
                   id={courseId}
-                  aria-label={`Edit course ${courseId}`}
+                  aria-label={"Edit course"}
                   className={"editCourseButton btn btn-primary"}
                   disabled={courseRoles[courseId] !== 3}
                   onClick={() => {
@@ -138,7 +138,7 @@ class ViewCourses extends Component {
             return (
                 <IconButton
                   id={courseId}
-                  aria-label={`View course ${courseId}`}
+                  aria-label={"View course"}
                   onClick={() => {
                     // The logged in user is an Admin in the course
                     if(courseRoles[courseId] === 3) {
