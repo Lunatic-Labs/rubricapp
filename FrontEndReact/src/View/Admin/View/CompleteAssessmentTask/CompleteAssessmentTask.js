@@ -110,20 +110,50 @@ class CompleteAssessmentTask extends Component {
                         `/user?team_ids=${teamIds}`,
                         "teams_users", this, { dest: "teamsUsers" }
                     );
+                } else {
+                    // Fetch checkins and users to map them for adhoc mode
+                    Promise.all([
+                        genericResourceGET(
+                            `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
+                            "checkin", this
+                        ),
+                        genericResourceGET(
+                            `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
+                            "users", this
+                        )
+                    ]).then(([checkinResponse, userResponse]) => {
+                        // Map users to teams based on checkins
+                        const teamsUsersMap = {};
+                        const checkins = checkinResponse.checkin || [];
+                        const users = userResponse.users || [];
+
+                        result.teams.forEach(team => {
+                            teamsUsersMap[team.team_id] = [];
+                        });
+                    
+                        // Add users to teams based on their checkins
+                        checkins.forEach(checkin => {
+                            const userId = checkin.user_id;
+                            const teamId = checkin.team_number;
+                            const user = users.find(u => u.user_id === userId);
+                        
+                            if (user && teamsUsersMap[teamId]) {
+                                teamsUsersMap[teamId].push(user);
+                            }
+                        });
+                    
+                        this.setState({
+                            teamsUsers: teamsUsersMap,
+                        });
+                    });
                 }
             }
         });
-    
+
         genericResourceGET(
             `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
             "users", this
-        ).then(response => {
-            if(adHocMode){
-                this.setState({
-                    teamsUsers: response.users,
-                })
-            }
-        });
+        );
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
@@ -142,6 +172,8 @@ class CompleteAssessmentTask extends Component {
         //this.setState({
         //    checkinEventSource: checkinEventSource,
         //});
+
+
         this.setState({
             checkinEventSource: null,
         })
@@ -173,7 +205,7 @@ class CompleteAssessmentTask extends Component {
 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeamss && !userFixedTeam) return;
+                if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam) return;
                 if (this.state.usingTeams && !teamsUsers) return;
                 
                 const userSort = [...users].sort((firstUser,secondUser) => {
@@ -194,6 +226,7 @@ class CompleteAssessmentTask extends Component {
 
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
                                                          : UnitType.INDIVIDUAL;
+                                                         
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,
@@ -264,7 +297,7 @@ class CompleteAssessmentTask extends Component {
 
         const roleName = currentUserRole["role_name"];
 
-        if (roleName === "Student" && this.state.usingTeams && !userFixedTeam){
+        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam){
             return (
                 <Loading />
             );
