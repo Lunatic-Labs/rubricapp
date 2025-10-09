@@ -277,45 +277,41 @@ class AdminAddUser extends Component {
         }
 
         promise
-        .then((result) => {
-          if (result && result.errorMessage == null) {
-            // success: ensure any old email error is cleared
-            this.setState(prev => ({ errors: { ...prev.errors, email: '' } }));
-            confirmCreateResource("User");
-            return;
-          }
-      
-          // Duplicate email → inline field error (no global toast)
-          if (result && typeof result.errorMessage === 'string') {
-            const msg = result.errorMessage;
-            const isDup =
-              /\b1062\b.*duplicate entry/i.test(msg) && /email/i.test(msg) ||     // MySQL
-              /duplicate key value/i.test(msg) && /unique constraint/i.test(msg) && /email/i.test(msg) || // Postgres
-              /UNIQUE constraint failed/i.test(msg) && /email/i.test(msg);        // SQLite
-      
-            if (isDup || /duplicate entry/i.test(msg) && /email/i.test(msg)) {
-              this.setState(prev => ({
-                errors: { ...prev.errors, email: 'Email is already in use.' },
-                errorMessage: null, // suppress big red toast
-              }));
-              return;
-            }
-          }
-      
-          // Other backend errors → keep your existing toast
-          if (result && result.errorMessage) {
-            this.setState({ errorMessage: result.errorMessage });
-          }
-        })
-        .catch(() => {
-          this.setState({ errorMessage: 'Unable to save right now. Please try again.' });
-        });
+  .then((result) => {
+    if (result && result.errorMessage == null) {
+      // success: ensure any old email error is cleared
+      this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
+      confirmCreateResource("User");
+      return;
     }
 
-    hasErrors = () => {
-        const { errors } = this.state;
+    // Duplicate email → inline field error (no global toast)
+    if (result && typeof result.errorMessage === 'string') {
+      const msg = result.errorMessage;
 
-        return Object.values(errors).some((error) => !!error);
+      // make each engine's pattern explicit to avoid mixed-operator lint
+      const isMysqlDup   = /\b1062\b.*duplicate entry/i.test(msg) && /email/i.test(msg);
+      const isPgDup      = /duplicate key value/i.test(msg) && /unique constraint/i.test(msg) && /email/i.test(msg);
+      const isSqliteDup  = /UNIQUE constraint failed/i.test(msg) && /email/i.test(msg);
+      const isDup = isMysqlDup || isPgDup || isSqliteDup;
+
+      if (isDup) {
+        this.setState((prev) => ({
+          errors: { ...prev.errors, email: 'Email is already in use.' },
+          errorMessage: null, // suppress big red toast
+        }));
+        return;
+      }
+    }
+
+    // Other backend errors → keep your existing toast
+    if (result && result.errorMessage) {
+      this.setState({ errorMessage: result.errorMessage });
+    }
+  })
+  .catch(() => {
+    this.setState({ errorMessage: 'Unable to save right now. Please try again.' });
+  });
     };
 
     render() {
