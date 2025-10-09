@@ -173,7 +173,7 @@ class AdminAddUser extends Component {
         this.setState({
             role: event.target.value
         });
-      };
+    };
 
       
     handleSubmit = () => {
