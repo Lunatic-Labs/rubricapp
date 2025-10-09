@@ -88,7 +88,8 @@ class StudentDashboard extends Component {
             userTeamIds,
         } = this.state;
         const filterATsAndCATs = roles && assessmentTasks && completedAssessments && (filteredATs === null);
-
+            // Remove ATs where the ID matches one of the IDs
+            // in the CATs (ATs that are completed/locked/past due are shifted to CATs).
         if (filterATsAndCATs && (userTeamIds || roles.role_id === 4)) {
             let filteredCompletedAsseessments = [];
             

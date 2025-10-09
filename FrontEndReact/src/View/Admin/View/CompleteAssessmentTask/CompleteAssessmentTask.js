@@ -159,7 +159,21 @@ class CompleteAssessmentTask extends Component {
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
             "completed_assessments", this, { dest: "completedAssessments" }
         );
-    
+        
+        //const checkinEventSource = createEventSource(
+        //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+        //    ({data}) => {
+        //        this.setState({
+        //            checkins: new CheckinsTracker(JSON.parse(data)),
+        //        });
+        //    }
+        //);
+        //
+        //this.setState({
+        //    checkinEventSource: checkinEventSource,
+        //});
+
+
         this.setState({
             checkinEventSource: null,
         })
