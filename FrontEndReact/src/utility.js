@@ -88,7 +88,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             return undefined;
 
         } else if (result['msg']==="Token has expired") {
-            cookies.remove('access_token');
+            cookies.remove('access_token');      
 
             window.location.reload(false);
             

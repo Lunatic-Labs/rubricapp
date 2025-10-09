@@ -1,4 +1,5 @@
 import { Component } from 'react';
+import Cookies from 'universal-cookie';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers.js';
@@ -37,7 +38,15 @@ import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 class AppState extends Component {
     constructor(props) {
         super(props);
-
+        
+        // --Checks for access token and/or user tokens-- 
+        // Redirects user to root path if unable to authenticate
+        const cookies =new Cookies();
+        if (!cookies.get('access_token') || !cookies.get('user')){
+            window.location.href = '/';
+            return
+        }
+        
         this.state = {
             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
 
