@@ -2,7 +2,6 @@ from Functions.customExceptions import *
 from Functions.genericImport import *
 from Functions.test_files.PopulationFunctions import *
 import pytest
-import pytest
 import os
 
 
@@ -183,8 +182,6 @@ def test_valid_ta_with_no_lms_id_in_table(flask_app_mock):
             user_id = get_user_user_id_by_email("testTA1@gmail.com")
             user_courses = get_user_courses_by_user_id(user_id)
 
-            
-
             error_message = "generic_csv_to_db() did not correctly enroll the valid test TA in the test course"
             assert user_courses.__len__() == 1, error_message
 
@@ -275,6 +272,7 @@ def test_valid_student_and_ta_with_no_lms_id_in_table(flask_app_mock):
                     delete_one_admin_course(result)
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
+                    
 
 def test_valid_students_and_tas_with_lms_id_in_table(flask_app_mock):
     with flask_app_mock.app_context():
