@@ -40,7 +40,6 @@ def test_should_fail_with_non_existant_ta_email(flask_app_mock):
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-
 def test_should_fail_with_suspected_misformatting_error_given_misformatted_ta_email(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -61,7 +60,7 @@ def test_should_fail_with_suspected_misformatting_error_given_misformatted_ta_em
                 delete_all_users_user_courses(result["course_id"])
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
-
+                
 
 def test_should_fail_with_empty_team_members(flask_app_mock):
     with flask_app_mock.app_context():
@@ -85,6 +84,7 @@ def test_should_fail_with_empty_team_members(flask_app_mock):
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
+                
 
 def test_should_fail_with_file_not_found_error_given_non_existent_file(flask_app_mock):
     with flask_app_mock.app_context():
