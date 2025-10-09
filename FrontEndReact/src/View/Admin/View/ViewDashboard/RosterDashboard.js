@@ -120,7 +120,7 @@ class RosterDashboard extends Component {
                                         const courseData = {
                                             course_id: courseId,
                                             course_name: course?.course_name || 'Test Course',
-                                            role_id: 5  // Student role
+                                            role_id: 6  // Student role
                                         };
                                         sessionStorage.setItem('chosenCourse', JSON.stringify(courseData));
                                         

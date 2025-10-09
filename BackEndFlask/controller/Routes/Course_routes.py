@@ -195,11 +195,13 @@ def update_course():
 # This code creates or retrieves the test student information for a course.
 # Used for: "View as Student" feature.
 # Important: The JWT identity must be a STRING to avoid "Subject must be a string" error.
+# These wehn commented out allow the test student to work. DO WE NEED THEM???
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+# In the get_test_student_token function, change both occurrences of role_id=5 to role_id=6:
 @bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
 @jwt_required()
-# These wehn commented out allow the test student to work. DO WE NEED THEM???
-#@bad_token_check()
-#@AuthCheck()
 def get_test_student_token(course_id):
     try:
         admin_id = get_jwt_identity()
@@ -215,17 +217,16 @@ def get_test_student_token(course_id):
         test_email = f"teststudent{course_id}@skillbuilder.edu"         
         test_student = User.query.filter_by(email=test_email).first()
         
-        # Ceck if test student exists in DB
         if not test_student:
             print(f"Test student not found, creating one...")
             
             try:
-                # Create test student with ALL required fields
+                # Create test student
                 test_student = User(
                     first_name="Test",
                     last_name="Student",
                     email=test_email,
-                    password="TestPassword123!", # TODO: Change to a secure random password
+                    password="TestPassword123!",
                     owner_id=course.admin_id if hasattr(course, 'admin_id') else admin_id,
                     has_set_password=True,
                     is_admin=False,
@@ -234,24 +235,22 @@ def get_test_student_token(course_id):
                     reset_code=None
                 )
                 
-                # Add and commit to DB
                 db.session.add(test_student)
                 db.session.commit()
                 
-                # Store new test student
                 test_student = User.query.filter_by(email=test_email).first()
                 
-                if test_student: # Check if enrolled
+                if test_student:
                     existing = UserCourse.query.filter_by(
                         user_id=test_student.user_id,
                         course_id=course_id
                     ).first()
                     
-                    if not existing: # Enroll if not already enrolled
+                    if not existing:
                         test_user_course = UserCourse(
                             user_id=test_student.user_id,
                             course_id=course_id,
-                            role_id=5,
+                            role_id=6,  # CHANGED: Use TestStudent role
                             active=True
                         )
                         db.session.add(test_user_course)
@@ -268,8 +267,8 @@ def get_test_student_token(course_id):
                     "success": False,
                     "error": f"Failed to create test student: {str(create_error)}"
                 }), 500
-            
-            # Check enrollment for existing test student too
+        else:
+            # Check enrollment for existing test student
             existing = UserCourse.query.filter_by(
                 user_id=test_student.user_id,
                 course_id=course_id
@@ -279,16 +278,14 @@ def get_test_student_token(course_id):
                 test_user_course = UserCourse(
                     user_id=test_student.user_id,
                     course_id=course_id,
-                    role_id=5,  # Student role
+                    role_id=6,  # CHANGED: Use TestStudent role
                     active=True
                 )
                 db.session.add(test_user_course)
                 db.session.commit()
         
-        # Create tokens for the test student   
+        # Create tokens (rest of the code remains the same)
         try:
-            # CRITICAL FIX: Convert user_id to string for JWT identity
-            # This fixes the "Subject must be a string" error
             access_token = create_access_token(identity=str(test_student.user_id))
             refresh_token = create_refresh_token(identity=str(test_student.user_id))
         except Exception as token_error:
@@ -302,14 +299,15 @@ def get_test_student_token(course_id):
         response_data = {
             "success": True,
             "user": {
-                "user_id": test_student.user_id,  # Keep as integer in response
+                "user_id": test_student.user_id,
                 "user_name": f"{test_student.first_name} {test_student.last_name}",
                 "first_name": test_student.first_name,
                 "last_name": test_student.last_name,
                 "email": test_student.email,
                 "isAdmin": False,
                 "isSuperAdmin": False,
-                "has_set_password": True
+                "has_set_password": True,
+                "role_id": 6  # ADD: Include role_id in response
             },
             "access_token": access_token,
             "refresh_token": refresh_token

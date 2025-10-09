@@ -75,7 +75,7 @@ def create_course(course_data):
     test_user_course = UserCourse (
         user_id = test_student.user_id,
         course_id = course_data.course_id,
-        role_id = 5
+        role_id = 6
     )
 
     db.session.add(test_user_course)
