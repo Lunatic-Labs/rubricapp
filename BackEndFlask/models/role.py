@@ -42,7 +42,7 @@ def load_existing_roles():
     create_role("Admin")          # 3
     create_role("TA/Instructor")  # 4
     create_role("Student")        # 5
-    create_role("TestStudent")    # 6
+    create_role("TestStudent")    # 6 <-- new student role for "view as student" feature
 
 
 @error_log
