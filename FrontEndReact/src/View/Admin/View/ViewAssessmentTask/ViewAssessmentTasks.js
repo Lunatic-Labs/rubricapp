@@ -547,7 +547,7 @@ class ViewAssessmentTasks extends Component {
                         const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === atId);
                         const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
-                        if (completedCount === 0) {
+                        if (completedCount === 0) {                                     // this code makes the export button and its text darker when disabled.
                             return (
                                 <Tooltip title="No completed assessments to export">
                                     <span>
@@ -557,6 +557,11 @@ class ViewAssessmentTasks extends Component {
                                             variant='contained'
                                             disabled
                                             aria-label='exportAssessmentTaskButton'
+                                            sx={{
+                                                '&.Mui-disabled': {
+                                                color: 'var(--export_disabled_text)',
+                                                }
+                                            }}
                                             >
                                             EXPORT
                                         </Button>

@@ -5,33 +5,17 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 
 class TextArea extends Component {
-    constructor(props) {
-        super(props);
-
-        this.state = {
-            textAreaValue: this.props.currentValue, // Set initial value from props
-        };
-    }
     
     handleTextareaChange = (event) => {
         if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
         const textAreaValue = event.target.value;
 
-        this.setState({ textAreaValue });
-
         this.props.setComments(textAreaValue);
         
         this.props.autosave();
     };
     
-    componentDidUpdate() {
-        if (this.props.currentValue !== this.state.textAreaValue) {
-            this.setState({
-                textAreaValue: this.props.currentValue,
-            });
-        }
-    }
 
     render() {
         return (
@@ -47,7 +31,7 @@ class TextArea extends Component {
 
                         placeholder="Comments for improvement..."
 
-                        value={this.state.textAreaValue}
+                        value={this.props.currentValue}
 
                         onChange={this.handleTextareaChange}
 
