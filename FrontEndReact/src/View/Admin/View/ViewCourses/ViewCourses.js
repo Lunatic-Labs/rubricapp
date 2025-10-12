@@ -62,7 +62,7 @@ class ViewCourses extends Component {
       },
       {
         name: "use_tas",
-        label: "Use TAs",
+        label: "Use T.A.s",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
@@ -114,7 +114,7 @@ class ViewCourses extends Component {
                       setAddCourseTabWithCourse(courses, courseId, "AddCourse")
                     }
                 }}
-                  aria-label={`Edit course ${courses[courseId]?.course_name || ''}`}
+                  aria-label={`Edit course`}
                  >
                   <EditIcon sx={{color:"black"}} aria-hidden="true"/>
                 </IconButton>
@@ -146,7 +146,7 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                aria-label={`View course ${courses[courseId]?.course_name || ''}`}>
+                aria-label={`View course`}>
                   <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
                 </IconButton>
             )
