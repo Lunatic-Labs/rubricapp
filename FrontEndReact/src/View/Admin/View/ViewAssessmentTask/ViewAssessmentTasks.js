@@ -523,7 +523,7 @@ class ViewAssessmentTasks extends Component {
                                             className='primary-color'
                                             variant='contained'
                                             disabled
-                                            aria-label='startAssessmentTasksButton'
+                                            aria-label="startAssessmentTasksButton"
                                         >
                                             START
                                         </Button>
