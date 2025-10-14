@@ -7,7 +7,7 @@ def create_validation(user_id, email):
         user_id=user_id,
         email=email,
         status="pending",
-        validation_time=datetime.utcnow(),
+        validation_time=datetime.now(),
     )
 
     db.session.add(email_validation)

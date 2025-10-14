@@ -8,7 +8,9 @@ import Select from '@mui/material/Select';
 export default function AssessmentTaskDropdown(props) {
   var assessmentTaskList = [];
 
-  props.assessmentTasks.map((assessmentTask) => {
+  // Check if assessmentTasks exists and is not empty to prevent null reference errors
+  if (props.assessmentTasks && props.assessmentTasks.length > 0) {
+    props.assessmentTasks.map((assessmentTask) => {
 
     const taskName = assessmentTask["assessment_task_name"];
 
@@ -33,24 +35,40 @@ export default function AssessmentTaskDropdown(props) {
       </MenuItem>
     );
   });
+  } else {
+    // Display placeholder when no assessment tasks are available
+    assessmentTaskList.push(
+      <MenuItem key="no-tasks" value="" disabled>
+        No assessment tasks available
+      </MenuItem>
+    );
+  } 
 
   return (
     <FormControl 
-    // controlls the way the 'dropdown' is displayed.
+    // controls the way the 'dropdown' is displayed.
       sx={{ 
         m: 3,           // margin
-        width: '95%'    // width
+        width: (!props.assessmentTasks || props.assessmentTasks.length === 0) ? '100%' : '95%',    // wider width when showing "no tasks" message
+        minWidth: '275px'  // ensure minimum width to display the full message
       }}
     >
-      <InputLabel id="demo-simple-select-autowidth-label">Assessment Task</InputLabel>
+      <InputLabel id="demo-simple-select-autowidth-label">
+        {(!props.assessmentTasks || props.assessmentTasks.length === 0) 
+          ? "No assessment tasks available" 
+          : "Assessment Task"}
+      </InputLabel>
 
       <Select
         labelId="demo-simple-select-autowidth-label"
         id="demo-simple-select-autowidth"
-        value={props.chosenAssessmentId}
+        value={props.chosenAssessmentId || ""}
         onChange={props.setChosenAssessmentId}
+        disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
         autoWidth={"false"}
-        label="Assessment Task"
+        label={(!props.assessmentTasks || props.assessmentTasks.length === 0) 
+          ? "No assessment tasks available" 
+          : "Assessment Task"}
         sx={{
           // This handles the text overflow
           '& .MuiSelect-select': {
