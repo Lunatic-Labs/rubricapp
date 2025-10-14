@@ -79,7 +79,7 @@ class ViewAssessmentTasks extends Component {
                 label: "Task Name",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"300x"}},
+                    setCellHeaderProps: () => { return { width:"300x"} },
                     setCellProps: () => { return { width:"300px"} },
                 }
             },
@@ -88,7 +88,7 @@ class ViewAssessmentTasks extends Component {
                 label: "Unit of Assessment",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"270px"}},
+                    setCellHeaderProps: () => { return { width:"270px"} },
                     setCellProps: () => { return { width:"270px"} },
                     customBodyRender: (isTeam) => {
                         return (
@@ -104,7 +104,7 @@ class ViewAssessmentTasks extends Component {
                 label: "Due Date",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"170px"}},
+                    setCellHeaderProps: () => { return { width:"170px"} },
                     setCellProps: () => { return { width:"170px"} },
                     customBodyRender: (dueDate) => {
                         let dueDateString = getHumanReadableDueDate(dueDate);
@@ -122,7 +122,7 @@ class ViewAssessmentTasks extends Component {
                 label: "Rubric Used",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"270px"}},
+                    setCellHeaderProps: () => { return { width:"270px"} },
                     setCellProps: () => { return { width:"270px"} },
                     customBodyRender: (rubricId) => {
                         return (
@@ -139,11 +139,14 @@ class ViewAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
+                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
                         let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
                         let filledByStudent = at.role_id === 5;
+                        
+                        // Check if user is switching teams (already checked in)
+                        const isSwitchingTeams = this.props.checkin.indexOf(atId) !== -1;
 
                         return (
                             <Box
@@ -165,14 +168,22 @@ class ViewAssessmentTasks extends Component {
                                         variant='contained'
 
                                         onClick={() => {
-                                            if (!fixedTeams && navbar.state.team === null) {
-                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
-                                            } else {
-                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
+                                            const hasPassword = at.create_team_password && at.create_team_password.trim() !== '';
+                                            const needsPasswordPrompt = isSwitchingTeams && hasPassword; // if just checking in, don't password prompt. if no password set, don't password prompt
+                                            
+                                            if (!fixedTeams) {
+                                                if (needsPasswordPrompt) {
+                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
+                                                } else {
+                                                    navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                                }
+                                            } 
+                                            else {
+                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, needsPasswordPrompt);
                                             }
                                         }}
                                     >
-                                        {this.props.checkin.indexOf(atId) === -1 ? 'Check In' : 'Switch Teams'}
+                                        {isSwitchingTeams ? 'Switch Teams' : 'Check In'}
                                     </Button>
                                 }
 
