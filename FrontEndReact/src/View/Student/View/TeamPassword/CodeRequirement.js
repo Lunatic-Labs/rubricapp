@@ -138,7 +138,7 @@ class CodeRequirement extends Component {
 							<CustomButton
 								label="Continue"
 								onClick={this.submitPasscode}
-								isOutlined={false}
+								isOutlined={false} //Default button
 								position={{ top: '10px', right: '0px' }}
 								aria-label="continueWithPasswordButton"
 							/>
