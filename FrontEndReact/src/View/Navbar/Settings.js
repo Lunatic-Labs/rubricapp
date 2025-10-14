@@ -4,6 +4,15 @@ import { Box, Typography, Switch, FormControlLabel } from '@mui/material';
 import Cookies from 'universal-cookie';
 
 // all 'mode' related things are for testing and should be removed afterwards.
+
+const genericResourcePUT = (url, context, data) => {
+  return fetch(url, {
+    method: 'PUT',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(data)
+  }).then(response => response.json());
+};
+
 class Settings extends Component {
     constructor(props) {
         super(props)
@@ -89,26 +98,34 @@ class Settings extends Component {
 
 
     // add a field to the user table to store weather or not 'dark mode' is enabled.
-    render() {
-        const { } = this.state;
-
-        return (
-            <>
-                <Box className="content-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="Settings">
-                        Settings
-                    </Typography>
-                </Box>
-                {user && (
-                    <Box>
-                        <Box sx={{ mt: 2 }}>
-                            <FormControlLabel/>
-                        </Box>
-                    </Box>
-                )}
-            </>
-        );
-    }
+render() {
+    const { user, darkMode } = this.state;
+    
+    return (
+      <>
+        <Box className="content-spacing">
+          <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="Settings">
+            Settings
+          </Typography>
+        </Box>
+        {this.state.user && (
+          <Box>
+            <Box sx={{ mt: 2 }}>
+              <FormControlLabel
+                control={
+                  <Switch
+                    checked={darkMode}
+                    onChange={this.switchDarkMode}
+                  />
+                }
+                label="Dark Mode"
+              />
+            </Box>
+          </Box>
+        )}
+      </>
+    );
+  }
 }
 
 export default Settings;
