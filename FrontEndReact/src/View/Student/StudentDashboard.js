@@ -69,7 +69,7 @@ class StudentDashboard extends Component {
             filteredATs: null,
             filteredCATs: null,
             isSwitchingBack: false,  // Add spam protection flag
-            userTeamIds: null,
+            userTeamIds: [],
 
             // Added for rubric grouping
             rubrics: null,
