@@ -26,7 +26,7 @@ from datetime import datetime
 class Role(db.Model):
     __tablename__ = "Role"
     role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    role_name = db.Column(db.Text, nullable=False)
+    role_name = db.Column(db.String(20), nullable=False)
 
 class User(db.Model):
     __tablename__ = "User"

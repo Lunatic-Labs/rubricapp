@@ -209,6 +209,20 @@ h4, h5 {
   color: var(--export_disabled_text) !important;
 }
 
+.navbar {
+  --navbar-bg: white;
+  --navbar-text: black;
+  margin-top: -0.45rem;
+  --navbar-dropdown-bg: white;
+  --navbar-dropdown-text: black;
+  --navbar-dropdown-hover: #f5f5f5;
+  --navbar-dropdown-divider: rgba(0, 0, 0, 0.12);
+}
+
+.navbar-arrow {
+  filter: none;
+}
+
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
 /* ============================================ */
@@ -297,6 +311,20 @@ body.mode .light_grey_ADA_hover {
 
 body.mode .export_disabled_text {
   color: #888888 !important;
+}
+
+body.mode .navbar {
+  --navbar-bg: #1a1a1a;
+  --navbar-text: #e0e0e0;
+  margin-top: -0.45rem;
+  --navbar-dropdown-bg: #2a2a2a;
+  --navbar-dropdown-text: #e0e0e0;
+  --navbar-dropdown-hover: #3a3a3a;
+  --navbar-dropdown-divider: rgba(255, 255, 255, 0.12);
+}
+
+body.mode .navbar-arrow {
+  filter: invert(1);
 }
 
 /* Dark mode text colors for general content */

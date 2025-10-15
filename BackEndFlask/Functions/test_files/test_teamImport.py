@@ -272,8 +272,7 @@ def test_users_do_not_exist_error(flask_app_mock):
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
                 print(f"Cleanup skipped: {e}")
-
-                print(f"Cleanup skipped: {e}")
+                
 
 # test_ta_not_yet_added_error()
 #   - calls create_one_admin_ta_student_course() with two parameter:
@@ -311,7 +310,6 @@ def test_ta_not_yet_added_error(flask_app_mock):
             except (InvalidCourseID, ValueError) as e:
                 print(f"Cleanup skipped: {e}")
 
-                print(f"Cleanup skipped: {e}")
 
 # test_student_not_enrolled_in_this_course()
 #   - calls create_one_admin_ta_student_course() with three parameter:
@@ -346,6 +344,5 @@ def test_student_not_enrolled_in_this_course_debug(flask_app_mock):
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"Cleanup skipped: {e}")
                 print(f"Cleanup skipped: {e}")
 
