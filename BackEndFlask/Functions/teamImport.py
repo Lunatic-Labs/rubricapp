@@ -1,5 +1,6 @@
-from Functions.test_files.PopulationFunctions import *
+# teamImport.py
 from Functions.customExceptions import *
+from Functions.helper import *
 from models.user import *
 from models.course import *
 from models.user_course import *

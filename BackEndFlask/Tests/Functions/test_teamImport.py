@@ -2,13 +2,18 @@ from Functions.customExceptions import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
-from Functions.test_files.PopulationFunctions import *
+from PopulationFunctions import *
 from Functions import teamImport
 import pytest
 import os
 
+
+# May not work with CI/CD pipelines, but works locally
 def retrieve_file_path(file_name):
-    return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "teamImport-files") + os.path.join(os.path.sep, file_name)
+    """Return absolute path to sample file in the same directory as this file."""
+    base_dir = os.path.dirname(__file__)
+    sample_dir = os.path.join(base_dir, "sample_files", "teamImport-files")
+    return os.path.join(sample_dir, file_name)
 
 # test_valid_file_w_tas_records_all_data()
 #   - calls create_one_admin_ta_student_course() with one parameter:
@@ -273,7 +278,6 @@ def test_users_do_not_exist_error(flask_app_mock):
             except (InvalidCourseID, ValueError) as e:
                 print(f"Cleanup skipped: {e}")
 
-                print(f"Cleanup skipped: {e}")
 
 # test_ta_not_yet_added_error()
 #   - calls create_one_admin_ta_student_course() with two parameter:
@@ -311,7 +315,6 @@ def test_ta_not_yet_added_error(flask_app_mock):
             except (InvalidCourseID, ValueError) as e:
                 print(f"Cleanup skipped: {e}")
 
-                print(f"Cleanup skipped: {e}")
 
 # test_student_not_enrolled_in_this_course()
 #   - calls create_one_admin_ta_student_course() with three parameter:
@@ -346,6 +349,5 @@ def test_student_not_enrolled_in_this_course_debug(flask_app_mock):
                 delete_all_teams_team_members(result["course_id"])
                 delete_one_admin_ta_student_course(result)
             except (InvalidCourseID, ValueError) as e:
-                print(f"Cleanup skipped: {e}")
                 print(f"Cleanup skipped: {e}")
 

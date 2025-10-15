@@ -1,4 +1,4 @@
-from Functions.helper import helper_verify_email_syntax, helper_create_user
+from Functions.helper import *
 from Functions.customExceptions import *
 from models.user import *
 from models.team import *
@@ -6,7 +6,6 @@ from models.team_user import *
 from models.user_course import *
 from models.course import *
 from models.queries import does_team_user_exist
-from Functions.test_files.PopulationFunctions import xlsx_to_csv
 from enum import Enum
 
 from datetime import date
@@ -256,7 +255,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
                 "observer_id": observer_id,
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id": course_id,
-                
+                "assessment_task_id": None,
             })
 
         team_id = team.team_id

@@ -1,7 +1,49 @@
-from Functions.test_files.PopulationFunctions import *
 from Functions.customExceptions import *
 from models.user import *
 from models.team import *
+import pandas as pd
+import uuid
+import re
+
+# that is_valid_email works as should!
+def is_valid_email(email: str) -> bool:
+    return bool(re.fullmatch(
+        r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}",
+        email.strip()
+    ))
+
+# that the xlsx file is deleted when there is success and when there are errors!
+def delete_xlsx(student_file, is_xlsx):
+    if is_xlsx:
+        os.remove(student_file)
+
+# filter_users_by_role()
+#   - takes two parameter:
+#       - an array of test users enrolled in the test course
+#       - the id a role
+#   - filters the array of test users to only contain test users with the specified role
+#   - returns an array of the filtered test users
+#       - unless an error occurs
+#           - returns the error message
+def filter_users_by_role(user_courses, role_id):
+    users = []
+    for user_course in user_courses:
+        user = get_user(user_course.user_id)
+        if type(user) is type(""):
+            return user
+        if user_course.role_id == role_id:
+            users.append(user)
+            
+    return users
+
+# that xlsx file is converted to csv
+def xlsx_to_csv(csv_file):
+    read_file = pd.read_excel(csv_file)
+    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
+    temp_file = "/temp_"+ uuid.uuid4().hex +".csv"
+    read_file.to_csv(sample_files+temp_file, index=None, header=True)
+    return sample_files + os.path.join(os.path.sep, temp_file)
+
 
 def helper_ok(field: any) -> bool:
     """

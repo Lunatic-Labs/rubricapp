@@ -1,9 +1,11 @@
+# test_randAssignTeams.py
+from Functions.helper import *
 from Functions.customExceptions import *
-from Functions.test_files.PopulationFunctions import *
+from PopulationFunctions import *
 from models.team import *
 from models.user import *
 from models.team_user import *
-from Functions.randAssign import RandomAssignTeams
+from Functions.randAssign import *
 import pytest
 
 # test_one_ta_ten_students()

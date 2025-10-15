@@ -1,7 +1,6 @@
 from typing import List, Dict, Tuple as TypingTuple
 
 from core import db
-from Functions.test_files.PopulationFunctions import *
 from Functions.helper import *
 from Functions.customExceptions import *
 from models.user import *

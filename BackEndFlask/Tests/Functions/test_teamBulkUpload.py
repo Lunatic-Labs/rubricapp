@@ -1,11 +1,16 @@
 from Functions.customExceptions import *
 from Functions.teamBulkUpload import team_bulk_upload
-from Functions.test_files.PopulationFunctions import *
+from PopulationFunctions import *
 import pytest
 import os
 
-def retrieve_file_path(file_name):
-    return os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")+ os.path.join(os.path.sep, "teamBulkUpload-files") + os.path.join(os.path.sep, file_name)
+
+# May not work with CI/CD pipelines, but works locally
+def retrieve_file_path(file_name: str) -> str:
+    """Return absolute path to sample file in the same directory as this file."""
+    base_dir = os.path.dirname(__file__)
+    sample_dir = os.path.join(base_dir, "sample_files", "teamBulkUpload-files")
+    return os.path.join(sample_dir, file_name)
 
 
 def test_should_fail_with_wrong_extention_error(flask_app_mock):

@@ -1,13 +1,16 @@
 from Functions.customExceptions import *
 from Functions.genericImport import *
-from Functions.test_files.PopulationFunctions import *
-import pytest
+from PopulationFunctions import *
 import pytest
 import os
 
 
-def retrieve_file_path(file_name):
-    return os.getcwd () +  os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files") + os.path.join(os.path.sep, "genericImport-files") + os.path.join(os.path.sep, file_name)
+# May not work with CI/CD pipelines, but works locally
+def retrieve_file_path(file_name: str) -> str:
+    """Return absolute path to sample file in the same directory as this file."""
+    base_dir = os.path.dirname(__file__) 
+    sample_dir = os.path.join(base_dir, "sample_files", "genericImport-files")
+    return os.path.join(sample_dir, file_name)
 
 
 def test_should_fail_with_file_not_found(flask_app_mock):
