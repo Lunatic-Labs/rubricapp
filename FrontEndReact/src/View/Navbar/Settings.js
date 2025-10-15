@@ -1,52 +1,119 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box, Typography, Switch, FormControlLabel } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import Cookies from 'universal-cookie';
+import { genericResourcePUT, genericResourceGET } from '../../utility.js';
+import Loading from "../Loading/Loading.js";
 
 // all 'mode' related things are for testing and should be removed afterwards.
 class Settings extends Component {
     constructor(props) {
-        super(props)
+        super(props);
 
         this.state = {
-            user: null,
+            isLoaded: null,
             errorMessage: null,
-            darkMode: false
+            user: null,
+            darkMode: false                 // add isLoaded
         };
 
-        this.swithcDarkMode = () => {
-            var navbar = this.props.navbar;
+        //console.log(props);
 
-            genericResourcePUT(
-                `/user?uid=${navbar.state.user["user_id"]}&user_dark_mode=${navbar.state.setDarkMode["user_dark_mode"]}`,
-                this,
-                {
-                    userId: navbar.state.user["user_id"],
-                    userDarkModePreferance: navbar.state.setDarkMode["user_dark_mode"]
-                });
-        }
+        //this.swithcDarkMode = () => {
+        //    var navbar = this.props.navbar;
+
+        //    genericResourcePUT(
+        //        `/user?uid=${navbar.state.user["user_id"]}&user_dark_mode=${navbar.state.setDarkMode["user_dark_mode"]}`,
+        //        this,
+        //        {
+        //            userId: navbar.state.user["user_id"],
+        //            userDarkModePreferance: navbar.state.setDarkMode["user_dark_mode"]
+        //        });
+        //}
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var user = state.user;
+        const cookies = new Cookies();
+        const user = cookies.get('user'); //used to be cookieUser
+
+        //var navbar = this.props.navbar;
+        //var state = navbar.state;
+        //var user = state.user;
+
+        //console.log(user);
+        //console.log(user.user_id);
+        //console.log("printed!");
+
+        //if (user === null && cookieUser) {
+        //    user = cookieUser["user_id"];
+        //}
 
         if (user !== null) {
-            this.setState({
-                user: user,
-                darkMode: user["user_dark_mode"] || false,
+
+            let promise;
+            let userData;
+
+            promise = genericResourceGET(
+                `/user`,
+                "users",
+                this
+            );
+            promise.then(result => {
+                //console.log(result, result["users"], result["users"][0]);
+                if (result !== undefined && result["users"] !== null) {
+                    console.log(result);
+                    userData = result["users"];
+                    console.log(userData);
+                    
+                    this.setState({
+                        isLoaded: true,
+                        user: userData["user_id"] || 1,
+                        darkMode: userData["user_dark_mode"] || true
+                    });
+
+
+
+                    if (this.state.darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
+                }
+            }).catch(error => {
+                console.error("Error fetching user data:", error);
+                // Fallback to user object
+                this.setState({
+                    isLoaded: false,
+                    user: user,
+                    darkMode: user["user_dark_mode"] || false,
+                });
+
+                if (user["user_dark_mode"]) {
+                    document.body.classList.add('mode');
+                }
             });
 
-            if (user["user_dark_mode"]) {
-                document.body.classList.add('mode');
-            }
+            //this.setState({
+            //    user: user,
+            //    darkMode: user["user_dark_mode"] || false,
+            //});
+
+            //if (user["user_dark_mode"]) {
+            //    document.body.classList.add('mode');
+            //}
+
         }
+        console.log(this.state);
     }
 
-    switchDarkMode = (event) => {
-        const newDarkMode = event.target.checked;
+    handleChange = () => {
+        const newDarkMode = !this.state.darkMode;
         var navbar = this.props.navbar;
+        let promise;
+        var body = JSON.stringify({
+            "user_id": navbar.state.user["user_id"],
+            "user_dark_mode": newDarkMode
+        });
 
         // Update state
         this.setState({
@@ -61,14 +128,12 @@ class Settings extends Component {
         }
 
         // Update in database
-        genericResourcePUT(
-            `/user?uid=${navbar.state.user["user_id"]}`,
-            this,
-            {
-                userId: navbar.state.user["user_id"],
-                user_dark_mode: newDarkMode
-            }
-        ).then(result => {
+        promise = genericResourcePUT(
+            `/user`,
+            this, body
+        );
+        promise.then(result => {
+            console.log(result);
             if (result !== undefined && result.errorMessage === null) {
                 // Update navbar state if needed
                 if (navbar.state.user) {
@@ -90,7 +155,16 @@ class Settings extends Component {
 
     // add a field to the user table to store weather or not 'dark mode' is enabled.
     render() {
-        const { } = this.state;
+        const { isLoaded, errorMessage, user, darkMode } = this.state;
+
+        if (!isLoaded || !user ) {
+            return(
+                <Loading />
+            );
+        }
+
+        console.log("Settings render - user:", user);
+        console.log("Settings render - darkMode:", darkMode);
 
         return (
             <>
@@ -100,9 +174,28 @@ class Settings extends Component {
                     </Typography>
                 </Box>
                 {user && (
-                    <Box>
-                        <Box sx={{ mt: 2 }}>
-                            <FormControlLabel/>
+                    <Box className="card-spacing">
+                        <Box className="form-position">
+                            <Box className="card-style">
+                                <Box sx={{ display: 'flex', flexDirection: 'column', gap: '20px', width: '100%' }}>
+                                    <Typography variant="h6" sx={{ fontWeight: '600' }}>
+                                        Appearance
+                                    </Typography>
+                                    <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+                                        <Typography>
+                                            Dark Mode: {darkMode ? 'On' : 'Off'}
+                                        </Typography>
+                                        <Button
+                                            onClick={this.handleChange}
+                                            className="primary-color"
+                                            variant="contained"
+                                            aria-label="toggleDarkModeButton"
+                                        >
+                                            Toggle Dark Mode
+                                        </Button>
+                                    </Box>
+                                </Box>
+                            </Box>
                         </Box>
                     </Box>
                 )}

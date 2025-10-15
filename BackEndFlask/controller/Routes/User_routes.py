@@ -131,10 +131,12 @@ def get_all_users():
 
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
-        if(request.args and request.args.get("uid")):
-            user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system
+        if(request.args and request.args.get("user_id")):
+            user_id = request.args.get("user_id") 
 
             user = get_user(user_id)  # Trigger an error if not exists.
+
+            print(user_id)
 
             return create_good_response(user_schema.dump(user), 200, "users")
 
@@ -318,6 +320,8 @@ def update_user():
 
         if(request.args and request.args.get("uid")):
             uid = request.args.get("uid")
+
+            print(uid)
 
             user = get_user(uid)  # Trigger an error if not exists.
 
