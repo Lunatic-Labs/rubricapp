@@ -67,7 +67,7 @@ class StudentDashboard extends Component {
 
             filteredATs: null,
             filteredCATs: null,
-            userTeamIds: null,
+            userTeamIds: [],
 
             // Added for rubric grouping
             rubrics: null,
