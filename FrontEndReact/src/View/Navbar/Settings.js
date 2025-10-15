@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box, Typography, Button} from '@mui/material';
+import { Box, Typography, Switch, FormControlLabel } from '@mui/material';
 import Cookies from 'universal-cookie';
 
 // all 'mode' related things are for testing and should be removed afterwards.
@@ -10,72 +10,99 @@ class Settings extends Component {
 
         this.state = {
             user: null,
-            isLoaded: false,
-            isModeActive: false
+            errorMessage: null,
+            darkMode: false
         };
 
-        this.handleToggleMode = this.handleToggleMode.bind(this);
+        this.swithcDarkMode = () => {
+            var navbar = this.props.navbar;
+
+            genericResourcePUT(
+                `/user?uid=${navbar.state.user["user_id"]}&user_dark_mode=${navbar.state.setDarkMode["user_dark_mode"]}`,
+                this,
+                {
+                    userId: navbar.state.user["user_id"],
+                    userDarkModePreferance: navbar.state.setDarkMode["user_dark_mode"]
+                });
+        }
     }
 
     componentDidMount() {
-        const cookies = new Cookies();
-        const user = cookies.get('user');
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+        var user = state.user;
 
-        const savedMode = localStorage.getItem('mode') === 'true';
-
-        if (savedMode) {
-            document.body.classList.add('mode');
-        }
-
-        if (user) {
+        if (user !== null) {
             this.setState({
-                isLoaded: true,
                 user: user,
-                isModeActive: savedMode
+                darkMode: user["user_dark_mode"] || false,
             });
-        } else {
-            this.setState({
-                isLoaded: true,
-                isModeActive: savedMode
-            });
+
+            if (user["user_dark_mode"]) {
+                document.body.classList.add('mode');
+            }
         }
     }
 
-    handleToggleMode() {
-        const newMode = !this.state.isModeActive;
-        
+    switchDarkMode = (event) => {
+        const newDarkMode = event.target.checked;
+        var navbar = this.props.navbar;
+
+        // Update state
         this.setState({
-            isModeActive: newMode
+            darkMode: newDarkMode
         });
 
         // Toggle dark mode class on body
-        if (newMode) {
+        if (newDarkMode) {
             document.body.classList.add('mode');
-            localStorage.setItem('mode', 'true');
         } else {
             document.body.classList.remove('mode');
-            localStorage.setItem('mode', 'false');
         }
+
+        // Update in database
+        genericResourcePUT(
+            `/user?uid=${navbar.state.user["user_id"]}`,
+            this,
+            {
+                userId: navbar.state.user["user_id"],
+                user_dark_mode: newDarkMode
+            }
+        ).then(result => {
+            if (result !== undefined && result.errorMessage === null) {
+                // Update navbar state if needed
+                if (navbar.state.user) {
+                    navbar.state.user["user_dark_mode"] = newDarkMode;
+                }
+            }
+        }).catch(error => {
+            console.error("Error updating dark mode:", error);
+            // Revert on error
+            this.setState({ darkMode: !newDarkMode });
+            if (!newDarkMode) {
+                document.body.classList.add('mode');
+            } else {
+                document.body.classList.remove('mode');
+            }
+        });
     }
+
 
     // add a field to the user table to store weather or not 'dark mode' is enabled.
     render() {
-        const { user } = this.state;
+        const { } = this.state;
 
         return (
             <>
                 <Box className="content-spacing">
-                <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="Settings">Settings</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="Settings">
+                        Settings
+                    </Typography>
                 </Box>
                 {user && (
                     <Box>
-                        <Typography variant="body1" className="primary-color-text">
-                            Settings content will be added here.
-                        </Typography>
-                        <Box>
-                            <Button variant="contained" className="primary-color" onClick={this.handleToggleMode}>
-                                Mode
-                            </Button>
+                        <Box sx={{ mt: 2 }}>
+                            <FormControlLabel/>
                         </Box>
                     </Box>
                 )}

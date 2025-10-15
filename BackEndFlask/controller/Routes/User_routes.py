@@ -316,6 +316,18 @@ def update_user():
 
             return create_good_response([], 201, "users")
 
+        if(request.args and request.args.get("uid")):
+            uid = request.args.get("uid")
+
+            user = get_user(uid)  # Trigger an error if not exists.
+
+            user_dark_mode = request.json["user_dark_mode"]
+
+            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
+
+            return create_good_response([], 201, "users")
+
+
         user_id = request.args.get("uid")
         new_email = request.args.get("new_email")
         owner_id = request.args.get("owner_id")
@@ -381,6 +393,7 @@ class UserSchema(ma.Schema):
     has_set_password = fields.Boolean()
     is_admin    = fields.Boolean()
     role_id     = fields.Integer()
+    user_dark_mode  = fields.Boolean()
     last_update = fields.DateTime()
 
 user_schema = UserSchema()
