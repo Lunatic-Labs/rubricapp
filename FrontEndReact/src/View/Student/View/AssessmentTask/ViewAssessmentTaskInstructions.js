@@ -28,21 +28,25 @@ class ViewAssessmentTaskInstructions extends Component {
                 return;
             }
 
-            const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
-            if (!completedAssessmentId) {
-                console.error('Completed assessment ID not found');
+            const assessmentTaskId = state.chosenAssessmentTask?.assessment_task_id;
+            if (!assessmentTaskId) {
+                console.error('Assessment task ID not found');
                 this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
                 return;
             }
 
-            await genericResourcePOST(
-                '/feedback',
-                this,
-                JSON.stringify({
-                    user_id: userId,
-                    completed_assessment_id: completedAssessmentId
-                })
-            );
+            const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
+            
+            if (completedAssessmentId) {
+                await genericResourcePOST(
+                    '/feedback',
+                    this,
+                    JSON.stringify({
+                        user_id: userId,
+                        completed_assessment_id: completedAssessmentId
+                    })
+                );
+            }
 
         } catch (error) {
             console.error('Error recording feedback view:', error);
