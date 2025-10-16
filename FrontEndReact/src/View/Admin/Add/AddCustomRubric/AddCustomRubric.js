@@ -116,26 +116,33 @@ class AddCustomRubric extends React.Component {
         };
 
         this.handleDeleteRubric = async (rubricId) => {
-
             try {
                 const result = await genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
                 if (result && result.errorMessage) {
-                throw new Error(result.errorMessage); }
-            
-                this.props.navbar.confirmCreateResource("MyCustomRubrics");
+                throw new Error(result.errorMessage);
+                }
 
+                // Success: behave like your current flow (navigate back / reload list)
+                this.props.navbar.confirmCreateResource("MyCustomRubrics");
             } catch (error) {
-                // fall back to a sensible message if the backend didn't provide one
-                const errorMessage = "An error occurred: Cannot delete custom rubric with associated tasks";
+                // Prefer backend message if present; otherwise use the exact copy you asked for.
+                const errorMessage = "An error occurred: Cannot delete custom rubric with associated tasks.";
+
                 window.alert(errorMessage);
-                // also surface through the existing inline error UI for consistency
-                this.setState({ isLoaded: true, errorMessage });
-                 setTimeout(() => {
-                    if (typeof this.props.refreshData === "function") {
-                        this.props.fetchData();
-                    } }, 1000);
+
+                // Bubble to parent like ViewUsers does so the inline <ErrorMessage/> shows and clears.
+                if (typeof this.props.onError === "function") {
+                this.props.onError(errorMessage);
+                }
+
+                // Refresh data after a short delay (same pattern used in ViewUsers).
+                setTimeout(() => {
+                if (typeof this.props.refreshData === "function") {
+                    this.props.refreshData();
+                }
+                }, 1000);
             }
-        };
+            };
 
     }
 
