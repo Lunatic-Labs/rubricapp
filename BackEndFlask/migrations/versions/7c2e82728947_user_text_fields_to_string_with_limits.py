@@ -33,7 +33,7 @@ def upgrade():
                existing_nullable=False)
         batch_op.alter_column('reset_code',
                existing_type=mysql.TEXT(),
-               type_=sa.String(length=6),
+               type_=sa.String(length=256),
                existing_nullable=True)
 
     # ### end Alembic commands ###
