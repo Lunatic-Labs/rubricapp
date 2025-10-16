@@ -19,7 +19,6 @@ var lb = "loginButton";
 var ei = "emailInput";
 var pi = "passwordInput";
 var ct = "coursesTitle";
-var vcib = /View course/i;
 var rt = "rosterTitle";
 var sbub = "studentBulkUploadButton";
 var abut = "adminBulkUploadTitle";

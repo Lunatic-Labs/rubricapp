@@ -22,7 +22,6 @@ var pi = "passwordInput";
 var aub = "addUserButton";
 var aut = "addUserTitle";
 var ct = "coursesTitle";
-var vcib = /View course/i;
 var rt = "rosterTitle";
 var mhbb = "mainHeaderBackButton";
 var caub = "cancelAddUserButton";

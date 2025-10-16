@@ -20,7 +20,6 @@ var lb = "loginButton";
 var ei = "emailInput";
 var pi = "passwordInput";
 var ct = "coursesTitle";
-var vcib = /View course/i;
 var rt = "rosterTitle";
 var eub = "editUserButton";
 var eut = "editUserTitle";
