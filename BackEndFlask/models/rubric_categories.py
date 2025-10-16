@@ -1,24 +1,27 @@
 from core import db
-from models.schemas import RubricCategory 
+from sqlalchemy.exc import IntegrityError
+from models.schemas import RubricCategory
 from models.utility import error_log
 
+
 @error_log
-def create_rubric_category(rubric_category):
-    new_category = RubricCategory(
-        rubric_id=rubric_category["rubric_id"],
-        category_id=rubric_category["category_id"]
-    )
+def get_rubric_categories_by_rubric_id(rubric_id):
+    return db.session.query(RubricCategory).filter(
+        RubricCategory.rubric_id == rubric_id
+    ).all()
 
-    db.session.add(new_category)
-    db.session.commit()
-
-    return new_category
 
 @error_log
 def delete_rubric_categories_by_rubric_id(rubric_id):
-    categories_to_delete = RubricCategory.query.filter_by(rubric_id=rubric_id).all()
-    
-    for category in categories_to_delete:
-        db.session.delete(category)
-        
-    db.session.commit()
+    try:
+        db.session.query(RubricCategory).filter(
+            RubricCategory.rubric_id == rubric_id
+        ).delete(synchronize_session=False)
+        db.session.commit()
+        return True
+    except IntegrityError:
+        db.session.rollback()
+        raise
+    except Exception:
+        db.session.rollback()
+        raise
