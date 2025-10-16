@@ -33,6 +33,9 @@ class Settings extends Component {
     }
 
     componentDidMount() {
+        var navbar = this.props.navbar;
+        var state = navbar.state;
+
         const cookies = new Cookies();
         const user = cookies.get('user'); //used to be cookieUser
 
@@ -67,8 +70,8 @@ class Settings extends Component {
                     
                     this.setState({
                         isLoaded: true,
-                        user: userData["user_id"] || 1,
-                        darkMode: userData["user_dark_mode"] || true
+                        user: userData["user_id"],
+                        darkMode: userData["user_dark_mode"]
                     });
 
 
@@ -107,11 +110,22 @@ class Settings extends Component {
     }
 
     handleChange = () => {
-        const newDarkMode = !this.state.darkMode;
-        var navbar = this.props.navbar;
+        //var navbar = this.props.navbar;
+        //console.log(navbar);
+        const newDarkMode = !(this.state.darkMode);
+        const user_id = this.state["user"];
+
+        const test_users = this.state["users"];
+        console.log(test_users);
+        const test_user = this.state["user"];
+        console.log(test_user);
+        const test_state = this.state;
+        console.log(test_state);
+        
         let promise;
+        // error in "user_id": navbar.state.user["user_id"],
         var body = JSON.stringify({
-            "user_id": navbar.state.user["user_id"],
+            "user_id": user_id,
             "user_dark_mode": newDarkMode
         });
 
@@ -128,17 +142,22 @@ class Settings extends Component {
         }
 
         // Update in database
+        // need something like this...
+        // genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         promise = genericResourcePUT(
             `/user`,
-            this, body
+            this, 
+            body,
+            { rawResponse: true }
         );
+
+        console.log(body);
+
         promise.then(result => {
             console.log(result);
             if (result !== undefined && result.errorMessage === null) {
                 // Update navbar state if needed
-                if (navbar.state.user) {
-                    navbar.state.user["user_dark_mode"] = newDarkMode;
-                }
+                this.state.darkMode = newDarkMode;
             }
         }).catch(error => {
             console.error("Error updating dark mode:", error);
