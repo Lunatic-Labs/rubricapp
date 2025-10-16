@@ -25,11 +25,11 @@ def upgrade():
                existing_nullable=False)
         batch_op.alter_column('last_name',
                existing_type=mysql.TEXT(),
-               type_=sa.String(length=256),
+               type_=sa.String(length=50),
                existing_nullable=False)
         batch_op.alter_column('password',
                existing_type=mysql.TEXT(),
-               type_=sa.String(length=20),
+               type_=sa.String(length=256),
                existing_nullable=False)
         batch_op.alter_column('reset_code',
                existing_type=mysql.TEXT(),
