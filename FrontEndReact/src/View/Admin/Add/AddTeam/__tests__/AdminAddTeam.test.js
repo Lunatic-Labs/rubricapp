@@ -22,7 +22,6 @@ var pi = "passwordInput";
 var ct = "coursesTitle";
 var vcib = "viewCourseIconButton";
 var mhbb = "mainHeaderBackButton";
-var vcib = "viewCourseIconButton";
 var tt = "teamsTab";
 var rt = "rosterTitle";
 var td = "teamDashboard";
