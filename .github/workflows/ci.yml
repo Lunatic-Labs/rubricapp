@@ -142,14 +142,13 @@ jobs:
             echo "Checking backend health..."
             docker ps
             for i in {1..5}; do 
-              CONTAINER_ID = $(docker ps -q --filter "name=backend")
+              CONTAINER_ID=$(docker ps -q --filter "name=backend")
 
-              if [-z "$CONTAINER_ID"]; then
-                echo "No container matched to backend. Falling back to hard coded name."
-                CONTAINER_ID="rubricapp-backend-1"
+              if [ -z "$CONTAINER_ID"]; then
+                echo "No container matched to backend. Check backend container as something might be causing to fail"
               fi
               
-              docker inspect --format='{{json .State.Status}}' "$CONTAINER_ID")
+              docker inspect --format='{{json .State.Status}}' "$CONTAINER_ID"
               netstat -tulpn | grep 5050  # Check if port is actually listening
 
               if curl -v 'http://127.0.0.1:5050/api'; then
