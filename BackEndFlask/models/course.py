@@ -71,8 +71,6 @@ def create_course(course_data):
         
     db.session.add(test_student)
     db.session.commit()
-        
-        # ... rest of the code ...
 
     # Assign the test student to the course
     test_user_course = UserCourse (

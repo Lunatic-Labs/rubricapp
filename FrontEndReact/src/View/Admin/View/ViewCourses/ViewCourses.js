@@ -17,7 +17,6 @@ class ViewCourses extends Component {
     // Initialize cookies here
     const cookies = new Cookies();
     const user = cookies.get('user');
-    const isViewingAsStudent = user?.viewingAsStudent || false;
 
     const columns = [
       {
