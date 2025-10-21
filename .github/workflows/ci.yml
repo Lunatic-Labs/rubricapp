@@ -141,6 +141,7 @@ jobs:
             sleep 7
             echo "Checking backend health..."
             for i in {1..5}; do 
+              echo 'found:  $(docker ps -q --filter "name=backend")'
               docker inspect --format='{{json .State.Status}}' $(docker ps -q --filter "name=backend")
               netstat -tulpn | grep 5050  # Check if port is actually listening
 
