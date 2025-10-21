@@ -4,7 +4,6 @@ import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { Typography, Box} from "@mui/material";
-import Cookies from 'universal-cookie';
 
 class ViewCourses extends Component {
   render() {
@@ -14,8 +13,6 @@ class ViewCourses extends Component {
     var courseRoles = adminViewCourses.courseRoles;
     var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
     
-    // Initialize cookies here
-    const cookies = new Cookies();
 
     const columns = [
       {
