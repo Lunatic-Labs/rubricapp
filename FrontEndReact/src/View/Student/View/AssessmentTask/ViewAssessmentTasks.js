@@ -71,8 +71,6 @@ class ViewAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
 
-        const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
-
         const role = this.props.role;
 
         var chosenCAT = null;
@@ -181,15 +179,10 @@ class ViewAssessmentTasks extends Component {
                                             const hasPassword = at.create_team_password && at.create_team_password.trim() !== '';
                                             const needsPasswordPrompt = isSwitchingTeams && hasPassword; // if just checking in, don't password prompt. if no password set, don't password prompt
                                             
-                                            if (!fixedTeams) {
-                                                if (needsPasswordPrompt) {
-                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
-                                                } else {
-                                                    navbar.setSelectCurrentTeam(assessmentTasks, atId);
-                                                }
-                                            } 
-                                            else {
-                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, needsPasswordPrompt);
+                                            if (needsPasswordPrompt) {
+                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
+                                            } else {
+                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
                                             }
                                         }}
                                     >
