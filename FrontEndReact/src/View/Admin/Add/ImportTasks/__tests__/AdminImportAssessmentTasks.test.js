@@ -22,6 +22,7 @@ var pi = "passwordInput";
 var ct = "coursesTitle";
 var iab = "importAssessmentButton";
 var aiatt = "adminImportAssessmentTasksTitle";
+var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 var at = "assessmentTab";
 var mhbb = "mainHeaderBackButton";

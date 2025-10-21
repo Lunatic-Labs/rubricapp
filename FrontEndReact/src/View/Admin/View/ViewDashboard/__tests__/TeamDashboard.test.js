@@ -19,6 +19,7 @@ var lb = "loginButton";
 var ei = "emailInput";
 var pi = "passwordInput";
 var ct = "coursesTitle";
+var vcib = "viewCourseIconButton";
 var mhbb = "mainHeaderBackButton";
 var tt = "teamsTab";
 var rt = "rosterTitle";
