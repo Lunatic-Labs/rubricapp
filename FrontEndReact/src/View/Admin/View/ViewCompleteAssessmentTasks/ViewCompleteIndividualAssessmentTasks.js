@@ -7,7 +7,7 @@ import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
-import { genericResourcePOST, genericResourcePUT, getHumanReadableDueDate } from "../../../../utility";
+import { genericResourcePUT, getHumanReadableDueDate, genericResourceGET } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
 import LockIcon from '@mui/icons-material/Lock';
@@ -17,20 +17,22 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     constructor(props) {
         super(props);
 
-    this.state = {
-        errorMessage: null,
-        isLoaded: null,
-        showDialog: false,
-        notes: '',
-        notificationSent: false,
-        isSingleMsg: false,
-        compATId: null,
-        lockStatus: {},
+        this.state = {
+            errorMessage: null,
+            isLoaded: null,
+            showDialog: false,
+            notes: '',
+            notificationSent: false,
+            isSingleMsg: false,
+            compATId: null,
+            lockStatus: {},
+            notificationStatus: null,
+            loading: false,
 
-        errors: {
-            notes:''
-        }
-      };
+            errors: {
+                notes: ''
+            }
+        };
     }
 
     componentDidMount() {
@@ -43,6 +45,31 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
         this.setState({ lockStatus: initialLockStatus });
     }
+
+    fetchNotificationStatus = async () => {
+        const { chosenAssessmentTask } = this.props.navbar.state;
+        
+        if (!chosenAssessmentTask) return;
+
+        try {
+            const response = await genericResourceGET(
+                `/notification_status?assessment_task_id=${chosenAssessmentTask.assessment_task_id}&team=false`,
+                this
+            );
+            
+            if (response && response.notification_status) {
+                this.setState({ notificationStatus: response.notification_status });
+            }
+        } catch (err) {
+            console.error('Error fetching notification status:', err);
+            this.setState({ 
+                errors: { 
+                    ...this.state.errors, 
+                    general: 'Failed to load notification status' 
+                } 
+            });
+        }
+    };
 
     handleLockToggle = (completedAssessmentId, task) => {
         this.setState((prevState) => {
@@ -107,84 +134,106 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-  handleDialog = (isSingleMessage, singleCompletedAT) => {
-    this.setState({
-        showDialog: this.state.showDialog === false ? true : false,
-        isSingleMsg: isSingleMessage,
-        compATId: singleCompletedAT,
-    });
-  }
-
-  handleSendNotification = () => {
-    var notes = this.state.notes;
-
-    var navbar = this.props.navbar;
-
-    var state = navbar.state;
-
-    var chosenAssessmentTask = state.chosenAssessmentTask;
-
-    var date = new Date();
-
-    if (notes.trim() === '') {
+    handleDialog = (isSingleMessage, singleCompletedAT) => {
+        const isOpening = !this.state.showDialog;
+        
         this.setState({
-            errors: {
-                notes: 'Notification Message cannot be empty',
-            },
+            showDialog: isOpening,
+            isSingleMsg: isSingleMessage,
+            compATId: singleCompletedAT,
+            notes: '',
+            errors: { notes: '' },
+            notificationStatus: null,
+        }, () => {
+            // Fetch notification status when opening dialog for mass notification
+            if (isOpening && !isSingleMessage) {
+                this.fetchNotificationStatus();
+            }
         });
+    };
 
-      return;
-    }
-    if(this.state.isSingleMsg) {
-      this.setState({isSingleMsg: false}, () => {
-        genericResourcePOST(
-          `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
-          this, JSON.stringify({ 
-            "notification_message": notes,
-          }) 
-        ).then((result) => {
-          if(result !== undefined && result.errorMessage === null){
-            this.setState({ 
-              showDialog: false, 
-              notificationSent: date, 
+    handleSendNotification = () => {
+        const notes = this.state.notes;
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const date = new Date();
+
+        if (notes.trim() === '') {
+            this.setState({
+                errors: {
+                    notes: 'Notification Message cannot be empty',
+                },
             });
-          }
-        });
-      });
-    } else {
-      genericResourcePUT(
-        `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
-        this, JSON.stringify({
-          "notification_message": notes, 
-          "date" : date
-        })
-      ).then((result) => {
-        if (result !== undefined && result.errorMessage === null) {
-          this.setState({
-            showDialog: false,
-            notificationSent: date,
-          });
+            return;
         }
-      });
-    }
 
-  };
+        this.setState({ loading: true });
+
+        if (this.state.isSingleMsg) {
+            genericResourcePOST(
+                `/send_single_email?team=false&completed_assessment_id=${this.state.compATId}`,
+                this,
+                JSON.stringify({
+                    "notification_message": notes,
+                })
+            ).then((result) => {
+                if (result !== undefined && result.errorMessage === null) {
+                    this.setState({
+                        showDialog: false,
+                        notificationSent: date,
+                        loading: false,
+                        notes: '',
+                        isSingleMsg: false,
+                    });
+                    alert('Student notified successfully!');
+                } else {
+                    this.setState({ loading: false });
+                }
+            }).catch((err) => {
+                this.setState({ 
+                    loading: false,
+                    errors: { general: 'Failed to send notification' }
+                });
+            });
+        } else {
+            genericResourcePUT(
+                `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=false`,
+                this,
+                JSON.stringify({
+                    "notification_message": notes,
+                    "date": date.toISOString()
+                })
+            ).then((result) => {
+                if (result !== undefined && result.errorMessage === null) {
+                    const count = result.Mass_notified?.count || 0;
+                    this.setState({
+                        showDialog: false,
+                        notificationSent: date,
+                        loading: false,
+                        notes: '',
+                    });
+                    alert(`Successfully notified ${count} student${count !== 1 ? 's' : ''}!`);
+                } else {
+                    this.setState({ loading: false });
+                }
+            }).catch((err) => {
+                this.setState({ 
+                    loading: false,
+                    errors: { general: 'Failed to send notifications' }
+                });
+            });
+        }
+    };
 
     render() {
         var navbar = this.props.navbar;
-
         var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
-
         var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
-
         var state = navbar.state;
-
         var chosenAssessmentTask = state.chosenAssessmentTask;
-
         var notificationSent = state.notificationSent;
-
         var chosenCourse = state.chosenCourse;
-
         var catIds = completedAssessmentTasks.map((task) => task.completed_assessment_id);
 
         const columns = [
@@ -193,11 +242,10 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 label: "Assessment Task",
                 options: {
                     filter: true,
-
                     customBodyRender: () => {
                         return (
                             <p variant="contained" align="left">
-                                {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
+                                {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"] : "N/A"}
                             </p>
                         );
                     },
@@ -208,7 +256,6 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 label: "Student Name",
                 options: {
                     filter: true,
-
                     customBodyRender: (last_name) => {
                         return (
                             <p variant="contained" align="left">
@@ -223,7 +270,6 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 label: "Assessor",
                 options: {
                     filter: true,
-
                     customBodyRender: (completed_by) => {
                         return (
                             <p variant="contained" align="left">
@@ -238,13 +284,11 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 label: "Initial Time",
                 options: {
                     filter: true,
-
                     customBodyRender: (initialTime) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
-
                         return (
                             <p variant="contained" align="left">
-                                {getHumanReadableDueDate(initialTime,timeZone)}
+                                {getHumanReadableDueDate(initialTime, timeZone)}
                             </p>
                         );
                     },
@@ -255,13 +299,11 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 label: "Last Updated",
                 options: {
                     filter: true,
-
                     customBodyRender: (lastUpdate) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
-                      
-                        return(
-                            <p  variant='contained' align='left' >
-                                {getHumanReadableDueDate(lastUpdate,timeZone)}
+                        return (
+                            <p variant='contained' align='left'>
+                                {getHumanReadableDueDate(lastUpdate, timeZone)}
                             </p>
                         )
                     },
@@ -276,23 +318,23 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                         const task = completedAssessmentTasks.find((task) => task["completed_assessment_id"] === completedAssessmentId);
                         const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
 
-                            return (
-                                <Tooltip
-                                    title={
-                                        <>
-                                            <p>
-                                                If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
-                                            </p>
-                                        </>
-                                    }>
-                                    <IconButton
-                                        aria-label={isLocked ? "unlock" : "lock"}
-                                        onClick={() => this.handleLockToggle(completedAssessmentId, task)}
-                                    >
-                                        {isLocked ? <LockIcon /> : <LockOpenIcon />}
-                                    </IconButton>
-                                </Tooltip>
-                            );
+                        return (
+                            <Tooltip
+                                title={
+                                    <>
+                                        <p>
+                                            If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
+                                        </p>
+                                    </>
+                                }>
+                                <IconButton
+                                    aria-label={isLocked ? "unlock" : "lock"}
+                                    onClick={() => this.handleLockToggle(completedAssessmentId, task)}
+                                >
+                                    {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                                </IconButton>
+                            </Tooltip>
+                        );
                     },
                 }
             },
@@ -302,14 +344,14 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align: "center", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", className: "button-column-alignment" } },
                     customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
                         const rowIndex = completeAssessmentTasks.rowIndex;
                         const userId = this.props.completedAssessment[rowIndex].user_id;
                         if (completedAssessmentId) {
                             return (
-                                <IconButton // problem : need to pass who im looking at
+                                <IconButton
                                     align="center"
                                     onClick={() => {
                                         navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
@@ -321,61 +363,60 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                                     }}
                                     aria-label="assessmentIndividualSeeMoreDetailsButtons"
                                 >
-                                    <VisibilityIcon sx={{color:"black"}}/>
+                                    <VisibilityIcon sx={{ color: "black" }} />
                                 </IconButton>
                             )
-
-            } else {
-              return(
-                <p variant='contained' align='center' > {"N/A"} </p>
-              )
-            }
-          }
-        }
-      },
-      {
-        name: "Student/Team Id",
-        label: "Notify",
-        options: {
-          filter: false,
-          sort: false,
-          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
-            const rowIndex = completeAssessmentTasks.rowIndex;
-            const completedATIndex = 5;
-            completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
-            if (completedAssessmentId !== null) {
-              return (
-                <Tooltip
-                    title={
-                        <>
-                            <p>
-                                Notifies one individual.
-                            </p>
-                        </>
-                    }>
-                    <span>
-                        <CustomButton
-                        onClick={() => this.handleDialog(true, completedAssessmentId)}
-                        label="Notify"
-                        align="center"
-                        isOutlined={true}
-                        disabled={notificationSent}
-                        aria-label="Send individual messages"
-                        />
-                    </span>
-                </Tooltip>
-              )
-            }else{
-              return(
-                <p variant='contained' align='center' > {''} </p>
-              )
-            }
-          }
-        }
-      },
-    ];
+                        } else {
+                            return (
+                                <p variant='contained' align='center'> {"N/A"} </p>
+                            )
+                        }
+                    }
+                }
+            },
+            {
+                name: "Student/Team Id",
+                label: "Notify",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => { return { align: "center", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", className: "button-column-alignment" } },
+                    customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+                        const rowIndex = completeAssessmentTasks.rowIndex;
+                        const completedATIndex = 5;
+                        completedAssessmentId = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
+                        if (completedAssessmentId !== null) {
+                            return (
+                                <Tooltip
+                                    title={
+                                        <>
+                                            <p>
+                                                Notifies one individual.
+                                            </p>
+                                        </>
+                                    }>
+                                    <span>
+                                        <CustomButton
+                                            onClick={() => this.handleDialog(true, completedAssessmentId)}
+                                            label="Notify"
+                                            align="center"
+                                            isOutlined={true}
+                                            disabled={notificationSent}
+                                            aria-label="Send individual messages"
+                                        />
+                                    </span>
+                                </Tooltip>
+                            )
+                        } else {
+                            return (
+                                <p variant='contained' align='center'> {''} </p>
+                            )
+                        }
+                    }
+                }
+            },
+        ];
 
         const options = {
             onRowsDelete: false,
@@ -389,72 +430,75 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         };
 
         return (
-            <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "20px" }}>
                 <Box className="content-spacing">
                     <CourseInfo
-                        courseTitle={chosenCourse["course_name"]} 
+                        courseTitle={chosenCourse["course_name"]}
                         courseNumber={chosenCourse["course_number"]}
                         aria-label={chosenCourse["course_name"]}
                     />
                 </Box>
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedIndividualRubricsTitle"> Completed Rubrics</Typography>
+                    <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="viewCompletedIndividualRubricsTitle"> Completed Rubrics</Typography>
 
-          <Box>
-            <ResponsiveNotification
-              show={this.state.showDialog}
-              handleDialog={this.handleDialog}
-              sendNotification={this.handleSendNotification}
-              handleChange={this.handleChange}
-              notes={this.state.notes}
-              error={this.state.errors}
-            />
+                    <Box>
+                        <ResponsiveNotification
+                            show={this.state.showDialog}
+                            handleDialog={() => this.handleDialog(false, null)}
+                            sendNotification={this.handleSendNotification}
+                            handleChange={this.handleChange}
+                            notes={this.state.notes}
+                            error={this.state.errors}
+                            loading={this.state.loading}
+                            notificationStatus={this.state.notificationStatus}
+                            type={this.state.isSingleMsg ? "single" : "mass"}
+                        />
 
-            <IconButton
-                aria-label={"unlock-all"}
-                onClick={() => this.handleUnlockAllCats(catIds)}
-            >
-                <LockOpenIcon />
-            </IconButton>
+                        <IconButton
+                            aria-label={"unlock-all"}
+                            onClick={() => this.handleUnlockAllCats(catIds)}
+                        >
+                            <LockOpenIcon />
+                        </IconButton>
 
-            <IconButton
-                aria-label={"lock-all"}
-                onClick={() => this.handleLockAllCats(catIds)}
-            >
-                <LockIcon />
-            </IconButton>
-            <Tooltip
-                title={
-                    <>
-                        <p>
-                            Notifies all individuals results are available.
-                        </p>
-                    </>
-                }>
-                <span>
-                    <CustomButton
-                    label="Send Notification"
-                    onClick={() => this.handleDialog(false)}
-                    isOutlined={false}
-                    disabled={notificationSent}
-                    aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
+                        <IconButton
+                            aria-label={"lock-all"}
+                            onClick={() => this.handleLockAllCats(catIds)}
+                        >
+                            <LockIcon />
+                        </IconButton>
+                        <Tooltip
+                            title={
+                                <>
+                                    <p>
+                                        Notifies all individuals results are available.
+                                    </p>
+                                </>
+                            }>
+                            <span>
+                                <CustomButton
+                                    label="Send Notification"
+                                    onClick={() => this.handleDialog(false)}
+                                    isOutlined={false}
+                                    disabled={notificationSent}
+                                    aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
+                                />
+                            </span>
+                        </Tooltip>
+                    </Box>
+                </Box>
+
+                <Box className="table-spacing">
+                    <CustomDataTable
+                        data={completedAssessmentTasks ? completedAssessmentTasks : []}
+                        columns={columns}
+                        options={options}
                     />
-                </span>
-            </Tooltip>
-          </Box>
-        </Box>
-
-        <Box className="table-spacing">
-        <CustomDataTable
-          data={completedAssessmentTasks ? completedAssessmentTasks : []}
-          columns={columns}
-          options={options}
-        />
-        </Box>
-      </Box>
-    );
-  }
+                </Box>
+            </Box>
+        );
+    }
 }
 
 export default ViewCompleteIndividualAssessmentTasks;
