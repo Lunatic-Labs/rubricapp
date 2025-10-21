@@ -35,10 +35,9 @@ class ViewAssessmentTaskInstructions extends Component {
             
             // Check if coming from completed assessments page
             if (state.chosenCompleteAssessmentTask) {
-                if (!completedAssessmentId) {
-                    this.setState({
-                        errorMessage: "Completed Assessment ID not found"
-                    });
+                if (completedAssessmentId) {
+                    console.error('Completed Assessment Task ID not found');
+                    this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
                     return;
                 }
                 
