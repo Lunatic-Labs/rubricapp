@@ -11,10 +11,18 @@ class ViewAssessmentTasks extends Component {
 
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments;
+            const currentUserId = this.props.currentUserId;
 
-            if(completedAssessments) {
+            if(completedAssessments && currentUserId) {
                 for (let i = 0; i < completedAssessments.length; i++) {
-                    if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === true) {
+                    const cat = completedAssessments[i];
+
+                    // For individual assessments: check user_id and done
+                    // For team assessments: check completed_by (the student who filled it) and done
+                    const isIndividualMatch = cat.user_id !== null && cat.user_id === currentUserId && cat.done === true;
+                    const isTeamMatch = cat.team_id !== null && cat.completed_by === currentUserId && cat.done === true;
+                    
+                    if (cat.assessment_task_id === atId && (isIndividualMatch || isTeamMatch)) {
                         return true;
                     }
                 }
@@ -72,6 +80,12 @@ class ViewAssessmentTasks extends Component {
         }
 
         var assessmentTasks = this.props.assessmentTasks;
+
+        console.log('=== ViewAssessmentTasks Props ===');
+        console.log('currentUserId:', this.props.currentUserId);
+        console.log('role:', role);
+        console.log('completedAssessments:', this.props.completedAssessments);
+        console.log('assessmentTasks:', assessmentTasks);
 
         const columns = [
             {
@@ -205,7 +219,20 @@ class ViewAssessmentTasks extends Component {
                                         this.areAllATsComplete(atId) === true
                                     }
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, chosenCAT);
+                                        // For team assessments, filter out completed assessments by other users
+                                        let filteredCAT = chosenCAT;
+                                        const currentUserId = this.props.currentUserId;
+                                        
+                                        if (chosenCAT && at.unit_of_assessment && currentUserId) {
+                                            // For team assessments, only pass the current user's completed assessment
+                                            filteredCAT = chosenCAT.filter(cat => 
+                                                cat.assessment_task_id === atId && 
+                                                (cat.completed_by === currentUserId || cat.completed_by === null)
+                                            );
+                                            console.log('Filtered CAT for team assessment:', filteredCAT);
+                                        }
+                                        
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, filteredCAT);
                                     }}
 
                                     aria-label="startAssessmentTasksButton"
