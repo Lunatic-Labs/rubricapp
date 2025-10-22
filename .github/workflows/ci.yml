@@ -140,7 +140,7 @@ jobs:
         run:  |
             sleep 7
             echo "Checking backend health..."
-            docker ps
+            docker ps -a
             for i in {1..5}; do 
               CONTAINER_ID=$(docker ps -q --filter "name=backend")
 
