@@ -146,7 +146,7 @@ jobs:
               CONTAINER_ID=$(docker ps -q --filter "name=backend")
 
               if [ -z "$CONTAINER_ID"]; then
-                echo "No container matched to backend. Check backend container as something might be causing to fail"
+                echo "No container matched to backend. Check backend container as something might be causing to exit."
               fi
               
               docker inspect --format='{{json .State.Status}}' "$CONTAINER_ID"
