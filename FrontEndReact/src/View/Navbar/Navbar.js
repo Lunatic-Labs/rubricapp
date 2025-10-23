@@ -16,7 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout.js';
-import Logo from "./sbText.png";
+import Logo from "./sbTextFixed.png";
 
 export default function ButtonAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
