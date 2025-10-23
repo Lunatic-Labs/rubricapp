@@ -30,11 +30,13 @@ export default function ButtonAppBar(props) {
     setAnchorEl(null);
   };
 
+  
+
   return (
-    <Box sx={{ flexGrow: 1 }}>
+    <Box className="navbar" sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar sx={{
-          backgroundColor:"white", 
+          backgroundColor:"var(--navbar-bg)", 
           py:".1rem", 
           px:{xs:"0.25rem",md:"1rem"},
           display: "flex", 
@@ -46,7 +48,7 @@ export default function ButtonAppBar(props) {
           />
           <Box component="div" sx={{ paddingLeft:{xs:"2rem"},display: 'flex', justifyContent:'space-between',alignItems:'center'}}>
             <Typography variant='h5' sx={{
-                color:"black",
+                color:"var(--navbar-text)",
                 fontFamily: "Roboto",
                 fontSize: {xs:"12px",md:"14px"},
                 fontStyle: "normal",
@@ -59,10 +61,11 @@ export default function ButtonAppBar(props) {
             <Button aria-label='accountDropdown' sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}>
-              <img src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
+              <img className="navbar-arrow" src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>
             </Button>
 
             <Menu
+              className="navbar"
               anchorEl={anchorEl}
               id="account-menu"
               open={open}
@@ -74,11 +77,19 @@ export default function ButtonAppBar(props) {
                   overflow: 'visible',
                   filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                   mt: 1.5,
+                  backgroundColor: 'var(--navbar-dropdown-bg)',
+                  color: 'var(--navbar-dropdown-text)',
                   '& .MuiAvatar-root': {
                     width: 32,
                     height: 32,
                     ml: -0.5,
                     mr: 1,
+                  },
+                  '& .MuiMenuItem-root:hover': {
+                    backgroundColor: 'var(--navbar-dropdown-hover)',
+                  },
+                  '& .MuiDivider-root': {
+                    borderColor: 'var(--navbar-dropdown-divider)',
                   },
                   '&:before': {
                     content: '""',
@@ -88,7 +99,7 @@ export default function ButtonAppBar(props) {
                     right: 14,
                     width: 10,
                     height: 10,
-                    bgcolor: 'background.paper',
+                    bgcolor: 'var(--navbar-dropdown-bg)',
                     transform: 'translateY(-50%) rotate(45deg)',
                     zIndex: 0,
                   },

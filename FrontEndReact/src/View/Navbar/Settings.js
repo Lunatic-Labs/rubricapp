@@ -5,65 +5,30 @@ import Cookies from 'universal-cookie';
 import { genericResourcePUT, genericResourceGET } from '../../utility.js';
 import Loading from "../Loading/Loading.js";
 
-
 // all 'mode' related things are for testing and should be removed afterwards.
 class Settings extends Component {
     constructor(props) {
         super(props);
 
-
         this.state = {
             isLoaded: null,
             errorMessage: null,
             user: null,
-            darkMode: false                 // add isLoaded
+            darkMode: false
         };
-
-
-        //console.log(props);
-
-
-        //this.swithcDarkMode = () => {
-        //    var navbar = this.props.navbar;
-
-
-        //    genericResourcePUT(
-        //        `/user?uid=${navbar.state.user["user_id"]}&user_dark_mode=${navbar.state.setDarkMode["user_dark_mode"]}`,
-        //        this,
-        //        {
-        //            userId: navbar.state.user["user_id"],
-        //            userDarkModePreferance: navbar.state.setDarkMode["user_dark_mode"]
-        //        });
-        //}
     }
 
-
     componentDidMount() {
-        const cookies = new Cookies();
-        const user = cookies.get('user'); //used to be cookieUser
-
-
         //var navbar = this.props.navbar;
         //var state = navbar.state;
-        //var user = state.user;
 
-
-        //console.log(user);
-        //console.log(user.user_id);
-        //console.log("printed!");
-
-
-        //if (user === null && cookieUser) {
-        //    user = cookieUser["user_id"];
-        //}
-
+        const cookies = new Cookies();
+        const user = cookies.get('user');
 
         if (user !== null) {
 
-
             let promise;
             let userData;
-
 
             promise = genericResourceGET(
                 `/user`,
@@ -71,22 +36,14 @@ class Settings extends Component {
                 this
             );
             promise.then(result => {
-                //console.log(result, result["users"], result["users"][0]);
                 if (result !== undefined && result["users"] !== null) {
-                    console.log(result);
                     userData = result["users"];
-                    console.log(userData);
-                   
+                    
                     this.setState({
                         isLoaded: true,
-                        user: userData["user_id"] || 1,
-                        darkMode: userData["user_dark_mode"] || true
+                        user: userData["user_id"],
+                        darkMode: userData["user_dark_mode"]
                     });
-
-
-
-
-
 
                     if (this.state.darkMode) {
                         document.body.classList.add('mode');
@@ -103,44 +60,27 @@ class Settings extends Component {
                     darkMode: user["user_dark_mode"] || false,
                 });
 
-
                 if (user["user_dark_mode"]) {
                     document.body.classList.add('mode');
                 }
             });
-
-
-            //this.setState({
-            //    user: user,
-            //    darkMode: user["user_dark_mode"] || false,
-            //});
-
-
-            //if (user["user_dark_mode"]) {
-            //    document.body.classList.add('mode');
-            //}
-
-
         }
-        console.log(this.state);
     }
 
-
     handleChange = () => {
-        const newDarkMode = !this.state.darkMode;
-        var navbar = this.props.navbar;
+        const newDarkMode = !(this.state.darkMode);
+        const user_id = this.state["user"];
+        
         let promise;
         var body = JSON.stringify({
-            "user_id": navbar.state.user["user_id"],
+            "user_id": user_id,
             "user_dark_mode": newDarkMode
         });
-
 
         // Update state
         this.setState({
             darkMode: newDarkMode
         });
-
 
         // Toggle dark mode class on body
         if (newDarkMode) {
@@ -149,19 +89,16 @@ class Settings extends Component {
             document.body.classList.remove('mode');
         }
 
-
-        // Update in database
         promise = genericResourcePUT(
             `/user`,
-            this, body
+            this, 
+            body
         );
+
         promise.then(result => {
-            console.log(result);
             if (result !== undefined && result.errorMessage === null) {
                 // Update navbar state if needed
-                if (navbar.state.user) {
-                    navbar.state.user["user_dark_mode"] = newDarkMode;
-                }
+                this.state.darkMode = newDarkMode;
             }
         }).catch(error => {
             console.error("Error updating dark mode:", error);
@@ -175,24 +112,14 @@ class Settings extends Component {
         });
     }
 
-
-
-
-    // add a field to the user table to store weather or not 'dark mode' is enabled.
     render() {
-        const { isLoaded, errorMessage, user, darkMode } = this.state;
-
+        const { isLoaded, user, darkMode } = this.state;
 
         if (!isLoaded || !user ) {
             return(
                 <Loading />
             );
         }
-
-
-        console.log("Settings render - user:", user);
-        console.log("Settings render - darkMode:", darkMode);
-
 
         return (
             <>
@@ -231,6 +158,5 @@ class Settings extends Component {
         );
     }
 }
-
 
 export default Settings;

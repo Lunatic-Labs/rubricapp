@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
-import { FormControl, MenuItem, InputLabel, Select } from '@mui/material';
+import { FormControl, MenuItem, InputLabel, Select, Alert } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility.js';
 
 
@@ -20,7 +20,8 @@ class SelectTeam extends Component {
         this.handleSelect = (event) => {
             this.setState({
                 teamID: event.target.value,
-                error: false
+                error: false,
+                errorMessage: ""
             })
         };
 
@@ -30,18 +31,37 @@ class SelectTeam extends Component {
 
             if (this.state.teamID === '') {
                 this.setState({
-                    error: true
+                    error: true,
+                    errorMessage: "Please select a team"
                 });
                 return;
             }
 
-	        genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, this, {}).then((result) => {
+            const password = navbar.state.teamSwitchPassword || "";
+            const requestBody = password ? JSON.stringify({ password: password }) : JSON.stringify({});
+
+	        genericResourcePOST(
+                `/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, 
+                this, 
+                requestBody
+            ).then((result) => {
                 if (result !== undefined && result.errorMessage === null) {
+                    navbar.setState({ teamSwitchPassword: null });
                     navbar.setNewTab("StudentDashboard");
+                } else if (result && result.errorMessage) {
+                    this.setState({
+                        error: true,
+                        errorMessage: result.errorMessage
+                    });
                 }
+            }).catch((error) => {
+                this.setState({
+                    error: true,
+                    errorMessage: "An error occurred while checking in. Please try again."
+                });
             });
         };
-};
+    }
 
     componentDidMount() {
         let course = this.props.navbar.state.chosenCourse;
@@ -89,9 +109,15 @@ class SelectTeam extends Component {
                             }}>
                             <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Choose a Team</h2>
 
+                            {this.state.error && this.state.errorMessage && (
+                                <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
+                                    {this.state.errorMessage}
+                                </Alert>
+                            )}
+
                             <div className="d-flex flex-column">
                                 <div className="d-flex flex-row justify-content-between">
-                                    <FormControl fullWidth>
+                                    <FormControl fullWidth error={this.state.error && !this.state.errorMessage}>
                                         <InputLabel id="Team">Team</InputLabel>
 
                                         <Select
@@ -102,6 +128,7 @@ class SelectTeam extends Component {
                                             onChange={this.handleSelect}
                                             required
                                             sx={{ mb: 3 }}
+                                            aria-label="selectTeamDropdown"
                                         >
                                             {teams.map((x) =>
                                                 <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
@@ -116,6 +143,7 @@ class SelectTeam extends Component {
                                 onClick={this.checkInUser}
                                 isOutlined={false} // Default button
                                 position={{ top: '10px', right: '0px' }}
+                                aria-label="checkInButton"
                             />
                         </div>
                     </>
