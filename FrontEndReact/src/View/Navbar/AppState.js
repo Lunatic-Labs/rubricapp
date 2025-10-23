@@ -39,10 +39,10 @@ class AppState extends Component {
     constructor(props) {
         super(props);
         
-        // --Checks for access token and/or user tokens-- 
+        // --Checks for access token
         // Redirects user to root path if unable to authenticate
         const cookies =new Cookies();
-        if (!cookies.get('access_token') || !cookies.get('user')){
+        if (!cookies.get('access_token')){
             window.location.href = '/';
             return
         }

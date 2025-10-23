@@ -10,8 +10,6 @@ import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdorn
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading.js';
 
-
-
 class Login extends Component {
     constructor(props) {
         super(props);
@@ -25,7 +23,7 @@ class Login extends Component {
             email: '',
             password: '',
             showPassword: '',
-
+            isRefreshing: false,
             errors: {
                 email: '',
                 password: '',
@@ -164,7 +162,7 @@ class Login extends Component {
                             cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
 
                             this.setState({
-                                loggedIn: null,
+                                loggedIn: true,
                                 isRefreshing: false
                             });
                         } else {
@@ -218,6 +216,29 @@ class Login extends Component {
         }
     }
 
+    componentDidMount() {
+        const cookies = new Cookies();
+        
+        // Check initial auth state only once on mount
+        if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
+            this.setState({
+                isLoaded: true,
+                loggedIn: true,
+                hasSetPassword: cookies.get('user')['has_set_password']
+            });
+        } else if (cookies.get('refresh_token') && cookies.get('user') && !cookies.get('access_token')) {
+            // Token expired, try to refresh once
+            this.setState({ isRefreshing: true });
+            this.handleNewAccessToken();
+        } else {
+            // No tokens, show login
+            this.setState({
+                isLoaded: true,
+                loggedIn: false
+            });
+        }
+    }
+
     render() {
         const {
             isLoaded,
@@ -228,7 +249,8 @@ class Login extends Component {
             email,
             password,
             showPassword,
-            errors
+            errors,
+            isRefreshing
         } = this.state;
 
         const cookies = new Cookies();
@@ -238,13 +260,22 @@ class Login extends Component {
             return (<ValidateReset />)
         }
 
-        // Handle case where user has no tokens at all - show login page
-        else if (!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
+        // Show loading while checking auth state
+        if (!isLoaded) {
+            return (<Loading />)
+        }
+
+        // Show loading while refreshing token
+        if (isRefreshing) {
+            return (<Loading />)
+        }
+
+        // User not authenticated - show login page
+        if (!loggedIn) {
             return (
                 <>
-                    {isLoaded && errorMessage &&
+                    {errorMessage &&
                         <>
-                            {/* A response has been received and an error occurred */}
                             <Box>
                                 <ErrorMessage errorMessage={errorMessage} />
                             </Box>
@@ -354,73 +385,23 @@ class Login extends Component {
             )
         }
 
-        // Handle case where user has no access token but has refresh token - try to refresh
-        else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) && !this.state.isRefreshing) {
-            this.setState({ isRefreshing: true });
-            this.handleNewAccessToken();
-
+        // User is authenticated - show appropriate content
+        if (hasSetPassword === false) {
             return (
-                <Loading />
+                <SetNewPassword
+                    email={email}
+                />
             )
         }
 
-        // Handle case where user has no refresh token but still has user data - clear everything and show login
-        else if (!loggedIn && !cookies.get('refresh_token') && cookies.get('user')) {
-            cookies.remove('access_token');
-            cookies.remove('refresh_token');
-            cookies.remove('user');
-
-            // Reset state and show login
-            this.setState({
-                isLoaded: true,
-                loggedIn: false,
-                isRefreshing: false,
-                errorMessage: "Session expired. Please log in again."
-            });
-
-            return (
-                <Loading />
-            )
-        }
-
-        // Handle case where access token exists but refresh token is missing - clear everything and show login
-        else if (!loggedIn && cookies.get('access_token') && !cookies.get('refresh_token')) {
-            cookies.remove('access_token');
-            cookies.remove('refresh_token');
-            cookies.remove('user');
-
-            this.setState({
-                isLoaded: true,
-                loggedIn: false,
-                isRefreshing: false,
-                errorMessage: "Session expired. Please log in again."
-            });
-
-            return (
-                <Loading />
-            )
-        }
-
-        // User is authenticated
-        else {
-            if (hasSetPassword === false) {
-                return (
-                    <SetNewPassword
-                        email={email}
-                    />
-                )
-            }
-            else {
-                return (
-                    <AppState
-                        userName={cookies.get('user')['user_name']}
-                        isSuperAdmin={cookies.get('user')['isSuperAdmin']}
-                        isAdmin={cookies.get('user')['isAdmin']}
-                        logout={this.logout}
-                    />
-                )
-            }
-        }
+        return (
+            <AppState
+                userName={cookies.get('user')['user_name']}
+                isSuperAdmin={cookies.get('user')['isSuperAdmin']}
+                isAdmin={cookies.get('user')['isAdmin']}
+                logout={this.logout}
+            />
+        )
     }
 }
 
