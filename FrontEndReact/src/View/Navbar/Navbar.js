@@ -30,13 +30,7 @@ export default function ButtonAppBar(props) {
     setAnchorEl(null);
   };
 
-  const isDarkMode = document.body.classList.contains('mode');
   
-  // Set colors based on mode
-  const dropdownBg = isDarkMode ? '#2a2a2a' : '#fff';
-  const dropdownText = isDarkMode ? '#e0e0e0' : '#000';
-  const dropdownHover = isDarkMode ? '#3a3a3a' : '#f5f5f5';
-  const dropdownDivider = isDarkMode ? 'rgba(255, 255, 255, 0.12)' : 'rgba(0, 0, 0, 0.12)';
 
   return (
     <Box className="navbar" sx={{ flexGrow: 1 }}>
@@ -71,6 +65,7 @@ export default function ButtonAppBar(props) {
             </Button>
 
             <Menu
+              className="navbar"
               anchorEl={anchorEl}
               id="account-menu"
               open={open}
@@ -82,8 +77,8 @@ export default function ButtonAppBar(props) {
                   overflow: 'visible',
                   filter: 'drop-shadow(0px 2px 8px rgba(0,0,0,0.32))',
                   mt: 1.5,
-                  backgroundColor: dropdownBg,
-                  color: dropdownText,
+                  backgroundColor: 'var(--navbar-dropdown-bg)',
+                  color: 'var(--navbar-dropdown-text)',
                   '& .MuiAvatar-root': {
                     width: 32,
                     height: 32,
@@ -91,10 +86,10 @@ export default function ButtonAppBar(props) {
                     mr: 1,
                   },
                   '& .MuiMenuItem-root:hover': {
-                    backgroundColor: dropdownHover,
+                    backgroundColor: 'var(--navbar-dropdown-hover)',
                   },
                   '& .MuiDivider-root': {
-                    borderColor: dropdownDivider,
+                    borderColor: 'var(--navbar-dropdown-divider)',
                   },
                   '&:before': {
                     content: '""',
@@ -104,7 +99,7 @@ export default function ButtonAppBar(props) {
                     right: 14,
                     width: 10,
                     height: 10,
-                    bgcolor: dropdownBg,
+                    bgcolor: 'var(--navbar-dropdown-bg)',
                     transform: 'translateY(-50%) rotate(45deg)',
                     zIndex: 0,
                   },
