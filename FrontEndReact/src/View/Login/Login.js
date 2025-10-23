@@ -25,6 +25,7 @@ class Login extends Component {
             email: '',
             password: '',
             showPassword: '',
+            darkMode: false,
 
             errors: {
                 email: '',
@@ -52,6 +53,15 @@ class Login extends Component {
                     password: '',
                 },
             });
+        };
+
+        // sets the darkmode depending on preferance
+        this.applyDarkMode = (darkModeEnabled) => {
+            if (darkModeEnabled) {
+                document.body.classList.add('mode');
+            } else {
+                document.body.classList.remove('mode');
+            }
         };
 
         this.login = () => {
@@ -93,10 +103,15 @@ class Login extends Component {
                                 cookies.set('refresh_token', result['headers']['refresh_token'], { sameSite: 'strict' });
                                 cookies.set('user', result['content']['login'][0], { sameSite: 'strict' });
 
+                                // gets the users darkmode preferance
+                                const userDarkMode = result['content']['login'][0]['user_dark_mode'] || false;
+                                this.applyDarkMode(userDarkMode);
+
                                 this.setState(() => ({
                                     isLoaded: true,
                                     loggedIn: true,
-                                    hasSetPassword: result['content']['login'][0]['has_set_password']
+                                    hasSetPassword: result['content']['login'][0]['has_set_password'],
+                                    darkMode: userDarkMode
                                 }));
 
                             } else {
@@ -163,9 +178,13 @@ class Login extends Component {
                         if (result["success"]) {
                             cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
 
+                            const userDarkMode = user['user_dark_mode'] || false;
+                            this.applyDarkMode(userDarkMode);
+
                             this.setState({
                                 loggedIn: null,
-                                isRefreshing: false
+                                isRefreshing: false,
+                                darkMode: userDarkMode
                             });
                         } else {
                             cookies.remove('access_token');
@@ -176,7 +195,7 @@ class Login extends Component {
                                 isLoaded: true,
                                 loggedIn: false,
                                 isRefreshing: false,
-                                errorMessage: "Session expired. Please log in again."
+                                errorMessage: "Session expired. Please log in again.",
                             });
                         }
                     },
@@ -207,7 +226,8 @@ class Login extends Component {
                 errorMessage: null,
                 loggedIn: null,
                 hasSetPassword: null,
-                resettingPassword: null
+                resettingPassword: null,
+                darkMode: false
             });
         }
 
