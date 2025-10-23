@@ -4,7 +4,6 @@ import ViewAssessmentTasks from './ViewAssessmentTasks.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
-import Cookies from 'universal-cookie';
 
 /**
  * @description Renders the my assessment section of the website.
@@ -18,7 +17,6 @@ import Cookies from 'universal-cookie';
  * @property {bool} isLoaded - Did requests complete without issues.
  * @property {object} checkin - Server response to saving a student checking in.
  * @property {object} rubrics - Rubrics for the current user.
- * @property {number} currentUserId - Current logged-in user's ID.
  * 
  */
 
@@ -31,7 +29,6 @@ class StudentViewAssessmentTask extends Component {
             isLoaded: false,
             checkin: null,
             rubrics: null,
-            currentUserId: null,
         }
     }
 
@@ -41,13 +38,6 @@ class StudentViewAssessmentTask extends Component {
         var state = navbar.state;
 
         var chosenCourseID = state.chosenCourse["course_id"];
-
-        // Get current user ID from cookies
-        const cookies = new Cookies();
-        const user = cookies.get('user');
-        const currentUserId = user ? user.user_id : null;
-
-        this.setState({ currentUserId });
 
         genericResourceGET(`/checkin?course_id=${chosenCourseID}`,"checkin", this);
 
@@ -63,7 +53,6 @@ class StudentViewAssessmentTask extends Component {
             checkin,
             rubrics,
             counts,
-            currentUserId,
         } = this.state;
 
         const filteredATs = this.props.filteredAssessments;
@@ -82,7 +71,7 @@ class StudentViewAssessmentTask extends Component {
                     />
                 </div>
             )
-        } else if (!isLoaded || !checkin || !rubrics || !counts || !currentUserId) {
+        } else if (!isLoaded || !checkin || !rubrics || !counts) {
             return(
                 <Loading />
             )
@@ -98,7 +87,6 @@ class StudentViewAssessmentTask extends Component {
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
                         counts={counts}
-                        currentUserId={currentUserId}
                     />
                 </div>
             )
