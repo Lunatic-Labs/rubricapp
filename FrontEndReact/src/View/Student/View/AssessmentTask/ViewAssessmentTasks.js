@@ -11,11 +11,21 @@ class ViewAssessmentTasks extends Component {
 
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments;
+            var userTeamIds = this.props.userTeamIds;
 
             if(completedAssessments) {
                 for (let i = 0; i < completedAssessments.length; i++) {
-                    if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === true) {
-                        return true;
+                    const cat = completedAssessments[i];
+                    if (cat.assessment_task_id === atId && cat.done === true) {
+                        // For individual assessments (team_id is null), any completion counts
+                        if (cat.team_id === null) {
+                            return true;
+                        }
+                
+                        // For team assessments, only count if it's the user's team
+                        if (userTeamIds && userTeamIds.includes(cat.team_id)) {
+                            return true;
+                        }
                     }
                 }
             }

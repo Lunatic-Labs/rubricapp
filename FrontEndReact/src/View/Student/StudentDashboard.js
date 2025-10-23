@@ -311,6 +311,7 @@ class StudentDashboard extends Component {
                             role={roles}
                             filteredAssessments={filteredATs}
                             CompleteAssessments={completedAssessments}
+                            userTeamIds={this.state.userTeamIds}
                         />
                     </Box>
                 </Box>
