@@ -1,3 +1,4 @@
+from core import ma
 from flask import request
 from marshmallow import fields
 from controller  import bp
