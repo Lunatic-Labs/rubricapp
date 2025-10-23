@@ -100,6 +100,7 @@ jobs:
           context: .
           file: Dockerfile.backend
           push: false
+          load: true
           cache-from: type=local,src=/tmp/.buildx-cache
           cache-to: type=local,dest=/tmp/.buildx-cache
 
@@ -140,8 +141,15 @@ jobs:
         run:  |
             sleep 7
             echo "Checking backend health..."
+            docker ps -a
             for i in {1..5}; do 
-              docker inspect --format='{{json .State.Status}}' $(docker ps -q --filter "name=backend")
+              CONTAINER_ID=$(docker ps -q --filter "name=backend")
+
+              if [ -z "$CONTAINER_ID"]; then
+                echo "No container matched to backend. Check backend container as something might be causing to exit."
+              fi
+              
+              docker inspect --format='{{json .State.Status}}' "$CONTAINER_ID"
               netstat -tulpn | grep 5050  # Check if port is actually listening
 
               if curl -v 'http://127.0.0.1:5050/api'; then
