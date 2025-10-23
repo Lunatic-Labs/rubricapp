@@ -43,13 +43,16 @@ class Settings extends Component {
                         isLoaded: true,
                         user: userData["user_id"],
                         darkMode: userData["user_dark_mode"]
+                    }, () => {
+                        // This callback runs AFTER state is updated
+                        if (this.state.darkMode) {
+                            document.body.classList.add('mode');
+                        } else {
+                            document.body.classList.remove('mode');
+                        }
                     });
 
-                    if (this.state.darkMode) {
-                        document.body.classList.add('mode');
-                    } else {
-                        document.body.classList.remove('mode');
-                    }
+                    
                 }
             }).catch(error => {
                 console.error("Error fetching user data:", error);
@@ -58,11 +61,18 @@ class Settings extends Component {
                     isLoaded: false,
                     user: user,
                     darkMode: user["user_dark_mode"] || false,
+                }, () => {
+                    // Apply dark mode in callback here too
+                    if (this.state.darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
                 });
 
-                if (user["user_dark_mode"]) {
-                    document.body.classList.add('mode');
-                }
+                //if (user["user_dark_mode"]) {
+                //    document.body.classList.add('mode');
+                //}
             });
         }
     }

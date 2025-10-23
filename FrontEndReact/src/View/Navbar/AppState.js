@@ -34,6 +34,8 @@ import UserAccount from './UserAccount.js';
 import PrivacyPolicy from './PrivacyPolicy.js';
 import Settings from './Settings.js';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
+//
+import { genericResourceGET } from '../../utility.js';
 
 
 class AppState extends Component {
@@ -84,6 +86,8 @@ class AppState extends Component {
 
             addCustomRubric: null,
             jumpToSection: null,
+
+            darkmode: false,
         }
 
         this.setNewTab = (newTab) => {
@@ -479,6 +483,24 @@ class AppState extends Component {
     // componentDidUpdate() {
     //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
     // }
+
+    // 
+    componentDidMount() {
+        const cookies = new Cookies();
+        const user = cookies.get('user');
+        
+        if (user && user.user_dark_mode) {
+            document.body.classList.add('mode');
+        }
+        
+        // Or fetch from API if needed
+        genericResourceGET(`/user`, "users", this)
+            .then(result => {
+                if (result?.users?.user_dark_mode) {
+                    document.body.classList.add('mode');
+                }
+            });
+    }
 
     render() {
         return (
