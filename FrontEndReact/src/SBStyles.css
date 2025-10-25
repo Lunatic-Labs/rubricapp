@@ -245,6 +245,12 @@ h4, h5 {
   --tab-border: #000000;
 }
 
+/* Back button color variables */
+.back-button-colors {
+  --back-button-bg: #e0e0e0;
+  --back-button-bg-hover: #bdbdbd;
+  --back-button-text: #000000;
+}
 
 
 /* THIS IS FOR TESTING PURPOSES! */
@@ -368,6 +374,12 @@ body.mode .tab-colors {
   --tab-selected-bg: #303030;
   --tab-text: #e0e0e0;
   --tab-border: #606060;
+}
+
+body.mode .back-button-colors {
+  --back-button-bg: #3a3a3a;
+  --back-button-bg-hover: #4a4a4a;
+  --back-button-text: #e0e0e0;
 }
 
 /* Dark mode text colors for general content */
