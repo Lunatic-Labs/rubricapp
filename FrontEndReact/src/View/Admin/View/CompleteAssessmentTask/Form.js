@@ -102,24 +102,16 @@ class Form extends Component {
             this.setState(
                 prevState => {
                     const updatedUnits = [...prevState.units];
-                    const oldUnit = updatedUnits[unitIndex];
-
-                    // create shallow clone of the unit and deep clone rocsData
-                    const newUnit = oldUnit.shallowClone();
-                    const newRocs = structuredClone(oldUnit.rocsData);
-
-                    // update only the category object immutably
-                    newRocs[categoryName] = {
-                    ...newRocs[categoryName],
-                    [propertyName]: propertyValue
-                    };
-
-                    newUnit.rocsData = newRocs;
-                    updatedUnits[unitIndex] = newUnit;
-
+                    
+                    updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewRocsData(rocs => {
+                        rocs[categoryName][propertyName] = propertyValue;
+                    });
+                    
                     return { units: updatedUnits };
                 },
-                () => { this.generateCategoriesAndSection(); }
+                () => {
+                    this.generateCategoriesAndSection();
+                }
             );
         };
         

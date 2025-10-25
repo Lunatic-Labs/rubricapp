@@ -125,18 +125,18 @@ class AddCustomRubric extends React.Component {
     }
 
     handleCategorySelect = (categoryId, isSelected) => {
-        this.handleCategorySelect = (categoryId, isSelected) => {
-            const allCategories = this.state.allCategories;
-            const correctCategory = allCategories.find(category => category.category_id === categoryId);
+        var allCategories = this.state.allCategories;
+        var selectedCategories = this.state.categories;
 
-            const selectedCategories = isSelected
-                ? [...(this.state.categories || []), correctCategory] // don't mutate original array
-                : (this.state.categories || []).filter(category => category.category_id !== categoryId);
-
-            this.setState({
-                categories: selectedCategories
-            });
-        };
+        if (isSelected) {
+            const correctCategory = allCategories.find(category => category.category_id === categoryId)
+            selectedCategories.push(correctCategory);
+        } else {
+            selectedCategories = selectedCategories.filter(category => category.category_id !== categoryId);
+        }
+        this.setState({
+            categories: selectedCategories
+        });
     };
 
     componentDidMount() {
