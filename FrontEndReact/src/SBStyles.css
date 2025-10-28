@@ -380,9 +380,9 @@ body.mode .textarea-colors {
 }
 
 body.mode .tab-colors {
-  --tab-selected-bg: #303030;
+  --tab-selected-bg: #3a3a3a;
   --tab-text: #e0e0e0;
-  --tab-border: #606060;
+  --tab-border: #707070;
 }
 
 body.mode .back-button-colors {
