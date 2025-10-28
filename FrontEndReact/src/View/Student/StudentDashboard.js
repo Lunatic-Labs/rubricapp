@@ -82,7 +82,10 @@ class StudentDashboard extends Component {
      * @param {array} teamIds - Team ids that the user is a part of.
      */
     updateUserTeamsIds = (teamIds) => {
-        this.setState({userTeamIds:teamIds});
+        this.setState({
+            userTeamIds: teamIds,
+            teamsFetched: true
+        });
     }
 
     componentDidMount() {
@@ -114,14 +117,20 @@ class StudentDashboard extends Component {
             rubrics,
             rubricNames,
         } = this.state;
-        // Wait until everything we need is present (including rubrics), and only compute once
+        
         const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
+        if (!roles) {
+        return;
+        }
 
-        if (canFilter && (userTeamIds || roles.role_id === 4)) {
-            // Build rubric name map once
+        // For students (role_id === 5), wait for userTeamIds to be populated
+        // For TAs (role_id === 4), userTeamIds isn't needed
+        const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
+
+        if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
             const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
 
-            // Remove ATs where the ID matches one of the IDs in the CATs (ATs that are completed/locked/past due are shifted to CATs).
+            // Remove ATs where the ID matches one of the IDs in the CATs (ATs that are completed/locked/past due are moved to CATs).
             let filteredCompletedAssessments = [];
             let filteredAvgData = [];
 
@@ -131,9 +140,18 @@ class StudentDashboard extends Component {
             completedAssessments.forEach(cat => {
                 const team_id = cat.team_id;
                 if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){
-                     CATmap.set(cat.assessment_task_id, cat);
+                    const key = cat.assessment_task_id;
+                    const existing = CATmap.get(key);
+        
+                    const shouldReplace = !existing ||
+                        (cat.done && !existing.done) ||
+                        (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
+            
+                    if (shouldReplace) {
+                        CATmap.set(key, cat);
+                    }
                 }
-             });
+            });
             averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
             const currentDate = new Date();
@@ -141,7 +159,7 @@ class StudentDashboard extends Component {
             const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
 
             let filteredAssessmentTasks = assessmentTasks.filter(task => {
-                const cat =  CATmap.get(task.assessment_task_id);
+                const cat = CATmap.get(task.assessment_task_id);
                 const avg = AVGmap.get(task.assessment_task_id);
 
                 // Qualities for if an AT is viewable.
@@ -149,12 +167,12 @@ class StudentDashboard extends Component {
                 const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
                 const locked = task.locked;                                
                 const published = task.published;
-                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate); // short-circuit
+                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
                 const viewable = !done && correctUser && !locked && published && !pastDue;
                 const CATviewable = correctUser === false && done === false;
 
-                if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                if (!viewable && !CATviewable && cat !== undefined) {
                     filteredCompletedAssessments.push(cat);
                     filteredAvgData.push(avg);
                 }
@@ -267,7 +285,6 @@ class StudentDashboard extends Component {
 
         // Wait for information to be filtered.
         if (!roles) {
-
             return <Loading />
         }
 
@@ -401,7 +418,6 @@ class StudentDashboard extends Component {
                                     barCategoryGap="0%"  
                                   >
                                     <CartesianGrid vertical={false} />
-                                    {}
                                     <XAxis dataKey="name" hide />
                                     <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} style={{ fontSize: '0.75rem' }} />
                                     <Tooltip
@@ -431,11 +447,10 @@ class StudentDashboard extends Component {
                                     />
                                     <Bar dataKey="avg" fill="#2e8bef">
                                       <LabelList dataKey="avg" position="top" style={{ fill: 'black' }} formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)} />
-                                    
                                       {this.state.chartData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={RUBRIC_COLOR_MAP[entry.rubricName]} />
                                       ))}
-</Bar>
+                                    </Bar>
                                   </BarChart>
                                 </ResponsiveContainer>
                               ) : (

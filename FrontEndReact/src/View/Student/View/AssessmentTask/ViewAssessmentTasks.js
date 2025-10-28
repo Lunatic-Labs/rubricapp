@@ -11,21 +11,31 @@ class ViewAssessmentTasks extends Component {
 
         this.isObjectFound = (atId) => {
             var completedAssessments = this.props.completedAssessments;
-            var userTeamIds = this.props.userTeamIds;
 
             if(completedAssessments) {
-                for (let i = 0; i < completedAssessments.length; i++) {
-                    const cat = completedAssessments[i];
-                    if (cat.assessment_task_id === atId && cat.done === true) {
-                        // For individual assessments (team_id is null), any completion counts
-                        if (cat.team_id === null) {
-                            return true;
-                        }
-                
-                        // For team assessments, only count if it's the user's team
-                        if (userTeamIds && userTeamIds.includes(cat.team_id)) {
-                            return true;
-                        }
+                // Get all completed assessments for this specific task
+                const catsForThisTask = completedAssessments.filter(cat => cat.assessment_task_id === atId);
+        
+                // Find the user's own completed assessment record for this task
+                // (There should be one created when they check in, even if not done yet)
+                const userCatForThisTask = catsForThisTask.find(cat => 
+                    // For individual assessments, team_id will be null
+                    // For team assessments, find one that matches user's general teams
+                    cat.team_id === null || 
+                    (this.props.userTeamIds && this.props.userTeamIds.includes(cat.team_id))
+                );
+        
+                if (userCatForThisTask) {
+                    const userTeamId = userCatForThisTask.team_id;
+            
+                    // Now check if ANY completed assessment for this task with the same team is done
+                    const teamIsDone = catsForThisTask.some(cat => 
+                        cat.done === true && 
+                        (cat.team_id === userTeamId || (cat.team_id === null && userTeamId === null))
+                    );
+            
+                    if (teamIsDone) {
+                        return true;
                     }
                 }
             }
@@ -177,12 +187,33 @@ class ViewAssessmentTasks extends Component {
 
                                         onClick={() => {
                                             const hasPassword = at.create_team_password && at.create_team_password.trim() !== '';
-                                            const needsPasswordPrompt = isSwitchingTeams && hasPassword; // if just checking in, don't password prompt. if no password set, don't password prompt
-                                            
-                                            if (needsPasswordPrompt) {
-                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
-                                            } else {
-                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                            const isFixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
+
+                                            if (isFixedTeams) {
+                                                if (!isSwitchingTeams) {
+                                                    // For check in: don't ask for password
+                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, false);
+                                                } 
+                                                else if (hasPassword) {
+                                                    // Switching teams WITH password: ask for password
+                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
+                                                }
+                                                else {
+                                                    // Switching teams WITHOUT password: don't ask for password
+                                                    navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                                }
+                                            }
+                                            else {
+                                                // For ad-hoc teams:
+        
+                                                if (isSwitchingTeams && hasPassword) {
+                                                    // Switching teams WITH password: ask for password
+                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
+                                                }
+                                                else {
+                                                    // Checking in or switching without a password set: don't ask for password
+                                                    navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                                }
                                             }
                                         }}
                                     >
