@@ -22,12 +22,20 @@ class TextArea extends Component {
             <Box sx={{ width:"100%" }}>
                 <TextareaAutosize
                         id="outlined-multiline-static"
+                        
+                        className="textarea-colors"
 
                         minRows={4}
 
                         maxRows={4}
 
-                        style={{ width:"100%" }}
+                        style={{ 
+                            width:"100%",
+                            backgroundColor: "var(--textarea-bg)",
+                            color: "var(--textarea-text)",
+                            border: "1px solid var(--textarea-border)"
+
+                        }}
 
                         placeholder="Comments for improvement..."
 

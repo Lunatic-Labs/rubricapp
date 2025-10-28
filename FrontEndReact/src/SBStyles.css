@@ -129,7 +129,7 @@ h4, h5 {
 .assessment-task-spacing {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 40px;
 }
 
 .assessment-card {
@@ -222,6 +222,45 @@ h4, h5 {
 .navbar-arrow {
   filter: none;
 }
+
+/* Checkbox color variables */
+.checkbox-colors {
+  --checkbox-bg-checked: #ADCBEE;
+  --checkbox-bg-unchecked: #D9D9D9;
+  --checkbox-color-checked: #2E8BEF;
+}
+
+/* Textarea color variables */
+.textarea-colors {
+  --textarea-bg: #ffffff;
+  --textarea-text: #000000;
+  --textarea-border: #c4c4c4;
+  --textarea-placeholder: #757575;
+}
+
+/* Tab color variables */
+.tab-colors {
+  --tab-selected-bg: #D9D9D9;
+  --tab-text: #000000;
+  --tab-border: #000000;
+}
+
+/* Back button color variables */
+.back-button-colors {
+  --back-button-bg: #e0e0e0;
+  --back-button-bg-hover: #bdbdbd;
+  --back-button-text: #000000;
+}
+
+/* Assessment instructions color variables */
+.assessment-instructions-colors {
+  --instructions-bg: #ffffff;
+  --instructions-text: #000000;
+  --instructions-border: #0000003b;
+  --instructions-textarea-bg: #ffffff;
+  --instructions-textarea-text: #000000;
+}
+
 
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
@@ -325,6 +364,39 @@ body.mode .navbar {
 
 body.mode .navbar-arrow {
   filter: invert(1);
+}
+
+body.mode .checkbox-colors {
+  --checkbox-bg-checked: #32485d;
+  --checkbox-bg-unchecked: #3a3a3a;
+  --checkbox-color-checked: #58a1f0;
+}
+
+body.mode .textarea-colors {
+  --textarea-bg: #202020;
+  --textarea-text: #e0e0e0;
+  --textarea-border: #565656;
+  --textarea-placeholder: #888888;
+}
+
+body.mode .tab-colors {
+  --tab-selected-bg: #3a3a3a;
+  --tab-text: #e0e0e0;
+  --tab-border: #707070;
+}
+
+body.mode .back-button-colors {
+  --back-button-bg: #3a3a3a;
+  --back-button-bg-hover: #4a4a4a;
+  --back-button-text: #e0e0e0;
+}
+
+body.mode .assessment-instructions-colors {
+  --instructions-bg: #2a2a2a;
+  --instructions-text: #e0e0e0;
+  --instructions-border: #404040;
+  --instructions-textarea-bg: #1a1a1a;
+  --instructions-textarea-text: #e0e0e0;
 }
 
 /* Dark mode text colors for general content */

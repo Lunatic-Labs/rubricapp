@@ -94,12 +94,13 @@ class ViewAssessmentTaskInstructions extends Component {
                 {this.state.errorMessage && (
                     <ErrorMessage errorMessage={this.state.errorMessage} />
                 )}
-                <h2
+                <h2 className="assessment-instructions-colors"
                     style={{
                         textAlign: "start",
                         paddingLeft: "3rem",
                         paddingTop: "1rem",
-                        fontWeight: '700'
+                        fontWeight: '700',
+                        color: 'var(--instructions-text)'
                     }}
                     aria-label="viewAssessmentTaskInstructionsTitle"
                 >
@@ -111,7 +112,7 @@ class ViewAssessmentTaskInstructions extends Component {
                         justifyContent: 'center',
                     }}
                 >
-                    <div
+                    <div className="assessment-instructions-colors"
                         style={{
                             borderTop: '3px solid #4A89E8', 
                             border: '3px, 0px, 0px, 0px',
@@ -120,16 +121,17 @@ class ViewAssessmentTaskInstructions extends Component {
                             paddingLeft:'5rem',
                             paddingRight:'5rem',
                             paddingTop:'2rem',
-                            backgroundColor: "white",
+                            backgroundColor: 'var(--instructions-bg)',
                             width: '90%',
                             height: 'fit-content'
                         }}
                     >
-                        <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
+                        <h3 
+                            style={{ textAlign: 'left', fontWeight: '700', color: 'var(--instructions-text)' }}>
                             {"Rubric for " + rubricName}
                         </h3>
 
-                        <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
+                        <h6 style={{ textAlign: 'left', fontWeight: '600', color: 'var(--instructions-text)' }}>
                             Rubric Description: {rubricDescription}
                         </h6>
 
@@ -142,7 +144,7 @@ class ViewAssessmentTaskInstructions extends Component {
                             <div
                                 style={{
                                     padding: "20px",
-                                    border: "solid 1px #0000003b"
+                                    border: "solid 1px var(--instructions-border)"
                                 }}
                             >
                                 <div
@@ -157,7 +159,8 @@ class ViewAssessmentTaskInstructions extends Component {
                                             margin: "1rem",
                                             fontWeight: "bold",
                                             width: "80%",
-                                            textAlign: "center"
+                                            textAlign: "center",
+                                            color: 'var(--instructions-text)'
                                         }}
                                     >
                                         Assessment Categories: {categoryList}
@@ -166,14 +169,17 @@ class ViewAssessmentTaskInstructions extends Component {
                                 <h2
                                     style={{
                                         textAlign: 'left',
-                                        marginLeft: "8px"
+                                        marginLeft: "8px",
+                                        color: 'var(--instructions-text)'
                                     }}>
                                     Instructions
                                 </h2>
                                 <textarea
                                     style={{
                                         width: "98%",
-                                        minHeight: "15rem"
+                                        minHeight: "15rem",
+                                        backgroundColor: 'var(--instructions-textarea-bg)',
+                                        color: 'var(--instructions-textarea-text)'
                                     }}
                                     defaultValue={this.state.instructions}
                                     readOnly

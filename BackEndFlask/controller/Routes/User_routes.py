@@ -52,6 +52,7 @@ from models.user import(
     make_admin,
     unmake_admin,
     delete_user,
+    set_user_dark_mode,
     #get_user_by_email,
 )
 
@@ -318,8 +319,8 @@ def update_user():
 
             return create_good_response([], 201, "users")
 
-        if(request.args and request.args.get("uid")):
-            uid = request.args.get("uid")
+        if(request.args and request.args.get("user_id")):
+            uid = request.args.get("user_id")
 
             print(uid)
 
