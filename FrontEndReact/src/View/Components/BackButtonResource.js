@@ -7,10 +7,10 @@ import { Box } from '@mui/material';
 const ColorButton = styled(Button)(({ theme }) => ({
     borderRadius:"100px",
     boxShadow: "none",
-    color: theme.palette.getContrastText(grey[300]),
-    backgroundColor: grey[300],
+    color: 'var(--back-button-text)',
+    backgroundColor: 'var(--back-button-bg)',
     '&:hover': {
-      backgroundColor: grey[400],
+      backgroundColor: 'var(--back-button-bg-hover)',
       boxShadow: "none"
     },
   }));
@@ -22,7 +22,7 @@ export default function BackButtonResource (props){
     var confirmResource = navbar.confirmCreateResource;
 
     return (
-      <Box>
+      <Box className="back-button-colors">
         <ColorButton
           onClick={() => {
             confirmResource(props.tabSelected, 0);
