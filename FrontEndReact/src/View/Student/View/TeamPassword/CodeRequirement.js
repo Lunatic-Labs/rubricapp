@@ -1,49 +1,65 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box, TextField } from '@mui/material';
+import { Box, TextField, Alert } from '@mui/material';
 import CustomButton from '../Components/CustomButton.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
-
-
 
 class CodeRequirement extends Component {
 	constructor(props) {
 		super(props)
 
 		this.state = {
-			password: null,
+			password: '',
 			errorMessage: null,
-			assessmentTasks: null
+			assessmentTasks: null,
+			validationError: null
 		};
 
 		this.submitPasscode = () => {
-			let pass = this.state.password
-			let correctPass = this.state.assessmentTasks["create_team_password"];
+			const enteredPassword = this.state.password;
+			const correctPassword = this.state.assessmentTasks["create_team_password"];
 
 			this.setState({
-				password: pass
+				validationError: null
 			});
 
-			if (pass === correctPass) {
-				this.props.navbar.setNewTab("SelectTeam")
-
-			} else {
+			if (!enteredPassword || enteredPassword.trim() === '') {
 				this.setState({
-					errorMessage: "Incorrect passcode"
+					validationError: "Please enter a password"
 				});
+				return;
 			}
+
+			if (enteredPassword !== correctPassword) {
+				this.setState({
+					validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
+				});
+				return;
+			}
+
+			this.props.navbar.setState({
+				teamSwitchPassword: enteredPassword
+			});
+
+			this.props.navbar.setNewTab("SelectTeam");
 		}
 
 		this.handleChange = (e) => {
 			const { value } = e.target;
 
 			this.setState({
-				password: value
+				password: value,
+				validationError: null // Clear error when user types
 			});
         };
 
+		this.handleKeyPress = (e) => {
+			if (e.key === 'Enter') {
+				this.submitPasscode();
+			}
+		};
 	}
 
 	componentDidMount() {
@@ -55,7 +71,7 @@ class CodeRequirement extends Component {
 	}
 
 	render() {
-		const { errorMessage } = this.state;
+		const { errorMessage, validationError } = this.state;
 
 		if (errorMessage) {
             return (
@@ -91,18 +107,32 @@ class CodeRequirement extends Component {
 							paddingBottom: '20px',
 							gap: 20,
 						}}>
-							
-
 						<div>
-							<h2>Enter passcode to change teams</h2>
+							<h2>Enter Password to Switch Teams</h2>
+							<p style={{ marginBottom: '20px'}}>
+								Your instructor has set a password for team switching. Please enter it below.
+							</p>
+
+							{validationError && (
+								<Alert severity="error" sx={{ mb: 2 }}>
+									{validationError}
+								</Alert>
+							)}
 
 							<TextField
 								id="password"
 								name="password"
 								variant='outlined'
-								label="Passcode"
+								label="Team Password"
+								type="password"
+								value={this.state.password}
 								onChange={this.handleChange}
+								onKeyPress={this.handleKeyPress}
+								fullWidth
+								autoFocus
 								sx={{ mb: 2 }}
+								inputProps={{ maxLength: 20 }}
+								aria-label="teamPasswordInput"
 							/>
 
 							<CustomButton
@@ -110,12 +140,12 @@ class CodeRequirement extends Component {
 								onClick={this.submitPasscode}
 								isOutlined={false} // Default button
 								position={{ top: '10px', right: '0px' }}
+								aria-label="continueWithPasswordButton"
 							/>
 						</div>
 					</div>
 				</div>
 			</Box>
-			
 		)
 	}
 }

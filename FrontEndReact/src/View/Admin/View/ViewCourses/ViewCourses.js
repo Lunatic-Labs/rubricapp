@@ -62,7 +62,7 @@ class ViewCourses extends Component {
       },
       {
         name: "use_tas",
-        label: "Use T.A.s",
+        label: "Use TA's",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
@@ -108,15 +108,14 @@ class ViewCourses extends Component {
               return (
                 <IconButton id={courseId}
                   className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
-                  disabled={courseRoles[courseId] !== 3}
                   onClick={() => {
                     if(courseRoles[courseId]===3) {
                       setAddCourseTabWithCourse(courses, courseId, "AddCourse")
                     }
                 }}
-                  aria-label={`Edit course`}
+                  aria-label='editCourseIconButton'
                  >
-                  <EditIcon sx={{color:"black"}} aria-hidden="true"/>
+                  <EditIcon sx={{color:"black"}}/>
                 </IconButton>
               )
             },
@@ -146,8 +145,8 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                aria-label={`View course`}>
-                  <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
+                aria-label="viewCourseIconButton">
+                  <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>
             )
           },

@@ -26,8 +26,8 @@ var lob = "logoutButton";
 var ct = "coursesTitle";
 var ac = "addCourse";
 var act = "addCourseTitle";
-var ecib = /Edit course/i;
-var vcib = /View course/i;
+var ecib = "editCourseIconButton";
+var vcib = "viewCourseIconButton";
 var rt = "rosterTitle";
 
 
