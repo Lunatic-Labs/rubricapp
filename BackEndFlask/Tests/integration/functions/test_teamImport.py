@@ -1,8 +1,9 @@
+# Tests/integrationg/functions/test_teamImport.py
 from Functions.customExceptions import *
 from models.user_course import *
 from models.team import *
 from models.team_user import *
-from PopulationFunctions import *
+from Tests.PopulationFunctions import *
 from Functions import teamImport
 import pytest
 import os

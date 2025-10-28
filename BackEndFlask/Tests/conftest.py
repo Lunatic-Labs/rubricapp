@@ -2,7 +2,7 @@ import pytest
 from urllib.parse import quote_plus
 from core import app, db
 from urllib.parse import quote_plus
-from integration.functions.PopulationFunctions import *
+from PopulationFunctions import *
 from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
 from sqlalchemy import create_engine, text

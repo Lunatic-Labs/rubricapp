@@ -82,11 +82,7 @@
 
 ## 5. Testing Workflow
 
-1. **Test Environment Setup**  
-   * Start isolated test environment (e.g., Docker) for app + test DB.  
-   * Configure app to use the dedicated test DB.  
-
-2. **Run Unit Tests**  
+1. **Run Unit Tests**  
    * Execute all tests in `Tests/unit/`.  
    * Fast tests run first to catch core logic errors early.  
    * **Command:**  
@@ -94,7 +90,7 @@
      python3 -m pytest Tests/unit/
      ```
 
-3. **Run Integration Tests**  
+2. **Run Integration Tests**  
    * Use `flask_app_mock` fixture with MySQL test DB.  
    * Populate DB using `PopulationFunctions.py`.  
    * Test interactions across models.  
@@ -104,7 +100,7 @@
      python3 -m pytest Tests/integration/
      ```
 
-4. **Run API/E2E Tests**  
+3. **Run API/E2E Tests**  
    * Use `client` fixture with JWT authentication.  
    * Populate DB (teacher/student/course) before each test.  
    * Test API endpoints using `client.get()` / `client.post()`.  
@@ -115,11 +111,11 @@
      python3 -m pytest Tests/e2e/
      ```
 
-5. **Run All Tests Together**  
+4. **Run All Tests Together**  
    ```bash
    python3 -m pytest Tests/ --disable-warnings -v
 
-6. **Run Individual Test**
+5. **Run Individual Test**
    ```bash
    python3 -m pytest -k "for_example.py"
    ```

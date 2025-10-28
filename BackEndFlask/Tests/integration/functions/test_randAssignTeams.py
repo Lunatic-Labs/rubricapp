@@ -1,7 +1,7 @@
 # test_randAssignTeams.py
 from Functions.helper import *
 from Functions.customExceptions import *
-from PopulationFunctions import *
+from Tests.PopulationFunctions import *
 from models.team import *
 from models.user import *
 from models.team_user import *

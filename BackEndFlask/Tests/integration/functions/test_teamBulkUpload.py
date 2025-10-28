@@ -1,6 +1,6 @@
 from Functions.customExceptions import *
 from Functions.teamBulkUpload import team_bulk_upload
-from PopulationFunctions import *
+from Tests.PopulationFunctions import *
 import pytest
 import os
 
