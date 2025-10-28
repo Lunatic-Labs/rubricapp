@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout.js';
+// sbTextFixed.png is the skill builder logo but with a transparent background
 import Logo from "./sbTextFixed.png";
 
 export default function ButtonAppBar(props) {

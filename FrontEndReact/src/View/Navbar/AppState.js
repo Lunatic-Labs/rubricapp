@@ -34,7 +34,7 @@ import UserAccount from './UserAccount.js';
 import PrivacyPolicy from './PrivacyPolicy.js';
 import Settings from './Settings.js';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
-//
+// for getting darkmode, line 488
 import { genericResourceGET } from '../../utility.js';
 
 
@@ -484,16 +484,19 @@ class AppState extends Component {
     //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
     // }
 
-    // 
+    // This code here was added for rendering darkmode if the user has set
+    // it as thier preferance.
     componentDidMount() {
         const cookies = new Cookies();
         const user = cookies.get('user');
         
+        // if users darkmode preferance is saved in cookies it will be loaded.
         if (user && user.user_dark_mode) {
             document.body.classList.add('mode');
         }
         
-        // Or fetch from API if needed
+        // if darkmode is not saved in cookies, the API will be called to check
+        // the backend if the user has darkmode preferance set to 'true'
         genericResourceGET(`/user`, "users", this)
             .then(result => {
                 if (result?.users?.user_dark_mode) {
