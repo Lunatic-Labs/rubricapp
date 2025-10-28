@@ -252,6 +252,15 @@ h4, h5 {
   --back-button-text: #000000;
 }
 
+/* Assessment instructions color variables */
+.assessment-instructions-colors {
+  --instructions-bg: #ffffff;
+  --instructions-text: #000000;
+  --instructions-border: #0000003b;
+  --instructions-textarea-bg: #ffffff;
+  --instructions-textarea-text: #000000;
+}
+
 
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
@@ -380,6 +389,14 @@ body.mode .back-button-colors {
   --back-button-bg: #3a3a3a;
   --back-button-bg-hover: #4a4a4a;
   --back-button-text: #e0e0e0;
+}
+
+body.mode .assessment-instructions-colors {
+  --instructions-bg: #2a2a2a;
+  --instructions-text: #e0e0e0;
+  --instructions-border: #404040;
+  --instructions-textarea-bg: #1a1a1a;
+  --instructions-textarea-text: #e0e0e0;
 }
 
 /* Dark mode text colors for general content */
