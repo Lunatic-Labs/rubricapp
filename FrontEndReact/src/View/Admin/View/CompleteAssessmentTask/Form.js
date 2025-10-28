@@ -447,7 +447,7 @@ class Form extends Component {
 
                     <Box sx={{mt: 1}}>
                         <Tabs
-                            className="tab-colors"
+                            className="assessment-tab-colors"
                             value={this.state.currentCategoryTabIndex} 
                         
                             onChange={(event, newCategoryTabIndex) => {

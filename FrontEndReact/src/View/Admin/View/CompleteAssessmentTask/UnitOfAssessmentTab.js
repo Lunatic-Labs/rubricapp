@@ -101,7 +101,7 @@ class UnitOfAssessmentTab extends Component {
 
         return (
             <Tabs
-                className="tab-colors"
+                className="assessment-tab-colors"
                 value={this.props.currentUnitTabIndex}
 
                 onChange={(event, newUnitTabIndex) => {

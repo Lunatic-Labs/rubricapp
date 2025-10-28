@@ -27,9 +27,26 @@ export default function BasicTabs (props){
   };
 
   return (
-    <Box>
+    <Box className="tab-colors">
       <Box sx={{ borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs 
+          value={value} 
+          onChange={handleChange} 
+          aria-label="basic tabs example">
+          sx={{
+            '& .MuiTab-root': {
+              color: 'var(--tab-text)',
+              textTransform: 'none',
+              fontWeight: 500,
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: 'var(--tab-text)',
+              backgroundColor: 'var(--tab-selected-bg)',
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'var(--tab-border)',
+            },
+          }}
           <Tab
             onClick={() => {
               setNewTab("Users");
