@@ -9,7 +9,7 @@ import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, 
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 
-
+const MAX_LMS_ID_LENGTH = 10;
 
 class AdminAddUser extends Component {
     constructor(props) {
@@ -107,29 +107,72 @@ class AdminAddUser extends Component {
         })
     }
 
+   
     handleChange = (e) => {
         const { id, value } = e.target;
-
-        var formatString = "";
-
-        for (let i = 0; i < id.length; i++) {
-            if (i === 0) {
-                formatString += id.charAt(0).toUpperCase();
-            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
-                formatString += (" " + id.charAt(i).toLowerCase()); 
-            } else {
-                formatString += id.charAt(i);
-            }
+      
+        // Special case: email with inline validation
+        if (id === 'email') {
+          this.setState(prev => ({
+            email: value,
+            errors: {
+              ...prev.errors,
+              email:
+                value.trim() === '' ? 'Email cannot be empty'
+                : validator.isEmail(value) ? ''
+                : 'Please enter a valid email address',
+            },
+          }));
+          return;
         }
+      
+        // Build a readable field label (e.g., "firstName" -> "First name")
+        let formatString = "";
+        for (let i = 0; i < id.length; i++) {
+          if (i === 0) formatString += id.charAt(0).toUpperCase();
+          else if (id.charAt(i) === id.charAt(i).toUpperCase())
+            formatString += (" " + id.charAt(i).toLowerCase());
+          else formatString += id.charAt(i);
+        }
+      
+        // LMS ID: digits only + max length
+        if (id === 'lmsId') {
+          if (/[^0-9]/.test(value)) {
+            this.setState({
+              errors: {
+                ...this.state.errors,
+                [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.'
+              }
+            });
+            return; // don’t update value
+          }
+      
+          if (typeof MAX_LMS_ID_LENGTH === 'number' && value.length > MAX_LMS_ID_LENGTH) {
+            this.setState({
+              errors: { ...this.state.errors, [id]: `Max ${MAX_LMS_ID_LENGTH} digits.` }
+            });
+            return; // don’t update value
+          }
+      
+          const atMax = typeof MAX_LMS_ID_LENGTH === 'number' && value.length === MAX_LMS_ID_LENGTH;
+          this.setState({
+            [id]: value,
+            errors: { ...this.state.errors, [id]: atMax ? `Max ${MAX_LMS_ID_LENGTH} digits reached.` : '' }
+          });
+          return;
+        }
+      
 
+        // other fields
         this.setState({
           [id]: value,
-          errors: {
-            ...this.state.errors,
-            [id]: value.trim() === '' ? `${formatString} cannot be empty` : '',
-          },
+          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
         });
-    };
+      };
+
+    
+    
+
 
     handleSelect = (event) => {
         this.setState({
@@ -137,6 +180,7 @@ class AdminAddUser extends Component {
         });
       };
 
+      
     handleSubmit = () => {
         const {
             firstName,
@@ -146,6 +190,18 @@ class AdminAddUser extends Component {
             role,
             lmsId,
         } = this.state;
+
+        if (lmsId) {
+            if (!/^\d+$/.test(lmsId) || lmsId.length > MAX_LMS_ID_LENGTH) {
+                this.setState({
+                    errors: { 
+                        ...this.state.errors, 
+                        lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` 
+                    }
+                });
+                return; // ⭐ CHANGED: stop here — do NOT hit backend
+            }
+        }
 
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -220,17 +276,42 @@ class AdminAddUser extends Component {
                 : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
-        promise.then(result => {
-            if (result !== undefined && result.errorMessage === null) {
-                confirmCreateResource("User");
-            }
-        });
+        promise
+  .then((result) => {
+    if (result && result.errorMessage == null) {
+      // success: ensure any old email error is cleared
+      this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
+      confirmCreateResource("User");
+      return;
     }
 
-    hasErrors = () => {
-        const { errors } = this.state;
+    // Duplicate email → inline field error (no global toast)
+    if (result && typeof result.errorMessage === 'string') {
+      const msg = result.errorMessage;
 
-        return Object.values(errors).some((error) => !!error);
+      // make each engine's pattern explicit to avoid mixed-operator lint
+      const isMysqlDup   = /\b1062\b.*duplicate entry/i.test(msg) && /email/i.test(msg);
+      const isPgDup      = /duplicate key value/i.test(msg) && /unique constraint/i.test(msg) && /email/i.test(msg);
+      const isSqliteDup  = /UNIQUE constraint failed/i.test(msg) && /email/i.test(msg);
+      const isDup = isMysqlDup || isPgDup || isSqliteDup;
+
+      if (isDup) {
+        this.setState((prev) => ({
+          errors: { ...prev.errors, email: 'Email is already in use.' },
+          errorMessage: null, // suppress big red toast
+        }));
+        return;
+      }
+    }
+
+    // Other backend errors → keep your existing toast
+    if (result && result.errorMessage) {
+      this.setState({ errorMessage: result.errorMessage });
+    }
+  })
+  .catch(() => {
+    this.setState({ errorMessage: 'Unable to save right now. Please try again.' });
+  });
     };
 
     render() {
@@ -395,6 +476,20 @@ class AdminAddUser extends Component {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
+                                       onPaste={(e) => {
+                                            const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                                            if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
+                                                e.preventDefault();
+                                                this.setState({
+                                                    errors: { ...this.state.errors, lmsId: `Digits only. Max ${MAX_LMS_ID_LENGTH} digits.` }
+                                                });
+                                            }
+                                        }}
+                                        inputProps={{
+                                            inputMode: 'numeric',
+                                            pattern: '[0-9]*',
+                                
+                                        }}
                                         sx={{mb: 3}}
                                     />
                                     
@@ -421,6 +516,6 @@ class AdminAddUser extends Component {
             </React.Fragment>
         )
     }
-}
 
+}
 export default AdminAddUser;
