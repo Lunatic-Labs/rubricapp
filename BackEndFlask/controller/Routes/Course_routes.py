@@ -124,8 +124,7 @@ def get_all_courses():
             all_courses = get_courses_by_user_courses_by_user_id(user_id)
             
             if all_courses is None:
-                print("No courses found, returning empty list")
-                all_courses = []
+                print("No courses found, check that the backend is working properly.")
             else:
                 print(f"Found {len(all_courses)} courses")
             

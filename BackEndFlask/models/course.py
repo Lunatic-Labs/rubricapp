@@ -68,9 +68,19 @@ def create_course(course_data):
             is_admin=False,  # Add this
             consent=True  # Add if required
         )
-        
+    
+    
     db.session.add(test_student)
     db.session.commit()
+
+    # Check if TestStudent role exists
+    from models.role import Role
+    test_role = Role.query.filter_by(role_id=6).first()
+    if not test_role:
+        # Create it if it doesn't exist
+        test_role = Role(role_id=6, role_name='TestStudent')
+        db.session.add(test_role)
+        db.session.commit()
 
     # Assign the test student to the course
     test_user_course = UserCourse (
