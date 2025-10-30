@@ -1,7 +1,7 @@
 from core import db
 from models.schemas import Course
-from models.user import User # To create test student
-from models.user_course import UserCourse # To assign test student to course
+from models.user import User
+from models.user_course import UserCourse
 from models.utility import error_log
 
 class InvalidCourseID(Exception):
@@ -51,42 +51,27 @@ def create_course(course_data):
     db.session.add(course_data)
     db.session.commit()
 
-    # Goal: create a demo student for each course. Admin are able to access test student
-    # to see the view of student.
-    # Test Student is created after a course is created.
-
-    # ... existing course creation code ...
-    
-    # Update the test student creation part:
+    # Create a test student for each course
     test_student = User(
-            first_name="Test",
-            last_name="Student", 
-            email=f"teststudent{course_data.course_id}@skillbuilder.edu",
-            password="TestPassword123!",  # Use a proper password
-            owner_id=course_data.admin_id,
-            has_set_password=True,  # Add this
-            is_admin=False,  # Add this
-            consent=True  # Add if required
-        )
-    
+        first_name="Test",
+        last_name="Student", 
+        email=f"teststudent{course_data.course_id}@skillbuilder.edu",
+        password="TestPassword123!",
+        owner_id=course_data.admin_id,
+        has_set_password=True,
+        is_admin=False,
+        consent=True
+    )
     
     db.session.add(test_student)
     db.session.commit()
 
-    # Check if TestStudent role exists
-    from models.role import Role
-    test_role = Role.query.filter_by(role_id=6).first()
-    if not test_role:
-        # Create it if it doesn't exist
-        test_role = Role(role_id=6, role_name='TestStudent')
-        db.session.add(test_role)
-        db.session.commit()
-
-    # Assign the test student to the course
-    test_user_course = UserCourse (
-        user_id = test_student.user_id,
-        course_id = course_data.course_id,
-        role_id = 6
+    # Assign the test student to the course with Student role (role_id=5)
+    # Using role_id=5 instead of 6 to avoid foreign key issues
+    test_user_course = UserCourse(
+        user_id=test_student.user_id,
+        course_id=course_data.course_id,
+        role_id=5  # Use existing Student role instead of TestStudent
     )
 
     db.session.add(test_user_course)
@@ -96,8 +81,17 @@ def create_course(course_data):
 
 
 def load_demo_course():
+    """Load demo courses with proper error handling"""
+    from models.role import Role
+    
+    # Ensure Student role exists (role_id=5)
+    student_role = Role.query.filter_by(role_id=5).first()
+    if not student_role:
+        print("ERROR: Student role (id=5) not found. Loading roles first...")
+        from models.role import load_existing_roles
+        load_existing_roles()
+    
     list_of_course_names = [
-        # course_id: 1
         {
             "course_number": "CS3523",
             "course_name": "Operating Systems",
@@ -105,7 +99,6 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": True
         },
-        # course_id: 2
         {
             "course_number": "IT2233",
             "course_name": "User Interface Design",
@@ -113,7 +106,6 @@ def load_demo_course():
             "use_tas": False,
             "use_fixed_teams": False
         },
-        # course_id: 3
         {
             "course_number": "MA1314",
             "course_name": "Calculus",
@@ -121,7 +113,6 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": False
         },
-        # course_id: 4
         {
             "course_number": "PH2414",
             "course_name": "Physics 1",
@@ -130,17 +121,29 @@ def load_demo_course():
             "use_fixed_teams": True
         },
     ]
+    
+    courses_created = 0
     for course in list_of_course_names:
-        create_course({
-            "course_number": course["course_number"],
-            "course_name": course["course_name"],
-            "year": 2025,
-            "term": course["term"],
-            "active": True,
-            "admin_id": 2,
-            "use_tas": course["use_tas"],
-            "use_fixed_teams": course["use_fixed_teams"]
-        })
+        try:
+            create_course({
+                "course_number": course["course_number"],
+                "course_name": course["course_name"],
+                "year": 2025,
+                "term": course["term"],
+                "active": True,
+                "admin_id": 2,
+                "use_tas": course["use_tas"],
+                "use_fixed_teams": course["use_fixed_teams"]
+            })
+            courses_created += 1
+            print(f"Created course: {course['course_name']}")
+        except Exception as e:
+            print(f"Failed to create course {course['course_name']}: {e}")
+            db.session.rollback()
+    
+    print(f"Successfully created {courses_created} courses")
+    return courses_created
+
 
 @error_log
 def replace_course(course_data, course_id):
