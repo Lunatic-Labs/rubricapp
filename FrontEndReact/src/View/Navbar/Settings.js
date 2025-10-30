@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Switch, FormControlLabel } from '@mui/material';
 import Cookies from 'universal-cookie';
 import { genericResourcePUT, genericResourceGET } from '../../utility.js';
 import Loading from "../Loading/Loading.js";
@@ -37,10 +37,11 @@ class Settings extends Component {
                 "users",
                 this
             );
+
             promise.then(result => {
                 if (result !== undefined && result["users"] !== null) {
                     userData = result["users"];
-                    
+
                     // user data is now set by the result for 'users' and the state is changed
                     // to match the users preferance (false or true).
                     this.setState({
@@ -107,7 +108,7 @@ class Settings extends Component {
 
         // Put the new preferance for darkmode into the user backend.
         promise = genericResourcePUT(
-            `/user`,
+            `/user_settings`,
             this, 
             body
         );
@@ -115,7 +116,7 @@ class Settings extends Component {
         promise.then(result => {
             if (result !== undefined && result.errorMessage === null) {
                 // Update the state
-                this.state.darkMode = newDarkMode;
+                this.state.darkMode = newDarkMode; // warning to not mutate state directly
             }
         }).catch(error => {
             console.error("Error updating dark mode:", error);
@@ -154,17 +155,16 @@ class Settings extends Component {
                                         Appearance
                                     </Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <Typography>
-                                            Current: {darkMode ? 'Dark' : 'Light'}
-                                        </Typography>
-                                        <Button
-                                            onClick={this.handleChange}
-                                            className="primary-color"
-                                            variant="contained"
-                                            aria-label="toggleDarkModeButton"
-                                        >
-                                            Toggle Mode
-                                        </Button>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={darkMode}
+                                                    onChange={this.handleChange}
+                                                    aria-label="toggle dark mode"
+                                                />
+                                            }
+                                            label="Dark Mode"
+                                        />
                                     </Box>
                                 </Box>
                             </Box>
