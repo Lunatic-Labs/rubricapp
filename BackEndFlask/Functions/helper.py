@@ -4,6 +4,7 @@ from models.team import *
 import pandas as pd
 import uuid
 import re
+import os
 
 # that is_valid_email works as should!
 def is_valid_email(email: str) -> bool:
@@ -15,7 +16,12 @@ def is_valid_email(email: str) -> bool:
 # that the xlsx file is deleted when there is success and when there are errors!
 def delete_xlsx(student_file, is_xlsx):
     if is_xlsx:
-        os.remove(student_file)
+        try:
+            if os.path.exists(student_file):
+                os.remove(student_file)
+        except Exception as e:
+            pass
+
 
 # filter_users_by_role()
 #   - takes two parameter:
@@ -38,10 +44,14 @@ def filter_users_by_role(user_courses, role_id):
 
 # that xlsx file is converted to csv
 def xlsx_to_csv(csv_file):
-    read_file = pd.read_excel(csv_file)
-    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-    temp_file = "/temp_"+ uuid.uuid4().hex +".csv"
-    read_file.to_csv(sample_files+temp_file, index=None, header=True)
+    read_file = pd.read_excel(csv_file, engine='openpyxl')
+    sample_files = os.path.join(os.getcwd(), "Functions", "sample_files")
+
+    # Ensure the directory exists
+    os.makedirs(sample_files, exist_ok=True)
+
+    temp_file = f"/temp_{uuid.uuid4().hex}.csv"
+    read_file.to_csv(sample_files + temp_file, index=None, header=True)
     return sample_files + os.path.join(os.path.sep, temp_file)
 
 
@@ -80,7 +90,7 @@ def helper_str_to_int_role(role: str) -> int:
     elif lrole == "ta":
         return 4
     else:
-        raise InvalidRole
+        raise InvalidRole(0, role, ["student", "ta"])
 
 
 def helper_verify_email_syntax(email: str) -> bool:

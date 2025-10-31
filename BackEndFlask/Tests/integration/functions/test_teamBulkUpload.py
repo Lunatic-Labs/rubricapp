@@ -1,6 +1,7 @@
 from Functions.customExceptions import *
 from Functions.teamBulkUpload import team_bulk_upload
 from Tests.PopulationFunctions import *
+from unittest.mock import patch
 import pytest
 import os
 
@@ -35,6 +36,79 @@ def test_should_fail_with_non_existant_ta_email(flask_app_mock):
                 result["admin_id"],
                 result["course_id"]
             )
+
+        # Clean up
+        if result:
+            try:
+                delete_all_teams_team_members(result["course_id"])
+                delete_one_admin_ta_student_course(result)
+                delete_all_users_user_courses(result["course_id"])
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+def test_should_fail_without_using_ta_with_non_existant_ta_email(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        result = create_one_admin_ta_student_course(False)
+
+        # Patch get_user to simulate missing owner
+        with patch("Functions.teamBulkUpload.get_user", return_value=None):
+            with pytest.raises(UserDoesNotExist):
+                team_bulk_upload(
+                    retrieve_file_path("f-add-1-team-non-existant-ta-email.csv"),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+
+        # Clean up
+        if result:
+            try:
+                delete_all_teams_team_members(result["course_id"])
+                delete_one_admin_ta_student_course(result)
+                delete_all_users_user_courses(result["course_id"])
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+def test_should_pass_when_course_found(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        result = create_one_admin_ta_student_course(False)
+        try:
+            team_bulk_upload(
+                retrieve_file_path("f-add-1-team-non-existant-ta-email.csv"),
+                result["admin_id"],
+                result["course_id"]
+            )
+
+            teams = get_team_by_course_id(result["course_id"])
+            assert len(teams) == 1, "Expected at least one team to exist"
+
+            course_uses_tas = get_course_use_tas(result["course_id"])
+            assert course_uses_tas is False, "course_uses_tas should be False for no-TA courses"
+
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_all_teams_team_members(result["course_id"])
+                    delete_one_admin_ta_student_course(result)
+                    delete_all_users_user_courses(result["course_id"])
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
+
+def test_should_fail_when_course_not_found(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        result = create_one_admin_ta_student_course(False)
+
+        # Patch get_course to simulate missing course
+        with patch("Functions.teamBulkUpload.get_course", return_value=None):
+            with pytest.raises(OwnerIDDidNotCreateTheCourse):
+                team_bulk_upload(
+                    retrieve_file_path("f-add-1-team-non-existant-ta-email.csv"),
+                    result["admin_id"],
+                    result["course_id"]
+                )
 
         # Clean up
         if result:

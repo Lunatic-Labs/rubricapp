@@ -1,8 +1,3 @@
-# =============================================================================
-# tests/unit/Functions/test_csv_export.py
-# Unit tests for CSV export - All dependencies mocked
-# =============================================================================
-
 import pytest
 from unittest.mock import Mock, patch, MagicMock
 from datetime import datetime
@@ -172,40 +167,92 @@ class TestRatingsCsvUnit:
         assert "John" in result
         # Verify it doesn't crash on None lag_time
 
+class TestOcs_Sfis_CsvUnit:
 
-class TestCommentsCsvUnit:
-    """Unit tests for Comments_Csv class"""
-    
-    @patch('Functions.exportCsv.get_csv_data_by_at_id')
-    @patch('Functions.exportCsv.get_course_name_by_at_id')
-    def test_extracts_comments_from_json(self, mock_get_course, mock_get_data):
-        """UNIT: Test that comments are extracted correctly"""
-        # Arrange
-        mock_get_course.return_value = "Test Course"
-        mock_get_data.return_value = [
+    def test_ocs_sfis_csv_init_sets_marks(self):
+        """Unit test __init__"""
+        csv_obj = Ocs_Sfis_Csv(123)
+        # Accessing name-mangled private attributes
+        assert csv_obj._Ocs_Sfis_Csv__checkmark == "\u2713"
+        assert csv_obj._Ocs_Sfis_Csv__crossmark == " "
+
+    @patch("Functions.exportCsv.get_csv_categories")
+    def test_ocs_sfis_format_writes_expected_rows(self, mock_get_csv_categories):
+        """Unit test _format"""
+        # Mock data returned by get_csv_categories()
+        mock_get_csv_categories.return_value = (
+            [("OC1",), ("OC2",)],
+            [("SFI1",), ("SFI2",)],
+        )
+
+        # Fake data that would exist in Csv_Data.JSON
+        fake_json = {
+            "CategoryA": {
+                "observable_characteristics": ["1", "0"],
+                "suggestions": ["0", "1"]
+            },
+            "done": {},
+            "comments": {}
+        }
+
+        csv_obj = Ocs_Sfis_Csv(1)
+        csv_obj._writer = MagicMock()  # Spy on writer calls
+        csv_obj._is_teams = False
+        csv_obj._singular = {
+            2: "rubric_id",
+            7: "user_id",
+            5: "team_id",
+            13: fake_json,  # Corresponds to Csv_Data.JSON
+        }
+        csv_obj._completed_assessment_data = [
             {
-                Csv_Data.FIRST_NAME.value: "John",
-                Csv_Data.LAST_NAME.value: "Doe",
-                Csv_Data.TEAM_NAME.value: None,
-                Csv_Data.JSON.value: {
-                    "category1": {"comments": "Great work!"},
-                    "category2": {"comments": "Needs improvement"},
-                    "done": True,
-                    "comments": "Overall good"  # This should be skipped
-                }
+                8: "John",  # FIRST_NAME
+                9: "Doe",   # LAST_NAME
+                13: fake_json,
             }
         ]
-        
-        # Act
-        csv_obj = Comments_Csv(1)
-        result = csv_obj.return_csv_str()
-        
-        # Assert
-        assert "Great work!" in result
-        assert "Needs improvement" in result
-        assert "category1" in result
-        assert "category2" in result
 
+        csv_obj._format()
+
+        # Ensure writer is called correctly
+        calls = [call[0][0] for call in csv_obj._writer.writerow.call_args_list]
+        assert any("CategoryA" in c for c in calls if isinstance(c, list))
+        assert any("OC:OC1" in c for c in calls if isinstance(c, list))
+        assert any("SFI:SFI2" in c for c in calls if isinstance(c, list))
+
+
+    class TestCommentsCsvUnit:
+        """Unit tests for Comments_Csv class"""
+        
+        @patch('Functions.exportCsv.get_csv_data_by_at_id')
+        @patch('Functions.exportCsv.get_course_name_by_at_id')
+        def test_extracts_comments_from_json(self, mock_get_course, mock_get_data):
+            """UNIT: Test that comments are extracted correctly"""
+            # Arrange
+            mock_get_course.return_value = "Test Course"
+            mock_get_data.return_value = [
+                {
+                    Csv_Data.FIRST_NAME.value: "John",
+                    Csv_Data.LAST_NAME.value: "Doe",
+                    Csv_Data.TEAM_NAME.value: None,
+                    Csv_Data.JSON.value: {
+                        "category1": {"comments": "Great work!"},
+                        "category2": {"comments": "Needs improvement"},
+                        "done": True,
+                        "comments": "Overall good"  # This should be skipped
+                    }
+                }
+            ]
+            
+            # Act
+            csv_obj = Comments_Csv(1)
+            result = csv_obj.return_csv_str()
+            
+            # Assert
+            assert "Great work!" in result
+            assert "Needs improvement" in result
+            assert "category1" in result
+            assert "category2" in result
 
 class TestCreateCsvStringsUnit:
     """Unit tests for create_csv_strings function"""
@@ -251,3 +298,16 @@ class TestCreateCsvStringsUnit:
         
         assert "No type of csv is associated" in str(exc_info.value)
 
+    @patch("Functions.exportCsv.Comments_Csv.return_csv_str", return_value="mocked comments csv")
+    def test_create_csv_strings_comments(self, mock_return_csv):
+        result = create_csv_strings(123, CSV_Type.COMMENTS_CSV.value)
+        mock_return_csv.assert_called_once()
+        assert result == "mocked comments csv"
+
+    @patch("Functions.exportCsv.CSV_Type", autospec=True)
+    def test_create_csv_strings_default_case_returns_error(self, mock_csv_type):
+        # Simulate an Enum-like object that doesn't match any case
+        mock_csv_type.return_value = "UNKNOWN_CSV"
+
+        result = create_csv_strings(at_id=1, type_csv=999)
+        assert result == "Error in create_csv_strings()."

@@ -5,6 +5,7 @@ from models.team import *
 from models.team_user import *
 from Tests.PopulationFunctions import *
 from Functions import teamImport
+from unittest.mock import patch
 import pytest
 import os
 
@@ -316,6 +317,118 @@ def test_ta_not_yet_added_error(flask_app_mock):
             except (InvalidCourseID, ValueError) as e:
                 print(f"Cleanup skipped: {e}")
 
+
+def test_team_created_with_missing_ta(flask_app_mock):
+    """
+    Test that a team is created correctly when the TA is missing.
+    Ensures that the observer for the team is set to the admin (owner)
+    if the course uses TAs but the TA is missing, or generally falls back
+    to the owner when no TA is assigned. Also confirms that exactly one
+    team is created in the course.
+    """
+    with flask_app_mock.app_context():
+
+        result = create_one_admin_ta_student_course(True, True)
+       
+        try:
+            teamImport.team_csv_to_db(
+                retrieve_file_path("oneTeamStudent.csv"),
+                result["admin_id"],
+                result["course_id"]
+            )
+
+            # Confirm teams were assigned to this course
+            teams = get_team_by_course_id(result["course_id"])
+            assert len(teams) == 1, "team_csv_to_db() should not assign a test team to a test course!"
+
+            team = teams[0]
+            assert team.observer_id == result["admin_id"], (
+                f"Expected observer_id to be admin_id ({result['admin_id']}), got {team.observer_id}"
+            )
+        
+        finally:
+            # Clean up after test
+            if result:
+                try:
+                    delete_one_admin_ta_student_course(result)
+                except (InvalidCourseID, ValueError) as e:
+                    print(f"Cleanup skipped: {e}")
+
+def test_user_does_not_exist_with_missing_owner_id(flask_app_mock):
+    with flask_app_mock.app_context():
+
+        result = create_one_admin_ta_student_course(False)
+
+        # Patch get_user to simulate missing owner
+        with patch("Functions.teamImport.get_user", return_value=None):
+            # Expect UserDoesNotExist when importing team CSV
+            with pytest.raises(UserDoesNotExist):
+                teamImport.team_csv_to_db(
+                    retrieve_file_path("oneTeamTAStudent.csv"),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+
+            # Confirm no teams were assigned to this course
+            teams = get_team_by_course_id(result["course_id"])
+            assert len(teams) == 0, "team_csv_to_db() should not assign a test team to a test course!"
+
+        # Clean up after test
+        if result:
+            try:
+                delete_one_admin_ta_student_course(result)
+            except (InvalidCourseID, ValueError) as e:
+                print(f"Cleanup skipped: {e}")
+
+def test_fail_when_course_is_missing(flask_app_mock):
+    with flask_app_mock.app_context():
+
+        result = create_one_admin_ta_student_course(False)
+
+        # Patch get_course to simulate missing course
+        with patch("Functions.teamImport.get_course", return_value=None):
+            # Expect OwnerIDDidNotCreateTheCourse when importing team CSV
+            with pytest.raises(OwnerIDDidNotCreateTheCourse):
+                teamImport.team_csv_to_db(
+                    retrieve_file_path("oneTeamTAStudent.csv"),
+                    result["admin_id"],
+                    result["course_id"]
+                )
+
+            # Confirm no teams were assigned to this course
+            teams = get_team_by_course_id(result["course_id"])
+            assert len(teams) == 0, "team_csv_to_db() should not assign a test team to a test course!"
+
+        # Clean up after test
+        if result:
+            try:
+                delete_one_admin_ta_student_course(result)
+            except (InvalidCourseID, ValueError) as e:
+                print(f"Cleanup skipped: {e}")
+
+def test_fail_when_used_non_existent_student(flask_app_mock):
+    with flask_app_mock.app_context():
+
+        result = create_one_admin_ta_student_course(False)
+
+        # Expect UserDoesNotExist when importing team CSV
+        with pytest.raises(UserDoesNotExist):
+            teamImport.team_csv_to_db(
+                retrieve_file_path("oneTeamTANonExistingStudent.xlsx"),
+                result["admin_id"],
+                result["course_id"]
+            )
+
+        # Confirm no teams were assigned to this course
+        teams = get_team_by_course_id(result["course_id"])
+        assert len(teams) == 0, "team_csv_to_db() should not assign a test team to a test course!"
+
+        # Clean up after test
+        if result:
+            try:
+                delete_one_admin_ta_student_course(result)
+            except (InvalidCourseID, ValueError) as e:
+                print(f"Cleanup skipped: {e}")
 
 # test_student_not_enrolled_in_this_course()
 #   - calls create_one_admin_ta_student_course() with three parameter:

@@ -29,7 +29,7 @@ class TBUTeam:
         self.ta_email :str = ta_email
         self.students :list[TBUStudent] = students
 
-def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
+def _expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     """
     Description:
         Pops off the "top" row of the csv data and sanitizes it. At the same
@@ -50,7 +50,7 @@ def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     
     return cleaned
 
-def __parse(lst: list[list[str]]) -> list[TBUTeam]:
+def _parse(lst: list[list[str]]) -> list[TBUTeam]:
     """
     DESCRIPTION:
         Reads the teams and associates sudents/tas with their respective team.
@@ -65,7 +65,7 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
     current_state = ParseState.TA
     
     while len(lst) > 0:
-        hd = __expect(lst)
+        hd = _expect(lst)
         current_row += 1
         
         # Handles the end of one team
@@ -80,11 +80,11 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
                 empty_space = False
 
                 if len(lst) >= 1:
-                    lookAhead = __expect(lst)
+                    lookAhead = _expect(lst)
                     if len(hd) == 0:
                         empty_space = True
                         hd = lookAhead
-                        lookAhead = __expect(lst)
+                        lookAhead = _expect(lst)
                     lst.insert(0, lookAhead)
                     lst.insert(0, hd)
                     multiple_observers = (len(hd) == len(lookAhead) == 1)
@@ -100,6 +100,8 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
             ta = hd[0]
             current_state = ParseState.TEAM 
         elif current_state == ParseState.TEAM:
+            if len(hd) == 0:
+                raise EmptyTeamName
             if len(hd) != 1:
                 raise TooManyColumns(current_row, 1, len(hd))
             team_name = hd[0]
@@ -300,7 +302,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
 #            if not helper_verify_email_syntax(student.email):
 #                raise SuspectedMisformatting
 
-def __verify_information(teams: list[TBUTeam]):
+def _verify_information(teams: list[TBUTeam]):
     for team in teams:
         if team.ta_email == "":
             raise EmptyTAEmail
@@ -319,7 +321,7 @@ def __verify_information(teams: list[TBUTeam]):
             if student.email == "":
                 raise EmptyStudentEmail
             if not helper_verify_email_syntax(student.email):
-                raise SuspectedMisformatting
+                raise SuspectedMisformatting(student.email)
 
 # First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
@@ -337,13 +339,13 @@ def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
             rows: list[list[str]] = [list(map(str.strip, row)) for row in csvr]
 
         # Gather teams and verify the correctness of all emails.
-        teams = __parse(rows)
+        teams = _parse(rows)
 
         if len(teams) == 0:
             raise EmptyTeamMembers
 
         # __verify_emails(teams)
-        __verify_information(teams)
+        _verify_information(teams)
 
         # Actually add people to the DB.
         for team in teams:
