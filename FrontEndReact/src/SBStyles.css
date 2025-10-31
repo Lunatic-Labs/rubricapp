@@ -239,7 +239,7 @@ h4, h5 {
 }
 
 /* Tab color variables */
-.tab-colors {
+.assessment-tab-colors {
   --tab-selected-bg: #D9D9D9;
   --tab-text: #000000;
   --tab-border: #000000;
@@ -259,6 +259,13 @@ h4, h5 {
   --instructions-border: #0000003b;
   --instructions-textarea-bg: #ffffff;
   --instructions-textarea-text: #000000;
+}
+
+/* Tab color variables */
+.tab-colors {
+  --tab-selected-bg: #D9D9D9;
+  --tab-text: #000000;
+  --tab-border: #2E8BEF;
 }
 
 
@@ -397,6 +404,12 @@ body.mode .assessment-instructions-colors {
   --instructions-border: #404040;
   --instructions-textarea-bg: #1a1a1a;
   --instructions-textarea-text: #e0e0e0;
+}
+
+body.mode .tab-colors {
+  --tab-selected-bg: #3a3a3a;
+  --tab-text: #e0e0e0;
+  --tab-border: #2E8BEF;
 }
 
 /* Dark mode text colors for general content */
