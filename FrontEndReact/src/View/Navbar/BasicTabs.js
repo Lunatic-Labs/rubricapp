@@ -36,15 +36,15 @@ export default function BasicTabs (props){
           sx={{
             '& .MuiTab-root': {
               color: 'var(--tab-text)',
-              textTransform: 'none',
-              fontWeight: 400,
+              textTransform: 'uppercase',
+              fontWeight: 450,
             },
             '& .MuiTab-root.Mui-selected': {
-              color: '#2E8BEF',
-              fontWeight: 500,
+              color: 'var(--tab-text-selected)',
+              fontWeight: 550,
             },
             '& .MuiTabs-indicator': {
-              backgroundColor: '#2E8BEF',
+              backgroundColor: 'var(--tab-text-selected)',
               height: '2px',
             },
           }}
