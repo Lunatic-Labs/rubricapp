@@ -274,6 +274,7 @@ h4, h5 {
   --table-body-bg: #ffffff;
   --table-body-text: #000000;
   --table-border: #e0e0e0;
+  --table-arrow-color: #0000008A;
 }
 
 /* THIS IS FOR TESTING PURPOSES! */
@@ -424,6 +425,7 @@ body.mode .collapsible-table-colors {
   --table-body-bg: #2a2a2a;
   --table-body-text: #e0e0e0;
   --table-border: #404040;
+  --table-arrow-color: #FFFFFF8A;
 }
 
 

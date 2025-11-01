@@ -96,7 +96,7 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Rubric</TableCell>
+              <TableCell style={{ fontSize: "1.3rem" }}>Rubric</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -125,6 +125,7 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             size="small"
                             sx={{
                               marginLeft: 1,
+                              color: 'var(--table-arrow-color)',
                               '&:focus': {
                                 outline: '2px solid #1976d2',
                                 outlineOffset: '2px',
