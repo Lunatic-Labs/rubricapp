@@ -52,6 +52,7 @@ class Settings extends Component {
                         // This callback runs AFTER state is updated
                         if (this.state.darkMode) {
                             document.body.classList.add('mode');
+                            
                         } else {
                             document.body.classList.remove('mode');
                         }
