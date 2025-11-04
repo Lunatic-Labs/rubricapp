@@ -239,7 +239,7 @@ h4, h5 {
 }
 
 /* Tab color variables */
-.tab-colors {
+.assessment-tab-colors {
   --tab-selected-bg: #D9D9D9;
   --tab-text: #000000;
   --tab-border: #000000;
@@ -261,6 +261,21 @@ h4, h5 {
   --instructions-textarea-text: #000000;
 }
 
+/* Tab color variables */
+.tab-colors {
+  --tab-text: #646464;
+  --tab-text-selected: #2E8BEF;
+}
+
+/* Collapsible table color variables */
+.collapsible-table-colors {
+  --table-head-bg: #A4C4F4;
+  --table-head-text: #000000;
+  --table-body-bg: #ffffff;
+  --table-body-text: #000000;
+  --table-border: #e0e0e0;
+  --table-arrow-color: #0000008A;
+}
 
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
@@ -398,6 +413,21 @@ body.mode .assessment-instructions-colors {
   --instructions-textarea-bg: #1a1a1a;
   --instructions-textarea-text: #e0e0e0;
 }
+
+body.mode .tab-colors {
+  --tab-text: #a0a0a0;
+  --tab-text-selected: #3a93f3;
+}
+
+body.mode .collapsible-table-colors {
+  --table-head-bg: #2d4a6b;
+  --table-head-text: #e0e0e0;
+  --table-body-bg: #2a2a2a;
+  --table-body-text: #e0e0e0;
+  --table-border: #404040;
+  --table-arrow-color: #FFFFFF8A;
+}
+
 
 /* Dark mode text colors for general content */
 body.mode {
