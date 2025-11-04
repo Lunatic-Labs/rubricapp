@@ -229,6 +229,18 @@ h4, h5 {
 /* DARK MODE STYLES */
 /* ============================================ */
 
+/* ============================================ */
+/* DARK MODE STYLES - FIXED */
+/* ============================================ */
+
+/* Fix CSS custom properties - apply to body.mode, not :root */
+body.mode {
+  --light_grey_ADA: #2a2a2a;
+  --light_grey_hover: #3a3a3a;
+  --export_disabled_text: #888888;
+  color: #e0e0e0;
+}
+
 body.mode .app-body { 
   background-color: #1a1a1a;
   min-height: 100vh;
@@ -263,6 +275,8 @@ body.mode .card-style {
   border-radius: 10px;
   border-top: 3px solid #2E8BEF;
   background: #2a2a2a;
+  color: #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 
   @media screen and (max-width: 600px) {
     width: 100%;
@@ -280,6 +294,16 @@ body.mode .assessment-card {
   margin-bottom: 10px;
   font-size: 1.3rem;
   color: #e0e0e0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
+}
+
+/* Progress bars */
+body.mode .MuiLinearProgress-root {
+  background-color: #3a3a3a;
+}
+
+body.mode .MuiLinearProgress-bar {
+  background-color: #2E8BEF;
 }
 
 body.mode .checkbox-alignment {
@@ -293,12 +317,6 @@ body.mode .errorSelect {
 
 body.mode .table-row {
   color: #e0e0e0;
-}
-
-body.mode :root {
-  --light_grey_ADA: #2a2a2a;
-  --light_grey_hover: #3a3a3a;
-  --export_disabled_text: #888888;
 }
 
 body.mode .light_grey_ADA {
@@ -327,11 +345,117 @@ body.mode .navbar-arrow {
   filter: invert(1);
 }
 
-/* Dark mode text colors for general content */
-body.mode {
+body.mode .MuiSlider-markLabel {
   color: #e0e0e0;
 }
 
-body.mode .MuiSlider-markLabel {
+/* MUI Typography components */
+body.mode .MuiTypography-root {
   color: #e0e0e0;
+}
+
+/* MUI TextField and Input components */
+body.mode .MuiInputBase-root {
+  color: #e0e0e0;
+  background-color: #2a2a2a;
+}
+
+body.mode .MuiInputLabel-root {
+  color: #b0b0b0;
+}
+
+body.mode .MuiOutlinedInput-notchedOutline {
+  border-color: #404040;
+}
+
+body.mode .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #606060;
+}
+
+/* MUI Tables */
+body.mode .MuiTableCell-root {
+  color: #e0e0e0;
+  border-bottom: 1px solid #404040;
+}
+
+body.mode .MuiTableHead-root .MuiTableCell-root {
+  background-color: #2a2a2a;
+  font-weight: 600;
+}
+
+body.mode .MuiTableBody-root .MuiTableRow-root:hover {
+  background-color: #2a2a2a;
+}
+
+/* MUI Paper components */
+body.mode .MuiPaper-root {
+  background-color: #2a2a2a;
+  color: #e0e0e0;
+  border: 1px solid #404040;
+}
+
+/* Chart containers and SVG elements */
+body.mode svg text {
+  fill: #e0e0e0 !important;
+}
+
+body.mode .recharts-text {
+  fill: #e0e0e0 !important;
+}
+
+body.mode .recharts-cartesian-axis-tick-value {
+  fill: #e0e0e0 !important;
+}
+
+body.mode .recharts-label {
+  fill: #e0e0e0 !important;
+}
+
+/* MUI Select dropdowns */
+body.mode .MuiSelect-select {
+  color: #e0e0e0;
+  background-color: #2a2a2a;
+}
+
+body.mode .MuiOutlinedInput-root {
+  background-color: #2a2a2a;
+}
+
+body.mode .MuiMenuItem-root {
+  color: #e0e0e0;
+  background-color: #2a2a2a;
+}
+
+body.mode .MuiMenuItem-root:hover {
+  background-color: #3a3a3a;
+}
+
+body.mode .MuiMenu-paper {
+  background-color: #2a2a2a;
+}
+
+body.mode .MuiList-root {
+  background-color: #2a2a2a;
+}
+
+/* MUI Dividers */
+body.mode .MuiDivider-root {
+  background-color: #404040;
+}
+
+/* Dark mode styles for reporting dashboard */
+body.mode .reporting-error-container,
+body.mode [data-theme="dark"] .reporting-error-container {
+    background-color: #1a1a1a;
+    color: #ffffff;
+}
+
+body.mode .reporting-loading-container,
+body.mode [data-theme="dark"] .reporting-loading-container {
+    background-color: #1a1a1a;
+}
+
+body.mode .reporting-content-container,
+body.mode [data-theme="dark"] .reporting-content-container {
+    background-color: #1a1a1a;
 }
