@@ -311,10 +311,34 @@ jobs:
       - name: Verify Node.js instalation
         run: node -v
         
-      - name: Force load demo data
+      - name: Wait for backend and verify demo data
         run: |
-          echo "Loading demo data..."
-          docker compose exec -T backend python dbcreate.py demo
+          echo "Waiting for backend to fully initialize..."
+          sleep 20
+          
+          echo "Checking backend logs for demo data loading..."
+          docker compose logs backend | tail -50
+          
+          echo "Verifying demo data exists..."
+          docker compose exec -T backend python -c "
+          from core import create_app
+          from models.course import Course
+          from models.user import User
+          
+          app = create_app()
+          with app.app_context():
+              courses = Course.query.count()
+              users = User.query.count()
+              
+              print(f'Database state: {courses} courses, {users} users')
+              
+              if courses == 0:
+                  print('ERROR: No demo data loaded!')
+                  print('Backend started but database is empty')
+                  exit(1)
+              else:
+                  print(f'SUCCESS: Demo data loaded correctly')
+          "
   
       # Main section where more testing can be added that requires the frontend and backend running.\
       - name: Run Jest tests
