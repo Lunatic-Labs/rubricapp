@@ -16,7 +16,8 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout.js';
-import Logo from "./sbText.png";
+// sbTextFixed.png is the skill builder logo but with a transparent background
+import Logo from "./sbTextFixed.png";
 
 export default function ButtonAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -136,8 +137,7 @@ export default function ButtonAppBar(props) {
               <MenuItem  onClick={() => {
                 props.setNewTab("Settings");
               }}>
-                <Settings />
-                Settings
+                <Settings sx={{ mr: 1 }} /> Settings
               </MenuItem>
 
               <Divider />

@@ -319,18 +319,18 @@ def update_user():
 
             return create_good_response([], 201, "users")
 
-        if(request.args and request.args.get("user_id")):
-            uid = request.args.get("user_id")
+#        if(request.args and request.args.get("user_id")):
+#            uid = request.args.get("user_id")
 
-            print(uid)
+#            print(uid)
 
-            user = get_user(uid)  # Trigger an error if not exists.
+#            user = get_user(uid)  # Trigger an error if not exists.
 
-            user_dark_mode = request.json["user_dark_mode"]
+#            user_dark_mode = request.json["user_dark_mode"]
 
-            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
+#            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
 
-            return create_good_response([], 201, "users")
+#            return create_good_response([], 201, "users")
 
 
         user_id = request.args.get("uid")
@@ -383,6 +383,29 @@ def delete_selected_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
+
+# new route
+@bp.route('/user_settings', methods = ['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def update_user_settings():
+    try:
+        if(request.args and request.args.get("user_id")):
+            uid = request.args.get("user_id")
+
+            print(uid)
+
+            # user_settings = get_user(uid)  # Trigger an error if not exists.
+
+            user_dark_mode = request.json["user_dark_mode"]
+
+            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
+
+            return create_good_response([], 201, "users")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
 
 class UserSchema(ma.Schema):
     user_id     = fields.Integer()

@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import { Box, Typography, Button } from '@mui/material';
+import { Box, Typography, Switch, FormControlLabel } from '@mui/material';
 import Cookies from 'universal-cookie';
 import { genericResourcePUT, genericResourceGET } from '../../utility.js';
 import Loading from "../Loading/Loading.js";
 
-// all 'mode' related things are for testing and should be removed afterwards.
+// 'mode' refers to the darkmode classlist in the SBStyles.css, by adding 'mode' to the
+// document body, the darkmode css will be applied.
+
+// currently settings has only one option and that is to toggle darkmode, more options
+// will be added later as the app grows.
 class Settings extends Component {
     constructor(props) {
         super(props);
@@ -14,42 +18,46 @@ class Settings extends Component {
             isLoaded: null,
             errorMessage: null,
             user: null,
-            darkMode: false
+            darkMode: false         // darkmode is not nullable, the deafult state is false
         };
     }
 
     componentDidMount() {
-        //var navbar = this.props.navbar;
-        //var state = navbar.state;
-
         const cookies = new Cookies();
         const user = cookies.get('user');
 
         if (user !== null) {
 
-            let promise;
-            let userData;
+            let promise;            // promise is used because we do not yet have the 'data' from the backend
+            let userData;           // promise tells the app that it will recieve data
 
+            // get all the neccessary resources from the backend, the 'user' from the 'users' array.
             promise = genericResourceGET(
                 `/user`,
                 "users",
                 this
             );
+
             promise.then(result => {
                 if (result !== undefined && result["users"] !== null) {
                     userData = result["users"];
-                    
+
+                    // user data is now set by the result for 'users' and the state is changed
+                    // to match the users preferance (false or true).
                     this.setState({
                         isLoaded: true,
                         user: userData["user_id"],
                         darkMode: userData["user_dark_mode"]
+                    }, () => {
+                        // This callback runs AFTER state is updated
+                        if (this.state.darkMode) {
+                            document.body.classList.add('mode');
+                        } else {
+                            document.body.classList.remove('mode');
+                        }
                     });
 
-                    if (this.state.darkMode) {
-                        document.body.classList.add('mode');
-                    } else {
-                        document.body.classList.remove('mode');
-                    }
+                    
                 }
             }).catch(error => {
                 console.error("Error fetching user data:", error);
@@ -58,47 +66,57 @@ class Settings extends Component {
                     isLoaded: false,
                     user: user,
                     darkMode: user["user_dark_mode"] || false,
+                }, () => {
+                    // Apply dark mode in callback
+                    if (this.state.darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
                 });
-
-                if (user["user_dark_mode"]) {
-                    document.body.classList.add('mode');
-                }
             });
         }
     }
 
+    // will handle any changes within the change, currently only used for detecting if user
+    // has set darkmode.
+    
+    // for future refernace handleChange should be changed to handleDarkMode, as not to conflict with
+    // any other 'changes' on the page.
     handleChange = () => {
-        const newDarkMode = !(this.state.darkMode);
+        const newDarkMode = !(this.state.darkMode);     // take the users current prefernace and invert it
         const user_id = this.state["user"];
         
-        let promise;
+        let promise;            // promise that data will be provided later
+
         var body = JSON.stringify({
             "user_id": user_id,
             "user_dark_mode": newDarkMode
         });
 
-        // Update state
+        // Set the state (the updated darkmode preferance which will be put into the backend later.
         this.setState({
             darkMode: newDarkMode
         });
 
-        // Toggle dark mode class on body
+        // Toggle dark mode class on body (darkmode will now be applied).
         if (newDarkMode) {
             document.body.classList.add('mode');
         } else {
             document.body.classList.remove('mode');
         }
 
+        // Put the new preferance for darkmode into the user backend.
         promise = genericResourcePUT(
-            `/user`,
+            `/user_settings`,
             this, 
             body
         );
 
         promise.then(result => {
             if (result !== undefined && result.errorMessage === null) {
-                // Update navbar state if needed
-                this.state.darkMode = newDarkMode;
+                // Update the state
+                this.state.darkMode = newDarkMode; // warning to not mutate state directly
             }
         }).catch(error => {
             console.error("Error updating dark mode:", error);
@@ -137,17 +155,16 @@ class Settings extends Component {
                                         Appearance
                                     </Typography>
                                     <Box sx={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-                                        <Typography>
-                                            Dark Mode: {darkMode ? 'On' : 'Off'}
-                                        </Typography>
-                                        <Button
-                                            onClick={this.handleChange}
-                                            className="primary-color"
-                                            variant="contained"
-                                            aria-label="toggleDarkModeButton"
-                                        >
-                                            Toggle Dark Mode
-                                        </Button>
+                                        <FormControlLabel
+                                            control={
+                                                <Switch
+                                                    checked={darkMode}
+                                                    onChange={this.handleChange}
+                                                    aria-label="toggle dark mode"
+                                                />
+                                            }
+                                            label="Dark Mode"
+                                        />
                                     </Box>
                                 </Box>
                             </Box>

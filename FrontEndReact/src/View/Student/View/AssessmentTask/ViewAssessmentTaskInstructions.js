@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import {genericResourcePOST} from '../../../../utility.js';
 import Cookies from 'universal-cookie';
+import ErrorMessage from "../../../Error/ErrorMessage.js";
 
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {
@@ -12,6 +13,7 @@ class ViewAssessmentTaskInstructions extends Component {
             categories: this.props.rubrics["category_json"],
             instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
             skipInstructions: this.props.navbar.state.skipInstructions,
+            errorMessage: null
         }
     }
 
@@ -28,21 +30,34 @@ class ViewAssessmentTaskInstructions extends Component {
                 return;
             }
 
+            const assessmentTaskId = state.chosenAssessmentTask?.assessment_task_id;
             const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
-            if (!completedAssessmentId) {
-                console.error('Completed assessment ID not found');
-                this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
-                return;
+            
+            // Check if coming from completed assessments page
+            if (state.chosenCompleteAssessmentTask) {
+                if (completedAssessmentId) {
+                    console.error('Completed Assessment Task ID not found');
+                    this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+                    return;
+                }
+                
+                await genericResourcePOST(
+                    '/feedback',
+                    this,
+                    JSON.stringify({
+                        user_id: userId,
+                        completed_assessment_id: completedAssessmentId
+                    })
+                );
+            } else {
+                // Coming from assessments page
+                if (!assessmentTaskId) {
+                    this.setState({
+                        errorMessage: "Assessment Task ID not found"
+                    });
+                    return;
+                }
             }
-
-            await genericResourcePOST(
-                '/feedback',
-                this,
-                JSON.stringify({
-                    user_id: userId,
-                    completed_assessment_id: completedAssessmentId
-                })
-            );
 
         } catch (error) {
             console.error('Error recording feedback view:', error);
@@ -76,12 +91,16 @@ class ViewAssessmentTaskInstructions extends Component {
 
         return (
             <>
-                <h2
+                {this.state.errorMessage && (
+                    <ErrorMessage errorMessage={this.state.errorMessage} />
+                )}
+                <h2 className="assessment-instructions-colors"
                     style={{
                         textAlign: "start",
                         paddingLeft: "3rem",
                         paddingTop: "1rem",
-                        fontWeight: '700'
+                        fontWeight: '700',
+                        color: 'var(--instructions-text)'
                     }}
                     aria-label="viewAssessmentTaskInstructionsTitle"
                 >
@@ -93,7 +112,7 @@ class ViewAssessmentTaskInstructions extends Component {
                         justifyContent: 'center',
                     }}
                 >
-                    <div
+                    <div className="assessment-instructions-colors"
                         style={{
                             borderTop: '3px solid #4A89E8', 
                             border: '3px, 0px, 0px, 0px',
@@ -102,16 +121,17 @@ class ViewAssessmentTaskInstructions extends Component {
                             paddingLeft:'5rem',
                             paddingRight:'5rem',
                             paddingTop:'2rem',
-                            backgroundColor: "white",
+                            backgroundColor: 'var(--instructions-bg)',
                             width: '90%',
                             height: 'fit-content'
                         }}
                     >
-                        <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
+                        <h3 
+                            style={{ textAlign: 'left', fontWeight: '700', color: 'var(--instructions-text)' }}>
                             {"Rubric for " + rubricName}
                         </h3>
 
-                        <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
+                        <h6 style={{ textAlign: 'left', fontWeight: '600', color: 'var(--instructions-text)' }}>
                             Rubric Description: {rubricDescription}
                         </h6>
 
@@ -124,7 +144,7 @@ class ViewAssessmentTaskInstructions extends Component {
                             <div
                                 style={{
                                     padding: "20px",
-                                    border: "solid 1px #0000003b"
+                                    border: "solid 1px var(--instructions-border)"
                                 }}
                             >
                                 <div
@@ -139,7 +159,8 @@ class ViewAssessmentTaskInstructions extends Component {
                                             margin: "1rem",
                                             fontWeight: "bold",
                                             width: "80%",
-                                            textAlign: "center"
+                                            textAlign: "center",
+                                            color: 'var(--instructions-text)'
                                         }}
                                     >
                                         Assessment Categories: {categoryList}
@@ -148,14 +169,17 @@ class ViewAssessmentTaskInstructions extends Component {
                                 <h2
                                     style={{
                                         textAlign: 'left',
-                                        marginLeft: "8px"
+                                        marginLeft: "8px",
+                                        color: 'var(--instructions-text)'
                                     }}>
                                     Instructions
                                 </h2>
                                 <textarea
                                     style={{
                                         width: "98%",
-                                        minHeight: "15rem"
+                                        minHeight: "15rem",
+                                        backgroundColor: 'var(--instructions-textarea-bg)',
+                                        color: 'var(--instructions-textarea-text)'
                                     }}
                                     defaultValue={this.state.instructions}
                                     readOnly

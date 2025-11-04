@@ -434,7 +434,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 }>
                 <span>
                     <CustomButton
-                    label="Send Notification"
+                    label="Notify All"
                     onClick={() => this.handleDialog(false)}
                     isOutlined={false}
                     disabled={notificationSent}

@@ -129,7 +129,7 @@ h4, h5 {
 .assessment-task-spacing {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 40px;
 }
 
 .assessment-card {
@@ -222,6 +222,51 @@ h4, h5 {
 .navbar-arrow {
   filter: none;
 }
+
+/* Checkbox color variables */
+.checkbox-colors {
+  --checkbox-bg-checked: #ADCBEE;
+  --checkbox-bg-unchecked: #D9D9D9;
+  --checkbox-color-checked: #2E8BEF;
+}
+
+/* Textarea color variables */
+.textarea-colors {
+  --textarea-bg: #ffffff;
+  --textarea-text: #000000;
+  --textarea-border: #c4c4c4;
+  --textarea-placeholder: #757575;
+}
+
+/* Tab color variables */
+.assessment-tab-colors {
+  --tab-selected-bg: #D9D9D9;
+  --tab-text: #000000;
+  --tab-border: #000000;
+}
+
+/* Back button color variables */
+.back-button-colors {
+  --back-button-bg: #e0e0e0;
+  --back-button-bg-hover: #bdbdbd;
+  --back-button-text: #000000;
+}
+
+/* Assessment instructions color variables */
+.assessment-instructions-colors {
+  --instructions-bg: #ffffff;
+  --instructions-text: #000000;
+  --instructions-border: #0000003b;
+  --instructions-textarea-bg: #ffffff;
+  --instructions-textarea-text: #000000;
+}
+
+/* Tab color variables */
+.tab-colors {
+  --tab-text: #646464;
+  --tab-text-selected: #2E8BEF;
+}
+
 
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
