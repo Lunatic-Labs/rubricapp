@@ -51,32 +51,6 @@ def create_course(course_data):
     db.session.add(course_data)
     db.session.commit()
 
-    # Create a test student for each course
-    test_student = User(
-        first_name="Test",
-        last_name="Student", 
-        email=f"teststudent{course_data.course_id}@skillbuilder.edu",
-        password="TestPassword123!",
-        owner_id=course_data.admin_id,
-        has_set_password=True,
-        is_admin=False,
-        consent=True
-    )
-    
-    db.session.add(test_student)
-    db.session.commit()
-
-    # Assign the test student to the course with Student role (role_id=5)
-    # Using role_id=5 instead of 6 to avoid foreign key issues
-    test_user_course = UserCourse(
-        user_id=test_student.user_id,
-        course_id=course_data.course_id,
-        role_id=5  # Use existing Student role instead of TestStudent
-    )
-
-    db.session.add(test_user_course)
-    db.session.commit()
-
     return course_data
 
 
