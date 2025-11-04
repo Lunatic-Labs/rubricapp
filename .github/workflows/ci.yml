@@ -310,53 +310,11 @@ jobs:
 
       - name: Verify Node.js instalation
         run: node -v
-      
+        
       - name: Force load demo data
         run: |
           echo "Loading demo data..."
-          docker compose exec -T backend python -c "
-          import sys
-          sys.path.insert(0, '/app')
-          
-          from run import app
-          from core import db
-          from models.role import load_existing_roles
-          from models.user import load_demo_users
-          from models.course import load_demo_course
-          from models.team import load_demo_teams
-          from models.assessment_task import load_demo_assessment_tasks
-          
-          with app.app_context():
-              try:
-                  print('Loading roles...')
-                  load_existing_roles()
-                  
-                  print('Loading users...')
-                  load_demo_users()
-                  
-                  print('Loading courses...')
-                  load_demo_course()
-                  
-                  print('Loading teams...')
-                  load_demo_teams()
-                  
-                  print('Loading assessment tasks...')
-                  load_demo_assessment_tasks()
-                  
-                  db.session.commit()
-                  
-                  from models.course import Course
-                  count = Course.query.count()
-                  print(f'Successfully loaded {count} courses')
-                  
-                  if count == 0:
-                      raise Exception('No courses loaded!')
-                      
-              except Exception as e:
-                  print(f'ERROR loading demo data: {e}')
-                  db.session.rollback()
-                  raise
-          "
+          docker compose exec -T backend python dbcreate.py demo
   
       # Main section where more testing can be added that requires the frontend and backend running.\
       - name: Run Jest tests
