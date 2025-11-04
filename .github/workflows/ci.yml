@@ -319,28 +319,24 @@ jobs:
           echo "Checking backend logs for demo data loading..."
           docker compose logs backend | tail -50
           
-          echo "Verifying demo data exists..."
-          docker compose exec -T backend python -c "
-          import sys
-          sys.path.insert(0, '/app')
+          echo "Verifying demo data exists by querying MySQL directly..."
+          COURSE_COUNT=$(docker compose exec -T mysql mysql -u root -proot account -se "SELECT COUNT(*) FROM courses;")
+          USER_COUNT=$(docker compose exec -T mysql mysql -u root -proot account -se "SELECT COUNT(*) FROM users;")
           
-          from run import app
-          from models.course import Course
-          from models.user import User
+          echo "Database state: $COURSE_COUNT courses, $USER_COUNT users"
           
-          with app.app_context():
-              courses = Course.query.count()
-              users = User.query.count()
-              
-              print(f'Database state: {courses} courses, {users} users')
-              
-              if courses == 0:
-                  print('ERROR: No demo data loaded!')
-                  print('Backend started but database is empty')
-                  exit(1)
-              else:
-                  print(f'SUCCESS: Demo data loaded correctly')
-          "
+          if [ "$COURSE_COUNT" -eq 0 ]; then
+            echo "ERROR: No demo data loaded!"
+            echo "Backend started but database is empty"
+            
+            echo "Checking if tables exist..."
+            docker compose exec -T mysql mysql -u root -proot account -e "SHOW TABLES;"
+            
+            exit 1
+          else
+            echo "SUCCESS: Demo data loaded correctly"
+            echo "Found $COURSE_COUNT courses and $USER_COUNT users"
+          fi
   
       # Main section where more testing can be added that requires the frontend and backend running.\
       - name: Run Jest tests
