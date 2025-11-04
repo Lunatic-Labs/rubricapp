@@ -56,7 +56,7 @@ services:
       # This improves startup time
       - "frontend-cache:/app/node_modules/.cache"
     environment:
-      - REACT_APP_API_URL=http://localhost:5000/api
+      - REACT_APP_API_URL=http://localhost:5050/api
     networks:
       - app-network
 
