@@ -190,11 +190,9 @@ def update_course():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a course{e}", "courses", 400)
 
-# New Endpooint: get_test_student_token
+# Endpooint: get_test_student_token
 # This code creates or retrieves the test student information for a course.
 # Used for: "View as Student" feature.
-# Important: The JWT identity must be a STRING to avoid "Subject must be a string" error.
-# These wehn commented out allow the test student to work. DO WE NEED THEM???
 @bad_token_check()
 @AuthCheck()
 @admin_check()
