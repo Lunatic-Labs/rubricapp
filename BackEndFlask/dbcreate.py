@@ -69,20 +69,27 @@ with app.app_context():
             print("[dbcreate] exiting...")
     time.sleep(sleep_time)
     try:
-        inspector = inspect(db.engine)
-        table_names = inspector.get_table_names()
-        if table_names:
-            subprocess.run(["flask db upgrade"], shell=True, check=True)
-        else:
-            db.create_all()
-            subprocess.run(["flask db stamp head"], shell=True, check=True)
+        db.create_all()
+        print("[dbcreate] tables created/updated")
+        try:
+            inspector = inspect(db.engine)
+            table_names = inspector.get_table_names()
+            if table_names:
+                subprocess.run(["flask db upgrade"], shell=True, check=True)
+            else:
+                db.create_all()
+                subprocess.run(["flask db stamp head"], shell=True, check=True)
 
 
-        is_docker = os.getenv('DOCKER_BUILD', 'false').lower() == 'true'
-        if not is_docker:
-            start_redis()
+            is_docker = os.getenv('DOCKER_BUILD', 'false').lower() == 'true'
+            if not is_docker:
+                start_redis()
+        except Exception as e:
+            print(f"[dbcreate] an error ({e}) occured with db.create_all()")
+            print("[dbcreate] exiting...")
+            raise e
     except Exception as e:
-        print(f"[dbcreate] an error ({e}) occured with db.create_all()")
+        print(f"[dbcreate] ✗ error: {e}")
         print("[dbcreate] exiting...")
         raise e
     print("[dbcreate] successfully created new db")
