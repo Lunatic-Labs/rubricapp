@@ -267,24 +267,21 @@ h4, h5 {
   --tab-text-selected: #2E8BEF;
 }
 
+/* Collapsible table color variables */
+.collapsible-table-colors {
+  --table-head-bg: #A4C4F4;
+  --table-head-text: #000000;
+  --table-body-bg: #ffffff;
+  --table-body-text: #000000;
+  --table-border: #e0e0e0;
+  --table-arrow-color: #0000008A;
+}
 
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
 /* ============================================ */
 /* DARK MODE STYLES */
 /* ============================================ */
-
-/* ============================================ */
-/* DARK MODE STYLES - FIXED */
-/* ============================================ */
-
-/* Fix CSS custom properties - apply to body.mode, not :root */
-body.mode {
-  --light_grey_ADA: #2a2a2a;
-  --light_grey_hover: #3a3a3a;
-  --export_disabled_text: #888888;
-  color: #e0e0e0;
-}
 
 body.mode .app-body { 
   background-color: #1a1a1a;
@@ -320,8 +317,6 @@ body.mode .card-style {
   border-radius: 10px;
   border-top: 3px solid #2E8BEF;
   background: #2a2a2a;
-  color: #e0e0e0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
 
   @media screen and (max-width: 600px) {
     width: 100%;
@@ -339,16 +334,6 @@ body.mode .assessment-card {
   margin-bottom: 10px;
   font-size: 1.3rem;
   color: #e0e0e0;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.4);
-}
-
-/* Progress bars */
-body.mode .MuiLinearProgress-root {
-  background-color: #3a3a3a;
-}
-
-body.mode .MuiLinearProgress-bar {
-  background-color: #2E8BEF;
 }
 
 body.mode .checkbox-alignment {
@@ -362,6 +347,12 @@ body.mode .errorSelect {
 
 body.mode .table-row {
   color: #e0e0e0;
+}
+
+body.mode :root {
+  --light_grey_ADA: #2a2a2a;
+  --light_grey_hover: #3a3a3a;
+  --export_disabled_text: #888888;
 }
 
 body.mode .light_grey_ADA {
@@ -390,117 +381,60 @@ body.mode .navbar-arrow {
   filter: invert(1);
 }
 
+body.mode .checkbox-colors {
+  --checkbox-bg-checked: #32485d;
+  --checkbox-bg-unchecked: #3a3a3a;
+  --checkbox-color-checked: #58a1f0;
+}
+
+body.mode .textarea-colors {
+  --textarea-bg: #202020;
+  --textarea-text: #e0e0e0;
+  --textarea-border: #565656;
+  --textarea-placeholder: #888888;
+}
+
+body.mode .tab-colors {
+  --tab-selected-bg: #3a3a3a;
+  --tab-text: #e0e0e0;
+  --tab-border: #707070;
+}
+
+body.mode .back-button-colors {
+  --back-button-bg: #3a3a3a;
+  --back-button-bg-hover: #4a4a4a;
+  --back-button-text: #e0e0e0;
+}
+
+body.mode .assessment-instructions-colors {
+  --instructions-bg: #2a2a2a;
+  --instructions-text: #e0e0e0;
+  --instructions-border: #404040;
+  --instructions-textarea-bg: #1a1a1a;
+  --instructions-textarea-text: #e0e0e0;
+}
+
+body.mode .tab-colors {
+  --tab-text: #a0a0a0;
+  --tab-text-selected: #3a93f3;
+}
+
+body.mode .collapsible-table-colors {
+  --table-head-bg: #2d4a6b;
+  --table-head-text: #e0e0e0;
+  --table-body-bg: #2a2a2a;
+  --table-body-text: #e0e0e0;
+  --table-border: #404040;
+  --table-arrow-color: #FFFFFF8A;
+}
+
+
+/* Dark mode text colors for general content */
+body.mode {
+  color: #e0e0e0;
+}
+
 body.mode .MuiSlider-markLabel {
   color: #e0e0e0;
 }
 
-/* MUI Typography components */
-body.mode .MuiTypography-root {
-  color: #e0e0e0;
-}
-
-/* MUI TextField and Input components */
-body.mode .MuiInputBase-root {
-  color: #e0e0e0;
-  background-color: #2a2a2a;
-}
-
-body.mode .MuiInputLabel-root {
-  color: #b0b0b0;
-}
-
-body.mode .MuiOutlinedInput-notchedOutline {
-  border-color: #404040;
-}
-
-body.mode .MuiInputBase-root:hover .MuiOutlinedInput-notchedOutline {
-  border-color: #606060;
-}
-
-/* MUI Tables */
-body.mode .MuiTableCell-root {
-  color: #e0e0e0;
-  border-bottom: 1px solid #404040;
-}
-
-body.mode .MuiTableHead-root .MuiTableCell-root {
-  background-color: #2a2a2a;
-  font-weight: 600;
-}
-
-body.mode .MuiTableBody-root .MuiTableRow-root:hover {
-  background-color: #2a2a2a;
-}
-
-/* MUI Paper components */
-body.mode .MuiPaper-root {
-  background-color: #2a2a2a;
-  color: #e0e0e0;
-  border: 1px solid #404040;
-}
-
-/* Chart containers and SVG elements */
-body.mode svg text {
-  fill: #e0e0e0 !important;
-}
-
-body.mode .recharts-text {
-  fill: #e0e0e0 !important;
-}
-
-body.mode .recharts-cartesian-axis-tick-value {
-  fill: #e0e0e0 !important;
-}
-
-body.mode .recharts-label {
-  fill: #e0e0e0 !important;
-}
-
-/* MUI Select dropdowns */
-body.mode .MuiSelect-select {
-  color: #e0e0e0;
-  background-color: #2a2a2a;
-}
-
-body.mode .MuiOutlinedInput-root {
-  background-color: #2a2a2a;
-}
-
-body.mode .MuiMenuItem-root {
-  color: #e0e0e0;
-  background-color: #2a2a2a;
-}
-
-body.mode .MuiMenuItem-root:hover {
-  background-color: #3a3a3a;
-}
-
-body.mode .MuiMenu-paper {
-  background-color: #2a2a2a;
-}
-
-body.mode .MuiList-root {
-  background-color: #2a2a2a;
-}
-
-/* MUI Dividers */
-body.mode .MuiDivider-root {
-  background-color: #404040;
-}
-
-/* Dark mode styles for reporting dashboard */
-body.mode .reporting-error-container,
-body.mode [data-theme="dark"] .reporting-error-container {
-    background-color: #1a1a1a;
-    color: #ffffff;
-}
-
-body.mode .reporting-loading-container,
-body.mode [data-theme="dark"] .reporting-loading-container {
-    background-color: #1a1a1a;
-}
-
-body.mode .reporting-content-container,
-body.mode [data-theme="dark"] .reporting-content-container {
-    background-color: #1a1a1a;
-}
