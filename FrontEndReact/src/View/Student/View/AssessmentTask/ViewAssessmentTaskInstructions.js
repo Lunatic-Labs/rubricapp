@@ -8,7 +8,6 @@ import ErrorMessage from "../../../Error/ErrorMessage.js";
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             categories: this.props.rubrics["category_json"],
             instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
@@ -18,12 +17,19 @@ class ViewAssessmentTaskInstructions extends Component {
     }
 
     handleContinueClick = async () => {
+        console.log('=== handleContinueClick START ===');
         const navbar = this.props.navbar;
         const state = navbar.state;
         const cookies = new Cookies();
 
+        console.log('Navbar state:', state);
+        console.log('chosenAssessmentTask:', state.chosenAssessmentTask);
+        console.log('chosenCompleteAssessmentTask:', state.chosenCompleteAssessmentTask);
+
         try {
             const userId = cookies.get('user')?.user_id;
+            console.log('User ID from cookies:', userId);
+            
             if (!userId) {
                 console.error('User ID not found in cookies');
                 this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
@@ -33,36 +39,21 @@ class ViewAssessmentTaskInstructions extends Component {
             const assessmentTaskId = state.chosenAssessmentTask?.assessment_task_id;
             const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
             
+            console.log('assessmentTaskId:', assessmentTaskId);
+            console.log('completedAssessmentId:', completedAssessmentId);
+            
             // Check if coming from completed assessments page
             if (state.chosenCompleteAssessmentTask) {
-                if (completedAssessmentId) {
-                    console.error('Completed Assessment Task ID not found');
-                    this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
-                    return;
-                }
-                
-                await genericResourcePOST(
-                    '/feedback',
-                    this,
-                    JSON.stringify({
-                        user_id: userId,
-                        completed_assessment_id: completedAssessmentId
-                    })
-                );
+                console.log('Has chosenCompleteAssessmentTask - recording feedback');
             } else {
-                // Coming from assessments page
-                if (!assessmentTaskId) {
-                    this.setState({
-                        errorMessage: "Assessment Task ID not found"
-                    });
-                    return;
-                }
+                console.log('No chosenCompleteAssessmentTask - fresh start');
             }
 
         } catch (error) {
-            console.error('Error recording feedback view:', error);
+            console.error('Error in handleContinueClick:', error);
         }
 
+        console.log('Navigating to ViewStudentCompleteAssessmentTask');
         this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
     }
 

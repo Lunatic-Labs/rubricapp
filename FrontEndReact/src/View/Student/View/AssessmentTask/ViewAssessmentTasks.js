@@ -13,11 +13,8 @@ class ViewAssessmentTasks extends Component {
             var completedAssessments = this.props.completedAssessments;
 
             if(completedAssessments) {
-                // Get all completed assessments for this specific task
                 const catsForThisTask = completedAssessments.filter(cat => cat.assessment_task_id === atId);
         
-                // Find the user's own completed assessment record for this task
-                // (There should be one created when they check in, even if not done yet)
                 const userCatForThisTask = catsForThisTask.find(cat => 
                     // For individual assessments, team_id will be null
                     // For team assessments, find one that matches user's general teams
@@ -205,7 +202,7 @@ class ViewAssessmentTasks extends Component {
                                             }
                                             else {
                                                 // For ad-hoc teams:
-        
+
                                                 if (isSwitchingTeams && hasPassword) {
                                                     // Switching teams WITH password: ask for password
                                                     navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
@@ -239,7 +236,27 @@ class ViewAssessmentTasks extends Component {
                                         this.areAllATsComplete(atId) === true
                                     }
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, chosenCAT);
+                                        let relevantCAT = null;
+                                        
+                                        if (role["role_id"] === 5 && at.unit_of_assessment) {
+                                            // For students on team assessments, find THEIR team's CAT
+                                            
+                                            relevantCAT = this.props.completedAssessments.find(cat => 
+                                                cat.assessment_task_id === atId && 
+                                                this.props.userTeamIds.includes(cat.team_id)
+                                            );
+                                        } else if (role["role_id"] === 5) {
+                                            // For individual assessments, find their personal CAT
+                                            relevantCAT = this.props.completedAssessments.find(cat => 
+                                                cat.assessment_task_id === atId && 
+                                                cat.team_id === null
+                                            );
+                                        } else {
+                                            // For TAs, use chosenCAT as before
+                                            relevantCAT = chosenCAT;
+                                        }
+                                        
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, relevantCAT);
                                     }}
 
                                     aria-label="startAssessmentTasksButton"

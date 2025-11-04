@@ -25,7 +25,7 @@ function createApiRequestUrl(fetchURL, cookies) {
 async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
     const {
         dest = resource,
-        rawResponse = false, // Return the raw response from the backend instead of just the resource
+        rawResponse = false,
     } = options;
 
     const cookies = new Cookies();
@@ -53,6 +53,9 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
                 }
             );
         } catch (error) {
+            console.error(`=== UTILITY: ${type} ERROR ===`);
+            console.error('Error:', error);
+            
             component.setState({
                 isLoaded: true,
                 errorMessage: error,

@@ -95,11 +95,12 @@ class StudentDashboard extends Component {
         const userRole = state.chosenCourse.role_id;
 
         genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
+
         genericResourceGET(`/assessment_task?course_id=${chosenCourse}`, "assessment_tasks", this, { dest: "assessmentTasks" });
 
-        // For a student, the role_id is not added calling a different route.
         const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
-        genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" });
+
+        genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" })
 
         genericResourceGET(`/average?course_id=${chosenCourse}`, "average", this, { dest: "averageData" });
 
@@ -117,10 +118,10 @@ class StudentDashboard extends Component {
             rubrics,
             rubricNames,
         } = this.state;
-        
+
         const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
         if (!roles) {
-        return;
+            return;
         }
 
         // For students (role_id === 5), wait for userTeamIds to be populated
@@ -137,21 +138,36 @@ class StudentDashboard extends Component {
             const CATmap = new Map();
             const AVGmap = new Map();
             const roleId = roles["role_id"];
+            
+            const getCATKey = (assessment_task_id, team_id, isTeamAssessment) => {
+                // For team assessments, include team_id in the key
+                // For individual assessments, just use assessment_task_id
+                if (isTeamAssessment && team_id !== null) {
+                    return `${assessment_task_id}-${team_id}`;
+                }
+                return `${assessment_task_id}`;
+            };
+
             completedAssessments.forEach(cat => {
                 const team_id = cat.team_id;
-                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){
-                    const key = cat.assessment_task_id;
+                
+                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){                    
+                    const at = assessmentTasks.find(task => task.assessment_task_id === cat.assessment_task_id);
+                    const isTeamAssessment = at?.unit_of_assessment === true;                    
+
+                    const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
                     const existing = CATmap.get(key);
         
                     const shouldReplace = !existing ||
                         (cat.done && !existing.done) ||
                         (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
-            
+                                
                     if (shouldReplace) {
                         CATmap.set(key, cat);
                     }
                 }
             });
+            
             averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
             const currentDate = new Date();
@@ -159,7 +175,21 @@ class StudentDashboard extends Component {
             const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
 
             let filteredAssessmentTasks = assessmentTasks.filter(task => {
-                const cat = CATmap.get(task.assessment_task_id);
+                
+                const isTeamAssessment = task.unit_of_assessment === true;
+                let relevantTeamId = null;
+                                
+                if (isTeamAssessment && userTeamIds.length > 0) {
+                    // For team assessments, find which team this user is on for this task
+                    const userCAT = completedAssessments.find(cat => 
+                        cat.assessment_task_id === task.assessment_task_id && 
+                        userTeamIds.includes(cat.team_id)
+                    );
+                    relevantTeamId = userCAT?.team_id || null;
+                }
+                
+                const catKey = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
+                const cat = CATmap.get(catKey);
                 const avg = AVGmap.get(task.assessment_task_id);
 
                 // Qualities for if an AT is viewable.
@@ -176,9 +206,12 @@ class StudentDashboard extends Component {
                     filteredCompletedAssessments.push(cat);
                     filteredAvgData.push(avg);
                 }
-
                 return viewable;
             });
+
+            console.log('=== FILTERED RESULTS ===');
+            console.log('filteredAssessmentTasks:', filteredAssessmentTasks);
+            console.log('filteredCompletedAssessments:', filteredCompletedAssessments);
 
             // Helpers for chart data
             const computeAvg = (avgObj) => {
@@ -205,15 +238,15 @@ class StudentDashboard extends Component {
 
             // helper: pick the *created* timestamp for the AT (fallbacks just in case)
             const getCreatedDate = (at, cat) => {
-              const raw =
+            const raw =
                 at?.created_at ||
                 at?.created_time ||
                 at?.created ||
                 at?.initial_time || 
                 cat?.initial_time ||
                 at?.due_date;        
-              const d = raw ? new Date(raw) : new Date(0);
-              return isNaN(d) ? new Date(0) : d;
+            const d = raw ? new Date(raw) : new Date(0);
+            return isNaN(d) ? new Date(0) : d;
             };
 
             let chartDataCore = filteredCompletedAssessments
@@ -250,18 +283,18 @@ class StudentDashboard extends Component {
 
             const chartData = [];
             for (let i = 0; i < chartDataCore.length; i++) {
-              const cur = chartDataCore[i];
-              const prev = chartDataCore[i - 1];
+            const cur = chartDataCore[i];
+            const prev = chartDataCore[i - 1];
 
-              if (i > 0 && prev?.rubric_id !== cur?.rubric_id) {
+            if (i > 0 && prev?.rubric_id !== cur?.rubric_id) {
                 chartData.push({
-                  key: `spacer-${cur.rubric_id}-${i}`,
-                  name: '',
-                  avg: null,
-                  isSpacer: true,
+                key: `spacer-${cur.rubric_id}-${i}`,
+                name: '',
+                avg: null,
+                isSpacer: true,
                 });
-              }
-              chartData.push(cur);
+            }
+            chartData.push(cur);
             }
 
             this.setState({
