@@ -18,26 +18,27 @@ depends_on = None
 
 def upgrade():
     """Add TestStudent role to roles table"""
-    # Use raw SQL to insert the TestStudent role
-    # Using INSERT IGNORE or ON DUPLICATE KEY UPDATE to handle if it already exists
-    op.execute("""
-        INSERT INTO roles (role_id, role_name) 
-        VALUES (6, 'TestStudent')
-        ON DUPLICATE KEY UPDATE role_name = 'TestStudent'
-    """)
+    # Get connection and check if table exists
+    conn = op.get_bind()
+    inspector = inspect(conn)
     
-    # Alternative for PostgreSQL (if you're using PostgreSQL instead of MySQL):
-    # op.execute("""
-    #     INSERT INTO roles (role_id, role_name) 
-    #     VALUES (6, 'TestStudent')
-    #     ON CONFLICT (role_id) DO UPDATE SET role_name = 'TestStudent'
-    # """)
+    # Only insert if roles table exists
+    if 'roles' in inspector.get_table_names():
+        op.execute("""
+            INSERT INTO roles (role_id, role_name) 
+            VALUES (6, 'TestStudent')
+            ON DUPLICATE KEY UPDATE role_name = 'TestStudent'
+        """)
+        print("TestStudent role added successfully")
+    else:
+        print("Roles table doesn't exist yet, skipping TestStudent insertion")
 
 
 def downgrade():
     """Remove TestStudent role from roles table"""
-    # Delete the TestStudent role
-    op.execute("DELETE FROM roles WHERE role_id = 6")
+    conn = op.get_bind()
+    inspector = inspect(conn)
     
-    # Also remove any user_course entries with this role to maintain referential integrity
-    op.execute("DELETE FROM user_courses WHERE role_id = 6")
+    if 'roles' in inspector.get_table_names():
+        op.execute("DELETE FROM roles WHERE role_id = 6")
+        op.execute("DELETE FROM user_courses WHERE role_id = 6")
