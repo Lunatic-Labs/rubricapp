@@ -73,9 +73,6 @@ class CompleteAssessmentTask extends Component {
     }
 
     componentDidMount() {
-        console.log('=== CompleteAssessmentTask MOUNT ===');
-        console.log('Is admin?', this.props.navbar.state.chosenCourse?.use_fixed_teams);
-        
         const navbar = this.props.navbar;
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
@@ -83,12 +80,7 @@ class CompleteAssessmentTask extends Component {
         const cookies = new Cookies();
         const adHocMode = this.state.usingAdHoc;
 
-        console.log('chosenAssessmentTask:', chosenAssessmentTask);
-        console.log('chosenCompleteAssessmentTask:', state.chosenCompleteAssessmentTask);
-        console.log('Assessment Task ID:', chosenAssessmentTask?.assessment_task_id);
-
         this.currentUserId = cookies.get("user")["user_id"];
-        console.log('Current User ID:', this.currentUserId);
 
         genericResourceGET(
             `/rubric?rubric_id=${chosenAssessmentTask["rubric_id"]}`,
@@ -163,15 +155,10 @@ class CompleteAssessmentTask extends Component {
             "users", this
         );
 
-        console.log('FETCHING completed_assessments for AT:', chosenAssessmentTask["assessment_task_id"]);
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
             "completed_assessments", this, { dest: "completedAssessments" }
-        ).then(() => {
-            console.log('=== COMPLETED ASSESSMENTS LOADED IN CompleteAssessmentTask ===');
-            console.log('Number of CATs:', this.state.completedAssessments?.length);
-            console.log('CATs:', this.state.completedAssessments);
-        });
+        );
 
         genericResourceGET(
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
