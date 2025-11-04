@@ -310,7 +310,7 @@ jobs:
 
       - name: Verify Node.js instalation
         run: node -v
-        
+
       - name: Wait for backend and verify demo data
         run: |
           echo "Waiting for backend to fully initialize..."
@@ -321,11 +321,13 @@ jobs:
           
           echo "Verifying demo data exists..."
           docker compose exec -T backend python -c "
-          from core import create_app
+          import sys
+          sys.path.insert(0, '/app')
+          
+          from run import app
           from models.course import Course
           from models.user import User
           
-          app = create_app()
           with app.app_context():
               courses = Course.query.count()
               users = User.query.count()
