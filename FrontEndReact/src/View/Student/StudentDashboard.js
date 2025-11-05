@@ -23,7 +23,8 @@ import Loading from '../Loading/Loading.js';
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
  *  @property {Array}  filteredCATs - All valid CATs for the course and user.
- *  @property {Array}  userTeamIds -Figured out user teams.
+ *  @property {Array}  fullyDoneCATS - All CATs that should display in the completed assessments section only.
+ *  @property {Array}  userTeamIds - Figured out user teams.
  *  @property {Array}  averageData  - Averages for all completed assessment task rubrics.
  * 
  */
@@ -68,6 +69,7 @@ class StudentDashboard extends Component {
             filteredATs: null,
             filteredCATs: null,
             userTeamIds: null,
+            fullyDoneCATS: null,
 
             // Added for rubric grouping
             rubrics: null,
@@ -118,30 +120,23 @@ class StudentDashboard extends Component {
         const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
 
         if (canFilter && (userTeamIds || roles.role_id === 4)) {
-            console.log("team ids:",userTeamIds); // MARKED FOR DELETION
             // Build rubric name map once
             const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
 
             // Remove ATs where the ID matches one of the IDs in the CATs (ATs that are completed/locked/past due are shifted to CATs).
             let filteredCompletedAssessments = [];
             let filteredAvgData = [];
+            let finishedCats = [];
 
             const CATmap = new Map();
             const AVGmap = new Map();
             const roleId = roles["role_id"];
-            console.log("roles in student dash", roles);// MARKED FOR DELETION
-            console.log("cats before filtering", completedAssessments);// MARKED FOR DELETION
             completedAssessments.forEach(cat => {
                 const team_id = cat.team_id;
-                //console.log("cat and team_id", cat, team_id === null);// MARKED FOR DELETION
-                //console.warn("in the list", userTeamIds.includes(team_id))// MARKED FOR DELETION
                 if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){
                     CATmap.set(cat.assessment_task_id, cat);
                 }
              });
-            console.log("cats:", CATmap);// MARKED FOR DELETION
-            console.log("the inital student dashboard load", completedAssessments);// MARKED FOR DELETION
-            console.log("student dashborad this", this);// MARKED FOR DELETION
 
             averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
@@ -162,13 +157,9 @@ class StudentDashboard extends Component {
 
                 const viewable = !done && correctUser && !locked && published && !pastDue;
                 const CATviewable = correctUser === false && done === false;
-                console.log("cat before pushing", cat);// MARKED FOR DELETION
-                console.log("!viewable", !viewable);// MARKED FOR DELETION
-                console.log("!CATviewable", !CATviewable);// MARKED FOR DELETION
-                console.log("cat !== undefined", cat !== undefined);// MARKED FOR DELETION
-                if (viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
-                    console.log("cat that made it", cat);// MARKED FOR DELETION
-                    filteredCompletedAssessments.push(cat);
+
+                if (!CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                    viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
                     filteredAvgData.push(avg);
                 }
 
@@ -262,11 +253,11 @@ class StudentDashboard extends Component {
             this.setState({
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAssessments,
+                fullyDoneCATS: finishedCats,
 
                 rubricNames: rubricNameMap,
                 chartData,
             });
-            console.log("final filteredcats", filteredCompletedAssessments);// MARKED FOR DELETION
         }
     }
 
@@ -276,6 +267,7 @@ class StudentDashboard extends Component {
             assessmentTasks,
             filteredATs,
             filteredCATs,
+            fullyDoneCATS,
         } = this.state; 
 
         // Wait for information to be filtered.
@@ -301,9 +293,6 @@ class StudentDashboard extends Component {
         };
 
         const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
-
-        //Should be empty but I have a faulty cat// MARKED FOR DELETION
-        //console.warn("completed ats", completedAssessments);// MARKED FOR DELETION
 
         return (
             <>
@@ -351,7 +340,7 @@ class StudentDashboard extends Component {
                                 navbar={navbar}
                                 role={roles}
                                 assessmentTasks={assessmentTasks}
-                                filteredCompleteAssessments={filteredCATs}
+                                filteredCompleteAssessments={fullyDoneCATS}
                             />
                         }
                     </Box>
