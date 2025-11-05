@@ -17,10 +17,25 @@ class AdminAddCustomRubric extends Component {
         };
     }
 
+    fetchData = () => {
+        genericResourceGET(`/rubric`, "rubrics", this);
+        genericResourceGET(`/category`, "categories", this);
+        };
+
+        setErrorMessage = (errorMessage) => {
+        this.setState({ errorMessage });
+        // Clear the banner after 3s, same feel as AdminViewUsers
+        setTimeout(() => {
+            this.setState({ errorMessage: null });
+        }, 1000);
+    };
+
+
     componentDidMount() {
         genericResourceGET(`/rubric`, "rubrics", this);
 
         genericResourceGET(`/category`, "categories", this);
+        this.fetchData();
     }
 
     render() {
@@ -47,6 +62,8 @@ class AdminAddCustomRubric extends Component {
                     categories={categories}
                     chosenCategoryJson={parseCategoriesToContained(categories)}
                     categoryMap={parseCategoryIDToCategories(categories)}
+                    onError={this.setErrorMessage}
+                    refreshData={this.fetchData}
                 />
             );
         }
