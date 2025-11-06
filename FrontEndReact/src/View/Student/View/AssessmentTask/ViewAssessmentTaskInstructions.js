@@ -4,7 +4,6 @@ import Button from '@mui/material/Button';
 import {genericResourcePOST} from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import ErrorMessage from "../../../Error/ErrorMessage.js";
-import ErrorMessage from "../../../Error/ErrorMessage.js";
 
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {

@@ -68,7 +68,7 @@ class StudentDashboard extends Component {
 
             filteredATs: null,
             filteredCATs: null,
-            userTeamIds: null,
+            userTeamIds: [],
             fullyDoneCATS: null,
 
             // Added for rubric grouping
@@ -315,6 +315,7 @@ class StudentDashboard extends Component {
         const {
             roles,
             assessmentTasks,
+            completedAssessments,
             filteredATs,
             filteredCATs,
             fullyDoneCATS,
