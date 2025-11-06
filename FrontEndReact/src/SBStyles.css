@@ -277,6 +277,20 @@ h4, h5 {
   --table-arrow-color: #0000008A;
 }
 
+:root {
+  --text-color: #000000;
+  --text-color-secondary: #646464;
+  --error-color: #d32f2f;
+  --border-color: rgba(0, 0, 0, 0.23);
+  --border-hover-color: rgba(0, 0, 0, 0.87);
+  --icon-color: rgba(0, 0, 0, 0.54);
+}
+
+/* Generic text color */
+.generic-text-color {
+  color: black;
+}
+
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
 /* ============================================ */
@@ -426,6 +440,19 @@ body.mode .collapsible-table-colors {
   --table-body-text: #e0e0e0;
   --table-border: #404040;
   --table-arrow-color: #FFFFFF8A;
+}
+
+body.mode {
+  --text-color: #e0e0e0;
+  --text-color-secondary: #a0a0a0;
+  --error-color: #ff6b6b;
+  --border-color: rgba(255, 255, 255, 0.23);
+  --border-hover-color: rgba(255, 255, 255, 0.87);
+  --icon-color: rgba(255, 255, 255, 0.7);
+}
+
+body.mode .generic-text-color {
+  color: #e0e0e0;
 }
 
 
