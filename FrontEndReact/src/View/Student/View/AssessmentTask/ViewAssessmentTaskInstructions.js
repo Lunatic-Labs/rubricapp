@@ -17,18 +17,12 @@ class ViewAssessmentTaskInstructions extends Component {
     }
 
     handleContinueClick = async () => {
-        console.log('=== handleContinueClick START ===');
         const navbar = this.props.navbar;
         const state = navbar.state;
         const cookies = new Cookies();
 
-        console.log('Navbar state:', state);
-        console.log('chosenAssessmentTask:', state.chosenAssessmentTask);
-        console.log('chosenCompleteAssessmentTask:', state.chosenCompleteAssessmentTask);
-
         try {
             const userId = cookies.get('user')?.user_id;
-            console.log('User ID from cookies:', userId);
             
             if (!userId) {
                 console.error('User ID not found in cookies');
@@ -66,7 +60,7 @@ class ViewAssessmentTaskInstructions extends Component {
             }
 
         } catch (error) {
-            console.error('Error in handleContinueClick:', error);
+            console.error('Error in recording feedback view:', error);
         }
 
         console.log('Navigating to ViewStudentCompleteAssessmentTask');

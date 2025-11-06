@@ -224,7 +224,7 @@ class Form extends Component {
             if (unit.completedAssessmentTask) {
                 const catId = unit.completedAssessmentTask["completed_assessment_id"];
                 
-                promise = genericResourcePUT(
+                promise = genericResourcePUT( //if there is a cat
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
@@ -232,7 +232,7 @@ class Form extends Component {
                 );
             } else {
                 
-                promise = genericResourcePOST(
+                promise = genericResourcePOST( //errr since not bound to real team on adhocs
                     `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
                     this,
                     JSON.stringify(newCAT),
@@ -257,7 +257,7 @@ class Form extends Component {
             // Once the CAT entry has been updated, insert the new CAT entry into the unit object
             promise.then(result => {
                 
-                const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0];
+                const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
 
                 if (completeAssessmentEntry) {
                     
@@ -270,11 +270,8 @@ class Form extends Component {
                             return { units: updatedUnits };
                         }
                     );
-                } else {
-                    console.error('No CAT returned in response!');
                 }
             }).catch(error => {
-                console.error('=== SAVE UNIT ERROR ===');
                 console.error('Error:', error);
             });
             

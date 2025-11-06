@@ -100,8 +100,9 @@ class StudentDashboard extends Component {
 
         genericResourceGET(`/assessment_task?course_id=${chosenCourse}`, "assessment_tasks", this, { dest: "assessmentTasks" });
 
+        // For a student, the role_id is not added calling a different route.
         const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
-
+        
         genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" })
 
         genericResourceGET(`/average?course_id=${chosenCourse}`, "average", this, { dest: "averageData" });
@@ -211,10 +212,6 @@ class StudentDashboard extends Component {
                 }
                 return viewable;
             });
-
-            console.log('=== FILTERED RESULTS ===');
-            console.log('filteredAssessmentTasks:', filteredAssessmentTasks);
-            console.log('filteredCompletedAssessments:', filteredCompletedAssessments);
 
             // Helpers for chart data
             const computeAvg = (avgObj) => {
