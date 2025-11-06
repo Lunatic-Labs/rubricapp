@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import {genericResourcePOST} from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import ErrorMessage from "../../../Error/ErrorMessage.js";
+import ErrorMessage from "../../../Error/ErrorMessage.js";
 
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {
@@ -39,14 +40,30 @@ class ViewAssessmentTaskInstructions extends Component {
             const assessmentTaskId = state.chosenAssessmentTask?.assessment_task_id;
             const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
             
-            console.log('assessmentTaskId:', assessmentTaskId);
-            console.log('completedAssessmentId:', completedAssessmentId);
-            
             // Check if coming from completed assessments page
             if (state.chosenCompleteAssessmentTask) {
-                console.log('Has chosenCompleteAssessmentTask - recording feedback');
+                if (completedAssessmentId) {
+                    console.error('Completed Assessment Task ID not found');
+                    this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+                    return;
+                }
+                
+                await genericResourcePOST(
+                    '/feedback',
+                    this,
+                    JSON.stringify({
+                        user_id: userId,
+                        completed_assessment_id: completedAssessmentId
+                    })
+                );
             } else {
-                console.log('No chosenCompleteAssessmentTask - fresh start');
+                // Coming from assessments page
+                if (!assessmentTaskId) {
+                    this.setState({
+                        errorMessage: "Assessment Task ID not found"
+                    });
+                    return;
+                }
             }
 
         } catch (error) {
