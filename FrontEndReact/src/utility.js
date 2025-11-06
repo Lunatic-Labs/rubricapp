@@ -62,11 +62,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             throw error;
         }
 
-        console.log('📡 Response status:', response.status);
-        console.log('📡 Response ok:', response.ok);
-
         const result = await response.json();
-        console.log('📋 API Response result:', result); // ADD THIS LINE
         if (result['success']) {
             let state = {};
 
