@@ -275,7 +275,7 @@ class ValidateReset extends Component {
                                                 fontFamily: "Roboto",
                                                 fontSize: {xs:"12px", md:"18px"},
                                                 fontStyle: "normal",
-                                                color: "#B8B5BB",
+                                                color: 'var(--text-color-secondary)',
                                                 fontWeight: "500",
                                                 lineHeight: "160%",
                                                 letterSpacing: "0.15px",
