@@ -120,7 +120,7 @@ class ViewCourses extends Component {
                     setAddCourseTabWithCourse(courses, courseId, "AddCourse")
                   }
                 }}
-                aria-label={`Edit course`}
+                aria-label="editCourseIconButton"
               >
                 <EditIcon sx={{color:"black"}} aria-hidden="true"/>
               </IconButton>
