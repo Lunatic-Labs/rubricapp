@@ -7,6 +7,11 @@ from models.email_validation import *
 from models.logger import logger
 from datetime import datetime
 
+def output(text, clear=False): # Marked for deletion
+    with open("ap.txt" ,'w' if clear else 'a') as out:
+        print(text, file=out)
+
+
 def spawn_thread(f, *args, **kwargs):
     threading.Thread(
         target=f,
@@ -36,13 +41,17 @@ def validate_pending_emails():
         try:
             print("Fetching emails to check")
             emails_to_check = get_emails_need_checking()
+            output(emails_to_check, True)#marked for deletion
+
 
             if emails_to_check:
                 oldest_time, all_pending_emails, data = (
                     emails_to_check[0].user.last_update, [], {},
                 )
+                output("in the first if")#marked for deletion
 
                 for email_obj in emails_to_check:
+                    output("in the for")# marked for deletion
                     if email_obj.user.last_update < oldest_time:
                         oldest_time = email_obj.user.last_update
                     owner_email = get_user(email_obj.user.owner_id).email
@@ -53,13 +62,16 @@ def validate_pending_emails():
                 # Regardless of if we find any bounces or not, we need
                 # to update these.
                 mark_emails_as_checked(all_pending_emails)
+                output("marked all emails as checked")# Marked for deletion
 
                 bounced = check_bounced_emails(int(oldest_time.timestamp()))
+                output("checked for bounces")# Marked for deletion
 
                 if bounced is None:
                     return
 
                 for bounce in bounced:
+                    output("got into the bounced")# Marked for deletion
                     # TODO: Find solution if the student's email in the message is not there.
                     #       Will this ever happen?
                     # if bounce["to"]:

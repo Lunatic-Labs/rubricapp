@@ -9,6 +9,10 @@ from controller.Routes.RouteExceptions import EmailFailureException
 from constants.Email import DEFAULT_SENDER_EMAIL
 from enums.Email_type import EmailContentType
 
+def output(text, clear=False):# Marked for deletion func
+    with open("ap.txt" ,'w' if clear else 'a') as out:
+        print(text, file=out)
+
 def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     """
     Returns a list of all bounced emails.
@@ -51,6 +55,8 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
             request_headers = headers,
             query_params = params,
         )
+
+        output(f"response:{response}")# Marked for deletion
 
         if response.status_code == 200 and response.body:
             email_json = response.body

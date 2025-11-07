@@ -5,6 +5,6 @@ monkey.patch_all()
 import core
 
 if __name__ == '__main__':
-    core.config.rubricapp_running_locally = True
+    core.config.rubricapp_running_locally = False
 
     core.app.run(host="0.0.0.0", port=5000)
