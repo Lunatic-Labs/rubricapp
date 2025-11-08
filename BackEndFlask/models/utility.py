@@ -1,3 +1,4 @@
+import json
 import string
 import secrets
 from time import time
@@ -12,6 +13,15 @@ from enums.Email_type import EmailContentType
 def output(text, clear=False):# Marked for deletion func
     with open("ap.txt" ,'w' if clear else 'a') as out:
         print(text, file=out)
+
+def print_object_details(obj:object) -> None: # Marked for deletion func
+    for attr in dir(obj):
+        if attr.startswith("__"):
+            continue
+        value = getattr(obj, attr)
+        if not callable(value):
+            output(f"{attr}: {value}")
+
 
 def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     """
@@ -56,10 +66,9 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
             query_params = params,
         )
 
-        output(f"response:{response}")# Marked for deletion
-
         if response.status_code == 200 and response.body:
-            email_json = response.body
+            decoded_body = response.body.decode('utf-8')  # Convert bytes to string
+            email_json = json.loads(decoded_body)
             for entry in email_json:
                 bounced_emails.append({
                     'id': entry['created'],
