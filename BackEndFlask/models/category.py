@@ -85,13 +85,14 @@ def create_category(category):
 
 @error_log
 def replace_category(category, category_id):
-    one_category = Category.query.filery_by(category_id=category_id).first()
+    one_category = Category.query.filter_by(category_id=category_id).first()
 
     if one_category is None:
         raise InvalidCategoryID(category_id)
 
-    one_category.rubric_id = category[0]
-    one_category.name = category[1]
+    one_category.category_name = category[0]
+    one_category.description = category[1]
+    one_category.rating_json = category[2]
 
     db.session.commit()
 

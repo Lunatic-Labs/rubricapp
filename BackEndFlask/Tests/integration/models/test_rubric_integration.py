@@ -19,6 +19,9 @@ from Tests.PopulationFunctions import (
 from models.loadExistingRubrics import load_existing_rubrics
 from models.assessment_task import create_assessment_task, delete_assessment_task
 
+# -----------------------------------------------
+# Helper function
+# -----------------------------------------------
 def sample_rubric(user_id):
     """Helper to create a sample rubric payload."""
     rubric_data = {
@@ -29,7 +32,9 @@ def sample_rubric(user_id):
     rubric = create_rubric(rubric_data)
     return rubric
         
-
+# -----------------------------------------------
+# Tests
+# -----------------------------------------------
 def test_get_rubrics_returns_list(flask_app_mock):
     with flask_app_mock.app_context():   
         cleanup_test_users(db.session)
