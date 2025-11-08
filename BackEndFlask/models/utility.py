@@ -1,6 +1,6 @@
 import string
 import secrets
-from time import time
+import time
 from typing import Any
 from models.logger import logger
 from core import sendgrid_client, config
@@ -8,6 +8,7 @@ from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
 from constants.Email import DEFAULT_SENDER_EMAIL
 from enums.Email_type import EmailContentType
+from functools import wraps
 
 def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     """
@@ -222,12 +223,17 @@ def error_log(f:Any) -> Any:
         Use as a decorator @error_log above functions you want to have
         error logging
     '''
-    def wrapper(*args, **kwargs):
+    @wraps(f)  # Preserves function metadata
+    def wrapper(*args, **kwargs):  
         try:
-            return f(*args, *kwargs)
-
+            return f(*args, **kwargs) 
         except BaseException as e:
-            logger.error(f"{e.__traceback__.tb_frame.f_code.co_filename} { e.__traceback__.tb_lineno} Error Type: {type(e).__name__} Message: {e}")
+            logger.error(
+                f"{e.__traceback__.tb_frame.f_code.co_filename} "
+                f"{e.__traceback__.tb_lineno} "
+                f"Error Type: {type(e).__name__} "
+                f"Message: {e}"
+            )
             raise e
-
+    
     return wrapper
