@@ -12,30 +12,8 @@ from Tests.PopulationFunctions import cleanup_test_users
 from models.schemas import ObservableCharacteristic
 from models.category import create_category
 from models.loadExistingRubrics import load_existing_observable_characteristics
+from integration.integration_helpers import sample_category, sample_observable_characteristic
 
-
-# ------------------------------------------------------------
-# Helper function
-# ------------------------------------------------------------
-def sample_observable_characteristic(category_id):
-    """Helper to create a sample observable characteristic."""
-    data = (category_id, "Demonstrates clear reasoning and evidence")
-    obs = create_observable_characteristic(data)
-    return obs
-
-def sample_category():
-    """Helper to create a sample category payload."""
-    category_data = {
-        "name": "Critical Thinking",
-        "description": "Evaluate analytical skills",
-        "rating_json": '{"Excellent":5,"Good":4,"Fair":3,"Poor":2,"Fail":1}'
-    }
-    category = create_category(category_data)
-    return category
-
-# -------------------------------------------------------------------------
-# Tests
-# -------------------------------------------------------------------------
 
 def test_create_and_get_observable_characteristic(flask_app_mock):
     """Verify an observable characteristic can be created and retrieved."""

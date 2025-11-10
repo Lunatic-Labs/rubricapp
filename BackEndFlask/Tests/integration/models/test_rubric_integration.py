@@ -15,26 +15,11 @@ from Tests.PopulationFunctions import (
     delete_one_admin_course,
     cleanup_test_users,
 )
-
+from integration.integration_helpers import sample_rubric, build_sample_task_payload
 from models.loadExistingRubrics import load_existing_rubrics
 from models.assessment_task import create_assessment_task, delete_assessment_task
-
-# -----------------------------------------------
-# Helper function
-# -----------------------------------------------
-def sample_rubric(user_id):
-    """Helper to create a sample rubric payload."""
-    rubric_data = {
-        "rubric_name": "Clarity",
-        "rubric_description": "Evaluate clarity and precision",
-        "owner": user_id,
-    }
-    rubric = create_rubric(rubric_data)
-    return rubric
         
-# -----------------------------------------------
-# Tests
-# -----------------------------------------------
+        
 def test_get_rubrics_returns_list(flask_app_mock):
     with flask_app_mock.app_context():   
         cleanup_test_users(db.session)
@@ -73,7 +58,7 @@ def test_get_rubric_valid_id_returns_rubric(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result["user_id"], "Clarity")
             result = get_rubric(rubric.rubric_id)
             assert result.rubric_name == "Clarity"
         
@@ -176,23 +161,7 @@ def test_delete_rubric_by_id_raises_if_used_in_assessment(flask_app_mock):
         try:
             result = create_one_admin_course(True)
             rubric = sample_rubric(result["user_id"])
-            payload = {
-                "assessment_task_name": "Integration Test Assessment",
-                "course_id": result["course_id"],
-                "rubric_id": rubric.rubric_id,
-                "role_id": 4,
-                "due_date": "2026-01-01T12:00:00", 
-                "time_zone": "EST",
-                "show_suggestions": True,
-                "show_ratings": True,
-                "unit_of_assessment": False,
-                "create_team_password": "pw123",
-                "comment": "Test comment",
-                "number_of_teams": 3,
-                "max_team_size": 4,
-                "locked": False,
-                "published": False,
-            }
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
             assessment_task = create_assessment_task(payload)
 
             # Attempt to delete rubric now should fail

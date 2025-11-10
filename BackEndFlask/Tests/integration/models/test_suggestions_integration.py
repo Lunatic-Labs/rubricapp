@@ -12,30 +12,9 @@ from models.schemas import SuggestionsForImprovement, Category
 from models.category import create_category
 from Tests.PopulationFunctions import cleanup_test_users
 from models.loadExistingRubrics import load_existing_suggestions
-
-# ------------------------------------------------------------
-# Helper Functions
-# ------------------------------------------------------------
-def sample_category():
-    """Helper to create a sample category payload."""
-    category_data = {
-        "name": "Critical Thinking",
-        "description": "Evaluate analytical skills",
-        "rating_json": '{"Excellent":5,"Good":4,"Fair":3,"Poor":2,"Fail":1}'
-    }
-    category = create_category(category_data)
-    return category
+from integration.integration_helpers import sample_category, sample_suggestion
 
 
-def sample_suggestion(category_id, suggestion_text):
-    """Helper to create a sample suggestion payload."""
-    suggestion_data = (category_id, suggestion_text)
-    suggestion = create_suggestion(suggestion_data)
-    return suggestion
-
-# -------------------------------------------------------------------------
-# Tests
-# -------------------------------------------------------------------------
 def test_create_suggestion(flask_app_mock):
     """Verify a suggestion can be created and stored."""
     with flask_app_mock.app_context():

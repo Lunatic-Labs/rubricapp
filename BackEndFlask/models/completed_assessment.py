@@ -2,7 +2,7 @@ from core import db
 from sqlalchemy import and_, func, or_
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
-from datetime import datetime
+from datetime import datetime, timezone
 from models.utility import error_log
 from Functions.time import *
 
@@ -86,11 +86,11 @@ def create_completed_assessment(completed_assessment_data):
     
     # Default to current time in UTC if no initial time provided
     if not completed_assessment_data.get("initial_time"):
-        completed_assessment_data["initial_time"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
+        completed_assessment_data["initial_time"] = datetime.now(timezone.utc).isoformat() + "Z"
     
     # Default to current time in UTC if no last update provided
     if not completed_assessment_data.get("last_update"):
-        completed_assessment_data["last_update"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
+        completed_assessment_data["last_update"] = datetime.now(timezone.utc).isoformat() + "Z"
     
     # Convert times to UTC before saving
     initial_time_utc = ensure_utc_datetime(completed_assessment_data["initial_time"])
@@ -1066,7 +1066,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
     assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=one_completed_assessment.assessment_task_id).first()
     
     if not completed_assessment_data.get("last_update"):
-        completed_assessment_data["last_update"] = datetime.utcnow().isoformat() + "Z"
+        completed_assessment_data["last_update"] = datetime.now(timezone.utc).isoformat() + "Z"
     
     # Convert to UTC
     last_update_utc = ensure_utc_datetime(completed_assessment_data["last_update"])

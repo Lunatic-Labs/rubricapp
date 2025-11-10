@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy import ForeignKey, func, DateTime, Interval, Index
-from datetime import datetime
+from datetime import datetime, timezone
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
@@ -190,7 +190,7 @@ class EmailValidation(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete="CASCADE"), nullable=False)
     email = db.Column(db.String(254), nullable=False)
     status = db.Column(db.String(50), nullable=False)
-    validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     validation_error = db.Column(db.String(500), nullable=True)
 
     user = db.relationship('User', backref=db.backref('email_validations', lazy=True, passive_deletes=True))

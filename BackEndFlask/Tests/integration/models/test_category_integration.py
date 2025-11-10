@@ -21,33 +21,9 @@ from Tests.PopulationFunctions import (
 from models.schemas import Category, Rubric, RubricCategory
 from models.rubric import create_rubric
 from models.loadExistingRubrics import load_existing_categories
+from integration.integration_helpers import sample_rubric, sample_category
+from models.queries import get_categories_for_user_id
 
-# --------------------------------------------------
-# Helper functions
-# --------------------------------------------------
-def sample_rubric(user_id):
-    """Helper to create a sample rubric payload."""
-    rubric_data = {
-        "rubric_name": "Clarity",
-        "rubric_description": "Evaluate clarity and precision",
-        "owner": user_id,
-    }
-    rubric = create_rubric(rubric_data)
-    return rubric
-
-def sample_category():
-    """Helper to create a sample category payload."""
-    category_data = {
-        "name": "Critical Thinking",
-        "description": "Evaluate analytical skills",
-        "rating_json": '{"Excellent":5,"Good":4,"Fair":3,"Poor":2,"Fail":1}'
-    }
-    category = create_category(category_data)
-    return category
-
-# -----------------------------------------------
-# Tests
-# -----------------------------------------------
 def test_create_and_get_category(flask_app_mock):
     """Verify a category can be created and retrieved."""
     with flask_app_mock.app_context():
@@ -155,11 +131,10 @@ def test_get_categories_per_rubric(flask_app_mock):
         finally:
         # Cleanup
             try:
-                delete_rubric_categories_by_rubric_id(sample_rubric.rubric_id)
+                delete_rubric_categories_by_rubric_id(rubric.rubric_id)
                 db.session.delete(cat)
                 db.session.commit()
                 delete_one_admin_course(result)
-                delete_rubric_categories_by_rubric_id(rubric.rubric_id)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
@@ -218,7 +193,7 @@ def test_get_categories_returns_joined_data(flask_app_mock):
             # Cleanup
             try:
                 delete_one_admin_course(result)
-                delete_rubric_categories_by_rubric_id(sample_rubric.rubric_id)
+                delete_rubric_categories_by_rubric_id(rubric.rubric_id)
                 db.session.delete(cat)
                 db.session.commit()
             except Exception as e:
@@ -236,3 +211,39 @@ def test_replace_category_invalid_id(flask_app_mock):
         )
         with pytest.raises(InvalidCategoryID):
             replace_category(updated_data, 9999)
+
+def test_get_categories_for_user_id(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            cat = sample_category()
+            result = create_one_admin_course(True)
+            rubric1 = sample_rubric(result["user_id"], "Mathematical thinking")
+            rubric2 = sample_rubric(result["user_id"], "Analyzing data")
+
+            rc1 = create_rubric_category({
+                "rubric_id": rubric1.rubric_id,
+                "category_id": cat.category_id,
+            })
+            rc2 = create_rubric_category({
+                "rubric_id": rubric2.rubric_id,
+                "category_id": cat.category_id,
+            })
+
+            results = get_categories_for_user_id(result["user_id"])
+            assert len(results) == 2
+            assert results[0].category_name == "Critical Thinking"
+            assert any("Analyzing data" in row.rubric_name for row in results)
+            assert any("Mathematical thinking" in row.rubric_name for row in results)
+
+        finally:
+        # Cleanup
+            try:
+                delete_rubric_categories_by_rubric_id(rubric1.rubric_id)
+                delete_rubric_categories_by_rubric_id(rubric2.rubric_id)
+                db.session.delete(cat)
+                db.session.commit()
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
