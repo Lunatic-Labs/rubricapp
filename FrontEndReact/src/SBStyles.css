@@ -183,16 +183,24 @@ h4, h5 {
 .table-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   height: .1rem;
   padding: 0.15rem;
 }
 
 /* these colors regulate the display for custom data table and the text inside the 'disabled' export button. */
+
+
 :root {
-  --light_grey_ADA: #e8e8e8;
+  --light_grey_ADA: #f8f6f6;
   --light_grey_hover: #d0d0d0;
   --export_disabled_text: #4b4b4b;
+  /* Data table light mode colors */
+  --table-odd-row: white;
+  --table-odd-row-hover: #f5f5f5;
+  --table-toolbar: white;
+  --table-header: #A4C4F4;
+  --table-text: #000000;
 }
 
 /* used in line 23 of CustomDataTable.js */
@@ -407,3 +415,15 @@ body.mode {
 body.mode .MuiSlider-markLabel {
   color: #e0e0e0;
 }
+
+body.mode {
+  --light_grey_ADA: #5b5b5b;
+  --light_grey_hover: #4a4a4a;
+  --export_disabled_text: #4b4b4b;
+  --table-odd-row: #1f1f1f;
+  --table-odd-row-hover: #353535;
+  --table-toolbar: #2a2a2a;
+  --table-header: #32485d;
+  --table-text: #e0e0e0;
+}
+
