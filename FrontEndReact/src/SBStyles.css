@@ -491,10 +491,6 @@ body.mode .dropdown-colors .MuiOutlinedInput-root:hover .MuiOutlinedInput-notche
   border-color: #ffffff !important;
 }
 
-body.mode .dropdown-colors .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #ffffff !important;
-}
-
 /* Dark mode text colors for general content */
 body.mode {
   color: #e0e0e0;
