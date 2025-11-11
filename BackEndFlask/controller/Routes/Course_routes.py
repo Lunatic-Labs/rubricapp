@@ -9,6 +9,8 @@ from models.user import User
 from models.user_course import UserCourse, get_user_course
 from models.course import Course, get_course
 
+import secrets, string
+
 from controller.security.CustomDecorators import( 
     AuthCheck, bad_token_check,
     admin_check
@@ -190,6 +192,20 @@ def update_course():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing a course{e}", "courses", 400)
 
+
+
+def generate_secure_password(length=12):
+    alphabet = string.ascii_letters + string.digits + "!@#$%^&*()-_=+"
+    while True:
+        pwd = ''.join(secrets.choice(alphabet) for _ in range(length))
+        # enforce complexity
+        if (any(c.islower() for c in pwd)
+                and any(c.isupper() for c in pwd)
+                and any(c.isdigit() for c in pwd)
+                and any(c in "!@#$%^&*()-_=+" for c in pwd)):
+            return pwd
+
+
 # Endpooint: get_test_student_token
 # This code creates or retrieves the test student information for a course.
 # Used for: "View as Student" feature.
@@ -219,11 +235,12 @@ def get_test_student_token(course_id):
             
             try:
                 # Create test student
+                secure_password = generate_secure_password(14)
                 test_student = User(
                     first_name="Test",
                     last_name="Student",
                     email=test_email,
-                    password="TestPassword123!",
+                    password=secure_password,
                     owner_id=course.admin_id if hasattr(course, 'admin_id') else admin_id,
                     has_set_password=True,
                     is_admin=False,
