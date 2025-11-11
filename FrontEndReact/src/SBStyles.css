@@ -277,6 +277,16 @@ h4, h5 {
   --table-arrow-color: #0000008A;
 }
 
+/* Target any card-like containers */
+body.mode div[class*="card"],
+body.mode div[class*="Card"],
+body.mode section[class*="card"],
+body.mode section[class*="Card"] {
+    background-color: #2a2a2a !important;
+    color: #e0e0e0 !important;
+    border: 1px solid #404040 !important;
+}
+
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
 /* ============================================ */
@@ -436,5 +446,32 @@ body.mode {
 
 body.mode .MuiSlider-markLabel {
   color: #e0e0e0;
+}
+
+/* ============================================ */
+/* FIX FOR WHITE LINE AT BOTTOM */
+/* ============================================ */
+
+/* Remove any white borders from html and body */
+body.mode,
+body.mode html,
+body.mode #root {
+    background-color: #1a1a1a !important;
+    border: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove any bottom borders that might cause white lines */
+body.mode *:last-child {
+    border-bottom: none !important;
+}
+
+/* Ensure main content area has no white borders */
+body.mode main,
+body.mode .main-content,
+body.mode .app-container {
+    background-color: #1a1a1a;
+    border: none !important;
 }
 
