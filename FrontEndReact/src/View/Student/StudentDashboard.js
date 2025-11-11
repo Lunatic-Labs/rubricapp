@@ -164,9 +164,7 @@ class StudentDashboard extends Component {
 
             const checkinTeamMap = new Map();
             if (checkins && Array.isArray(checkins)) {
-                console.log(checkins);
                 checkins.forEach(checkin => {
-                    console.log(checkin);
                     checkinTeamMap.set(checkin.assessment_task_id, checkin.team_number);
                 });
             }
