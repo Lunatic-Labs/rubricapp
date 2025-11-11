@@ -90,6 +90,22 @@ class StudentDashboard extends Component {
         });
     }
 
+    refreshCheckins = () => {
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenCourse = state.chosenCourse["course_id"];
+        
+        // Reset filteredATs to null to trigger re-filtering
+        this.setState({ 
+            filteredATs: null,
+            checkinTeamMap: null 
+        });
+        
+        genericResourceGET(`/checkin?course_id=${chosenCourse}`, "checkin", this, { 
+            dest: "checkins"
+        });
+    }
+
     componentDidMount() {
     const navbar = this.props.navbar;
     const state = navbar.state;
@@ -109,114 +125,126 @@ class StudentDashboard extends Component {
     }
 
     componentDidUpdate() {
-    const {
-        filteredATs, 
-        roles,
-        assessmentTasks,
-        completedAssessments,
-        userTeamIds,
-        averageData,
-        rubrics,
-        rubricNames,
-        checkins,
-    } = this.state;
+        const {
+            filteredATs, 
+            roles,
+            assessmentTasks,
+            completedAssessments,
+            userTeamIds,
+            averageData,
+            rubrics,
+            rubricNames,
+            checkins,
+        } = this.state;
 
-    const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
-    if (!roles) {
-        return;
-    }
-
-    // For students (role_id === 5), wait for userTeamIds to be populated
-    // For TAs (role_id === 4), userTeamIds isn't needed
-    const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
-
-    if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
-        const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
-
-        let filteredCompletedAssessments = [];
-        let filteredAvgData = [];
-        let finishedCats = [];
-
-        const CATmap = new Map();
-        const AVGmap = new Map();
-        const roleId = roles["role_id"];
-        
-        const getCATKey = (assessment_task_id, team_id, isTeamAssessment) => {
-            if (isTeamAssessment && team_id !== null) {
-                return `${assessment_task_id}-${team_id}`;
-            }
-            return `${assessment_task_id}`;
-        };
-
-        const checkinTeamMap = new Map();
-        if (checkins && Array.isArray(checkins)) {
-            checkins.forEach(checkin => {
-                checkinTeamMap.set(checkin.assessment_task_id, checkin.team_number);
-            });
+        const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
+        if (!roles) {
+            return;
         }
 
-        completedAssessments.forEach(cat => {
-            const team_id = cat.team_id;
-            const at = assessmentTasks.find(task => task.assessment_task_id === cat.assessment_task_id);
-            const isTeamAssessment = at?.unit_of_assessment === true;
+        const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
+
+        if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
+            const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
+
+            let filteredCompletedAssessments = [];
+            let filteredAvgData = [];
+            let finishedCats = [];
+
+            const CATmap = new Map();
+            const AVGmap = new Map();
+            const roleId = roles["role_id"];
             
-            //For team assessments, check if user is checked in to this team
-            if (roles.role_id === 4) {
-                // TAs see everything
-                const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
-                const existing = CATmap.get(key);
-                const shouldReplace = !existing || (cat.done && !existing.done);
-                if (shouldReplace) {
-                    CATmap.set(key, cat);
+            const getCATKey = (assessment_task_id, team_id, isTeamAssessment) => {
+                if (isTeamAssessment && team_id !== null) {
+                    return `${assessment_task_id}-${team_id}`;
                 }
-            } else if (isTeamAssessment) {
-                // For team assessments, check if user is checked in to this team for this assessment
-                const checkedInTeamId = checkinTeamMap.get(cat.assessment_task_id);
-                if (checkedInTeamId === team_id) {
+                return `${assessment_task_id}`;
+            };
+
+            const checkinTeamMap = new Map();
+            if (checkins && Array.isArray(checkins)) {
+                console.log(checkins);
+                checkins.forEach(checkin => {
+                    console.log(checkin);
+                    checkinTeamMap.set(checkin.assessment_task_id, checkin.team_number);
+                });
+            }
+
+            completedAssessments.forEach(cat => {
+                const team_id = cat.team_id;
+                const at = assessmentTasks.find(task => task.assessment_task_id === cat.assessment_task_id);
+                const isTeamAssessment = at?.unit_of_assessment === true;
+                
+                if (roles.role_id === 4) {
+                    // TAs see everything
+                    const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
+                    const existing = CATmap.get(key);
+                    const shouldReplace = !existing || (cat.done && !existing.done);
+                    if (shouldReplace) {
+                        CATmap.set(key, cat);
+                    }
+                } else if (isTeamAssessment) {
+                    // For team assessments, only include if this is the team they're checked in with
+                    const checkedInTeamId = checkinTeamMap.get(cat.assessment_task_id);
+                    if (checkedInTeamId === team_id) {
+                        const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
+                        CATmap.set(key, cat);
+                    }
+                } else if (team_id === null) { //Individual asssessments
                     const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
                     CATmap.set(key, cat);
                 }
-            } else if (team_id === null) {
-                // Individual assessments
-                const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
-                CATmap.set(key, cat);
-            }
-        });
-        
-        averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
-
-        const currentDate = new Date();
-        const isATDone = (cat) => cat !== undefined && cat.done;
-        const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
-
-        let filteredAssessmentTasks = assessmentTasks.filter(task => {
-            const isTeamAssessment = task.unit_of_assessment === true;
-            let relevantTeamId = null;
-                            
-            if (isTeamAssessment) {
-                //Use the checked-in team, not the course team
-                relevantTeamId = checkinTeamMap.get(task.assessment_task_id) || null;
-            }
+            });
             
-            const catKey = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
-            const cat = CATmap.get(catKey);
-            const avg = AVGmap.get(task.assessment_task_id);
+            averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
-            const done = isATDone(cat);
-            const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
-            const locked = task.locked;                                
-            const published = task.published;
-            const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
+            const currentDate = new Date();
+            const isATDone = (cat) => cat !== undefined && cat.done;
+            const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
 
-            const viewable = !done && correctUser && !locked && published && !pastDue;
-            const CATviewable = correctUser === false && done === false;
+            let filteredAssessmentTasks = assessmentTasks.filter(task => {
+                const isTeamAssessment = task.unit_of_assessment === true;
+                let relevantTeamId = null;
+                                
+                if (isTeamAssessment) {
+                    relevantTeamId = checkinTeamMap.get(task.assessment_task_id) || null;
+                }
+                
+                const catKey = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
+                const cat = CATmap.get(catKey);
+                const avg = AVGmap.get(task.assessment_task_id);
 
-            if (!CATviewable && cat !== undefined) {
-                viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
-                filteredAvgData.push(avg);
-            }
-            return viewable;
-        });
+                // For team assessments without check-in, still show in "My Assessment Tasks" 
+                // so students can check in
+                const needsCheckIn = isTeamAssessment && !relevantTeamId;
+                
+                const done = isATDone(cat);
+                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
+                const locked = task.locked;                                
+                const published = task.published;
+                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
+
+                // Show in "My Assessment Tasks" if:
+                // - Not done AND user is correct AND not locked AND published AND not past due
+                // OR for team assessments, if they need to check in
+                const viewable = (!done && correctUser && !locked && published && !pastDue) || needsCheckIn;
+                const CATviewable = correctUser === false && done === false;
+
+                // Add to completed assessments if there's a CAT and it's either:
+                // - Done (goes to "Completed Assessments")
+                // - Not viewable but exists (goes to "Completed Assessments" - past due/locked)
+                if (!CATviewable && cat !== undefined) {
+                    if (done) {
+                        filteredCompletedAssessments.push(cat);
+                    } else {
+                        finishedCats.push(cat);
+                    }
+                    filteredAvgData.push(avg);
+                }
+
+                return viewable;
+            });
 
             // Helpers for chart data
             const computeAvg = (avgObj) => {
@@ -309,6 +337,7 @@ class StudentDashboard extends Component {
 
                 rubricNames: rubricNameMap,
                 chartData,
+                checkinTeamMap: checkinTeamMap,
             });
         }
     }
@@ -321,6 +350,7 @@ class StudentDashboard extends Component {
             filteredATs,
             filteredCATs,
             fullyDoneCATS,
+            checkinTeamMap,
         } = this.state; 
 
         // Wait for information to be filtered.
@@ -329,6 +359,7 @@ class StudentDashboard extends Component {
         }
 
         var navbar = this.props.navbar;
+        navbar.refreshCheckins = this.refreshCheckins;
         navbar.studentViewTeams = {};
         navbar.studentViewTeams.show = "ViewTeams";
         navbar.studentViewTeams.team = null;
@@ -369,6 +400,7 @@ class StudentDashboard extends Component {
                             filteredAssessments={filteredATs}
                             CompleteAssessments={completedAssessments}
                             userTeamIds={this.state.userTeamIds}
+                            checkinTeamMap={checkinTeamMap}
                         />
                     </Box>
                 </Box>

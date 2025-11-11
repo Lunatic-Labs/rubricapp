@@ -57,6 +57,7 @@ class StudentViewAssessmentTask extends Component {
 
         const filteredATs = this.props.filteredAssessments;
         const filteredCATs = this.props.CompleteAssessments;
+        const checkinTeamMap = this.props.checkinTeamMap;
 
         var navbar = this.props.navbar;
 
@@ -88,6 +89,7 @@ class StudentViewAssessmentTask extends Component {
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
                         counts={counts}
                         userTeamIds={this.props.userTeamIds}
+                        checkinTeamMap={checkinTeamMap}
                     />
                 </div>
             )
