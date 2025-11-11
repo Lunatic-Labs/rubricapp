@@ -44,11 +44,29 @@ export default function CategoryDropdown(props) {
   }
 
   return (
-    <FormControl 
-    // controlls the way the 'dropdown' is displayed.
+    <FormControl
+    className="dropdown-colors" 
+    // controls the way the 'dropdown' is displayed.
       sx={{ 
         m: 3,           // margin
-        width: '95%'    // width
+        width: '95%',    // width
+        '& .MuiInputBase-root': {
+          backgroundColor: 'var(--dropdown-bg)',
+          color: 'var(--dropdown-text)',
+        },
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: 'var(--dropdown-border)',
+        },
+        '& .MuiInputLabel-root': {
+          color: 'var(--dropdown-label)',
+        },
+        '& .MuiSelect-icon': {
+          color: 'var(--dropdown-icon)',
+        },
+        '& .Mui-disabled': {
+          backgroundColor: 'var(--dropdown-disabled-bg)',
+          color: 'var(--dropdown-disabled-text)',
+        }
       }}
     >
         <InputLabel id="demo-simple-select-autowidth-label">Category</InputLabel>
@@ -68,6 +86,26 @@ export default function CategoryDropdown(props) {
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
           }
+        }}
+        MenuProps={{
+          PaperProps: {
+            className: 'dropdown-colors',
+            sx: {
+              backgroundColor: 'var(--dropdown-bg)',
+              color: 'var(--dropdown-text)',
+              '& .MuiMenuItem-root': {
+                '&:hover': {
+                  backgroundColor: 'var(--dropdown-hover)',
+                },
+                '&.Mui-selected': {
+                  backgroundColor: 'var(--dropdown-selected)',
+                  '&:hover': {
+                    backgroundColor: 'var(--dropdown-selected)',
+                  },
+                },
+              },
+            },
+          },
         }}
         >
           { categoryList }

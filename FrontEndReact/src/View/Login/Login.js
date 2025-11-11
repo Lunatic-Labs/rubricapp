@@ -330,6 +330,31 @@ class Login extends Component {
                                                 onChange={this.handleChange}
                                                 onKeyDown={this.keyPress}
                                                 aria-label="emailInput"
+                                                sx={{
+                                                    '& .MuiInputBase-input': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiInputLabel-root': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiInputLabel-root.Mui-focused': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root': {
+                                                        '& fieldset': {
+                                                            borderColor: 'var(--border-color)',
+                                                        },
+                                                        '&:hover fieldset': {
+                                                            borderColor: 'var(--border-hover-color)',
+                                                        },
+                                                        '&.Mui-focused fieldset': {
+                                                            borderColor: '#2E8BEF',
+                                                        },
+                                                    },
+                                                    '& .MuiFormHelperText-root': {
+                                                        color: 'var(--error-color)',
+                                                    },
+                                                }}
                                             />
 
                                             <TextField
@@ -347,6 +372,37 @@ class Login extends Component {
                                                 onChange={this.handleChange}
                                                 onKeyDown={this.keyPress}
                                                 aria-label="passwordInput"
+                                                sx={{
+                                                    '& .MuiInputBase-input': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiInputLabel-root': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiInputLabel-root.Mui-focused': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root': {
+                                                        '& fieldset': {
+                                                            borderColor: 'var(--border-color)',
+                                                        },
+                                                        '&:hover fieldset': {
+                                                            borderColor: 'var(--border-hover-color)',
+                                                        },
+                                                        '&.Mui-focused fieldset': {
+                                                            borderColor: '#2E8BEF',
+                                                        },
+                                                    },
+                                                    '& .MuiFormHelperText-root': {
+                                                        color: 'var(--error-color)',
+                                                    },
+                                                    '& .MuiIconButton-root': {
+                                                        color: 'var(--icon-color)',
+                                                    },
+                                                    '& .MuiSvgIcon-root': {
+                                                        color: 'var(--icon-color)',
+                                                    },
+                                                }}
                                                 InputProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">
