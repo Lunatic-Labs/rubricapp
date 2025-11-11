@@ -61,8 +61,6 @@ class ViewAssessmentTasks extends Component {
     render() {
         var navbar = this.props.navbar;
 
-        const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
-
         const role = this.props.role;
 
         var chosenCAT = null;
@@ -144,6 +142,9 @@ class ViewAssessmentTasks extends Component {
                     customBodyRender: (atId) => {
                         let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
                         let filledByStudent = at.role_id === 5;
+                        
+                        // Check if user is switching teams (already checked in)
+                        const isSwitchingTeams = this.props.checkin.indexOf(atId) !== -1;
 
                         return (
                             <Box
@@ -165,14 +166,17 @@ class ViewAssessmentTasks extends Component {
                                         variant='contained'
 
                                         onClick={() => {
-                                            if (!fixedTeams && navbar.state.team === null) {
-                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                            const hasPassword = at.create_team_password && at.create_team_password.trim() !== '';
+                                            const needsPasswordPrompt = isSwitchingTeams && hasPassword; // if just checking in, don't password prompt. if no password set, don't password prompt
+                                            
+                                            if (needsPasswordPrompt) {
+                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
                                             } else {
-                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, this.props.checkin.indexOf(atId) !== -1);
+                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
                                             }
                                         }}
                                     >
-                                        {this.props.checkin.indexOf(atId) === -1 ? 'Check In' : 'Switch Teams'}
+                                        {isSwitchingTeams ? 'Switch Teams' : 'Check In'}
                                     </Button>
                                 }
 

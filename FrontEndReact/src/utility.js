@@ -62,7 +62,6 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             throw error;
         }
 
-
         const result = await response.json();
         if (result['success']) {
             let state = {};
