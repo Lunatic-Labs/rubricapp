@@ -6,6 +6,7 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 import datetime
+from controller.security.blacklist import is_token_blacklisted, blacklist_token
 
 @bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
@@ -15,6 +16,16 @@ def refresh_token():
     try:
         user_id = int(request.args.get('user_id'))
         user = user_schema.dump(get_user(user_id))
+        
+        # What: This is blacklisting feature for refresh tokens.
+        # Once refresh tokens are expired, they are pushed to a blacklist.
+        # Why: The reason is to ensure that tokens can not be reused for security purposes.
+        
+        # Get old token and check/blacklist it
+        old_token = request.headers.get('Authorization').split()[1]
+        if is_token_blacklisted(old_token):
+            return create_bad_response("Refresh token has been revoked", "user", 401)
+        blacklist_token(old_token)
         
         # Convert user_id to string for JWT identity
         user_id_str = str(user_id)
