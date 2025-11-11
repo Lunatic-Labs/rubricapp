@@ -42,7 +42,9 @@ from models.team import delete_team
 from models.queries import (
     get_completed_assessment_by_user_id,
     get_users_by_course_id_and_role_id,
-    get_completed_assessment_by_ta_user_id
+    get_completed_assessment_by_ta_user_id,
+    get_completed_assessment_with_user_name,
+    get_completed_assessment_with_team_name
 )
 
 
@@ -550,3 +552,59 @@ def test_get_completed_assessment_by_ta_user_id(flask_app_mock):
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
 
+
+def test_get_completed_assessment_with_user_name(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(True)
+            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            task = create_assessment_task(payload)
+            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            comp = create_completed_assessment(data)
+
+            results = get_completed_assessment_with_user_name(comp.assessment_task_id)
+            assert results[0].first_name == "Test Teacher"
+            assert results[0].last_name == "1"
+
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_completed_assessment_tasks(comp.completed_assessment_id)
+                    delete_one_admin_course(result)
+                    delete_assessment_task(task.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
+
+def test_get_completed_assessment_with_team_name(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(True)
+            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            task = create_assessment_task(payload)
+            team = sample_team("Team Alpha", result["user_id"], result["course_id"], task.assessment_task_id) 
+            data = sample_completed_assessment(result["user_id"], task.assessment_task_id, team.team_id)
+            comp = create_completed_assessment(data)
+
+            results = get_completed_assessment_with_team_name(comp.assessment_task_id)
+            assert results[0].team_name == "Team Alpha"
+            assert results[0].completed_by == result["user_id"]
+
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_completed_assessment_tasks(comp.completed_assessment_id)
+                    delete_team(team.team_id)
+                    delete_assessment_task(task.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
