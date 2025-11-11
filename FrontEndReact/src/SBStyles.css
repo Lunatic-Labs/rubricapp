@@ -371,10 +371,10 @@ body.mode .navbar {
   --navbar-bg: #1a1a1a;
   --navbar-text: #e0e0e0;
   margin-top: -0.45rem;
-  --navbar-dropdown-bg: #2a2a2a;
-  --navbar-dropdown-text: #e0e0e0;
-  --navbar-dropdown-hover: #3a3a3a;
-  --navbar-dropdown-divider: rgba(255, 255, 255, 0.12);
+  --navbar-dropdown-bg: #2d2d2d;
+  --navbar-dropdown-text: #f5f5f5;
+  --navbar-dropdown-hover: #404040;
+  --navbar-dropdown-divider: rgba(255, 255, 255, 0.2);
 }
 
 body.mode .navbar-arrow {
