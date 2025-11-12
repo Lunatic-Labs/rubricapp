@@ -160,7 +160,7 @@ class Login extends Component {
                             this.cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
 
                             this.setState({
-                                loggedIn: null,
+                                loggedIn: true,
                                 isRefreshing: false
                             });
                         } else {
