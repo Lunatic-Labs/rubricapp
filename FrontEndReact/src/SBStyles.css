@@ -295,6 +295,17 @@ h4, h5 {
   background-color: var(--dropdown-bg) !important;
 }
 
+/* Text box color variables */
+.text-box-colors {
+  --textbox-bg: #ffffff;
+  --textbox-text: #000000;
+  --textbox-border: #0000003b;
+  --textbox-border-hover: #000000de;
+  --textbox-border-focused: #2E8BEF;
+  --textbox-error: #d32f2f;
+  --textbox-label: rgba(0, 0, 0, 0.6);
+}
+
 
 :root {
   --text-color: #000000;
@@ -475,7 +486,7 @@ body.mode .generic-text-color {
 }
 
 body.mode .dropdown-colors {
-  --dropdown-bg: #202020ff;
+  --dropdown-bg: #262626ff;
   --dropdown-text: #e0e0e0;
   --dropdown-border: #ffffff3b;
   --dropdown-label: #ffffffb3;
@@ -490,6 +501,18 @@ body.mode .dropdown-colors {
 body.mode .dropdown-colors .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
   border-color: #ffffff !important;
 }
+
+/* Dark mode text box colors */
+body.mode .text-box-colors {
+  --textbox-bg: #262626ff;
+  --textbox-text: #e0e0e0;
+  --textbox-border: #ffffff3b;
+  --textbox-border-hover: #ffffff;
+  --textbox-border-focused: #3a93f3;
+  --textbox-error: #ff6b6b;
+  --textbox-label: #a0a0a0;
+}
+
 
 /* Dark mode text colors for general content */
 body.mode {
