@@ -10,18 +10,6 @@ from controller.Routes.RouteExceptions import EmailFailureException
 from constants.Email import DEFAULT_SENDER_EMAIL
 from enums.Email_type import EmailContentType
 
-def output(text, clear=False):# Marked for deletion func
-    with open("ap.txt" ,'w' if clear else 'a') as out:
-        print(text, file=out)
-
-def print_object_details(obj:object) -> None: # Marked for deletion func
-    for attr in dir(obj):
-        if attr.startswith("__"):
-            continue
-        value = getattr(obj, attr)
-        if not callable(value):
-            output(f"{attr}: {value}")
-
 
 def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     """
@@ -94,7 +82,7 @@ def send_bounced_email_notification(dest_addr: str, msg: str, failure: str) -> N
         failure (str)  : Specific error from the system.
     """
     subject = "Student's email failed to send."
-    message = f'''The email could not sent due to:
+    message = f'''The email could not send due to:
 
                 {msg}
 
