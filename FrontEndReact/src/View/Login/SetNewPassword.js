@@ -41,10 +41,10 @@ class SetNewPassword extends Component {
             let errorMessage = '';
             if(value.trim() === '') {
                 errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
-            } else if(id === 'password' && value.length > 20) {
-                errorMessage = 'Password cannot exceed 20 characters';                          // checks if password is not exceeding 20 characters
-            } else if(id === 'confirmationPassword' && value.length > 20) {
-                errorMessage = 'Password cannot exceed 20 characters';                          // checks if confirmationPassword is not exceeding 20 characters
+            } else if(id === 'password' && value.length > 30) {
+                errorMessage = 'Password cannot exceed 30 characters';                          // checks if password is not exceeding 20 characters
+            } else if(id === 'confirmationPassword' && value.length > 30) {
+                errorMessage = 'Password cannot exceed 30 characters';                          // checks if confirmationPassword is not exceeding 20 characters
             }
 
             // this.setState() used to contain the code below.
@@ -153,18 +153,18 @@ class SetNewPassword extends Component {
             }
 
             // this is an error check to see if password is not exceeding 20 characters
-            if (pass1.length > 20) {
+            if (pass1.length > 30) {
                 this.setState({
-                    errorMessage: "Password cannot exceed 20 characters"
+                    errorMessage: "Password cannot exceed 30 characters"
                 });
 
                 return;
             }
 
             // this is an error check to see if confirmationPassword is not exceeding 20 characters
-            if (pass2.length > 20) {
+            if (pass2.length > 30) {
                 this.setState({
-                    errorMessage: "Password cannot exceed 20 characters"
+                    errorMessage: "Password cannot exceed 30 characters"
                 });
 
                 return;

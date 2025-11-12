@@ -228,11 +228,11 @@ class AdminAddAssessmentTask extends Component {
         } else {
 
             // Add password length check here at the top of the else block
-            if (password && password.length > 20) {
+            if (password && password.length > 30) {
                 this.setState({
                     errors: {
                         ...this.state.errors,
-                        password: 'Password cannot exceed 20 characters',
+                        password: 'Password cannot exceed 30 characters',
                     },
                 });
                 return;

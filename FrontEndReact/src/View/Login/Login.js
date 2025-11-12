@@ -41,8 +41,8 @@ class Login extends Component {
             let errorMessage = '';
             if(value.trim() === '') {
                 errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
-            } else if(id === 'password' && value.length > 20) {
-                errorMessage = 'Password cannot exceed 20 characters';
+            } else if(id === 'password' && value.length > 30) {
+                errorMessage = 'Password cannot exceed 30 characters';
             }
 
             // this.setState() used to contain the code below.
