@@ -68,7 +68,7 @@ class ViewCourses extends Component {
       },
       {
         name: "use_tas",
-        label: "Use T.A.s",
+        label: "Use T.A's",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
@@ -103,32 +103,31 @@ class ViewCourses extends Component {
           // If the logged in user is an Admin in the course, they can edit the course.
           // Otherwise the edit button is disabled because they did not make the course
           // and are either a TA/Instructor or Student in the course!
-        name: "course_id",
-        label: "EDIT",
-        options: {
-          filter: false,
-          sort: false,
-          setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-          setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-          customBodyRender: (courseId) => {
-            return (
-              <IconButton id={courseId}
-                className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
-                  disabled={courseRoles[courseId] !== 3}
-                onClick={() => {
-                  if(courseRoles[courseId]===3) {
-                    setAddCourseTabWithCourse(courses, courseId, "AddCourse")
-                  }
+          name: "course_id",
+          label: "EDIT",
+          options: {
+            filter: false,
+            sort: false,
+            setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+            setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+            customBodyRender: (courseId) => {
+              return (
+                <IconButton id={courseId}
+                role = "img" aria-label='editCourseIconButton'
+                  className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
+                  onClick={() => {
+                    if(courseRoles[courseId]===3) {
+                      setAddCourseTabWithCourse(courses, courseId, "AddCourse")
+                    }
                 }}
-                aria-label="editCourseIconButton"
-              >
-                <EditIcon sx={{color:"black"}} aria-hidden="true"/>
-              </IconButton>
-            )
-          },
-        }
-      });
-    }
+                 >
+                  <EditIcon sx={{color:"black"}}/>
+                </IconButton>
+              )
+            },
+          }
+        });
+      }
 
       columns.push(
       {
@@ -142,6 +141,7 @@ class ViewCourses extends Component {
         customBodyRender: (courseId) => {
           return (
             <IconButton id={courseId}
+                role = "img" aria-label="viewCourseIconButton"
               onClick={() => {
                 // If viewing as student, always go to student dashboard
                 if (isViewingAsStudent) {
@@ -155,7 +155,7 @@ class ViewCourses extends Component {
                   }
                 }
               }}
-              aria-label="viewCourseIconButton">
+              >
               <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
             </IconButton>
           )
