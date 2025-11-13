@@ -9,6 +9,7 @@ import { apiUrl } from '../../App.js';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 
 
@@ -41,8 +42,8 @@ class Login extends Component {
             let errorMessage = '';
             if(value.trim() === '') {
                 errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
-            } else if(id === 'password' && value.length > 30) {
-                errorMessage = 'Password cannot exceed 30 characters';
+            } else if(id === 'password' && value.length > MAX_PASSWORD_LENGTH) {
+                errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;
             }
 
             // this.setState() used to contain the code below.

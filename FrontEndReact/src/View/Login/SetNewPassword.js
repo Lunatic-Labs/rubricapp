@@ -7,6 +7,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App.js';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 
 
@@ -41,10 +42,10 @@ class SetNewPassword extends Component {
             let errorMessage = '';
             if(value.trim() === '') {
                 errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
-            } else if(id === 'password' && value.length > 30) {
-                errorMessage = 'Password cannot exceed 30 characters';                          // checks if password is not exceeding 20 characters
-            } else if(id === 'confirmationPassword' && value.length > 30) {
-                errorMessage = 'Password cannot exceed 30 characters';                          // checks if confirmationPassword is not exceeding 20 characters
+            } else if(id === 'password' && value.length > MAX_PASSWORD_LENGTH) {
+                errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;                          // checks if password is not exceeding 20 characters
+            } else if(id === 'confirmationPassword' && value.length > MAX_PASSWORD_LENGTH) {
+                errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;                          // checks if confirmationPassword is not exceeding 20 characters
             }
 
             // this.setState() used to contain the code below.
@@ -153,18 +154,18 @@ class SetNewPassword extends Component {
             }
 
             // this is an error check to see if password is not exceeding 20 characters
-            if (pass1.length > 30) {
+            if (pass1.length > MAX_PASSWORD_LENGTH) {
                 this.setState({
-                    errorMessage: "Password cannot exceed 30 characters"
+                    errorMessage: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`
                 });
 
                 return;
             }
 
             // this is an error check to see if confirmationPassword is not exceeding 20 characters
-            if (pass2.length > 30) {
+            if (pass2.length > MAX_PASSWORD_LENGTH) {
                 this.setState({
-                    errorMessage: "Password cannot exceed 30 characters"
+                    errorMessage: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`
                 });
 
                 return;
