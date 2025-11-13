@@ -270,41 +270,13 @@ class AdminAddCourse extends Component {
                                         name="newCourseName"
                                         variant="outlined"
                                         label="Course Name"
-                                        className="text-box-colors"
                                         fullWidth
                                         value={courseName}
                                         error={!!errors.courseName}
                                         helperText={errors.courseName}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{ 
-                                            mb: 3,
-                                            '& .MuiOutlinedInput-root': {
-                                                backgroundColor: 'var(--textbox-bg)',
-                                                color: 'var(--textbox-text)',
-                                                '& fieldset': {
-                                                    borderColor: 'var(--textbox-border)',
-                                                },
-                                                '&:hover fieldset': {
-                                                    borderColor: 'var(--textbox-border-hover)',
-                                                },
-                                                '&.Mui-focused fieldset': {
-                                                    borderColor: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error fieldset': {
-                                                    borderColor: 'var(--textbox-error)',
-                                                },
-                                            },
-                                            '& .MuiInputLabel-root': {
-                                                color: 'var(--textbox-label)',
-                                                '&.Mui-focused': {
-                                                    color: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error': {
-                                                    color: 'var(--textbox-error)',
-                                                },
-                                            },
-                                        }}
+                                        sx={{ mb: 3 }}
                                         inputProps={{ maxLength: 50 }}
                                         aria-label="courseNameInput"
                                     />
@@ -314,41 +286,13 @@ class AdminAddCourse extends Component {
                                         name="newCourseNumber"
                                         variant="outlined"
                                         label="Course Number"
-                                        className="text-box-colors"
                                         fullWidth
                                         value={courseNumber}
                                         error={!!errors.courseNumber}
                                         helperText={errors.courseNumber}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{ 
-                                            mb: 3,
-                                            '& .MuiOutlinedInput-root': {
-                                                backgroundColor: 'var(--textbox-bg)',
-                                                color: 'var(--textbox-text)',
-                                                '& fieldset': {
-                                                    borderColor: 'var(--textbox-border)',
-                                                },
-                                                '&:hover fieldset': {
-                                                    borderColor: 'var(--textbox-border-hover)',
-                                                },
-                                                '&.Mui-focused fieldset': {
-                                                    borderColor: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error fieldset': {
-                                                    borderColor: 'var(--textbox-error)',
-                                                },
-                                            },
-                                            '& .MuiInputLabel-root': {
-                                                color: 'var(--textbox-label)',
-                                                '&.Mui-focused': {
-                                                    color: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error': {
-                                                    color: 'var(--textbox-error)',
-                                                },
-                                            },
-                                        }}
+                                        sx={{ mb: 3 }}
                                         inputProps={{ maxLength: 20 }}
                                         aria-label="courseNumberInput"
                                     />
@@ -358,41 +302,13 @@ class AdminAddCourse extends Component {
                                         name="newTerm"
                                         variant="outlined"
                                         label="Type your Term name here"
-                                        className="text-box-colors"
                                         fullWidth
                                         value={term}
                                         error={!!errors.term}
                                         helperText={errors.term}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{ 
-                                            mb: 3,
-                                            '& .MuiOutlinedInput-root': {
-                                                backgroundColor: 'var(--textbox-bg)',
-                                                color: 'var(--textbox-text)',
-                                                '& fieldset': {
-                                                    borderColor: 'var(--textbox-border)',
-                                                },
-                                                '&:hover fieldset': {
-                                                    borderColor: 'var(--textbox-border-hover)',
-                                                },
-                                                '&.Mui-focused fieldset': {
-                                                    borderColor: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error fieldset': {
-                                                    borderColor: 'var(--textbox-error)',
-                                                },
-                                            },
-                                            '& .MuiInputLabel-root': {
-                                                color: 'var(--textbox-label)',
-                                                '&.Mui-focused': {
-                                                    color: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error': {
-                                                    color: 'var(--textbox-error)',
-                                                },
-                                            },
-                                        }}
+                                        sx={{ mb: 3 }}
                                         inputProps={{ maxLength: 20 }}
                                         aria-label="courseTermInput"
                                     />
@@ -401,7 +317,6 @@ class AdminAddCourse extends Component {
                                         id="year" 
                                         name="newYear"
                                         variant="outlined"
-                                        className="text-box-colors"
                                         label="Year"
                                         fullWidth
                                         value={year}
@@ -409,34 +324,7 @@ class AdminAddCourse extends Component {
                                         helperText={errors.year}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{ 
-                                            mb: 3,
-                                            '& .MuiOutlinedInput-root': {
-                                                backgroundColor: 'var(--textbox-bg)',
-                                                color: 'var(--textbox-text)',
-                                                '& fieldset': {
-                                                    borderColor: 'var(--textbox-border)',
-                                                },
-                                                '&:hover fieldset': {
-                                                    borderColor: 'var(--textbox-border-hover)',
-                                                },
-                                                '&.Mui-focused fieldset': {
-                                                    borderColor: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error fieldset': {
-                                                    borderColor: 'var(--textbox-error)',
-                                                },
-                                            },
-                                            '& .MuiInputLabel-root': {
-                                                color: 'var(--textbox-label)',
-                                                '&.Mui-focused': {
-                                                    color: 'var(--textbox-border-focused)',
-                                                },
-                                                '&.Mui-error': {
-                                                    color: 'var(--textbox-error)',
-                                                },
-                                            },
-                                        }}
+                                        sx={{ mb: 3 }}
                                         aria-label="courseYearInput"
                                     />
 
@@ -449,16 +337,9 @@ class AdminAddCourse extends Component {
                                                     }}
 
                                                     id="active"
-                                                    className="checkbox-colors"
                                                     value={active}
                                                     checked={active}
                                                     onClick={this.handleCheckboxChange}
-                                                    sx={{
-                                                        color: 'var(--checkbox-bg-unchecked)',
-                                                        '&.Mui-checked': {
-                                                            color: 'var(--checkbox-color-checked)',
-                                                        },
-                                                    }}
                                                 />
                                             }
 
@@ -474,16 +355,9 @@ class AdminAddCourse extends Component {
                                                     }}
 
                                                     id="useTas"
-                                                    className="checkbox-colors"
                                                     value={useTas}
                                                     checked={useTas}
                                                     onClick={this.handleCheckboxChange}
-                                                    sx={{
-                                                        color: 'var(--checkbox-bg-unchecked)',
-                                                        '&.Mui-checked': {
-                                                            color: 'var(--checkbox-color-checked)',
-                                                        },
-                                                    }}
                                                 />
                                             }
 
@@ -499,16 +373,9 @@ class AdminAddCourse extends Component {
                                                     }}
 
                                                     id="useFixedTeams"
-                                                    className="checkbox-colors"
                                                     value={useFixedTeams}
                                                     checked={useFixedTeams}
                                                     onClick={this.handleCheckboxChange}
-                                                    sx={{
-                                                        color: 'var(--checkbox-bg-unchecked)',
-                                                        '&.Mui-checked': {
-                                                            color: 'var(--checkbox-color-checked)',
-                                                        },
-                                                    }}
                                                 />
                                             }
 
