@@ -138,7 +138,7 @@ h4, h5 {
   flex-direction: column;
   padding: var(--2, 4px) ;
   border-radius: px;
-  border-top: 3px solid #2E8BEF ;
+  border-top: 3px solid #a4cdf9 ;
   background:#FFF;
   margin-bottom: 10px;
   font-size: 1.3rem;
@@ -169,6 +169,7 @@ h4, h5 {
 #slider {
     height: 0.75rem;
     width: 100% !important;
+    background-color: pink;
 }
 
 .MuiSlider-mark {
@@ -261,31 +262,13 @@ h4, h5 {
   --instructions-textarea-text: #000000;
 }
 
+
 /* Tab color variables */
 .tab-colors {
   --tab-text: #646464;
   --tab-text-selected: #2E8BEF;
 }
 
-/* Collapsible table color variables */
-.collapsible-table-colors {
-  --table-head-bg: #A4C4F4;
-  --table-head-text: #000000;
-  --table-body-bg: #ffffff;
-  --table-body-text: #000000;
-  --table-border: #e0e0e0;
-  --table-arrow-color: #0000008A;
-}
-
-/* Target any card-like containers */
-body.mode div[class*="card"],
-body.mode div[class*="Card"],
-body.mode section[class*="card"],
-body.mode section[class*="Card"] {
-    background-color: #2a2a2a !important;
-    color: #e0e0e0 !important;
-    border: 1px solid #404040 !important;
-}
 
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
@@ -381,10 +364,10 @@ body.mode .navbar {
   --navbar-bg: #1a1a1a;
   --navbar-text: #e0e0e0;
   margin-top: -0.45rem;
-  --navbar-dropdown-bg: #2d2d2d;
-  --navbar-dropdown-text: #f5f5f5;
-  --navbar-dropdown-hover: #404040;
-  --navbar-dropdown-divider: rgba(255, 255, 255, 0.2);
+  --navbar-dropdown-bg: #2a2a2a;
+  --navbar-dropdown-text: #e0e0e0;
+  --navbar-dropdown-hover: #3a3a3a;
+  --navbar-dropdown-divider: rgba(255, 255, 255, 0.12);
 }
 
 body.mode .navbar-arrow {
@@ -392,9 +375,10 @@ body.mode .navbar-arrow {
 }
 
 body.mode .checkbox-colors {
-  --checkbox-bg-checked: #32485d;
+  --checkbox-bg-checked: #ffffff;
   --checkbox-bg-unchecked: #3a3a3a;
   --checkbox-color-checked: #58a1f0;
+  background-color: pink;
 }
 
 body.mode .textarea-colors {
@@ -425,19 +409,9 @@ body.mode .assessment-instructions-colors {
 }
 
 body.mode .tab-colors {
-  --tab-text: #a0a0a0;
+  --tab-text: #909090;
   --tab-text-selected: #3a93f3;
 }
-
-body.mode .collapsible-table-colors {
-  --table-head-bg: #2d4a6b;
-  --table-head-text: #e0e0e0;
-  --table-body-bg: #2a2a2a;
-  --table-body-text: #e0e0e0;
-  --table-border: #404040;
-  --table-arrow-color: #FFFFFF8A;
-}
-
 
 /* Dark mode text colors for general content */
 body.mode {
