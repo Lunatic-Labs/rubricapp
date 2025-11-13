@@ -11,11 +11,15 @@ const customTheme = createTheme({
     MuiTableCell: { 
       styleOverrides: {
         head: { 
-          backgroundColor: "#A4C4F4", 
+          backgroundColor: "var(--table-head-bg)", 
+          color: "var(--table-head-text)",
           padding: "23px",
         },
         root: {
           padding: "19px",
+          backgroundColor: "var(--table-body-bg)",
+          color: "var(--table-body-text)",
+          borderColor: "var(--table-border)",
         },
       },
     },
@@ -88,11 +92,11 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
 
   return (
     <ThemeProvider theme={customTheme}>
-      <TableContainer component={Card}>
+      <TableContainer component={Card} className="collapsible-table-colors">
         <Table>
           <TableHead>
             <TableRow>
-              <TableCell>Rubric</TableCell>
+              <TableCell style={{ fontSize: "1.3rem" }}>Rubric</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -121,6 +125,7 @@ const CollapsableRubricCategoryTable = ({ categories, rubrics, onCategorySelect,
                             size="small"
                             sx={{
                               marginLeft: 1,
+                              color: 'var(--table-arrow-color)',
                               '&:focus': {
                                 outline: '2px solid #1976d2',
                                 outlineOffset: '2px',

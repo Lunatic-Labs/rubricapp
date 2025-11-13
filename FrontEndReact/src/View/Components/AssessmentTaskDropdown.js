@@ -45,12 +45,30 @@ export default function AssessmentTaskDropdown(props) {
   } 
 
   return (
-    <FormControl 
+    <FormControl
+    className="dropdown-colors"
     // controls the way the 'dropdown' is displayed.
       sx={{ 
         m: 3,           // margin
         width: (!props.assessmentTasks || props.assessmentTasks.length === 0) ? '100%' : '95%',    // wider width when showing "no tasks" message
-        minWidth: '275px'  // ensure minimum width to display the full message
+        minWidth: '275px',  // ensure minimum width to display the full message
+        '& .MuiInputBase-root': {
+          backgroundColor: 'var(--dropdown-bg)',
+          color: 'var(--dropdown-text)',
+        },
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: 'var(--dropdown-border)',
+        },
+        '& .MuiInputLabel-root': {
+          color: 'var(--dropdown-label)',
+        },
+        '& .MuiSelect-icon': {
+          color: 'var(--dropdown-icon)',
+        },
+        '& .Mui-disabled': {
+          backgroundColor: 'var(--dropdown-disabled-bg)',
+          color: 'var(--dropdown-disabled-text)',
+        }
       }}
     >
       <InputLabel id="demo-simple-select-autowidth-label">
@@ -76,6 +94,26 @@ export default function AssessmentTaskDropdown(props) {
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
           }
+        }}
+        MenuProps={{
+          PaperProps: {
+            className: 'dropdown-colors',
+            sx: {
+              backgroundColor: 'var(--dropdown-bg)',
+              color: 'var(--dropdown-text)',
+              '& .MuiMenuItem-root': {
+                '&:hover': {
+                  backgroundColor: 'var(--dropdown-hover)',
+                },
+                '&.Mui-selected': {
+                  backgroundColor: 'var(--dropdown-selected)',
+                  '&:hover': {
+                    backgroundColor: 'var(--dropdown-selected)',
+                  },
+                },
+              },
+            },
+          },
         }}
       >
         { assessmentTaskList }

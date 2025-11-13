@@ -484,8 +484,14 @@ class AppState extends Component {
     //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
     // }
 
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
+    // THE COMMENTED OUT CODE ABOVE DOES NOT RELATE TO THE CODE BELOW //
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
+
     // This code here was added for rendering darkmode if the user has set
     // it as thier preferance.
+    // componentDidMount can be modified to accomodate more functions as the
+    // app is updated.
     componentDidMount() {
         const cookies = new Cookies();
         const user = cookies.get('user');

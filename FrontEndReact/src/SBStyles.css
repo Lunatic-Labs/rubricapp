@@ -138,7 +138,7 @@ h4, h5 {
   flex-direction: column;
   padding: var(--2, 4px) ;
   border-radius: px;
-  border-top: 3px solid #a4cdf9 ;
+  border-top: 3px solid #2E8BEF ;
   background:#FFF;
   margin-bottom: 10px;
   font-size: 1.3rem;
@@ -169,7 +169,6 @@ h4, h5 {
 #slider {
     height: 0.75rem;
     width: 100% !important;
-    background-color: pink;
 }
 
 .MuiSlider-mark {
@@ -227,7 +226,7 @@ h4, h5 {
 /* Checkbox color variables */
 .checkbox-colors {
   --checkbox-bg-checked: #ADCBEE;
-  --checkbox-bg-unchecked: #D9D9D9;
+  --checkbox-bg-unchecked: #3a3a3ab1;
   --checkbox-color-checked: #2E8BEF;
 }
 
@@ -262,13 +261,65 @@ h4, h5 {
   --instructions-textarea-text: #000000;
 }
 
-
 /* Tab color variables */
 .tab-colors {
   --tab-text: #646464;
   --tab-text-selected: #2E8BEF;
 }
 
+/* Collapsible table color variables */
+.collapsible-table-colors {
+  --table-head-bg: #A4C4F4;
+  --table-head-text: #000000;
+  --table-body-bg: #ffffff;
+  --table-body-text: #000000;
+  --table-border: #e0e0e0;
+  --table-arrow-color: #0000008A;
+}
+
+/* Dropdown Menu Colors */
+.dropdown-colors {
+  --dropdown-bg: #ffffffff;
+  --dropdown-text: #000000;
+  --dropdown-border: #0000003b;
+  --dropdown-label: #00000099;
+  --dropdown-hover: #0000000a;
+  --dropdown-selected: #2e8bef14;
+  --dropdown-disabled-bg: #f5f5f5ff;
+  --dropdown-disabled-text: #00000061;
+  --dropdown-icon: #0000008a;  
+}
+
+/* Dropdown menu paper override */
+.dropdown-menu-paper {
+  background-color: var(--dropdown-bg) !important;
+}
+
+/* Text box color variables */
+.text-box-colors {
+  --textbox-bg: #ffffff;
+  --textbox-text: #000000;
+  --textbox-border: #0000003b;
+  --textbox-border-hover: #000000de;
+  --textbox-border-focused: #2E8BEF;
+  --textbox-error: #d32f2f;
+  --textbox-label: rgba(0, 0, 0, 0.6);
+}
+
+
+:root {
+  --text-color: #000000;
+  --text-color-secondary: #646464;
+  --error-color: #d32f2f;
+  --border-color: rgba(0, 0, 0, 0.23);
+  --border-hover-color: rgba(0, 0, 0, 0.87);
+  --icon-color: rgba(0, 0, 0, 0.54);
+}
+
+/* Generic text color */
+.generic-text-color {
+  color: black;
+}
 
 /* THIS IS FOR TESTING PURPOSES! */
 /* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
@@ -375,10 +426,9 @@ body.mode .navbar-arrow {
 }
 
 body.mode .checkbox-colors {
-  --checkbox-bg-checked: #ffffff;
-  --checkbox-bg-unchecked: #3a3a3a;
+  --checkbox-bg-checked: #32485d;
+  --checkbox-bg-unchecked: #D9D9D9b1;
   --checkbox-color-checked: #58a1f0;
-  background-color: pink;
 }
 
 body.mode .textarea-colors {
@@ -409,9 +459,60 @@ body.mode .assessment-instructions-colors {
 }
 
 body.mode .tab-colors {
-  --tab-text: #909090;
+  --tab-text: #a0a0a0;
   --tab-text-selected: #3a93f3;
 }
+
+body.mode .collapsible-table-colors {
+  --table-head-bg: #2d4a6b;
+  --table-head-text: #e0e0e0;
+  --table-body-bg: #2a2a2a;
+  --table-body-text: #e0e0e0;
+  --table-border: #404040;
+  --table-arrow-color: #FFFFFF8A;
+}
+
+body.mode {
+  --text-color: #e0e0e0;
+  --text-color-secondary: #a0a0a0;
+  --error-color: #ff6b6b;
+  --border-color: rgba(255, 255, 255, 0.23);
+  --border-hover-color: rgba(255, 255, 255, 0.87);
+  --icon-color: rgba(255, 255, 255, 0.7);
+}
+
+body.mode .generic-text-color {
+  color: #e0e0e0;
+}
+
+body.mode .dropdown-colors {
+  --dropdown-bg: #262626ff;
+  --dropdown-text: #e0e0e0;
+  --dropdown-border: #ffffff3b;
+  --dropdown-label: #ffffffb3;
+  --dropdown-hover: #d1d1d12a;
+  --dropdown-selected: #3a93f329;
+  --dropdown-disabled-bg: #1a1a1aff;
+  --dropdown-disabled-text: #ffffff61;
+  --dropdown-icon: #ffffffb3;
+}
+ 
+/*Dropdown border for dark mode*/
+body.mode .dropdown-colors .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #ffffff !important;
+}
+
+/* Dark mode text box colors */
+body.mode .text-box-colors {
+  --textbox-bg: #262626ff;
+  --textbox-text: #e0e0e0;
+  --textbox-border: #ffffff3b;
+  --textbox-border-hover: #ffffff;
+  --textbox-border-focused: #3a93f3;
+  --textbox-error: #ff6b6b;
+  --textbox-label: #a0a0a0;
+}
+
 
 /* Dark mode text colors for general content */
 body.mode {
@@ -448,4 +549,3 @@ body.mode .app-container {
     background-color: #1a1a1a;
     border: none !important;
 }
-

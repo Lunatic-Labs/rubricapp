@@ -384,7 +384,9 @@ def delete_selected_user():
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
-# new route
+# new route for user to 'put' things into the back-end.
+# currently used only for user settings, additional use might
+# require renaming of route to '/user_general_put'
 @bp.route('/user_settings', methods = ['PUT'])
 @jwt_required()
 @bad_token_check()
@@ -396,16 +398,14 @@ def update_user_settings():
 
             print(uid)
 
-            # user_settings = get_user(uid)  # Trigger an error if not exists.
-
             user_dark_mode = request.json["user_dark_mode"]
 
-            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
+            set_user_dark_mode(uid, user_dark_mode)
 
             return create_good_response([], 201, "users")
 
     except Exception as e:
-        return create_bad_response(f"An error occurred replacing a user_id: {e}", "users", 400)
+        return create_bad_response(f"An error occurred while modifying settings: {e}", "users", 400)
 
 class UserSchema(ma.Schema):
     user_id     = fields.Integer()
