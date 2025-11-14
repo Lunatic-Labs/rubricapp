@@ -306,6 +306,11 @@ h4, h5 {
   --textbox-label: rgba(0, 0, 0, 0.6);
 }
 
+/* Button color variables */
+.button-colors {
+  --button-text: #2E8BEF;
+  --button-hover: rgba(46, 139, 239, 0.08);
+}
 
 :root {
   --text-color: #000000;
@@ -508,9 +513,14 @@ body.mode .text-box-colors {
   --textbox-text: #e0e0e0;
   --textbox-border: #ffffff3b;
   --textbox-border-hover: #ffffff;
-  --textbox-border-focused: #3a93f3;
+  --textbox-border-focused: #4193eb;
   --textbox-error: #ff6b6b;
   --textbox-label: #a0a0a0;
+}
+
+body.mode .button-colors {
+  --button-text: #3a93f3;
+  --button-hover: #3a93f314;
 }
 
 
