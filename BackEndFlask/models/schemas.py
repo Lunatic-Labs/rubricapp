@@ -28,18 +28,22 @@ class Role(db.Model):
     role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     role_name = db.Column(db.String(20), nullable=False)
 
+"""
+    The code for User has been changed to pair the character limit in the database with the character limit in the front-end UI's
+    currently the code
+"""
 class User(db.Model):
     __tablename__ = "User"
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.Text, nullable=False)
-    last_name = db.Column(db.Text, nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)   # first_name has been changed from 'text to 'string', and now has a 50 character limit
+    last_name = db.Column(db.String(50), nullable=False)    # last_name has been changed from 'text to 'string', and now has a 50 character limit
     email = db.Column(db.String(254), unique=True, nullable=False)
-    password = db.Column(db.Text, nullable=False)
+    password = db.Column(db.String(256), nullable=False)           # password has been changed from 'text to 'string', and now has a 256 character limit.
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=True)
     has_set_password = db.Column(db.Boolean, nullable=False)
-    reset_code = db.Column(db.Text, nullable=True)
+    reset_code = db.Column(db.String(256), nullable=True)          # reset_code has been changed from 'text to 'string', and now has a 256 character limit.
     is_admin = db.Column(db.Boolean, nullable=False)
     last_update = db.Column(DateTime(timezone=True), nullable=True)
     team = db.relationship('TeamUser', backref='user', cascade='all, delete')

@@ -8,6 +8,7 @@ import { apiUrl } from '../../App.js';
 import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Email, AccountCircle } from '@mui/icons-material';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 class UserAccount extends Component {
     constructor(props) {
@@ -41,14 +42,30 @@ class UserAccount extends Component {
         this.handleDialogClose = this.handleDialogClose.bind(this);
     }
 
+    // handleChange has been altered to account for the 20 character limit for password
     handleChange(e) {
         const { id, value } = e.target;
 
+        // This will create an error message if password is empty and/or exceeding the 20 character limit
+        let errorMessage = '';
+        if(value.trim() === '') {
+            errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
+        } else if(id === 'password' && value.length > MAX_PASSWORD_LENGTH) {
+            errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;                          // checks if password is not exceeding 20 characters
+        } else if(id === 'confirmationPassword' && value.length > MAX_PASSWORD_LENGTH) {
+            errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;                          // checks if confirmationPassword is not exceeding 20 characters
+        }
+
+        // this.setState() used to contain the code below.
+        //
+        //[id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+        //
+        // part of it was moved to errrorMessage and replaced with [id]: errorMessage,
         this.setState({
             [id]: value,
             errors: {
                 ...this.state.errors,
-                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                [id]: errorMessage,
             },
         });
     };
@@ -130,6 +147,8 @@ class UserAccount extends Component {
         return 'WEAK';
     };
 
+    // 2 new 'validation' / error handling statemetns where added below
+    // both check that character length does not exceed 20
     setPassword() {
         const cookies = new Cookies();
         const user = cookies.get('user');
@@ -147,6 +166,24 @@ class UserAccount extends Component {
         if (pass2 === '') {
             this.setState({
                 errorMessage: "Confirm Password cannot be empty"
+            });
+
+            return;
+        }
+
+        // this is an error check to see if password is not exceeding MAX_PASSWORD_LENGTH characters
+        if (pass1.length > MAX_PASSWORD_LENGTH) {
+            this.setState({
+                errorMessage: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`
+            });
+
+            return;
+        }
+
+        // this is an error check to see if confirmationPassword is not exceeding 20 characters
+        if (pass2.length > MAX_PASSWORD_LENGTH) {
+            this.setState({
+                errorMessage: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`
             });
 
             return;
@@ -295,6 +332,7 @@ class UserAccount extends Component {
                                                 error={!!errors.password}
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
+                                                inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
                                                 aria-label="setNewPasswordInput"
                                                 InputProps={{
                                                     endAdornment: (
@@ -352,6 +390,7 @@ class UserAccount extends Component {
                                             error={!!errors.confirmationPassword}
                                             helperText={errors.confirmationPassword}
                                             onChange={this.handleChange}
+                                            inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}          // the maximum character length of confirmationPassword has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
                                             aria-label="setNewPasswordConfirmInput"
                                         />
 
