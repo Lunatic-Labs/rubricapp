@@ -62,7 +62,7 @@ class ViewCourses extends Component {
       },
       {
         name: "use_tas",
-        label: "Use T.A.s",
+        label: "Use T.A's",
         options : {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
@@ -107,16 +107,15 @@ class ViewCourses extends Component {
             customBodyRender: (courseId) => {
               return (
                 <IconButton id={courseId}
+                role = "img" aria-label='editCourseIconButton'
                   className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
-                  disabled={courseRoles[courseId] !== 3}
                   onClick={() => {
                     if(courseRoles[courseId]===3) {
                       setAddCourseTabWithCourse(courses, courseId, "AddCourse")
                     }
                 }}
-                  aria-label={`Edit course`}
                  >
-                  <EditIcon sx={{color:"black"}} aria-hidden="true"/>
+                  <EditIcon sx={{color:"black"}}/>
                 </IconButton>
               )
             },
@@ -136,6 +135,7 @@ class ViewCourses extends Component {
           customBodyRender: (courseId) => {
             return (
                 <IconButton id={courseId}
+                role = "img" aria-label="viewCourseIconButton"
                    onClick={() => {
                     // The logged in user is an Admin in the course
                     if(courseRoles[courseId] === 3) {
@@ -146,8 +146,8 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                aria-label={`View course`}>
-                  <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
+                >
+                  <VisibilityIcon sx={{color:"black"}} />
                 </IconButton>
             )
           },
