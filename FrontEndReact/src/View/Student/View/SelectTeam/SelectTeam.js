@@ -47,11 +47,6 @@ class SelectTeam extends Component {
             ).then((result) => {
                 if (result !== undefined && result.errorMessage === null) {
                     navbar.setState({ teamSwitchPassword: null });
-
-                    if (navbar.refreshCheckins) {
-                        navbar.refreshCheckins();
-                    }
-                    
                     navbar.setNewTab("StudentDashboard");
                 } else if (result && result.errorMessage) {
                     this.setState({

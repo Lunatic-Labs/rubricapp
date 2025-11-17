@@ -92,7 +92,6 @@ class ViewCompletedAssessmentTasks extends Component {
                     }
                 }
             },
-
             {
                 name: "assessment_task_id",
                 label: "View",
@@ -101,36 +100,33 @@ class ViewCompletedAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
                     setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
-                    customBodyRender: (atId, tableMeta) => {
+                    customBodyRender: (atId) => {
                         return (
                             <div>
                                 <IconButton
                                     onClick={() => {
-                                        const rowIndex = tableMeta.rowIndex;
-                                        const singularCompletedAssessment = completedAssessments[rowIndex];
-                                        
-                                        if (singularCompletedAssessment) {
-                                            genericResourcePOST(
-                                                `/rating`,
-                                                this,
-                                                JSON.stringify({
-                                                    "user_id": singularCompletedAssessment.user_id,
-                                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
-                                                }),
-                                            );
-                                            
-                                            this.props.navbar.setAssessmentTaskInstructions(
-                                                assessmentTasks,
-                                                atId,
-                                                completedAssessments,
-                                                { 
-                                                    readOnly: true, 
-                                                    skipInstructions: true,
-                                                    teamId: singularCompletedAssessment.team_id
-                                                }
-                                            );
-                                        }
-                                    }}
+                              var singularCompletedAssessment = null;
+                              if (completedAssessments) {
+                                  singularCompletedAssessment
+                                      = completedAssessments.find(
+                                          completedAssessment => completedAssessment.assessment_task_id === atId
+                                      ) ?? null;
+                              }
+                              genericResourcePOST(
+                                `/rating`,
+                                this,
+                                JSON.stringify({
+                                    "user_id" : singularCompletedAssessment.user_id,
+                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
+                                }),
+                              );
+                              this.props.navbar.setAssessmentTaskInstructions(
+                                  assessmentTasks,
+                                  atId,
+                                  completedAssessments,
+                                  { readOnly: true, skipInstructions: true }
+                              );
+                                      }}
                                     aria-label="completedAssessmentTasksViewIconButton"
                                 >
                                     <VisibilityIcon sx={{color:"black"}} />

@@ -162,9 +162,6 @@ class ViewAssessmentTasks extends Component {
                         
                         // Check if user is switching teams (already checked in)
                         const isSwitchingTeams = this.props.checkin.indexOf(atId) !== -1;
-                        
-                        // Get the checked-in team for this assessment
-                        const checkedInTeamId = this.props.checkinTeamMap?.get(atId);
 
                         return (
                             <Box
@@ -176,20 +173,44 @@ class ViewAssessmentTasks extends Component {
                                 {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] &&
                                     <Button
                                         className='primary-color'
+
                                         style={{
                                             width: "fit-content",
                                             margin: "5px",
                                             display:  role["role_id"] === 5 ? "block" : "none"
                                         }}
+
                                         variant='contained'
+
                                         onClick={() => {
                                             const hasPassword = at.create_team_password && at.create_team_password.trim() !== '';
-                                            const needsPasswordPrompt = isSwitchingTeams && hasPassword;
-                                            
-                                            if (needsPasswordPrompt) {
-                                                navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
-                                            } else {
-                                                navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                            const isFixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
+
+                                            if (isFixedTeams) {
+                                                if (!isSwitchingTeams) {
+                                                    // For check in: don't ask for password
+                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, false);
+                                                } 
+                                                else if (hasPassword) {
+                                                    // Switching teams WITH password: ask for password
+                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
+                                                }
+                                                else {
+                                                    // Switching teams WITHOUT password: don't ask for password
+                                                    navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                                }
+                                            }
+                                            else {
+                                                // For ad-hoc teams:
+
+                                                if (isSwitchingTeams && hasPassword) {
+                                                    // Switching teams WITH password: ask for password
+                                                    navbar.setConfirmCurrentTeam(assessmentTasks, atId, true);
+                                                }
+                                                else {
+                                                    // Checking in or switching without a password set: don't ask for password
+                                                    navbar.setSelectCurrentTeam(assessmentTasks, atId);
+                                                }
                                             }
                                         }}
                                     >
@@ -199,27 +220,45 @@ class ViewAssessmentTasks extends Component {
 
                                 <Button
                                     className='primary-color'
+
                                     style={{
                                         width: "fit-content",
                                         margin: "5px"
                                     }}
+
                                     variant='contained'
+
                                     disabled={role["role_id"] === 5 ?
-                                        // For team assessments, require check-in (checkedInTeamId must exist)
-                                        ((at.unit_of_assessment && !checkedInTeamId) ||
-                                        this.isObjectFound(atId) === true || 
-                                        !filledByStudent)
+                                        ((this.props.checkin.indexOf(atId) === -1 &&
+                                        (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) ||
+                                        this.isObjectFound(atId) === true || !filledByStudent)
                                     :
                                         this.areAllATsComplete(atId) === true
                                     }
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(
-                                            assessmentTasks, 
-                                            atId, 
-                                            chosenCAT,
-                                            checkedInTeamId
-                                        );
+                                        let relevantCAT = null;
+                                        
+                                        if (role["role_id"] === 5 && at.unit_of_assessment) {
+                                            // For students on team assessments, find THEIR team's CAT
+                                            
+                                            relevantCAT = this.props.completedAssessments.find(cat => 
+                                                cat.assessment_task_id === atId && 
+                                                this.props.userTeamIds.includes(cat.team_id)
+                                            );
+                                        } else if (role["role_id"] === 5) {
+                                            // For individual assessments, find their personal CAT
+                                            relevantCAT = this.props.completedAssessments.find(cat => 
+                                                cat.assessment_task_id === atId && 
+                                                cat.team_id === null
+                                            );
+                                        } else {
+                                            // For TAs, use chosenCAT as before
+                                            relevantCAT = chosenCAT;
+                                        }
+                                        
+                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId, relevantCAT);
                                     }}
+
                                     aria-label="startAssessmentTasksButton"
                                 >
                                     START
@@ -229,7 +268,6 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             }
-
         ]
 
         const options = {

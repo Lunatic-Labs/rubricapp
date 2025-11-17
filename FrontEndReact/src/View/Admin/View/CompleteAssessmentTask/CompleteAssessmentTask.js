@@ -93,43 +93,10 @@ class CompleteAssessmentTask extends Component {
         );
 
         if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
-            if (adHocMode) {
-                // For ad-hoc, keep existing behavior
-                genericResourceGET(
-                    `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}&adhoc_mode=${adHocMode}`,
-                    "teams", this, { dest: "userFixedTeam" }
-                );
-            } else {
-                // For fixed teams, get the team from check-in data for this specific assessment
-                genericResourceGET(
-                    `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}&user_id=${this.currentUserId}`,
-                    "checkin", this
-                ).then((result) => {
-                    if (result && result.checkin && result.checkin.length > 0) {
-                        const checkin = result.checkin[0];
-                        const checkedInTeamId = checkin.team_number;
-                        
-                        // Fetch the team details for the checked-in team
-                        genericResourceGET(
-                            `/team?course_id=${chosenCourse["course_id"]}`,
-                            "teams", this
-                        ).then((teamsResult) => {
-                            if (teamsResult && teamsResult.teams) {
-                                const userTeam = teamsResult.teams.find(t => t.team_id === checkedInTeamId);
-                                this.setState({
-                                    userFixedTeam: userTeam ? [userTeam] : null
-                                });
-                            }
-                        });
-                    } else {
-                        // No check-in found, fall back to course-level team
-                        genericResourceGET(
-                            `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}&adhoc_mode=false`,
-                            "teams", this, { dest: "userFixedTeam" }
-                        );
-                    }
-                });
-            }
+            genericResourceGET(
+                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}&adhoc_mode=${adHocMode}`,
+                "teams", this, { dest: "userFixedTeam" }
+            );
         }
 
         genericResourceGET(
@@ -144,6 +111,7 @@ class CompleteAssessmentTask extends Component {
                         "teams_users", this, { dest: "teamsUsers" }
                     );
                 } else {
+                    // Fetch checkins and users to map them for adhoc mode
                     Promise.all([
                         genericResourceGET(
                             `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
@@ -154,6 +122,7 @@ class CompleteAssessmentTask extends Component {
                             "users", this
                         )
                     ]).then(([checkinResponse, userResponse]) => {
+                        // Map users to teams based on checkins
                         const teamsUsersMap = {};
                         const checkins = checkinResponse.checkin || [];
                         const users = userResponse.users || [];
@@ -162,6 +131,7 @@ class CompleteAssessmentTask extends Component {
                             teamsUsersMap[team.team_id] = [];
                         });
                     
+                        // Add users to teams based on their checkins
                         checkins.forEach(checkin => {
                             const userId = checkin.user_id;
                             const teamId = checkin.team_number;
@@ -189,6 +159,11 @@ class CompleteAssessmentTask extends Component {
             `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
             "completed_assessments", this, { dest: "completedAssessments" }
         );
+
+        genericResourceGET(
+            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
+            "completed_assessments", this, { dest: "completedAssessments" }
+        );
         
         //const checkinEventSource = createEventSource(
         //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
@@ -205,9 +180,9 @@ class CompleteAssessmentTask extends Component {
 
 
         this.setState({
-        checkinEventSource: null,
-    })
-}
+            checkinEventSource: null,
+        })
+    }
     
     componentWillUnmount() {
         this.state.checkinEventSource?.close();
