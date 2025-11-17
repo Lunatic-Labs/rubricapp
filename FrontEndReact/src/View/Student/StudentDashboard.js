@@ -100,7 +100,6 @@ class StudentDashboard extends Component {
 
         genericResourceGET(`/assessment_task?course_id=${chosenCourse}`, "assessment_tasks", this, { dest: "assessmentTasks" });
 
-        // For a student, the role_id is not added calling a different route.
         const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
         
         genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" })
@@ -127,14 +126,11 @@ class StudentDashboard extends Component {
             return;
         }
 
-        // For students (role_id === 5), wait for userTeamIds to be populated
-        // For TAs (role_id === 4), userTeamIds isn't needed
         const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
 
         if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
             const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
 
-            // Remove ATs where the ID matches one of the IDs in the CATs (ATs that are completed/locked/past due are moved to CATs).
             let filteredCompletedAssessments = [];
             let filteredAvgData = [];
             let finishedCats = [];
@@ -144,8 +140,6 @@ class StudentDashboard extends Component {
             const roleId = roles["role_id"];
             
             const getCATKey = (assessment_task_id, team_id, isTeamAssessment) => {
-                // For team assessments, include team_id in the key
-                // For individual assessments, just use assessment_task_id
                 if (isTeamAssessment && team_id !== null) {
                     return `${assessment_task_id}-${team_id}`;
                 }

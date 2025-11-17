@@ -62,8 +62,6 @@ class ViewAssessmentTaskInstructions extends Component {
         } catch (error) {
             console.error('Error in recording feedback view:', error);
         }
-
-        console.log('Navigating to ViewStudentCompleteAssessmentTask');
         this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
     }
 
