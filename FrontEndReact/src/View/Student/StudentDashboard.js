@@ -23,7 +23,8 @@ import Loading from '../Loading/Loading.js';
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
  *  @property {Array}  filteredCATs - All valid CATs for the course and user.
- *  @property {Array}  userTeamIds -Figured out user teams.
+ *  @property {Array}  fullyDoneCATS - All CATs that should display in the completed assessments section only.
+ *  @property {Array}  userTeamIds - Figured out user teams.
  *  @property {Array}  averageData  - Averages for all completed assessment task rubrics.
  * 
  */
@@ -67,7 +68,8 @@ class StudentDashboard extends Component {
 
             filteredATs: null,
             filteredCATs: null,
-            userTeamIds: [],
+            userTeamIds: null,
+            fullyDoneCATS: null,
 
             // Added for rubric grouping
             rubrics: null,
@@ -124,6 +126,7 @@ class StudentDashboard extends Component {
             // Remove ATs where the ID matches one of the IDs in the CATs (ATs that are completed/locked/past due are shifted to CATs).
             let filteredCompletedAssessments = [];
             let filteredAvgData = [];
+            let finishedCats = [];
 
             const CATmap = new Map();
             const AVGmap = new Map();
@@ -131,9 +134,10 @@ class StudentDashboard extends Component {
             completedAssessments.forEach(cat => {
                 const team_id = cat.team_id;
                 if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){
-                     CATmap.set(cat.assessment_task_id, cat);
+                    CATmap.set(cat.assessment_task_id, cat);
                 }
              });
+
             averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
             const currentDate = new Date();
@@ -154,8 +158,8 @@ class StudentDashboard extends Component {
                 const viewable = !done && correctUser && !locked && published && !pastDue;
                 const CATviewable = correctUser === false && done === false;
 
-                if (!viewable && !CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
-                    filteredCompletedAssessments.push(cat);
+                if (!CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                    viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
                     filteredAvgData.push(avg);
                 }
 
@@ -249,6 +253,7 @@ class StudentDashboard extends Component {
             this.setState({
                 filteredATs: filteredAssessmentTasks,
                 filteredCATs: filteredCompletedAssessments,
+                fullyDoneCATS: finishedCats,
 
                 rubricNames: rubricNameMap,
                 chartData,
@@ -260,9 +265,9 @@ class StudentDashboard extends Component {
         const {
             roles,
             assessmentTasks,
-            completedAssessments,
             filteredATs,
             filteredCATs,
+            fullyDoneCATS,
         } = this.state; 
 
         // Wait for information to be filtered.
@@ -310,7 +315,7 @@ class StudentDashboard extends Component {
                             navbar={navbar}
                             role={roles}
                             filteredAssessments={filteredATs}
-                            CompleteAssessments={completedAssessments}
+                            CompleteAssessments={filteredCATs}
                         />
                     </Box>
                 </Box>
@@ -335,7 +340,7 @@ class StudentDashboard extends Component {
                                 navbar={navbar}
                                 role={roles}
                                 assessmentTasks={assessmentTasks}
-                                filteredCompleteAssessments={filteredCATs}
+                                filteredCompleteAssessments={fullyDoneCATS}
                             />
                         }
                     </Box>

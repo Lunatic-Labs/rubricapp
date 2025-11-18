@@ -226,7 +226,7 @@ h4, h5 {
 /* Checkbox color variables */
 .checkbox-colors {
   --checkbox-bg-checked: #ADCBEE;
-  --checkbox-bg-unchecked: #D9D9D9;
+  --checkbox-bg-unchecked: #3a3a3ab1;
   --checkbox-color-checked: #2E8BEF;
 }
 
@@ -295,6 +295,22 @@ h4, h5 {
   background-color: var(--dropdown-bg) !important;
 }
 
+/* Text box color variables */
+.text-box-colors {
+  --textbox-bg: #ffffff;
+  --textbox-text: #000000;
+  --textbox-border: #0000003b;
+  --textbox-border-hover: #000000de;
+  --textbox-border-focused: #2E8BEF;
+  --textbox-error: #d32f2f;
+  --textbox-label: rgba(0, 0, 0, 0.6);
+}
+
+/* Button color variables */
+.button-colors {
+  --button-text: #2E8BEF;
+  --button-hover: rgba(46, 139, 239, 0.08);
+}
 
 :root {
   --text-color: #000000;
@@ -416,7 +432,7 @@ body.mode .navbar-arrow {
 
 body.mode .checkbox-colors {
   --checkbox-bg-checked: #32485d;
-  --checkbox-bg-unchecked: #3a3a3a;
+  --checkbox-bg-unchecked: #D9D9D9b1;
   --checkbox-color-checked: #58a1f0;
 }
 
@@ -475,7 +491,7 @@ body.mode .generic-text-color {
 }
 
 body.mode .dropdown-colors {
-  --dropdown-bg: #202020ff;
+  --dropdown-bg: #262626ff;
   --dropdown-text: #e0e0e0;
   --dropdown-border: #ffffff3b;
   --dropdown-label: #ffffffb3;
@@ -491,9 +507,22 @@ body.mode .dropdown-colors .MuiOutlinedInput-root:hover .MuiOutlinedInput-notche
   border-color: #ffffff !important;
 }
 
-body.mode .dropdown-colors .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
-  border-color: #ffffff !important;
+/* Dark mode text box colors */
+body.mode .text-box-colors {
+  --textbox-bg: #262626ff;
+  --textbox-text: #e0e0e0;
+  --textbox-border: #ffffff3b;
+  --textbox-border-hover: #ffffff;
+  --textbox-border-focused: #4193eb;
+  --textbox-error: #ff6b6b;
+  --textbox-label: #a0a0a0;
 }
+
+body.mode .button-colors {
+  --button-text: #3a93f3;
+  --button-hover: #3a93f314;
+}
+
 
 /* Dark mode text colors for general content */
 body.mode {
@@ -502,4 +531,31 @@ body.mode {
 
 body.mode .MuiSlider-markLabel {
   color: #e0e0e0;
+}
+
+/* ============================================ */
+/* FIX FOR WHITE LINE AT BOTTOM */
+/* ============================================ */
+
+/* Remove any white borders from html and body */
+body.mode,
+body.mode html,
+body.mode #root {
+    background-color: #1a1a1a !important;
+    border: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove any bottom borders that might cause white lines */
+body.mode *:last-child {
+    border-bottom: none !important;
+}
+
+/* Ensure main content area has no white borders */
+body.mode main,
+body.mode .main-content,
+body.mode .app-container {
+    background-color: #1a1a1a;
+    border: none !important;
 }
