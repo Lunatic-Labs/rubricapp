@@ -253,28 +253,26 @@ class AdminAddUser extends Component {
         });
 
         let promise;
-        let owner_id = cookies.get('user')['user_id'];
+let owner_id = cookies.get('user')['user_id'];
 
-        if(user === null && addUser === false) {
-            if(navbar.props.isSuperAdmin) {
-                promise = genericResourcePOST(`/user`, this, body);
-            } else {
-                promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}&owner_id=${owner_id}`, this, body);
-            }
-
-        } else if (user === null && addUser === true && navbar.props.isSuperAdmin) {
-            promise = genericResourcePOST(`/user`, this, body);
-        } else if (user !== null && addUser === false && navbar.props.isSuperAdmin) {
-            promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
-        } else {
-            promise = (email !== originalEmail)
-
-                // The email has been updated, pass the new email
-                ? genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}&new_email=${email}&owner_id=${owner_id}`, this, body)
-
-                // The email has not been updated, no need to pass the new email
-                : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
-        }
+// Case 1: Super Admin adding a new user (user is null, addUser can be true or false)
+if (user === null && navbar.props.isSuperAdmin) {
+    promise = genericResourcePOST(`/user`, this, body);
+}
+// Case 2: Super Admin editing an existing user
+else if (user !== null && navbar.props.isSuperAdmin) {
+    promise = genericResourcePUT(`/user?uid=${user["user_id"]}`, this, body);
+}
+// Case 3: Non-super admin adding a new user
+else if (user === null && !navbar.props.isSuperAdmin) {
+    promise = genericResourcePOST(`/user?course_id=${chosenCourse["course_id"]}&owner_id=${owner_id}`, this, body);
+}
+// Case 4: Non-super admin editing an existing user
+else if (user !== null && !navbar.props.isSuperAdmin) {
+    promise = (email !== originalEmail)
+        ? genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}&new_email=${email}&owner_id=${owner_id}`, this, body)
+        : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
+}
 
         promise
   .then((result) => {
