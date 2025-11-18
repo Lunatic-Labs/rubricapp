@@ -34,18 +34,18 @@ class RosterDashboard extends Component {
                   aria-label="studentBulkUploadButton"
                 >
                   Student Bulk Upload
-                </Button>
+                        </Button>
 
-                <Button
-                  className="primary-color"
-                  variant="contained"
-                  onClick={() => {
-                    navbar.setState({ user: null, addUser: true });
-                  }}
-                  aria-label="addUserButton"
-                >
-                  Add User
-                </Button>
+                        <Button
+                            className="primary-color"
+                            variant="contained"
+                            onClick={() => {
+                                navbar.setState({ user: null, addUser: true });
+                            }}
+                            aria-label="addUserButton"
+                        >
+                            Add User
+                        </Button>
               </Box>
             </Box>
 

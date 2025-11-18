@@ -1,14 +1,12 @@
-import React, { Component } from 'react';
-import 'bootstrap/dist/css/bootstrap.css';
-import ViewUsers from './ViewUsers.js';
-import AdminAddUser from '../../Add/AddUsers/AdminAddUser.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
-import { Box } from '@mui/material';
-import Loading from '../../../Loading/Loading.js';
-import SuccessMessage from '../../../Success/SuccessMessage.js';
-
-
+import React, { Component } from "react";
+import "bootstrap/dist/css/bootstrap.css";
+import ViewUsers from "./ViewUsers.js";
+import AdminAddUser from "../../Add/AddUsers/AdminAddUser.js";
+import ErrorMessage from "../../../Error/ErrorMessage.js";
+import { genericResourceGET, parseRoleNames } from "../../../../utility.js";
+import { Box } from "@mui/material";
+import Loading from "../../../Loading/Loading.js";
+import SuccessMessage from "../../../Success/SuccessMessage.js";
 
 class AdminViewUsers extends Component {
   constructor(props) {
