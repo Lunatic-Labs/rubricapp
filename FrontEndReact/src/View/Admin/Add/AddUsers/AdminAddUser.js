@@ -221,7 +221,6 @@ class AdminAddUser extends Component {
     var navbar = this.props.navbar;
     var state = navbar.state;
     var user = state.user;
-    var addUser = state.addUser;
     var confirmCreateResource = navbar.confirmCreateResource;
     var chosenCourse = state.chosenCourse;
 
