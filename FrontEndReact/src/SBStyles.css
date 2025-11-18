@@ -314,7 +314,7 @@ h4, h5 {
 
 /* Shadow color variable */
 :root {
-  --box-shadow: #d6d6d6;
+  --box-shadow: #6e6e6ecb;
 }
 
 :root {
@@ -533,7 +533,7 @@ body.mode .button-colors {
 
 /* Dark mode shadow */
 body.mode {
-  --box-shadow: #848484;
+  --box-shadow: #848484b8;
 }
 
 
