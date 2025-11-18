@@ -564,13 +564,6 @@ body.mode html,
 body.mode #root {
     background-color: #1a1a1a !important;
     border: none !important;
-    margin: 0;
-    padding: 0;
-}
-
-/* Remove any bottom borders that might cause white lines */
-body.mode *:last-child {
-    border-bottom: none !important;
 }
 
 /* Ensure main content area has no white borders */
