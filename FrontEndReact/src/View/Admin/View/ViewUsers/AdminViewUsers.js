@@ -93,41 +93,26 @@ class AdminViewUsers extends Component {
                 </div>
             )
 
-        } else if (!isLoaded || !users || !roles) {
-            return(
-                <Loading />
-            )
-
-        } else if (user===null && addUser===null) {
-
-            return(
-                <Box>
-                    {successMessage !== null && 
-                        <div className='container'>
-                          <SuccessMessage 
-                            successMessage={successMessage}
-                            aria-label="adminViewUsersSuccessMessage"
-                          />
-                        </div>
-                    }
-                    <ViewUsers
-                        navbar={navbar}
-                        onError={this.setErrorMessage}
-                        onSuccess={this.setSuccessMessage}
-                        refreshData={this.fetchData}
+        } else if ((!user || !user.user_id) && isLoaded && users && roles) {
+    return(
+        <Box>
+            {successMessage !== null && 
+                <div className='container'>
+                    <SuccessMessage 
+                        successMessage={successMessage}
+                        aria-label="adminViewUsersSuccessMessage"
                     />
-                </Box>
-            )
-
-        } else {
-            return(
-                <Box>
-                    <AdminAddUser
-                        navbar={navbar}
-                    />
-                </Box>
-            )
-        }
+                </div>
+            }
+            <ViewUsers
+                navbar={navbar}
+                onError={this.setErrorMessage}
+                onSuccess={this.setSuccessMessage}
+                refreshData={this.fetchData}
+            />
+        </Box>
+    )
+}
     }
 }
 
