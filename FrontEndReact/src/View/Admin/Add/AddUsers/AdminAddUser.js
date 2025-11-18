@@ -318,38 +318,38 @@ else if (user !== null && !navbar.props.isSuperAdmin) {
     };
 
     render() {
-        const {
-            errors,
-            errorMessage,
-            validMessage,
-            firstName,
-            lastName,
-            email,
-            role,
-            lmsId,
-            editUser
-        } = this.state;
-       
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var confirmCreateResource = navbar.confirmCreateResource;
-        var addUser = state.addUser;
-        return (
-            <React.Fragment>
-                { errorMessage &&
-                    <ErrorMessage
-                        add={addUser}
-                        resource={"User"}
-                        errorMessage={errorMessage}
-                    />
-                }
+    const {
+        errors,
+        errorMessage,
+        validMessage,
+        firstName,
+        lastName,
+        email,
+        role,
+        lmsId,
+        editUser
+    } = this.state;
+   
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var confirmCreateResource = navbar.confirmCreateResource;
+    
+    return (
+        <React.Fragment>
+            { errorMessage &&
+                <ErrorMessage
+                    add={state.addUser}
+                    resource={"User"}
+                    errorMessage={errorMessage}
+                />
+            }
 
-                { validMessage!=="" &&
-                    <ErrorMessage
-                        add={addUser}
-                        error={validMessage}
-                    />
-                }
+            { validMessage!=="" &&
+                <ErrorMessage
+                    add={state.addUser}
+                    error={validMessage}
+                />
+            }
 
                 <Box className="card-spacing">
                     <DropConfirmation
