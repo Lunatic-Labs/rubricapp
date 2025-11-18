@@ -274,13 +274,18 @@ else if (user !== null && !navbar.props.isSuperAdmin) {
         : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
 }
 
-        promise
-  .then((result) => {
+        promise.then((result) => {
     if (result && result.errorMessage == null) {
-      // success: ensure any old email error is cleared
-      this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
-      confirmCreateResource("User");
-      return;
+        // success: ensure any old email error is cleared
+        this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
+        
+        // Refresh the users list before closing the form
+        if (navbar.refreshUsersList) {
+            navbar.refreshUsersList();
+        }
+        
+        confirmCreateResource("User");
+        return;
     }
 
     // Duplicate email → inline field error (no global toast)

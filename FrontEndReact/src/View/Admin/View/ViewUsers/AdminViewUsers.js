@@ -38,19 +38,54 @@ class AdminViewUsers extends Component {
     genericResourceGET("/role?", "roles", this);
   };
 
-  componentDidMount() {
+componentDidMount() {
     this.fetchData();
-  }
+    // Expose fetchData to navbar so it can be called after adding a user
+    this.props.navbar.refreshUsersList = this.fetchData;
+}
 
-  componentDidUpdate() {
-    if (
-      this.state.users &&
-      this.state.users.length !== this.state.prevUsersLength
-    ) {
-      this.setState({ prevUsersLength: this.state.users.length });
-      this.fetchData();
+componentWillUnmount() {
+    // Clean up the reference
+    if (this.props.navbar.refreshUsersList) {
+        delete this.props.navbar.refreshUsersList;
     }
-  }
+}
+
+
+componentDidUpdate(prevProps, prevState) {
+    const navbar = this.props.navbar;
+    const prevNavbar = prevProps.navbar;
+    
+    // Check if we were in add/edit mode before
+    const wasAddingOrEditing = 
+        prevNavbar.state.addUser === true || 
+        (prevNavbar.state.user && typeof prevNavbar.state.user === "object" && prevNavbar.state.user.user_id);
+    
+    // Check if we're now viewing the roster
+    const isNowViewingRoster = 
+        navbar.state.addUser !== true && 
+        (!navbar.state.user || typeof navbar.state.user !== "object" || !navbar.state.user.user_id);
+    
+    // Refetch when transitioning back from add/edit form to roster
+    if (wasAddingOrEditing && isNowViewingRoster) {
+        this.fetchData();
+    }
+}
+
+fetchData = () => {
+    var navbar = this.props.navbar;
+    if (navbar.props.isSuperAdmin) {
+        // Fixed: added opening parenthesis
+        genericResourceGET(`/user?isAdmin=True`, "users", this);
+    } else {
+        genericResourceGET(
+            `/user?course_id=${navbar.state.chosenCourse["course_id"]}`,
+            "users",
+            this
+        );
+    }
+    genericResourceGET("/role?", "roles", this);
+};
 
   setErrorMessage = (errorMessage) => {
     this.setState({ errorMessage: errorMessage });
