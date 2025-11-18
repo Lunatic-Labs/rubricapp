@@ -234,6 +234,7 @@ def get_test_student_token(course_id):
             print(f"Test student not found, creating one...")
             
             try:
+                #comment 
                 # Create test student
                 secure_password = generate_secure_password(14)
                 test_student = User(
