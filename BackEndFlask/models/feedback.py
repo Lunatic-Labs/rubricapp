@@ -1,6 +1,6 @@
 from core import db
 from models.schemas import Feedback
-from datetime import datetime
+from datetime import datetime, timezone
 from models.utility import error_log
 
 class InvalidFeedbackID(Exception):
@@ -46,7 +46,7 @@ def create_feedback(feedback_data):
         user_id=feedback_data.get("user_id"),
         team_id=feedback_data.get("team_id"),
         completed_assessment_id=feedback_data["completed_assessment_id"],
-        feedback_time=datetime.strptime(feedback_data["feedback_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
+        feedback_time=feedback_data.get("feedback_time", datetime.now(timezone.utc)),
     )
 
     db.session.add(new_feedback)
@@ -67,7 +67,7 @@ def load_demo_feedback():
     create_feedback({
         "completed_assessment_id": 1,
         "user_id": 3,
-        "feedback_time": "2027-04-25T09:30:00.000000Z",
+        "feedback_time": datetime.now(timezone.utc),
     })
 
 @error_log

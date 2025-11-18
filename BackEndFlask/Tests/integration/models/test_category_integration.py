@@ -1,28 +1,16 @@
 import pytest
 from core import db
-from models.category import (
-    create_category,
-    get_category,
-    get_categories,
-    get_categories_per_rubric,
-    get_ratings_by_category,
-    replace_category,
-    InvalidCategoryID,
-)
-from models.rubric_categories import (
-    create_rubric_category,
-    delete_rubric_categories_by_rubric_id,
-)
-from Tests.PopulationFunctions import (
-    create_one_admin_course,
-    delete_one_admin_course,
-    cleanup_test_users,
-)
+from models.category import *
+from models.rubric_categories import *
+from Tests.PopulationFunctions import *
 from models.schemas import Category, Rubric, RubricCategory
-from models.rubric import create_rubric
-from models.loadExistingRubrics import load_existing_categories
-from integration.integration_helpers import sample_rubric, sample_category
-from models.queries import get_categories_for_user_id
+from models.loadExistingRubrics import *
+from integration.integration_helpers import *
+from models.queries import *
+from models.user import create_user, delete_user
+from models.rubric import delete_rubric_by_id
+from models.ratings_numbers import *
+
 
 def test_create_and_get_category(flask_app_mock):
     """Verify a category can be created and retrieved."""
@@ -34,7 +22,7 @@ def test_create_and_get_category(flask_app_mock):
 
             fetched = get_category(category.category_id)
             assert fetched.category_name == "Critical Thinking"
-            assert "Excellent" in fetched.rating_json
+            assert fetched.rating_json["3"] == "Partially"
 
         finally:
             # Cleanup
@@ -52,12 +40,12 @@ def test_replace_category(flask_app_mock):
             updated_data = (
                 "Analytical Thinking",
                 "Assess ability to analyze and evaluate information",
-                '{"Outstanding":5,"Satisfactory":3,"Needs Improvement":1}'
+                consistently
             )
             replaced = replace_category(updated_data, category.category_id)
 
             assert replaced.category_name == "Analytical Thinking"
-            assert "Outstanding" in replaced.rating_json
+            assert "Sometimes" in replaced.rating_json.values()
 
         finally:
             # Cleanup
@@ -92,10 +80,15 @@ def test_get_ratings_by_category(flask_app_mock):
     """Verify ratings JSON is retrieved correctly."""
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
-        
-        cat = sample_category()
+        cat_name = "Interpreting"
+        desc = "Provided meaning to data, made inferences and predictions from data."
+        rating = accurately
+        cat = sample_category(cat_name=cat_name, desc=desc, rating=rating)
         ratings = get_ratings_by_category(cat.category_id)
-        assert '"Good":4' in ratings
+        assert "No evidence" in ratings.values()
+        assert rating["1"] == "Inaccurately"
+        assert rating["4"] == ""
+        assert rating["5"] == "Accurately"
 
         db.session.delete(cat)
         db.session.commit()
@@ -247,3 +240,65 @@ def test_get_categories_for_user_id(flask_app_mock):
                 delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
+
+def test_get_rubrics_and_total_categories(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            load_existing_rubrics()
+            load_existing_categories()
+
+            rc = get_rubrics_and_total_categories(1)
+            assert any(r.rubric_name == "Metacognition" for r in rc)
+            assert any(c.category_total == 10 for c in rc)
+
+            count = 0
+            for c in rc:
+                count += c.category_total
+            assert count == 74
+
+        finally:
+           cleanup_test_users(db.session)
+
+def test_get_rubrics_and_total_categories_for_user_id(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            load_existing_rubrics()
+            load_existing_categories()
+
+            user_data = sample_user()
+            user = create_user(user_data)
+            rubric = sample_rubric(user.user_id)
+            cat = sample_category(cat_name="Test Category")
+            create_rubric_category({
+                "rubric_id": rubric.rubric_id,
+                "category_id": cat.category_id,
+            })
+
+            rc1 = get_rubrics_and_total_categories_for_user_id(user.user_id)
+            assert all(r.rubric_name == "Integration Test Rubric" for r in rc1)
+            assert all(c.category_total == 1 for c in rc1)
+
+            rc2 = get_rubrics_and_total_categories_for_user_id(user.user_id, True)
+            assert any(r.rubric_name == "Modeling" for r in rc2)
+            assert any(c.category_total == 10 for c in rc2)
+            assert any(c.category_total == 1 for c in rc2)
+
+            count = 0
+            for c in rc2:
+                count += c.category_total
+            assert count == 75
+        
+        finally:
+            try:
+                db.session.delete(cat)
+                db.session.commit()
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_user(user.user_id)
+                cleanup_test_users(db.session)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+            

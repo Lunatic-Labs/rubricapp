@@ -42,12 +42,35 @@ def flask_app_mock():
     mock_app.db = db
     yield mock_app
 
-    # Drop the database after test
-    with engine.connect() as conn:
-        conn.execute(text(f"DROP DATABASE IF EXISTS `{os.getenv('MYSQL_DATABASE')}`"))
-
+    # Cleanup
     with app.app_context():
-        db.session.close()
-        db.engine.dispose()
-    close_all_sessions()
-
+        # Remove session and rollback any pending transactions
+        try:
+            db.session.remove()
+        except Exception as e:
+            print(f"Session cleanup warning: {e}")
+        
+        # Dispose of engine connections
+        try:
+            db.engine.dispose()
+        except Exception as e:
+            print(f"Engine dispose warning: {e}")
+    
+    # Close all sessions safely
+    try:
+        close_all_sessions()
+    except Exception as e:
+        print(f"Close all sessions warning: {e}")
+    
+    # Drop the database after sessions are closed
+    try:
+        with engine.connect() as conn:
+            conn.execute(text(f"DROP DATABASE IF EXISTS `{os.getenv('MYSQL_DATABASE')}`"))
+    except Exception as e:
+        print(f"Database drop warning: {e}")
+    
+    # Dispose of the temporary engine
+    try:
+        engine.dispose()
+    except Exception as e:
+        print(f"Temp engine dispose warning: {e}")

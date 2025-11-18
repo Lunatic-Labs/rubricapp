@@ -18,14 +18,13 @@ from Tests.PopulationFunctions import (
 )
 from integration.integration_helpers import (
     build_sample_task_payload, 
-    sample_completed_assessment,
     sample_rubric,
     sample_team,
     sample_checkin
 )
 from models.assessment_task import create_assessment_task, delete_assessment_task
 from models.rubric import delete_rubric_by_id
-from models.queries import get_all_checkins_for_assessment
+from models.queries import get_all_checkins_for_assessment, get_all_checkins_for_student_for_course
 
 
 def test_create_checkin(flask_app_mock):
@@ -225,3 +224,41 @@ def test_delete_latest_checkins_over_team_size(flask_app_mock):
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")  
 
+def test_get_all_checkins_for_student_for_course(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(True)
+            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            user = create_users(result["course_id"], result["user_id"], 2)
+
+            task = []
+            payload1 = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            task.append(create_assessment_task(payload1))
+            payload2 = build_sample_task_payload(result["course_id"], rubric.rubric_id, task_name="Management Test Assessment")
+            task.append(create_assessment_task(payload2))
+            payload3 = build_sample_task_payload(result["course_id"], rubric.rubric_id, task_name="Communication Test Assessment")
+            task.append(create_assessment_task(payload3))
+
+            data = []
+            for i in range(len(task)):
+                data.append(create_checkin(sample_checkin(task[i].assessment_task_id, user[0].user_id)))
+
+            checkins = get_all_checkins_for_student_for_course(user[0].user_id, result["course_id"])
+            assert len(checkins) == 3
+            assert any(c == data[0].assessment_task_id for c in checkins)
+            assert any(c == data[1].assessment_task_id for c in checkins)
+            assert any(c == data[2].assessment_task_id for c in checkins)
+
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_checkins_over_team_count(task.assessment_task_id, 1)
+                    delete_users([user])
+                    delete_one_admin_course(result)
+                    delete_assessment_task(task.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}") 

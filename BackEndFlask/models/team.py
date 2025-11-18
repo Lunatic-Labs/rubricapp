@@ -34,11 +34,6 @@ def get_team_by_team_name_and_course_id(team_name, course_id):
 
 
 @error_log
-def get_team_by_team_name_and_course_id(team_name, course_id):
-    return Team.query.filter_by(team_name=team_name, course_id=course_id).first()
-
-
-@error_log
 def get_teams_by_observer_id(observer_id, course_id):
     return Team.query.filter_by(active_until=None, observer_id=observer_id, course_id=course_id).all()
 

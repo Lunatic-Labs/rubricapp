@@ -1,38 +1,18 @@
 import pytest
 from datetime import datetime
-from models.assessment_task import (
-    create_assessment_task,
-    get_assessment_task,
-    replace_assessment_task,
-    toggle_lock_status,
-    toggle_published_status,
-    delete_assessment_task,
-    toggle_notification_sent_to_true,
-    load_demo_admin_assessment_task,
-    get_assessment_tasks,
-    get_assessment_tasks_by_course_id,
-    get_assessment_tasks_by_role_id,
-    get_assessment_tasks_by_team_id,
-    InvalidAssessmentTaskID,
-)
+from models.assessment_task import *
 from models.rubric import delete_rubric_by_id
-from Tests.PopulationFunctions import (
-    create_one_admin_course,
-    delete_one_admin_course,
-    cleanup_test_users,
-)
+from Tests.PopulationFunctions import *
 from core import db
 from sqlalchemy.exc import SQLAlchemyError
 from unittest.mock import patch
 from models.team import create_team, delete_team
-from integration.integration_helpers import (
-    build_sample_task_payload,
-    sample_rubric
-)
+from integration.integration_helpers import *
+from models.queries import *
+from models.user import create_user, delete_user
+from models.course import create_course, delete_course
 
-# -----------------------
-# CREATE + GET
-# -----------------------
+
 def test_create_and_get_assessment_task(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -61,18 +41,14 @@ def test_create_and_get_assessment_task(flask_app_mock):
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
 
-# -----------------------
-# INVALID GET
-# -----------------------
+
 def test_get_assessment_task_invalid_id(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
         with pytest.raises(InvalidAssessmentTaskID):
             get_assessment_task(9999999)
 
-# -----------------------
-# REPLACE (UPDATE)
-# -----------------------
+
 def test_replace_assessment_task_updates_fields(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -126,9 +102,7 @@ def test_replace_assessment_task_invalid_id(flask_app_mock):
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
 
-# -----------------------
-# TOGGLE LOCK / PUBLISHED
-# -----------------------
+
 def test_toggle_lock_and_published_status(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -154,9 +128,7 @@ def test_toggle_lock_and_published_status(flask_app_mock):
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
 
-# -----------------------
-# GET ALL ASSESSMENT TASKS
-# -----------------------
+
 def test_get_all_assessment_tasks(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -165,10 +137,11 @@ def test_get_all_assessment_tasks(flask_app_mock):
             result = create_one_admin_course(False)
 
             # Creating multiple rubrics to satisfy foreign key constraints
-            for _ in range(18): 
-                r = sample_rubric(result["user_id"])
-            
-            # Load sample assessment tasks into DB
+            for rid in range(1, 18): 
+                r = sample_rubric(result["user_id"], f"Test rubric{rid}")
+                db.session.add(r)
+            db.session.commit()
+
             load_demo_admin_assessment_task()
             
             # Get all assessment tasks
@@ -236,9 +209,6 @@ def test_get_assessment_tasks_by_team_id(flask_app_mock):
 
 
 
-# -----------------------
-# TOGGLE NOTIFICATION SENT
-# -----------------------
 def test_toggle_notification_sent_to_true(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -263,9 +233,7 @@ def test_toggle_notification_sent_to_true(flask_app_mock):
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
 
-# -----------------------
-# DELETE
-# -----------------------
+
 def test_delete_assessment_task_removes_record(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -301,9 +269,6 @@ def test_delete_assessment_task_raises_sqlalchemy_error(flask_app_mock):
             payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            db.session.add(task)
-            db.session.commit()
-
             with patch("models.assessment_task.db.session.delete", side_effect=SQLAlchemyError("DB Error")):
                 result = delete_assessment_task(task.assessment_task_id)
                 
@@ -314,8 +279,8 @@ def test_delete_assessment_task_raises_sqlalchemy_error(flask_app_mock):
             # Clean up
             if result:
                 try:
-                    delete_one_admin_course(result)
                     delete_rubric_by_id(rubric.rubric_id)
+                    delete_one_admin_course(result)
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
 
@@ -324,4 +289,87 @@ def test_delete_assessment_task_invalid_id_raises(flask_app_mock):
     with flask_app_mock.app_context():
         with pytest.raises(InvalidAssessmentTaskID):
             delete_assessment_task(8888888)
+
+
+def test_get_course_from_at(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+
+            task = create_assessment_task(payload)
+            rslt = get_course_from_at(task.assessment_task_id)
+            assert rslt[0] == result["course_id"]
+
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_assessment_task(task.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
+
+
+def test_get_assessment_task_by_course_id_and_role_id(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            teacher_data = sample_user(role_id=3)
+            teacher = create_user(teacher_data)
+            course_data = sample_course(teacher.user_id)
+            course = create_course(course_data)
+            rubric = sample_rubric(teacher.user_id)
+            payload1 = build_sample_task_payload(course.course_id, rubric.rubric_id, role_id=3)
+            task_name = "Integration Test Assessment 2"
+            payload2 = build_sample_task_payload(course.course_id, rubric.rubric_id, role_id=3, task_name=task_name)
+
+            task1 = create_assessment_task(payload1)
+            task2 = create_assessment_task(payload2)
+            results = get_assessment_task_by_course_id_and_role_id(course.course_id, role_id=3)
+            assert len(results) == 2
+            assert all(t.course_id == course.course_id for t in results)
+            assert any(t.assessment_task_name == "Integration Test Assessment 2" for t in results)
+            assert any(t.assessment_task_name == "Integration Test Assessment" for t in results)
+        
+        finally:
+            # Clean up
+            if teacher:
+                try:
+                    delete_assessment_task(task1.assessment_task_id)
+                    delete_assessment_task(task2.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                    delete_course(course.course_id)
+                    delete_user(teacher)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
+
+
+def test_get_course_name_by_at_id(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+
+            task = create_assessment_task(payload)
+
+            assert get_course_name_by_at_id(task.assessment_task_id) == "Summer Internship"
+
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_assessment_task(task.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
 

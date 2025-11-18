@@ -12,6 +12,7 @@ from models.schemas import EmailValidation, User
 from datetime import datetime, timezone
 from integration.integration_helpers import sample_user
 from models.user import create_user, delete_user
+import os
 
 
 def test_create_validation(flask_app_mock):
@@ -35,7 +36,7 @@ def test_create_validation(flask_app_mock):
             try:
                 delete_user(user.user_id)
             except Exception as e:
-                    print(f"Cleanup skipped: {e}")  
+                print(f"Cleanup skipped: {e}")  
 
 
 def test_get_emails_need_checking_returns_only_pending(flask_app_mock):
@@ -43,7 +44,7 @@ def test_get_emails_need_checking_returns_only_pending(flask_app_mock):
         cleanup_test_users(db.session)
         
         try:
-            data = sample_user("pending1@example.com")
+            data = sample_user(email="pending1@example.com")
             user = create_user(data)
         
             # Create two, one pending and one checked
@@ -65,7 +66,7 @@ def test_get_emails_need_checking_returns_only_pending(flask_app_mock):
                 db.session.commit()
                 delete_user(user.user_id)
             except Exception as e:
-                    print(f"Cleanup skipped: {e}")  
+                print(f"Cleanup skipped: {e}")  
 
 
 def test_update_email_to_pending_updates_existing(flask_app_mock):
@@ -93,7 +94,7 @@ def test_update_email_to_pending_updates_existing(flask_app_mock):
                 db.session.commit()
                 delete_user(user.user_id)
             except Exception as e:
-                    print(f"Cleanup skipped: {e}")  
+                print(f"Cleanup skipped: {e}")  
 
 
 from datetime import timedelta
@@ -152,6 +153,8 @@ def test_mark_emails_as_checked_empty_list_does_nothing(flask_app_mock):
 
 
 def test_mark_emails_as_pending(flask_app_mock):
+    #if os.getenv("TESTING") == "true":
+        #pytest.skip("Skipping pending email tests in Docker")
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
 
@@ -174,10 +177,12 @@ def test_mark_emails_as_pending(flask_app_mock):
                 db.session.commit()
                 delete_user(user.user_id)
             except Exception as e:
-                    print(f"Cleanup skipped: {e}")  
+                print(f"Cleanup skipped: {e}")  
 
 
 def test_mark_emails_as_pending_empty_list_does_nothing(flask_app_mock):
+    #if os.getenv("TESTING") == "true":
+        #pytest.skip("Skipping pending email tests in Docker")
     with flask_app_mock.app_context():
         mark_emails_as_pending([])
         assert True

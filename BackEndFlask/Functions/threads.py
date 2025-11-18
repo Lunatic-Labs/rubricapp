@@ -129,6 +129,7 @@ class EmailValidationProcessor:
         Returns:
             Number of emails processed, or None if an error occurred
         """
+        
         try:
             logger.info("Fetching emails to check")
             emails_to_check = get_emails_need_checking()

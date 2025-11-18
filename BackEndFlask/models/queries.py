@@ -283,7 +283,7 @@ def get_all_adhoc_teams_from_AT(assessment_task_id):
 
 # HERE
 @error_log
-def get_team_users(course_id: int, team_id: int, user_id: int):
+def get_team_users(course_id: int, team_id: int):
     """
     Description:
     Gets all users associated with the given team in the given course.
@@ -327,8 +327,6 @@ def get_team_by_course_id_and_observer_id(course_id, observer_id):
     """
     teams = db.session.query(
         Team
-    ).join(
-        TeamUser, TeamUser.team_id == Team.team_id
     ).filter(
         and_(
             Team.course_id == course_id,
@@ -697,10 +695,10 @@ def get_rubrics_and_total_categories(user_id):
         Category, RubricCategory.category_id == Category.category_id
     ).filter(
         or_(
-            Rubric.owner == 1,
+            Rubric.owner == 1,                  # default rubrics
             or_(
-                Rubric.owner == user_id,
-                Rubric.owner == user.owner_id
+                Rubric.owner == user_id,        # rubrics created by the user
+                Rubric.owner == user.owner_id   # rubrics created by the user's owner (e.g. admin/instructor)
             )
         )
     ).group_by(
@@ -1287,6 +1285,9 @@ def get_course_total_students(course_id: int, assessment_task_id: int) -> int:
     assessment_task_id : int (The id of an assessment task)
 
     Return: int (The total number of students or teams in a course.)
+
+    Note: only if the assessment is completed by at least one user of a course
+          then the total number of students in the course will be returned.
     """
     course_total = 0
 
@@ -1371,7 +1372,7 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
     if at_id is not None:
         student_info = student_info.filter(
             CompletedAssessment.assessment_task_id == at_id
-        )
+        ).distinct() # Avoid duplicates when multiple assessments exits
     else:
         student_info = student_info.filter(
             CompletedAssessment.completed_assessment_id == completed_at_id
@@ -1421,10 +1422,27 @@ def get_num_of_adhocs(assessment_task_id:int):
     """
 
     pattern = '^Team [0-9]+$'
-    count = db.session.query(func.count(Team.team_id)).filter(
-        Team.team_name.op('REGEXP')(pattern),
-        Team.assessment_task_id == assessment_task_id
-    ).scalar()
+
+    # Get the course for the AT
+    course_id = get_course_from_at(assessment_task_id)
+    course_id = 0 if course_id is None else course_id[0]
+
+    count = (
+        db.session.query(func.count(func.distinct(Team.team_id)))
+        .join(
+            Checkin,
+            and_(
+                Checkin.assessment_task_id == assessment_task_id,
+                Checkin.team_number == Team.team_id,
+            )
+        )
+        .filter(
+            Team.course_id == course_id,
+            Team.team_name.op('REGEXP')(pattern),
+        )
+        .scalar()
+    )
+
     return count
 
 def get_adhoc_team_users(team_id):

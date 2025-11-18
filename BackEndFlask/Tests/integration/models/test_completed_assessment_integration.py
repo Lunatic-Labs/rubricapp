@@ -3,50 +3,15 @@ from core import db
 from datetime import datetime, timezone
 from unittest.mock import patch
 from sqlalchemy.exc import SQLAlchemyError
-from models.completed_assessment import (
-    get_completed_assessments,
-    get_completed_assessment,
-    get_completed_assessments_by_assessment_task_id,
-    get_completed_assessment_by_course_id,
-    get_completed_assessment_count,
-    completed_assessment_exists,
-    completed_assessment_team_or_user_exists,
-    create_completed_assessment,
-    delete_completed_assessment_tasks,
-    toggle_lock_status,
-    make_complete_assessment_locked,
-    make_complete_assessment_unlocked,
-    replace_completed_assessment,
-    load_demo_completed_assessment,
-    InvalidCRID
-)
+from models.completed_assessment import *
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback, Course
-from Tests.PopulationFunctions import (
-    create_one_admin_ta_student_course,
-    delete_one_admin_ta_student_course,
-     cleanup_test_users, 
-     create_one_admin_course, 
-     delete_one_admin_course, 
-     create_users,
-     delete_users
-)
+from Tests.PopulationFunctions import *
 from models.assessment_task import create_assessment_task, delete_assessment_task
-from integration.integration_helpers import (
-    build_sample_task_payload, 
-    sample_completed_assessment,
-    sample_rubric,
-    sample_team
-)
+from integration.integration_helpers import *
 from models.rubric import delete_rubric_by_id
 from models.team import delete_team
-from models.queries import (
-    get_completed_assessment_by_user_id,
-    get_users_by_course_id_and_role_id,
-    get_completed_assessment_by_ta_user_id,
-    get_completed_assessment_with_user_name,
-    get_completed_assessment_with_team_name
-)
-
+from models.queries import *
+from models.ratings_numbers import *
 
 def test_create_completed_assessment(flask_app_mock):
     with flask_app_mock.app_context():
@@ -179,11 +144,11 @@ def test_get_completed_assessment_by_count(flask_app_mock):
             user_id = []
             for user in users:
                 user_id.append(user.user_id)
-            rubric = sample_rubric(user_id[0], "Critical Thinking")
+            rubric = sample_rubric(result["user_id"], "Critical Thinking")
             payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id)
-            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id)
+            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id, c_by=result["user_id"])
+            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id, c_by=result["user_id"])
             comp1 = create_completed_assessment(data1)
             comp2 = create_completed_assessment(data2)
 
@@ -215,11 +180,11 @@ def test_get_completed_assessments_by_task_id(flask_app_mock):
             user_id = []
             for user in users:
                 user_id.append(user.user_id)
-            rubric = sample_rubric(user_id[0], "Critical Thinking")
+            rubric = sample_rubric(result["user_id"], "Critical Thinking")
             payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id)
-            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id)
+            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id, c_by=result["user_id"])
+            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id, c_by=result["user_id"])
             comp1 = create_completed_assessment(data1)
             comp2 = create_completed_assessment(data2)
 
@@ -227,6 +192,7 @@ def test_get_completed_assessments_by_task_id(flask_app_mock):
             assert all(r.assessment_task_id == comp1.assessment_task_id for r in results)
             assert any(r.user_id == user_id[0] for r in results)
             assert any(r.user_id == user_id[1] for r in results)
+            assert all(r.completed_by == result["user_id"] for r in results)
             assert len(results) == 2
 
         finally:
@@ -608,3 +574,122 @@ def test_get_completed_assessment_with_team_name(flask_app_mock):
                     delete_one_admin_course(result)
                 except Exception as e:
                     print(f"Cleanup skipped: {e}")
+
+def test_get_course_total_students(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result["course_id"], result["user_id"], number_of_users=5)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+
+            task = create_assessment_task(payload)
+            data = sample_completed_assessment(users[0].user_id, task.assessment_task_id)
+            comp = create_completed_assessment(data)
+
+            assert get_course_total_students(result["course_id"], task.assessment_task_id) == 4
+        
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_completed_assessment_tasks(comp.completed_assessment_id)
+                    delete_assessment_task(task.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                    delete_users(users)
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
+
+
+def test_get_individual_ratings(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            task = create_assessment_task(payload)
+
+            data1 = sample_completed_assessment(users[0].user_id, task.assessment_task_id,c_by=result["user_id"])
+            comp1 = create_completed_assessment(data1)
+
+            data2 = sample_completed_assessment(users[1].user_id, task.assessment_task_id, rating=completely["3"],c_by=result["user_id"])
+            comp2 = create_completed_assessment(data2)
+
+            results = get_individual_ratings(task.assessment_task_id)
+
+            assert any(r.rating_observable_characteristics_suggestions_data == "Completely" for r in results)
+            assert any(r.rating_observable_characteristics_suggestions_data == "Partially" for r in results)
+
+        finally:
+            # Clean up
+            if result:
+                try:
+                    delete_completed_assessment_tasks(comp1.completed_assessment_id)
+                    delete_completed_assessment_tasks(comp2.completed_assessment_id)
+                    delete_assessment_task(task.assessment_task_id)
+                    delete_rubric_by_id(rubric.rubric_id)
+                    delete_users(users)
+                    delete_one_admin_course(result)
+                except Exception as e:
+                    print(f"Cleanup skipped: {e}")
+            
+
+def test_get_students_for_emailing(flask_app_mock):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result["course_id"], result["user_id"], number_of_users=6)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            task = create_assessment_task(payload)
+            team = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
+
+            for i in range(2):
+                sample_team_user(team.team_id, users[i].user_id)
+            
+            data = []
+            data.append(sample_completed_assessment(users[0].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result["user_id"]))
+            data.append(sample_completed_assessment(users[1].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result["user_id"]))
+            data.append(sample_completed_assessment(users[2].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["0"], c_by=result["user_id"]))
+            data.append(sample_completed_assessment(users[3].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result["user_id"]))
+            data.append(sample_completed_assessment(users[4].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["5"], c_by=result["user_id"]))
+
+            comp = []
+            for i in range(5):
+                comp.append(create_completed_assessment(data[i]))
+            
+            # Query only users in the team (both of them return 2)
+            #results = get_students_for_emailing(True, comp[0].completed_assessment_id)
+            results = get_students_for_emailing(True, comp[0].completed_assessment_id, task.assessment_task_id)
+            assert len(results) == 2
+
+            # Query all users who completed the assessment
+            results = get_students_for_emailing(False, comp[0].completed_assessment_id, task.assessment_task_id)
+            assert len(results) == 5
+
+            # Query the only completed assessment user
+            results = get_students_for_emailing(False, comp[0].completed_assessment_id)
+            print([r.email for r in results])
+            assert len(results) == 1
+
+        
+        finally:
+            # Clean up
+            try:
+                CompletedAssessment.query.delete()
+                TeamUser.query.delete()
+                delete_team(team.team_id)
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")

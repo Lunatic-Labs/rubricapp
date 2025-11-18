@@ -6,33 +6,42 @@ from models.category import create_category
 from models.suggestions import create_suggestion
 from models.observable_characteristics import create_observable_characteristic
 from models.team import create_team
+from models.feedback import create_feedback
+from models.ratings_numbers import *
+from models.team_user import create_team_user
 
 
-def sample_completed_assessment(user_id, task_id, team_id=None):
-    """Helper to create a sample completed assessment payload."""
+def sample_completed_assessment(
+        user_id, 
+        task_id, 
+        team_id=None, 
+        rating=None, 
+        c_by=None
+    ):
+    if rating is None:
+        rating = completely["5"]
+    if c_by is None:
+        c_by = user_id
     data = {
         "assessment_task_id": task_id,
-        "completed_by": user_id,
+        "completed_by": c_by,
         "team_id": team_id,
         "user_id": user_id,
         "initial_time": None,
         "last_update": None,
-        "rating_observable_characteristics_suggestions_data": {},
+        "rating_observable_characteristics_suggestions_data": rating,
         "done": True
     }
     return data
 
-def sample_user(course_id, admin_id, number_user, role=5):
-    """Helper to create a sample user."""
-    user = create_users(course_id, admin_id, number_user, role)
-    return user
-
-def build_sample_task_payload(course_id, rubric_id, extra: dict = None):
+def build_sample_task_payload(course_id, rubric_id, role_id=5, task_name=None):
+    if task_name is None:
+        task_name = "Integration Test Assessment"
     payload = {
-        "assessment_task_name": "Integration Test Assessment",
+        "assessment_task_name": task_name,
         "course_id": course_id,
         "rubric_id": rubric_id,
-        "role_id": 4,
+        "role_id": role_id,
         "due_date": "2026-01-01T12:00:00", 
         "time_zone": "EST",
         "show_suggestions": True,
@@ -45,24 +54,23 @@ def build_sample_task_payload(course_id, rubric_id, extra: dict = None):
         "locked": False,
         "published": False,
     }
-    if extra:
-        payload.update(extra)
     return payload
 
-def sample_rubric(course_admin, rbric_name="Integration Test Rubric"):
+def sample_rubric(owner_id, rbric_name="Integration Test Rubric"):
     rubric_payload = {
         "rubric_name": rbric_name,
         "rubric_description": "A rubric for integration testing.",
-        "owner": course_admin,  # course_admin is user_id
+        "owner": owner_id,  # owner_id is user_id
     }
     return create_rubric(rubric_payload)
 
-def sample_category():
-    """Helper to create a sample category payload."""
+def sample_category(cat_name="Critical Thinking", desc=None, rating=completely):
+    if desc is None:
+        desc = "Evaluate analytical skills"
     category_data = {
-        "name": "Critical Thinking",
-        "description": "Evaluate analytical skills",
-        "rating_json": '{"Excellent":5,"Good":4,"Fair":3,"Poor":2,"Fail":1}'
+        "name": cat_name,
+        "description": desc,
+        "rating_json": rating
     }
     category = create_category(category_data)
     return category
@@ -109,3 +117,31 @@ def sample_user(email="john.doe@example.com",role_id=5, owner_id=1):
         "owner_id": owner_id,
         "role_id": role_id,           
     }
+
+def sample_user_course(user_id, course_id, role_id=5):
+    return {"user_id": user_id, "course_id": course_id, "role_id": role_id}
+
+def sample_course(teacher_user_id, course_number="CRS001", use_tas=False):
+    return ({
+        "course_number": course_number,
+        "course_name": "Summer Internship",
+        "year": 2023,
+        "term": "Summer",
+        "active": True,
+        "admin_id": teacher_user_id,
+        "use_tas": use_tas,
+        "use_fixed_teams": False
+    })
+
+def sample_feedback(completed_assessment_id, user_id, team_id=None):
+    feedback_data = {
+            "completed_assessment_id": completed_assessment_id,
+            "user_id": user_id,
+            "team_id": team_id,
+            "feedback_time": datetime.now(timezone.utc),
+        }
+    new_feedback = create_feedback(feedback_data)
+    return new_feedback
+
+def sample_team_user(team_id, user_id):
+    return create_team_user({"team_id": team_id, "user_id": user_id})
