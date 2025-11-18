@@ -254,6 +254,37 @@ class SetNewPassword extends Component {
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
                                                 aria-label="setNewPasswordInput"
+                                                sx={{
+                                                    '& .MuiInputBase-input': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiInputLabel-root': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiInputLabel-root.Mui-focused': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root': {
+                                                        '& fieldset': {
+                                                            borderColor: 'var(--border-color)',
+                                                        },
+                                                        '&:hover fieldset': {
+                                                            borderColor: 'var(--border-hover-color)',
+                                                        },
+                                                        '&.Mui-focused fieldset': {
+                                                            borderColor: '#2E8BEF',
+                                                        },
+                                                    },
+                                                    '& .MuiFormHelperText-root': {
+                                                        color: 'var(--error-color)',
+                                                    },
+                                                    '& .MuiIconButton-root': {
+                                                        color: 'var(--icon-color)',
+                                                    },
+                                                    '& .MuiSvgIcon-root': {
+                                                        color: 'var(--icon-color)',
+                                                    },
+                                                }}
                                                 InputProps={{
                                                         endAdornment: (
                                                         <InputAdornment position="end">
@@ -298,7 +329,33 @@ class SetNewPassword extends Component {
                                         </Box>
 
                                         <TextField
-                                            sx={{ mb: 3, mt: 2 }}
+                                            sx={{ 
+                                                mb: 3, 
+                                                mt: 2,
+                                                '& .MuiInputBase-input': {
+                                                    color: 'var(--text-color)',
+                                                },
+                                                '& .MuiInputLabel-root': {
+                                                    color: 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiInputLabel-root.Mui-focused': {
+                                                    color: 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: 'var(--border-color)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: '#2E8BEF',
+                                                    },
+                                                },
+                                                '& .MuiFormHelperText-root': {
+                                                    color: 'var(--error-color)',
+                                                },
+                                            }}
                                             margin="normal"
                                             required
                                             fullWidth
