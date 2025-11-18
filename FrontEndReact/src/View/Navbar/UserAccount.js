@@ -274,16 +274,13 @@ class UserAccount extends Component {
                             fullWidth
                             open={resetPasswordDialogOpen}
                             onClose={this.handleDialogClose}
-                            MenuProps={{
-                                PaperProps: {
-                                    className: 'dropdown-colors textarea-colors',
-                                    sx: {
-                                        backgroundColor: 'var(--dropdown-bg)',
-                                        color: 'var(--textarea-text)',
-                                    }
+                            PaperProps={{
+                                className: 'dropdown-colors textarea-colors',
+                                sx: {
+                                    backgroundColor: 'var(--dropdown-bg)',
+                                    color: 'var(--textarea-color)',
                                 }
                             }}
-                            
                         >
                         {errorMessage &&
                       
