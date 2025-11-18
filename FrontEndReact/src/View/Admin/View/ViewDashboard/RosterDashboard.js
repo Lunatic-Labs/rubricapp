@@ -11,47 +11,49 @@ class RosterDashboard extends Component {
         var navbar = this.props.navbar;
         var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
 
-        return(
-            <>
-                <MainHeader
-                    navbar={navbar}
-                />
+        return (
+          <>
+            <MainHeader navbar={navbar} />
 
-                <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="rosterTitle">Roster</Typography>
+            <Box className="subcontent-spacing">
+              <Typography
+                sx={{ fontWeight: "700" }}
+                variant="h5"
+                aria-label="rosterTitle"
+              >
+                Roster
+              </Typography>
 
-                    <Box sx={{display:"flex", gap:"20px"}}>
-                        <Button
-                            className='primary-color'
-                            variant='contained' 
-                            onClick={() => {
-                                navbar.setNewTab("BulkUpload");
-                            }}
-                            aria-label='studentBulkUploadButton'
-                        >
-                            Student Bulk Upload
-                        </Button>
+              <Box sx={{ display: "flex", gap: "20px" }}>
+                <Button
+                  className="primary-color"
+                  variant="contained"
+                  onClick={() => {
+                    navbar.setNewTab("BulkUpload");
+                  }}
+                  aria-label="studentBulkUploadButton"
+                >
+                  Student Bulk Upload
+                </Button>
 
-                        <Button
-                            className='primary-color'
-                            variant='contained' 
-                            onClick={() => {
-                                setAddUserTabWithUser([], null);
-                            }}
-                            aria-label='addUserButton'
-                        >
-                            Add User
-                        </Button>
-                    </Box>
-                </Box>
+                <Button
+                  className="primary-color"
+                  variant="contained"
+                  onClick={() => {
+                    navbar.setState({ user: null, addUser: true });
+                  }}
+                  aria-label="addUserButton"
+                >
+                  Add User
+                </Button>
+              </Box>
+            </Box>
 
-                <Box className="table-spacing">
-                    <AdminViewUsers
-                        navbar={navbar}
-                    />
-                </Box>
-            </>
-        )
+            <Box className="table-spacing">
+              <AdminViewUsers navbar={navbar} />
+            </Box>
+          </>
+        );
     }
 }
 

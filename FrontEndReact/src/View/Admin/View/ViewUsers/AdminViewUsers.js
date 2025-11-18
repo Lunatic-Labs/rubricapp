@@ -11,109 +11,112 @@ import SuccessMessage from '../../../Success/SuccessMessage.js';
 
 
 class AdminViewUsers extends Component {
-    constructor(props) {
-        super(props);
+  constructor(props) {
+    super(props);
 
-        this.state = {
-            errorMessage: null,
-            isLoaded: false,
-            users: null,
-            roles: null,
-            prevUsersLength: 0,
-            successMessage: null
-        }
+    this.state = {
+      errorMessage: null,
+      isLoaded: false,
+      users: null,
+      roles: null,
+      prevUsersLength: 0,
+      successMessage: null,
+    };
+  }
+
+  fetchData = () => {
+    var navbar = this.props.navbar;
+
+    if (navbar.props.isSuperAdmin) {
+      genericResourceGET(`/user?isAdmin=True`, "users", this);
+    } else {
+      genericResourceGET(
+        `/user?course_id=${navbar.state.chosenCourse["course_id"]}`,
+        "users",
+        this
+      );
     }
 
-    fetchData = () => {
-        var navbar = this.props.navbar;
+    genericResourceGET("/role?", "roles", this);
+  };
 
-        if(navbar.props.isSuperAdmin) {
-            genericResourceGET(
-                `/user?isAdmin=True`, "users", this);
+  componentDidMount() {
+    this.fetchData();
+  }
 
-        } else {
-            genericResourceGET(
-                `/user?course_id=${navbar.state.chosenCourse["course_id"]}`, 
-                "users", this);
-        }
-
-        genericResourceGET(
-            "/role?", "roles", this); 
-    }
-    
-    componentDidMount() {
-        this.fetchData();
-    }
-
-  componentDidUpdate(){
-    if (this.state.users && this.state.users.length !== this.state.prevUsersLength) {
+  componentDidUpdate() {
+    if (
+      this.state.users &&
+      this.state.users.length !== this.state.prevUsersLength
+    ) {
       this.setState({ prevUsersLength: this.state.users.length });
       this.fetchData();
     }
   }
 
   setErrorMessage = (errorMessage) => {
-    this.setState({errorMessage: errorMessage});
+    this.setState({ errorMessage: errorMessage });
     setTimeout(() => {
-        this.setState({errorMessage: null,});
+      this.setState({ errorMessage: null });
     }, 3000);
-  }
+  };
 
   setSuccessMessage = (successMessage) => {
-    this.setState({successMessage: successMessage});
+    this.setState({ successMessage: successMessage });
     setTimeout(() => {
-        this.setState({successMessage: null,});
+      this.setState({ successMessage: null });
     }, 3000);
-  }
-    render() {
-        const {
-            errorMessage,
-            isLoaded,
-            users,
-            roles,
-            successMessage
-        } = this.state;
+  };
+  render() {
+    const { errorMessage, isLoaded, users, roles, successMessage } = this.state;
 
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var user = state.user;
-        var addUser = state.addUser;
+    var navbar = this.props.navbar;
+    var state = navbar.state;
+    var user = state.user;
+    var addUser = state.addUser;
 
-        navbar.adminViewUsers = {};
-        navbar.adminViewUsers.users = users ? users : [];
-        navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
+    navbar.adminViewUsers = {};
+    navbar.adminViewUsers.users = users ? users : [];
+    navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
 
-        if (errorMessage) {
-            return(
-                <div className='container'>
-                    <ErrorMessage
-                        fetchedResource={"Users"}
-                        errorMessage={errorMessage}
-                    />
-                </div>
-            )
-
-        } else if ((!user || !user.user_id) && isLoaded && users && roles) {
-    return(
+    if (errorMessage) {
+      return (
+        <div className="container">
+          <ErrorMessage fetchedResource={"Users"} errorMessage={errorMessage} />
+        </div>
+      );
+    } else if (!isLoaded || !users || !roles) {
+      return <Loading />;
+    } else if (
+      (!user || typeof user !== "object" || !user.user_id) &&
+      addUser !== true
+    ) {
+      return (
         <Box>
-            {successMessage !== null && 
-                <div className='container'>
-                    <SuccessMessage 
-                        successMessage={successMessage}
-                        aria-label="adminViewUsersSuccessMessage"
-                    />
-                </div>
-            }
-            <ViewUsers
-                navbar={navbar}
-                onError={this.setErrorMessage}
-                onSuccess={this.setSuccessMessage}
-                refreshData={this.fetchData}
-            />
+          {successMessage !== null && (
+            <div className="container">
+              <SuccessMessage
+                successMessage={successMessage}
+                aria-label="adminViewUsersSuccessMessage"
+              />
+            </div>
+          )}
+          <ViewUsers
+            navbar={navbar}
+            onError={this.setErrorMessage}
+            onSuccess={this.setSuccessMessage}
+            refreshData={this.fetchData}
+          />
         </Box>
-    )
-}
+      );
+    } else {
+      return (
+        <Box>
+          <AdminAddUser navbar={navbar} />
+        </Box>
+      );
     }
+  }
 }
 
 export default AdminViewUsers;
