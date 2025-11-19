@@ -54,6 +54,9 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
                 }
             );
         } catch (error) {
+            console.error(`=== UTILITY: ${type} ERROR ===`);
+            console.error('Error:', error);
+            
             component.setState({
                 isLoaded: true,
                 errorMessage: error,
