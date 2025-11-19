@@ -356,7 +356,7 @@ class StudentDashboard extends Component {
                             navbar={navbar}
                             role={roles}
                             filteredAssessments={filteredATs}
-                            CompleteAssessments={completedAssessments}
+                            CompleteAssessments={filteredCATs}
                             userTeamIds={this.state.userTeamIds}
                         />
                     </Box>
