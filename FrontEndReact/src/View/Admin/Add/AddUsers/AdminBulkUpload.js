@@ -13,6 +13,7 @@ import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { RequestState } from '../../../../Enums/RequestState.js';
 import Loading from '../../../Loading/Loading.js';
+import { CircularProgress } from "@mui/material";
 import debounce from 'debounce';
 
 class AdminBulkUpload extends Component {
@@ -70,12 +71,14 @@ class AdminBulkUpload extends Component {
         }
     }
 
-    onFormSubmit = (e) => {
+    onFormSubmit = async (e) => {
         e.preventDefault();
 
         this.setState({
             uploadRequestStatus: RequestState.LOADING,
         });
+
+        await new Promise(resolve => setTimeout(resolve, 5000));; // pauses here for 5 seconds
 
         var fileName;
         var lastDot;
@@ -167,22 +170,6 @@ class AdminBulkUpload extends Component {
                         aria-label="adminBulkUploadErrorMessage"
                     />
                 }
-
-                {uploadRequestStatus === RequestState.LOADING && (
-                  <Box
-                    sx={{
-                      position: "absolute",
-                      inset: 0,
-                      display: "flex",
-                      justifyContent: "center",
-                      alignItems: "center",
-                      backgroundColor: "rgba(255,255,255,0.7)",
-                      zIndex: 10,
-                    }}
-                  >
-                    <Loading />
-                  </Box>
-                )}
 
                 <Box  sx={{ justifyContent:"center" }} className="card-spacing">
                     <Box className="form-position">
@@ -301,7 +288,15 @@ class AdminBulkUpload extends Component {
                                             Cancel
                                         </Button>
 
-                                        <Button className='primary-color' variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"> Upload </Button>
+                                        {uploadRequestStatus === RequestState.LOADING ? (
+                                            <CircularProgress size={32} thickness={3} sx={{ color: "#2E8BEF"}} />
+                                        ):(
+                                            <Button className='primary-color' variant='contained' type="subminheritit" aria-label="adminBulkUploadUploadFileButton"
+                                                style={{ display: uploadRequestStatus === RequestState.LOADING ? 'none' : 'inline-flex' }}
+                                            >
+                                                Upload
+                                            </Button>
+                                        )}
                                     </form>
 
                                     {this.props.tab === "AdminTeamBulkUpload" &&
