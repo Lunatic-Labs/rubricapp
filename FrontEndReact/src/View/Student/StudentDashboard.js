@@ -289,7 +289,7 @@ class StudentDashboard extends Component {
           border: "#7F7F7F", 
           padding: 0,
           margin: 0,
-          boxShadow: "0.3em 0.3em 1em #d6d6d6"
+          boxShadow: "0.3em 0.3em 0.9em var(--box-shadow)"
         };
 
         const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
