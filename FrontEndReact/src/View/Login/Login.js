@@ -9,6 +9,7 @@ import { apiUrl } from '../../App.js';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 
 
@@ -33,14 +34,28 @@ class Login extends Component {
             }
         }
 
+        // handleChange has been altered to account for the 20 character limit for password
         this.handleChange = (e) => {
             const { id, value } = e.target;
 
+            // This will create an error message if password is empty and/or exceeding the 20 character limit
+            let errorMessage = '';
+            if(value.trim() === '') {
+                errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
+            } else if(id === 'password' && value.length > MAX_PASSWORD_LENGTH) {
+                errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;
+            }
+
+            // this.setState() used to contain the code below.
+            //
+            //[id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+            //
+            // part of it was moved to errrorMessage and replaced with [id]: errorMessage,
             this.setState({
                 [id]: value,
                 errors: {
                     ...this.state.errors,
-                    [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                    [id]: errorMessage,
                 },
             });
         };
@@ -347,6 +362,7 @@ class Login extends Component {
                                                 onChange={this.handleChange}
                                                 onKeyDown={this.keyPress}
                                                 aria-label="passwordInput"
+                                                inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of MAX_PASSWORD_LENGTH password has been changed to 21, this accounts for browsers handling characters differently
                                                 InputProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">
