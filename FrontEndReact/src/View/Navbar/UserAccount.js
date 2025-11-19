@@ -8,7 +8,7 @@ import { apiUrl } from '../../App.js';
 import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Email, AccountCircle } from '@mui/icons-material';
-import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/Password.js';
 
 class UserAccount extends Component {
     constructor(props) {

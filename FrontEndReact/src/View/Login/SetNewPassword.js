@@ -7,7 +7,7 @@ import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App.js';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/Password.js';
 
 
 

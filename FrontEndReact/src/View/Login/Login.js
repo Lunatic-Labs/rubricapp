@@ -9,7 +9,7 @@ import { apiUrl } from '../../App.js';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading.js';
-import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/Password.js';
 
 
 
