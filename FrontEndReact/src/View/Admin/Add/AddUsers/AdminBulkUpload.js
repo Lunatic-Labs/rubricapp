@@ -11,8 +11,9 @@ import { Box, Typography, Tooltip, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { RequestState } from '../../../../Enums/RequestState.js';
+import Loading from '../../../Loading/Loading.js';
 import debounce from 'debounce';
-
 
 class AdminBulkUpload extends Component {
     constructor(props) {
@@ -22,6 +23,7 @@ class AdminBulkUpload extends Component {
             errorMessage: null,
             selectedFile: null,
             isLoaded: false,
+            uploadRequestStatus: RequestState.IDLE,
 
             // Used for displaying the appropriate image
             // when clicking the "next example" button.
@@ -45,7 +47,7 @@ class AdminBulkUpload extends Component {
             currentTeamPic: 0,
         }
 
-        this.debouncedSubmit = debounce(this.onFormSubmit.bind(this), 3000);
+        this.debouncedSubmit = debounce(this.blockMultipleRequests.bind(this), 500);
         this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
     }
 
@@ -58,8 +60,22 @@ class AdminBulkUpload extends Component {
       });
     }
 
+    /**
+     * This function makes sure one request is sent and we have awaited for a failure or success.
+     * @param {*} e 
+     */
+    blockMultipleRequests = (e) => {
+        if (this.state.uploadRequestStatus !== RequestState.LOADING){
+            this.onFormSubmit(e);
+        }
+    }
+
     onFormSubmit = (e) => {
         e.preventDefault();
+
+        this.setState({
+            uploadRequestStatus: RequestState.LOADING,
+        });
 
         var fileName;
         var lastDot;
@@ -73,11 +89,13 @@ class AdminBulkUpload extends Component {
 
         if(this.state.selectedFile === null) {
             this.setState({
-                errorMessage: "Please Select a File to Upload!"
+                errorMessage: "Please Select a File to Upload!",
+                uploadRequestStatus: RequestState.IDLE,
             });
         } else if (fileExtension !== "csv" && fileExtension !== "xlsx") {
             this.setState({
-                errorMessage: "Please Select a File using the .csv or .xlsx format!"
+                errorMessage: "Please Select a File using the .csv or .xlsx format!",
+                uploadRequestStatus: RequestState.IDLE,
             });
         } else {
             var navbar = this.props.navbar;
@@ -106,7 +124,19 @@ class AdminBulkUpload extends Component {
                     } else {
                         confirmCreateResource("TeamBulkUpload");
                     }
+                    this.setState({
+                        uploadRequestStatus: RequestState.SUCCESS,
+                    });
+                } else {
+                    this.setState({
+                        uploadRequestStatus: RequestState.ERROR,
+                    });
                 }
+            }).catch((error) => { 
+                this.setState({
+                    errorMessage: error,
+                    uploadRequestStatus: RequestState.ERROR,
+                })
             });
         }
     }
@@ -126,6 +156,8 @@ class AdminBulkUpload extends Component {
         var navbar = this.props.navbar;
         var confirmCreateResource = navbar.confirmCreateResource;
 
+        const {uploadRequestStatus} = this.state; 
+
         return (
             <Box>
                 {this.state.errorMessage &&
@@ -135,6 +167,10 @@ class AdminBulkUpload extends Component {
                         aria-label="adminBulkUploadErrorMessage"
                     />
                 }
+
+                {uploadRequestStatus === RequestState.LOADING ? (
+                    <Loading/>
+                ) : ( 
 
                 <Box  sx={{ justifyContent:"center" }} className="card-spacing">
                     <Box className="form-position">
@@ -268,6 +304,7 @@ class AdminBulkUpload extends Component {
                         </Box>
                     </Box>
                 </Box>
+                )}
             </Box>
         )
     }
