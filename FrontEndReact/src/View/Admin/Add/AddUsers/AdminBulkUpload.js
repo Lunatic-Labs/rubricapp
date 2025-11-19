@@ -47,7 +47,7 @@ class AdminBulkUpload extends Component {
             currentTeamPic: 0,
         }
 
-        this.debouncedSubmit = debounce(this.blockMultipleRequests.bind(this), 500);
+        this.debouncedSubmit = debounce(this.blockMultipleRequests.bind(this), 1000);
         this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
     }
 
@@ -163,14 +163,26 @@ class AdminBulkUpload extends Component {
                 {this.state.errorMessage &&
                     <ErrorMessage
                         navbar={this.props.navbar}
-                        errorMessage={this.state.errorMessage}
+                        errorMessage={String(this.state.errorMessage)}
                         aria-label="adminBulkUploadErrorMessage"
                     />
                 }
 
-                {uploadRequestStatus === RequestState.LOADING ? (
-                    <Loading/>
-                ) : ( 
+                {uploadRequestStatus === RequestState.LOADING && (
+                  <Box
+                    sx={{
+                      position: "absolute",
+                      inset: 0,
+                      display: "flex",
+                      justifyContent: "center",
+                      alignItems: "center",
+                      backgroundColor: "rgba(255,255,255,0.7)",
+                      zIndex: 10,
+                    }}
+                  >
+                    <Loading />
+                  </Box>
+                )}
 
                 <Box  sx={{ justifyContent:"center" }} className="card-spacing">
                     <Box className="form-position">
@@ -304,7 +316,6 @@ class AdminBulkUpload extends Component {
                         </Box>
                     </Box>
                 </Box>
-                )}
             </Box>
         )
     }
