@@ -306,7 +306,6 @@ class StudentDashboard extends Component {
         const {
             roles,
             assessmentTasks,
-            completedAssessments,
             filteredATs,
             filteredCATs,
             fullyDoneCATS,
