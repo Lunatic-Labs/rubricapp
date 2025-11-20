@@ -201,6 +201,7 @@ h4, h5 {
   --table-toolbar: white;
   --table-header: #A4C4F4;
   --table-text: #000000;
+  --table-border: #e0e0e0;
 }
 
 /* used in line 23 of CustomDataTable.js */
@@ -555,14 +556,15 @@ body.mode .MuiSlider-markLabel {
 }
 
 body.mode {
-  --light_grey_ADA: #5b5b5b;
+  --light_grey_ADA: #494949;
   --light_grey_hover: #4a4a4a;
   --export_disabled_text: #4b4b4b;
-  --table-odd-row: #1f1f1f;
+  --table-odd-row: #252525;
   --table-odd-row-hover: #353535;
   --table-toolbar: #2a2a2a;
-  --table-header: #32485d;
+  --table-header: #2d4a6b;
   --table-text: #e0e0e0;
+  --table-border: #404040;
 }
 
 
