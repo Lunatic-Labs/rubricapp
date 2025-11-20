@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamMembers from './TeamMembers.js';
@@ -8,7 +9,9 @@ import Loading from '../../../Loading/Loading.js';
 
 
 class StudentTeamMembers extends Component {
-    constructor(props) {
+    props: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -43,11 +46,13 @@ class StudentTeamMembers extends Component {
 
         if (errorMessage) {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Team Members"}
                         errorMessage={errorMessage}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
 
@@ -58,14 +63,18 @@ class StudentTeamMembers extends Component {
 
         } else {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <h1 className='mt-5'>Student View: Team Members</h1>
 
                     <ViewTeamMembers
                         navbar={navbar}
                     />
 
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <div className='d-flex justify-content-end'>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <button
                             className='mt-3 btn btn-primary'
 
@@ -75,8 +84,11 @@ class StudentTeamMembers extends Component {
                             // }}
                         >
                             Add Member
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </button>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </div>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         }

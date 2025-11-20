@@ -1,23 +1,36 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/HelpOutlin... Remove this comment to see the full error message
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDateString } from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Button, FormControl, Typography, IconButton, TextField, Tooltip, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/x-date-pickers/DateTimePi... Remove this comment to see the full error message
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
+// @ts-expect-error TS(2307): Cannot find module '@mui/x-date-pickers/Localizati... Remove this comment to see the full error message
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+// @ts-expect-error TS(2307): Cannot find module '@mui/x-date-pickers/AdapterDat... Remove this comment to see the full error message
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
+// @ts-expect-error TS(2307): Cannot find module '../../../../../src/RubricDetai... Remove this comment to see the full error message
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
+// @ts-expect-error TS(2307): Cannot find module '../../../../../src/RubricDetai... Remove this comment to see the full error message
 import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/FormHelperText' ... Remove this comment to see the full error message
 import FormHelperText from '@mui/material/FormHelperText';
 import { MAX_PASSWORD_LENGTH } from '../../../../Constants/password.js';
 
 
 
 class AdminAddAssessmentTask extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    toggleHelp: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -66,6 +79,7 @@ class AdminAddAssessmentTask extends Component {
 
         if (assessmentTask && !addAssessmentTask && this.state.completedAssessments !== null && this.state.completedAssessments.length !== 0) {
             if (document.getElementById("formSelectRubric") !== null) {
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
                 document.getElementById("formSelectRubric").remove();
             }
         }
@@ -104,7 +118,7 @@ class AdminAddAssessmentTask extends Component {
         }
     }
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
         const regex = /^[1-9]\d*$/; // Positive digits
         const {usingTeams} = this.state;
@@ -144,7 +158,9 @@ class AdminAddAssessmentTask extends Component {
         let errorMessage = '';
         if (value.trim() === '') {
             errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         } else if (maxLengths[id] && value.length > maxLengths[id]) {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot exceed ${maxLengths[id]} characters`;
         }
 
@@ -157,13 +173,13 @@ class AdminAddAssessmentTask extends Component {
         });
     };
 
-    handleSelect = (key, event) => {
+    handleSelect = (key: any, event: any) => {
         this.setState({
             [key]: event.target.value
         });
     };
 
-    handleTeams = (event) => {
+    handleTeams = (event: any) => {
         const unitOfAssessment = event.target.value === 'true' ? true : false;
 
         this.setState({
@@ -240,7 +256,7 @@ class AdminAddAssessmentTask extends Component {
             }
 
             const adhoc = this.props.navbar.state.chosenCourse.use_fixed_teams;
-            const fixTeamData = (i) => this.state.usingTeams && !adhoc ? i : null;
+            const fixTeamData = (i: any) => this.state.usingTeams && !adhoc ? i : null;
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
@@ -324,7 +340,7 @@ class AdminAddAssessmentTask extends Component {
         var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
         const { isHelpOpen } = this.state;
 
-        var roleOptions = [];
+        var roleOptions: any = [];
 
         Object.keys(roleNames).map((role) => {
             if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
@@ -336,7 +352,7 @@ class AdminAddAssessmentTask extends Component {
 
         var confirmCreateResource = navbar.confirmCreateResource;
 
-        var rubricOptions = [];
+        var rubricOptions: any = [];
 
         Object.keys(rubricNames).map((rubric) => {
             rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric} aria-label="addAssessmentRubricOption">{rubricNames[rubric]}</MenuItem>];
@@ -361,297 +377,306 @@ class AdminAddAssessmentTask extends Component {
             editAssessmentTask,
         } = this.state;
 
-        return (
-            <>
-                {errorMessage &&
-                    <ErrorMessage
-                        add={addAssessmentTask}
-                        resource={"Assessment Task"}
-                        errorMessage={errorMessage}
-                    />
-                }
+        // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
+        return <>
+            {errorMessage &&
+                <ErrorMessage
+                    add={addAssessmentTask}
+                    resource={"Assessment Task"}
+                    errorMessage={errorMessage}
+                />
+            }
 
-                {validMessage !== "" &&
-                    <ErrorMessage
-                        add={addAssessmentTask}
-                        error={validMessage}
-                    />
-                }
-                
-                <Box className="card-spacing">
-                    <Box className="form-position">
-                        <Box className="card-style">
-                            <FormControl className="form-spacing">
-                                <Typography id="addTaskTitle" variant="h5" aria-label={editAssessmentTask ? 'adminEditAssessmentTaskTitle' : 'adminAddAssessmentTaskTitle'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+            {validMessage !== "" &&
+                <ErrorMessage
+                    add={addAssessmentTask}
+                    error={validMessage}
+                />
+            }
+            
+            <Box className="card-spacing">
+                <Box className="form-position">
+                    <Box className="card-style">
+                        <FormControl className="form-spacing">
+                            <Typography id="addTaskTitle" variant="h5" aria-label={editAssessmentTask ? 'adminEditAssessmentTaskTitle' : 'adminAddAssessmentTaskTitle'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
 
-                                <Box className="form-input">
-                                    <TextField
-                                        id="taskName"
-                                        name="newTaskName"
-                                        variant='outlined'
-                                        label="Task Name"
-                                        value={taskName}
-                                        error={!!errors.taskName}
-                                        helperText={errors.taskName}
-                                        onChange={this.handleChange}
-                                        required
-                                        sx={{ mb: 2 }}
-                                        inputProps={{ maxLength: 50 }}
-                                        aria-label="addAssessmentTaskName"
+                            <Box className="form-input">
+                                <TextField
+                                    id="taskName"
+                                    name="newTaskName"
+                                    variant='outlined'
+                                    label="Task Name"
+                                    value={taskName}
+                                    error={!!errors.taskName}
+                                    helperText={errors.taskName}
+                                    onChange={this.handleChange}
+                                    required
+                                    sx={{ mb: 2 }}
+                                    inputProps={{ maxLength: 50 }}
+                                    aria-label="addAssessmentTaskName"
+                                />
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
+                                    <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }} error={!!errors.rubricId} required>
+                                        <InputLabel required id="rubricId">Rubric</InputLabel>
+                                        <Select
+                                            id="rubricId"
+                                            name="rubricID"
+                                            value={rubricId}
+                                            label="Rubric"
+                                            error={!!errors.rubricId}
+                                            onChange={(event: any) => this.handleSelect("rubricId", event)}
+                                            required
+                                            aria-label="addAssessmentRubricDropdown"
+                                        >
+                                            {rubricOptions}
+                                        </Select>
+                                        <FormHelperText>{errors.rubricId}</FormHelperText>
+                                    </FormControl>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                    <div style={{padding: '3px'}}>
+                                        <Tooltip title="Help">
+                                            <IconButton aria-label="help" onClick={this.toggleHelp}>
+                                                <HelpOutlineIcon />
+                                            </IconButton>
+                                        </Tooltip>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                    </div>
+                                    <ImageModal 
+                                        isOpen={isHelpOpen}
+                                        handleClose={this.toggleHelp}
+                                        imageUrl={RubricDescriptionsImage}
+                                        imageUrl2={RubricDescriptionsImage2}
                                     />
-                                    <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
-                                        <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }} error={!!errors.rubricId} required>
-                                            <InputLabel required id="rubricId">Rubric</InputLabel>
-                                            <Select
-                                                id="rubricId"
-                                                name="rubricID"
-                                                value={rubricId}
-                                                label="Rubric"
-                                                error={!!errors.rubricId}
-                                                onChange={(event) => this.handleSelect("rubricId", event)}
-                                                required
-                                                aria-label="addAssessmentRubricDropdown"
-                                            >
-                                                {rubricOptions}
-                                            </Select>
-                                            <FormHelperText>{errors.rubricId}</FormHelperText>
-                                        </FormControl>
-                                        <div style={{padding: '3px'}}>
-                                            <Tooltip title="Help">
-                                                <IconButton aria-label="help" onClick={this.toggleHelp}>
-                                                    <HelpOutlineIcon />
-                                                </IconButton>
-                                            </Tooltip>
-                                        </div>
-                                        <ImageModal 
-                                            isOpen={isHelpOpen}
-                                            handleClose={this.toggleHelp}
-                                            imageUrl={RubricDescriptionsImage}
-                                            imageUrl2={RubricDescriptionsImage2}
-                                        />
-                                    </div>
-                                    <FormControl>
-                                        <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                </div>
+                                <FormControl>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
 
-                                        <RadioGroup
-                                            row
-                                            aria-labelledby="demo-row-radio-buttons-group-label"
-                                            value={usingTeams}
-                                            id="usingTeams"
-                                            name="usingTeams"
-                                            sx={{ mb: 2 }}
-                                            onChange={this.handleTeams}
-                                        >
-                                            <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-row-radio-buttons-group-label"
+                                        value={usingTeams}
+                                        id="usingTeams"
+                                        name="usingTeams"
+                                        sx={{ mb: 2 }}
+                                        onChange={this.handleTeams}
+                                    >
+                                        <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
 
-                                            <FormControlLabel value={true} control={<Radio />} label="Team Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
-                                        </RadioGroup>
-                                    </FormControl>
+                                        <FormControlLabel value={true} control={<Radio />} label="Team Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
+                                    </RadioGroup>
+                                </FormControl>
 
-                                    {usingTeams && !chosenCourse["use_fixed_teams"] &&
-                                        <TextField
-                                            id="numberOfTeams"
-                                            name="newPassword"
-                                            variant='outlined'
-                                            label="Maximum number of teams you will use during class for this assessment"
-                                            value={this.state.numberOfTeams}
-                                            error={!!errors.numberOfTeams}
-                                            helperText={errors.numberOfTeams}
-                                            onChange={this.handleChange}
-                                            required
-                                            type={"text"}
-                                            inputProps={{ 
-                                                pattern: "[1-9][0-9]*", 
-                                                inputMode: "numeric"
-                                            }}
-                                            sx={{ mb: 2 }}
-                                        />
-                                    }
-
-                                    {usingTeams && !chosenCourse["use_fixed_teams"] &&
-                                        <TextField 
-                                            id="maxTeamSize"
-                                            name="setTeamSize"
-                                            variant='outlined'
-                                            label="Max team size allowed for each team in class"
-                                            value={this.state.maxTeamSize}
-                                            error={!!errors.maxTeamSize}
-                                            helperText={errors.maxTeamSize}
-                                            onChange={this.handleChange}
-                                            required
-                                            type={"text"}
-                                            inputProps={{
-                                                pattern: "[1-9][0-9]*",
-                                                inputMode: "numeric"
-                                            }}
-                                            sx={{ mb: 2 }}
-                                        />
-                                    }
-
-                                    <FormControl>
-                                        <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
-
-                                        <RadioGroup
-                                            row
-                                            aria-labelledby="demo-row-radio-buttons-group-label"
-                                            value={roleId}
-                                            id="roleId"
-                                            name="roleID"
-                                            sx={{ mb: 2 }}
-                                            onChange={(event) => this.handleSelect("roleId", event)}
-                                        >
-                                            {roleOptions}
-                                        </RadioGroup>
-                                    </FormControl>
-
-                                    <FormGroup sx={{ mb: 2 }}>
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    onChange={(event) => {
-                                                        this.setState({ suggestions: event.target.checked });
-                                                    }}
-                                                    id="suggestions"
-                                                    value={suggestions}
-                                                    checked={suggestions}
-                                                />
-                                            }
-                                            name="suggestions"
-                                            label="Show Suggestions for Improvement"
-                                        />
-                                        <FormControlLabel
-                                            control={
-                                                <Checkbox
-                                                    onChange={(event) => {
-                                                        this.setState({ ratings: event.target.checked });
-                                                    }}
-                                                    id="ratings"
-                                                    value={ratings}
-                                                    checked={ratings}
-                                                />
-                                            }
-                                            name="ratings"
-                                            label="Show Ratings"
-                                        />
-                                    </FormGroup>
-
-                                    {/* NOTE: The due date and time are in the time zone of the course are here */}
-                                    <div style={{ display: 'flex', alignItems: 'center' }}>
-                                        <div style={{ position: "relative", marginRight: '10px' }}>
-                                            <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
-                                                <DateTimePicker label="Due Date" value={dueDate}
-                                                    views={['year', 'month', 'day', 'hours', 'minutes']}
-
-                                                    ampm={true}
-
-                                                    onChange={(date) => {
-                                                        this.setState({ dueDate: date });
-                                                    }}
-
-                                                    sx={{ mb: errors.timeZone ? 2 : 0 }}
-                                                />
-                                            </LocalizationProvider>
-                                        </div>
-
-                                        <div style={{ position: "relative", marginTop: '16px'}}>
-                                            <FormControl error={!!errors.timeZone} required fullWidth sx={{ mb: 2 }}> 
-                                                <InputLabel className={errors.timeZone ? "errorSelect" : ""} required id="timeone">Time Zone</InputLabel>
-
-                                                <Select
-                                                    labelId="timeone"
-                                                    id="timeZone"
-                                                    value={timeZone}
-                                                    label="Time Zone"
-                                                    error={!!errors.timeZone}
-
-                                                    onChange={(event) => {
-                                                        this.handleSelect("timeZone", event);
-                                                    }}
-
-                                                    required
-                                                    style={{width: "200px"}}
-                                                    aria-label="addAssessmentTimezoneDropdown"
-                                                >
-                                                    {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
-
-                                                    <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
-
-                                                    <MenuItem value={"EDT"} aria-label="addAssessmentEdtRadioOption" >EDT</MenuItem>
-
-                                                    <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
-
-                                                    <MenuItem value={"CDT"} aria-label="addAssessmentCdtRadioOption" >CDT</MenuItem>
-
-                                                    <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
-
-                                                    <MenuItem value={"MDT"} aria-label="addAssessmentMdtRadioOption" >MDT</MenuItem>
-
-                                                    <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
-
-                                                    <MenuItem value={"PDT"} aria-label="addAssessmentPdtRadioOption" >PDT</MenuItem>
-                                                </Select>
-                                                <FormHelperText>{errors.timeZone}</FormHelperText>
-                                            </FormControl>
-                                        </div>
-                                    </div>
-                                    
-                                    {usingTeams &&
-                                    
+                                {usingTeams && !chosenCourse["use_fixed_teams"] &&
                                     <TextField
-                                        id="password"
+                                        id="numberOfTeams"
                                         name="newPassword"
                                         variant='outlined'
-                                        label="Password to switch teams (Prevents students from switching teams without instructor approval.)"
-                                        value={password}
-                                        error={!!errors.password}
-                                        helperText={errors.password}
-                                        onChange={this.handleChange}
-                                        sx={{ mb: 2 }}
-                                        inputProps={{ maxLength: 20 }}
-                                        aria-label="addAssessmentTeamPassword"
-                                    />
-
-                                    }
-
-                                    <TextField
-                                        id="notes"
-                                        name="notes"
-                                        variant='outlined'
-                                        label="Instructions for Students/TA's about the Assessment or particular focus areas"
-                                        value={notes}
-                                        error={!!errors.notes}
-                                        helperText={errors.notes}
+                                        label="Maximum number of teams you will use during class for this assessment"
+                                        value={this.state.numberOfTeams}
+                                        error={!!errors.numberOfTeams}
+                                        helperText={errors.numberOfTeams}
                                         onChange={this.handleChange}
                                         required
-                                        multiline
-                                        minRows={2}
-                                        maxRows={8}
+                                        type={"text"}
+                                        inputProps={{ 
+                                            pattern: "[1-9][0-9]*", 
+                                            inputMode: "numeric"
+                                        }}
                                         sx={{ mb: 2 }}
-                                        aria-label="addAssessmentNotes"
                                     />
+                                }
 
-                                    <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
-                                        <Button onClick={() => { confirmCreateResource("AssessmentTask"); }} aria-label="adminAddAssessmentCancelButton">
-                                            Cancel
-                                        </Button>
+                                {usingTeams && !chosenCourse["use_fixed_teams"] &&
+                                    <TextField 
+                                        id="maxTeamSize"
+                                        name="setTeamSize"
+                                        variant='outlined'
+                                        label="Max team size allowed for each team in class"
+                                        value={this.state.maxTeamSize}
+                                        error={!!errors.maxTeamSize}
+                                        helperText={errors.maxTeamSize}
+                                        onChange={this.handleChange}
+                                        required
+                                        type={"text"}
+                                        inputProps={{
+                                            pattern: "[1-9][0-9]*",
+                                            inputMode: "numeric"
+                                        }}
+                                        sx={{ mb: 2 }}
+                                    />
+                                }
 
-                                        <Button
-                                            id="createAssessmentTask"
-                                            className="primary-color"
-                                            variant="contained"
-                                            onClick={this.handleSubmit}
-                                            aria-label="addAssessmentCreateOrUpdateButton"
-                                        >
-                                            {editAssessmentTask ? "Update Task" : "Create Task"}
-                                        </Button>
-                                    </Box>
+                                <FormControl>
+                                    <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
+
+                                    <RadioGroup
+                                        row
+                                        aria-labelledby="demo-row-radio-buttons-group-label"
+                                        value={roleId}
+                                        id="roleId"
+                                        name="roleID"
+                                        sx={{ mb: 2 }}
+                                        onChange={(event: any) => this.handleSelect("roleId", event)}
+                                    >
+                                        {roleOptions}
+                                    </RadioGroup>
+                                </FormControl>
+
+                                <FormGroup sx={{ mb: 2 }}>
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                onChange={(event: any) => {
+                                                    this.setState({ suggestions: event.target.checked });
+                                                }}
+                                                id="suggestions"
+                                                value={suggestions}
+                                                checked={suggestions}
+                                            />
+                                        }
+                                        name="suggestions"
+                                        label="Show Suggestions for Improvement"
+                                    />
+                                    <FormControlLabel
+                                        control={
+                                            <Checkbox
+                                                onChange={(event: any) => {
+                                                    this.setState({ ratings: event.target.checked });
+                                                }}
+                                                id="ratings"
+                                                value={ratings}
+                                                checked={ratings}
+                                            />
+                                        }
+                                        name="ratings"
+                                        label="Show Ratings"
+                                    />
+                                </FormGroup>
+
+                                {/* NOTE: The due date and time are in the time zone of the course are here */}
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                    <div style={{ position: "relative", marginRight: '10px' }}>
+                                        <LocalizationProvider sx={{ width: '38%' }} dateAdapter={AdapterDateFns}>
+                                            <DateTimePicker label="Due Date" value={dueDate}
+                                                views={['year', 'month', 'day', 'hours', 'minutes']}
+
+                                                ampm={true}
+
+                                                onChange={(date: any) => {
+                                                    this.setState({ dueDate: date });
+                                                }}
+
+                                                sx={{ mb: errors.timeZone ? 2 : 0 }}
+                                            />
+                                        </LocalizationProvider>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                    </div>
+
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                    <div style={{ position: "relative", marginTop: '16px'}}>
+                                        <FormControl error={!!errors.timeZone} required fullWidth sx={{ mb: 2 }}> 
+                                            <InputLabel className={errors.timeZone ? "errorSelect" : ""} required id="timeone">Time Zone</InputLabel>
+
+                                            <Select
+                                                labelId="timeone"
+                                                id="timeZone"
+                                                value={timeZone}
+                                                label="Time Zone"
+                                                error={!!errors.timeZone}
+
+                                                onChange={(event: any) => {
+                                                    this.handleSelect("timeZone", event);
+                                                }}
+
+                                                required
+                                                style={{width: "200px"}}
+                                                aria-label="addAssessmentTimezoneDropdown"
+                                            >
+                                                {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
+
+                                                <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
+
+                                                <MenuItem value={"EDT"} aria-label="addAssessmentEdtRadioOption" >EDT</MenuItem>
+
+                                                <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
+
+                                                <MenuItem value={"CDT"} aria-label="addAssessmentCdtRadioOption" >CDT</MenuItem>
+
+                                                <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
+
+                                                <MenuItem value={"MDT"} aria-label="addAssessmentMdtRadioOption" >MDT</MenuItem>
+
+                                                <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
+
+                                                <MenuItem value={"PDT"} aria-label="addAssessmentPdtRadioOption" >PDT</MenuItem>
+                                            </Select>
+                                            <FormHelperText>{errors.timeZone}</FormHelperText>
+                                        </FormControl>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                    </div>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                </div>
+                                
+                                {usingTeams &&
+                                
+                                <TextField
+                                    id="password"
+                                    name="newPassword"
+                                    variant='outlined'
+                                    label="Password to switch teams (Prevents students from switching teams without instructor approval.)"
+                                    value={password}
+                                    error={!!errors.password}
+                                    helperText={errors.password}
+                                    onChange={this.handleChange}
+                                    sx={{ mb: 2 }}
+                                    inputProps={{ maxLength: 20 }}
+                                    aria-label="addAssessmentTeamPassword"
+                                />
+
+                                }
+
+                                <TextField
+                                    id="notes"
+                                    name="notes"
+                                    variant='outlined'
+                                    label="Instructions for Students/TA's about the Assessment or particular focus areas"
+                                    value={notes}
+                                    error={!!errors.notes}
+                                    helperText={errors.notes}
+                                    onChange={this.handleChange}
+                                    required
+                                    multiline
+                                    minRows={2}
+                                    maxRows={8}
+                                    sx={{ mb: 2 }}
+                                    aria-label="addAssessmentNotes"
+                                />
+
+                                <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
+                                    <Button onClick={() => { confirmCreateResource("AssessmentTask"); }} aria-label="adminAddAssessmentCancelButton">
+                                        Cancel
+                                    </Button>
+
+                                    <Button
+                                        id="createAssessmentTask"
+                                        className="primary-color"
+                                        variant="contained"
+                                        onClick={this.handleSubmit}
+                                        aria-label="addAssessmentCreateOrUpdateButton"
+                                    >
+                                        {editAssessmentTask ? "Update Task" : "Create Task"}
+                                    </Button>
                                 </Box>
-                            </FormControl>
-                        </Box>
+                            </Box>
+                        </FormControl>
                     </Box>
                 </Box>
-            </>
-        )
+            </Box>
+        </>;
     }
 }
 

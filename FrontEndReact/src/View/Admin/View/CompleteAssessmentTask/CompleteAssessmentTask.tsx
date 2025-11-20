@@ -1,10 +1,13 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form.js";
 //import { genericResourceGET, createEventSource } from '../../../../utility.js'; Removed to unhook /checkin_events
 import { genericResourceGET} from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
 import Loading from '../../../Loading/Loading.js';
 import { generateUnitList, UnitType } from './unit.js';
@@ -45,7 +48,11 @@ import { CheckinsTracker } from './cat_utils.js';
  */ 
 
 class CompleteAssessmentTask extends Component {
-    constructor(props) {
+    currentUserId: any;
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -104,7 +111,7 @@ class CompleteAssessmentTask extends Component {
             "teams", this
         ).then((result) => {
             if (this.state.usingTeams && result.teams && result.teams.length > 0) {
-                const teamIds = result.teams.map(team => team.team_id);
+                const teamIds = result.teams.map((team: any) => team.team_id);
                 if(!adHocMode){
                     genericResourceGET(
                         `/user?team_ids=${teamIds}`,
@@ -127,17 +134,20 @@ class CompleteAssessmentTask extends Component {
                         const checkins = checkinResponse.checkin || [];
                         const users = userResponse.users || [];
 
-                        result.teams.forEach(team => {
+                        result.teams.forEach((team: any) => {
+                            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                             teamsUsersMap[team.team_id] = [];
                         });
                     
                         // Add users to teams based on their checkins
-                        checkins.forEach(checkin => {
+                        checkins.forEach((checkin: any) => {
                             const userId = checkin.user_id;
                             const teamId = checkin.team_number;
-                            const user = users.find(u => u.user_id === userId);
+                            const user = users.find((u: any) => u.user_id === userId);
                         
+                            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                             if (user && teamsUsersMap[teamId]) {
+                                // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                                 teamsUsersMap[teamId].push(user);
                             }
                         });
@@ -183,11 +193,11 @@ class CompleteAssessmentTask extends Component {
             checkinEventSource: null,
         })
     }
-    
+
     componentWillUnmount() {
         this.state.checkinEventSource?.close();
     }
-    
+
     componentDidUpdate() { 
         if (this.state.unitList === null) {
             const {
@@ -276,6 +286,7 @@ class CompleteAssessmentTask extends Component {
 
         if (errorMessage) {
             return (
+                // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
                 <ErrorMessage
                     fetchedResource={"Complete Assessment Task"}
                     errorMessage={errorMessage}
@@ -288,14 +299,17 @@ class CompleteAssessmentTask extends Component {
             );
         } else if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) {
             return (
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h1>Please create a team to complete this assessment.</h1>
             );
         } else if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) {
             return (
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h1>Please add students to the roster to complete this assessment.</h1>
             );
         } else if (usingAdHoc && teams.length < 1){
             return (
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h1>No team has any students checked in at the moment.</h1>
             );
         }
@@ -326,8 +340,10 @@ class CompleteAssessmentTask extends Component {
             <Box>
                 <Box className="assessment-title-spacing">
                     <Box className='d-flex flex-column justify-content-start'>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <h4>{assessmentTaskRubric["rubric_name"]}</h4>
 
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <h5>{assessmentTaskRubric["rubric_description"]}</h5>
                     </Box>
                 </Box>

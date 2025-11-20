@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login.js";
@@ -40,19 +41,25 @@ var aeatt = "adminEditAssessmentTaskTitle";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 1: Should render Login Form component", () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 2: Should show Admin View Courses when logging with Admin credentials", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -67,7 +74,9 @@ test("AssessmentDashboard.test.js Test 2: Should show Admin View Courses when lo
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -82,7 +91,9 @@ test("AssessmentDashboard.test.js Test 3: Should show Roster Dashboard when clic
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 4: Should show Assessment Dashboard when clicking the Assessment tab", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -103,7 +114,9 @@ test("AssessmentDashboard.test.js Test 4: Should show Assessment Dashboard when 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 5: Should show View Courses page when clicking the back button", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -130,7 +143,9 @@ test("AssessmentDashboard.test.js Test 5: Should show View Courses page when cli
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 6: Should show My Custom Rubrics page when clicking the My Custom Rubrics button", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -157,7 +172,9 @@ test("AssessmentDashboard.test.js Test 6: Should show My Custom Rubrics page whe
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 7: Should show Import Assessment page when clicking the import assessment button", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -184,7 +201,9 @@ test("AssessmentDashboard.test.js Test 7: Should show Import Assessment page whe
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 8: Should show Add Assessment page when clicking the add assessment button", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -211,7 +230,9 @@ test("AssessmentDashboard.test.js Test 8: Should show Add Assessment page when c
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 9: Should show Edit Assessment page when clicking the edit assessment button", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -240,7 +261,9 @@ test("AssessmentDashboard.test.js Test 9: Should show Edit Assessment page when 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 10: Should show View Completed Assessments page when clicking the view completed assessment button", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {
@@ -269,7 +292,9 @@ test("AssessmentDashboard.test.js Test 10: Should show View Completed Assessment
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessment page when clicking the complete assessment button", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     await waitFor(() => {

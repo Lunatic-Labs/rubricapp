@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login.js";
@@ -34,12 +35,16 @@ var aetmstb = "adminEditTeamMembersSaveTeamButton";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 1: Should render the TeamDashboard", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -66,7 +71,9 @@ test("AdminViewTeamMembers.test.js Test 1: Should render the TeamDashboard", asy
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 2: Should render the View Team page if the adminViewTeam button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -95,7 +102,9 @@ test("AdminViewTeamMembers.test.js Test 2: Should render the View Team page if t
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 3: Should render the View Team page if the back button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -130,7 +139,9 @@ test("AdminViewTeamMembers.test.js Test 3: Should render the View Team page if t
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 4: Should render the Add Team Members page if the add member button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -165,7 +176,9 @@ test("AdminViewTeamMembers.test.js Test 4: Should render the Add Team Members pa
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 5: Should render the Remove Team Members page if the remove member button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -200,7 +213,9 @@ test("AdminViewTeamMembers.test.js Test 5: Should render the Remove Team Members
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 6: Should render the AdminViewTeamMembers page if the back button on the AddMembers page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -241,7 +256,9 @@ test("AdminViewTeamMembers.test.js Test 6: Should render the AdminViewTeamMember
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 7: Should render the AdminViewTeamMembers page if the back button on the RemoveMembers page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -282,7 +299,9 @@ test("AdminViewTeamMembers.test.js Test 7: Should render the AdminViewTeamMember
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 8: Should render the AdminViewTeamMembers page if the save team button on the AddMembers page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -319,7 +338,9 @@ test("AdminViewTeamMembers.test.js Test 8: Should render the AdminViewTeamMember
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewTeamMembers.test.js Test 9: Should render the AdminViewTeamMembers page if the save team button on the RemoveMembers page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {

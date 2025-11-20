@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login.js";
@@ -38,12 +39,16 @@ var aan = "addAssessmentNotes";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddAssessmentTask.test.js Test 1: Should render the Add Assessment Task Form given the Add Task button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -76,7 +81,9 @@ test("AdminAddAssessmentTask.test.js Test 1: Should render the Add Assessment Ta
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddAssessmentTask.test.js Test 2: Should render the Assessment dashboard if the cancel button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -109,7 +116,9 @@ test("AdminAddAssessmentTask.test.js Test 2: Should render the Assessment dashbo
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text field if the Team Assessment option is clicked for Unit of Assessment", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -142,7 +151,9 @@ test("AdminAddAssessmentTask.test.js Test 3: Should render the Password text fie
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error when Task Name is left empty", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -175,7 +186,9 @@ test("AdminAddAssessmentTask.test.js Test 4: Should provide a HelperText error w
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessment View page if all valid information is provided and the Add Assessment button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -289,7 +302,9 @@ test("AdminAddAssessmentTask.test.js Test 5: Should return back to the Assessmen
 // });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddAssessmentTask.test.js Test 8: Should provide a HelperText error when Instructions to Students/TA's is left empty", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {

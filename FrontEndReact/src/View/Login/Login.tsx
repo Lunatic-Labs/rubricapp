@@ -1,12 +1,16 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import ErrorMessage from '../Error/ErrorMessage.js';
 import 'bootstrap/dist/css/bootstrap.css';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
 import AppState from '../Navbar/AppState.js';
 import SetNewPassword from './SetNewPassword.js';
 import ValidateReset from './ValidateReset.js';
 import { apiUrl } from '../../App.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material' or its co... Remove this comment to see the full error message
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading.js';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
@@ -14,7 +18,17 @@ import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 
 class Login extends Component {
-    constructor(props) {
+    cookies: any;
+    handleChange: any;
+    handleNewAccessToken: any;
+    handleTogglePasswordVisibility: any;
+    keyPress: any;
+    login: any;
+    logout: any;
+    resetPassword: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -35,7 +49,7 @@ class Login extends Component {
         }
 
         // handleChange has been altered to account for the 20 character limit for password
-        this.handleChange = (e) => {
+        this.handleChange = (e: any) => {
             const { id, value } = e.target;
 
             // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -222,7 +236,7 @@ class Login extends Component {
             });
         }
 
-        this.keyPress = (e) => {
+        this.keyPress = (e: any) => {
             if (e.key === 'Enter') {
                 this.login();
             };
@@ -288,6 +302,7 @@ class Login extends Component {
 
         // Handle password reset flow
         if (resettingPassword) {
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             return (<ValidateReset />)
         }
 
@@ -312,6 +327,7 @@ class Login extends Component {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     <form aria-label='loginForm' onKeyDown={this.keyPress}>
                                         <Typography variant="h6" component="div"
                                             sx={{
@@ -403,6 +419,7 @@ class Login extends Component {
                                                 Sign In
                                             </Button>
                                         </Box>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     </form>
                                 </FormControl>
                             </Box>

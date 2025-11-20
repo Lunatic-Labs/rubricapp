@@ -1,16 +1,25 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/AddCircleO... Remove this comment to see the full error message
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/RemoveCirc... Remove this comment to see the full error message
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Grid, IconButton, Button } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/TextField' or it... Remove this comment to see the full error message
 import TextField from '@mui/material/TextField';
 
 
 
 class BuildTeamTable extends Component {
-  constructor(props) {
+  handleConfirmTeamClick: any;
+  props: any;
+  setState: any;
+  state: any;
+  constructor(props: any) {
     super(props);
 
     this.state = {
@@ -21,11 +30,11 @@ class BuildTeamTable extends Component {
 
   // TO DO
   // handleConfirmTeamClick = () => {
-    // Add your confirm team functionality here
-    // console.log('Confirm Team Button Clicked');
+  // Add your confirm team functionality here
+  // console.log('Confirm Team Button Clicked');
   // };
 
-  handleChange = (userId) => (event) => {
+  handleChange = (userId: any) => (event: any) => {
     const { selected, unselected } = this.state;
     const targetTable = selected[userId] ? 'unselected' : 'selected';
 
@@ -70,7 +79,7 @@ class BuildTeamTable extends Component {
         options: {
           filter: false,
           align: "center",
-          customBodyRender: (userId) => {
+          customBodyRender: (userId: any) => {
             return (
               <IconButton 
                 aria-label='controlled' 
@@ -107,7 +116,7 @@ class BuildTeamTable extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (userId) => {
+          customBodyRender: (userId: any) => {
             return (
               <IconButton 
                 aria-label='controlled' 
@@ -132,17 +141,22 @@ class BuildTeamTable extends Component {
       tableBodyMaxHeight: "21rem",
     };
 
-    const selectedStudents = students.filter((student) => this.state.selected[student["user_id"]]);
-    const unselectedStudents = students.filter((student) => !this.state.selected[student["user_id"]]);
+    const selectedStudents = students.filter((student: any) => this.state.selected[student["user_id"]]);
+    const unselectedStudents = students.filter((student: any) => !this.state.selected[student["user_id"]]);
 
     return (
+      // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
       <>
+        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
         <div style={{ padding: '70px', backgroundColor: '#F8F8F8' }}>
+          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
           <div>
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             <h2 style={{ padding: '25px', marginLeft: '-35px', fontWeight: 'bold' }}>Build your new team</h2>
 
             <Grid container spacing={2} alignItems='center'>
               <Grid item xs={6}>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h2 style={{ padding: '14px', marginLeft: '-15px' }}>Roster</h2>
               </Grid>
 
@@ -209,7 +223,9 @@ class BuildTeamTable extends Component {
                   </Button>
               </Grid>
             </Grid>
+          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
           </div>
+        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
         </div>
       </>
     );

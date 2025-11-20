@@ -1,17 +1,25 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
+// @ts-expect-error TS(2307): Cannot find module 'validator' or its correspondin... Remove this comment to see the full error message
 import validator from "validator";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 import { genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from "universal-cookie";
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/HelpOutlin... Remove this comment to see the full error message
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Button, FormControl, Typography, Popover, TextField, Tooltip, IconButton, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
 
 
 
 class AdminAddCourse extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -39,7 +47,7 @@ class AdminAddCourse extends Component {
         
     }
 
-    setAnchorEl = (element) => {
+    setAnchorEl = (element: any) => {
         this.setState({ anchorEl: element });
     };
 
@@ -63,15 +71,15 @@ class AdminAddCourse extends Component {
             });
         }
     }
-    handleClick = (event) => {
+    handleClick = (event: any) => {
         this.setAnchorEl(event.currentTarget);
       };
-    
+
     handleClose = () => {
         this.setAnchorEl(null);
       };
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
 
         var formatString = "";
@@ -97,7 +105,9 @@ class AdminAddCourse extends Component {
         let errorMessage = "";
         if (value.trim() === "") {
             errorMessage = `${formatString} cannot be empty`;
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         } else if (maxLengths[id] && value.length > maxLengths[id]) {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             errorMessage = `${formatString} cannot exceed ${maxLengths[id]} characters`;
         }
 
@@ -114,13 +124,13 @@ class AdminAddCourse extends Component {
     };
 
 
-    handleSelect = (event) => {
+    handleSelect = (event: any) => {
         this.setState({
             term: event.target.value,
         });
     };
 
-    handleCheckboxChange = (e) => {
+    handleCheckboxChange = (e: any) => {
         const { id } = e.target;
 
         this.setState({
@@ -243,6 +253,7 @@ class AdminAddCourse extends Component {
         const id = open ? 'simple-popover' : undefined;
 
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <React.Fragment>
                 {errorMessage && (
                     <ErrorMessage
@@ -332,6 +343,7 @@ class AdminAddCourse extends Component {
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
+                                                    // @ts-expect-error TS(7006): Parameter 'event' implicitly has an 'any' type.
                                                     onChange={(event) => {
                                                         this.setState({ active: event.target.checked });
                                                     }}
@@ -350,6 +362,7 @@ class AdminAddCourse extends Component {
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
+                                                    // @ts-expect-error TS(7006): Parameter 'event' implicitly has an 'any' type.
                                                     onChange={(event) => {
                                                         this.setState({ useTas: event.target.checked });
                                                     }}
@@ -368,6 +381,7 @@ class AdminAddCourse extends Component {
                                         <FormControlLabel
                                             control={
                                                 <Checkbox
+                                                    // @ts-expect-error TS(7006): Parameter 'event' implicitly has an 'any' type.
                                                     onChange={(event) => {
                                                         this.setState({ useFixedTeams: event.target.checked });
                                                     }}
@@ -382,12 +396,14 @@ class AdminAddCourse extends Component {
                                             name="newFixedTeams"
                                             label="Fixed Teams"
                                             />
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             <div style={{padding: '3px'}}>
                                             <Tooltip title="Help">
                                                 <IconButton aria-label="help" onClick={this.handleClick}>
                                                     <HelpOutlineIcon />
                                                 </IconButton>
                                             </Tooltip>
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             </div>
                                             <Popover
                                                 id={id}
@@ -399,9 +415,13 @@ class AdminAddCourse extends Component {
                                                 horizontal: 'left',
                                                 }}
                                             >
+                                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                 <Typography sx={{ p: 2 }}>Active:  Uncheck this box at the end of the term to move it to the Inactive Courses table.<br>
+                                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                 </br>Use TA's:  
+                                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                 Will you use Teaching or Learning Assistants in this course to fill out rubrics?<br>
+                                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                 </br>Fixed teams:  Do you assign students to teams or do they form teams on their own?</Typography>
                                             </Popover>
                                             

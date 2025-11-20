@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
@@ -5,6 +6,7 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 
 
 class ViewTeamMembers extends Component{
+  props: any;
   render() {
     var navbar = this.props.navbar;
     var users = navbar.adminViewTeamMembers.users;
@@ -51,6 +53,7 @@ class ViewTeamMembers extends Component{
     };
 
     return (
+      // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
       <CustomDataTable data={users ? users:[]} columns={columns} options={options}/>
     )
   }

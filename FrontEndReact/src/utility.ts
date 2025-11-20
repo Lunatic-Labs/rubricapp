@@ -1,31 +1,37 @@
 import { apiUrl } from './App.js';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
+// @ts-expect-error TS(2307): Cannot find module 'eventsource-client' or its cor... Remove this comment to see the full error message
 import * as eventsource from "eventsource-client";
 
-export async function genericResourceGET(fetchURL, resource, component, options = {}) {
+export async function genericResourceGET(fetchURL: any, resource: any, component: any, options = {}) {
     return await genericResourceFetch(fetchURL, resource, component, "GET", null, options);
 }
 
-export async function genericResourcePOST(fetchURL, component, body, options = {}) {
+export async function genericResourcePOST(fetchURL: any, component: any, body: any, options = {}) {
     return await genericResourceFetch(fetchURL, null, component, "POST", body, options);
 }
 
-export async function genericResourcePUT(fetchURL, component, body, options = {}) {
+export async function genericResourcePUT(fetchURL: any, component: any, body: any, options = {}) {
     return await genericResourceFetch(fetchURL, null, component, "PUT", body, options);
 }
 
-export async function genericResourceDELETE(fetchURL, component, options = {}) {
+export async function genericResourceDELETE(fetchURL: any, component: any, options = {}) {
     return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options)
 }
 
-function createApiRequestUrl(fetchURL, cookies) {
+function createApiRequestUrl(fetchURL: any, cookies: any) {
     return fetchURL.indexOf('?') > -1 ? apiUrl + fetchURL + `&user_id=${cookies.get('user')['user_id']}` : apiUrl + fetchURL + `?user_id=${cookies.get('user')['user_id']}`;
 }
 
-async function genericResourceFetch(fetchURL, resource, component, type, body, options = {}) {
+// @ts-expect-error TS(7023): 'genericResourceFetch' implicitly has return type ... Remove this comment to see the full error message
+async function genericResourceFetch(fetchURL: any, resource: any, component: any, type: any, body: any, options = {}) {
     const {
+        // @ts-expect-error TS(2339): Property 'dest' does not exist on type '{}'.
         dest = resource,
+        // @ts-expect-error TS(2339): Property 'rawResponse' does not exist on type '{}'... Remove this comment to see the full error message
         rawResponse = false, // Return the raw response from the backend instead of just the resource
+        // @ts-expect-error TS(2339): Property 'isRetry' does not exist on type '{}'.
         isRetry = false // Track if this is a retry after token refresh
     } = options;
 
@@ -39,6 +45,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
         };
 
         if (url.indexOf('bulk_upload') === -1) {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             headers["Content-Type"] = "application/json";
         }
 
@@ -69,11 +76,14 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
         if (result['success']) {
             let state = {};
 
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             state['isLoaded'] = true;
 
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             state['errorMessage'] = null;
 
             if (resource) {
+                // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                 state[dest] = result['content'][resource][0];
             }
 
@@ -86,6 +96,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             cookies.remove('refresh_token');
             cookies.remove('user');
 
+            // @ts-expect-error TS(2554): Expected 0 arguments, but got 1.
             window.location.reload(false);
 
             return undefined;
@@ -100,6 +111,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
+                // @ts-expect-error TS(2554): Expected 0 arguments, but got 1.
                 window.location.reload(false);
                 return undefined;
             }
@@ -138,6 +150,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
+                // @ts-expect-error TS(2554): Expected 0 arguments, but got 1.
                 window.location.reload(false);
                 return undefined;
             }
@@ -145,6 +158,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             cookies.remove('access_token');
             cookies.remove('refresh_token');
             cookies.remove('user');
+            // @ts-expect-error TS(2554): Expected 0 arguments, but got 1.
             window.location.reload(false);
             return undefined;
         }
@@ -162,7 +176,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
 }
 }
 
-export function createEventSource(fetchURL, onMessage) {
+export function createEventSource(fetchURL: any, onMessage: any) {
     const cookies = new Cookies();
 
     if (cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) {
@@ -180,36 +194,41 @@ export function createEventSource(fetchURL, onMessage) {
     }
 }
 
-export function parseRoleNames(roles) {
+export function parseRoleNames(roles: any) {
     var allRoles = {};
 
     for (var roleIndex = 0; roleIndex < roles.length; roleIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         allRoles[roles[roleIndex]["role_id"]] = roles[roleIndex]["role_name"];
     }
 
     return allRoles;
 }
 
-export function parseRubricNames(rubrics) {
+export function parseRubricNames(rubrics: any) {
     var allRubrics = {};
 
     for (var rubricIndex = 0; rubricIndex < rubrics.length; rubricIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         allRubrics[rubrics[rubricIndex]["rubric_id"]] = rubrics[rubricIndex]["rubric_name"];
     }
 
     return allRubrics;
 }
 
-export function parseCategoriesByRubrics(rubrics, categories) {
+export function parseCategoriesByRubrics(rubrics: any, categories: any) {
     var allCategoriesByRubrics = {};
 
     for (var rubricIndex = 0; rubricIndex < rubrics.length; rubricIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         allCategoriesByRubrics[rubrics[rubricIndex]["rubric_id"]] = [];
     }
 
     Object.keys(allCategoriesByRubrics).map((rubricId) => {
         for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+            // @ts-expect-error TS(2362): The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
             if (categories[categoryIndex]["rubric_id"] === rubricId - "0") {
+                // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                 allCategoriesByRubrics[rubricId] = [...allCategoriesByRubrics[rubricId], categories[categoryIndex]];
             }
         }
@@ -220,57 +239,62 @@ export function parseCategoriesByRubrics(rubrics, categories) {
     return allCategoriesByRubrics;
 }
 
-export function parseCategoriesToContained(categories) {
+export function parseCategoriesToContained(categories: any) {
     var chosenCategories = {};
 
     for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         chosenCategories[categoryIndex] = false;
     }
 
     return chosenCategories;
 }
 
-export function parseUserNames(users) {
+export function parseUserNames(users: any) {
     var allUserNames = {};
 
     for (var userIndex = 0; userIndex < users.length; userIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         allUserNames[users[userIndex]["user_id"]] = users[userIndex]["first_name"] + " " + users[userIndex]["last_name"];
     }
 
     return allUserNames;
 }
 
-export function parseCourseRoles(courses) {
+export function parseCourseRoles(courses: any) {
     var allCourseRoles = {};
 
     for (var courseRoleIndex = 0; courseRoleIndex < courses.length; courseRoleIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         allCourseRoles[courses[courseRoleIndex]["course_id"]] = courses[courseRoleIndex]["role_id"];
     }
 
     return allCourseRoles;
 }
 
-export function parseAssessmentIndividualOrTeam(assessmentTasks) {
+export function parseAssessmentIndividualOrTeam(assessmentTasks: any) {
     var allAssessments = {};
 
     for (var assessmentIndex = 0; assessmentIndex < assessmentTasks.length; assessmentIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         allAssessments[assessmentTasks[assessmentIndex]["assessment_task_id"]] = assessmentTasks[assessmentIndex]["unit_of_assessment"];
     }
 
     return allAssessments;
 }
 
-export function parseCategoryIDToCategories(categories) {
+export function parseCategoryIDToCategories(categories: any) {
     var categoryIdsToCategories = {};
 
     for (var categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         categoryIdsToCategories[categories[categoryIndex]["category_id"]] = categories[categoryIndex];
     }
 
     return categoryIdsToCategories;
 }
 
-export function validPasword(password) {
+export function validPasword(password: any) {
     if (password.length < 8)
         return "be at least 8 characters long.";
     else if (!/[A-Z]/.test(password))
@@ -282,7 +306,7 @@ export function validPasword(password) {
     return true;
 }
 
-export function getDueDateString(dueDate) {
+export function getDueDateString(dueDate: any) {
     let year = dueDate.getFullYear();
 
     let month = dueDate.getMonth() + 1;
@@ -302,7 +326,7 @@ export function getDueDateString(dueDate) {
     return dueDateString;
 }
 
-export function getHumanReadableDueDate(dueDate, timeZone) {
+export function getHumanReadableDueDate(dueDate: any, timeZone: any) {
     const date = new Date(dueDate);
 
     const month = date.getMonth();
@@ -336,10 +360,10 @@ export function getHumanReadableDueDate(dueDate, timeZone) {
  * @param {number} wait - The wait time in milliseconds.
  * @returns {function(...): void} The debounced function.
  */
-export function debounce(func, wait) {
-    let timeoutId = null;
+export function debounce(func: any, wait: any) {
+    let timeoutId: any = null;
 
-    return (...args) => {
+    return (...args: any[]) => {
         window.clearTimeout(timeoutId);
 
         timeoutId = window.setTimeout(() => {

@@ -1,5 +1,6 @@
 // import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+// @ts-expect-error TS(2307): Cannot find module 'resize-observer-polyfill' or i... Remove this comment to see the full error message
 import ResizeObserver from "resize-observer-polyfill";
 // import Login from "../../../../Login/Login.js";
 
@@ -14,6 +15,7 @@ import ResizeObserver from "resize-observer-polyfill";
 //     demoAdminPassword,
 // } from "../../../../../App.js";
 
+// @ts-expect-error TS(2304): Cannot find name 'global'.
 global.ResizeObserver = ResizeObserver;
 
 // var lf = "loginForm";
@@ -31,7 +33,9 @@ global.ResizeObserver = ResizeObserver;
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 

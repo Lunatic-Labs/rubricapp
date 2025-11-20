@@ -1,14 +1,22 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Button' or its c... Remove this comment to see the full error message
 import Button from "@mui/material/Button";
 import "bootstrap/dist/css/bootstrap.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Checkbox, Typography } from "@mui/material";
 
 
 
 class AdminEditTeamMembers extends Component {
-    constructor(props) {
+    props: any;
+    saveUser: any;
+    sendUsers: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -18,7 +26,7 @@ class AdminEditTeamMembers extends Component {
             userEdits: {},
         };
 
-        this.saveUser = (userId) => {
+        this.saveUser = (userId: any) => {
             var userEdits = this.state.userEdits;
 
             for (var user = 0; user < this.state.users.length; user++) {
@@ -37,9 +45,10 @@ class AdminEditTeamMembers extends Component {
         };
 
         this.sendUsers = () => {
-            var users = [];
+            var users: any = [];
 
             Object.keys(this.state.userEdits).map((userId) => {
+                // @ts-expect-error TS(2362): The left-hand side of an arithmetic operation must... Remove this comment to see the full error message
                 users = [...users, userId - "0"];
                 return userId;
             });
@@ -125,7 +134,7 @@ class AdminEditTeamMembers extends Component {
                   setCellProps: () => {
                       return { width: "300px" };
                   },
-                  customBodyRender: (teamName) => {
+                  customBodyRender: (teamName: any) => {
                     return teamName ? teamName : "No team assigned";
                   }
               },
@@ -163,7 +172,7 @@ class AdminEditTeamMembers extends Component {
                             className: "button-column-alignment",
                         };
                     },
-                    customBodyRender: (userId) => {
+                    customBodyRender: (userId: any) => {
                         return (
                             <Checkbox
                                 checked={this.state.userEdits[userId] !== undefined}
@@ -190,7 +199,9 @@ class AdminEditTeamMembers extends Component {
         };
 
         return (
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             <div className="container">
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className="d-flex justify-content-between align-items-center">
                     <Typography
                         sx={{ fontWeight: "700" }}
@@ -217,6 +228,7 @@ class AdminEditTeamMembers extends Component {
                     >
                         Save Team
                     </Button>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
 
                 <CustomDataTable
@@ -224,6 +236,7 @@ class AdminEditTeamMembers extends Component {
                     columns={columns}
                     options={options}
                 />
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             </div>
         );
     }

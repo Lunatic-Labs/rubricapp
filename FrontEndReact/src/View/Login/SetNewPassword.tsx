@@ -1,18 +1,32 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
 import Login from './Login.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/ErrorOutli... Remove this comment to see the full error message
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Check' or ... Remove this comment to see the full error message
 import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material' or its co... Remove this comment to see the full error message
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 
 
 class SetNewPassword extends Component {
-    constructor(props) {
+    generateColors: any;
+    getIcon: any;
+    handleChange: any;
+    handleTogglePasswordVisibility: any;
+    props: any;
+    setPassword: any;
+    setState: any;
+    state: any;
+    testPasswordStrength: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -35,7 +49,7 @@ class SetNewPassword extends Component {
         }
 
         // handleChange has been altered to account for the 20 character limit for password
-        this.handleChange = (e) => {
+        this.handleChange = (e: any) => {
             const { id, value } = e.target;
 
             // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -62,7 +76,7 @@ class SetNewPassword extends Component {
             });
         };
 
-        this.getIcon = (strength) => {
+        this.getIcon = (strength: any) => {
             switch(strength) {
                 case 'STRONG':
                     return CheckIcon;
@@ -76,7 +90,7 @@ class SetNewPassword extends Component {
             }
         };
 
-        this.generateColors = (strength) => {
+        this.generateColors = (strength: any) => {
             const COLORS = {
                 NEUTRAL: '#E2E2E2',
                 WEAK: '#B40314',
@@ -106,12 +120,12 @@ class SetNewPassword extends Component {
             });
         };
 
-        this.testPasswordStrength = (password) => {
-            const atLeastMinimumLength = (password) => new RegExp(/(?=.{8,})/).test(password);
-            const atLeastOneUppercaseLetter = (password) => new RegExp(/(?=.*?[A-Z])/).test(password);
-            const atLeastOneLowercaseLetter = (password) => new RegExp(/(?=.*?[a-z])/).test(password);
-            const atLeastOneNumber = (password) => new RegExp(/(?=.*?[0-9])/).test(password);
-            const atLeastOneSpecialChar = (password) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
+        this.testPasswordStrength = (password: any) => {
+            const atLeastMinimumLength = (password: any) => new RegExp(/(?=.{8,})/).test(password);
+            const atLeastOneUppercaseLetter = (password: any) => new RegExp(/(?=.*?[A-Z])/).test(password);
+            const atLeastOneLowercaseLetter = (password: any) => new RegExp(/(?=.*?[a-z])/).test(password);
+            const atLeastOneNumber = (password: any) => new RegExp(/(?=.*?[0-9])/).test(password);
+            const atLeastOneSpecialChar = (password: any) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
 
             if (!password) return 'WEAK';
 
@@ -247,131 +261,135 @@ class SetNewPassword extends Component {
         const Icon = this.getIcon(passwordStrength);
 
         if (!isPasswordSet) {
-            return (
-                <>
-                    {errorMessage &&
-                        <Box>
-                            <ErrorMessage errorMessage={errorMessage} />
-                        </Box>
-                    }
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
+            return <>
+                {errorMessage &&
+                    <Box>
+                        <ErrorMessage errorMessage={errorMessage} />
+                    </Box>
+                }
 
-                     <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
-                        <Box role="form" className="form-position">
-                            <Box className="card-style">
-                                <FormControl className="form-spacing">
-                                    <form aria-label="setNewPasswordFormLabel">
-                                        <Typography variant="h4" component="div" aria-label="setNewPasswordTitle"
-                                            sx={{
-                                                fontFeatureSettings: "'clig' off, 'liga' off",
-                                                fontFamily: "Roboto",
-                                                fontSize: {xs:"16px", md:"24px"},
-                                                fontStyle: "normal",
-                                                fontWeight: "500",
-                                                lineHeight: "160%",
-                                                letterSpacing: "0.15px",
-                                                textAlign:"center"
-                                            }}
-                                        >
-                                            Enter your new password
-                                        </Typography>
-            
-                                        <Box>
-                                            <TextField
-                                                margin="normal"
-                                                required
-                                                fullWidth
-                                                autoFocus
-                                                autoComplete="new-password"
-                                                name="password"
-                                                label="Password"
-                                                type={showPassword ? 'text' : 'password'}
-                                                id="password"
-                                                value={password}
-                                                error={!!errors.password}
-                                                helperText={errors.password}
-                                                onChange={this.handleChange}
-                                                inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
-                                                aria-label="setNewPasswordInput"
-                                                InputProps={{
-                                                        endAdornment: (
-                                                        <InputAdornment position="end">
-                                                            <IconButton
-                                                            aria-label="toggle password visibility"
-                                                            onClick={this.handleTogglePasswordVisibility}
-                                                            edge="end"
-                                                            >
-                                                            {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                            </IconButton>
-                                                        </InputAdornment>
-                                                        ),
-                                                    }}
-                                                />
-                                            
-                                            <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
-                                                {colors.map((color,index) => (
-                                                    <Box key={index} bgcolor={color} sx={{ flex: 1, height:"5px", borderRadius:"5px"}}></Box>
-                                                ))}
-                                            </Box>
-
-                                            <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", gap:"5px", margin:"0 0 15px 0"}}>
-                                                <Icon style={{ color: colors[0]}}/>
-
-                                                <Typography color={colors[0]}>{passwordStrength}</Typography>
-                                            </Box>
-
-                                            {this.state.PasswordStrength !== "STRONG" &&(
-                                                <>
-                                                    <Typography variant='subtitle2' fontSize="1rem" color="#9E9E9E" margin="0 0 8px 0">
-                                                        To make your Password Stronger:
-                                                    </Typography>
-
-                                                    <Typography variant='subtitle2' fontSize="14px" color="#9E9E9E" margin="0 0 8px 0">
-                                                        * Set a password with a minimum of eight characters. <br></br>
-                                                        * Include a UpperCase letter. <br></br>
-                                                        * Include at least One Number. <br></br>
-                                                        * Include a Symbol ( ! @ # $ % ^ & *).
-                                                    </Typography>
-                                                </>
-                                            )}
-                                        </Box>
-
+                 <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
+                    <Box role="form" className="form-position">
+                        <Box className="card-style">
+                            <FormControl className="form-spacing">
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                <form aria-label="setNewPasswordFormLabel">
+                                    <Typography variant="h4" component="div" aria-label="setNewPasswordTitle"
+                                        sx={{
+                                            fontFeatureSettings: "'clig' off, 'liga' off",
+                                            fontFamily: "Roboto",
+                                            fontSize: {xs:"16px", md:"24px"},
+                                            fontStyle: "normal",
+                                            fontWeight: "500",
+                                            lineHeight: "160%",
+                                            letterSpacing: "0.15px",
+                                            textAlign:"center"
+                                        }}
+                                    >
+                                        Enter your new password
+                                    </Typography>
+        
+                                    <Box>
                                         <TextField
-                                            sx={{ mb: 3, mt: 2 }}
                                             margin="normal"
                                             required
                                             fullWidth
-                                            name="confirmationPassword"
-                                            label="Retype Password"
-                                            type="password"
-                                            id="confirmationPassword"
-                                            value={confirmationPassword}
-                                            error={!!errors.confirmationPassword}
-                                            helperText={errors.confirmationPassword}
+                                            autoFocus
+                                            autoComplete="new-password"
+                                            name="password"
+                                            label="Password"
+                                            type={showPassword ? 'text' : 'password'}
+                                            id="password"
+                                            value={password}
+                                            error={!!errors.password}
+                                            helperText={errors.password}
                                             onChange={this.handleChange}
-                                            inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1}}          // the maximum character length of confirmationPassword has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
-                                            aria-label="setNewPasswordConfirmInput"
-                                        />
-
-                                        <Box sx={{ display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
-                                            <Box>
-                                                <Button
-                                                    onClick={this.setPassword}
-                                                    type="button"
-                                                    variant="contained"
-                                                    className="primary-color"
-                                                    aria-label="setNewPasswordButton"
-                                                >
-                                                    Set Password
-                                                </Button>
-                                            </Box>
+                                            inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
+                                            aria-label="setNewPasswordInput"
+                                            InputProps={{
+                                                    endAdornment: (
+                                                    <InputAdornment position="end">
+                                                        <IconButton
+                                                        aria-label="toggle password visibility"
+                                                        onClick={this.handleTogglePasswordVisibility}
+                                                        edge="end"
+                                                        >
+                                                        {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                        </IconButton>
+                                                    </InputAdornment>
+                                                    ),
+                                                }}
+                                            />
+                                        
+                                        <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
+                                            {colors.map((color: any,index: any) => (
+                                                <Box key={index} bgcolor={color} sx={{ flex: 1, height:"5px", borderRadius:"5px"}}></Box>
+                                            ))}
                                         </Box>
-                                    </form>
-                                </FormControl>
-                            </Box>
+
+                                        <Box sx={{display:"flex", alignItems:"center", justifyContent:"flex-start", gap:"5px", margin:"0 0 15px 0"}}>
+                                            <Icon style={{ color: colors[0]}}/>
+
+                                            <Typography color={colors[0]}>{passwordStrength}</Typography>
+                                        </Box>
+
+                                        {this.state.PasswordStrength !== "STRONG" &&(
+                                            <>
+                                                <Typography variant='subtitle2' fontSize="1rem" color="#9E9E9E" margin="0 0 8px 0">
+                                                    To make your Password Stronger:
+                                                </Typography>
+
+                                                <Typography variant='subtitle2' fontSize="14px" color="#9E9E9E" margin="0 0 8px 0">
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                                    * Set a password with a minimum of eight characters. <br></br>
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                                    * Include a UpperCase letter. <br></br>
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                                    * Include at least One Number. <br></br>
+                                                    * Include a Symbol ( ! @ # $ % ^ & *).
+                                                </Typography>
+                                            </>
+                                        )}
+                                    </Box>
+
+                                    <TextField
+                                        sx={{ mb: 3, mt: 2 }}
+                                        margin="normal"
+                                        required
+                                        fullWidth
+                                        name="confirmationPassword"
+                                        label="Retype Password"
+                                        type="password"
+                                        id="confirmationPassword"
+                                        value={confirmationPassword}
+                                        error={!!errors.confirmationPassword}
+                                        helperText={errors.confirmationPassword}
+                                        onChange={this.handleChange}
+                                        inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1}}          // the maximum character length of confirmationPassword has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
+                                        aria-label="setNewPasswordConfirmInput"
+                                    />
+
+                                    <Box sx={{ display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
+                                        <Box>
+                                            <Button
+                                                onClick={this.setPassword}
+                                                type="button"
+                                                variant="contained"
+                                                className="primary-color"
+                                                aria-label="setNewPasswordButton"
+                                            >
+                                                Set Password
+                                            </Button>
+                                        </Box>
+                                    </Box>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                </form>
+                            </FormControl>
                         </Box>
                     </Box>
-                </>
-            )
+                </Box>
+            </>;
 
         } else { return ( <Login/> ); }
     }

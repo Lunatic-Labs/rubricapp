@@ -1,9 +1,13 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React from 'react';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Tabs' or its cor... Remove this comment to see the full error message
 import Tabs from '@mui/material/Tabs';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Tab' or its corr... Remove this comment to see the full error message
 import Tab from '@mui/material/Tab';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Box' or its corr... Remove this comment to see the full error message
 import Box from '@mui/material/Box';
 
-export default function BasicTabs (props){
+export default function BasicTabs (props: any){
   var navbar = props.navbar;
   var state = navbar.state;
   var activeTab = state.activeTab;
@@ -22,11 +26,12 @@ export default function BasicTabs (props){
     setValue(idTab);
   }, [activeTab, useFixedTeams, idTab]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
 
   return (
+    // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
     <Box>
       <Box sx={{ borderColor: 'divider' }}>
         <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">

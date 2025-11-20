@@ -1,13 +1,20 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { FormControl, MenuItem, InputLabel, Select, Alert } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility.js';
 
 
 
 class SelectTeam extends Component {
-    constructor(props) {
+    checkInUser: any;
+    handleSelect: any;
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -17,7 +24,7 @@ class SelectTeam extends Component {
             errorMessage: ""
         };
 
-        this.handleSelect = (event) => {
+        this.handleSelect = (event: any) => {
             this.setState({
                 teamID: event.target.value,
                 error: false,
@@ -88,9 +95,11 @@ class SelectTeam extends Component {
         var teams = this.state.teams;
 
         return (
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             <div style={{ padding: '50px', backgroundColor: '#F8F8F8' }}>
                 {teams &&
                     <>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <div className='container'
                             style={{
                                 backgroundColor: '#FFF',
@@ -107,6 +116,7 @@ class SelectTeam extends Component {
                                 paddingBottom: '20px',
                                 gap: 20,
                             }}>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Choose a Team</h2>
 
                             {this.state.error && this.state.errorMessage && (
@@ -115,7 +125,9 @@ class SelectTeam extends Component {
                                 </Alert>
                             )}
 
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <div className="d-flex flex-column">
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <div className="d-flex flex-row justify-content-between">
                                     <FormControl fullWidth error={this.state.error && !this.state.errorMessage}>
                                         <InputLabel id="Team">Team</InputLabel>
@@ -130,12 +142,15 @@ class SelectTeam extends Component {
                                             sx={{ mb: 3 }}
                                             aria-label="selectTeamDropdown"
                                         >
+                                            // @ts-expect-error TS(7006): Parameter 'x' implicitly has an 'any' type.
                                             {teams.map((x) =>
                                                 <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>
                                     </FormControl>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 </div>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </div>
 
                             <CustomButton
@@ -145,9 +160,11 @@ class SelectTeam extends Component {
                                 position={{ top: '10px', right: '0px' }}
                                 aria-label="checkInButton"
                             />
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </div>
                     </>
                 }
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             </div>
         )
     }

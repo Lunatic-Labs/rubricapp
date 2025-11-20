@@ -1,17 +1,27 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/InputLabel' or i... Remove this comment to see the full error message
 import InputLabel from '@mui/material/InputLabel';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/FormControl' or ... Remove this comment to see the full error message
 import FormControl from '@mui/material/FormControl';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Select' or its c... Remove this comment to see the full error message
 import Select from '@mui/material/Select';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/MenuItem' or its... Remove this comment to see the full error message
 import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
 import { genericResourceGET } from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 
 
 
 class CourseDropdown extends Component {
-  constructor(props) {
+  handleCourseChange: any;
+  props: any;
+  setState: any;
+  state: any;
+  constructor(props: any) {
     super(props);
 
     this.state = {
@@ -20,7 +30,7 @@ class CourseDropdown extends Component {
       courses: []
     };
 
-    this.handleCourseChange = (newSelectedCourse) => {
+    this.handleCourseChange = (newSelectedCourse: any) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
 
       this.setState({
@@ -35,11 +45,13 @@ class CourseDropdown extends Component {
 
   render() {
     var courseChoices = [
+      // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
       <MenuItem key={-1} value="">
+        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
         <em>None</em>
       </MenuItem>
     ];
-    this.state.courses && this.state.courses.map((course, index) => {
+    this.state.courses && this.state.courses.map((course: any, index: any) => {
       return(
         courseChoices = [...courseChoices,
           <MenuItem key={index} value={course["course_id"]} aria-label="adminImportAssessmentCourseChoice">

@@ -1,12 +1,18 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Button' or its c... Remove this comment to see the full error message
 import Button from '@mui/material/Button';
 import {genericResourcePOST} from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 
 class ViewAssessmentTaskInstructions extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
         this.state = {
             categories: this.props.rubrics["category_json"],
@@ -85,6 +91,7 @@ class ViewAssessmentTaskInstructions extends Component {
 
         if (skipInstructions) {
             this.handleContinueClick();
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             return <></>;
         }
 
@@ -93,6 +100,7 @@ class ViewAssessmentTaskInstructions extends Component {
                 {this.state.errorMessage && (
                     <ErrorMessage errorMessage={this.state.errorMessage} />
                 )}
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h2
                     style={{
                         textAlign: "start",
@@ -103,13 +111,16 @@ class ViewAssessmentTaskInstructions extends Component {
                     aria-label="viewAssessmentTaskInstructionsTitle"
                 >
                     {assessmentTaskName}
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </h2>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div
                     style={{
                         display: 'flex',
                         justifyContent: 'center',
                     }}
                 >
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <div
                         style={{
                             borderTop: '3px solid #4A89E8', 
@@ -124,26 +135,33 @@ class ViewAssessmentTaskInstructions extends Component {
                             height: 'fit-content'
                         }}
                     >
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
                             {"Rubric for " + rubricName}
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </h3>
 
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
                             Rubric Description: {rubricDescription}
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </h6>
 
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <div
                             style={{
                                 display: 'flex',
                                 flexDirection: 'column',
                                 justifyContent: 'flex-start'
                             }}>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <div
                                 style={{
                                     padding: "20px",
                                     border: "solid 1px #0000003b"
                                 }}
                             >
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <div
                                     style={{
                                         width: "100%",
@@ -151,6 +169,7 @@ class ViewAssessmentTaskInstructions extends Component {
                                         justifyContent: "center"
                                     }}
                                 >
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     <h4
                                         style={{
                                             margin: "1rem",
@@ -160,15 +179,20 @@ class ViewAssessmentTaskInstructions extends Component {
                                         }}
                                     >
                                         Assessment Categories: {categoryList}
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     </h4>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 </div>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <h2
                                     style={{
                                         textAlign: 'left',
                                         marginLeft: "8px"
                                     }}>
                                     Instructions
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 </h2>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <textarea
                                     style={{
                                         width: "98%",
@@ -176,8 +200,11 @@ class ViewAssessmentTaskInstructions extends Component {
                                     }}
                                     defaultValue={this.state.instructions}
                                     readOnly
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 ></textarea>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </div>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <div
                                 style={{
                                     width: "100%",
@@ -200,9 +227,13 @@ class ViewAssessmentTaskInstructions extends Component {
                                 >
                                     Complete rubric
                                 </Button>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </div>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </div>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </div>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             </>
         )

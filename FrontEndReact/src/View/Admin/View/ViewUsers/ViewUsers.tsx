@@ -1,14 +1,20 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/IconButton' or i... Remove this comment to see the full error message
 import IconButton from '@mui/material/IconButton';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Edit' or i... Remove this comment to see the full error message
 import EditIcon from '@mui/icons-material/Edit';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Delete' or... Remove this comment to see the full error message
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
 import { genericResourceDELETE } from "../../../../utility.js";
 
 class ViewUsers extends Component {
-  async deleteUser(userId) {
+  props: any;
+  async deleteUser(userId: any) {
     try {
       const result = await genericResourceDELETE(`/user?uid=${userId}`, this, {
         dest: "users",
@@ -22,6 +28,7 @@ class ViewUsers extends Component {
         this.props.refreshData();
       }, 1000);
     } catch (error) {
+      // @ts-expect-error TS(2571): Object is of type 'unknown'.
       const errorMessage = error.message || "Cannot delete user. There are assessment task associated with this user.";
       window.alert(errorMessage);
       this.props.onError(errorMessage);
@@ -76,8 +83,10 @@ class ViewUsers extends Component {
             filter: true,
             setCellHeaderProps: () => { return { width: "10%" } },
             setCellProps: () => { return { width: "10%" } },
-            customBodyRender: (roleId) => {
+            // @ts-expect-error TS(2322): Type '{ filter: true; setCellHeaderProps: () => { ... Remove this comment to see the full error message
+            customBodyRender: (roleId: any) => {
               return (
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <p>{roleNames[roleId]}</p>
               )
             }
@@ -91,6 +100,7 @@ class ViewUsers extends Component {
         {
           name: "lms_id",
           label: "LMS ID",
+          // @ts-expect-error TS(2739): Type '{ filter: true; }' is missing the following ... Remove this comment to see the full error message
           options: {
             filter: true
           }
@@ -103,10 +113,11 @@ class ViewUsers extends Component {
       label: "Edit",
       options: {
         filter: false,
+        // @ts-expect-error TS(2322): Type '{ filter: false; sort: false; setCellHeaderP... Remove this comment to see the full error message
         sort: false,
         setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId) => {
+        customBodyRender: (userId: any) => {
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersEditButton" + userId}
@@ -129,10 +140,11 @@ class ViewUsers extends Component {
       label: "Delete",
       options: {
         filter: false,
+        // @ts-expect-error TS(2322): Type '{ filter: false; sort: false; setCellHeaderP... Remove this comment to see the full error message
         sort: false,
         setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId) => {
+        customBodyRender: (userId: any) => {
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersDeleteButton" + userId}

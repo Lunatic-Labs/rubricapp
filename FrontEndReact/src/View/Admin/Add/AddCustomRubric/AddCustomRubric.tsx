@@ -1,6 +1,10 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React from "react";
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from "universal-cookie";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material";
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/HelpOutlin... Remove this comment to see the full error message
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CustomButton from "./Components/CustomButton.js";
 import ErrorMessage from "../../../Error/ErrorMessage.js";
@@ -8,13 +12,22 @@ import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericRes
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
+// @ts-expect-error TS(2307): Cannot find module '../../../../../src/RubricDetai... Remove this comment to see the full error message
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
+// @ts-expect-error TS(2307): Cannot find module '../../../../../src/RubricDetai... Remove this comment to see the full error message
 import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
 import Loading from '../../../Loading/Loading.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/FormHelperText' ... Remove this comment to see the full error message
 import FormHelperText from '@mui/material/FormHelperText';
 
 class AddCustomRubric extends React.Component {
-    constructor(props) {
+    handleCreateRubric: any;
+    handleDeleteRubric: any;
+    props: any;
+    setState: any;
+    state: any;
+    toggleHelp: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -40,11 +53,13 @@ class AddCustomRubric extends React.Component {
             });
         };
 
-        this.handleCreateRubric = (pickedCategories) => {
+        this.handleCreateRubric = (pickedCategories: any) => {
             var navbar = this.props.navbar;
             var rubricId = navbar.rubricId;
             var categoryIds = [];
+            // @ts-expect-error TS(2531): Object is possibly 'null'.
             var rubricName = document.getElementById("rubricNameInput").value
+            // @ts-expect-error TS(2531): Object is possibly 'null'.
             var rubricDescription = document.getElementById("rubricDescriptionInput").value
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
@@ -115,7 +130,7 @@ class AddCustomRubric extends React.Component {
             });
         };
 
-        this.handleDeleteRubric = async (rubricId) => {
+        this.handleDeleteRubric = async (rubricId: any) => {
             try {
                 const result = await genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
                 if (result && result.errorMessage) {
@@ -146,15 +161,15 @@ class AddCustomRubric extends React.Component {
 
     }
 
-    handleCategorySelect = (categoryId, isSelected) => {
+    handleCategorySelect = (categoryId: any, isSelected: any) => {
         var allCategories = this.state.allCategories;
         var selectedCategories = this.state.categories;
 
         if (isSelected) {
-            const correctCategory = allCategories.find(category => category.category_id === categoryId)
+            const correctCategory = allCategories.find((category: any) => category.category_id === categoryId)
             selectedCategories.push(correctCategory);
         } else {
-            selectedCategories = selectedCategories.filter(category => category.category_id !== categoryId);
+            selectedCategories = selectedCategories.filter((category: any) => category.category_id !== categoryId);
         }
         this.setState({
             categories: selectedCategories
@@ -176,7 +191,7 @@ class AddCustomRubric extends React.Component {
             genericResourceGET(`/rubric?rubric_id=${rubricId}`, "rubrics", this);
         }
     }
-    
+
     render() {
         const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics } = this.state;
 
@@ -187,7 +202,8 @@ class AddCustomRubric extends React.Component {
                 options: {
                     filter: true,
                     align: "center",
-                    customBodyRender: (categoryName) => {
+                    customBodyRender: (categoryName: any) => {
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         return <p>{categoryName}</p>;
                     },
                 },
@@ -197,7 +213,8 @@ class AddCustomRubric extends React.Component {
                 label: "Rubric",
                 options: {
                     align: "center",
-                    customBodyRender: (rubricName) => {
+                    customBodyRender: (rubricName: any) => {
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         return <p>{rubricName}</p>;
                     },
                 },
@@ -219,11 +236,13 @@ class AddCustomRubric extends React.Component {
 
         if (errorMessage){
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Rubric or Category"}
                         errorMessage={errorMessage}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         }
@@ -236,8 +255,8 @@ class AddCustomRubric extends React.Component {
             }
         }
 
-        var pickedCategories = [];
-        categories.forEach((category) => {
+        var pickedCategories: any = [];
+        categories.forEach((category: any) => {
             if (category) {
                 for (let i = 0; i < allCategories.length; i++) {
                     if (allCategories[i]["category_id"] === category["category_id"]) {                        
@@ -253,9 +272,11 @@ class AddCustomRubric extends React.Component {
                     <ErrorMessage errorMessage={this.state.errorMessage} />
                 )}
 
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div>
                     <Grid container spacing={10}>
                         <Grid item xs={6}>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <h2
                                 style={{
                                     borderBottom: "1px solid #D9D9D9",
@@ -266,6 +287,7 @@ class AddCustomRubric extends React.Component {
                                 }}
                                 aria-label="addCustomizeYourRubricTitle"
                             > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </h2>
                         </Grid>
 
@@ -338,13 +360,16 @@ class AddCustomRubric extends React.Component {
 
                     <Grid container spacing={6.5}>
                         <Grid item xs={6}>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <div className="d-flex align-items-center justify-content-between mb-3">
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <h3 className="d-flex mb-3">Rubrics</h3>
                                 <Tooltip title="Help">
                                     <IconButton aria-label="help" onClick={this.toggleHelp}>
                                         <HelpOutlineIcon />
                                     </IconButton>
                                 </Tooltip>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </div>
 
                             <FormControl error={!!errors.rubricCategories} required fullWidth>
@@ -362,6 +387,7 @@ class AddCustomRubric extends React.Component {
                         </Grid>
 
                         <Grid item xs={6}>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <h3 className="d-flex mb-3" aria-label="yourSelectedCategories">Your Selected Categories</h3>
 
                             <CustomDataTable
@@ -378,6 +404,7 @@ class AddCustomRubric extends React.Component {
                             imageUrl2={RubricDescriptionsImage2}
                         />
                     </Grid>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             </>
         );

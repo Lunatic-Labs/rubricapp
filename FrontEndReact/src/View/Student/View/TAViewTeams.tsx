@@ -1,15 +1,20 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeamsTA from './ViewTeamsTA.js';
 import ErrorMessage from '../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../utility.js';
 import Loading from '../../Loading/Loading.js';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
 
 
 
 class TAViewTeams extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -46,11 +51,13 @@ class TAViewTeams extends Component {
         } = this.state;
         if (errorMessage) {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Teams"}
                         errorMessage={errorMessage}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
 
@@ -70,18 +77,22 @@ class TAViewTeams extends Component {
                         names = team_members[ci]["users"] + ", ";
                     }
                     var str_len = names.length;
+                    // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                     team["studentNames"]= names.substring(0, str_len-2);
+                    // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                     team["teamName"] = team_members[ci]["team_name"];
                     teams.push(team);
                 }
             }
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ViewTeamsTA
                         navbar={this.props.navbar}
                         teams={teams}
                         users={studentNames ? studentNames : []}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         }

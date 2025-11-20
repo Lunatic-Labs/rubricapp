@@ -1,7 +1,17 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React from 'react';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Button' or its c... Remove this comment to see the full error message
 import Button from '@mui/material/Button';
 
-const CustomButton = ({ label, onClick, style, isOutlined, position, disabled,'aria-label': ariaLabel}) => {
+const CustomButton = ({
+  label,
+  onClick,
+  style,
+  isOutlined,
+  position,
+  disabled,
+  'aria-label': ariaLabel
+}: any) => {
   // Default styles for the button
   const defaultStyle = {
     backgroundColor: isOutlined ? 'white' : '#2E8BEF',
@@ -19,6 +29,7 @@ const CustomButton = ({ label, onClick, style, isOutlined, position, disabled,'a
   const buttonStyle = { ...defaultStyle, ...style };
 
   return (
+// @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
 		<div style={{ position: 'relative' }}>
     	<Button
         onClick={onClick}
@@ -29,6 +40,7 @@ const CustomButton = ({ label, onClick, style, isOutlined, position, disabled,'a
       >
         {label}
     	</Button>
+// @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
 		</div>
   );
 };

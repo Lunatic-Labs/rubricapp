@@ -1,17 +1,25 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import Section from './Section.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Tab, Button } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Tabs' or its cor... Remove this comment to see the full error message
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab.js';
 import StatusIndicator, { StatusIndicatorState } from './StatusIndicator.js';
 import { genericResourcePOST, genericResourcePUT, debounce } from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Alert' or its co... Remove this comment to see the full error message
 import Alert from '@mui/material/Alert';
 import { getUnitCategoryStatus } from './cat_utils.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/FormGroup' or it... Remove this comment to see the full error message
 import FormGroup from '@mui/material/FormGroup';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/FormControlLabel... Remove this comment to see the full error message
 import FormControlLabel from '@mui/material/FormControlLabel';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Switch' or its c... Remove this comment to see the full error message
 import Switch from '@mui/material/Switch'
 
 
@@ -37,7 +45,23 @@ import Switch from '@mui/material/Switch'
  * @property {Set<number>} unitsThatNeedSaving - A set of all the unit indexes that need saving for autosave.
  */
 class Form extends Component {
-    constructor(props) {
+    areAllCategoriesCompleted: any;
+    doAutosave: any;
+    findPersistantTab: any;
+    generateCategoriesAndSection: any;
+    getUnitCategoryStatus: any;
+    handleCategoryChange: any;
+    handleUnitTabChange: any;
+    hideTabs: any;
+    markForAutosave: any;
+    modifyUnitCategoryProperty: any;
+    props: any;
+    saveUnit: any;
+    setState: any;
+    shouldTabsCategoriesRender: any;
+    state: any;
+    unitsThatNeedSaving: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -58,7 +82,7 @@ class Form extends Component {
          * @method handleUnitTabChange - Handles the change of the unit tab.
          * @param {number} newUnitTabIndex - The new index of the unit tab.
          */
-        this.handleUnitTabChange = (newUnitTabIndex) => {
+        this.handleUnitTabChange = (newUnitTabIndex: any) => {
             if (this.state.currentUnitTabIndex !== newUnitTabIndex) {
                 this.setState(
                     {
@@ -76,7 +100,7 @@ class Form extends Component {
          * @method handleCategoryChange - Handles the change of the category tab.
          * @param {number} newCategoryTabIndex - The new index of the category tab.
          */
-        this.handleCategoryChange = (newCategoryTabIndex) => {
+        this.handleCategoryChange = (newCategoryTabIndex: any) => {
             if (this.state.currentCategoryTabIndex !== newCategoryTabIndex) {
                 this.setState(
                     {
@@ -96,14 +120,14 @@ class Form extends Component {
          * @param {string} propertyName The name of the category property to modify.
          * @param {any} propertyValue The value to set.
          */
-        this.modifyUnitCategoryProperty = (unitIndex, categoryName, propertyName, propertyValue) => {
+        this.modifyUnitCategoryProperty = (unitIndex: any, categoryName: any, propertyName: any, propertyValue: any) => {
             if (this.state.units[unitIndex].isDone && !this.props.navbar.props.isAdmin) return;
             
             this.setState(
-                prevState => {
+                (prevState: any) => {
                     const updatedUnits = [...prevState.units];
                     
-                    updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewRocsData(rocs => {
+                    updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewRocsData((rocs: any) => {
                         rocs[categoryName][propertyName] = propertyValue;
                     });
                     
@@ -121,7 +145,7 @@ class Form extends Component {
          * @param {string} categoryName - The name of the category.
          * @returns {string} - The status of the unit category.
          */
-        this.getUnitCategoryStatus = (unitId, categoryName) => {
+        this.getUnitCategoryStatus = (unitId: any, categoryName: any) => {
             const unit = this.state.units[unitId];
             const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
             
@@ -133,17 +157,20 @@ class Form extends Component {
          */
         this.generateCategoriesAndSection = () => {
             const assessmentTaskRubric = this.props.assessmentTaskRubric;
-            const categoryList = [];
+            const categoryList: any = [];
             let section;
             
             // We sort assessmentTaskRubric["category_json"] by the index of each entry, since the the data gets
             // automatically sorted when it comes out of the backend
             Object.entries(assessmentTaskRubric["category_json"])
-                .toSorted((a, b) => a[1].index - b[1].index)
-                .forEach(([category, _], index) => {
+                // @ts-expect-error TS(2339): Property 'toSorted' does not exist on type '[strin... Remove this comment to see the full error message
+                .toSorted((a: any, b: any) => a[1].index - b[1].index)
+                // @ts-expect-error TS(7031): Binding element 'category' implicitly has an 'any'... Remove this comment to see the full error message
+                .forEach(([category, _], index: any) => {
                     categoryList.push(
                         <Tab label={
                             <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <span>{category}</span>
 
                                 <StatusIndicator
@@ -194,7 +221,7 @@ class Form extends Component {
         this.areAllCategoriesCompleted = () => {
             const currentUnit = this.state.units[this.state.currentUnitTabIndex];
             
-            return currentUnit.categoryNames().every(category => {
+            return currentUnit.categoryNames().every((category: any) => {
                 return this.getUnitCategoryStatus(this.state.currentUnitTabIndex, category) === StatusIndicatorState.COMPLETED;
             });
         };
@@ -204,7 +231,7 @@ class Form extends Component {
          * @param {number} unitIndex - The index of the unit to save.
          * @param {boolean} markDone - If the unit should be marked as done or retain the current done status.
          */
-        this.saveUnit = (unitIndex, markDone) => {
+        this.saveUnit = (unitIndex: any, markDone: any) => {
             
             const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
             const unit = this.state.units[unitIndex];
@@ -242,7 +269,7 @@ class Form extends Component {
             
             // Replace the selected unit with updated unit and display saving notification
             this.setState(
-                prevState => {
+                (prevState: any) => {
                     const updatedUnits = [...prevState.units];
                     
                     updatedUnits[unitIndex] = newUnit;
@@ -262,7 +289,7 @@ class Form extends Component {
                 if (completeAssessmentEntry) {
                     
                     this.setState(
-                        prevState => {
+                        (prevState: any) => {
                             const updatedUnits = [...prevState.units];
 
                             updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewCAT(completeAssessmentEntry);
@@ -286,7 +313,7 @@ class Form extends Component {
          * @method markForAutosave - Marks a unit to be autosaving soon.
          * @param {number} unitIndex - The index of the unit.
          */
-        this.markForAutosave = (unitIndex) => {
+        this.markForAutosave = (unitIndex: any) => {
             this.unitsThatNeedSaving.add(unitIndex);
             
             this.doAutosave();
@@ -296,7 +323,7 @@ class Form extends Component {
          * @method doAutosave - Performs an autosave.
          */
         this.doAutosave = debounce(() => {
-            this.unitsThatNeedSaving.forEach(unitIndex => {
+            this.unitsThatNeedSaving.forEach((unitIndex: any) => {
                 this.saveUnit(unitIndex, false);
             });
             
@@ -306,7 +333,7 @@ class Form extends Component {
         /**
         * @method hideTabs - Handles setting the properties needed for hiding tabs.
         */
-        this.hideTabs = (event) => {
+        this.hideTabs = (event: any) => {
             this.setState({
                 hideUnits: event.target.checked
             })
@@ -338,7 +365,7 @@ class Form extends Component {
         * 
         * @param {object} - What is supposed to be rendered.
         */
-        this.shouldTabsCategoriesRender = (renderObject) => {
+        this.shouldTabsCategoriesRender = (renderObject: any) => {
             const {hideUnits, consistentValidUnit} = this.state;
             const tabToDefualtTo = consistentValidUnit !== null;
             // {hideUnits} holds precedence.
@@ -347,7 +374,7 @@ class Form extends Component {
                 && renderObject 
             );
         };
-    };
+    }
 
     componentDidMount() {
         const {usingTeams, jumpId} = this.props;
@@ -374,9 +401,10 @@ class Form extends Component {
             });
         }
     }
-    
+
     render() {
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <Box sx={{mt:1}} id="formDiv" className="assessment-task-spacing">
                 <Box sx={{
                     display:"flex",
@@ -395,7 +423,7 @@ class Form extends Component {
                                 control={
                                     <Switch 
                                         checked={this.state.hideUnits}
-                                        onChange={(event) => this.hideTabs(event)}
+                                        onChange={(event: any) => this.hideTabs(event)}
                                         sx={{
                                             '& .MuiSwitch-track': {
                                                 width: '2.6rem',
@@ -454,7 +482,7 @@ class Form extends Component {
                         <Tabs
                             value={this.state.currentCategoryTabIndex} 
                         
-                            onChange={(event, newCategoryTabIndex) => {
+                            onChange={(event: any, newCategoryTabIndex: any) => {
                                 this.handleCategoryChange(newCategoryTabIndex);
                             }}
 
@@ -489,7 +517,7 @@ class Form extends Component {
 
                 {this.shouldTabsCategoriesRender(this.state.section)}
             </Box>
-        )
+        );
     }
 }
 

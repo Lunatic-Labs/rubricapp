@@ -1,34 +1,37 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Button } from '@mui/material';
 import { getHumanReadableDueDate } from '../../../../utility';
 
 
 class ViewAssessmentTasks extends Component {
-    constructor(props) {
+    areAllATsComplete: any;
+    isObjectFound: any;
+    props: any;
+    constructor(props: any) {
         super(props);
 
-        this.isObjectFound = (atId) => {
+        this.isObjectFound = (atId: any) => {
             var completedAssessments = this.props.completedAssessments;
 
             if(completedAssessments) {
-                const catsForThisTask = completedAssessments.filter(cat => cat.assessment_task_id === atId);
+                const catsForThisTask = completedAssessments.filter((cat: any) => cat.assessment_task_id === atId);
         
-                const userCatForThisTask = catsForThisTask.find(cat => 
-                    // For individual assessments, team_id will be null
-                    // For team assessments, find one that matches user's general teams
-                    cat.team_id === null || 
-                    (this.props.userTeamIds && this.props.userTeamIds.includes(cat.team_id))
+                const userCatForThisTask = catsForThisTask.find((cat: any) => // For individual assessments, team_id will be null
+                // For team assessments, find one that matches user's general teams
+                cat.team_id === null || 
+                (this.props.userTeamIds && this.props.userTeamIds.includes(cat.team_id))
                 );
         
                 if (userCatForThisTask) {
                     const userTeamId = userCatForThisTask.team_id;
             
                     // Now check if ANY completed assessment for this task with the same team is done
-                    const teamIsDone = catsForThisTask.some(cat => 
-                        cat.done === true && 
-                        (cat.team_id === userTeamId || (cat.team_id === null && userTeamId === null))
+                    const teamIsDone = catsForThisTask.some((cat: any) => cat.done === true && 
+                    (cat.team_id === userTeamId || (cat.team_id === null && userTeamId === null))
                     );
             
                     if (teamIsDone) {
@@ -40,11 +43,11 @@ class ViewAssessmentTasks extends Component {
             return false;
         }
 
-        this.areAllATsComplete = (atId) => {
+        this.areAllATsComplete = (atId: any) => {
             // Contains all Assessments completed by the TA
-            var completedAssessments = this.props.completedAssessments.filter(at => at.assessment_task_id === atId);
+            var completedAssessments = this.props.completedAssessments.filter((at: any) => at.assessment_task_id === atId);
 
-            var assessmentTasks = this.props.assessmentTasks.filter(at => at.assessment_task_id === atId);
+            var assessmentTasks = this.props.assessmentTasks.filter((at: any) => at.assessment_task_id === atId);
 
             var count = 0;
             if (assessmentTasks["unit_of_assessment"]) {          // Team Assessment
@@ -80,7 +83,7 @@ class ViewAssessmentTasks extends Component {
 
         const role = this.props.role;
 
-        var chosenCAT = null;
+        var chosenCAT: any = null;
 
         if (role["role_id"] === 5) {
             chosenCAT = this.props.completedAssessments;
@@ -105,10 +108,12 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"270px"}},
                     setCellProps: () => { return { width:"270px"} },
-                    customBodyRender: (isTeam) => {
+                    customBodyRender: (isTeam: any) => {
                         return (
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p className='mt-3' variant="contained">
                                 {isTeam ? "Team" : "Individual"}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         )
                     }
@@ -121,12 +126,15 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"170px"}},
                     setCellProps: () => { return { width:"170px"} },
-                    customBodyRender: (dueDate) => {
+                    customBodyRender: (dueDate: any) => {
+                        // @ts-expect-error TS(2554): Expected 2 arguments, but got 1.
                         let dueDateString = getHumanReadableDueDate(dueDate);
 
                         return(
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p className='mt-3' variant='contained'>
                                 {dueDate ? dueDateString : "N/A"}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         )
                     }
@@ -139,10 +147,12 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"270px"}},
                     setCellProps: () => { return { width:"270px"} },
-                    customBodyRender: (rubricId) => {
+                    customBodyRender: (rubricId: any) => {
                         return (
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p className='mt-3' variant="contained">
                                 {this.props.rubricNames ? this.props.rubricNames[rubricId]:""}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         )
                     }
@@ -156,8 +166,8 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        let at = assessmentTasks.find((at) => at["assessment_task_id"] === atId);
+                    customBodyRender: (atId: any) => {
+                        let at = assessmentTasks.find((at: any) => at["assessment_task_id"] === atId);
                         let filledByStudent = at.role_id === 5;
                         
                         // Check if user is switching teams (already checked in)
@@ -170,7 +180,7 @@ class ViewAssessmentTasks extends Component {
                                     flexFlow: "row wrap",
                                 }}
                             >
-                                {assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"] &&
+                                {assessmentTasks.find((at: any) => at["assessment_task_id"] === atId)["unit_of_assessment"] &&
                                     <Button
                                         className='primary-color'
 
@@ -230,7 +240,7 @@ class ViewAssessmentTasks extends Component {
 
                                     disabled={role["role_id"] === 5 ?
                                         ((this.props.checkin.indexOf(atId) === -1 &&
-                                        (assessmentTasks.find((at) => at["assessment_task_id"] === atId)["unit_of_assessment"])) ||
+                                        (assessmentTasks.find((at: any) => at["assessment_task_id"] === atId)["unit_of_assessment"])) ||
                                         this.isObjectFound(atId) === true || !filledByStudent)
                                     :
                                         this.areAllATsComplete(atId) === true
@@ -241,15 +251,13 @@ class ViewAssessmentTasks extends Component {
                                         if (role["role_id"] === 5 && at.unit_of_assessment) {
                                             // For students on team assessments, find THEIR team's CAT
                                             
-                                            relevantCAT = this.props.completedAssessments.find(cat => 
-                                                cat.assessment_task_id === atId && 
-                                                this.props.userTeamIds.includes(cat.team_id)
+                                            relevantCAT = this.props.completedAssessments.find((cat: any) => cat.assessment_task_id === atId && 
+                                            this.props.userTeamIds.includes(cat.team_id)
                                             );
                                         } else if (role["role_id"] === 5) {
                                             // For individual assessments, find their personal CAT
-                                            relevantCAT = this.props.completedAssessments.find(cat => 
-                                                cat.assessment_task_id === atId && 
-                                                cat.team_id === null
+                                            relevantCAT = this.props.completedAssessments.find((cat: any) => cat.assessment_task_id === atId && 
+                                            cat.team_id === null
                                             );
                                         } else {
                                             // For TAs, use chosenCAT as before
@@ -264,7 +272,7 @@ class ViewAssessmentTasks extends Component {
                                     START
                                 </Button>
                             </Box>
-                        )
+                        );
                     }
                 }
             }

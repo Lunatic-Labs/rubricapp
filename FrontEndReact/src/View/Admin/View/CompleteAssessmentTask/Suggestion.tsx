@@ -1,11 +1,17 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Checkbox' or its... Remove this comment to see the full error message
 import Checkbox from '@mui/material/Checkbox';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Box' or its corr... Remove this comment to see the full error message
 import Box from '@mui/material/Box';
 
 
 
 class Suggestion extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -25,8 +31,8 @@ class Suggestion extends Component {
         const handleChange = () => {
             if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
             
-            this.setState((prevState) => ({
-                checked: !prevState.checked,
+            this.setState((prevState: any) => ({
+                checked: !prevState.checked
             }));
 
             var newData = "";
@@ -41,6 +47,7 @@ class Suggestion extends Component {
         };
 
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <Box
                 className="checkbox-alignment"
 
@@ -65,6 +72,7 @@ class Suggestion extends Component {
                     disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
                 />
 
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <label>{this.props.suggestion}</label>
             </Box>
         );

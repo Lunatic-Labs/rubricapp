@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
@@ -8,7 +9,11 @@ import Loading from '../../../../Loading/Loading';
 
 
 class AdminViewAssessmentStatus extends Component {
-    constructor(props) {
+    fetchData: any;
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -103,11 +108,13 @@ class AdminViewAssessmentStatus extends Component {
 
         if(errorMessage) {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Completed Assessments"}
                         errorMessage={errorMessage}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         } else if (!isLoaded || (!completedAssessments && this.props.chosenAssessmentId !== "") || !categories || !rubrics){
@@ -117,6 +124,7 @@ class AdminViewAssessmentStatus extends Component {
 
         } else {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ViewAssessmentStatus
                         navbar={this.props.navbar}
@@ -130,6 +138,7 @@ class AdminViewAssessmentStatus extends Component {
                         completedByTAs={completedByTAs}
                         courseTotalStudents={courseTotalStudents}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         }

@@ -1,17 +1,22 @@
+// @ts-expect-error TS(2307): Cannot find module 'react-dom' or its correspondin... Remove this comment to see the full error message
 import ReactDOM from 'react-dom';
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import { Component } from 'react';
 
 
 
 class ViewTAEval extends Component {
-  constructor(props) {
+  containerEl: any;
+  externalWindow: any;
+  props: any;
+  constructor(props: any) {
     super(props);
 
     // STEP 1: create a container <div>
     this.containerEl = document.createElement('div');
     this.externalWindow = null;
   }
-  
+
   render() {
     // STEP 2: append props.children to the container <div> that isn't mounted anywhere yet
     return ReactDOM.createPortal(this.props.children, this.containerEl);

@@ -1,13 +1,19 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Slider' or its c... Remove this comment to see the full error message
 import Slider from '@mui/material/Slider';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Box' or its corr... Remove this comment to see the full error message
 import Box from '@mui/material/Box';
 import './../../../../SBStyles.css';
 
 
 
 class Rating extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -26,7 +32,7 @@ class Rating extends Component {
     render() {
         var sliderValues = this.props.sliderValues;
 
-        const marks = [];
+        const marks: any = [];
         let valueIndicator = 0;
 
         for(let i = 0; i < sliderValues.length; i++){
@@ -39,17 +45,19 @@ class Rating extends Component {
             valueIndicator = valueIndicator + 20;
         }
 
-        function valuetext(valueText) {
+        function valuetext(valueText: any) {
             return valueText;
         }
 
-        function valueLabelFormat(value) {
+        function valueLabelFormat(value: any) {
+            // @ts-expect-error TS(7006): Parameter 'mark' implicitly has an 'any' type.
             return marks.findIndex((mark) => mark.value === value);
         }
 
         const showRatings = this.props.navbar.state.chosenAssessmentTask["show_ratings"];
         
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <Box
                 sx={{
                     p: 3, display: "flex", width: "90%",
@@ -93,7 +101,7 @@ class Rating extends Component {
                         },
                     }}
 
-                    onChange={(event) => {
+                    onChange={(event: any) => {
                         if(this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
                         this.props.setRating(Math.floor(event.target.value / 20));
@@ -108,7 +116,7 @@ class Rating extends Component {
                     disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
                 />
             </Box>
-        )
+        );
     }
 }
 

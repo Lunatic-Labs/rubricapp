@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login.js";
@@ -34,12 +35,16 @@ var vcaib = "viewCompletedAssessmentIconButton";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewCompleteAssessmentTasks.test.js Test 1: Should render the AdminViewCompleteAssessmentTasks component given the View Icon Button on Individual AssessmentTasks is clicked.", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -74,7 +79,9 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 1: Should render the AdminVi
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessment Dashboard if the back button on the View Individual Completed Assessment Tasks is clicked.", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -109,7 +116,9 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessm
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewCompleteAssessmentTasks.test.js Test 3: Should render the Add Message prompt given that the Send Notification button is clicked on View Individual Completed Assessment Tasks page.", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -144,7 +153,9 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 3: Should render the Add Mes
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Individual Assessment Task name page given that the See More Details button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -175,7 +186,9 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Individ
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Individual Completed Assessment Tasks page when the cancel button on the Add Message prompt is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -216,7 +229,9 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Individ
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Individual Completed Assessment Tasks page when the send notification button on the Add Message prompt is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -257,7 +272,9 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Individ
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Individual Completed Assessment Tasks page if the back button on the Critical Thinking page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {

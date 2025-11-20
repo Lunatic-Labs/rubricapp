@@ -1,20 +1,36 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Button } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Tooltip } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Edit' or i... Remove this comment to see the full error message
 import EditIcon from '@mui/icons-material/Edit';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Visibility... Remove this comment to see the full error message
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourceGET, genericResourcePUT, getHumanReadableDueDate } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { IconButton } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Lock' or i... Remove this comment to see the full error message
 import LockIcon from '@mui/icons-material/Lock';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/LockOpen' ... Remove this comment to see the full error message
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Publish' o... Remove this comment to see the full error message
 import PublishIcon from '@mui/icons-material/Publish';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Unpublishe... Remove this comment to see the full error message
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 
 class ViewAssessmentTasks extends Component {
-    constructor(props) {
+    handleDownloadCsv: any;
+    handleLockToggle: any;
+    handlePublishToggle: any;
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -29,7 +45,7 @@ class ViewAssessmentTasks extends Component {
             publishedStatus: {},
         }
 
-        this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
+        this.handleDownloadCsv = (atId: any, exportButtonId: any, assessmentTaskIdToAssessmentTaskName: any) => {
             let promise = genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}&format=0`,
                 "csv_creation",
@@ -53,8 +69,8 @@ class ViewAssessmentTasks extends Component {
             });
         }
 
-        this.handleLockToggle = (assessmentTaskId, task) => {
-          this.setState((prevState) => {
+        this.handleLockToggle = (assessmentTaskId: any, task: any) => {
+          this.setState((prevState: any) => {
               const newLockStatus = { ...prevState.lockStatus };
               newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
               return { lockStatus: newLockStatus };
@@ -69,8 +85,8 @@ class ViewAssessmentTasks extends Component {
           });
         };
 
-        this.handlePublishToggle = (assessmentTaskId, task) => {
-          this.setState((prevState) => {
+        this.handlePublishToggle = (assessmentTaskId: any, task: any) => {
+          this.setState((prevState: any) => {
               const newPublishedStatus = { ...prevState.publishedStatus };
               newPublishedStatus[assessmentTaskId] = !newPublishedStatus[assessmentTaskId];
               return { publishedStatus: newPublishedStatus };
@@ -138,8 +154,10 @@ class ViewAssessmentTasks extends Component {
         const initialLockStatus = {};
         const initialPublishedStatus = {};
 
-        assessmentTasks.forEach((task) => {
+        assessmentTasks.forEach((task: any) => {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             initialLockStatus[task.assessment_task_id] = task.locked;
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             initialPublishedStatus[task.assessment_task_id] = task.published;
         });
 
@@ -148,6 +166,7 @@ class ViewAssessmentTasks extends Component {
 
     render() {
         if (this.state.assessmentTasks === null || this.state.completedAssessments === null) {
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             return <Loading />;
         }
         const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
@@ -162,6 +181,7 @@ class ViewAssessmentTasks extends Component {
         let assessmentTasksToDueDates = {};
 
         for(let index = 0; index < assessmentTasks.length; index++) {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
                 "due_date": assessmentTasks[index]["due_date"],
                 "time_zone": assessmentTasks[index]["time_zone"]
@@ -171,6 +191,7 @@ class ViewAssessmentTasks extends Component {
         var assessmentTaskIdToAssessmentTaskName = {};
 
         for(let index = 0; index < assessmentTasks.length; index++) {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             assessmentTaskIdToAssessmentTaskName[assessmentTasks[index]["assessment_task_id"]] = assessmentTasks[index]["assessment_task_name"];
         }
 
@@ -187,7 +208,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (assessmentTaskName) => {
+                    customBodyRender: (assessmentTaskName: any) => {
                         return(
                             <>
                                 {assessmentTaskName ? assessmentTaskName : "N/A"}
@@ -203,14 +224,17 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"160px"}},
                     setCellProps: () => { return { width:"160px"} },
-                    customBodyRender: (assessmentTaskId) => {
+                    customBodyRender: (assessmentTaskId: any) => {
                         let dueDateString = getHumanReadableDueDate(
+                            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
+                            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                             assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
                         );
 
                         return(
                             <>
+                                // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
                                 {assessmentTasksToDueDates[assessmentTaskId]["due_date"] && dueDateString ? dueDateString : "N/A"}
                             </>
                         )
@@ -224,7 +248,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"80px"}},
                     setCellProps: () => { return { width:"80px"} },
-                    customBodyRender: (roleId) => {
+                    customBodyRender: (roleId: any) => {
                         return (
                             <>
                                 {roleNames && roleId ? roleNames[roleId] : "N/A"}
@@ -240,7 +264,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (rubricId) => {
+                    customBodyRender: (rubricId: any) => {
                         return (
                             <>
                                 {rubricNames && rubricId ? rubricNames[rubricId] : "N/A"}
@@ -290,7 +314,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"80px"}},
                     setCellProps: () => { return { width:"80px"} },
-                    customBodyRender: (unitOfAssessment) => {
+                    customBodyRender: (unitOfAssessment: any) => {
                         return(
                             <>
                                 {unitOfAssessment ? "Yes" : "No"}
@@ -307,15 +331,18 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                    customBodyRender: (atId: any) => {
+                        const task = assessmentTasks.find((task: any) => task["assessment_task_id"] === atId);
                         const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
                         return (
                             <Tooltip 
                                 title={
                                     <>
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         <p> 
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             If the icon shows <strong>an upward arrow</strong>, the assessment task is published and visible to students; otherwise, the task is unpublished and hidden from students. 
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         </p>
                                          
                                     </>
@@ -339,16 +366,18 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                    customBodyRender: (atId: any) => {
+                        const task = assessmentTasks.find((task: any) => task["assessment_task_id"] === atId);
                         const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
 
                         return (
                             <Tooltip
                                 title={
                                     <>
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         <p>
                                             If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         </p>
                                     </>
                                 }>
@@ -371,14 +400,16 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (assessmentTaskId) => {
+                    customBodyRender: (assessmentTaskId: any) => {
                         if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
                             return (
                                 <Tooltip
                                     title={
                                         <>
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             <p>
                                                 Instructors can modify the details of the assessment task such as its name, unit of assessment, due date or assigned rubric.
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             </p>
                                         </>
                                     }>
@@ -418,10 +449,10 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (assessmentTaskId) => {
+                    customBodyRender: (assessmentTaskId: any) => {
                         if (assessmentTaskId && assessmentTasks) {
-                            const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
-                            const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === assessmentTaskId);
+                            const selectedTask = assessmentTasks.find((task: any) => task.assessment_task_id === assessmentTaskId);
+                            const completedAssessments = this.state.completedAssessments.filter((ca: any) => ca.assessment_task_id === assessmentTaskId);
                             const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
                             if (completedCount === 0) {
@@ -430,11 +461,14 @@ class ViewAssessmentTasks extends Component {
                                         <Tooltip
                                             title={
                                                 <>
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                     <p>
                                                         Completed Rubrics are not present.
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                     </p>
                                                 </>
                                             }>
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             <span>
                                                 <IconButton
                                                     id=""
@@ -443,6 +477,7 @@ class ViewAssessmentTasks extends Component {
                                                 >
                                                 <VisibilityIcon sx={{color: "rgba(0, 0, 0, 0.26)"}} />
                                                 </IconButton>
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             </span>
                                         </Tooltip>
                                     </>
@@ -454,8 +489,10 @@ class ViewAssessmentTasks extends Component {
                                         <Tooltip
                                             title={
                                                 <>
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                     <p>
                                                         Instructors can review the contents of the assessment task to ensure everything is up to date.
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                     </p>
                                                 </>
                                             }>
@@ -489,14 +526,15 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const assessmentTask = assessmentTasks.find(task => task.assessment_task_id === atId);
+                    customBodyRender: (atId: any) => {
+                        const assessmentTask = assessmentTasks.find((task: any) => task.assessment_task_id === atId);
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
 
                         if (isTeamAssessment && (fixedTeams && !teamsExist)) {
                             return (
                                 <Tooltip title="No teams available for this team assessment">
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     <span>
                                         <Button
                                             className='primary-color'
@@ -506,6 +544,7 @@ class ViewAssessmentTasks extends Component {
                                         >
                                             START
                                         </Button>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     </span>
                                 </Tooltip>
                             );
@@ -515,8 +554,10 @@ class ViewAssessmentTasks extends Component {
                             <Tooltip
                                 title={
                                     <>
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         <p>
                                             Begins the process of completing an assessment task, allowing the assessor to review the instructions and rubric criteria for the selected task.
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         </p>
                                     </>
                                 }>
@@ -543,13 +584,14 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === atId);
+                    customBodyRender: (atId: any) => {
+                        const completedAssessments = this.state.completedAssessments.filter((ca: any) => ca.assessment_task_id === atId);
                         const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
                         if (completedCount === 0) {                                     // this code makes the export button and its text darker when disabled.
                             return (
                                 <Tooltip title="No completed assessments to export">
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     <span>
                                         <Button
                                             id={"assessment_export_" + atId}
@@ -565,6 +607,7 @@ class ViewAssessmentTasks extends Component {
                                             >
                                             EXPORT
                                         </Button>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     </span>
                                 </Tooltip>
                             );

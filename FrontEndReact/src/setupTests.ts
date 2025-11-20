@@ -1,3 +1,4 @@
+// @ts-expect-error TS(1208): 'setupTests.ts' cannot be compiled under '--isolat... Remove this comment to see the full error message
 // jest-dom adds custom jest matchers for asserting on DOM nodes.
 // allows you to do things like:
 // expect(element).toHaveTextContent(/react/i)

@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login.js";
@@ -33,12 +34,16 @@ var abub = "adminBulkUploadButton";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-10 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 1: Should render the AdminBulkUpload component given the Student Bulk Upload button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -65,7 +70,9 @@ test("AdminBulkUpload.test.js Test 1: Should render the AdminBulkUpload componen
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the back button on the Student Bulk Upload page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -92,7 +99,9 @@ test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 3: Should render your files when the Choose File button is clicked on Student Bulk Upload page", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -142,7 +151,9 @@ test("AdminBulkUpload.test.js Test 3: Should render your files when the Choose F
 // });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the cancel button on the Student Bulk Upload page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -169,7 +180,9 @@ test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 6: Should render the AdminBulkUpload component given the Team Bulk Upload button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -198,7 +211,9 @@ test("AdminBulkUpload.test.js Test 6: Should render the AdminBulkUpload componen
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 7: Should render the roster dashboard if the back button on the Team Bulk Upload page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -233,7 +248,9 @@ test("AdminBulkUpload.test.js Test 7: Should render the roster dashboard if the 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 8: Should render your files when the Choose File button is clicked on Team Bulk Upload page", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -299,7 +316,9 @@ test("AdminBulkUpload.test.js Test 8: Should render your files when the Choose F
 // });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminBulkUpload.test.js Test 10: Should render the roster dashboard if the cancel button on the Team Bulk Upload page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {

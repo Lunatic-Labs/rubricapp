@@ -1,4 +1,6 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import * as React from 'react';
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import { useState } from 'react';
 import AdminViewRatings from './ViewRatings/AdminViewRatings';
 import AdminViewAssessmentStatus from './ViewAssessmentStatus/AdminViewAssessmentStatus';
@@ -6,7 +8,7 @@ import ReportingMainHeader from '../../../Components/ReportingHeader';
 
 
 
-export default function AdminReportTabs(props) {
+export default function AdminReportTabs(props: any) {
     var [tab, setTab] = useState('Assessment Status');
     
     var defaultAssessmentTaskId = "";
@@ -17,11 +19,12 @@ export default function AdminReportTabs(props) {
     
     var [chosenAssessmentId, setChosenAssessmentId] = useState(defaultAssessmentTaskId);
 
-    const handleChosenAssessmentIdChange = (event) => {
+    const handleChosenAssessmentIdChange = (event: any) => {
         setChosenAssessmentId(event.target.value);
     };
 
     return (
+        // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
         <>
             <ReportingMainHeader
                 navbar={props.navbar}
@@ -47,10 +50,12 @@ export default function AdminReportTabs(props) {
              }
 
             { tab === 'Improvement' &&
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h1 className='mt-3'>Improvement</h1>
             }
 
             { tab === 'Calibrations' &&
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h1 className='mt-3'>Calibrations</h1>
             }
         </>

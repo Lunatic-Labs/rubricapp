@@ -1,9 +1,12 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams.js';
 import TAViewTeams from './View/TAViewTeams.js';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask.js';
+// @ts-expect-error TS(2307): Cannot find module 'recharts' or its corresponding... Remove this comment to see the full error message
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip , Cell} from 'recharts';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Typography } from '@mui/material';
 import { genericResourceGET, parseRubricNames } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
@@ -57,7 +60,10 @@ const RUBRIC_COLOR_MAP = {
 };
 
 class StudentDashboard extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -83,7 +89,7 @@ class StudentDashboard extends Component {
      * Upates the team ids that the user is a part of.
      * @param {array} teamIds - Team ids that the user is a part of.
      */
-    updateUserTeamsIds = (teamIds) => {
+    updateUserTeamsIds = (teamIds: any) => {
         this.setState({
             userTeamIds: teamIds,
             teamsFetched: true
@@ -131,26 +137,26 @@ class StudentDashboard extends Component {
         if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
             const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
 
-            let filteredCompletedAssessments = [];
-            let filteredAvgData = [];
-            let finishedCats = [];
+            let filteredCompletedAssessments: any = [];
+            let filteredAvgData: any = [];
+            let finishedCats: any = [];
 
             const CATmap = new Map();
             const AVGmap = new Map();
             const roleId = roles["role_id"];
             
-            const getCATKey = (assessment_task_id, team_id, isTeamAssessment) => {
+            const getCATKey = (assessment_task_id: any, team_id: any, isTeamAssessment: any) => {
                 if (isTeamAssessment && team_id !== null) {
                     return `${assessment_task_id}-${team_id}`;
                 }
                 return `${assessment_task_id}`;
             };
 
-            completedAssessments.forEach(cat => {
+            completedAssessments.forEach((cat: any) => {
                 const team_id = cat.team_id;
                 
                 if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){                    
-                    const at = assessmentTasks.find(task => task.assessment_task_id === cat.assessment_task_id);
+                    const at = assessmentTasks.find((task: any) => task.assessment_task_id === cat.assessment_task_id);
                     const isTeamAssessment = at?.unit_of_assessment === true;                    
 
                     const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
@@ -166,22 +172,21 @@ class StudentDashboard extends Component {
                 }
             });
             
-            averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
+            averageData.forEach((cat: any) => { AVGmap.set(cat.assessment_task_id, cat) });
 
             const currentDate = new Date();
-            const isATDone = (cat) => cat !== undefined && cat.done;
-            const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
+            const isATDone = (cat: any) => cat !== undefined && cat.done;
+            const isATPastDue = (at: any, today: any) => (new Date(at.due_date)) < today; 
 
-            let filteredAssessmentTasks = assessmentTasks.filter(task => {
+            let filteredAssessmentTasks = assessmentTasks.filter((task: any) => {
                 
                 const isTeamAssessment = task.unit_of_assessment === true;
                 let relevantTeamId = null;
                                 
                 if (isTeamAssessment && userTeamIds.length > 0) {
                     // For team assessments, find which team this user is on for this task
-                    const userCAT = completedAssessments.find(cat => 
-                        cat.assessment_task_id === task.assessment_task_id && 
-                        userTeamIds.includes(cat.team_id)
+                    const userCAT = completedAssessments.find((cat: any) => cat.assessment_task_id === task.assessment_task_id && 
+                    userTeamIds.includes(cat.team_id)
                     );
                     relevantTeamId = userCAT?.team_id || null;
                 }
@@ -208,7 +213,7 @@ class StudentDashboard extends Component {
             });
 
             // Helpers for chart data
-            const computeAvg = (avgObj) => {
+            const computeAvg = (avgObj: any) => {
                 if (avgObj == null) return null;
                 if (typeof avgObj === 'number') return avgObj;
                 if (typeof avgObj?.average === 'number') return avgObj.average;
@@ -222,16 +227,17 @@ class StudentDashboard extends Component {
                 return null;
             };
 
-            const fmtDate = (ts) => {
+            const fmtDate = (ts: any) => {
                 try {
                     const d = new Date(ts);
+                    // @ts-expect-error TS(2345): Argument of type 'Date' is not assignable to param... Remove this comment to see the full error message
                     if (!isNaN(d)) return d.toLocaleDateString();
                 } catch (e) {}
                 return 'N/A';
             };
 
             // helper: pick the *created* timestamp for the AT (fallbacks just in case)
-            const getCreatedDate = (at, cat) => {
+            const getCreatedDate = (at: any, cat: any) => {
             const raw =
                 at?.created_at ||
                 at?.created_time ||
@@ -240,13 +246,15 @@ class StudentDashboard extends Component {
                 cat?.initial_time ||
                 at?.due_date;        
             const d = raw ? new Date(raw) : new Date(0);
+            // @ts-expect-error TS(2345): Argument of type 'Date' is not assignable to param... Remove this comment to see the full error message
             return isNaN(d) ? new Date(0) : d;
             };
 
             let chartDataCore = filteredCompletedAssessments
+                // @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
                 .map((cat, i) => {
                     const avgObj = filteredAvgData[i];
-                    const at = assessmentTasks.find(a => a.assessment_task_id === cat.assessment_task_id);
+                    const at = assessmentTasks.find((a: any) => a.assessment_task_id === cat.assessment_task_id);
                     const avg = computeAvg(avgObj);
 
                     const createdDate = getCreatedDate(at, cat); // creation date for ordering
@@ -266,9 +274,11 @@ class StudentDashboard extends Component {
                         createdDate,
                     };
                 })
+                // @ts-expect-error TS(7006): Parameter 'd' implicitly has an 'any' type.
                 .filter(d => d.avg !== null);
 
             // === Group by rubric, then by created (oldest → newest) ===
+            // @ts-expect-error TS(7006): Parameter 'a' implicitly has an 'any' type.
             chartDataCore.sort((a, b) => {
                 const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);
                 if (r !== 0) return r;
@@ -313,6 +323,7 @@ class StudentDashboard extends Component {
 
         // Wait for information to be filtered.
         if (!roles) {
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             return <Loading />
         }
 
@@ -334,33 +345,88 @@ class StudentDashboard extends Component {
 
         const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
 
-        return (
-            <>
-                <Box className="page-spacing">
-                    <Box sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        alignSelf: "stretch"
-                    }}>
-                        <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
-                                My Assessment Tasks
-                            </Typography>
-                        </Box>
+        return <>
+            <Box className="page-spacing">
+                <Box sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignSelf: "stretch"
+                }}>
+                    <Box sx={{ width: "100%" }} className="content-spacing">
+                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
+                            My Assessment Tasks
+                        </Typography>
                     </Box>
+                </Box>
 
-                    <Box>
-                        <StudentViewAssessmentTask
+                <Box>
+                    <StudentViewAssessmentTask
+                        navbar={navbar}
+                        role={roles}
+                        filteredAssessments={filteredATs}
+                        CompleteAssessments={filteredCATs}
+                        userTeamIds={this.state.userTeamIds}
+                    />
+                </Box>
+            </Box>
+
+            <Box className="page-spacing">
+                <Box sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignSelf: "stretch"
+                }}>
+                    <Box sx={{ width: "100%" }} className="content-spacing">
+                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
+                            Completed Assessments
+                        </Typography>
+                    </Box>
+                </Box>
+
+                <Box>
+                    {[4, 5].includes(roles["role_id"]) &&
+                        <StudentCompletedAssessmentTasks
                             navbar={navbar}
                             role={roles}
-                            filteredAssessments={filteredATs}
-                            CompleteAssessments={filteredCATs}
-                            userTeamIds={this.state.userTeamIds}
+                            assessmentTasks={assessmentTasks}
+                            filteredCompleteAssessments={fullyDoneCATS}
                         />
+                    }
+                </Box>
+            </Box>
+
+            <Box className="page-spacing">
+                <Box sx={{
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "center",
+                    alignSelf: "stretch"
+                }}>
+                    <Box sx={{ width: "100%" }} className="content-spacing">
+                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
+                            My Teams
+                        </Typography>
                     </Box>
                 </Box>
 
+                <Box>
+                    {roles["role_id"] === 5 &&
+                        <StudentViewTeams
+                            navbar={navbar}
+                            updateUserTeamsIds={this.updateUserTeamsIds}
+                        />
+                    }
+                    {roles["role_id"] === 4 &&
+                        <TAViewTeams
+                            navbar={navbar}
+                        />
+                    }
+                </Box>
+            </Box>
+
+            {roles["role_id"] === 5 &&
                 <Box className="page-spacing">
                     <Box sx={{
                         display: "flex",
@@ -369,128 +435,87 @@ class StudentDashboard extends Component {
                         alignSelf: "stretch"
                     }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
-                                Completed Assessments
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="averageRatings">
+                                Skill Development Process
                             </Typography>
                         </Box>
                     </Box>
 
-                    <Box>
-                        {[4, 5].includes(roles["role_id"]) &&
-                            <StudentCompletedAssessmentTasks
-                                navbar={navbar}
-                                role={roles}
-                                assessmentTasks={assessmentTasks}
-                                filteredCompleteAssessments={fullyDoneCATS}
-                            />
-                        }
-                    </Box>
+                    {
+                      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                      <div className={innerDivClassName} style={{ ...innerGridStyle, minHeight: '300px' }}>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                        <h6 style={{ margin: 0, padding: '1px', lineHeight: 1 }}>
+                          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                          <u>Completed Task Average Over Time</u>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                        </h6>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                        <div style={{ width: '100%', height: '260px', flexGrow: 1 }}>
+                          {this.state.chartData && this.state.chartData.length ? (
+                            <ResponsiveContainer>
+                              <BarChart
+                                data={this.state.chartData}
+                                margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
+                                barSize={40}
+                                barCategoryGap="0%"  
+                              >
+                                <CartesianGrid vertical={false} />
+                                <XAxis dataKey="name" hide />
+                                <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} style={{ fontSize: '0.75rem' }} />
+                                <Tooltip
+                                  content={({
+                                      active,
+                                      payload
+                                  }: any) => {
+                                    if (active && payload && payload.length) {
+                                      const p = payload[0].payload;
+                                      if (p.isSpacer) return null; 
+                                      return (
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                        <div
+                                          style={{
+                                            background: 'white',
+                                            border: '1px solid #d0d0d0',
+                                            padding: '8px 10px',
+                                            borderRadius: 4,
+                                            boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
+                                            fontSize: '0.85rem'
+                                          }}
+                                        >
+                                          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                          <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
+                                          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                          <div><strong>Rubric:</strong> {p.rubricName || 'N/A'}</div>
+                                          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                          <div><strong>Last updated:</strong> {p.dateLabel || 'N/A'}</div>
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                                        </div>
+                                      );
+                                    }
+                                    return null;
+                                  }}
+                                />
+                                <Bar dataKey="avg" fill="#2e8bef">
+                                  <LabelList dataKey="avg" position="top" style={{ fill: 'black' }} formatter={(v: any) => typeof v === 'number' ? v.toFixed(2) : v} />
+                                  {this.state.chartData.map((entry: any, index: any) => (
+                                    // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
+                                    <Cell key={`cell-${index}`} fill={RUBRIC_COLOR_MAP[entry.rubricName]} />
+                                  ))}
+                                </Bar>
+                              </BarChart>
+                            </ResponsiveContainer>
+                          ) : (
+                            <Typography variant="body2" sx={{ mt: 2 }}>No completed task ratings yet.</Typography>
+                          )}
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                        </div>
+                      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
+                      </div>
+                    }
                 </Box>
-
-                <Box className="page-spacing">
-                    <Box sx={{
-                        display: "flex",
-                        justifyContent: "space-between",
-                        alignItems: "center",
-                        alignSelf: "stretch"
-                    }}>
-                        <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
-                                My Teams
-                            </Typography>
-                        </Box>
-                    </Box>
-
-                    <Box>
-                        {roles["role_id"] === 5 &&
-                            <StudentViewTeams
-                                navbar={navbar}
-                                updateUserTeamsIds={this.updateUserTeamsIds}
-                            />
-                        }
-                        {roles["role_id"] === 4 &&
-                            <TAViewTeams
-                                navbar={navbar}
-                            />
-                        }
-                    </Box>
-                </Box>
-
-                {roles["role_id"] === 5 &&
-                    <Box className="page-spacing">
-                        <Box sx={{
-                            display: "flex",
-                            justifyContent: "space-between",
-                            alignItems: "center",
-                            alignSelf: "stretch"
-                        }}>
-                            <Box sx={{ width: "100%" }} className="content-spacing">
-                                <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="averageRatings">
-                                    Skill Development Process
-                                </Typography>
-                            </Box>
-                        </Box>
-
-                        {
-                          <div className={innerDivClassName} style={{ ...innerGridStyle, minHeight: '300px' }}>
-                            <h6 style={{ margin: 0, padding: '1px', lineHeight: 1 }}>
-                              <u>Completed Task Average Over Time</u>
-                            </h6>
-                            <div style={{ width: '100%', height: '260px', flexGrow: 1 }}>
-                              {this.state.chartData && this.state.chartData.length ? (
-                                <ResponsiveContainer>
-                                  <BarChart
-                                    data={this.state.chartData}
-                                    margin={{ top: 10, right: 20, left: 10, bottom: 10 }}
-                                    barSize={40}
-                                    barCategoryGap="0%"  
-                                  >
-                                    <CartesianGrid vertical={false} />
-                                    <XAxis dataKey="name" hide />
-                                    <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} style={{ fontSize: '0.75rem' }} />
-                                    <Tooltip
-                                      content={({ active, payload }) => {
-                                        if (active && payload && payload.length) {
-                                          const p = payload[0].payload;
-                                          if (p.isSpacer) return null; 
-                                          return (
-                                            <div
-                                              style={{
-                                                background: 'white',
-                                                border: '1px solid #d0d0d0',
-                                                padding: '8px 10px',
-                                                borderRadius: 4,
-                                                boxShadow: '0 2px 8px rgba(0,0,0,0.08)',
-                                                fontSize: '0.85rem'
-                                              }}
-                                            >
-                                              <div style={{ fontWeight: 700, marginBottom: 4 }}>{p.name}</div>
-                                              <div><strong>Rubric:</strong> {p.rubricName || 'N/A'}</div>
-                                              <div><strong>Last updated:</strong> {p.dateLabel || 'N/A'}</div>
-                                            </div>
-                                          );
-                                        }
-                                        return null;
-                                      }}
-                                    />
-                                    <Bar dataKey="avg" fill="#2e8bef">
-                                      <LabelList dataKey="avg" position="top" style={{ fill: 'black' }} formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)} />
-                                      {this.state.chartData.map((entry, index) => (
-                                        <Cell key={`cell-${index}`} fill={RUBRIC_COLOR_MAP[entry.rubricName]} />
-                                      ))}
-                                    </Bar>
-                                  </BarChart>
-                                </ResponsiveContainer>
-                              ) : (
-                                <Typography variant="body2" sx={{ mt: 2 }}>No completed task ratings yet.</Typography>
-                              )}
-                            </div>
-                          </div>
-                        }
-                    </Box>
-                }
-            </>
-        )
+            }
+        </>;
     }
 }
 

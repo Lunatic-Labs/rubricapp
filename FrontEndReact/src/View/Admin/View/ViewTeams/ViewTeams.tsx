@@ -1,14 +1,20 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/IconButton' or i... Remove this comment to see the full error message
 import IconButton from "@mui/material/IconButton";
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Edit' or i... Remove this comment to see the full error message
 import EditIcon from "@mui/icons-material/Edit";
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Delete' or... Remove this comment to see the full error message
 import DeleteIcon from "@mui/icons-material/Delete";
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Visibility... Remove this comment to see the full error message
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import { genericResourceDELETE } from "../../../../utility.js";
 
 class ViewTeams extends Component {
-  async deleteTeam(teamId) {
+  props: any;
+  async deleteTeam(teamId: any) {
     try {
       const result = await genericResourceDELETE(`/team?team_id=${teamId}`, this, {
         dest: "teams",
@@ -22,6 +28,7 @@ class ViewTeams extends Component {
         this.props.refreshData();
       }, 1000);
     } catch (error) {
+      // @ts-expect-error TS(2571): Object is of type 'unknown'.
       const errorMessage = error.message || "Cannot delete team. There are assessment task associated with this team.";
       window.alert(errorMessage);
       this.props.onError(errorMessage);
@@ -65,10 +72,12 @@ class ViewTeams extends Component {
           setCellProps: () => {
             return { width: "30%" };
           },
-          customBodyRender: (observerId) => {
+          customBodyRender: (observerId: any) => {
             return observerId === chosenCourse["admin_id"] ? (
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <p> Admin </p>
             ) : (
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <p>{users[observerId]}</p>
             );
           },
@@ -85,7 +94,7 @@ class ViewTeams extends Component {
           setCellProps: () => {
             return { width: "20%" };
           },
-          customBodyRender: (date) => {
+          customBodyRender: (date: any) => {
             var year = "";
             var month = "";
             var day = "";
@@ -106,6 +115,7 @@ class ViewTeams extends Component {
               }
             }
 
+            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
             return <p>{month + "/" + day + "/" + year}</p>;
           },
         },
@@ -130,8 +140,9 @@ class ViewTeams extends Component {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId) => {
+          customBodyRender: (teamId: any) => {
             return (
+              // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
               <IconButton
                 align="center"
                 onClick={() => {
@@ -165,7 +176,7 @@ class ViewTeams extends Component {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId) => {
+          customBodyRender: (teamId: any) => {
             return (
               <IconButton
                 align="center"
@@ -204,7 +215,7 @@ class ViewTeams extends Component {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId) => {
+          customBodyRender: (teamId: any) => {
             return (
               <IconButton
                 align="center"

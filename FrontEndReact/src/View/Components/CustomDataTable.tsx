@@ -1,5 +1,8 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React from 'react';
+// @ts-expect-error TS(2307): Cannot find module 'mui-datatables' or its corresp... Remove this comment to see the full error message
 import MUIDataTable from 'mui-datatables';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/styles' or its c... Remove this comment to see the full error message
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const customTheme = createTheme({
@@ -96,7 +99,11 @@ const customTheme = createTheme({
   },
 });
 
-const CustomDataTable = ({ data, columns, options }) => {
+const CustomDataTable = ({
+  data,
+  columns,
+  options
+}: any) => {
   const defaultOptions = {
     rowStyle: { height: 4 },
   };
@@ -104,6 +111,7 @@ const CustomDataTable = ({ data, columns, options }) => {
   const tableOptions = { ...defaultOptions, ...options };
 
   return (
+    // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
     <ThemeProvider theme={customTheme}>
       <MUIDataTable
         data={data}

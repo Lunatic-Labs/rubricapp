@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
@@ -8,7 +9,9 @@ import Loading from '../../../Loading/Loading';
 
 
 class ReportingDashboard extends Component {
-    constructor(props) {
+    props: any;
+    state: any;
+    constructor(props: any) {
       super(props);
   
       this.state = {
@@ -18,14 +21,14 @@ class ReportingDashboard extends Component {
           assessmentTasks: null
       }
     }
-  
+
     componentDidMount() {
       var courseID = this.props.navbar.state.chosenCourse.course_id;
 
       genericResourceGET(`/assessment_task?course_id=${courseID}`, "assessment_tasks", this, {dest: "assessmentTasks"});
       
     }
-  
+
     render() {
       const {
           errorMessage,
@@ -35,11 +38,13 @@ class ReportingDashboard extends Component {
   
       if(errorMessage) {
           return(
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <div className='container'>
                   <ErrorMessage
                       fetchedResource={"Assessment Tasks"}
                       errorMessage={errorMessage}
                   />
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               </div>
           )
       } else if (!isLoaded || !assessmentTasks) {
@@ -55,6 +60,6 @@ class ReportingDashboard extends Component {
           )
       }
     }
-  }
+}
 
   export default ReportingDashboard;

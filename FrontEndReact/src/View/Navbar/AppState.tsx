@@ -1,6 +1,9 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import { Component } from 'react';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
 import 'bootstrap/dist/css/bootstrap.css';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Button' or its c... Remove this comment to see the full error message
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers.js';
 import AdminViewCourses from '../Admin/View/ViewCourses/AdminViewCourses.js';
@@ -18,6 +21,7 @@ import TeamDashboard from '../Admin/View/ViewDashboard/TeamDashboard.js';
 import AdminAddTeam from '../Admin/Add/AddTeam/AdminAddTeam.js';
 import AdminAddAssessmentTask from '../Admin/Add/AddTask/AdminAddAssessmentTask.js';
 import ButtonAppBar from './Navbar.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Typography } from '@mui/material';
 import BackButtonResource from '../Components/BackButtonResource.js';
 import StudentConfirmCurrentTeam from '../Student/View/ConfirmCurrentTeam/StudentConfirmCurrentTeam.js';
@@ -36,7 +40,29 @@ import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
 
 
 class AppState extends Component {
-    constructor(props) {
+    Reset: any;
+    ViewCTwithAT: any;
+    confirmCreateResource: any;
+    props: any;
+    resetJump: any;
+    setAddAssessmentTaskTabWithAssessmentTask: any;
+    setAddCourseTabWithCourse: any;
+    setAddCustomRubric: any;
+    setAddTeamTabWithTeam: any;
+    setAddTeamTabWithUsers: any;
+    setAddUserTabWithUser: any;
+    setAssessmentTaskInstructions: any;
+    setCompleteAssessmentTaskTabWithID: any;
+    setConfirmCurrentTeam: any;
+    setEditConsentWithUser: any;
+    setNewTab: any;
+    setSelectCurrentTeam: any;
+    setState: any;
+    setStudentDashboardWithCourse: any;
+    setSuccessMessage: any;
+    setViewCompleteAssessmentTaskTabWithAssessmentTask: any;
+    state: any;
+    constructor(props: any) {
         super(props);
         
         // --Checks for access token and/or user tokens-- 
@@ -85,14 +111,14 @@ class AppState extends Component {
             jumpToSection: null,
         }
 
-        this.setNewTab = (newTab) => {
+        this.setNewTab = (newTab: any) => {
             this.setState({
                 activeTab: newTab
             });
         }
 
 
-        this.setAddUserTabWithUser = (users, userId) => {
+        this.setAddUserTabWithUser = (users: any, userId: any) => {
             var newUser = null;
 
             for (var u = 0; u < users.length; u++) {
@@ -108,7 +134,7 @@ class AppState extends Component {
             });
         }
 
-        this.setAddCourseTabWithCourse = (courses, courseId, tab) => {
+        this.setAddCourseTabWithCourse = (courses: any, courseId: any, tab: any) => {
             if (courses.length === 0 && courseId === null && tab === "AddCourse") {
                 this.setState({
                     activeTab: tab,
@@ -141,7 +167,7 @@ class AppState extends Component {
             }
         }
 
-        this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
+        this.setAssessmentTaskInstructions = (assessmentTasks: any, assessmentTaskId: any, completedAssessments=null, {
             readOnly = false,
             skipInstructions = false
         }={}) => {
@@ -150,20 +176,22 @@ class AppState extends Component {
 
             if (completedAssessments) {
                 if (!Array.isArray(completedAssessments) && 
+                    // @ts-expect-error TS(2339): Property 'assessment_task_id' does not exist on ty... Remove this comment to see the full error message
                     completedAssessments.assessment_task_id === assessmentTaskId) {
                     // Single CAT object passed - use it directly
                     completedAssessment = completedAssessments;
                 } 
                 // If it's an array, search for matching assessment_task_id
                 else if (Array.isArray(completedAssessments)) {
+                    // @ts-expect-error TS(2339): Property 'find' does not exist on type 'never'.
                     completedAssessment = completedAssessments.find(
-                        cat => cat.assessment_task_id === assessmentTaskId
+                        (cat: any) => cat.assessment_task_id === assessmentTaskId
                     ) ?? null;
                 }
             }
             
             const assessmentTask = assessmentTasks.find(
-                assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId
+                (assessmentTask: any) => assessmentTask["assessment_task_id"] === assessmentTaskId
             );
 
             this.setState({
@@ -176,7 +204,7 @@ class AppState extends Component {
             });
         }
 
-        this.setConfirmCurrentTeam = (assessmentTasks, assessmentTaskId, switchTeam) => {
+        this.setConfirmCurrentTeam = (assessmentTasks: any, assessmentTaskId: any, switchTeam: any) => {
             var assessmentTask = null;
 
             for (var index = 0; index < assessmentTasks.length; index++) {
@@ -194,7 +222,7 @@ class AppState extends Component {
             });
         }
 
-        this.setSelectCurrentTeam = (assessmentTasks, assessmentTaskId) => {
+        this.setSelectCurrentTeam = (assessmentTasks: any, assessmentTaskId: any) => {
             var assessmentTask = null;
 
             for (var index = 0; index < assessmentTasks.length; index++) {
@@ -210,7 +238,7 @@ class AppState extends Component {
             });
         }
 
-        this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks, assessmentTaskId, course, roleNames, rubricNames) => {
+        this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks: any, assessmentTaskId: any, course: any, roleNames: any, rubricNames: any) => {
             var newAssessmentTask = null;
 
             for (var a = 0; a < assessmentTasks.length; a++) {
@@ -229,7 +257,7 @@ class AppState extends Component {
             });
         }
 
-        this.setCompleteAssessmentTaskTabWithID = (assessmentTask) => {
+        this.setCompleteAssessmentTaskTabWithID = (assessmentTask: any) => {
             if(assessmentTask && assessmentTask.unit_of_assessment !== undefined){
                 this.setState({
                     activeTab: "ViewComplete",
@@ -245,7 +273,7 @@ class AppState extends Component {
                 });
             }
         }
-        this.setAddTeamTabWithTeam = (teams, teamId, users, tab, addTeamAction) => {
+        this.setAddTeamTabWithTeam = (teams: any, teamId: any, users: any, tab: any, addTeamAction: any) => {
             var newTeam = null;
 
             for (var t = 0; t < teams.length; t++) {
@@ -263,7 +291,7 @@ class AppState extends Component {
             });
         }
 
-        this.setAddTeamTabWithUsers = (users) => {
+        this.setAddTeamTabWithUsers = (users: any) => {
             this.setState({
                 activeTab: "AddTeam",
                 users: users
@@ -283,7 +311,7 @@ class AppState extends Component {
         // When you click "complete" on the "TO DO" column the completed fields were null 
         // thus it would not display anything
         // By adding === null as a test case, we were able to have it populate.
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks, completedAssessmentId, chosenAssessmentTask, jumpId=null) => {
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks: any, completedAssessmentId: any, chosenAssessmentTask: any, jumpId=null) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
@@ -323,7 +351,7 @@ class AppState extends Component {
             }
         }; 
 
-        this.ViewCTwithAT = (assessmentTasks, atId) => {
+        this.ViewCTwithAT = (assessmentTasks: any, atId: any) => {
             var selectedAssessment = null;
 
             for(var index = 0; index < assessmentTasks.length; index++) {
@@ -339,7 +367,7 @@ class AppState extends Component {
             });
         };
 
-        this.setEditConsentWithUser = (userId, users) => {
+        this.setEditConsentWithUser = (userId: any, users: any) => {
             var newUser = null;
 
             for (var i = 0; i < users.length; i++) {
@@ -354,7 +382,7 @@ class AppState extends Component {
             });
         }
 
-        this.setStudentDashboardWithCourse = (courseId, courses) => {
+        this.setStudentDashboardWithCourse = (courseId: any, courses: any) => {
             var chosenCourse = null;
 
             for (var i = 0; i < courses.length; i++) {
@@ -369,7 +397,7 @@ class AppState extends Component {
             });
         }
 
-        this.setAddCustomRubric = (addCustomRubric) => {
+        this.setAddCustomRubric = (addCustomRubric: any) => {
 
             this.setState({
                 activeTab: "AddCustomRubric",
@@ -377,7 +405,7 @@ class AppState extends Component {
             });
         }
 
-        this.confirmCreateResource = (resource, delay = 1000) => {
+        this.confirmCreateResource = (resource: any, delay = 1000) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
                     if (resource === "User" || resource === "UserBulkUpload") {
@@ -452,17 +480,20 @@ class AppState extends Component {
             }, delay);
         }
 
-        this.Reset = (listOfElements) => {
+        this.Reset = (listOfElements: any) => {
             for (var element = 0; element < listOfElements.length; element++) {
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
                 document.getElementById(listOfElements[element]).value = "";
 
+                // @ts-expect-error TS(2531): Object is possibly 'null'.
                 if (document.getElementById(listOfElements[element]).getAttribute("type") === "checkbox") {
+                    // @ts-expect-error TS(2531): Object is possibly 'null'.
                     document.getElementById(listOfElements[element]).checked = false;
                 }
             }
         }
         
-        this.setSuccessMessage = (newSuccessMessage) => {
+        this.setSuccessMessage = (newSuccessMessage: any) => {
             clearTimeout(this.state.successMessageTimeout);
             
             const timeoutId = setTimeout(() => {
@@ -495,6 +526,7 @@ class AppState extends Component {
 
     render() {
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <Box className="app-body">
                 <ButtonAppBar
                     userName={this.props.userName}
@@ -511,11 +543,13 @@ class AppState extends Component {
 
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <div className="d-flex justify-content-between align-items-center">
                             <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
                             <Box>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <div style={{display:"flex", gap:"20px"}}>
                                     <Button
                                         className="primary-color"
@@ -543,8 +577,10 @@ class AppState extends Component {
                                     >
                                         View Notifications
                                     </Button>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 </div>
                             </Box>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </div>
                         <AdminViewUsers
                             navbar={this}

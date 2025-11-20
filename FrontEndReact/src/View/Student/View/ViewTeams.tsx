@@ -1,9 +1,11 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 import { getHumanReadableDueDate } from "../../../utility";
 
 class ViewTeams extends Component{
+    props: any;
     render() {
         var teams = this.props.teams;
         var users = this.props.users;
@@ -26,8 +28,9 @@ class ViewTeams extends Component{
                     filter: true,
                     setCellHeaderProps: () => { return { width:"230px" } },
                     setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (observerId) => {
+                    customBodyRender: (observerId: any) => {
                         return(
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p className="pt-3" variant="contained">{users[observerId]}</p>
                         )
                     }
@@ -40,7 +43,7 @@ class ViewTeams extends Component{
                     filter: true,
                     setCellHeaderProps: () => { return { width:"230px" } },
                     setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (user) => {
+                    customBodyRender: (user: any) => {
                         return(
                             <>{user + " "}</>
                         );
@@ -54,12 +57,15 @@ class ViewTeams extends Component{
                     filter: true,
                     setCellHeaderProps: () => { return { width:"160px" } },
                     setCellProps: () => { return { width:"160px" } },
-                    customBodyRender: (date_created) => {
+                    customBodyRender: (date_created: any) => {
+                        // @ts-expect-error TS(2554): Expected 2 arguments, but got 1.
                         let dateCreatedString = getHumanReadableDueDate(date_created);
 
                         return(
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p className="pt-3" variant='contained'>
                                 {date_created ? dateCreatedString : "N/A"}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         )
                     }

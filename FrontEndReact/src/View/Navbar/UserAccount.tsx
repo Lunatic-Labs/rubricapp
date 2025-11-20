@@ -1,17 +1,26 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton, Dialog, DialogContent, DialogTitle } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/ErrorOutli... Remove this comment to see the full error message
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Check' or ... Remove this comment to see the full error message
 import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App.js';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material' or its co... Remove this comment to see the full error message
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material' or its co... Remove this comment to see the full error message
 import { Email, AccountCircle } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 class UserAccount extends Component {
-    constructor(props) {
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -43,7 +52,7 @@ class UserAccount extends Component {
     }
 
     // handleChange has been altered to account for the 20 character limit for password
-    handleChange(e) {
+    handleChange(e: any) {
         const { id, value } = e.target;
 
         // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -68,9 +77,9 @@ class UserAccount extends Component {
                 [id]: errorMessage,
             },
         });
-    };
+    }
 
-    
+
     handleResetPasswordClick() {
         this.setState({ resetPasswordDialogOpen: true });
     }
@@ -82,7 +91,7 @@ class UserAccount extends Component {
 
 
 
-    getIcon(strength) {
+    getIcon(strength: any) {
         switch (strength) {
             case 'STRONG':
                 return CheckIcon;
@@ -92,9 +101,9 @@ class UserAccount extends Component {
             default:
                 return ErrorOutlineIcon;
         }
-    };
+    }
 
-    generateColors(strength) {
+    generateColors(strength: any) {
         const COLORS = {
             NEUTRAL: '#E2E2E2',
             WEAK: '#B40314',
@@ -112,7 +121,7 @@ class UserAccount extends Component {
             default:
                 return [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
         }
-    };
+    }
 
     handleTogglePasswordVisibility() {
         this.setState({
@@ -122,14 +131,14 @@ class UserAccount extends Component {
                 password: '',
             },
         });
-    };
+    }
 
-    testPasswordStrength(password) {
-        const atLeastMinimumLength = (password) => new RegExp(/(?=.{8,})/).test(password);
-        const atLeastOneUppercaseLetter = (password) => new RegExp(/(?=.*?[A-Z])/).test(password);
-        const atLeastOneLowercaseLetter = (password) => new RegExp(/(?=.*?[a-z])/).test(password);
-        const atLeastOneNumber = (password) => new RegExp(/(?=.*?[0-9])/).test(password);
-        const atLeastOneSpecialChar = (password) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
+    testPasswordStrength(password: any) {
+        const atLeastMinimumLength = (password: any) => new RegExp(/(?=.{8,})/).test(password);
+        const atLeastOneUppercaseLetter = (password: any) => new RegExp(/(?=.*?[A-Z])/).test(password);
+        const atLeastOneLowercaseLetter = (password: any) => new RegExp(/(?=.*?[a-z])/).test(password);
+        const atLeastOneNumber = (password: any) => new RegExp(/(?=.*?[0-9])/).test(password);
+        const atLeastOneSpecialChar = (password: any) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
 
         if (!password) return 'WEAK';
 
@@ -145,7 +154,7 @@ class UserAccount extends Component {
         if (points >= 3) return 'MEDIUM';
 
         return 'WEAK';
-    };
+    }
 
     // 2 new 'validation' / error handling statemetns where added below
     // both check that character length does not exceed 20
@@ -282,6 +291,7 @@ class UserAccount extends Component {
 
         if (!isPasswordSet) {
             return (
+                // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
                 <>
                    
 
@@ -316,6 +326,7 @@ class UserAccount extends Component {
                             <DialogTitle>Reset Password</DialogTitle>
                             <DialogContent>
                             <FormControl sx={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     <form aria-label="setNewPasswordFormLabel">
                                         <Box>
                                             <TextField
@@ -368,8 +379,11 @@ class UserAccount extends Component {
                                                     </Typography>
 
                                                     <Typography variant='subtitle2' fontSize="14px" color="#9E9E9E" margin="0 0 8px 0">
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         * Set a password with a minimum of eight characters. <br></br>
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         * Include a UpperCase letter. <br></br>
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         * Include at least One Number. <br></br>
                                                         * Include a Symbol ( ! @ # $ % ^ & *).
                                                     </Typography>
@@ -407,6 +421,7 @@ class UserAccount extends Component {
                                                 </Button>
                                             </Box>
                                         </Box>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     </form>
                                 </FormControl>
                             </DialogContent>

@@ -1,14 +1,19 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { useState } from 'react';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Box' or its corr... Remove this comment to see the full error message
 import Box from '@mui/material/Box';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Container } from '@mui/material';
 //import Button from '@mui/material/Button';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Grid' or its cor... Remove this comment to see the full error message
 import Grid from '@mui/material/Grid';
+// @ts-expect-error TS(2307): Cannot find module 'recharts' or its corresponding... Remove this comment to see the full error message
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
 import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements.js';
 
-export default function ViewAssessmentStatus(props) {
+export default function ViewAssessmentStatus(props: any) {
   // Check if rubrics and category_json exist to prevent null reference errors when no tasks are available
   var categoryList = (props.rubrics && props.rubrics.category_json) 
     ? Object.keys(props.rubrics.category_json)
@@ -23,7 +28,7 @@ export default function ViewAssessmentStatus(props) {
   // Set initial category ID, defaulting to empty string if no categories available
   var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] : '');
 
-  const handleChosenCategoryIdChange = (event) => {
+  const handleChosenCategoryIdChange = (event: any) => {
     setChosenCategoryId(event.target.value);
   };
 
@@ -48,14 +53,18 @@ export default function ViewAssessmentStatus(props) {
   if (chosenCategoryIdCorrespondsWithRubric) {
     for (let i = 0; i < props.rubrics['category_json'][chosenCategoryId]['observable_characteristics'].length; i++) {
       characteristicsData['characteristics'].push({
+        // @ts-expect-error TS(2322): Type 'any' is not assignable to type 'never'.
         'characteristic' : props.rubrics['category_json'][chosenCategoryId]['observable_characteristics'][i],
+        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'never'.
         'number': 0,
       });
     }
 
     for (let i = 0; i < props.rubrics['category_json'][chosenCategoryId]['suggestions'].length; i++) {
       improvementsData['improvements'].push({
+        // @ts-expect-error TS(2322): Type 'any' is not assignable to type 'never'.
         'improvement' : props.rubrics['category_json'][chosenCategoryId]['suggestions'][i],
+        // @ts-expect-error TS(2322): Type 'number' is not assignable to type 'never'.
         'number': 0,
       });
     }
@@ -96,12 +105,14 @@ export default function ViewAssessmentStatus(props) {
 
           allRatings.push(oneRating);
 
+          // @ts-expect-error TS(2532): Object is possibly 'undefined'.
           ratingsData['ratings'][oneRating]['number'] += 1; 
 
           // Iterate through each observable characteristic within the category and see whether the user checked the box
           for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'].length; j++) {
             let oc_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'][j]);
 
+            // @ts-expect-error TS(2532): Object is possibly 'undefined'.
             characteristicsData['characteristics'][j]['number'] += oc_data;
           }
 
@@ -109,6 +120,7 @@ export default function ViewAssessmentStatus(props) {
           for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'].length; j++) {
             let sugg_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'][j]);
 
+            // @ts-expect-error TS(2532): Object is possibly 'undefined'.
             improvementsData['improvements'][j]['number'] += sugg_data;
           }
         } 
@@ -118,21 +130,27 @@ export default function ViewAssessmentStatus(props) {
     
       // calc avg/stdev using allRatings
       if (allRatings.length > 0) {
+        // @ts-expect-error TS(2322): Type 'string' is not assignable to type 'number'.
         avg = (allRatings.reduce((a, b) => a + b) / allRatings.length).toFixed(2);
 
+        // @ts-expect-error TS(2322): Type 'string' is not assignable to type 'number'.
         stdev = (Math.sqrt(allRatings.map(x => (x - avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
       }
 
       // add percentage to each JSON object in improvement/characteristics
       for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
         let percent = total === 0 ? 0 : 
+          // @ts-expect-error TS(2532): Object is possibly 'undefined'.
           (characteristicsData['characteristics'][i]['number'] / total * 100);
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
         characteristicsData['characteristics'][i]['percentage'] = +percent.toFixed(2);
       }
   
       for (let i = 0; i < improvementsData['improvements'].length; i++) {
         let percent = total === 0 ? 0 : 
+          // @ts-expect-error TS(2532): Object is possibly 'undefined'.
           (improvementsData['improvements'][i]['number'] / total * 100);
+        // @ts-expect-error TS(2532): Object is possibly 'undefined'.
         improvementsData['improvements'][i]['percentage'] = +percent.toFixed(2);
       }
   }
@@ -149,18 +167,24 @@ export default function ViewAssessmentStatus(props) {
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
 
   return (
+    // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
     <Container>
       <Box sx={{ maxHeight:"135vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
         <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw",  }}>
         <Grid container item xs={12} spacing={2}>
             <Grid item xs={12} md={6}>
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <div className={innerDivClassName} style={{
                 ...innerGridStyle,
                 minHeight: '250px'
               }}>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <h6 style={{ margin: '0', padding: '1px', lineHeight: '1' }}>
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   <u>Distribution of Ratings</u>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </h6>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div style={{ width: '100%', height: '210px', flexGrow: 1 }}>
                   {props.showRatings ? (
                     <ResponsiveContainer>
@@ -179,23 +203,34 @@ export default function ViewAssessmentStatus(props) {
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <div style={{textAlign: "center"}}>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="grey" className="bi bi-bar-chart" viewBox="0 0 16 16">
+                      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                       <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </svg>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </div>
                   )}
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
                 {props.showRatings && (
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   <h6 style={{ fontSize: '0.8rem', margin: '0', padding: '0', lineHeight: '1' }}>
                     Avg: {avg}; StdDev: {stdev}
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   </h6>
                 )}
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               </div>
             </Grid>
 
             <Grid item xs={12} md={6}>
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div style={{
                   ...innerGridStyle,
                   padding: '16px'
@@ -216,44 +251,66 @@ export default function ViewAssessmentStatus(props) {
                       />
                     </Grid>
                   </Grid>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
 
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div style={{
                   ...innerGridStyle,
                   padding: '20px',
                   marginTop: '16px',  
                 }}>
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   <h3 style={{ fontWeight: 'normal', textAlign: 'center'}}>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <u>Assessment Tasks Completed:</u>
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   </h3>
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px' }}>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <div
                       className="progress-bar"
                       role="progressbar"
+                      // @ts-expect-error TS(2454): Variable 'progress' is used before being assigned.
                       style={{ width: `${progress}%`, backgroundColor: '#2e8bef' }}
+                      // @ts-expect-error TS(2454): Variable 'progress' is used before being assigned.
                       aria-valuenow={progress}
                       aria-valuemin={0}
                       aria-valuemax={100}
                     >
+                      // @ts-expect-error TS(2454): Variable 'progress' is used before being assigned.
                       {progress >= 20 && (
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <h5>
+                          // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                           <b style={{ float: 'right', padding: '10px 5px 0 0' }}>{progress}%</b>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </h5>
                       )}
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </div>
+                    // @ts-expect-error TS(2454): Variable 'progress' is used before being assigned.
                     {progress < 20 && (
+                      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                       <h5 style={{ padding: '0 0 0 5px', lineHeight:'30px'}}>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <b style={{ color: '#2e8bef'}}>{progress}%</b>
+                      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                       </h5>
                     )}
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   </div>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               </div>
             </Grid>
           </Grid>
 
           <Grid container item xs={12} spacing={2} sx={{ mt: 2 }}>
             <Grid item xs={12} md={6}>
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <div className={innerDivClassName} style={innerGridStyle}>
                 <CharacteristicsAndImprovements 
                   dataType="characteristics"
@@ -261,9 +318,11 @@ export default function ViewAssessmentStatus(props) {
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
                 />
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               </div>
             </Grid>
             <Grid item xs={12} md={6}>
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               <div className={innerDivClassName} style={innerGridStyle}>
                 <CharacteristicsAndImprovements 
                   dataType="improvements"
@@ -271,6 +330,7 @@ export default function ViewAssessmentStatus(props) {
                   improvementsData={improvementsData}
                   showSuggestions={props.showSuggestions}
                 />
+              // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
               </div>
             </Grid>
           </Grid>

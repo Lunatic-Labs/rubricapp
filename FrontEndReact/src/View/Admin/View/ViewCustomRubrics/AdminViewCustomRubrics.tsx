@@ -1,7 +1,9 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import { Component } from "react";
 import { genericResourceGET } from "../../../../utility";
 import CollapsableRubricCategoryTable from "../../Add/AddCustomRubric/CollapsableRubricCategoryTable";
 import ErrorMessage from "../../../Error/ErrorMessage";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Grid } from "@mui/material";
 import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton.js";
 import Loading from "../../../Loading/Loading.js";
@@ -9,7 +11,9 @@ import Loading from "../../../Loading/Loading.js";
 
 
 class AdminViewCustomRubrics extends Component {
-    constructor(props) {
+    props: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -38,6 +42,7 @@ class AdminViewCustomRubrics extends Component {
 
         if (!isLoaded || !rubrics || !categories) {
             return(
+                // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
                 <Loading />
             );
         }
@@ -51,6 +56,7 @@ class AdminViewCustomRubrics extends Component {
                         />
                     }
 
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <h2
                         style={{
                             borderBottom: "1px solid #D9D9D9",
@@ -62,6 +68,7 @@ class AdminViewCustomRubrics extends Component {
                         aria-label="addCustomRubricTitle"
                     >
                         My Custom Rubrics
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </h2>
 
                     <CollapsableRubricCategoryTable

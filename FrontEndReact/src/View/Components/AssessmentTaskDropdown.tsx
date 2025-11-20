@@ -1,16 +1,21 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import * as React from 'react';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/InputLabel' or i... Remove this comment to see the full error message
 import InputLabel from '@mui/material/InputLabel';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/MenuItem' or its... Remove this comment to see the full error message
 import MenuItem from '@mui/material/MenuItem';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/FormControl' or ... Remove this comment to see the full error message
 import FormControl from '@mui/material/FormControl';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Select' or its c... Remove this comment to see the full error message
 import Select from '@mui/material/Select';
 
 
-export default function AssessmentTaskDropdown(props) {
+export default function AssessmentTaskDropdown(props: any) {
   var assessmentTaskList = [];
 
   // Check if assessmentTasks exists and is not empty to prevent null reference errors
   if (props.assessmentTasks && props.assessmentTasks.length > 0) {
-    props.assessmentTasks.map((assessmentTask) => {
+    props.assessmentTasks.map((assessmentTask: any) => {
 
     const taskName = assessmentTask["assessment_task_name"];
 
@@ -38,6 +43,7 @@ export default function AssessmentTaskDropdown(props) {
   } else {
     // Display placeholder when no assessment tasks are available
     assessmentTaskList.push(
+      // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
       <MenuItem key="no-tasks" value="" disabled>
         No assessment tasks available
       </MenuItem>

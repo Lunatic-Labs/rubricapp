@@ -1,6 +1,9 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/RemoveCirc... Remove this comment to see the full error message
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable.js'
 import { genericResourceGET } from '../../../../utility.js';
@@ -8,7 +11,11 @@ import { genericResourceGET } from '../../../../utility.js';
 
 
 class ShowTeamMembers extends Component {
-    constructor(props) {
+    props: any;
+    removeUser: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -18,9 +25,9 @@ class ShowTeamMembers extends Component {
             users: null
         }
 
-        this.removeUser = (userId) => {
+        this.removeUser = (userId: any) => {
             var students = this.state.users;
-            var studentsRemaining = [];
+            var studentsRemaining: any = [];
 
             for(var student = 0; student < students.length; student++) {
                 if(students[student]["user_id"]!==userId) {
@@ -70,7 +77,7 @@ class ShowTeamMembers extends Component {
                 options: {
                     filter: false,
                     sort: false,
-                    customBodyRender: (userId) => {
+                    customBodyRender: (userId: any) => {
                         return (
                             <IconButton aria-label='controlled'
                                 onClick={() => {
@@ -101,6 +108,7 @@ class ShowTeamMembers extends Component {
         var students = this.state.users;
 
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <>
                 { (teamId !== null) && students !== null &&
                     <>

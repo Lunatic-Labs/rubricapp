@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks.js';
@@ -21,7 +22,9 @@ import Loading from '../../../Loading/Loading.js';
  */
 
 class StudentViewAssessmentTask extends Component {
-    constructor(props) {
+    props: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -64,11 +67,13 @@ class StudentViewAssessmentTask extends Component {
 
         if (errorMessage) {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Assessment Task"}
                         errorMessage={errorMessage}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         } else if (!isLoaded || !checkin || !rubrics || !counts) {
@@ -78,6 +83,7 @@ class StudentViewAssessmentTask extends Component {
 
         } else {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ViewAssessmentTasks
                         navbar={navbar}
@@ -89,6 +95,7 @@ class StudentViewAssessmentTask extends Component {
                         counts={counts}
                         userTeamIds={this.props.userTeamIds}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         }

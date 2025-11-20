@@ -1,14 +1,23 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React from "react";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Button' or its c... Remove this comment to see the full error message
 import Button from '@mui/material/Button';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Dialog' or its c... Remove this comment to see the full error message
 import Dialog from '@mui/material/Dialog';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { TextField } from "@mui/material";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/DialogActions' o... Remove this comment to see the full error message
 import DialogActions from '@mui/material/DialogActions';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/DialogContent' o... Remove this comment to see the full error message
 import DialogContent from '@mui/material/DialogContent';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/DialogContentTex... Remove this comment to see the full error message
 import DialogContentText from '@mui/material/DialogContentText';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/DialogTitle' or ... Remove this comment to see the full error message
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function ResponsiveNotification ( props ) {
+export default function ResponsiveNotification ( props: any ) {
     return (
+        // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
         <React.Fragment>
                 <Dialog
                     fullScreen={false}

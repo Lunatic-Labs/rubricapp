@@ -1,16 +1,22 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../../utility';
 import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Button, Tooltip } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 
 class AdminViewRatings extends Component {
-  constructor(props) {
+  fetchData: any;
+  props: any;
+  setState: any;
+  state: any;
+  constructor(props: any) {
     super(props);
 
     /**
@@ -45,6 +51,7 @@ class AdminViewRatings extends Component {
         
         var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
         const url = `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`;
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         const urlFinal = assessmentIsTeam[this.props.chosenAssessmentId] ? `${url}&team_id=true` : url;
         
         genericResourceGET(urlFinal, "ratings", this);
@@ -94,9 +101,9 @@ class AdminViewRatings extends Component {
       const suffix = ["-sfis_ocs", "-ratings", "-comments"];
       let fileName = this.props.navbar.state.chosenCourse['course_name'];
 
-      let assessment = this.props.assessmentTasks.find(obj => obj["assessment_task_id"] === this.props.chosenAssessmentId);
+      let assessment = this.props.assessmentTasks.find((obj: any) => obj["assessment_task_id"] === this.props.chosenAssessmentId);
       const atName = assessment["assessment_task_name"].split(' ');
-      const abreviationLetters = atName.map(word => word.charAt(0).toUpperCase());
+      const abreviationLetters = atName.map((word: any) => word.charAt(0).toUpperCase());
       fileName += '-' + abreviationLetters.join('');
 
       fileName += suffix[this.state.lastSeenCsvType];
@@ -133,7 +140,7 @@ class AdminViewRatings extends Component {
    * Calls api to recive csv data and stores it.
    * @param {int} type: INT that informs what csv is to be retived; sif/ocs,ratings,comments are respecitvley 1,2,3.
    */
-  handleCsvDownloads(type) {
+  handleCsvDownloads(type: any) {
     let promise = genericResourceGET(
       `/csv_assessment_export?assessment_task_id=${this.state.loadedAssessmentId}&format=${type}`,
       "csv_creation",
@@ -175,6 +182,7 @@ class AdminViewRatings extends Component {
 
     if(errorMessage) {
       return(
+        // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
         <Box>
             <ErrorMessage
                 fetchedResource={"Ratings"}
@@ -204,11 +212,14 @@ class AdminViewRatings extends Component {
                 <Tooltip
                   title={
                     <> 
+                      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                       <p>
                           SFIS = Suggestions for Improvement. OCS = Observable Characteristics.
+                      // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                       </p>
                     </>
                   }>
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   <span>
                     <Button
                       variant='contained'
@@ -217,6 +228,7 @@ class AdminViewRatings extends Component {
                     >
                       Export SFIS & OCS
                     </Button>
+                  // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                   </span>
                 </Tooltip>
                 

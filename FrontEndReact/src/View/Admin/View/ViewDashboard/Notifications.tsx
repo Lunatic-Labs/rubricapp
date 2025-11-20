@@ -1,13 +1,18 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton.js";
 import SendMessageModal from '../../../Components/SendMessageModal.js';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 
 class ViewNotification extends Component {
-  constructor(props) {
+  props: any;
+  setState: any;
+  state: any;
+  constructor(props: any) {
     super(props);
 
     this.state = {
@@ -25,7 +30,7 @@ class ViewNotification extends Component {
     };
   }
 
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     const { id, value } = e.target;
 
     this.setState({
@@ -90,6 +95,7 @@ class ViewNotification extends Component {
     var notificationSent = state.notificationSent;
 
    return (
+      // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
       <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
         <Box className="subcontent-spacing">
           <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewNotificationsTitle"> View Notifications</Typography>

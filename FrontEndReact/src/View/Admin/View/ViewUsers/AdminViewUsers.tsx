@@ -1,9 +1,11 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers.js';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 import SuccessMessage from '../../../Success/SuccessMessage.js';
@@ -11,7 +13,10 @@ import SuccessMessage from '../../../Success/SuccessMessage.js';
 
 
 class AdminViewUsers extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -40,31 +45,31 @@ class AdminViewUsers extends Component {
         genericResourceGET(
             "/role?", "roles", this); 
     }
-    
+
     componentDidMount() {
         this.fetchData();
     }
 
-  componentDidUpdate(){
-    if (this.state.users && this.state.users.length !== this.state.prevUsersLength) {
-      this.setState({ prevUsersLength: this.state.users.length });
-      this.fetchData();
+    componentDidUpdate(){
+      if (this.state.users && this.state.users.length !== this.state.prevUsersLength) {
+        this.setState({ prevUsersLength: this.state.users.length });
+        this.fetchData();
+      }
     }
-  }
 
-  setErrorMessage = (errorMessage) => {
-    this.setState({errorMessage: errorMessage});
-    setTimeout(() => {
-        this.setState({errorMessage: null,});
-    }, 3000);
-  }
+    setErrorMessage = (errorMessage: any) => {
+      this.setState({errorMessage: errorMessage});
+      setTimeout(() => {
+          this.setState({errorMessage: null,});
+      }, 3000);
+    }
 
-  setSuccessMessage = (successMessage) => {
-    this.setState({successMessage: successMessage});
-    setTimeout(() => {
-        this.setState({successMessage: null,});
-    }, 3000);
-  }
+    setSuccessMessage = (successMessage: any) => {
+      this.setState({successMessage: successMessage});
+      setTimeout(() => {
+          this.setState({successMessage: null,});
+      }, 3000);
+    }
     render() {
         const {
             errorMessage,
@@ -85,11 +90,13 @@ class AdminViewUsers extends Component {
 
         if (errorMessage) {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Users"}
                         errorMessage={errorMessage}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
 
@@ -103,11 +110,13 @@ class AdminViewUsers extends Component {
             return(
                 <Box>
                     {successMessage !== null && 
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <div className='container'>
                           <SuccessMessage 
                             successMessage={successMessage}
                             aria-label="adminViewUsersSuccessMessage"
                           />
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </div>
                     }
                     <ViewUsers

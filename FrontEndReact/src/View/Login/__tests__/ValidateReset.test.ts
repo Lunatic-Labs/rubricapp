@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../Login.js";
@@ -27,14 +28,18 @@ var ema = "errorMessageAlert";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("ValidateReset.test.js Test 1: should render Login Form component", () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("ValidateReset.test.js Test 2: Should show Set New Password page when clicking Forgot Password Link.", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     clickElementWithAriaLabel(rpb);
@@ -45,7 +50,9 @@ test("ValidateReset.test.js Test 2: Should show Set New Password page when click
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("ValidateReset.test.js Test 3: Should show Login page when clicking Back button.", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     clickElementWithAriaLabel(rpb);
@@ -62,7 +69,9 @@ test("ValidateReset.test.js Test 3: Should show Login page when clicking Back bu
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("ValidateReset.test.js Test 4: Should show email cannot be empty when email is not passed in.", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     clickElementWithAriaLabel(rpb);
@@ -81,7 +90,9 @@ test("ValidateReset.test.js Test 4: Should show email cannot be empty when email
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("ValidateReset.test.js Test 5: Should show SetNewPassword page when email is invalid.", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login/>);
 
     clickElementWithAriaLabel(rpb);

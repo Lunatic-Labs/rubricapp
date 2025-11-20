@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams.js';
@@ -8,7 +9,9 @@ import Loading from '../../Loading/Loading.js';
 
 
 class StudentViewTeams extends Component {
-    constructor(props) {
+    props: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -29,8 +32,8 @@ class StudentViewTeams extends Component {
         genericResourceGET(
             `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${adhocMode}`, "teams", this
         ).then(data =>{
-            let newTeams = [];
-            data.teams.forEach(team => {
+            let newTeams: any = [];
+            data.teams.forEach((team: any) => {
                 newTeams.push(team.team_id);
             });
             this.props.updateUserTeamsIds(newTeams);
@@ -57,11 +60,13 @@ class StudentViewTeams extends Component {
 
         if (errorMessage) {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Teams"}
                         errorMessage={errorMessage}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
 
@@ -72,12 +77,14 @@ class StudentViewTeams extends Component {
 
         } else {
             return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <div className='container'>
                     <ViewTeams
                         navbar={this.props.navbar}
                         teams={teams}
                         users={users ? parseUserNames(users) : []}
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </div>
             )
         }

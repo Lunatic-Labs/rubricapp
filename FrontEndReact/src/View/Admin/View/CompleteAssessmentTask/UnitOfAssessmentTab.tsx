@@ -1,13 +1,19 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Tabs' or its cor... Remove this comment to see the full error message
 import Tabs, { tabsClasses } from '@mui/material/Tabs';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Tab } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/Tooltip' or its ... Remove this comment to see the full error message
 import Tooltip from '@mui/material/Tooltip';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box } from '@mui/material';
 import StatusIndicator from './StatusIndicator.js';
 import {StatusIndicatorState} from './StatusIndicator.js';
 import {getUnitCategoryStatus} from './cat_utils.js';
+// @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
 import Cookies from 'universal-cookie';
 
 /**
@@ -28,6 +34,7 @@ import Cookies from 'universal-cookie';
  * @param {boolean} state.usingTeams - Bool that represents if we are on a valid tab when hiding other tabs.
  */
 class UnitOfAssessmentTab extends Component {
+    props: any;
     render() {
         const units = this.props.units;
         const hideUnits = this.props.hideUnits;
@@ -51,7 +58,7 @@ class UnitOfAssessmentTab extends Component {
             if (currentUnit.isDone === true) {
                 unitStatus = StatusIndicatorState.COMPLETED;
             } else {
-                const isNotStarted = currentUnit.categoryNames().every(categoryName => {
+                const isNotStarted = currentUnit.categoryNames().every((categoryName: any) => {
                     return getUnitCategoryStatus(currentUnit, this.props.navbar.state.chosenAssessmentTask, categoryName) === StatusIndicatorState.NOT_STARTED;
                 });
 
@@ -63,6 +70,7 @@ class UnitOfAssessmentTab extends Component {
             }
 
             unitTabsList.push(
+                // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
                 <Tab
                     label={
                         <Box sx={{
@@ -72,6 +80,7 @@ class UnitOfAssessmentTab extends Component {
                             justifyContent: "center"
                         }}>
                             <Tooltip title={unitTooltip}>
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <span>{unitName}</span>
                             </Tooltip>
                             <StatusIndicator
@@ -103,7 +112,7 @@ class UnitOfAssessmentTab extends Component {
             <Tabs
                 value={this.props.currentUnitTabIndex}
 
-                onChange={(event, newUnitTabIndex) => {
+                onChange={(event: any, newUnitTabIndex: any) => {
                     this.props.handleUnitTabChange(newUnitTabIndex);
                 }}
 
@@ -133,7 +142,7 @@ class UnitOfAssessmentTab extends Component {
             >
                 {unitTabsList}
             </Tabs>
-        )
+        );
     }
 }
 

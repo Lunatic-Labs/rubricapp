@@ -1,21 +1,35 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
+// @ts-expect-error TS(2307): Cannot find module '../AddUsers/Images/generic_bul... Remove this comment to see the full error message
 import studentImage from '../AddUsers/Images/generic_bulk_upload_example.png';
+// @ts-expect-error TS(2307): Cannot find module '../AddUsers/Images/team_bulk_u... Remove this comment to see the full error message
 import teamImage1 from '../AddUsers/Images/team_bulk_upload_example1.png';
+// @ts-expect-error TS(2307): Cannot find module '../AddUsers/Images/team_bulk_u... Remove this comment to see the full error message
 import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
+// @ts-expect-error TS(2307): Cannot find module '../AddUsers/Images/team_bulk_u... Remove this comment to see the full error message
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourcePOST } from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Typography, Tooltip, Button } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/IconButton' or i... Remove this comment to see the full error message
 import IconButton from '@mui/material/IconButton';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/ArrowForwa... Remove this comment to see the full error message
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/HelpOutlin... Remove this comment to see the full error message
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+// @ts-expect-error TS(2307): Cannot find module 'debounce' or its corresponding... Remove this comment to see the full error message
 import debounce from 'debounce';
 
 
 class AdminBulkUpload extends Component {
-    constructor(props) {
+    debouncedSubmit: any;
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -58,7 +72,7 @@ class AdminBulkUpload extends Component {
       });
     }
 
-    onFormSubmit = (e) => {
+    onFormSubmit = (e: any) => {
         e.preventDefault();
 
         var fileName;
@@ -127,6 +141,7 @@ class AdminBulkUpload extends Component {
         var confirmCreateResource = navbar.confirmCreateResource;
 
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <Box>
                 {this.state.errorMessage &&
                     <ErrorMessage
@@ -144,6 +159,7 @@ class AdminBulkUpload extends Component {
                                     {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
                                 </Typography>
 
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 <div className="d-flex justify-content-center flex-column align-items-center">
                                     <Typography variant="h8" sx={{ marginTop:"30px" }}>
                                         Upload a CSV or XLSX file to bulk upload
@@ -175,6 +191,7 @@ class AdminBulkUpload extends Component {
                                         {this.props.tab === "AdminTeamBulkUpload" &&
                                             <Box sx={{ display:"flex", flexDirection:"row", alignItems:"center" }}>
                                                 <Typography variant='h8'>
+                                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                     TA Email<br></br>Team Name<br></br>"Last1, First1", Student Email 1, Optional LMS ID<br></br>"Last2, First2", Student Email 2, Optional LMS ID
                                                 </Typography>
                                             </Box>
@@ -184,12 +201,15 @@ class AdminBulkUpload extends Component {
                                             <Tooltip
                                                 title={
                                                     <>
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         <p>Example of format in Excel: <br></br>Two Students and Two TAs </p>
 
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         <img
                                                             alt="Format Example"
                                                             style={{ width:"100%", height:"100px" }}
                                                             src={ studentImage }
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         ></img>
                                                     </>
                                                 }
@@ -202,14 +222,19 @@ class AdminBulkUpload extends Component {
                                             <Tooltip
                                                 title={
                                                     <Box sx={{ width:"100%" }}>
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         <p>
+                                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                             Example of format in Excel: <br></br>{this.state.teamsMsgs[this.state.currentTeamPic]}
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         </p>
 
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         <img
                                                             alt="Format Example"
                                                             style={{ width:"250px", height:"150px" }}
                                                             src={ this.state.teamsPics[this.state.currentTeamPic] }
+                                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                                         ></img>
 
                                                         <Box sx={{ display:"flex", width:"100%", justifyContent:"flex-end", mt: 1 }}>
@@ -225,20 +250,22 @@ class AdminBulkUpload extends Component {
                                         }
                                     </Box>
 
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     <form
-                                        onSubmit={ (e) =>{
+                                        onSubmit={ (e: any) => {
                                             e.preventDefault();
                                             this.debouncedSubmit(e);
                                         }
                                     }
                                         className="d-flex justify-content-center align-items-center rounded p-1 bg-white gap-3"
                                     >
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         <input
                                             className='rounded form-control'
                                             type="file"
                                             name="file"
                                             aria-label="adminBulkUploadChooseFileButton"
-                                            onChange={(e) => {
+                                            onChange={(e: any) => {
                                                 this.setState({
                                                     selectedFile: e.target.files[0]
                                                 })
@@ -254,22 +281,26 @@ class AdminBulkUpload extends Component {
                                         </Button>
 
                                         <Button className='primary-color' variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"> Upload </Button>
+                                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                     </form>
 
                                     {this.props.tab === "AdminTeamBulkUpload" &&
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         <div className="form-position">
                                             <Typography variant="h8">
                                                 Team Bulk Upload will also add students to course
                                             </Typography>
+                                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                         </div>
                                     }
+                                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                 </div>
                             </Box>
                         </Box>
                     </Box>
                 </Box>
             </Box>
-        )
+        );
     }
 }
 

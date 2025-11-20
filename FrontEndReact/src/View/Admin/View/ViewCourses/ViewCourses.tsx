@@ -1,11 +1,17 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/IconButton' or i... Remove this comment to see the full error message
 import IconButton from '@mui/material/IconButton';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Edit' or i... Remove this comment to see the full error message
 import EditIcon from '@mui/icons-material/Edit';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Visibility... Remove this comment to see the full error message
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Typography, Box } from "@mui/material";
 
 class ViewCourses extends Component {
+  props: any;
   render() {
     var navbar = this.props.navbar;
     var adminViewCourses = navbar.adminViewCourses;
@@ -21,8 +27,9 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"25%" } },
           setCellProps: () => { return { width:"25%" } },
-          customBodyRender: (courseName) => {
+          customBodyRender: (courseName: any) => {
             return(
+              // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
               <Typography
                 sx={{fontSize: "1.6rem"}}
                 aria-label={ courseName }
@@ -67,7 +74,7 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
           setCellProps: () => { return { width:"6%" } },
-          customBodyRender: (value) => {
+          customBodyRender: (value: any) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
             )
@@ -81,7 +88,7 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"7%" } },
           setCellProps: () => { return { width:"7%" } },
-          customBodyRender: (value) => {
+          customBodyRender: (value: any) => {
             return(
               <>{value===null ? "N/A": (value ? "Yes":"No")}</>
             )
@@ -101,6 +108,7 @@ class ViewCourses extends Component {
           label: "EDIT",
           options: {
             filter: false,
+            // @ts-expect-error TS(2322): Type '{ filter: false; sort: false; setCellHeaderP... Remove this comment to see the full error message
             sort: false,
             setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
             setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
@@ -129,6 +137,7 @@ class ViewCourses extends Component {
         label: "VIEW",
         options: {
           filter: false,
+          // @ts-expect-error TS(2322): Type '{ filter: false; sort: false; setCellHeaderP... Remove this comment to see the full error message
           sort: false,
           setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
@@ -165,8 +174,8 @@ class ViewCourses extends Component {
       tableBodyMaxHeight: "35vh",
     };
 
-    const activeCourses = courses ? courses.filter(course => course.active) : [];
-    const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
+    const activeCourses = courses ? courses.filter((course: any) => course.active) : [];
+    const inactiveCourses = courses ? courses.filter((course: any) => !course.active) : [];
 
     return (
       <Box aria-label="viewCourseDiv">

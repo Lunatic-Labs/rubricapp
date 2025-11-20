@@ -1,20 +1,30 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Tooltip } from '@mui/material';
 import CustomDataTable from "../../../Components/CustomDataTable";
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/IconButton' or i... Remove this comment to see the full error message
 import IconButton from '@mui/material/IconButton';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Visibility... Remove this comment to see the full error message
 import VisibilityIcon from '@mui/icons-material/Visibility';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import { genericResourcePOST, genericResourcePUT, getHumanReadableDueDate } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/Lock' or i... Remove this comment to see the full error message
 import LockIcon from '@mui/icons-material/Lock';
+// @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/LockOpen' ... Remove this comment to see the full error message
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 class ViewCompleteIndividualAssessmentTasks extends Component {
-    constructor(props) {
+    props: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
     this.state = {
@@ -37,15 +47,16 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         const completedAssessmentTasks = this.props.navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
         const initialLockStatus = {};
 
-        completedAssessmentTasks.forEach((task) => {
+        completedAssessmentTasks.forEach((task: any) => {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             initialLockStatus[task.completed_assessment_id] = task.locked;
         });
 
         this.setState({ lockStatus: initialLockStatus });
     }
 
-    handleLockToggle = (completedAssessmentId, task) => {
-        this.setState((prevState) => {
+    handleLockToggle = (completedAssessmentId: any, task: any) => {
+        this.setState((prevState: any) => {
             const newLockStatus = { ...prevState.lockStatus };
             newLockStatus[completedAssessmentId] = !newLockStatus[completedAssessmentId];
             return { lockStatus: newLockStatus };
@@ -60,9 +71,9 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleUnlockAllCats = (assessmentTaskIds) => {
-        assessmentTaskIds.forEach((completedAssessmentId) => {
-            this.setState((prevState) => {
+    handleUnlockAllCats = (assessmentTaskIds: any) => {
+        assessmentTaskIds.forEach((completedAssessmentId: any) => {
+            this.setState((prevState: any) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = false;
                 return { lockStatus: newLockStatus };
@@ -77,9 +88,9 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleLockAllCats = (assessmentTaskIds) => {
-        assessmentTaskIds.forEach((completedAssessmentId) => {
-            this.setState((prevState) => {
+    handleLockAllCats = (assessmentTaskIds: any) => {
+        assessmentTaskIds.forEach((completedAssessmentId: any) => {
+            this.setState((prevState: any) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = true;
                 return { lockStatus: newLockStatus };
@@ -95,7 +106,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
 
         this.setState({
@@ -107,68 +118,68 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-  handleDialog = (isSingleMessage, singleCompletedAT) => {
-    this.setState({
-        showDialog: this.state.showDialog === false ? true : false,
-        isSingleMsg: isSingleMessage,
-        compATId: singleCompletedAT,
-    });
-  }
-
-  handleSendNotification = () => {
-    var notes = this.state.notes;
-
-    var navbar = this.props.navbar;
-
-    var state = navbar.state;
-
-    var chosenAssessmentTask = state.chosenAssessmentTask;
-
-    var date = new Date();
-
-    if (notes.trim() === '') {
-        this.setState({
-            errors: {
-                notes: 'Notification Message cannot be empty',
-            },
-        });
-
-      return;
+    handleDialog = (isSingleMessage: any, singleCompletedAT: any) => {
+      this.setState({
+          showDialog: this.state.showDialog === false ? true : false,
+          isSingleMsg: isSingleMessage,
+          compATId: singleCompletedAT,
+      });
     }
-    if(this.state.isSingleMsg) {
-      this.setState({isSingleMsg: false}, () => {
-        genericResourcePOST(
-          `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
-          this, JSON.stringify({ 
-            "notification_message": notes,
-          }) 
+
+    handleSendNotification = () => {
+      var notes = this.state.notes;
+
+      var navbar = this.props.navbar;
+
+      var state = navbar.state;
+
+      var chosenAssessmentTask = state.chosenAssessmentTask;
+
+      var date = new Date();
+
+      if (notes.trim() === '') {
+          this.setState({
+              errors: {
+                  notes: 'Notification Message cannot be empty',
+              },
+          });
+
+        return;
+      }
+      if(this.state.isSingleMsg) {
+        this.setState({isSingleMsg: false}, () => {
+          genericResourcePOST(
+            `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
+            this, JSON.stringify({ 
+              "notification_message": notes,
+            }) 
+          ).then((result) => {
+            if(result !== undefined && result.errorMessage === null){
+              this.setState({ 
+                showDialog: false, 
+                notificationSent: date, 
+              });
+            }
+          });
+        });
+      } else {
+        genericResourcePUT(
+          `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
+          this, JSON.stringify({
+            "notification_message": notes, 
+            "date" : date
+          })
         ).then((result) => {
-          if(result !== undefined && result.errorMessage === null){
-            this.setState({ 
-              showDialog: false, 
-              notificationSent: date, 
+          if (result !== undefined && result.errorMessage === null) {
+            this.setState({
+              showDialog: false,
+              notificationSent: date,
             });
           }
         });
-      });
-    } else {
-      genericResourcePUT(
-        `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
-        this, JSON.stringify({
-          "notification_message": notes, 
-          "date" : date
-        })
-      ).then((result) => {
-        if (result !== undefined && result.errorMessage === null) {
-          this.setState({
-            showDialog: false,
-            notificationSent: date,
-          });
-        }
-      });
-    }
+      }
 
-  };
+    };
 
     render() {
         var navbar = this.props.navbar;
@@ -185,7 +196,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
         var chosenCourse = state.chosenCourse;
 
-        var catIds = completedAssessmentTasks.map((task) => task.completed_assessment_id);
+        var catIds = completedAssessmentTasks.map((task: any) => task.completed_assessment_id);
 
         const columns = [
             {
@@ -196,8 +207,10 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
                     customBodyRender: () => {
                         return (
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p variant="contained" align="left">
                                 {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         );
                     },
@@ -209,10 +222,12 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (last_name) => {
+                    customBodyRender: (last_name: any) => {
                         return (
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p variant="contained" align="left">
                                 {last_name ? last_name : "N/A"}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         );
                     },
@@ -224,10 +239,12 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (completed_by) => {
+                    customBodyRender: (completed_by: any) => {
                         return (
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p variant="contained" align="left">
                                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         );
                     },
@@ -239,12 +256,14 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (initialTime) => {
+                    customBodyRender: (initialTime: any) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
 
                         return (
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p variant="contained" align="left">
                                 {getHumanReadableDueDate(initialTime,timeZone)}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         );
                     },
@@ -256,12 +275,14 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (lastUpdate) => {
+                    customBodyRender: (lastUpdate: any) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                       
                         return(
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p  variant='contained' align='left' >
                                 {getHumanReadableDueDate(lastUpdate,timeZone)}
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         )
                     },
@@ -272,16 +293,18 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 label: "Lock",
                 options: {
                     filter: true,
-                    customBodyRender: (completedAssessmentId) => {
-                        const task = completedAssessmentTasks.find((task) => task["completed_assessment_id"] === completedAssessmentId);
+                    customBodyRender: (completedAssessmentId: any) => {
+                        const task = completedAssessmentTasks.find((task: any) => task["completed_assessment_id"] === completedAssessmentId);
                         const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
 
                             return (
                                 <Tooltip
                                     title={
                                         <>
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             <p>
                                                 If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
+                                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                                             </p>
                                         </>
                                     }>
@@ -304,11 +327,12 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+                    customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
                         const rowIndex = completeAssessmentTasks.rowIndex;
                         const userId = this.props.completedAssessment[rowIndex].user_id;
                         if (completedAssessmentId) {
                             return (
+                                // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
                                 <IconButton // problem : need to pass who im looking at
                                     align="center"
                                     onClick={() => {
@@ -327,6 +351,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
             } else {
               return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <p variant='contained' align='center' > {"N/A"} </p>
               )
             }
@@ -341,7 +366,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           sort: false,
           setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+          customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
             const rowIndex = completeAssessmentTasks.rowIndex;
             const completedATIndex = 5;
             completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
@@ -350,11 +375,14 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 <Tooltip
                     title={
                         <>
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             <p>
                                 Notifies one individual.
+                            // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                             </p>
                         </>
                     }>
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     <span>
                         <CustomButton
                         onClick={() => this.handleDialog(true, completedAssessmentId)}
@@ -364,11 +392,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                         disabled={notificationSent}
                         aria-label="Send individual messages"
                         />
+                    // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                     </span>
                 </Tooltip>
               )
             }else{
               return(
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <p variant='contained' align='center' > {''} </p>
               )
             }
@@ -427,19 +457,24 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
             <Tooltip
                 title={
                     <>
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         <p>
                             Notifies all individuals results are available.
+                        // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                         </p>
                     </>
                 }>
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 <span>
                     <CustomButton
                     label="Notify All"
+                    // @ts-expect-error TS(2554): Expected 2 arguments, but got 1.
                     onClick={() => this.handleDialog(false)}
                     isOutlined={false}
                     disabled={notificationSent}
                     aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
                     />
+                // @ts-expect-error TS(7026): JSX element implicitly has type 'any' because no i... Remove this comment to see the full error message
                 </span>
             </Tooltip>
           </Box>

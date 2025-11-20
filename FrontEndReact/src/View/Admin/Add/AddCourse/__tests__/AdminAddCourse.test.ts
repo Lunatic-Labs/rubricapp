@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login.js";
@@ -32,12 +33,16 @@ var vcd = "viewCourseDiv";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -58,7 +63,9 @@ test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 2: Should render the course table if the cancel button on the Add Course page is clicked", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -79,7 +86,9 @@ test("AdminAddCourse.test.js Test 2: Should render the course table if the cance
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 3: HelperText errors should show for each text field when no information is filled", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -108,7 +117,9 @@ test("AdminAddCourse.test.js Test 3: HelperText errors should show for each text
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 4: HelperText error should show for the addCourseName text field when it is left blank while all other information is filled", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -137,7 +148,9 @@ test("AdminAddCourse.test.js Test 4: HelperText error should show for the addCou
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 5: HelperText error should show for the addCourseNumber text field when it is left blank while all other information is filled", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -166,7 +179,9 @@ test("AdminAddCourse.test.js Test 5: HelperText error should show for the addCou
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 6: HelperText error should show for the addCourseTerm text field when it is left blank while all other information is filled", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -195,7 +210,9 @@ test("AdminAddCourse.test.js Test 6: HelperText error should show for the addCou
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 7: HelperText error should show for the addCourseYear text field when it is left blank while all other information is filled", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -223,7 +240,9 @@ test("AdminAddCourse.test.js Test 7: HelperText error should show for the addCou
     });
 });
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 8: HelperText error should show for the addCourseYear text field when input is less than 2023", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -254,7 +273,9 @@ test("AdminAddCourse.test.js Test 8: HelperText error should show for the addCou
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 9: HelperText error should show for the addCourseYear text field when input is not a numeric value", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -285,7 +306,9 @@ test("AdminAddCourse.test.js Test 9: HelperText error should show for the addCou
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 10: Filling in valid input and clicking the Add Course button should redirect you to course view page, and should contain the new course you just added", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -323,7 +346,9 @@ test("AdminAddCourse.test.js Test 10: Filling in valid input and clicking the Ad
     });
 });
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminAddCourse.test.js Test 11: HelperText errors should show for the addCourseYear text field when the input year is not numeric", async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {

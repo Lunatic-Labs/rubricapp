@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box } from '@mui/material';
 
 export const UnitType = Object.freeze({
@@ -74,12 +75,14 @@ if(module.hot){
     Debug.data = {}; 
 }  */
 
+// @ts-expect-error TS(7006): Parameter 'args' implicitly has an 'any' type.
 export function generateUnitList(args) {
 	let unitList = [];
 
 	if (args.roleName === "Student") {
 		if (args.unitType === UnitType.INDIVIDUAL) {
 			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.currentUserId;
+// @ts-expect-error TS(7006): Parameter 'user' implicitly has an 'any' type.
 			const user = args.users.find(user => user["user_id"] === userId);
 			
 			unitList.push(createIndividualUnit(
@@ -88,11 +91,13 @@ export function generateUnitList(args) {
 			));
 		} else {
 			// Note that when we are here args.ChosenCompleteAssessmentTask is not populated.
+// @ts-expect-error TS(7034): Variable 'team' implicitly has type 'any' in some ... Remove this comment to see the full error message
 			let team;
 			const isFixedTeams = args.unitType === UnitType.FIXED_TEAM;
 			
 			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask && isFixedTeams) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
+// @ts-expect-error TS(7006): Parameter 'team' implicitly has an 'any' type.
 				team = args.fixedTeams.find(team => team["team_id"] === teamId);
 			} else {
  				team = args.userFixedTeam;// Despite the var name this works for adhocs.
@@ -100,10 +105,12 @@ export function generateUnitList(args) {
 
 			let chosenCAT = args.chosenCompleteAssessmentTask
 
+// @ts-expect-error TS(7006): Parameter 'i' implicitly has an 'any' type.
 			const exitsAndMeaningful = (i) =>{return i && i.length > 0;}
 			
 			// Next if statement allows for quicksaved data to be reflected in the AT view.
 			if (chosenCAT === null && exitsAndMeaningful(args.completedAssessments)){
+// @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
 				chosenCAT = args.completedAssessments.find(cat => cat.team_id === team.team_id);
 			}
 
@@ -120,8 +127,10 @@ export function generateUnitList(args) {
 		// Otherwise we must be an admin or TA
 		
 		if (args.unitType === UnitType.INDIVIDUAL) {
+// @ts-expect-error TS(7006): Parameter 'user' implicitly has an 'any' type.
 			unitList = args.users.map(user => {
 				const userId = user["user_id"];
+// @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
 				const cat = args.completedAssessments.find(cat => cat["user_id"] === userId);
 				
 				return createIndividualUnit(user, cat, args.assessmentTaskRubric);
@@ -129,8 +138,10 @@ export function generateUnitList(args) {
 
 		} else {
 			const isFixed = args.unitType === UnitType.FIXED_TEAM;
+// @ts-expect-error TS(7006): Parameter 'team' implicitly has an 'any' type.
 			unitList = args.fixedTeams.map(team => {
 				const teamId = team["team_id"];
+// @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
 				const cat = args.completedAssessments.find(cat => cat["team_id"] === teamId);
 				return isFixed ?
 					createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers):
@@ -142,6 +153,7 @@ export function generateUnitList(args) {
 	return unitList;
 }
 
+// @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
 function getOrGenerateUnitData(cat, rubric) {
 	let rocsData;
 	let isDone;
@@ -161,12 +173,14 @@ function getOrGenerateUnitData(cat, rubric) {
 	return [rocsData, isDone];
 }
 
+// @ts-expect-error TS(7006): Parameter 'user' implicitly has an 'any' type.
 function createIndividualUnit(user, cat, rubric) {
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
 	
 	return new IndividualUnit(cat ?? null, rocsData, isDone, user);
 }
 
+// @ts-expect-error TS(7006): Parameter 'team' implicitly has an 'any' type.
 function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	const teamId = team["team_id"];
 	
@@ -179,6 +193,7 @@ function createFixedTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	);
 }
 
+// @ts-expect-error TS(7006): Parameter 'team' implicitly has an 'any' type.
 function createAdHocTeamUnit(team, cat, rubric, fixedTeamMembers) {
 	const teamId = team["team_id"]; //|| team["team_number"];
 	
@@ -217,6 +232,7 @@ export class ATUnit {
 	 */
 	unitType;
 	
+// @ts-expect-error TS(7006): Parameter 'unitType' implicitly has an 'any' type.
 	constructor(unitType, cat, rocsData, isDone) {
 		this.unitType = unitType;
 		this.completedAssessmentTask = cat;
@@ -246,6 +262,7 @@ export class ATUnit {
 	 * @param {CheckinsTracker} checkinsTracker
 	 * @returns {object[]} The contents of the checked in tooltip.
 	 */
+// @ts-expect-error TS(7006): Parameter 'checkinsTracker' implicitly has an 'any... Remove this comment to see the full error message
 	getCheckedInTooltip(checkinsTracker) {
 		throw new Error("Not implemented");
 	}
@@ -264,11 +281,13 @@ export class ATUnit {
 	 * @param modifier
 	 * @returns {ATUnit}
 	 */
+// @ts-expect-error TS(7006): Parameter 'modifier' implicitly has an 'any' type.
 	withNewRocsData(modifier) {
 		const newRocs = structuredClone(this.rocsData);
 		modifier(newRocs);
 		
 		const newUnit = this.shallowClone();
+// @ts-expect-error TS(2339): Property 'rocsData' does not exist on type 'void'.
 		newUnit.rocsData = newRocs;
 		return newUnit;
 	}
@@ -278,8 +297,10 @@ export class ATUnit {
 	 * @param {boolean} isDone
 	 * @returns {ATUnit}
 	 */
+// @ts-expect-error TS(7006): Parameter 'isDone' implicitly has an 'any' type.
 	withNewIsDone(isDone) {
 		const newUnit = this.shallowClone();
+// @ts-expect-error TS(2339): Property 'isDone' does not exist on type 'void'.
 		newUnit.isDone = isDone;
 		return newUnit;
 	}
@@ -289,8 +310,10 @@ export class ATUnit {
 	 * @param {object} newCat
 	 * @returns {ATUnit}
 	 */
+// @ts-expect-error TS(7006): Parameter 'newCat' implicitly has an 'any' type.
 	withNewCAT(newCat) {
 		const newUnit = this.shallowClone();
+// @ts-expect-error TS(2339): Property 'completedAssessmentTask' does not exist ... Remove this comment to see the full error message
 		newUnit.completedAssessmentTask = newCat;
 		return newUnit;
 	}
@@ -322,6 +345,7 @@ export class ATUnit {
 	 * @param {Date} completedAt The date and time that this assessment task was completed/updated.
 	 * @returns {object}
 	 */
+// @ts-expect-error TS(7006): Parameter 'assessmentTaskId' implicitly has an 'an... Remove this comment to see the full error message
 	generateNewCAT(assessmentTaskId, completedBy, completedAt) {
 		if (this.completedAssessmentTask) {
 			const newCAT = structuredClone(this.completedAssessmentTask);
@@ -355,6 +379,7 @@ export class IndividualUnit extends ATUnit {
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} user User object.
 	 */
+// @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
 	constructor(cat, rocs, done, user) {
 		super(UnitType.INDIVIDUAL, cat, rocs, done);
 		this.user = user;
@@ -364,6 +389,7 @@ export class IndividualUnit extends ATUnit {
 		return this.user["user_id"];
 	}
 	
+// @ts-expect-error TS(2416): Property 'displayName' in type 'IndividualUnit' is... Remove this comment to see the full error message
 	get displayName() {
 		return this.user["first_name"] + " " + this.user["last_name"];
 	}
@@ -372,8 +398,10 @@ export class IndividualUnit extends ATUnit {
 		return this.userId;
 	}
 
+// @ts-expect-error TS(7006): Parameter 'checkinsTracker' implicitly has an 'any... Remove this comment to see the full error message
 	getCheckedInTooltip(checkinsTracker) {
 		if (checkinsTracker.hasCheckInForUser(this.userId)) {
+// @ts-expect-error TS(2304): Cannot find name 'key'.
 			return [ <Box key={0}>Checked In</Box> ];
 		} else {
 			return [];
@@ -383,6 +411,7 @@ export class IndividualUnit extends ATUnit {
 	shallowClone() {
 		return new IndividualUnit(
 			this.completedAssessmentTask, this.rocsData, this.isDone,
+// @ts-expect-error TS(2554): Expected 4 arguments, but got 5.
 			this.user, this.isCheckedIn
 		);
 	}
@@ -391,8 +420,10 @@ export class IndividualUnit extends ATUnit {
 		return `uid=${this.userId}`;
 	}
 	
+// @ts-expect-error TS(2416): Property 'generateNewCAT' in type 'IndividualUnit'... Remove this comment to see the full error message
 	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
 		return {
+// @ts-expect-error TS(2554): Expected 3 arguments, but got 4.
 			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
 			"user_id": this.userId,
 			"team_id": -1,
@@ -418,6 +449,7 @@ export class FixedTeamUnit extends ATUnit {
 	 * @param {object} team Team object.
 	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
 	 */
+// @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
 	constructor(cat, rocs, done, team, teamMembers) {
 		super(UnitType.FIXED_TEAM, cat, rocs, done);
 		this.team = team;
@@ -436,7 +468,9 @@ export class FixedTeamUnit extends ATUnit {
 		return this.teamId;
 	}
 	
+// @ts-expect-error TS(7006): Parameter 'checkinsTracker' implicitly has an 'any... Remove this comment to see the full error message
 	getCheckedInTooltip(checkinsTracker) {
+// @ts-expect-error TS(7006): Parameter 'user' implicitly has an 'any' type.
 		const checkedInMembers = this.teamMembers.filter(user => {
 			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
 			
@@ -444,8 +478,10 @@ export class FixedTeamUnit extends ATUnit {
 		});
 		
 		if (checkedInMembers.length !== 0) {
+// @ts-expect-error TS(7006): Parameter 'user' implicitly has an 'any' type.
 			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
 		} else {
+// @ts-expect-error TS(2304): Cannot find name 'key'.
 			return [ <Box key={0}>No Team Members Checked In</Box> ];
 		}
 	}
@@ -461,8 +497,10 @@ export class FixedTeamUnit extends ATUnit {
 		return `team_id=${this.teamId}`;
 	}
 	
+// @ts-expect-error TS(2416): Property 'generateNewCAT' in type 'FixedTeamUnit' ... Remove this comment to see the full error message
 	generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone) {
 		return {
+// @ts-expect-error TS(2554): Expected 3 arguments, but got 4.
 			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt, isDone),
 			"user_id": -1,
 			"team_id": this.teamId,
@@ -479,6 +517,7 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	 * @param {int} currentUserId - The current user to save data under.
 	 */
 
+// @ts-expect-error TS(7006): Parameter 'cat' implicitly has an 'any' type.
 	constructor(cat, rocs, done, team, teamMembers) {
 		super(cat, rocs, done, team, teamMembers);
 		this.unitType = UnitType.AD_HOC_TEAM;
@@ -489,10 +528,12 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	shallowClone() {
 		return new AdHocTeamUnit(
 			this.completedAssessmentTask, this.rocsData, this.isDone,
+// @ts-expect-error TS(2554): Expected 5 arguments, but got 6.
 			this.team, this.teamMembers, this.currentUserId,
 		);
 	}
 
+// @ts-expect-error TS(7006): Parameter 'checkinsTracker' implicitly has an 'any... Remove this comment to see the full error message
 	getCheckedInTooltip(checkinsTracker) {
 		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
 		
@@ -503,8 +544,10 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 		});
 		
 		if (checkedInMembers.length !== 0) {
+// @ts-expect-error TS(2304): Cannot find name 'key'.
 			return checkedInMembers.map((user, index) => <Box key={index}>{user["first_name"] + " " + user["last_name"]}</Box>);
 		} else {
+// @ts-expect-error TS(2304): Cannot find name 'key'.
 			return [ <Box key={0}>No Team Members Checked In</Box> ];
 		}
 	}

@@ -1,3 +1,4 @@
+// @ts-expect-error TS(2307): Cannot find module '@testing-library/react' or its... Remove this comment to see the full error message
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login.js";
@@ -39,19 +40,25 @@ var lb = "loginButton";
 
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
+    // @ts-expect-error TS(2304): Cannot find name 'expect'.
     expect(true).toBe(true);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 1: Should render Login Form component.", () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 2: Should render the Assessment Task Dashboard in Admin View.",  async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -78,7 +85,9 @@ test("AdminViewAssessmentTask.test.js Test 2: Should render the Assessment Task 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 3: Should render the My Custom Rubrics page given the My Custom Rubrics Button is clicked on Admin View.",  async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -105,7 +114,9 @@ test("AdminViewAssessmentTask.test.js Test 3: Should render the My Custom Rubric
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 4: Should render the Import Assessment Tasks page given the Import Tasks Button is clicked on Admin View.",  async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -132,7 +143,9 @@ test("AdminViewAssessmentTask.test.js Test 4: Should render the Import Assessmen
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 5: Should render the Add Assessment Task page given the Add Task Button is clicked on Admin View.",  async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -159,7 +172,9 @@ test("AdminViewAssessmentTask.test.js Test 5: Should render the Add Assessment T
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment Task page given the Edit Button is clicked on Admin View.",  async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -188,7 +203,9 @@ test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment 
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assessment Tasks page given the View Icon Button is clicked on Admin View.",  async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {
@@ -217,7 +234,9 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
 });
 
 
+// @ts-expect-error TS(2593): Cannot find name 'test'. Do you need to install ty... Remove this comment to see the full error message
 test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.",  async () => {
+    // @ts-expect-error TS(2352): Conversion of type 'RegExp' to type 'Login' may be... Remove this comment to see the full error message
     render(<Login />);
 
     await waitFor(() => {

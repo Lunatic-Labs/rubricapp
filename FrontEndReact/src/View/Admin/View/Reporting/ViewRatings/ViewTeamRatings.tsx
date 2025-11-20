@@ -1,18 +1,23 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
+// @ts-expect-error TS(2307): Cannot find module 'mui-datatables' or its corresp... Remove this comment to see the full error message
 import MUIDataTable from 'mui-datatables';
 
 
 
 class ViewTeamRatings extends Component {
+  props: any;
   render() {
-    var allRatings = [];
+    var allRatings: any = [];
     var rating = {};
 
-    this.props.ratings.map((currentRating) => {
+    this.props.ratings.map((currentRating: any) => {
+        // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
         rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
 
         if(currentRating["rating_observable_characteristics_suggestions_data"]) {
           Object.keys(currentRating["rating_observable_characteristics_suggestions_data"]).map((category) => {
+            // @ts-expect-error TS(7053): Element implicitly has an 'any' type because expre... Remove this comment to see the full error message
             return rating[category] = currentRating["rating_observable_characteristics_suggestions_data"][category]["rating"];
           });
 
@@ -95,6 +100,7 @@ class ViewTeamRatings extends Component {
     };
 
     return (
+      // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
       <MUIDataTable data={allRatings} columns={columns} options={options}/>
     )
   }

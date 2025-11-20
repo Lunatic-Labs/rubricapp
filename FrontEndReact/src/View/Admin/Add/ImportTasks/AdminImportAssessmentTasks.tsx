@@ -1,16 +1,24 @@
+// @ts-expect-error TS(2307): Cannot find module 'react' or its corresponding ty... Remove this comment to see the full error message
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
 import CourseDropdown from './CourseDropdown.js';
 import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourcePOST } from '../../../../utility.js';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material' or its correspo... Remove this comment to see the full error message
 import { Box, Typography, Button, FormControl } from '@mui/material';
+// @ts-expect-error TS(2307): Cannot find module '@mui/material/FormHelperText' ... Remove this comment to see the full error message
 import FormHelperText from '@mui/material/FormHelperText';
 
 
 
 class AdminImportAssessmentTask extends Component {
-    constructor(props) {
+    handleImportTasks: any;
+    props: any;
+    setSelectedCourse: any;
+    setState: any;
+    state: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -24,7 +32,7 @@ class AdminImportAssessmentTask extends Component {
             }
         }
 
-        this.setSelectedCourse = (newSelectedCourse) => {
+        this.setSelectedCourse = (newSelectedCourse: any) => {
             this.setState({
                 selectedCourse: newSelectedCourse
             });
@@ -68,6 +76,7 @@ class AdminImportAssessmentTask extends Component {
         var addAssessmentTask = state.addAssessmentTask;
         
         return (
+            // @ts-expect-error TS(2307): Cannot find module 'react/jsx-runtime' or its corr... Remove this comment to see the full error message
             <>
                 { errorMessage &&
                     <ErrorMessage
