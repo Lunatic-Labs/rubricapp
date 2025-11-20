@@ -20,7 +20,6 @@ const customTheme = createTheme({
     MUIDataTableBodyRow: {
       styleOverrides: {
         root: {
-          borderBottom: '1px solid var(--table-border)',
           '&:nth-of-type(even)': {
             backgroundColor: 'var(--light_grey_ADA)',
             '&:hover': {
