@@ -99,7 +99,7 @@ class StudentDashboard extends Component {
         genericResourceGET(`/assessment_task?course_id=${chosenCourse}`, "assessment_tasks", this, { dest: "assessmentTasks" });
 
         // For a student, the role_id is not added calling a different route.
-        const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
+        const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 || userRole === 6 ? "" : `&role_id=${userRole}`}`; 
         genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" });
 
         genericResourceGET(`/average?course_id=${chosenCourse}`, "average", this, { dest: "averageData" });
@@ -152,7 +152,8 @@ class StudentDashboard extends Component {
 
                 // Qualities for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
+                const isStudent = roleId === 5 || roleId === 6;
+                const correctUser = (roleId === task.role_id || (isStudent && task.role_id === 4));
                 const locked = task.locked;                                
                 const published = task.published;
                 const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate); // short-circuit
