@@ -560,6 +560,7 @@ class ViewAssessmentTasks extends Component {
                                             sx={{
                                                 '&.Mui-disabled': {
                                                 color: 'var(--export_disabled_text)',
+                                                backgroundColor: 'var(--button-disabled-bg)',
                                                 }
                                             }}
                                             >
