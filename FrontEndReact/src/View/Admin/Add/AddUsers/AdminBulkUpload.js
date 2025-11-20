@@ -12,8 +12,7 @@ import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
 import { RequestState } from '../../../../Enums/RequestState.js';
-import Loading from '../../../Loading/Loading.js';
-import { CircularProgress } from "@mui/material";
+import DynamicLoadingSpinner from '../../../Loading/DynamicLoading.js';
 import debounce from 'debounce';
 
 class AdminBulkUpload extends Component {
@@ -71,14 +70,12 @@ class AdminBulkUpload extends Component {
         }
     }
 
-    onFormSubmit = async (e) => {
+    onFormSubmit = (e) => {
         e.preventDefault();
 
         this.setState({
             uploadRequestStatus: RequestState.LOADING,
         });
-
-        await new Promise(resolve => setTimeout(resolve, 5000));; // pauses here for 5 seconds
 
         var fileName;
         var lastDot;
@@ -280,22 +277,25 @@ class AdminBulkUpload extends Component {
                                             }}
                                         />
 
-                                        <Button 
-                                        onClick={() => {
-                                            confirmCreateResource("User")
-                                        }}
-                                        id="" className="" aria-label="cancelAdminBulkUploadButton">   
-                                            Cancel
-                                        </Button>
-
-                                        {uploadRequestStatus === RequestState.LOADING ? (
-                                            <CircularProgress size={32} thickness={3} sx={{ color: "#2E8BEF"}} />
+                                        {uploadRequestStatus === RequestState.LOADING ?(
+                                            <DynamicLoadingSpinner/>
                                         ):(
-                                            <Button className='primary-color' variant='contained' type="subminheritit" aria-label="adminBulkUploadUploadFileButton"
-                                                style={{ display: uploadRequestStatus === RequestState.LOADING ? 'none' : 'inline-flex' }}
-                                            >
-                                                Upload
-                                            </Button>
+                                            <>
+                                                <Button 
+                                                onClick={() => {
+                                                    confirmCreateResource("User")
+                                                }}
+                                                id="" className="" aria-label="cancelAdminBulkUploadButton">   
+                                                    Cancel
+                                                </Button>
+
+                                                <Button className='primary-color' 
+                                                    variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"
+                                                    style={{ display: uploadRequestStatus === RequestState.LOADING ? 'none' : 'inline-flex' }}
+                                                >
+                                                    Upload
+                                                </Button>
+                                            </>
                                         )}
                                     </form>
 
