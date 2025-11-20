@@ -409,10 +409,10 @@ class AdminAddAssessmentTask extends Component {
                                                 },
                                             },
                                             '& .MuiInputLabel-root': {
-                                                color: 'var(--text-color)',
+                                                color: errors.taskName ? 'var(--error-color)' : 'var(--text-color)',
                                             },
                                             '& .MuiInputLabel-root.Mui-focused': {
-                                                color: '#2E8BEF',
+                                                color: errors.taskName ? 'var(--error-color)' : '#2E8BEF',
                                             },
                                             '& .MuiIconButton-root': {
                                                 color: 'var(--icon-color)',
@@ -424,7 +424,18 @@ class AdminAddAssessmentTask extends Component {
                                     />
                                     <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
                                         <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%'}} error={!!errors.rubricId} required>
-                                            <InputLabel required id="rubricId" sx={{ color: 'var(--text-color)' }}>Rubric</InputLabel>
+                                            <InputLabel
+                                            required
+                                            id="rubricId"
+                                            sx={{
+                                                color: errors.rubricId ? 'var(--error-color)' : 'var(--text-color)',
+                                                '&.Mui-focused': {
+                                                    color: errors.rubricId ? 'var(--error-color)' : '#2E8BEF',
+                                                },
+                                             }}
+                                            >
+                                                Rubric
+                                            </InputLabel>
                                             <Select
                                                 id="rubricId"
                                                 name="rubricID"
@@ -445,7 +456,7 @@ class AdminAddAssessmentTask extends Component {
                                                     '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                                                         borderColor: '#2E8BEF',
                                                     },
-                                                    '& .MuiIconButton-root': {
+                                                    '& .MuiSvgIcon-root': {
                                                         color: 'var(--icon-color)',
                                                     },
                                                 }}
@@ -682,6 +693,9 @@ class AdminAddAssessmentTask extends Component {
                                                         '&.Mui-focused .MuiOutlinedInput-notchedOutline': {
                                                             borderColor: '#2E8BEF',
                                                         },
+                                                        '& .MuiSvgIcon-root': {
+                                                            color: 'var(--icon-color)',
+                                                        },
                                                     }}
                                                 >
                                                     {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
@@ -733,11 +747,11 @@ class AdminAddAssessmentTask extends Component {
                                                 },
                                             },
                                             '& .MuiInputLabel-root': {
-                                                    color: 'var(--text-color)',
-                                                },
-                                                '& .MuiInputLabel-root.Mui-focused': {
-                                                    color: '#2E8BEF',
-                                                },
+                                                    color: errors.password ? 'var(--error-color)' : 'var(--text-color)',
+                                            },
+                                            '& .MuiInputLabel-root.Mui-focused': {
+                                                    color: errors.password ? 'var(--error-color)' : '#2E8BEF',
+                                            },
                                         }}
                                         inputProps={{ maxLength: 20 }}
                                         aria-label="addAssessmentTeamPassword"
@@ -761,10 +775,10 @@ class AdminAddAssessmentTask extends Component {
                                         sx={{ 
                                             mb: 2,
                                             '& .MuiInputLabel-root': {
-                                                color: 'var(--text-color)',
+                                                color: errors.notes ? 'var(--error-color)' : 'var(--text-color)',
                                             },
                                             '& .MuiInputLabel-root.Mui-focused': {
-                                                color: '#2E8BEF',
+                                                color: errors.notes ? 'var(--error-color)' : '#2E8BEF',
                                             },
                                             '& .MuiOutlinedInput-root': {
                                                 color: 'var(--text-color)',

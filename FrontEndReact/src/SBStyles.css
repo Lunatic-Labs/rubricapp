@@ -113,7 +113,6 @@ h4, h5 {
   border-radius: 10px;
   border-top: 3px solid #2E8BEF ;
   background:#FFF;
-  color: #e0e0e0;
 
   @media screen and (max-width: 600px) {
     width: 100%;
@@ -380,6 +379,7 @@ body.mode .card-style {
   border-radius: 10px;
   border-top: 3px solid #2E8BEF;
   background: #2a2a2a;
+  color: #e0e0e0;
 
   @media screen and (max-width: 600px) {
     width: 100%;
