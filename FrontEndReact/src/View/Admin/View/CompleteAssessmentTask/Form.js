@@ -200,15 +200,15 @@ class Form extends Component {
         };
         
         /**
-         * 
          * @method saveUnit - Saves a unit to the server.
          * @param {number} unitIndex - The index of the unit to save.
          * @param {boolean} markDone - If the unit should be marked as done or retain the current done status.
          */
         this.saveUnit = (unitIndex, markDone) => {
+            
             const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
             const unit = this.state.units[unitIndex];
-            
+
             const cookies = new Cookies();
             const currentUserId = cookies.get("user")["user_id"];
             const currentDate = new Date();
@@ -224,14 +224,15 @@ class Form extends Component {
             if (unit.completedAssessmentTask) {
                 const catId = unit.completedAssessmentTask["completed_assessment_id"];
                 
-                promise = genericResourcePUT(//if there is a cat
+                promise = genericResourcePUT( //if there is a cat
                     `/completed_assessment?completed_assessment_id=${catId}`,
                     this,
                     JSON.stringify(newCAT),
                     { rawResponse: true }
                 );
             } else {
-                promise = genericResourcePOST(//errr since not bound to real team on adhocs
+                
+                promise = genericResourcePOST( //errr since not bound to real team on adhocs
                     `/completed_assessment?assessment_task_id=${chosenAssessmentTaskId}&${newUnit.getSubmitQueryParam()}`,
                     this,
                     JSON.stringify(newCAT),
@@ -245,7 +246,7 @@ class Form extends Component {
                     const updatedUnits = [...prevState.units];
                     
                     updatedUnits[unitIndex] = newUnit;
-    
+
                     return { 
                         displaySavedNotification: true,
                         units: updatedUnits,
@@ -255,9 +256,11 @@ class Form extends Component {
             
             // Once the CAT entry has been updated, insert the new CAT entry into the unit object
             promise.then(result => {
+                
                 const completeAssessmentEntry = result?.["content"]?.["completed_assessments"]?.[0]; // The backend returns a list of a single entry
 
                 if (completeAssessmentEntry) {
+                    
                     this.setState(
                         prevState => {
                             const updatedUnits = [...prevState.units];
@@ -268,6 +271,8 @@ class Form extends Component {
                         }
                     );
                 }
+            }).catch(error => {
+                console.error('Error:', error);
             });
             
             setTimeout(() => {
