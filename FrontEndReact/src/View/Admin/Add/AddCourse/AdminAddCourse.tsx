@@ -4,9 +4,14 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 // @ts-expect-error TS(2307): Cannot find module 'validator' or its correspondin... Remove this comment to see the full error message
 import validator from "validator";
+<<<<<<< HEAD:FrontEndReact/src/View/Admin/Add/AddCourse/AdminAddCourse.tsx
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 import { genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
 // @ts-expect-error TS(2307): Cannot find module 'universal-cookie' or its corre... Remove this comment to see the full error message
+=======
+import ErrorMessage from "../../../Error/ErrorMessage.ts";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility.ts";
+>>>>>>> 5b40833d7f48a101e02bae62763a138e667e940b:FrontEndReact/src/View/Admin/Add/AddCourse/AdminAddCourse.js
 import Cookies from "universal-cookie";
 // @ts-expect-error TS(2307): Cannot find module '@mui/icons-material/HelpOutlin... Remove this comment to see the full error message
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
