@@ -235,7 +235,7 @@ h4, h5 {
 /* Checkbox color variables */
 .checkbox-colors {
   --checkbox-bg-checked: #ADCBEE;
-  --checkbox-bg-unchecked: #3a3a3ab1;
+  --checkbox-bg-unchecked: #9a9a9add;
   --checkbox-color-checked: #2E8BEF;
 }
 
@@ -319,6 +319,11 @@ h4, h5 {
 .button-colors {
   --button-text: #2E8BEF;
   --button-hover: rgba(46, 139, 239, 0.08);
+}
+
+/* Shadow color variable */
+:root {
+  --box-shadow: #6e6e6ecb;
 }
 
 :root {
@@ -441,8 +446,15 @@ body.mode .navbar-arrow {
 
 body.mode .checkbox-colors {
   --checkbox-bg-checked: #32485d;
-  --checkbox-bg-unchecked: #D9D9D9b1;
+  --checkbox-bg-unchecked: #7a7a7a91;
   --checkbox-color-checked: #58a1f0;
+  --checkbox-border-unchecked: #ffffff;
+}
+
+body.mode .assessment-tab-colors {
+  --tab-selected-bg: #3a3a3a;
+  --tab-text: #e0e0e0;
+  --tab-border: #707070;
 }
 
 body.mode .textarea-colors {
@@ -454,7 +466,8 @@ body.mode .textarea-colors {
 
 body.mode .tab-colors {
   --tab-selected-bg: #3a3a3a;
-  --tab-text: #e0e0e0;
+  --tab-text: #a0a0a0;
+  --tab-text-selected: #3a93f3;
   --tab-border: #707070;
 }
 
@@ -470,11 +483,6 @@ body.mode .assessment-instructions-colors {
   --instructions-border: #404040;
   --instructions-textarea-bg: #1a1a1a;
   --instructions-textarea-text: #e0e0e0;
-}
-
-body.mode .tab-colors {
-  --tab-text: #a0a0a0;
-  --tab-text-selected: #3a93f3;
 }
 
 body.mode .collapsible-table-colors {
@@ -530,6 +538,11 @@ body.mode .text-box-colors {
 body.mode .button-colors {
   --button-text: #3a93f3;
   --button-hover: #3a93f314;
+}
+
+/* Dark mode shadow */
+body.mode {
+  --box-shadow: #848484b8;
 }
 
 

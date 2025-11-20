@@ -57,7 +57,7 @@ class ObservableCharacteristic extends Component {
             p: 2,
             width: "1.25rem",
             height: "1.25rem",
-            color: this.state.checked ? "var(--checkbox-color-checked) !important" : "none",
+            color: this.state.checked ? "var(--checkbox-color-checked) !important" : "var(--checkbox-border-unchecked) !important",
           }}
 
           name={this.props.observableCharacteristic}
