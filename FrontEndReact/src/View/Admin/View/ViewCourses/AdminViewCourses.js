@@ -64,22 +64,24 @@ class AdminViewCourses extends Component {
                 <Box sx={{ 
                     display: "flex",
                     justifyContent: "space-between",
-                    alignItems: "center",
+                    alignItems: "right",
                     alignSelf: "stretch"}}>
                         <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h4">
                             Courses
                         </Typography>
                 
                         { navbar.props.isAdmin &&
-                            <Button className='primary-color'
-                                variant='contained'
-                                onClick={() => {
-                                    setAddCourseTabWithCourse([], null, "AddCourse");
-                                }}
-                                aria-label='addCourse'
-                            >   
-                                Add Course
-                            </Button>
+                            <>
+                                <Button className='primary-color'
+                                    variant='contained'
+                                    onClick={() => {
+                                        setAddCourseTabWithCourse([], null, "AddCourse");
+                                    }}
+                                    aria-label='addCourse'
+                                >   
+                                    Add Course
+                                </Button>   
+                            </>
                         }
                 </Box>
                 <Box>

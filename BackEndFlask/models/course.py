@@ -1,5 +1,7 @@
 from core import db
 from models.schemas import Course
+from models.user import User
+from models.user_course import UserCourse
 from models.utility import error_log
 
 class InvalidCourseID(Exception):
@@ -53,8 +55,17 @@ def create_course(course_data):
 
 
 def load_demo_course():
+    """Load demo courses with proper error handling"""
+    from models.role import Role
+    
+    # Ensure Student role exists (role_id=5)
+    student_role = Role.query.filter_by(role_id=5).first()
+    if not student_role:
+        print("ERROR: Student role (id=5) not found. Loading roles first...")
+        from models.role import load_existing_roles
+        load_existing_roles()
+    
     list_of_course_names = [
-        # course_id: 1
         {
             "course_number": "CS3523",
             "course_name": "Operating Systems",
@@ -62,7 +73,6 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": True
         },
-        # course_id: 2
         {
             "course_number": "IT2233",
             "course_name": "User Interface Design",
@@ -70,7 +80,6 @@ def load_demo_course():
             "use_tas": False,
             "use_fixed_teams": False
         },
-        # course_id: 3
         {
             "course_number": "MA1314",
             "course_name": "Calculus",
@@ -78,7 +87,6 @@ def load_demo_course():
             "use_tas": True,
             "use_fixed_teams": False
         },
-        # course_id: 4
         {
             "course_number": "PH2414",
             "course_name": "Physics 1",
@@ -87,17 +95,29 @@ def load_demo_course():
             "use_fixed_teams": True
         },
     ]
+    
+    courses_created = 0
     for course in list_of_course_names:
-        create_course({
-            "course_number": course["course_number"],
-            "course_name": course["course_name"],
-            "year": 2025,
-            "term": course["term"],
-            "active": True,
-            "admin_id": 2,
-            "use_tas": course["use_tas"],
-            "use_fixed_teams": course["use_fixed_teams"]
-        })
+        try:
+            create_course({
+                "course_number": course["course_number"],
+                "course_name": course["course_name"],
+                "year": 2025,
+                "term": course["term"],
+                "active": True,
+                "admin_id": 2,
+                "use_tas": course["use_tas"],
+                "use_fixed_teams": course["use_fixed_teams"]
+            })
+            courses_created += 1
+            print(f"Created course: {course['course_name']}")
+        except Exception as e:
+            print(f"Failed to create course {course['course_name']}: {e}")
+            db.session.rollback()
+    
+    print(f"Successfully created {courses_created} courses")
+    return courses_created
+
 
 @error_log
 def replace_course(course_data, course_id):
