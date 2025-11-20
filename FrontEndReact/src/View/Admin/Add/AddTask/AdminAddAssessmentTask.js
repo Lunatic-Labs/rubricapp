@@ -12,6 +12,7 @@ import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
+import { MAX_PASSWORD_LENGTH } from '../../../../Constants/password.js';
 
 
 
@@ -228,11 +229,11 @@ class AdminAddAssessmentTask extends Component {
         } else {
 
             // Add password length check here at the top of the else block
-            if (password && password.length > 20) {
+            if (password && password.length > MAX_PASSWORD_LENGTH) {
                 this.setState({
                     errors: {
                         ...this.state.errors,
-                        password: 'Password cannot exceed 20 characters',
+                        password: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`,
                     },
                 });
                 return;

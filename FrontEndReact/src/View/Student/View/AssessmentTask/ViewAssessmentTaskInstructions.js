@@ -8,7 +8,6 @@ import ErrorMessage from "../../../Error/ErrorMessage.js";
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {
         super(props);
-
         this.state = {
             categories: this.props.rubrics["category_json"],
             instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
@@ -24,6 +23,7 @@ class ViewAssessmentTaskInstructions extends Component {
 
         try {
             const userId = cookies.get('user')?.user_id;
+            
             if (!userId) {
                 console.error('User ID not found in cookies');
                 this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
@@ -60,9 +60,8 @@ class ViewAssessmentTaskInstructions extends Component {
             }
 
         } catch (error) {
-            console.error('Error recording feedback view:', error);
+            console.error('Error in recording feedback view:', error);
         }
-
         this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
     }
 
