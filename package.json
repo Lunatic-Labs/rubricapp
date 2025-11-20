@@ -1,0 +1,6 @@
+{
+  "devDependencies": {
+    "eslint-config-react-app": "^7.0.1",
+    "ts-migrate": "^0.1.35"
+  }
+}
