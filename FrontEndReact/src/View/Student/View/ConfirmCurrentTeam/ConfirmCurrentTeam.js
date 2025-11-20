@@ -17,7 +17,15 @@ class ConfirmCurrentTeamTable extends Component {
 	}
 
 	handleEditClick = () => {
-		this.props.navbar.setNewTab("CodeRequired");
+    	const navbar = this.props.navbar;
+    	const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+    	const hasPassword = chosenAssessmentTask.create_team_password && chosenAssessmentTask.create_team_password.trim() !== '';
+    
+    	if (hasPassword) {
+        	navbar.setNewTab("CodeRequired");
+   		} else {
+        	navbar.setNewTab("SelectTeam");
+    	}
 	};
 
 	handleConfirmClick = () => {

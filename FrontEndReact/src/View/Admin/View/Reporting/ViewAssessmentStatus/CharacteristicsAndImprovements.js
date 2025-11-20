@@ -1,11 +1,20 @@
 import React, { useState } from 'react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
 
+// CharacteristicsAndImprovements
+// Small reusable component that renders either a "Characteristics" or
+// "Improvements" horizontal bar chart. Used in the Admin reporting view
+// to summarize observable characteristics or suggestions with percentages.
+
+// Helper to shorten long labels for the compact chart view (keeps UI tidy)
 const truncateText = (text, limit = 15) => {
   if (text.length <= limit) return text;
   return `${text.substring(0, limit)}...`;
 };
 
+// Custom tooltip used by the chart. When hovering a bar, this shows the full
+// characteristic/improvement text in a small floating card rather than the
+// truncated version shown on the Y axis.
 const CustomTooltip = ({ active, payload }) => {
   if (active && payload && payload.length) {
     const fullText = payload[0].payload[payload[0].payload.characteristic ? 'characteristic' : 'improvement'];
@@ -25,6 +34,11 @@ const CustomTooltip = ({ active, payload }) => {
 };
 
 export default function CharacteristicsAndImprovements({
+  // props:
+  // - dataType: 'characteristics' | 'improvements' determines which dataset to use
+  // - characteristicsData: object containing characteristics array and metadata
+  // - improvementsData: object containing improvements array and metadata
+  // - showSuggestions: boolean used to decide whether to show the graph for improvements
   dataType,
   characteristicsData,
   improvementsData,
@@ -35,10 +49,15 @@ export default function CharacteristicsAndImprovements({
   const openModal = () => setModalOpen(true);
   const closeModal = () => setModalOpen(false);
 
+  
+
+  // Select the appropriate array of items depending on the requested dataType
   const data = dataType === 'characteristics'
     ? characteristicsData.characteristics
     : improvementsData.improvements;
 
+  // Prepare chart-friendly data: add a truncated label for compact view and
+  // keep a full label used in the expanded modal chart.
   const processedData = data.map(item => ({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
@@ -46,6 +65,8 @@ export default function CharacteristicsAndImprovements({
   }));
   
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
+
+  
 
   return (
     <div className="container-fluid p-0 position-relative">
@@ -59,6 +80,7 @@ export default function CharacteristicsAndImprovements({
               <h6 className="text-center">
                 <u>{dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}</u>
               </h6>
+              {/* Chart container (click to open expanded modal) */}
               <div 
                 style={{ height: '210px', position: 'relative' }}
                 className="chart-container"
@@ -66,6 +88,7 @@ export default function CharacteristicsAndImprovements({
               >
                 {shouldShowGraph ? (
                   <>
+                    {/* Subtle overlay shown on hover to indicate click-to-expand */}
                     <div 
                       className="hover-overlay d-flex justify-content-center align-items-center position-absolute w-100 h-100" 
                       style={{ 
@@ -88,6 +111,7 @@ export default function CharacteristicsAndImprovements({
                         data={processedData} 
                         margin={{ top: 5, right: 20, bottom: 5, left: 20 }}
                       >
+                        {/* Horizontal axis shows percentage values */}
                         <XAxis 
                           type="number" 
                           domain={[0, 100]} 
@@ -95,6 +119,7 @@ export default function CharacteristicsAndImprovements({
                           tickFormatter={(tick) => `${tick}`} 
                           style={{ fontSize: '12px' }} 
                         />
+                        {/* Y axis displays truncated labels in the compact view */}
                         <YAxis 
                           style={{ fontSize: '12px' }} 
                           type="category" 
@@ -102,8 +127,10 @@ export default function CharacteristicsAndImprovements({
                           width={100} 
                         />
                         <CartesianGrid horizontal={false} />
+                        {/* Use custom tooltip to show full text when hovering a bar */}
                         <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(46, 139, 239, 0.1)' }} />
                         <Bar dataKey="percentage" fill="#2e8bef" className="cursor-pointer">
+                          {/* Show percentage label inside each bar */}
                           <LabelList 
                             dataKey="percentage" 
                             fill="#ffffff" 
@@ -139,14 +166,13 @@ export default function CharacteristicsAndImprovements({
         }
       `}
       </style>
-      {/* Expanded Modal */}
+      {/* Expanded Modal: shows a larger version of the chart with full labels */}
       <div className={`modal fade ${isModalOpen ? 'show' : ''}`} 
         tabIndex="-1" 
         role="dialog"
         style={{ display: isModalOpen ? 'block' : 'none', justifyContent: 'center', alignItems: 'center' }}>
       <div className="modal-dialog modal-lg" style={{ maxWidth: '80%' }}>
-        <ResponsiveContainer width="100%" height= "100%">
-          <div className="modal-content">
+          <div className="modal-content" style={{ width: '100%' }}>
             <div className="modal-header position-relative">
               <div className="w-100">
                 <h4 className="modal-title text-center m-0 fw-normal">
@@ -175,6 +201,7 @@ export default function CharacteristicsAndImprovements({
                     style={{ fontSize: '15px' }}
                     scale="linear" 
                   />
+                  {/* In the expanded view we show the full, un-truncated labels */}
                   <YAxis
                     style={{ fontSize: '15px' }}
                     type="category"
@@ -197,7 +224,6 @@ export default function CharacteristicsAndImprovements({
               </ResponsiveContainer>
             </div>
           </div>
-          </ResponsiveContainer>
         </div>
       </div>
       {isModalOpen && (

@@ -70,7 +70,7 @@ class StudentDashboard extends Component {
             filteredATs: null,
             filteredCATs: null,
             isSwitchingBack: false,  // Add spam protection flag
-            userTeamIds: null,
+            userTeamIds: [],
             fullyDoneCATS: null,
 
             // Added for rubric grouping
@@ -86,7 +86,10 @@ class StudentDashboard extends Component {
      * @param {array} teamIds - Team ids that the user is a part of.
      */
     updateUserTeamsIds = (teamIds) => {
-        this.setState({userTeamIds:teamIds});
+        this.setState({
+            userTeamIds: teamIds,
+            teamsFetched: true
+        });
     }
 
     componentDidMount() {
@@ -96,11 +99,12 @@ class StudentDashboard extends Component {
         const userRole = state.chosenCourse.role_id;
 
         genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
+
         genericResourceGET(`/assessment_task?course_id=${chosenCourse}`, "assessment_tasks", this, { dest: "assessmentTasks" });
 
-        // For a student, the role_id is not added calling a different route.
-        const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 || userRole === 6 ? "" : `&role_id=${userRole}`}`; 
-        genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" });
+        const routeToCall = `/completed_assessment?course_id=${chosenCourse}${userRole === 5 ? "" : `&role_id=${userRole}`}`; 
+        
+        genericResourceGET(routeToCall, "completed_assessments", this, { dest: "completedAssessments" })
 
         genericResourceGET(`/average?course_id=${chosenCourse}`, "average", this, { dest: "averageData" });
 
@@ -118,14 +122,17 @@ class StudentDashboard extends Component {
             rubrics,
             rubricNames,
         } = this.state;
-        // Wait until everything we need is present (including rubrics), and only compute once
-        const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
 
-        if (canFilter && (userTeamIds || roles.role_id === 4)) {
-            // Build rubric name map once
+        const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
+        if (!roles) {
+            return;
+        }
+
+        const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
+
+        if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
             const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
 
-            // Remove ATs where the ID matches one of the IDs in the CATs (ATs that are completed/locked/past due are shifted to CATs).
             let filteredCompletedAssessments = [];
             let filteredAvgData = [];
             let finishedCats = [];
@@ -133,13 +140,34 @@ class StudentDashboard extends Component {
             const CATmap = new Map();
             const AVGmap = new Map();
             const roleId = roles["role_id"];
+            
+            const getCATKey = (assessment_task_id, team_id, isTeamAssessment) => {
+                if (isTeamAssessment && team_id !== null) {
+                    return `${assessment_task_id}-${team_id}`;
+                }
+                return `${assessment_task_id}`;
+            };
+
             completedAssessments.forEach(cat => {
                 const team_id = cat.team_id;
-                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){
-                    CATmap.set(cat.assessment_task_id, cat);
-                }
-             });
+                
+                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){                    
+                    const at = assessmentTasks.find(task => task.assessment_task_id === cat.assessment_task_id);
+                    const isTeamAssessment = at?.unit_of_assessment === true;                    
 
+                    const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
+                    const existing = CATmap.get(key);
+        
+                    const shouldReplace = !existing ||
+                        (cat.done && !existing.done) ||
+                        (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
+                                
+                    if (shouldReplace) {
+                        CATmap.set(key, cat);
+                    }
+                }
+            });
+            
             averageData.forEach(cat => { AVGmap.set(cat.assessment_task_id, cat) });
 
             const currentDate = new Date();
@@ -147,7 +175,21 @@ class StudentDashboard extends Component {
             const isATPastDue = (at, today) => (new Date(at.due_date)) < today; 
 
             let filteredAssessmentTasks = assessmentTasks.filter(task => {
-                const cat =  CATmap.get(task.assessment_task_id);
+                
+                const isTeamAssessment = task.unit_of_assessment === true;
+                let relevantTeamId = null;
+                                
+                if (isTeamAssessment && userTeamIds.length > 0) {
+                    // For team assessments, find which team this user is on for this task
+                    const userCAT = completedAssessments.find(cat => 
+                        cat.assessment_task_id === task.assessment_task_id && 
+                        userTeamIds.includes(cat.team_id)
+                    );
+                    relevantTeamId = userCAT?.team_id || null;
+                }
+                
+                const catKey = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
+                const cat = CATmap.get(catKey);
                 const avg = AVGmap.get(task.assessment_task_id);
 
                 // Qualities for if an AT is viewable.
@@ -156,7 +198,7 @@ class StudentDashboard extends Component {
                 const correctUser = (roleId === task.role_id || (isStudent && task.role_id === 4));
                 const locked = task.locked;                                
                 const published = task.published;
-                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate); // short-circuit
+                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
                 const viewable = !done && correctUser && !locked && published && !pastDue;
                 const CATviewable = correctUser === false && done === false;
@@ -165,7 +207,6 @@ class StudentDashboard extends Component {
                     viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
                     filteredAvgData.push(avg);
                 }
-
                 return viewable;
             });
 
@@ -194,15 +235,15 @@ class StudentDashboard extends Component {
 
             // helper: pick the *created* timestamp for the AT (fallbacks just in case)
             const getCreatedDate = (at, cat) => {
-              const raw =
+            const raw =
                 at?.created_at ||
                 at?.created_time ||
                 at?.created ||
                 at?.initial_time || 
                 cat?.initial_time ||
                 at?.due_date;        
-              const d = raw ? new Date(raw) : new Date(0);
-              return isNaN(d) ? new Date(0) : d;
+            const d = raw ? new Date(raw) : new Date(0);
+            return isNaN(d) ? new Date(0) : d;
             };
 
             let chartDataCore = filteredCompletedAssessments
@@ -239,18 +280,18 @@ class StudentDashboard extends Component {
 
             const chartData = [];
             for (let i = 0; i < chartDataCore.length; i++) {
-              const cur = chartDataCore[i];
-              const prev = chartDataCore[i - 1];
+            const cur = chartDataCore[i];
+            const prev = chartDataCore[i - 1];
 
-              if (i > 0 && prev?.rubric_id !== cur?.rubric_id) {
+            if (i > 0 && prev?.rubric_id !== cur?.rubric_id) {
                 chartData.push({
-                  key: `spacer-${cur.rubric_id}-${i}`,
-                  name: '',
-                  avg: null,
-                  isSpacer: true,
+                key: `spacer-${cur.rubric_id}-${i}`,
+                name: '',
+                avg: null,
+                isSpacer: true,
                 });
-              }
-              chartData.push(cur);
+            }
+            chartData.push(cur);
             }
 
             this.setState({
@@ -344,7 +385,6 @@ class StudentDashboard extends Component {
 
         // Wait for information to be filtered.
         if (!roles) {
-
             return <Loading />
         }
 
@@ -450,6 +490,7 @@ class StudentDashboard extends Component {
                             role={roles}
                             filteredAssessments={filteredATs}
                             CompleteAssessments={filteredCATs}
+                            userTeamIds={this.state.userTeamIds}
                         />
                     </Box>
                 </Box>
@@ -539,7 +580,6 @@ class StudentDashboard extends Component {
                                     barCategoryGap="0%"  
                                   >
                                     <CartesianGrid vertical={false} />
-                                    {}
                                     <XAxis dataKey="name" hide />
                                     <YAxis domain={[0, 5]} ticks={[0, 1, 2, 3, 4, 5]} style={{ fontSize: '0.75rem' }} />
                                     <Tooltip
@@ -569,11 +609,10 @@ class StudentDashboard extends Component {
                                     />
                                     <Bar dataKey="avg" fill="#2e8bef">
                                       <LabelList dataKey="avg" position="top" style={{ fill: 'black' }} formatter={(v) => (typeof v === 'number' ? v.toFixed(2) : v)} />
-                                    
                                       {this.state.chartData.map((entry, index) => (
                                         <Cell key={`cell-${index}`} fill={RUBRIC_COLOR_MAP[entry.rubricName]} />
                                       ))}
-</Bar>
+                                    </Bar>
                                   </BarChart>
                                 </ResponsiveContainer>
                               ) : (
