@@ -117,14 +117,15 @@ const customTheme = createTheme({
     MuiIconButton: {
       styleOverrides: {
         root: {
-          color: 'var(--table-text)',
+          color: 'var(--table-text) !important',
         },
       },
     },
     MuiSvgIcon: {
       styleOverrides: {
         root: {
-          color: 'var(--table-text)',
+          color: 'var(--table-text) !important',
+          fill: 'var(--table-text) !important',
         },
       },
     },

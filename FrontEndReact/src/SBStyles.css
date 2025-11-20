@@ -556,11 +556,11 @@ body.mode .MuiSlider-markLabel {
 }
 
 body.mode {
-  --light_grey_ADA: #494949;
-  --light_grey_hover: #4a4a4a;
+  --light_grey_ADA: #464646;
+  --light_grey_hover: #4c4c4c;
   --export_disabled_text: #4b4b4b;
   --table-odd-row: #252525;
-  --table-odd-row-hover: #353535;
+  --table-odd-row-hover: #2c2c2c;
   --table-toolbar: #2a2a2a;
   --table-header: #2d4a6b;
   --table-text: #e0e0e0;
