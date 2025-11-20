@@ -1277,6 +1277,24 @@ def get_course_name_by_at_id(at_id:int) -> str :
 
     return course_name[0][0]
 
+def get_assessment_task_name_by_at_id(at_id: int) -> str:
+    """
+    Retrieves the assessment task name for a given assessment task ID.
+    
+    Parameters:
+    at_id: int - The assessment task ID
+    
+    Returns:
+    str - The assessment task name
+    """
+    assessment_task_name = db.session.query(
+        AssessmentTask.assessment_task_name
+    ).filter(
+        AssessmentTask.assessment_task_id == at_id
+    ).first()
+
+    return assessment_task_name[0]
+
 def get_course_total_students(course_id: int, assessment_task_id: int) -> int:
     """
     Description:
