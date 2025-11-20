@@ -265,7 +265,7 @@ def get_test_student_token(course_id):
                         test_user_course = UserCourse(
                             user_id=test_student.user_id,
                             course_id=course_id,
-                            role_id=6,  # CHANGED: Use TestStudent role
+                            role_id=5,  # CHANGED: Use TestStudent role
                             active=True
                         )
                         db.session.add(test_user_course)
@@ -293,7 +293,7 @@ def get_test_student_token(course_id):
                 test_user_course = UserCourse(
                     user_id=test_student.user_id,
                     course_id=course_id,
-                    role_id=6,  # CHANGED: Use TestStudent role
+                    role_id=5,  # CHANGED: Use TestStudent role
                     active=True
                 )
                 db.session.add(test_user_course)
@@ -322,7 +322,7 @@ def get_test_student_token(course_id):
                 "isAdmin": False,
                 "isSuperAdmin": False,
                 "has_set_password": True,
-                "role_id": 6  # ADD: Include role_id in response
+                "role_id": 5  # ADD: Include role_id in response
             },
             "access_token": access_token,
             "refresh_token": refresh_token
