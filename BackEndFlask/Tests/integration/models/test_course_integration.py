@@ -113,7 +113,8 @@ def test_get_course_returns_single_course(flask_app_mock):
 def test_get_course_returns_none_if_missing(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
-        assert get_course(99999) is None
+        with pytest.raises(ValueError):
+            get_course(99999) 
 
 
 def test_get_course_use_tas(flask_app_mock):

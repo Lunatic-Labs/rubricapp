@@ -4,6 +4,7 @@ from datetime import datetime
 from models.utility import error_log
 from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 from sqlalchemy.exc import SQLAlchemyError
+from sqlalchemy import and_, or_
 
 """
 Something to consider may be the due_date as the default
@@ -62,17 +63,25 @@ def get_assessment_tasks_by_course_id(course_id):
 def get_assessment_tasks_by_role_id(role_id):
     return AssessmentTask.query.filter_by(role_id=role_id).all()
 
+
 @error_log
 def get_assessment_tasks_by_team_id(team_id):
-    return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
-            Team.team_id == team_id
-            and
-            (
-                (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
-                or
-                (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
+    return db.session.query(AssessmentTask).join(
+        Team, AssessmentTask.course_id == Team.course_id
+    ).filter(
+        Team.team_id == team_id,
+        or_(
+            and_(
+                AssessmentTask.due_date >= Team.date_created,
+                Team.active_until.is_(None)
+            ),
+            and_(
+                AssessmentTask.due_date >= Team.date_created,
+                AssessmentTask.due_date <= Team.active_until
             )
-        ).all()
+        )
+    ).all()
+
 @error_log
 def get_assessment_task(assessment_task_id):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()

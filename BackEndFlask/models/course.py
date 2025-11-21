@@ -17,7 +17,10 @@ def get_courses():
 
 @error_log
 def get_course(course_id):
-    return Course.query.filter_by(course_id=course_id).first()
+    course = Course.query.filter_by(course_id=course_id).first()
+    if not course:
+        raise ValueError(f"Course with id {course_id} not found")
+    return course
 
 
 @error_log

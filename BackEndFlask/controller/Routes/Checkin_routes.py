@@ -27,13 +27,13 @@ CHECK_IN_REDIS_CHANNEL = "check_in_updated"
 def checkin_user():
     # needs json with AT id, user id, and team id
     try:
-        user_id = request.args.get("user_id")
-        assessment_task_id = request.args.get("assessment_task_id")
+        user_id = int(request.args.get("user_id"))
+        assessment_task_id = int(request.args.get("assessment_task_id"))
 
         new_checkin = {}
         new_checkin["user_id"] = user_id
         new_checkin["assessment_task_id"] = assessment_task_id
-        new_checkin["team_number"] = request.args.get("team_id")
+        new_checkin["team_number"] = int(request.args.get("team_id"))
 
         if already_checked_in(user_id, assessment_task_id): 
             update_checkin(new_checkin)

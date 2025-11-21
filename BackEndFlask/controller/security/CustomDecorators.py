@@ -82,7 +82,7 @@ def verify_token(refresh: bool):
     if id == decoded_id : return
     course_redis_out("\n I am: verify_token")
     course_redis_out("\nI do not match the id recived to the token id.\n")
-    course_redis_out(id, decoded_id)
+    course_redis_out(f"ID mismatch: {id} vs {decoded_id}")
     raise NoAuthorizationError("No Authorization")
 
 def admin_check(refresh: bool = False) -> Callable:

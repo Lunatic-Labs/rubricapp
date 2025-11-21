@@ -84,6 +84,7 @@ def create_one_admin_course(use_tas):
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
     teacher["owner_id"] = 1
+    teacher["role_id"] = 3
     new_teacher = create_user(teacher)
     new_course = create_course({
         "course_number": "CRS001",

@@ -8,16 +8,19 @@ from models.role import *
 from sqlalchemy import create_engine, text
 from core import config
 from dotenv import load_dotenv
+from flask_jwt_extended import create_access_token
+from models.user import create_user, get_user, get_users
+from integration.integration_helpers import sample_user
 import os
 
 load_dotenv()  
+# Disable email sending in tests
+config.rubricapp_running_locally = True
+
 
 @pytest.fixture
 def flask_app_mock():
     mock_app = app
-
-    # Disable email sending in tests
-    config.rubricapp_running_locally = True
   
     MYSQL_PASSWORD_ENC = quote_plus(os.getenv('MYSQL_PASSWORD'))
     base_uri = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{MYSQL_PASSWORD_ENC}@{os.getenv('MYSQL_HOST')}"
@@ -74,3 +77,41 @@ def flask_app_mock():
         engine.dispose()
     except Exception as e:
         print(f"Temp engine dispose warning: {e}")
+
+
+@pytest.fixture
+def client(flask_app_mock):
+    """Create a test client for making HTTP requests"""
+    return flask_app_mock.test_client()
+
+@pytest.fixture
+def sample_token(flask_app_mock):
+    """Factory to generate JWT tokens for different test users"""
+    def _create_token(email=None, user_id=None, is_admin=None):
+        with flask_app_mock.app_context():
+            if user_id:
+                user = get_user(user_id)
+            elif email:
+                user = get_users_by_email(email)
+            else:
+                user = get_users()[0]
+            
+            # Create token ONCE with all claims
+            token = create_access_token(
+                identity=str(user.user_id),  # Convert to string
+                additional_claims={
+                    "user_id": user.user_id,  # Add this - AuthCheck needs it
+                    "is_admin": is_admin if is_admin is not None else user.is_admin
+                }
+            )
+            return token
+    
+    return _create_token
+
+
+@pytest.fixture
+def auth_header():
+    """Helper function to create auth headers"""
+    def _auth_header(token):
+        return {"Authorization": f"Bearer {token}"}
+    return _auth_header

@@ -96,11 +96,13 @@ def test_update_checkin(flask_app_mock):
             payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
             task = create_assessment_task(payload)
             data = sample_checkin(task.assessment_task_id, result["user_id"], team_number=7)
-            create_checkin(data)
+            checkin = create_checkin(data)
 
             update_checkin({"assessment_task_id": task.assessment_task_id, "user_id": result["user_id"], "team_number": 1})
             updated = get_checkins_by_assessment(task.assessment_task_id)
+            assert len(updated) == 1
             assert updated[0].team_number == 1
+            assert updated[0].user_id == checkin.user_id
 
         finally:
             # Clean up
