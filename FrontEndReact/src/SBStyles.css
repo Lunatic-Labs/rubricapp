@@ -320,11 +320,6 @@ h4, h5 {
   --button-hover: rgba(46, 139, 239, 0.08);
 }
 
-/* Shadow color variable */
-:root {
-  --box-shadow: #6e6e6ecb;
-}
-
 :root {
   --text-color: #000000;
   --text-color-secondary: #646464;
@@ -540,11 +535,6 @@ body.mode .button-colors {
   --button-hover: #3a93f314;
 }
 
-/* Dark mode shadow */
-body.mode {
-  --box-shadow: #848484b8;
-}
-
 
 /* Dark mode text colors for general content */
 body.mode {
@@ -578,6 +568,13 @@ body.mode html,
 body.mode #root {
     background-color: #1a1a1a !important;
     border: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove any bottom borders that might cause white lines */
+body.mode *:last-child {
+    border-bottom: none !important;
 }
 
 /* Ensure main content area has no white borders */
@@ -587,4 +584,3 @@ body.mode .app-container {
     background-color: #1a1a1a;
     border: none !important;
 }
-

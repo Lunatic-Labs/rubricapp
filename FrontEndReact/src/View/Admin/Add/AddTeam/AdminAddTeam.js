@@ -221,18 +221,68 @@ class AdminAddTeam extends Component {
                                         name="newTeamName"
                                         variant="outlined"
                                         label="Team Name"
+                                        className="text-box-colors"
                                         fullWidth
                                         value={teamName}
                                         error={!!errors.teamName}
                                         helperText={errors.teamName}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{ mb: 3 }}
+                                        sx={{
+                                            mb: 3,
+                                            '& .MuiInputBase-root': {
+                                                backgroundColor: 'var(--textbox-bg)',
+                                                color: 'var(--textbox-text)',
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'var(--textbox-border)',
+                                            },
+                                            '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'var(--textbox-border-hover)',
+                                            },
+                                            '& .MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'var(--textbox-border-focused)',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'var(--textbox-label)',
+                                            },
+                                            '& .MuiFormHelperText-root.Mui-error': {
+                                                color: 'var(--textbox-error)',
+                                            }
+                                        }}
                                         inputProps={{ maxLength: 50 }}
                                         aria-label="userTeamNameInput"
                                     />
 
-                                    <FormControl error={!!errors.observerId} required fullWidth sx={{mb: 3}}>
+                                    <FormControl 
+                                        error={!!errors.observerId} 
+                                        required 
+                                        fullWidth 
+                                        className="dropdown-colors"
+                                        sx={{
+                                            mb: 3,
+                                            '& .MuiInputBase-root': {
+                                                backgroundColor: 'var(--dropdown-bg)',
+                                                color: 'var(--dropdown-text)',
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'var(--dropdown-border)',
+                                            },
+                                            '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'var(--dropdown-border-hover)',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'var(--dropdown-label)',
+                                            },
+                                            '& .MuiSelect-icon': {
+                                                color: 'var(--dropdown-icon)',
+                                            },
+                                            '& .Mui-disabled': {
+                                                backgroundColor: 'var(--dropdown-disabled-bg)',
+                                                color: 'var(--dropdown-disabled-text)',
+                                            }
+                                        }}
+                                    >
                                         <InputLabel className={errors.observerId ? "errorSelect" : ""} id="Observer">Observer</InputLabel>
 
                                         <Select
@@ -244,6 +294,27 @@ class AdminAddTeam extends Component {
                                             required
                                             error={!!errors.observerId}
                                             aria-label="userObserverDropDown"
+                                            className="dropdown-colors"
+                                            MenuProps={{
+                                                PaperProps: {
+                                                    className: 'dropdown-colors',
+                                                    sx: {
+                                                        backgroundColor: 'var(--dropdown-bg)',
+                                                        color: 'var(--dropdown-text)',
+                                                        '& .MuiMenuItem-root': {
+                                                            '&:hover': {
+                                                                backgroundColor: 'var(--dropdown-hover)',
+                                                            },
+                                                            '&.Mui-selected': {
+                                                                backgroundColor: 'var(--dropdown-selected)',
+                                                                '&:hover': {
+                                                                    backgroundColor: 'var(--dropdown-selected)',
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
+                                            }}
                                         >
                                             {navbar.props.isAdmin &&
                                                 <MenuItem value={userId} key={userId}>{userName}</MenuItem>
@@ -260,7 +331,13 @@ class AdminAddTeam extends Component {
                                     <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
                                         <Button
                                             id="createTeamCancel"
-                                            className=""
+                                            className="button-colors"
+                                            sx={{
+                                                color: 'var(--button-text)',
+                                                '&:hover': {
+                                                    backgroundColor: 'var(--button-hover)'
+                                                }
+                                            }}
 
                                             onClick={() => {
                                                 navbar.setState({
