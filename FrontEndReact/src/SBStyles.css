@@ -556,3 +556,31 @@ body.mode {
   --table-text: #e0e0e0;
 }
 
+
+
+/* ============================================ */
+/* FIX FOR WHITE LINE AT BOTTOM */
+/* ============================================ */
+
+/* Remove any white borders from html and body */
+body.mode,
+body.mode html,
+body.mode #root {
+    background-color: #1a1a1a !important;
+    border: none !important;
+    margin: 0;
+    padding: 0;
+}
+
+/* Remove any bottom borders that might cause white lines */
+body.mode *:last-child {
+    border-bottom: none !important;
+}
+
+/* Ensure main content area has no white borders */
+body.mode main,
+body.mode .main-content,
+body.mode .app-container {
+    background-color: #1a1a1a;
+    border: none !important;
+}
