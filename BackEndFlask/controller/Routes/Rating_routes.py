@@ -24,10 +24,10 @@ def get_ratings():
     """
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        team_id = request.args.get("team_id")  
+        team_id = int(request.args.get("team_id"))
         if team_id: 
             ratings = get_team_ratings(assessment_task_id)
-            if ratings is None:
+            if not ratings:
                 return create_good_response([], 200, "ratings")
             result = []
             for team in ratings:
@@ -43,7 +43,8 @@ def get_ratings():
                 })
         else:
             ratings = get_individual_ratings(assessment_task_id)
-            if ratings is None:
+           
+            if not ratings:
                 return create_good_response([], 200, "ratings")
 
             result = []
@@ -61,6 +62,7 @@ def get_ratings():
                     "lag_time": str(lag_time) if lag_time else None,
                     "notification_sent": rating[3]  # presence of feedback_time => show lag
                 })
+        
         return create_good_response(result, 200, "ratings")
 
     except Exception as e:
@@ -82,31 +84,24 @@ def student_view_feedback():
        Errors that the database can raise. 
     """
     try:
-        if(team_id is not None):
-            team_id = request.args.get("team_id")
-            completed_assessment_id = request.json.get("completed_assessment_id")
-            exists = check_feedback_exists(team_id, completed_assessment_id)
-            if exists:
-                return create_bad_response(f"Using server's existing data as source of truth.", "feedbacks", 409)    
-            feedback_data = request.json
+        team_id = int(request.args.get("team_id"))
+        completed_assessment_id = request.json.get("completed_assessment_id")
+        feedback_data = request.json
+        
+        exists = None
+        if team_id:
             feedback_data["team_id"] = team_id
-            string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
-            feedback_data["feedback_time"] = datetime.utcnow().strftime(string_format)
-            feedback = create_feedback(feedback_data)
-            return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
-
+            exists = check_feedback_exists(None, completed_assessment_id, team_id=team_id)
         else:
-            user_id = request.args.get("user_id")
-            completed_assessment_id = request.json.get("completed_assessment_id")
+            user_id = feedback_data["user_id"]
             exists = check_feedback_exists(user_id, completed_assessment_id)
-            if exists:
-                return create_bad_response(f"Using server's existing data as source of truth.", "feedbacks", 409)    
-            feedback_data = request.json
-            feedback_data["user_id"] = user_id
-            string_format ='%Y-%m-%dT%H:%M:%S.%fZ'
-            feedback_data["feedback_time"] = datetime.utcnow().strftime(string_format)
-            feedback = create_feedback(feedback_data)
-            return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks")
+        
+        if exists:
+            return create_bad_response(f"Using server's existing data as source of truth.", "feedbacks", 409)  
+        
+        feedback = create_feedback(feedback_data)
+         
+        return create_good_response(student_feedback_schema.dump(feedback), 200, "feedbacks") 
     except Exception as e:
         return create_bad_response(f"An error occurred creating feedback: {e}", "feedbacks", 400)
 

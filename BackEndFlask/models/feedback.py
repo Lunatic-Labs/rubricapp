@@ -57,8 +57,11 @@ def create_feedback(feedback_data):
 
 
 @error_log
-def check_feedback_exists(user_id, completed_assessment_id) -> bool: 
-    feedback = Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first() 
+def check_feedback_exists(user_id, completed_assessment_id, team_id=None) -> bool: 
+    if user_id is not None:
+        feedback = Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first() 
+    else:
+        feedback = Feedback.query.filter_by(team_id=team_id, completed_assessment_id=completed_assessment_id).first() 
 
     return feedback is not None
 

@@ -37,8 +37,8 @@ from sqlalchemy import (
     case,
     literal_column
 )
-
 import sqlalchemy
+from sqlalchemy import and_
 
 
 @error_log
@@ -1035,13 +1035,17 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
-    ).filter(
-        AssessmentTask.course_id == course_id
     ).join(
         TeamUser,
-        CompletedAssessment.team_id == TeamUser.team_id and TeamUser.user_id == user_id  
+        and_(
+            CompletedAssessment.team_id == TeamUser.team_id,
+            TeamUser.user_id == user_id
+        )
+    ).filter(
+        AssessmentTask.course_id == course_id
     )
 
+    # Individual assessments
     complete_assessments_ind = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -1060,9 +1064,10 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
-        CompletedAssessment.user_id == user_id,
+        CompletedAssessment.user_id == user_id
     )
 
+    # Ad-hoc (checkin) assessments
     complete_assessments_adhoc = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -1080,8 +1085,6 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
-    ).filter(
-        AssessmentTask.course_id == course_id
     ).join(
         Checkin,
         and_(
@@ -1089,12 +1092,16 @@ def get_completed_assessment_by_user_id(course_id, user_id):
             Checkin.user_id == user_id,
             CompletedAssessment.assessment_task_id == Checkin.assessment_task_id
         )
+    ).filter(
+        AssessmentTask.course_id == course_id
     )
 
-    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
-    final_result = complete_assessments.union(complete_assessments_adhoc)
+    # Combine all queries
+    combined_query = complete_assessments_team.union(complete_assessments_ind).union(complete_assessments_adhoc)
 
-    return final_result
+    # Execute query
+    return combined_query.all()
+
 
 @error_log
 def get_completed_assessment_by_ta_user_id(course_id, user_id):

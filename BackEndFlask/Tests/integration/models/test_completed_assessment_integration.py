@@ -471,19 +471,32 @@ def test_get_completed_assessment_by_user_id(flask_app_mock):
             rubric = sample_rubric(result["user_id"], "Critical Thinking")
             payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
-            comp = create_completed_assessment(data)
 
-            results = get_completed_assessment_by_user_id(result["course_id"], result["user_id"])
-            assert all(r.completed_assessment_id == comp.completed_assessment_id for r in results)
-            assert all(r.user_id == result["user_id"] for r in results)
+            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            comp1 = create_completed_assessment(sample_completed_assessment(
+                users[0].user_id, 
+                task.assessment_task_id,
+                c_by=result["user_id"]
+            ))
+            comp2 = create_completed_assessment(sample_completed_assessment(
+                users[1].user_id, 
+                task.assessment_task_id,
+                c_by=result["user_id"]
+            ))
 
+            results = get_completed_assessment_by_user_id(result["course_id"], users[0].user_id)
+            assert len(results) == 1
+            assert all(r.completed_assessment_id == comp1.completed_assessment_id for r in results)
+            assert all(r.user_id == users[0].user_id for r in results)
+            assert all(r.assessment_task_id == task.assessment_task_id for r in results)
         
         finally:
             # Clean up
             if result:
                 try:
-                    delete_completed_assessment_tasks(comp.completed_assessment_id)
+                    delete_completed_assessment_tasks(comp1.completed_assessment_id)
+                    delete_completed_assessment_tasks(comp2.completed_assessment_id)
+                    delete_users(users)
                     delete_one_admin_course(result)
                     delete_assessment_task(task.assessment_task_id)
                     delete_rubric_by_id(rubric.rubric_id)

@@ -358,7 +358,7 @@ def test_get_assessment_tasks_raises_exception(
         finally:
             # Clean up
             try:
-                delete_rubric_by_id(result)
+                delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
@@ -427,7 +427,7 @@ def test_add_assessment_raises_exception(
         finally:
             # Clean up
             try:
-                delete_rubric_by_id(result)
+                delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
@@ -580,7 +580,7 @@ def test_update_assessment_raises_exception(
         finally:
             # Clean up
             try:
-                delete_rubric_by_id(result)
+                delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 

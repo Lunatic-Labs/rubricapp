@@ -57,7 +57,7 @@ def test_get_observable_characteristic_per_category(flask_app_mock):
         try:
             car = sample_category()
             oc = sample_observable_characteristic(car.category_id)
-            result = get_observable_characteristic_per_category(car.category_id).all()
+            result = get_observable_characteristic_per_category(car.category_id)
             assert len(result) == 1
             assert any(o.observable_characteristic_text == "Demonstrates clear reasoning and evidence" for o in result)
 

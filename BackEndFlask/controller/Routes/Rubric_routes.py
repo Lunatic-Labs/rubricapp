@@ -52,15 +52,15 @@ def get_all_rubrics():
                 category_json[category.category_name]["index"] = index
 
                 ratings = get_ratings_by_category(category.category_id)
-
+                
                 category.ratings = ratings
 
                 observable_characteristics = get_observable_characteristic_per_category(category.category_id)
-
+                
                 one_rubric.total_observable_characteristics += ocs_schema.dump(
                     observable_characteristics
                 ).__len__()
-
+                
                 for observable_characteristic in ocs_schema.dump(observable_characteristics):
                     category_json[category.category_name]["observable_characteristics"].append(observable_characteristic['observable_characteristic_text'])
                     current_category_json["observable_characteristics"] += "0"
@@ -68,7 +68,7 @@ def get_all_rubrics():
                 category.observable_characteristics = observable_characteristics
 
                 suggestions = get_suggestions_per_category(category.category_id)
-
+                
                 one_rubric.total_suggestions += sfis_schema.dump(
                     suggestions
                 ).__len__()

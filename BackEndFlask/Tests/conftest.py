@@ -98,9 +98,9 @@ def sample_token(flask_app_mock):
             
             # Create token ONCE with all claims
             token = create_access_token(
-                identity=str(user.user_id),  # Convert to string
+                identity=str(user.user_id), 
                 additional_claims={
-                    "user_id": user.user_id,  # Add this - AuthCheck needs it
+                    "user_id": user.user_id,  
                     "is_admin": is_admin if is_admin is not None else user.is_admin
                 }
             )

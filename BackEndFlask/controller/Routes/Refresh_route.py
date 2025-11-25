@@ -12,6 +12,10 @@ import datetime
 @bad_token_check()
 @AuthCheck(refresh=True)
 def refresh_token():
+    """
+    the exception here can't be executed because the decorators won't allow 
+    the function to be run without a user id in the query parameter.
+    """
     try:
         user_id = int(request.args.get('user_id'))
         user = user_schema.dump(get_user(user_id))

@@ -33,7 +33,10 @@ def get_course_use_tas(course_id):
 
 @error_log
 def get_courses_by_admin_id(admin_id):
-    return Course.query.filter_by(admin_id=admin_id).all()
+    courses = Course.query.filter_by(admin_id=admin_id).all()
+    if not courses:
+        raise ValueError(f"Courses with admin id {admin_id} not found")
+    return courses
 
 
 @error_log

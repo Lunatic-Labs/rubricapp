@@ -27,7 +27,7 @@ def get_observable_characteristic(observable_characteristics_id):
 
 @error_log
 def get_observable_characteristic_per_category(category_id):
-    observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id)
+    observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id).all()
 
     return observable_characteristic_per_category
 

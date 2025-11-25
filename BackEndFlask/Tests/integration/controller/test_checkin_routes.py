@@ -12,21 +12,10 @@ from integration.integration_helpers import *
 from models.assessment_task import (
     create_assessment_task,
     delete_assessment_task,
-    get_assessment_task,
-    get_assessment_tasks_by_course_id,
 )
 from models.rubric import delete_rubric_by_id
 import jwt
-from models.user import create_user, delete_user, get_user
-from models.course import create_course, delete_course
-from models.user_course import create_user_course, delete_user_course
 from models.team import delete_team
-from models.completed_assessment import (
-    create_completed_assessment,
-    delete_completed_assessment_tasks,
-)
-from models.team_user import delete_team_user
-from models.queries import get_all_checkins_for_student_for_course
 
 
 def test_update_checkin_user(flask_app_mock, client, sample_token, auth_header):
@@ -159,7 +148,7 @@ def test_checkin_user_raises_exception(flask_app_mock, client, sample_token, aut
             # Clean up
             try:
                 delete_users(user)
-                delete_rubric_by_id(result)
+                delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
@@ -329,6 +318,6 @@ def test_check_in_raises_exception(flask_app_mock, client, sample_token, auth_he
             # Clean up
             try:
                 delete_users(user)
-                delete_rubric_by_id(result)
+                delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")

@@ -105,7 +105,7 @@ def check_reset_code():
             raise MissingException(["Email", "Code"])
 
         user = get_user_by_email(email)
-
+        
         if user is None or not check_password_hash(user.reset_code, code):
             raise InvalidCredentialsException
 

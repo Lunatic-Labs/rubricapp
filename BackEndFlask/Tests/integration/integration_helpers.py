@@ -16,7 +16,8 @@ def sample_completed_assessment(
         task_id, 
         team_id=None, 
         rating=None, 
-        c_by=None
+        c_by=None,
+        last_update=None
     ):
     if rating is None:
         rating = completely["5"]
@@ -28,7 +29,7 @@ def sample_completed_assessment(
         "team_id": team_id,
         "user_id": user_id,
         "initial_time": None,
-        "last_update": None,
+        "last_update": last_update,
         "rating_observable_characteristics_suggestions_data": rating,
         "done": True
     }
@@ -81,9 +82,10 @@ def sample_suggestion(category_id, suggestion_text):
     suggestion = create_suggestion(suggestion_data)
     return suggestion
 
-def sample_observable_characteristic(category_id):
-    """Helper to create a sample observable characteristic."""
-    data = (category_id, "Demonstrates clear reasoning and evidence")
+def sample_observable_characteristic(category_id, observable=None):
+    if observable is None:
+        observable = "Demonstrates clear reasoning and evidence"
+    data = (category_id, observable)
     obs = create_observable_characteristic(data)
     return obs
 
@@ -133,7 +135,7 @@ def sample_course(teacher_user_id, course_number="CRS001", use_tas=False):
         "use_fixed_teams": False
     })
 
-def sample_feedback(completed_assessment_id, user_id, team_id=None):
+def sample_feedback(completed_assessment_id, user_id=None, team_id=None):
     feedback_data = {
             "completed_assessment_id": completed_assessment_id,
             "user_id": user_id,
