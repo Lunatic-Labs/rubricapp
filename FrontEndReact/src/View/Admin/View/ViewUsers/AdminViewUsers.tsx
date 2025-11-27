@@ -1,17 +1,18 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewUsers from './ViewUsers.js';
-import AdminAddUser from '../../Add/AddUsers/AdminAddUser.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, parseRoleNames } from '../../../../utility.js';
+import ViewUsers from './ViewUsers';
+import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET, parseRoleNames } from '../../../../utility';
 import { Box } from '@mui/material';
-import Loading from '../../../Loading/Loading.js';
-import SuccessMessage from '../../../Success/SuccessMessage.js';
+import Loading from '../../../Loading/Loading';
+import SuccessMessage from '../../../Success/SuccessMessage';
 
 
 
 class AdminViewUsers extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -40,31 +41,31 @@ class AdminViewUsers extends Component {
         genericResourceGET(
             "/role?", "roles", this); 
     }
-    
+
     componentDidMount() {
         this.fetchData();
     }
 
-  componentDidUpdate(){
-    if (this.state.users && this.state.users.length !== this.state.prevUsersLength) {
-      this.setState({ prevUsersLength: this.state.users.length });
-      this.fetchData();
+    componentDidUpdate(){
+      if (this.state.users && this.state.users.length !== this.state.prevUsersLength) {
+        this.setState({ prevUsersLength: this.state.users.length });
+        this.fetchData();
+      }
     }
-  }
 
-  setErrorMessage = (errorMessage) => {
-    this.setState({errorMessage: errorMessage});
-    setTimeout(() => {
-        this.setState({errorMessage: null,});
-    }, 3000);
-  }
+    setErrorMessage = (errorMessage: any) => {
+      this.setState({errorMessage: errorMessage});
+      setTimeout(() => {
+          this.setState({errorMessage: null,});
+      }, 3000);
+    }
 
-  setSuccessMessage = (successMessage) => {
-    this.setState({successMessage: successMessage});
-    setTimeout(() => {
-        this.setState({successMessage: null,});
-    }, 3000);
-  }
+    setSuccessMessage = (successMessage: any) => {
+      this.setState({successMessage: successMessage});
+      setTimeout(() => {
+          this.setState({successMessage: null,});
+      }, 3000);
+    }
     render() {
         const {
             errorMessage,

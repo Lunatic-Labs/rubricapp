@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewCompletedAssessmentTasks from './ViewCompletedAssessmentTasks.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
+import ViewCompletedAssessmentTasks from './ViewCompletedAssessmentTasks';
+import ErrorMessage from '../../../Error/ErrorMessage';
 
 /**
  * @description Renders the complete assessment section of the website.
@@ -15,8 +16,18 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
  * 
  */
 
-class StudentCompletedAssessmentTasks extends Component {
-    constructor(props) {
+interface StudentCompletedAssessmentTasksProps {
+    navbar: any;
+    assessmentTasks: any[];
+    filteredCompleteAssessments: any[];
+}
+
+interface StudentCompletedAssessmentTasksState {
+    errorMessage: string | null;
+}
+
+class StudentCompletedAssessmentTasks extends Component<StudentCompletedAssessmentTasksProps, StudentCompletedAssessmentTasksState> {
+    constructor(props: StudentCompletedAssessmentTasksProps) {
         super(props);
 
         this.state = {
@@ -29,13 +40,12 @@ class StudentCompletedAssessmentTasks extends Component {
 
         const ATs = this.props.assessmentTasks;    
         const filteredCATs = this.props.filteredCompleteAssessments;
-        const doneCATs = filteredCATs?.filter(cat => cat.done === true) || [];
+        const doneCATs = filteredCATs?.filter((cat: any) => cat.done === true) || [];
 
         if (errorMessage) {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Teams"}
                         errorMessage={errorMessage}
                     />
                 </div>

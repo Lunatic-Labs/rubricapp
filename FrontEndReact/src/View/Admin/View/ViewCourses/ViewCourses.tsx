@@ -2,10 +2,11 @@ import React, { Component } from 'react';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import CustomDataTable from '../../../Components/CustomDataTable.js';
+import CustomDataTable from '../../../Components/CustomDataTable';
 import { Typography, Box } from "@mui/material";
 
 class ViewCourses extends Component {
+  props: any;
   render() {
     var navbar = this.props.navbar;
     var adminViewCourses = navbar.adminViewCourses;
@@ -21,7 +22,7 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"25%" } },
           setCellProps: () => { return { width:"25%" } },
-          customBodyRender: (courseName) => {
+          customBodyRender: (courseName: any) => {
             return(
               <Typography
                 sx={{fontSize: "1.6rem"}}
@@ -67,7 +68,7 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
           setCellProps: () => { return { width:"6%" } },
-          customBodyRender: (value) => {
+          customBodyRender: (value: any) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
             )
@@ -81,7 +82,7 @@ class ViewCourses extends Component {
           filter: true,
           setCellHeaderProps: () => { return { width:"7%" } },
           setCellProps: () => { return { width:"7%" } },
-          customBodyRender: (value) => {
+          customBodyRender: (value: any) => {
             return(
               <>{value===null ? "N/A": (value ? "Yes":"No")}</>
             )
@@ -165,8 +166,8 @@ class ViewCourses extends Component {
       tableBodyMaxHeight: "35vh",
     };
 
-    const activeCourses = courses ? courses.filter(course => course.active) : [];
-    const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
+    const activeCourses = courses ? courses.filter((course: any) => course.active) : [];
+    const inactiveCourses = courses ? courses.filter((course: any) => !course.active) : [];
 
     return (
       <Box aria-label="viewCourseDiv">

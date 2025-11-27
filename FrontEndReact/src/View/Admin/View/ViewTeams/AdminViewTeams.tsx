@@ -1,15 +1,16 @@
 import "bootstrap/dist/css/bootstrap.css";
 import React, { Component } from "react";
-import ErrorMessage from "../../../Error/ErrorMessage.js";
-import ViewTeams from "./ViewTeams.js";
+import ErrorMessage from "../../../Error/ErrorMessage";
+import ViewTeams from "./ViewTeams";
 import { genericResourceGET, 
-  parseUserNames } from "../../../../utility.js";
+  parseUserNames } from "../../../../utility";
 import { Box, Button, Typography } from "@mui/material";
-import Loading from "../../../Loading/Loading.js";
-import SuccessMessage from "../../../Success/SuccessMessage.js";
+import Loading from "../../../Loading/Loading";
+import SuccessMessage from "../../../Success/SuccessMessage";
 
 class AdminViewTeams extends Component {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     super(props);
     
     this.state = {
@@ -37,7 +38,7 @@ class AdminViewTeams extends Component {
     ).then(response => {
       if (!this.props.navbar.state.chosenCourse.use_fixed_teams){
         const regex = /^Team [0-9]+$/;
-        const temp = response.teams.filter(team => !regex.test(team.team_name));
+        const temp = response.teams.filter((team: any) => !regex.test(team.team_name));
         this.setState({
           filtered: true,
           teams: temp,
@@ -63,7 +64,7 @@ class AdminViewTeams extends Component {
       this.fetchData();
     }
   }
-  setErrorMessage = (message) => {
+  setErrorMessage = (message: any) => {
     this.setState({ errorMessage: message });
     // Clear error message after 3 seconds
     setTimeout(() => {
@@ -71,7 +72,7 @@ class AdminViewTeams extends Component {
     }, 3000);
   }
 
-  setSuccessMessage = (message) => {
+  setSuccessMessage = (message: any) => {
     this.setState({ successMessage: message });
     // Clear success message after 3 seconds
     setTimeout(() => {

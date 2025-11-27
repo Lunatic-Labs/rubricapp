@@ -1,16 +1,25 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomButton from '../Components/CustomButton.js';
-import CustomDataTable from '../../../Components/CustomDataTable.js';
+import CustomButton from '../Components/CustomButton';
+import CustomDataTable from '../../../Components/CustomDataTable';
 import { Grid, Alert } from '@mui/material';
-import { genericResourcePOST } from '../../../../utility.js';
+import { genericResourcePOST } from '../../../../utility';
 
+interface ConfirmCurrentTeamTableProps {
+	students: any[];
+	teamId: string | number;
+	teamName: string;
+	navbar: any;
+}
 
+interface ConfirmCurrentTeamTableState {
+	errorMessage: string | null;
+}
 
-class ConfirmCurrentTeamTable extends Component {
-	constructor(props) {
+class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, ConfirmCurrentTeamTableState> {
+	constructor(props: ConfirmCurrentTeamTableProps) {
 		super(props);
-
 		this.state = {
 			errorMessage: null
 		};
@@ -37,7 +46,7 @@ class ConfirmCurrentTeamTable extends Component {
 		
 		genericResourcePOST(
 			`/checkin?assessment_task_id=${atId}&team_id=${this.props.teamId}`, 
-			this, 
+			this as any, 
 			requestBody
 		).then((result) => {
 			if (result !== undefined && result.errorMessage === null) {
@@ -80,7 +89,7 @@ class ConfirmCurrentTeamTable extends Component {
 				name: "email",
 				label: "Email",
 				options: {
-					customBodyRender: (value) => <div style={{ textAlign: 'left' }}>{value}</div>,
+					customBodyRender: (value: any) => <div style={{ textAlign: 'left' }}>{value}</div>,
 					filter: true
 				},
 			},
@@ -107,8 +116,7 @@ class ConfirmCurrentTeamTable extends Component {
 			<div style={{ backgroundColor: '#F8F8F8' }}>
 				{fixedTeams &&
 					<>
-						<h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Your Team </h2>
-
+						<h2 style={{ paddingTop: '16px', marginLeft: '-10px', fontWeight: 'bold' }}> Your Team </h2>
 						<div className='container'
 							style={{
 								backgroundColor: '#FFF',
@@ -130,12 +138,10 @@ class ConfirmCurrentTeamTable extends Component {
 									{this.state.errorMessage}
 								</Alert>
 							)}
-
 							{this.props.teamId &&
 								<>
 									<div className='container' style={{ marginTop: '15px' }}>
 										<h3 style={{ textAlign: 'left', marginBottom: '10px', marginLeft: '-21px' }}>Confirm your team members</h3>
-
 										<h4 style={{ textAlign: 'left', marginBottom: '20px', marginLeft: '-21px', color: '#2E8BEF' }}>{this.props.teamName}</h4>
 									</div>
 
@@ -146,7 +152,6 @@ class ConfirmCurrentTeamTable extends Component {
 									/>
 								</>
 							}
-
 							{!this.props.teamId &&
 								<h2>No default team found</h2>
 							}
@@ -160,7 +165,6 @@ class ConfirmCurrentTeamTable extends Component {
 										aria-label="chooseDifferentTeamButton"
 									/>
 								</Grid>
-
 								{this.props.teamId &&
 									<Grid item>
 										<CustomButton

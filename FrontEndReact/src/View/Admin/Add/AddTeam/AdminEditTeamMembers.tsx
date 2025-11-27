@@ -2,13 +2,16 @@ import React, { Component } from "react";
 import Button from "@mui/material/Button";
 import "bootstrap/dist/css/bootstrap.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
-import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
+import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import { Checkbox, Typography } from "@mui/material";
 
 
 
 class AdminEditTeamMembers extends Component {
-    constructor(props) {
+    props: any;
+    saveUser: any;
+    sendUsers: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -18,7 +21,7 @@ class AdminEditTeamMembers extends Component {
             userEdits: {},
         };
 
-        this.saveUser = (userId) => {
+        this.saveUser = (userId: any) => {
             var userEdits = this.state.userEdits;
 
             for (var user = 0; user < this.state.users.length; user++) {
@@ -37,7 +40,7 @@ class AdminEditTeamMembers extends Component {
         };
 
         this.sendUsers = () => {
-            var users = [];
+            var users: any = [];
 
             Object.keys(this.state.userEdits).map((userId) => {
                 users = [...users, userId - "0"];
@@ -125,7 +128,7 @@ class AdminEditTeamMembers extends Component {
                   setCellProps: () => {
                       return { width: "300px" };
                   },
-                  customBodyRender: (teamName) => {
+                  customBodyRender: (teamName: any) => {
                     return teamName ? teamName : "No team assigned";
                   }
               },
@@ -163,7 +166,7 @@ class AdminEditTeamMembers extends Component {
                             className: "button-column-alignment",
                         };
                     },
-                    customBodyRender: (userId) => {
+                    customBodyRender: (userId: any) => {
                         return (
                             <Checkbox
                                 checked={this.state.userEdits[userId] !== undefined}

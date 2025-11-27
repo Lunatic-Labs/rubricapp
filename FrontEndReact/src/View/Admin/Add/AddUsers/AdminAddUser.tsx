@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import validator from "validator";
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import DropConfirmation from '../../../Components/DropConfirmation.js';
-import DeleteConfirmation from '../../../Components/DeleteConfirmation.js';
-import { genericResourceDELETE, genericResourcePOST, genericResourcePUT } from '../../../../utility.js';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import DropConfirmation from '../../../Components/DropConfirmation';
+import DeleteConfirmation from '../../../Components/DeleteConfirmation';
+import { genericResourceDELETE, genericResourcePOST, genericResourcePUT } from '../../../../utility';
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
@@ -12,7 +12,10 @@ import FormHelperText from '@mui/material/FormHelperText';
 const MAX_LMS_ID_LENGTH = 10;
 
 class AdminAddUser extends Component {
-    constructor(props) {
+    deleteUser: any;
+    props: any;
+    unenrollUser: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -108,20 +111,21 @@ class AdminAddUser extends Component {
     }
 
     // handleChange has been altered to account for the 50 character limit for first / last names
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
       
         // Special case: email with inline validation
         if (id === 'email') {
-          this.setState(prev => ({
-            email: value,
-            errors: {
-              ...prev.errors,
-              email:
-                value.trim() === '' ? 'Email cannot be empty'
-                : validator.isEmail(value) ? ''
-                : 'Please enter a valid email address',
-            },
+          this.setState((prev: any) => ({
+              email: value,
+
+              errors: {
+                ...prev.errors,
+                email:
+                  value.trim() === '' ? 'Email cannot be empty'
+                  : validator.isEmail(value) ? ''
+                  : 'Please enter a valid email address',
+              }
           }));
           return;
         }
@@ -172,11 +176,11 @@ class AdminAddUser extends Component {
         });
       };
 
-    
-    
 
 
-    handleSelect = (event) => {
+
+
+    handleSelect = (event: any) => {
         this.setState({
             role: event.target.value
         });
@@ -287,7 +291,9 @@ class AdminAddUser extends Component {
   .then((result) => {
     if (result && result.errorMessage == null) {
       // success: ensure any old email error is cleared
-      this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
+      this.setState((prev: any) => ({
+          errors: { ...prev.errors, email: '' }
+      }));
       confirmCreateResource("User");
       return;
     }
@@ -303,9 +309,11 @@ class AdminAddUser extends Component {
       const isDup = isMysqlDup || isPgDup || isSqliteDup;
 
       if (isDup) {
-        this.setState((prev) => ({
-          errors: { ...prev.errors, email: 'Email is already in use.' },
-          errorMessage: null, // suppress big red toast
+        this.setState((prev: any) => ({
+            errors: { ...prev.errors, email: 'Email is already in use.' },
+
+            // suppress big red toast
+            errorMessage: null
         }));
         return;
       }
@@ -485,7 +493,7 @@ class AdminAddUser extends Component {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
-                                       onPaste={(e) => {
+                                       onPaste={(e: any) => {
                                             const text = (e.clipboardData || window.clipboardData).getData('text') || '';
                                             if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
                                                 e.preventDefault();
@@ -523,8 +531,7 @@ class AdminAddUser extends Component {
                     </Box>
                 </Box>
             </React.Fragment>
-        )
+        );
     }
-
 }
 export default AdminAddUser;

@@ -6,7 +6,7 @@ import ReportingMainHeader from '../../../Components/ReportingHeader';
 
 
 
-export default function AdminReportTabs(props) {
+export default function AdminReportTabs(props: any) {
     var [tab, setTab] = useState('Assessment Status');
     
     var defaultAssessmentTaskId = "";
@@ -17,7 +17,7 @@ export default function AdminReportTabs(props) {
     
     var [chosenAssessmentId, setChosenAssessmentId] = useState(defaultAssessmentTaskId);
 
-    const handleChosenAssessmentIdChange = (event) => {
+    const handleChosenAssessmentIdChange = (event: any) => {
         setChosenAssessmentId(event.target.value);
     };
 

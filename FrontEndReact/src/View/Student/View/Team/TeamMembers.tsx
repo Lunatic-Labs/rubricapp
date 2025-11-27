@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
 
+interface TeamMembersProps {
+  navbar: any;
+}
 
-
-class TeamMembers extends Component{
+class TeamMembers extends Component<TeamMembersProps>{
   render() {
     var navbar = this.props.navbar;
     var users = navbar.studentTeamMembers.users;

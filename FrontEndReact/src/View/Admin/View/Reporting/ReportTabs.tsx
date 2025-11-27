@@ -4,12 +4,12 @@ import Tab from '@mui/material/Tab';
 
 
 
-export default function TabManager (props) {
+export default function TabManager (props: any) {
   var idTab = props.activeTab==="Users"? 0 : (props.activeTab==="Teams" ? 1 : (props.activeTab==="AssessmentTasks") ? 2 : 0);
 
   const [value, setValue] = React.useState(idTab);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
 

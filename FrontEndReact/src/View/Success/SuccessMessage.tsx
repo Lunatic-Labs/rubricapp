@@ -1,10 +1,13 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box, Alert } from '@mui/material';
 
+interface SuccessMessageProps {
+    successMessage: string;
+}
 
-
-class SuccessMessage extends Component {
+class SuccessMessage extends Component<SuccessMessageProps> {
     render() {
         var displayedMessage = this.props.successMessage;
 

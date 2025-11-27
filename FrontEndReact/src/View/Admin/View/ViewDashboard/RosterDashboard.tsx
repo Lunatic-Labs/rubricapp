@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import AdminViewUsers from '../ViewUsers/AdminViewUsers.js';
-import MainHeader from '../../../Components/MainHeader.js';
+import AdminViewUsers from '../ViewUsers/AdminViewUsers';
+import MainHeader from '../../../Components/MainHeader';
 import { Box, Typography, Button } from '@mui/material';
 
 
 
 class RosterDashboard extends Component {
+    props: any;
     render() {
         var navbar = this.props.navbar;
         var setAddUserTabWithUser = navbar.setAddUserTabWithUser;

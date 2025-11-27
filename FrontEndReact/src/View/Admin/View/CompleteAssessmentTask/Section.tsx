@@ -1,10 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import ObservableCharacteristic from './ObservableCharacteristic.js';
-import Suggestion from './Suggestion.js';
-import Rating from './Rating.js';
-import TextArea from './TextArea.js';
+import ObservableCharacteristic from './ObservableCharacteristic';
+import Suggestion from './Suggestion';
+import Rating from './Rating';
+import TextArea from './TextArea';
 import Box from '@mui/material/Box';
 import { FormControl } from '@mui/material';
 
@@ -26,7 +26,10 @@ import { FormControl } from '@mui/material';
  * @param {Function} props.markForAutosave - Function to mark a unit for autosaving.
  */
 class Section extends Component {
-    constructor(props) {
+    autosave: any;
+    props: any;
+    setCategoryProperty: any;
+    constructor(props: any) {
         super(props);
         
         this.autosave = () => {
@@ -38,11 +41,11 @@ class Section extends Component {
          * @param {String} propertyName - the name of the ROCS category property that is to be changed
          * @param {Any} propertyValue - the new value for the property
          */
-        this.setCategoryProperty = (propertyName, propertyValue) => {
+        this.setCategoryProperty = (propertyName: any, propertyValue: any) => {
             this.props.modifyUnitCategoryProperty(this.props.currentUnitTabIndex, this.props.category, propertyName, propertyValue);
         };
     }
-    
+
     render() {
         const assessmentTaskRubric = this.props.assessmentTaskRubric;
         const currentRocsData = this.props.currentRocsData;
@@ -61,31 +64,35 @@ class Section extends Component {
         
         const observableCharacteristics = categoryJson["observable_characteristics"];
 
-        const observableCharacteristicList = observableCharacteristics.map((observableCharacteristic, index) => {
-            return <ObservableCharacteristic
-                navbar={this.props.navbar}
-                observableCharacteristic={observableCharacteristic}
-                observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
-                setObservableCharacteristics={(newValue) => this.setCategoryProperty("observable_characteristics", newValue)}
-                id={index}
-                key={index}
-                autosave={this.autosave}
-            />;
+        const observableCharacteristicList = observableCharacteristics.map((observableCharacteristic: any, index: any) => {
+            return (
+                <ObservableCharacteristic
+                    navbar={this.props.navbar}
+                    observableCharacteristic={observableCharacteristic}
+                    observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
+                    setObservableCharacteristics={(newValue: any) => this.setCategoryProperty("observable_characteristics", newValue)}
+                    id={index}
+                    key={index}
+                    autosave={this.autosave}
+                />
+            );
         });
         
         const suggestions = categoryJson["suggestions"];
 
-        const suggestionList = suggestions.map((suggestion, index) => {
-            return <Suggestion
-                navbar={this.props.navbar}
-                suggestion={suggestion}
-                suggestions={currentRocsData[category]["suggestions"]}
-                setCategoryProperty={this.setCategoryProperty}
-                setSuggestions={(newValue) => this.setCategoryProperty("suggestions", newValue)}
-                id={index}
-                key={index}
-                autosave={this.autosave}
-            />;
+        const suggestionList = suggestions.map((suggestion: any, index: any) => {
+            return (
+                <Suggestion
+                    navbar={this.props.navbar}
+                    suggestion={suggestion}
+                    suggestions={currentRocsData[category]["suggestions"]}
+                    setCategoryProperty={this.setCategoryProperty}
+                    setSuggestions={(newValue: any) => this.setCategoryProperty("suggestions", newValue)}
+                    id={index}
+                    key={index}
+                    autosave={this.autosave}
+                />
+            );
         });
 
         const currentRating = currentRocsData[category]["rating"];
@@ -103,7 +110,7 @@ class Section extends Component {
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
                                     navbar={this.props.navbar}
-                                    setRating={(newValue) => this.setCategoryProperty("rating", newValue)}
+                                    setRating={(newValue: any) => this.setCategoryProperty("rating", newValue)}
                                     currentRating={currentRating}
                                     sliderValues={sliderValues}
                                     autosave={this.autosave}
@@ -121,7 +128,6 @@ class Section extends Component {
 
                         {this.props.navbar.state.chosenAssessmentTask["show_suggestions"] &&
                             <Box className="assessment-card" aria-label="suggestionsForImprovementSection">
-
                                 <h4>Suggestions For Improvement</h4>
 
                                 <Box className="checkbox-spacing">
@@ -134,7 +140,7 @@ class Section extends Component {
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
-                                setComments={(newValue) => this.setCategoryProperty("comments", newValue)}
+                                setComments={(newValue: any) => this.setCategoryProperty("comments", newValue)}
                                 currentValue={currentRocsData[category]["comments"]}
                                 autosave={this.autosave}
                             />
@@ -142,7 +148,7 @@ class Section extends Component {
                     </FormControl> 
                 </Box>
             </Box>
-        )
+        );
     }
 }
 

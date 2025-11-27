@@ -2,6 +2,7 @@ import React from "react";
 import Modal from "@mui/material/Modal";
 
 class ImageModal extends React.Component {
+    props: any;
     render() {
         const { isOpen, handleClose, imageUrl, imageUrl2 } = this.props;
 

@@ -4,14 +4,17 @@ import { Component } from 'react';
 
 
 class ViewTAEval extends Component {
-  constructor(props) {
+  containerEl: any;
+  externalWindow: any;
+  props: any;
+  constructor(props: any) {
     super(props);
 
     // STEP 1: create a container <div>
     this.containerEl = document.createElement('div');
     this.externalWindow = null;
   }
-  
+
   render() {
     // STEP 2: append props.children to the container <div> that isn't mounted anywhere yet
     return ReactDOM.createPortal(this.props.children, this.containerEl);

@@ -1,4 +1,5 @@
-import React, { Component } from "react"
+import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
@@ -15,7 +16,13 @@ import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utilit
  * 
  */
 
-class ViewCompletedAssessmentTasks extends Component {
+interface ViewCompletedAssessmentTasksProps {
+    navbar: any;
+    assessmentTasks: any[];
+    completedAssessments: any[];
+}
+
+class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTasksProps> {
     render() {
         const completedAssessments = this.props.completedAssessments;
         const assessmentTasks = this.props.assessmentTasks;
@@ -37,7 +44,7 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (initial_time) => {
+                    customBodyRender: (initial_time: any) => {
                         return(
                             <>
                                 {initial_time ? getHumanReadableDueDate(initial_time) : "N/A"}
@@ -53,7 +60,7 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (last_update) => {
+                    customBodyRender: (last_update: any) => {
                         return(
                             <>
                                 {last_update ? getHumanReadableDueDate(last_update) : "N/A"}
@@ -69,8 +76,8 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId) => {
-                        const chosenAT = assessmentTasks.find(at => at.assessment_task_id === atId);
+                    customBodyRender: (atId: any) => {
+                        const chosenAT = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
                         if (!chosenAT) {
                             return <>UNDEFINED</>
                         }
@@ -85,8 +92,8 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"140px" } },
                     setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId) => {
-                        const at = assessmentTasks.find(at => at.assessment_task_id === atId);
+                    customBodyRender: (atId: any) => {
+                        const at = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
                         const completer = at.role_id;
                         return <>{completer === 5 ? "Student" : "TA/Instructor"}</>;
                     }
@@ -100,7 +107,7 @@ class ViewCompletedAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
                     setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
-                    customBodyRender: (atId) => {
+                    customBodyRender: (atId: any) => {
                         return (
                             <div>
                                 <IconButton
@@ -109,7 +116,7 @@ class ViewCompletedAssessmentTasks extends Component {
                               if (completedAssessments) {
                                   singularCompletedAssessment
                                       = completedAssessments.find(
-                                          completedAssessment => completedAssessment.assessment_task_id === atId
+                                          (completedAssessment: any) => completedAssessment.assessment_task_id === atId
                                       ) ?? null;
                               }
                               genericResourcePOST(
@@ -132,7 +139,7 @@ class ViewCompletedAssessmentTasks extends Component {
                                     <VisibilityIcon sx={{color:"black"}} />
                                 </IconButton>
                             </div>
-                        )
+                        );
                     }
                 }
             },

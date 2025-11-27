@@ -5,8 +5,9 @@ import TextareaAutosize from '@mui/material/TextareaAutosize';
 
 
 class TextArea extends Component {
-    
-    handleTextareaChange = (event) => {
+    props: any;
+
+    handleTextareaChange = (event: any) => {
         if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
         const textAreaValue = event.target.value;
@@ -15,7 +16,7 @@ class TextArea extends Component {
         
         this.props.autosave();
     };
-    
+
 
     render() {
         return (

@@ -1,7 +1,7 @@
 import { Box } from "@mui/material";
 import React from "react";
 
-export default function CourseInfo (props){
+export default function CourseInfo (props: any){
     return (
         <Box sx={{display:"flex", flexDirection:"row"}}>
             <h4>{props.courseTitle}</h4>

@@ -4,11 +4,11 @@ import { Container } from '@mui/material';
 //import Button from '@mui/material/Button';
 import Grid from '@mui/material/Grid';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer } from 'recharts';
-import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown.js';
-import CategoryDropdown from '../../../../Components/CategoryDropdown.js';
-import CharacteristicsAndImprovements from './CharacteristicsAndImprovements.js';
+import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
+import CategoryDropdown from '../../../../Components/CategoryDropdown';
+import CharacteristicsAndImprovements from './CharacteristicsAndImprovements';
 
-export default function ViewAssessmentStatus(props) {
+export default function ViewAssessmentStatus(props: any) {
   // Check if rubrics and category_json exist to prevent null reference errors when no tasks are available
   var categoryList = (props.rubrics && props.rubrics.category_json) 
     ? Object.keys(props.rubrics.category_json)
@@ -23,7 +23,7 @@ export default function ViewAssessmentStatus(props) {
   // Set initial category ID, defaulting to empty string if no categories available
   var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] : '');
 
-  const handleChosenCategoryIdChange = (event) => {
+  const handleChosenCategoryIdChange = (event: any) => {
     setChosenCategoryId(event.target.value);
   };
 
@@ -95,20 +95,17 @@ export default function ViewAssessmentStatus(props) {
           var oneRating = props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['rating'];
 
           allRatings.push(oneRating);
-
           ratingsData['ratings'][oneRating]['number'] += 1; 
 
           // Iterate through each observable characteristic within the category and see whether the user checked the box
           for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'].length; j++) {
             let oc_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['observable_characteristics'][j]);
-
             characteristicsData['characteristics'][j]['number'] += oc_data;
           }
 
           // Iterate through each suggestion for improvement within the category and see whether the user checked the box
           for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'].length; j++) {
             let sugg_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId]['suggestions'][j]);
-
             improvementsData['improvements'][j]['number'] += sugg_data;
           }
         } 
@@ -119,7 +116,6 @@ export default function ViewAssessmentStatus(props) {
       // calc avg/stdev using allRatings
       if (allRatings.length > 0) {
         avg = (allRatings.reduce((a, b) => a + b) / allRatings.length).toFixed(2);
-
         stdev = (Math.sqrt(allRatings.map(x => (x - avg) ** 2).reduce((a, b) => a + b) / allRatings.length)).toFixed(2);
       }
 
@@ -217,7 +213,6 @@ export default function ViewAssessmentStatus(props) {
                     </Grid>
                   </Grid>
                 </div>
-
                 <div style={{
                   ...innerGridStyle,
                   padding: '20px',

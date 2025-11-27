@@ -2,12 +2,13 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import { Box, Typography } from "@mui/material";
-import CustomButton from "../../../Student/View/Components/CustomButton.js";
-import SendMessageModal from '../../../Components/SendMessageModal.js';
-import CustomDataTable from "../../../Components/CustomDataTable.js";
+import CustomButton from "../../../Student/View/Components/CustomButton";
+import SendMessageModal from '../../../Components/SendMessageModal';
+import CustomDataTable from "../../../Components/CustomDataTable";
 
 class ViewNotification extends Component {
-  constructor(props) {
+  props: any;
+  constructor(props: any) {
     super(props);
 
     this.state = {
@@ -25,7 +26,7 @@ class ViewNotification extends Component {
     };
   }
 
-  handleChange = (e) => {
+  handleChange = (e: any) => {
     const { id, value } = e.target;
 
     this.setState({

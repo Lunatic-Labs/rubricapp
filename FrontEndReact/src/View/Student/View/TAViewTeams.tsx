@@ -1,15 +1,29 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewTeamsTA from './ViewTeamsTA.js';
-import ErrorMessage from '../../Error/ErrorMessage.js';
-import { genericResourceGET } from '../../../utility.js';
-import Loading from '../../Loading/Loading.js';
+import ViewTeamsTA from './ViewTeamsTA';
+import ErrorMessage from '../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../utility';
+import Loading from '../../Loading/Loading';
 import Cookies from 'universal-cookie';
 
 
 
-class TAViewTeams extends Component {
-    constructor(props) {
+interface TAViewTeamsProps {
+    navbar: any;
+}
+
+interface TAViewTeamsState {
+    errorMessage: any;
+    isLoaded: boolean;
+    teams: any;
+    users: any;
+    user_id: any;
+    team_members?: any;
+}
+
+class TAViewTeams extends Component<TAViewTeamsProps, TAViewTeamsState> {
+    constructor(props: TAViewTeamsProps) {
         super(props);
 
         this.state = {
@@ -48,7 +62,6 @@ class TAViewTeams extends Component {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Teams"}
                         errorMessage={errorMessage}
                     />
                 </div>
@@ -60,18 +73,23 @@ class TAViewTeams extends Component {
             )
 
         } else {
-            var studentNames = {}
-            var teams=[]
+            var studentNames = {};
+            type Team = {
+                studentNames: string;
+                teamName: string;
+            };
+            var teams: Team[] = [];
             for (var ci = 0; ci < team_members.length; ci++) {
                 if (team_members[ci]["observer_id"] === this.state.user_id) {
-                    var team={};
-                    var names = "";  
+                    let names = "";  
                     for (var i = 0; i < team_members[ci]["users"].length; i++) {
-                        names = team_members[ci]["users"] + ", ";
+                        names += team_members[ci]["users"][i] + ", ";
                     }
                     var str_len = names.length;
-                    team["studentNames"]= names.substring(0, str_len-2);
-                    team["teamName"] = team_members[ci]["team_name"];
+                    const team: Team = {
+                        studentNames: names.substring(0, str_len-2),
+                        teamName: team_members[ci]["team_name"]
+                    };
                     teams.push(team);
                 }
             }

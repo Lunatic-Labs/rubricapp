@@ -2,8 +2,8 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import validator from "validator";
-import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { genericResourcePOST, genericResourcePUT } from "../../../../utility.js";
+import ErrorMessage from "../../../Error/ErrorMessage";
+import { genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import Cookies from "universal-cookie";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Box, Button, FormControl, Typography, Popover, TextField, Tooltip, IconButton, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
@@ -11,7 +11,8 @@ import { Box, Button, FormControl, Typography, Popover, TextField, Tooltip, Icon
 
 
 class AdminAddCourse extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -39,7 +40,7 @@ class AdminAddCourse extends Component {
         
     }
 
-    setAnchorEl = (element) => {
+    setAnchorEl = (element: any) => {
         this.setState({ anchorEl: element });
     };
 
@@ -63,15 +64,15 @@ class AdminAddCourse extends Component {
             });
         }
     }
-    handleClick = (event) => {
+    handleClick = (event: any) => {
         this.setAnchorEl(event.currentTarget);
       };
-    
+
     handleClose = () => {
         this.setAnchorEl(null);
       };
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
 
         var formatString = "";
@@ -114,13 +115,13 @@ class AdminAddCourse extends Component {
     };
 
 
-    handleSelect = (event) => {
+    handleSelect = (event: any) => {
         this.setState({
             term: event.target.value,
         });
     };
 
-    handleCheckboxChange = (e) => {
+    handleCheckboxChange = (e: any) => {
         const { id } = e.target;
 
         this.setState({

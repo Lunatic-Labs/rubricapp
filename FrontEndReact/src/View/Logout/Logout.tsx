@@ -1,13 +1,15 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
-import { apiUrl } from '../../App.js';
+import { apiUrl } from '../../App';
 import { MenuItem, ListItemIcon} from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 
+interface LogoutProps {
+    logout: () => void;
+}
 
-
-class Logout extends Component {
-    constructor(props) {
+class Logout extends Component<LogoutProps> {
+    constructor(props: LogoutProps) {
         super(props);
 
         this.handleLogout = this.handleLogout.bind(this);

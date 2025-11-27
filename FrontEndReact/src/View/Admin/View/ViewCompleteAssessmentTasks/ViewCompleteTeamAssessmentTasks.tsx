@@ -13,7 +13,8 @@ import { getHumanReadableDueDate } from "../../../../utility";
 import { Tooltip } from '@mui/material';
 
 class ViewCompleteTeamAssessmentTasks extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
     this.state = {
@@ -31,7 +32,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
         };
     }
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
 
         this.setState({
@@ -43,13 +44,13 @@ class ViewCompleteTeamAssessmentTasks extends Component {
         });
     };
 
-  handleDialog = (isSingleMessage, singleCompletedAT) => {
-    this.setState({
-        showDialog: this.state.showDialog === false ? true : false,
-        isSingleMsg: isSingleMessage,
-        compATId: singleCompletedAT,
-      });
-  }
+    handleDialog = (isSingleMessage: any, singleCompletedAT: any) => {
+      this.setState({
+          showDialog: this.state.showDialog === false ? true : false,
+          isSingleMsg: isSingleMessage,
+          compATId: singleCompletedAT,
+        });
+    }
 
     handleSendNotification = () => {
         var notes =  this.state.notes;
@@ -144,7 +145,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (team_name) => {
+                    customBodyRender: (team_name: any) => {
                         return (
                             <p variant="contained" align="left">
                                 {team_name ? team_name : "N/A"}
@@ -159,7 +160,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (completed_by) => {
+                    customBodyRender: (completed_by: any) => {
                         return (
                             <p variant="contained" align="left">
                                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
@@ -174,7 +175,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (initialTime) => { 
+                    customBodyRender: (initialTime: any) => { 
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                         
                         return (
@@ -191,7 +192,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (lastUpdate) => {
+                    customBodyRender: (lastUpdate: any) => {
                       const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";    
 
                       return (
@@ -210,7 +211,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+                    customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
                       const rowIndex = completeAssessmentTasks.rowIndex;
                       const teamId = this.props.completedAssessment[rowIndex].team_id;
                       if (completedAssessmentId) {
@@ -247,7 +248,7 @@ class ViewCompleteTeamAssessmentTasks extends Component {
           sort: false,
           setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+          customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
             const rowIndex = completeAssessmentTasks.rowIndex;
             const completedATIndex = 5;
             completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];

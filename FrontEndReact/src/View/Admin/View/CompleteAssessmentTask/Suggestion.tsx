@@ -5,7 +5,8 @@ import Box from '@mui/material/Box';
 
 
 class Suggestion extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -25,8 +26,8 @@ class Suggestion extends Component {
         const handleChange = () => {
             if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
             
-            this.setState((prevState) => ({
-                checked: !prevState.checked,
+            this.setState((prevState: any) => ({
+                checked: !prevState.checked
             }));
 
             var newData = "";
@@ -64,7 +65,6 @@ class Suggestion extends Component {
 
                     disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
                 />
-
                 <label>{this.props.suggestion}</label>
             </Box>
         );

@@ -8,7 +8,9 @@ export const StatusIndicatorState = Object.freeze({
 });
 
 class StatusIndicator extends Component {
-  constructor(props) {
+  getStatusIcon: any;
+  props: any;
+  constructor(props: any) {
     super(props);
 
     this.state = {

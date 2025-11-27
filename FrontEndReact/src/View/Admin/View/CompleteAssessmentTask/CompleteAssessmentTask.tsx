@@ -1,14 +1,14 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Form from "./Form.js";
-//import { genericResourceGET, createEventSource } from '../../../../utility.js'; Removed to unhook /checkin_events
-import { genericResourceGET} from '../../../../utility.js';
+import Form from "./Form";
+//import { genericResourceGET, createEventSource } from '../../../../utility'; Removed to unhook /checkin_events
+import { genericResourceGET} from '../../../../utility';
 import { Box } from '@mui/material';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
+import ErrorMessage from '../../../Error/ErrorMessage';
 import Cookies from 'universal-cookie';
-import Loading from '../../../Loading/Loading.js';
-import { generateUnitList, UnitType } from './unit.js';
-import { CheckinsTracker } from './cat_utils.js';
+import Loading from '../../../Loading/Loading';
+import { generateUnitList, UnitType } from './unit';
+import { CheckinsTracker } from './cat_utils';
 
 
 
@@ -45,7 +45,9 @@ import { CheckinsTracker } from './cat_utils.js';
  */ 
 
 class CompleteAssessmentTask extends Component {
-    constructor(props) {
+    currentUserId: any;
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -104,7 +106,7 @@ class CompleteAssessmentTask extends Component {
             "teams", this
         ).then((result) => {
             if (this.state.usingTeams && result.teams && result.teams.length > 0) {
-                const teamIds = result.teams.map(team => team.team_id);
+                const teamIds = result.teams.map((team: any) => team.team_id);
                 if(!adHocMode){
                     genericResourceGET(
                         `/user?team_ids=${teamIds}`,
@@ -127,16 +129,15 @@ class CompleteAssessmentTask extends Component {
                         const checkins = checkinResponse.checkin || [];
                         const users = userResponse.users || [];
 
-                        result.teams.forEach(team => {
+                        result.teams.forEach((team: any) => {
                             teamsUsersMap[team.team_id] = [];
                         });
                     
                         // Add users to teams based on their checkins
-                        checkins.forEach(checkin => {
+                        checkins.forEach((checkin: any) => {
                             const userId = checkin.user_id;
                             const teamId = checkin.team_number;
-                            const user = users.find(u => u.user_id === userId);
-                        
+                            const user = users.find((u: any) => u.user_id === userId);
                             if (user && teamsUsersMap[teamId]) {
                                 teamsUsersMap[teamId].push(user);
                             }
@@ -183,11 +184,11 @@ class CompleteAssessmentTask extends Component {
             checkinEventSource: null,
         })
     }
-    
+
     componentWillUnmount() {
         this.state.checkinEventSource?.close();
     }
-    
+
     componentDidUpdate() { 
         if (this.state.unitList === null) {
             const {
@@ -327,7 +328,6 @@ class CompleteAssessmentTask extends Component {
                 <Box className="assessment-title-spacing">
                     <Box className='d-flex flex-column justify-content-start'>
                         <h4>{assessmentTaskRubric["rubric_name"]}</h4>
-
                         <h5>{assessmentTaskRubric["rubric_description"]}</h5>
                     </Box>
                 </Box>

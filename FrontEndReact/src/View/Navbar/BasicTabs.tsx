@@ -3,7 +3,7 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-export default function BasicTabs (props){
+export default function BasicTabs (props: any){
   var navbar = props.navbar;
   var state = navbar.state;
   var activeTab = state.activeTab;
@@ -22,7 +22,7 @@ export default function BasicTabs (props){
     setValue(idTab);
   }, [activeTab, useFixedTeams, idTab]);
 
-  const handleChange = (event, newValue) => {
+  const handleChange = (event: any, newValue: any) => {
     setValue(newValue);
   };
 

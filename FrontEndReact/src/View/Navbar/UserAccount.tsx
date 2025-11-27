@@ -1,17 +1,42 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from '../Error/ErrorMessage.js';
+import ErrorMessage from '../Error/ErrorMessage';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { apiUrl } from '../../App.js';
+import { apiUrl } from '../../App';
 import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Email, AccountCircle } from '@mui/icons-material';
-import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 
-class UserAccount extends Component {
-    constructor(props) {
+interface UserAccountProps {
+    navbar?: any;
+}
+
+interface UserAccountState {
+    errorMessage: string | null;
+    isPasswordSet: boolean;
+    password: string;
+    confirmationPassword: string;
+    showPassword: boolean;
+    user: any;
+    resetPasswordDialogOpen: boolean;
+    isLoaded?: boolean;
+    errors: {
+        password: string;
+        confirmationPassword: string;
+    };
+    PasswordStrength: {
+        STRONG: string;
+        MEDIUM: string;
+        WEAK: string;
+    };
+}
+
+class UserAccount extends Component<UserAccountProps, UserAccountState> {
+    constructor(props: UserAccountProps) {
         super(props);
 
         this.state = {
@@ -43,7 +68,7 @@ class UserAccount extends Component {
     }
 
     // handleChange has been altered to account for the 20 character limit for password
-    handleChange(e) {
+    handleChange(e: any) {
         const { id, value } = e.target;
 
         // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -67,22 +92,22 @@ class UserAccount extends Component {
                 ...this.state.errors,
                 [id]: errorMessage,
             },
-        });
-    };
+        } as any);
+    }
 
-    
+
     handleResetPasswordClick() {
         this.setState({ resetPasswordDialogOpen: true });
     }
 
     handleDialogClose() {
-        this.setState({ resetPasswordDialogOpen: false, newPassword: '', confirmPassword: '' });
+        this.setState({ resetPasswordDialogOpen: false });
     }
 
 
 
 
-    getIcon(strength) {
+    getIcon(strength: any) {
         switch (strength) {
             case 'STRONG':
                 return CheckIcon;
@@ -92,9 +117,9 @@ class UserAccount extends Component {
             default:
                 return ErrorOutlineIcon;
         }
-    };
+    }
 
-    generateColors(strength) {
+    generateColors(strength: any) {
         const COLORS = {
             NEUTRAL: '#E2E2E2',
             WEAK: '#B40314',
@@ -112,7 +137,7 @@ class UserAccount extends Component {
             default:
                 return [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
         }
-    };
+    }
 
     handleTogglePasswordVisibility() {
         this.setState({
@@ -122,14 +147,14 @@ class UserAccount extends Component {
                 password: '',
             },
         });
-    };
+    }
 
-    testPasswordStrength(password) {
-        const atLeastMinimumLength = (password) => new RegExp(/(?=.{8,})/).test(password);
-        const atLeastOneUppercaseLetter = (password) => new RegExp(/(?=.*?[A-Z])/).test(password);
-        const atLeastOneLowercaseLetter = (password) => new RegExp(/(?=.*?[a-z])/).test(password);
-        const atLeastOneNumber = (password) => new RegExp(/(?=.*?[0-9])/).test(password);
-        const atLeastOneSpecialChar = (password) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
+    testPasswordStrength(password: any) {
+        const atLeastMinimumLength = (password: any) => new RegExp(/(?=.{8,})/).test(password);
+        const atLeastOneUppercaseLetter = (password: any) => new RegExp(/(?=.*?[A-Z])/).test(password);
+        const atLeastOneLowercaseLetter = (password: any) => new RegExp(/(?=.*?[a-z])/).test(password);
+        const atLeastOneNumber = (password: any) => new RegExp(/(?=.*?[0-9])/).test(password);
+        const atLeastOneSpecialChar = (password: any) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
 
         if (!password) return 'WEAK';
 
@@ -145,7 +170,7 @@ class UserAccount extends Component {
         if (points >= 3) return 'MEDIUM';
 
         return 'WEAK';
-    };
+    }
 
     // 2 new 'validation' / error handling statemetns where added below
     // both check that character length does not exceed 20

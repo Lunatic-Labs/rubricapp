@@ -1,16 +1,17 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewAssessmentTasks from './ViewAssessmentTasks.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility.js';
-import AdminAddAssessmentTask from '../../Add/AddTask/AdminAddAssessmentTask.js';
+import ViewAssessmentTasks from './ViewAssessmentTasks';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility';
+import AdminAddAssessmentTask from '../../Add/AddTask/AdminAddAssessmentTask';
 import { Box } from '@mui/material';
-import Loading from '../../../Loading/Loading.js';
+import Loading from '../../../Loading/Loading';
 
 
 
 class AdminViewAssessmentTask extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {

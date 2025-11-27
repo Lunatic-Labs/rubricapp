@@ -7,7 +7,7 @@ import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContai
 // to summarize observable characteristics or suggestions with percentages.
 
 // Helper to shorten long labels for the compact chart view (keeps UI tidy)
-const truncateText = (text, limit = 15) => {
+const truncateText = (text: any, limit = 15) => {
   if (text.length <= limit) return text;
   return `${text.substring(0, limit)}...`;
 };
@@ -15,7 +15,10 @@ const truncateText = (text, limit = 15) => {
 // Custom tooltip used by the chart. When hovering a bar, this shows the full
 // characteristic/improvement text in a small floating card rather than the
 // truncated version shown on the Y axis.
-const CustomTooltip = ({ active, payload }) => {
+const CustomTooltip = ({
+  active,
+  payload
+}: any) => {
   if (active && payload && payload.length) {
     const fullText = payload[0].payload[payload[0].payload.characteristic ? 'characteristic' : 'improvement'];
     return (
@@ -40,10 +43,11 @@ export default function CharacteristicsAndImprovements({
   // - improvementsData: object containing improvements array and metadata
   // - showSuggestions: boolean used to decide whether to show the graph for improvements
   dataType,
+
   characteristicsData,
   improvementsData,
-  showSuggestions,
-}) {
+  showSuggestions
+}: any) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => setModalOpen(true);
@@ -58,7 +62,7 @@ export default function CharacteristicsAndImprovements({
 
   // Prepare chart-friendly data: add a truncated label for compact view and
   // keep a full label used in the expanded modal chart.
-  const processedData = data.map(item => ({
+  const processedData = data.map((item: any) => ({
     ...item,
     truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
     fullLabel: item[dataType === 'characteristics' ? 'characteristic' : 'improvement']
@@ -116,7 +120,7 @@ export default function CharacteristicsAndImprovements({
                           type="number" 
                           domain={[0, 100]} 
                           ticks={[0, 25, 50, 75, 100]} 
-                          tickFormatter={(tick) => `${tick}`} 
+                          tickFormatter={(tick: any) => `${tick}`} 
                           style={{ fontSize: '12px' }} 
                         />
                         {/* Y axis displays truncated labels in the compact view */}
@@ -135,7 +139,7 @@ export default function CharacteristicsAndImprovements({
                             dataKey="percentage" 
                             fill="#ffffff" 
                             position="inside" 
-                            formatter={value => `${value}%`} 
+                            formatter={(value: any) => `${value}%`} 
                           />
                         </Bar>
                       </BarChart>
@@ -197,7 +201,7 @@ export default function CharacteristicsAndImprovements({
                     type="number"
                     domain={[0, 100]}
                     ticks={[0, 25, 50, 75, 100]}
-                    tickFormatter={(tick) => `${tick}`}
+                    tickFormatter={(tick: any) => `${tick}`}
                     style={{ fontSize: '15px' }}
                     scale="linear" 
                   />
@@ -217,7 +221,7 @@ export default function CharacteristicsAndImprovements({
                       dataKey="percentage" 
                       fill="#ffffff" 
                       position="inside"
-                      formatter={value => `${value}%`}
+                      formatter={(value: any) => `${value}%`}
                     />
                   </Bar>
                 </BarChart>

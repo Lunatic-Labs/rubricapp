@@ -1,16 +1,26 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomButton from '../Components/CustomButton.js';
+import CustomButton from '../Components/CustomButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Grid, IconButton, Button } from '@mui/material';
-import CustomDataTable from '../../../Components/CustomDataTable.js';
+import CustomDataTable from '../../../Components/CustomDataTable';
 import TextField from '@mui/material/TextField';
 
+interface BuildTeamTableProps {
+  navbar: any;
+  users: any[];
+}
 
+interface BuildTeamTableState {
+  selected: { [key: string]: boolean };
+  unselected: { [key: string]: boolean };
+}
 
-class BuildTeamTable extends Component {
-  constructor(props) {
+class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState> {
+  handleConfirmTeamClick: any;
+  constructor(props: BuildTeamTableProps) {
     super(props);
 
     this.state = {
@@ -21,11 +31,11 @@ class BuildTeamTable extends Component {
 
   // TO DO
   // handleConfirmTeamClick = () => {
-    // Add your confirm team functionality here
-    // console.log('Confirm Team Button Clicked');
+  // Add your confirm team functionality here
+  // console.log('Confirm Team Button Clicked');
   // };
 
-  handleChange = (userId) => (event) => {
+  handleChange = (userId: any) => (event: any) => {
     const { selected, unselected } = this.state;
     const targetTable = selected[userId] ? 'unselected' : 'selected';
 
@@ -70,7 +80,7 @@ class BuildTeamTable extends Component {
         options: {
           filter: false,
           align: "center",
-          customBodyRender: (userId) => {
+          customBodyRender: (userId: any) => {
             return (
               <IconButton 
                 aria-label='controlled' 
@@ -107,7 +117,7 @@ class BuildTeamTable extends Component {
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (userId) => {
+          customBodyRender: (userId: any) => {
             return (
               <IconButton 
                 aria-label='controlled' 
@@ -132,8 +142,8 @@ class BuildTeamTable extends Component {
       tableBodyMaxHeight: "21rem",
     };
 
-    const selectedStudents = students.filter((student) => this.state.selected[student["user_id"]]);
-    const unselectedStudents = students.filter((student) => !this.state.selected[student["user_id"]]);
+    const selectedStudents = students.filter((student: any) => this.state.selected[student["user_id"]]);
+    const unselectedStudents = students.filter((student: any) => !this.state.selected[student["user_id"]]);
 
     return (
       <>

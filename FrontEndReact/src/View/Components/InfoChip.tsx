@@ -3,7 +3,7 @@ import React from "react";
 
 
 
-export default function InfoChip (props){
+export default function InfoChip (props: any){
     var navbar = props.navbar;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;

@@ -3,7 +3,7 @@ import React from "react";
 import BackButtonResource from "./BackButtonResource";
 import InfoChip from "./InfoChip";
 
-export default function StudentNavigation (props){
+export default function StudentNavigation (props: any){
     var navbar = props.navbar;
     var tabSelected = props.tabSelected;
 

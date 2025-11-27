@@ -1,13 +1,25 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomButton from '../Components/CustomButton.js';
+import CustomButton from '../Components/CustomButton';
 import { FormControl, MenuItem, InputLabel, Select, Alert } from '@mui/material';
-import { genericResourceGET, genericResourcePOST } from '../../../../utility.js';
+import { genericResourceGET, genericResourcePOST } from '../../../../utility';
 
+interface SelectTeamProps {
+    navbar: any;
+}
 
+interface SelectTeamState {
+    teams: any[] | null;
+    teamID: string;
+    error: boolean;
+    errorMessage: string;
+}
 
-class SelectTeam extends Component {
-    constructor(props) {
+class SelectTeam extends Component<SelectTeamProps, SelectTeamState> {
+    checkInUser: any;
+    handleSelect: any;
+    constructor(props: SelectTeamProps) {
         super(props);
 
         this.state = {
@@ -17,7 +29,7 @@ class SelectTeam extends Component {
             errorMessage: ""
         };
 
-        this.handleSelect = (event) => {
+        this.handleSelect = (event: any) => {
             this.setState({
                 teamID: event.target.value,
                 error: false,
@@ -42,7 +54,7 @@ class SelectTeam extends Component {
 
 	        genericResourcePOST(
                 `/checkin?assessment_task_id=${atId}&team_id=${this.state.teamID}`, 
-                this, 
+                this as any, 
                 requestBody
             ).then((result) => {
                 if (result !== undefined && result.errorMessage === null) {
@@ -70,7 +82,7 @@ class SelectTeam extends Component {
             let courseID = course["course_id"];
             genericResourceGET(
                 `/team?course_id=${courseID}`, 
-                "teams", this);
+                "teams", this as any);
         }
         else {
             // using Ad Hoc teams
@@ -79,7 +91,7 @@ class SelectTeam extends Component {
 
             genericResourceGET(
                 `/nonfull-adhoc?assessment_task_id=${atId}`,
-                "teams", this
+                "teams", this as any
             )
         }
     }
@@ -107,14 +119,13 @@ class SelectTeam extends Component {
                                 paddingBottom: '20px',
                                 gap: 20,
                             }}>
-                            <h2 style={{ paddingTop: '16px', marginLeft: '-10px', bold: true }}> Choose a Team</h2>
+                            <h2 style={{ paddingTop: '16px', marginLeft: '-10px', fontWeight: 'bold' }}> Choose a Team</h2>
 
                             {this.state.error && this.state.errorMessage && (
                                 <Alert severity="error" sx={{ mb: 2, width: '100%' }}>
                                     {this.state.errorMessage}
                                 </Alert>
                             )}
-
                             <div className="d-flex flex-column">
                                 <div className="d-flex flex-row justify-content-between">
                                     <FormControl fullWidth error={this.state.error && !this.state.errorMessage}>
@@ -130,7 +141,7 @@ class SelectTeam extends Component {
                                             sx={{ mb: 3 }}
                                             aria-label="selectTeamDropdown"
                                         >
-                                            {teams.map((x) =>
+                                            {teams.map((x: any) =>
                                                 <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>

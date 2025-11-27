@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box, Alert } from '@mui/material';
 
+type ErrorMessageProps = { errorMessage: string };
 
-
-class ErrorMessage extends Component {
+class ErrorMessage extends Component<ErrorMessageProps> {
     render() {
         var displayedMessage = this.props.errorMessage;
 

@@ -1,14 +1,25 @@
 import { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ConfirmCurrentTeamTable from './ConfirmCurrentTeam.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET } from '../../../../utility.js';
-import Loading from '../../../Loading/Loading.js';
+import ConfirmCurrentTeamTable from './ConfirmCurrentTeam';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility';
+import Loading from '../../../Loading/Loading';
 
+interface StudentConfirmCurrentTeamProps {
+    navbar: any;
+    students?: any;
+    chosenCourse?: any;
+}
 
+interface StudentConfirmCurrentTeamState {
+    isLoaded: boolean | null;
+    errorMessage: string | null;
+    teamMembers: any | null;
+}
 
-class StudentConfirmCurrentTeam extends Component {
-    constructor(props) {
+class StudentConfirmCurrentTeam extends Component<StudentConfirmCurrentTeamProps, StudentConfirmCurrentTeamState> {
+    constructor(props: StudentConfirmCurrentTeamProps) {
         super(props);
 
         this.state = {
@@ -23,7 +34,7 @@ class StudentConfirmCurrentTeam extends Component {
 
         genericResourceGET(
             `/team_members?course_id=${courseId}`,
-            "team_members", this, {dest: "teamMembers"}
+            "team_members", this as any, {dest: "teamMembers"}
         );
     }
 
@@ -38,7 +49,6 @@ class StudentConfirmCurrentTeam extends Component {
             return (
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Team"}
                         errorMessage={errorMessage}
                     />
                 </div>

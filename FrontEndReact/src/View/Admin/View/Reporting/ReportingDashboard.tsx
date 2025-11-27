@@ -8,7 +8,8 @@ import Loading from '../../../Loading/Loading';
 
 
 class ReportingDashboard extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
       super(props);
   
       this.state = {
@@ -18,14 +19,14 @@ class ReportingDashboard extends Component {
           assessmentTasks: null
       }
     }
-  
+
     componentDidMount() {
       var courseID = this.props.navbar.state.chosenCourse.course_id;
 
       genericResourceGET(`/assessment_task?course_id=${courseID}`, "assessment_tasks", this, {dest: "assessmentTasks"});
       
     }
-  
+
     render() {
       const {
           errorMessage,
@@ -55,6 +56,6 @@ class ReportingDashboard extends Component {
           )
       }
     }
-  }
+}
 
   export default ReportingDashboard;

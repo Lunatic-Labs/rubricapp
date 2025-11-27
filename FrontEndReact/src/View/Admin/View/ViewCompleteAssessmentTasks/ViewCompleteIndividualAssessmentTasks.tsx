@@ -14,7 +14,8 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 
 class ViewCompleteIndividualAssessmentTasks extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
     this.state = {
@@ -37,15 +38,15 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         const completedAssessmentTasks = this.props.navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
         const initialLockStatus = {};
 
-        completedAssessmentTasks.forEach((task) => {
+        completedAssessmentTasks.forEach((task: any) => {
             initialLockStatus[task.completed_assessment_id] = task.locked;
         });
 
         this.setState({ lockStatus: initialLockStatus });
     }
 
-    handleLockToggle = (completedAssessmentId, task) => {
-        this.setState((prevState) => {
+    handleLockToggle = (completedAssessmentId: any, task: any) => {
+        this.setState((prevState: any) => {
             const newLockStatus = { ...prevState.lockStatus };
             newLockStatus[completedAssessmentId] = !newLockStatus[completedAssessmentId];
             return { lockStatus: newLockStatus };
@@ -60,9 +61,9 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleUnlockAllCats = (assessmentTaskIds) => {
-        assessmentTaskIds.forEach((completedAssessmentId) => {
-            this.setState((prevState) => {
+    handleUnlockAllCats = (assessmentTaskIds: any) => {
+        assessmentTaskIds.forEach((completedAssessmentId: any) => {
+            this.setState((prevState: any) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = false;
                 return { lockStatus: newLockStatus };
@@ -77,9 +78,9 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleLockAllCats = (assessmentTaskIds) => {
-        assessmentTaskIds.forEach((completedAssessmentId) => {
-            this.setState((prevState) => {
+    handleLockAllCats = (assessmentTaskIds: any) => {
+        assessmentTaskIds.forEach((completedAssessmentId: any) => {
+            this.setState((prevState: any) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = true;
                 return { lockStatus: newLockStatus };
@@ -95,7 +96,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
 
         this.setState({
@@ -107,68 +108,68 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-  handleDialog = (isSingleMessage, singleCompletedAT) => {
-    this.setState({
-        showDialog: this.state.showDialog === false ? true : false,
-        isSingleMsg: isSingleMessage,
-        compATId: singleCompletedAT,
-    });
-  }
-
-  handleSendNotification = () => {
-    var notes = this.state.notes;
-
-    var navbar = this.props.navbar;
-
-    var state = navbar.state;
-
-    var chosenAssessmentTask = state.chosenAssessmentTask;
-
-    var date = new Date();
-
-    if (notes.trim() === '') {
-        this.setState({
-            errors: {
-                notes: 'Notification Message cannot be empty',
-            },
-        });
-
-      return;
+    handleDialog = (isSingleMessage: any, singleCompletedAT: any) => {
+      this.setState({
+          showDialog: this.state.showDialog === false ? true : false,
+          isSingleMsg: isSingleMessage,
+          compATId: singleCompletedAT,
+      });
     }
-    if(this.state.isSingleMsg) {
-      this.setState({isSingleMsg: false}, () => {
-        genericResourcePOST(
-          `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
-          this, JSON.stringify({ 
-            "notification_message": notes,
-          }) 
+
+    handleSendNotification = () => {
+      var notes = this.state.notes;
+
+      var navbar = this.props.navbar;
+
+      var state = navbar.state;
+
+      var chosenAssessmentTask = state.chosenAssessmentTask;
+
+      var date = new Date();
+
+      if (notes.trim() === '') {
+          this.setState({
+              errors: {
+                  notes: 'Notification Message cannot be empty',
+              },
+          });
+
+        return;
+      }
+      if(this.state.isSingleMsg) {
+        this.setState({isSingleMsg: false}, () => {
+          genericResourcePOST(
+            `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
+            this, JSON.stringify({ 
+              "notification_message": notes,
+            }) 
+          ).then((result) => {
+            if(result !== undefined && result.errorMessage === null){
+              this.setState({ 
+                showDialog: false, 
+                notificationSent: date, 
+              });
+            }
+          });
+        });
+      } else {
+        genericResourcePUT(
+          `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
+          this, JSON.stringify({
+            "notification_message": notes, 
+            "date" : date
+          })
         ).then((result) => {
-          if(result !== undefined && result.errorMessage === null){
-            this.setState({ 
-              showDialog: false, 
-              notificationSent: date, 
+          if (result !== undefined && result.errorMessage === null) {
+            this.setState({
+              showDialog: false,
+              notificationSent: date,
             });
           }
         });
-      });
-    } else {
-      genericResourcePUT(
-        `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${false}`,
-        this, JSON.stringify({
-          "notification_message": notes, 
-          "date" : date
-        })
-      ).then((result) => {
-        if (result !== undefined && result.errorMessage === null) {
-          this.setState({
-            showDialog: false,
-            notificationSent: date,
-          });
-        }
-      });
-    }
+      }
 
-  };
+    };
 
     render() {
         var navbar = this.props.navbar;
@@ -185,7 +186,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
         var chosenCourse = state.chosenCourse;
 
-        var catIds = completedAssessmentTasks.map((task) => task.completed_assessment_id);
+        var catIds = completedAssessmentTasks.map((task: any) => task.completed_assessment_id);
 
         const columns = [
             {
@@ -209,7 +210,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (last_name) => {
+                    customBodyRender: (last_name: any) => {
                         return (
                             <p variant="contained" align="left">
                                 {last_name ? last_name : "N/A"}
@@ -224,7 +225,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (completed_by) => {
+                    customBodyRender: (completed_by: any) => {
                         return (
                             <p variant="contained" align="left">
                                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
@@ -239,7 +240,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (initialTime) => {
+                    customBodyRender: (initialTime: any) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
 
                         return (
@@ -256,7 +257,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 options: {
                     filter: true,
 
-                    customBodyRender: (lastUpdate) => {
+                    customBodyRender: (lastUpdate: any) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                       
                         return(
@@ -272,8 +273,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                 label: "Lock",
                 options: {
                     filter: true,
-                    customBodyRender: (completedAssessmentId) => {
-                        const task = completedAssessmentTasks.find((task) => task["completed_assessment_id"] === completedAssessmentId);
+                    customBodyRender: (completedAssessmentId: any) => {
+                        const task = completedAssessmentTasks.find((task: any) => task["completed_assessment_id"] === completedAssessmentId);
                         const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
 
                             return (
@@ -304,7 +305,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+                    customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
                         const rowIndex = completeAssessmentTasks.rowIndex;
                         const userId = this.props.completedAssessment[rowIndex].user_id;
                         if (completedAssessmentId) {
@@ -341,7 +342,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           sort: false,
           setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+          customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
             const rowIndex = completeAssessmentTasks.rowIndex;
             const completedATIndex = 5;
             completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];

@@ -1,14 +1,25 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewTeamMembers from './TeamMembers.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET } from '../../../../utility.js';
-import Loading from '../../../Loading/Loading.js';
+import ViewTeamMembers from './TeamMembers';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility';
+import Loading from '../../../Loading/Loading';
 
+interface StudentTeamMembersProps {
+    navbar: any;
+    team?: any;
+    chosenCourse?: any;
+}
 
+interface StudentTeamMembersState {
+    isLoaded: boolean | null;
+    errorMessage: string | null;
+    users: any[] | null;
+}
 
-class StudentTeamMembers extends Component {
-    constructor(props) {
+class StudentTeamMembers extends Component<StudentTeamMembersProps, StudentTeamMembersState> {
+    constructor(props: StudentTeamMembersProps) {
         super(props);
 
         this.state = {
@@ -26,7 +37,7 @@ class StudentTeamMembers extends Component {
 
         genericResourceGET(
             `/user?course_id=${courseID}&team_id=${team["team_id"]}&assign=${true}`,
-            "users", this
+            "users", this as any
         );
     }
 
@@ -45,7 +56,6 @@ class StudentTeamMembers extends Component {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Team Members"}
                         errorMessage={errorMessage}
                     />
                 </div>
@@ -64,7 +74,6 @@ class StudentTeamMembers extends Component {
                     <ViewTeamMembers
                         navbar={navbar}
                     />
-
                     <div className='d-flex justify-content-end'>
                         <button
                             className='mt-3 btn btn-primary'

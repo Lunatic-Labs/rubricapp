@@ -1,12 +1,13 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories, } from "../../../../utility.js";
+import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories, } from "../../../../utility";
 import AddCustomRubric from "./AddCustomRubric";
-import Loading from "../../../Loading/Loading.js";
+import Loading from "../../../Loading/Loading";
 
 class AdminAddCustomRubric extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -22,13 +23,13 @@ class AdminAddCustomRubric extends Component {
         genericResourceGET(`/category`, "categories", this);
         };
 
-        setErrorMessage = (errorMessage) => {
-        this.setState({ errorMessage });
-        // Clear the banner after 3s, same feel as AdminViewUsers
-        setTimeout(() => {
-            this.setState({ errorMessage: null });
-        }, 1000);
-    };
+    setErrorMessage = (errorMessage: any) => {
+    this.setState({ errorMessage });
+    // Clear the banner after 3s, same feel as AdminViewUsers
+    setTimeout(() => {
+        this.setState({ errorMessage: null });
+    }, 1000);
+};
 
 
     componentDidMount() {

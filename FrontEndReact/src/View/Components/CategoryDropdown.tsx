@@ -6,12 +6,12 @@ import Select from '@mui/material/Select';
 
 
 
-export default function CategoryDropdown(props) {
+export default function CategoryDropdown(props: any) {
   var categoryList = [];
 
   // Check if categories exists and is not empty to prevent null reference errors
   if (props.categories && props.categories.length > 0) {
-    props.categories.map((category) => {
+    props.categories.map((category: any) => {
 
     return categoryList.push(
       <MenuItem 
@@ -59,7 +59,7 @@ export default function CategoryDropdown(props) {
           value={props.chosenCategoryId}
           onChange={props.setChosenCategoryId}
           disabled={props.disabled}
-          autoWidth={"false"}
+          autoWidth={false}
           label="Category"
           sx={{
           // This handles the text overflow

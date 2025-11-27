@@ -1,15 +1,16 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewTeamMembers from './ViewTeamMembers.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, parseUserNames } from '../../../../utility.js';
+import ViewTeamMembers from './ViewTeamMembers';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET, parseUserNames } from '../../../../utility';
 import { Button, Typography } from '@mui/material';
-import Loading from '../../../Loading/Loading.js';
+import Loading from '../../../Loading/Loading';
 
 
 
 class AdminViewTeamMembers extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -18,7 +19,7 @@ class AdminViewTeamMembers extends Component {
             users: []
         }
     }
-    
+
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;
@@ -68,7 +69,6 @@ class AdminViewTeamMembers extends Component {
                         <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="adminViewTeamMembersTitle"> 
                             {team["team_name"]}
                         </Typography>
-
                         <div className='d-flex justify-content-end gap-3'>
                             <Button
                                 className='mt-3 mb-3 btn btn-primary'

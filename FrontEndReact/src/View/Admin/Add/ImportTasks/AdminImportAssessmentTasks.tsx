@@ -1,16 +1,19 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-import CourseDropdown from './CourseDropdown.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourcePOST } from '../../../../utility.js';
+import CourseDropdown from './CourseDropdown';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourcePOST } from '../../../../utility';
 import { Box, Typography, Button, FormControl } from '@mui/material';
 import FormHelperText from '@mui/material/FormHelperText';
 
 
 
 class AdminImportAssessmentTask extends Component {
-    constructor(props) {
+    handleImportTasks: any;
+    props: any;
+    setSelectedCourse: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -24,7 +27,7 @@ class AdminImportAssessmentTask extends Component {
             }
         }
 
-        this.setSelectedCourse = (newSelectedCourse) => {
+        this.setSelectedCourse = (newSelectedCourse: any) => {
             this.setState({
                 selectedCourse: newSelectedCourse
             });

@@ -5,6 +5,7 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 
 
 class ViewTeamMembers extends Component{
+  props: any;
   render() {
     var navbar = this.props.navbar;
     var users = navbar.adminViewTeamMembers.users;

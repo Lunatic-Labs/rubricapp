@@ -5,12 +5,12 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 
-export default function AssessmentTaskDropdown(props) {
+export default function AssessmentTaskDropdown(props: any) {
   var assessmentTaskList = [];
 
   // Check if assessmentTasks exists and is not empty to prevent null reference errors
   if (props.assessmentTasks && props.assessmentTasks.length > 0) {
-    props.assessmentTasks.map((assessmentTask) => {
+    props.assessmentTasks.map((assessmentTask: any) => {
 
     const taskName = assessmentTask["assessment_task_name"];
 
@@ -65,7 +65,7 @@ export default function AssessmentTaskDropdown(props) {
         value={props.chosenAssessmentId || ""}
         onChange={props.setChosenAssessmentId}
         disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
-        autoWidth={"false"}
+        autoWidth={false}
         label={(!props.assessmentTasks || props.assessmentTasks.length === 0) 
           ? "No assessment tasks available" 
           : "Assessment Task"}

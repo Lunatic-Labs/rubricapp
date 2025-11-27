@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewAssessmentTasks from './ViewAssessmentTasks.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET, parseRubricNames } from '../../../../utility.js';
-import Loading from '../../../Loading/Loading.js';
+import ViewAssessmentTasks from './ViewAssessmentTasks';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET, parseRubricNames } from '../../../../utility';
+import Loading from '../../../Loading/Loading';
 
 /**
  * @description Renders the my assessment section of the website.
@@ -20,8 +21,24 @@ import Loading from '../../../Loading/Loading.js';
  * 
  */
 
-class StudentViewAssessmentTask extends Component {
-    constructor(props) {
+interface StudentViewAssessmentTaskProps {
+    navbar: any;
+    role: any;
+    filteredAssessments: any[];
+    CompleteAssessments: any[];
+    userTeamIds: any[];
+}
+
+interface StudentViewAssessmentTaskState {
+    errorMessage: string | null;
+    isLoaded: boolean;
+    checkin: any[] | null;
+    rubrics: any[] | null;
+    counts?: any;
+}
+
+class StudentViewAssessmentTask extends Component<StudentViewAssessmentTaskProps, StudentViewAssessmentTaskState> {
+    constructor(props: StudentViewAssessmentTaskProps) {
         super(props);
 
         this.state = {
@@ -39,11 +56,11 @@ class StudentViewAssessmentTask extends Component {
 
         var chosenCourseID = state.chosenCourse["course_id"];
 
-        genericResourceGET(`/checkin?course_id=${chosenCourseID}`,"checkin", this);
+        genericResourceGET(`/checkin?course_id=${chosenCourseID}`,"checkin", this as any);
 
-        genericResourceGET(`/rubric?all=${true}`, "rubrics", this);
+        genericResourceGET(`/rubric?all=${true}`, "rubrics", this as any);
 
-        genericResourceGET(`/course?course_id=${chosenCourseID}`, "course_count", this, {dest: "counts"});
+        genericResourceGET(`/course?course_id=${chosenCourseID}`, "course_count", this as any, {dest: "counts"});
     }
 
     render() {
@@ -66,7 +83,6 @@ class StudentViewAssessmentTask extends Component {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Assessment Task"}
                         errorMessage={errorMessage}
                     />
                 </div>
@@ -85,7 +101,7 @@ class StudentViewAssessmentTask extends Component {
                         assessmentTasks={filteredATs}
                         completedAssessments={filteredCATs}
                         checkin={checkin}
-                        rubricNames={rubrics ? parseRubricNames(rubrics) : []}
+                        rubricNames={rubrics ? parseRubricNames(rubrics) as any : []}
                         counts={counts}
                         userTeamIds={this.props.userTeamIds}
                     />

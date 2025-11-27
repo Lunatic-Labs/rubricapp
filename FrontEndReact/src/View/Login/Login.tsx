@@ -1,20 +1,43 @@
 import React, { Component } from 'react';
-import ErrorMessage from '../Error/ErrorMessage.js';
+import ErrorMessage from '../Error/ErrorMessage';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
-import AppState from '../Navbar/AppState.js';
-import SetNewPassword from './SetNewPassword.js';
-import ValidateReset from './ValidateReset.js';
-import { apiUrl } from '../../App.js';
+import AppState from '../Navbar/AppState';
+import SetNewPassword from './SetNewPassword';
+import ValidateReset from './ValidateReset';
+import { apiUrl } from '../../App';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import Loading from '../Loading/Loading.js';
-import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
+import Loading from '../Loading/Loading';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 
+interface LoginState {
+    isLoaded: any;
+    errorMessage: any;
+    loggedIn: any;
+    hasSetPassword: any;
+    resettingPassword: any;
+    isRefreshing: boolean;
+    email: string;
+    password: string;
+    showPassword: boolean;
+    errors: {
+        email: string;
+        password: string;
+    };
+}
 
-
-class Login extends Component {
-    constructor(props) {
+class Login extends Component<{}, LoginState> {
+    cookies: any;
+    handleChange: any;
+    handleNewAccessToken: any;
+    handleTogglePasswordVisibility: any;
+    keyPress: any;
+    login: any;
+    logout: any;
+    resetPassword: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -35,7 +58,7 @@ class Login extends Component {
         }
 
         // handleChange has been altered to account for the 20 character limit for password
-        this.handleChange = (e) => {
+        this.handleChange = (e: any) => {
             const { id, value } = e.target;
 
             // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -57,7 +80,7 @@ class Login extends Component {
                     ...this.state.errors,
                     [id]: errorMessage,
                 },
-            });
+            } as any);
         };
 
         this.handleTogglePasswordVisibility = () => {
@@ -222,7 +245,7 @@ class Login extends Component {
             });
         }
 
-        this.keyPress = (e) => {
+        this.keyPress = (e: any) => {
             if (e.key === 'Enter') {
                 this.login();
             };

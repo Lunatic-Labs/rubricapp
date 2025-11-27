@@ -1,14 +1,23 @@
 import React, { Component } from "react";
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from "../../../Error/ErrorMessage.js";
-import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions.js";
-import { genericResourceGET } from "../../../../utility.js";
-import Loading from "../../../Loading/Loading.js";
+import ErrorMessage from "../../../Error/ErrorMessage";
+import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
+import { genericResourceGET } from "../../../../utility";
+import Loading from "../../../Loading/Loading";
 
+interface StudentViewAssessmentTaskInstructionsProps {
+  navbar: any;
+}
 
+interface StudentViewAssessmentTaskInstructionsState {
+  errorMessage: string | null;
+  isLoaded: boolean;
+  rubrics: any | null;
+}
 
-class StudentViewAssessmentTaskInstructions extends Component {
-  constructor(props) {
+class StudentViewAssessmentTaskInstructions extends Component<StudentViewAssessmentTaskInstructionsProps, StudentViewAssessmentTaskInstructionsState> {
+  constructor(props: StudentViewAssessmentTaskInstructionsProps) {
     super(props);
 
     this.state = {
@@ -23,7 +32,7 @@ class StudentViewAssessmentTaskInstructions extends Component {
 
     genericResourceGET(
       `/rubric?rubric_id=${state.chosenAssessmentTask["rubric_id"]}`,
-      "rubrics", this, {dest: "rubrics"}
+      "rubrics", this as any, {dest: "rubrics"}
     )
   }
 
@@ -38,7 +47,6 @@ class StudentViewAssessmentTaskInstructions extends Component {
       return(
         <div className="container">
           <ErrorMessage
-            fetchedResource={"Instructions"}
             errorMessage={errorMessage}
           />
         </div>

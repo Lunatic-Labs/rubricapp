@@ -4,11 +4,12 @@ import IconButton from "@mui/material/IconButton";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
-import CustomDataTable from "../../../Components/CustomDataTable.js";
-import { genericResourceDELETE } from "../../../../utility.js";
+import CustomDataTable from "../../../Components/CustomDataTable";
+import { genericResourceDELETE } from "../../../../utility";
 
 class ViewTeams extends Component {
-  async deleteTeam(teamId) {
+  props: any;
+  async deleteTeam(teamId: any) {
     try {
       const result = await genericResourceDELETE(`/team?team_id=${teamId}`, this, {
         dest: "teams",
@@ -65,7 +66,7 @@ class ViewTeams extends Component {
           setCellProps: () => {
             return { width: "30%" };
           },
-          customBodyRender: (observerId) => {
+          customBodyRender: (observerId: any) => {
             return observerId === chosenCourse["admin_id"] ? (
               <p> Admin </p>
             ) : (
@@ -85,7 +86,7 @@ class ViewTeams extends Component {
           setCellProps: () => {
             return { width: "20%" };
           },
-          customBodyRender: (date) => {
+          customBodyRender: (date: any) => {
             var year = "";
             var month = "";
             var day = "";
@@ -105,7 +106,6 @@ class ViewTeams extends Component {
                 }
               }
             }
-
             return <p>{month + "/" + day + "/" + year}</p>;
           },
         },
@@ -130,7 +130,7 @@ class ViewTeams extends Component {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId) => {
+          customBodyRender: (teamId: any) => {
             return (
               <IconButton
                 align="center"
@@ -165,7 +165,7 @@ class ViewTeams extends Component {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId) => {
+          customBodyRender: (teamId: any) => {
             return (
               <IconButton
                 align="center"
@@ -204,7 +204,7 @@ class ViewTeams extends Component {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId) => {
+          customBodyRender: (teamId: any) => {
             return (
               <IconButton
                 align="center"

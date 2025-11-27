@@ -2,19 +2,23 @@ import React from "react";
 import Cookies from "universal-cookie";
 import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import CustomButton from "./Components/CustomButton.js";
-import ErrorMessage from "../../../Error/ErrorMessage.js";
-import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericResourceDELETE } from "../../../../utility.js";
-import CustomDataTable from "../../../Components/CustomDataTable.js";
-import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
-import ImageModal from "./CustomRubricModal.js";
+import CustomButton from "./Components/CustomButton";
+import ErrorMessage from "../../../Error/ErrorMessage";
+import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericResourceDELETE } from "../../../../utility";
+import CustomDataTable from "../../../Components/CustomDataTable";
+import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable";
+import ImageModal from "./CustomRubricModal";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
-import Loading from '../../../Loading/Loading.js';
+import Loading from '../../../Loading/Loading';
 import FormHelperText from '@mui/material/FormHelperText';
 
 class AddCustomRubric extends React.Component {
-    constructor(props) {
+    handleCreateRubric: any;
+    handleDeleteRubric: any;
+    props: any;
+    toggleHelp: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -40,7 +44,7 @@ class AddCustomRubric extends React.Component {
             });
         };
 
-        this.handleCreateRubric = (pickedCategories) => {
+        this.handleCreateRubric = (pickedCategories: any) => {
             var navbar = this.props.navbar;
             var rubricId = navbar.rubricId;
             var categoryIds = [];
@@ -115,7 +119,7 @@ class AddCustomRubric extends React.Component {
             });
         };
 
-        this.handleDeleteRubric = async (rubricId) => {
+        this.handleDeleteRubric = async (rubricId: any) => {
             try {
                 const result = await genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
                 if (result && result.errorMessage) {
@@ -146,15 +150,15 @@ class AddCustomRubric extends React.Component {
 
     }
 
-    handleCategorySelect = (categoryId, isSelected) => {
+    handleCategorySelect = (categoryId: any, isSelected: any) => {
         var allCategories = this.state.allCategories;
         var selectedCategories = this.state.categories;
 
         if (isSelected) {
-            const correctCategory = allCategories.find(category => category.category_id === categoryId)
+            const correctCategory = allCategories.find((category: any) => category.category_id === categoryId)
             selectedCategories.push(correctCategory);
         } else {
-            selectedCategories = selectedCategories.filter(category => category.category_id !== categoryId);
+            selectedCategories = selectedCategories.filter((category: any) => category.category_id !== categoryId);
         }
         this.setState({
             categories: selectedCategories
@@ -176,7 +180,7 @@ class AddCustomRubric extends React.Component {
             genericResourceGET(`/rubric?rubric_id=${rubricId}`, "rubrics", this);
         }
     }
-    
+
     render() {
         const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics } = this.state;
 
@@ -187,7 +191,7 @@ class AddCustomRubric extends React.Component {
                 options: {
                     filter: true,
                     align: "center",
-                    customBodyRender: (categoryName) => {
+                    customBodyRender: (categoryName: any) => {
                         return <p>{categoryName}</p>;
                     },
                 },
@@ -197,7 +201,7 @@ class AddCustomRubric extends React.Component {
                 label: "Rubric",
                 options: {
                     align: "center",
-                    customBodyRender: (rubricName) => {
+                    customBodyRender: (rubricName: any) => {
                         return <p>{rubricName}</p>;
                     },
                 },
@@ -236,8 +240,8 @@ class AddCustomRubric extends React.Component {
             }
         }
 
-        var pickedCategories = [];
-        categories.forEach((category) => {
+        var pickedCategories: any = [];
+        categories.forEach((category: any) => {
             if (category) {
                 for (let i = 0; i < allCategories.length; i++) {
                     if (allCategories[i]["category_id"] === category["category_id"]) {                        
@@ -252,7 +256,6 @@ class AddCustomRubric extends React.Component {
                 {this.state.isLoaded && this.state.errorMessage && (
                     <ErrorMessage errorMessage={this.state.errorMessage} />
                 )}
-
                 <div>
                     <Grid container spacing={10}>
                         <Grid item xs={6}>

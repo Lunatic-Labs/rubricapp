@@ -1,10 +1,20 @@
 import React, { Component } from "react"
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 
 
 
-class ViewTeamsTA extends Component{
+interface ViewTeamsTAProps {
+  // `navbar` is passed from the parent `TAViewTeams` component
+  navbar?: any;
+  // `teams` is the data table rows
+  teams?: any[];
+  // `users` may be passed by the parent (unused here currently), keep it optional
+  users?: any;
+}
+
+class ViewTeamsTA extends Component<ViewTeamsTAProps> {
   render() {
     var teams = this.props.teams;
 
@@ -18,6 +28,7 @@ class ViewTeamsTA extends Component{
           setCellProps: () => { return { width:"230px" } },
         }
       },
+      
       {
         name: "studentNames",
         label: "Team Member Names",
@@ -25,9 +36,9 @@ class ViewTeamsTA extends Component{
           filter: true,
           setCellHeaderProps: () => { return { width:"230px" } },
           setCellProps: () => { return { width:"230px" } },
-          customBodyRender: (users) => {
+          customBodyRender: (users: any) => {
             return(
-              <p className="pt-3" variant="contained">{users}</p>
+              <p className="pt-3">{users}</p>
             )
           }
         }

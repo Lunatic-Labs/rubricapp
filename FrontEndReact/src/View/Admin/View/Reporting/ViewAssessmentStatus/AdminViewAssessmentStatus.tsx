@@ -8,7 +8,9 @@ import Loading from '../../../../Loading/Loading';
 
 
 class AdminViewAssessmentStatus extends Component {
-    constructor(props) {
+    fetchData: any;
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {

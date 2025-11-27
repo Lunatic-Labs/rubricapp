@@ -1,73 +1,80 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box, TextField, Alert } from '@mui/material';
-import CustomButton from '../Components/CustomButton.js';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourceGET } from '../../../../utility.js';
-import Loading from '../../../Loading/Loading.js';
+import CustomButton from '../Components/CustomButton';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourceGET } from '../../../../utility';
+import Loading from '../../../Loading/Loading';
 
-class CodeRequirement extends Component {
-	constructor(props) {
+interface CodeRequirementProps {
+	navbar: any;
+}
+
+interface CodeRequirementState {
+	password: string;
+	errorMessage: string | null;
+	assessmentTasks: any | null;
+	validationError: string | null;
+}
+
+class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementState> {
+	constructor(props: CodeRequirementProps) {
 		super(props)
-
 		this.state = {
 			password: '',
 			errorMessage: null,
 			assessmentTasks: null,
 			validationError: null
 		};
+	}
 
-		this.submitPasscode = () => {
-			const enteredPassword = this.state.password;
-			const correctPassword = this.state.assessmentTasks["create_team_password"];
+	submitPasscode = () => {
+		const enteredPassword = this.state.password;
+		const correctPassword = this.state.assessmentTasks["create_team_password"];
+		this.setState({
+			validationError: null
+		});
 
+		if (!enteredPassword || enteredPassword.trim() === '') {
 			this.setState({
-				validationError: null
+				validationError: "Please enter a password"
 			});
-
-			if (!enteredPassword || enteredPassword.trim() === '') {
-				this.setState({
-					validationError: "Please enter a password"
-				});
-				return;
-			}
-
-			if (enteredPassword !== correctPassword) {
-				this.setState({
-					validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
-				});
-				return;
-			}
-
-			this.props.navbar.setState({
-				teamSwitchPassword: enteredPassword
-			});
-
-			this.props.navbar.setNewTab("SelectTeam");
+			return;
 		}
 
-		this.handleChange = (e) => {
-			const { value } = e.target;
-
+		if (enteredPassword !== correctPassword) {
 			this.setState({
-				password: value,
-				validationError: null // Clear error when user types
+				validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
 			});
-        };
-
-		this.handleKeyPress = (e) => {
-			if (e.key === 'Enter') {
-				this.submitPasscode();
-			}
-		};
+			return;
+		}
+		this.props.navbar.setState({
+			teamSwitchPassword: enteredPassword
+		});
+		this.props.navbar.setNewTab("SelectTeam");
 	}
+
+	handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+		const { value } = e.target;
+		this.setState({
+			password: value,
+			validationError: null // Clear error when user types
+		});
+	};
+
+	handleKeyPress = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === 'Enter') {
+			this.submitPasscode();
+		}
+	};
 
 	componentDidMount() {
 		let atId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
 
 		genericResourceGET(
 			`/assessment_task?assessment_task_id=${atId}`, 
-			"assessment_tasks", this, {dest: "assessmentTasks"});
+			"assessment_tasks", this as any, {dest: "assessmentTasks"});
 	}
 
 	render() {
@@ -81,7 +88,6 @@ class CodeRequirement extends Component {
 					}
 				</Box>
             );
-
 		} else if (this.state.assessmentTasks === null) {
             return (
                 <Loading />

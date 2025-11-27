@@ -4,11 +4,12 @@ import MUIDataTable from 'mui-datatables';
 
 
 class ViewTeamRatings extends Component {
+  props: any;
   render() {
-    var allRatings = [];
+    var allRatings: any = [];
     var rating = {};
 
-    this.props.ratings.map((currentRating) => {
+    this.props.ratings.map((currentRating: any) => {
         rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
 
         if(currentRating["rating_observable_characteristics_suggestions_data"]) {

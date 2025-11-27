@@ -4,14 +4,16 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
-import { genericResourceGET } from '../../../../utility.js';
+import { genericResourceGET } from '../../../../utility';
 import { Box } from '@mui/material';
-import Loading from '../../../Loading/Loading.js';
+import Loading from '../../../Loading/Loading';
 
 
 
 class CourseDropdown extends Component {
-  constructor(props) {
+  handleCourseChange: any;
+  props: any;
+  constructor(props: any) {
     super(props);
 
     this.state = {
@@ -20,7 +22,7 @@ class CourseDropdown extends Component {
       courses: []
     };
 
-    this.handleCourseChange = (newSelectedCourse) => {
+    this.handleCourseChange = (newSelectedCourse: any) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
 
       this.setState({
@@ -39,7 +41,7 @@ class CourseDropdown extends Component {
         <em>None</em>
       </MenuItem>
     ];
-    this.state.courses && this.state.courses.map((course, index) => {
+    this.state.courses && this.state.courses.map((course: any, index: any) => {
       return(
         courseChoices = [...courseChoices,
           <MenuItem key={index} value={course["course_id"]} aria-label="adminImportAssessmentCourseChoice">

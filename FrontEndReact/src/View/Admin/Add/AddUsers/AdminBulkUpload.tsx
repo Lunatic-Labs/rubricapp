@@ -5,8 +5,8 @@ import studentImage from '../AddUsers/Images/generic_bulk_upload_example.png';
 import teamImage1 from '../AddUsers/Images/team_bulk_upload_example1.png';
 import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
-import ErrorMessage from '../../../Error/ErrorMessage.js';
-import { genericResourcePOST } from '../../../../utility.js';
+import ErrorMessage from '../../../Error/ErrorMessage';
+import { genericResourcePOST } from '../../../../utility';
 import { Box, Typography, Tooltip, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
@@ -15,7 +15,9 @@ import debounce from 'debounce';
 
 
 class AdminBulkUpload extends Component {
-    constructor(props) {
+    debouncedSubmit: any;
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -58,7 +60,7 @@ class AdminBulkUpload extends Component {
       });
     }
 
-    onFormSubmit = (e) => {
+    onFormSubmit = (e: any) => {
         e.preventDefault();
 
         var fileName;
@@ -143,7 +145,6 @@ class AdminBulkUpload extends Component {
                                 <Typography variant="h5" aria-label='adminBulkUploadTitle'>
                                     {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
                                 </Typography>
-
                                 <div className="d-flex justify-content-center flex-column align-items-center">
                                     <Typography variant="h8" sx={{ marginTop:"30px" }}>
                                         Upload a CSV or XLSX file to bulk upload
@@ -185,7 +186,6 @@ class AdminBulkUpload extends Component {
                                                 title={
                                                     <>
                                                         <p>Example of format in Excel: <br></br>Two Students and Two TAs </p>
-
                                                         <img
                                                             alt="Format Example"
                                                             style={{ width:"100%", height:"100px" }}
@@ -205,7 +205,6 @@ class AdminBulkUpload extends Component {
                                                         <p>
                                                             Example of format in Excel: <br></br>{this.state.teamsMsgs[this.state.currentTeamPic]}
                                                         </p>
-
                                                         <img
                                                             alt="Format Example"
                                                             style={{ width:"250px", height:"150px" }}
@@ -224,9 +223,8 @@ class AdminBulkUpload extends Component {
                                             </Tooltip>
                                         }
                                     </Box>
-
                                     <form
-                                        onSubmit={ (e) =>{
+                                        onSubmit={ (e: any) => {
                                             e.preventDefault();
                                             this.debouncedSubmit(e);
                                         }
@@ -238,7 +236,7 @@ class AdminBulkUpload extends Component {
                                             type="file"
                                             name="file"
                                             aria-label="adminBulkUploadChooseFileButton"
-                                            onChange={(e) => {
+                                            onChange={(e: any) => {
                                                 this.setState({
                                                     selectedFile: e.target.files[0]
                                                 })
@@ -269,7 +267,7 @@ class AdminBulkUpload extends Component {
                     </Box>
                 </Box>
             </Box>
-        )
+        );
     }
 }
 

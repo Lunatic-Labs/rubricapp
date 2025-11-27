@@ -5,7 +5,7 @@ import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 
 
-export default function ViewRatingsHeader(props) {
+export default function ViewRatingsHeader(props: any) {
   var assessmentIsTeam = parseAssessmentIndividualOrTeam(props.assessmentTasks);
   return (
     <Box>

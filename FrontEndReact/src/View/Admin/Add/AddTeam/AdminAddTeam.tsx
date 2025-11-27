@@ -1,17 +1,18 @@
 import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
-import ErrorMessage from "../../../Error/ErrorMessage.js";
+import ErrorMessage from "../../../Error/ErrorMessage";
 import { Box, Button, Typography, TextField } from "@mui/material";
-import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility.js";
+import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility";
 import { FormControl, MenuItem, InputLabel, Select } from "@mui/material";
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
-import Loading from "../../../Loading/Loading.js";
+import Loading from "../../../Loading/Loading";
 
 
 class AdminAddTeam extends Component {
-    constructor(props) {
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -61,7 +62,7 @@ class AdminAddTeam extends Component {
         }
     }
 
-    handleSelect = (event) => {
+    handleSelect = (event: any) => {
         this.setState({
             observerId: event.target.value,
         });
@@ -118,7 +119,6 @@ class AdminAddTeam extends Component {
             } else if (team !== null && addTeam === false) {
                 promise = genericResourcePUT(`/team?team_id=${team.team_id}`, this, body);
             }
-            
             promise.then(result => {
                 if (result !== undefined && result.errorMessage === null) {
                     confirmCreateResource("Team");
@@ -127,7 +127,7 @@ class AdminAddTeam extends Component {
         }
     };
 
-    handleChange = (e) => {
+    handleChange = (e: any) => {
         const { id, value } = e.target;
 
         //Define max length for teamName
@@ -167,7 +167,7 @@ class AdminAddTeam extends Component {
                     <Loading />
                 );
             }
-            instructors = this.state.users.map((item) => { 
+            instructors = this.state.users.map((item: any) => { 
                 return {
                     id: item["user_id"],
                     firstName: item["first_name"],
@@ -190,108 +190,105 @@ class AdminAddTeam extends Component {
             observerId
         } = this.state;
 
-        return (
-            <>
-                { errorMessage &&
-                    <ErrorMessage
-                        add={addTeam}
-                        resource={"Team"}
-                        errorMessage={errorMessage}
-                    />
-                }
+        return <>
+            { errorMessage &&
+                <ErrorMessage
+                    add={addTeam}
+                    resource={"Team"}
+                    errorMessage={errorMessage}
+                />
+            }
 
-                { validMessage!=="" &&
-                    <ErrorMessage
-                        add={addTeam}
-                        error={validMessage}
-                    />
-                }
+            { validMessage!=="" &&
+                <ErrorMessage
+                    add={addTeam}
+                    error={validMessage}
+                />
+            }
 
-                <Box style={{ marginTop: "5rem" }} className="card-spacing">
-                    <Box className="form-position">
-                        <Box className="card-style">
-                            <FormControl className="form-spacing" aria-label="addTeamForm">
-                                <Typography id="addTeamTitle" variant="h5" aria-label={this.state.editTeam ? "adminEditTeamTitle" : "adminAddTeamTitle"}>
-                                    {this.state.editTeam ? "Edit Team" : "Add Team"}
-                                </Typography>
+            <Box style={{ marginTop: "5rem" }} className="card-spacing">
+                <Box className="form-position">
+                    <Box className="card-style">
+                        <FormControl className="form-spacing" aria-label="addTeamForm">
+                            <Typography id="addTeamTitle" variant="h5" aria-label={this.state.editTeam ? "adminEditTeamTitle" : "adminAddTeamTitle"}>
+                                {this.state.editTeam ? "Edit Team" : "Add Team"}
+                            </Typography>
 
-                                <Box className="form-input">
-                                    <TextField
-                                        id="teamName"
-                                        name="newTeamName"
-                                        variant="outlined"
-                                        label="Team Name"
-                                        fullWidth
-                                        value={teamName}
-                                        error={!!errors.teamName}
-                                        helperText={errors.teamName}
-                                        onChange={this.handleChange}
+                            <Box className="form-input">
+                                <TextField
+                                    id="teamName"
+                                    name="newTeamName"
+                                    variant="outlined"
+                                    label="Team Name"
+                                    fullWidth
+                                    value={teamName}
+                                    error={!!errors.teamName}
+                                    helperText={errors.teamName}
+                                    onChange={this.handleChange}
+                                    required
+                                    sx={{ mb: 3 }}
+                                    inputProps={{ maxLength: 50 }}
+                                    aria-label="userTeamNameInput"
+                                />
+
+                                <FormControl error={!!errors.observerId} required fullWidth sx={{mb: 3}}>
+                                    <InputLabel className={errors.observerId ? "errorSelect" : ""} id="Observer">Observer</InputLabel>
+
+                                    <Select
+                                        id="Observer"
+                                        labelId="Observer"
+                                        value={observerId}
+                                        label="Observer"
+                                        onChange={(event: any) => this.handleSelect(event)}
                                         required
-                                        sx={{ mb: 3 }}
-                                        inputProps={{ maxLength: 50 }}
-                                        aria-label="userTeamNameInput"
-                                    />
+                                        error={!!errors.observerId}
+                                        aria-label="userObserverDropDown"
+                                    >
+                                        {navbar.props.isAdmin &&
+                                            <MenuItem value={userId} key={userId}>{userName}</MenuItem>
+                                        }
 
-                                    <FormControl error={!!errors.observerId} required fullWidth sx={{mb: 3}}>
-                                        <InputLabel className={errors.observerId ? "errorSelect" : ""} id="Observer">Observer</InputLabel>
-
-                                        <Select
-                                            id="Observer"
-                                            labelId="Observer"
-                                            value={observerId}
-                                            label="Observer"
-                                            onChange={(event)=> this.handleSelect(event)}
-                                            required
-                                            error={!!errors.observerId}
-                                            aria-label="userObserverDropDown"
-                                        >
-                                            {navbar.props.isAdmin &&
-                                                <MenuItem value={userId} key={userId}>{userName}</MenuItem>
-                                            }
-
-                                            {instructors.map((x)=>
-                                                <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
-                                            )}
-                                        </Select>
-                                        <FormHelperText>{errors.observerId}</FormHelperText>
-                                    </FormControl>
+                                        {instructors.map((x: any) => <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
+                                        )}
+                                    </Select>
+                                    <FormHelperText>{errors.observerId}</FormHelperText>
+                                </FormControl>
 
 
-                                    <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
-                                        <Button
-                                            id="createTeamCancel"
-                                            className=""
+                                <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
+                                    <Button
+                                        id="createTeamCancel"
+                                        className=""
 
-                                            onClick={() => {
-                                                navbar.setState({
-                                                    activeTab: "Teams",
-                                                    team: null,
-                                                    addTeam: null,
-                                                });
-                                            }}
-                                            aria-label="cancelAddTeamButton"
-                                        >
-                                            Cancel
-                                        </Button>
+                                        onClick={() => {
+                                            navbar.setState({
+                                                activeTab: "Teams",
+                                                team: null,
+                                                addTeam: null,
+                                            });
+                                        }}
+                                        aria-label="cancelAddTeamButton"
+                                    >
+                                        Cancel
+                                    </Button>
 
-                                        <Button
-                                            id="createTeam"
-                                            variant="contained"
+                                    <Button
+                                        id="createTeam"
+                                        variant="contained"
 
-                                            onClick={this.handleSubmit}
+                                        onClick={this.handleSubmit}
 
-                                            aria-label="addOrSaveAddTeamButton"
-                                        >
-                                            {this.state.editTeam ? "Save" : "Add Team"}
-                                        </Button>
-                                    </Box>
+                                        aria-label="addOrSaveAddTeamButton"
+                                    >
+                                        {this.state.editTeam ? "Save" : "Add Team"}
+                                    </Button>
                                 </Box>
-                            </FormControl>
-                        </Box>
+                            </Box>
+                        </FormControl>
                     </Box>
                 </Box>
-            </>
-        )
+            </Box>
+        </>;
     }
 }
 

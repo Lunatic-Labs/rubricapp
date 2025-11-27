@@ -5,9 +5,9 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import { Tab } from '@mui/material';
 import Tooltip from '@mui/material/Tooltip';
 import { Box } from '@mui/material';
-import StatusIndicator from './StatusIndicator.js';
-import {StatusIndicatorState} from './StatusIndicator.js';
-import {getUnitCategoryStatus} from './cat_utils.js';
+import StatusIndicator from './StatusIndicator';
+import {StatusIndicatorState} from './StatusIndicator';
+import {getUnitCategoryStatus} from './cat_utils';
 import Cookies from 'universal-cookie';
 
 /**
@@ -28,6 +28,7 @@ import Cookies from 'universal-cookie';
  * @param {boolean} state.usingTeams - Bool that represents if we are on a valid tab when hiding other tabs.
  */
 class UnitOfAssessmentTab extends Component {
+    props: any;
     render() {
         const units = this.props.units;
         const hideUnits = this.props.hideUnits;
@@ -51,7 +52,7 @@ class UnitOfAssessmentTab extends Component {
             if (currentUnit.isDone === true) {
                 unitStatus = StatusIndicatorState.COMPLETED;
             } else {
-                const isNotStarted = currentUnit.categoryNames().every(categoryName => {
+                const isNotStarted = currentUnit.categoryNames().every((categoryName: any) => {
                     return getUnitCategoryStatus(currentUnit, this.props.navbar.state.chosenAssessmentTask, categoryName) === StatusIndicatorState.NOT_STARTED;
                 });
 
@@ -103,7 +104,7 @@ class UnitOfAssessmentTab extends Component {
             <Tabs
                 value={this.props.currentUnitTabIndex}
 
-                onChange={(event, newUnitTabIndex) => {
+                onChange={(event: any, newUnitTabIndex: any) => {
                     this.props.handleUnitTabChange(newUnitTabIndex);
                 }}
 
@@ -133,7 +134,7 @@ class UnitOfAssessmentTab extends Component {
             >
                 {unitTabsList}
             </Tabs>
-        )
+        );
     }
 }
 

@@ -1,9 +1,16 @@
 import React, { Component } from "react"
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 import { getHumanReadableDueDate } from "../../../utility";
 
-class ViewTeams extends Component{
+interface ViewTeamsProps {
+    teams: any[];
+    users: { [key: string]: string };
+    navbar: any;
+}
+
+class ViewTeams extends Component<ViewTeamsProps> {
     render() {
         var teams = this.props.teams;
         var users = this.props.users;
@@ -26,9 +33,9 @@ class ViewTeams extends Component{
                     filter: true,
                     setCellHeaderProps: () => { return { width:"230px" } },
                     setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (observerId) => {
+                    customBodyRender: (observerId: any) => {
                         return(
-                            <p className="pt-3" variant="contained">{users[observerId]}</p>
+                            <p className="pt-3">{users[observerId]}</p>
                         )
                     }
                 }
@@ -40,7 +47,7 @@ class ViewTeams extends Component{
                     filter: true,
                     setCellHeaderProps: () => { return { width:"230px" } },
                     setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (user) => {
+                    customBodyRender: (user: any) => {
                         return(
                             <>{user + " "}</>
                         );
@@ -54,11 +61,11 @@ class ViewTeams extends Component{
                     filter: true,
                     setCellHeaderProps: () => { return { width:"160px" } },
                     setCellProps: () => { return { width:"160px" } },
-                    customBodyRender: (date_created) => {
+                    customBodyRender: (date_created: any) => {
                         let dateCreatedString = getHumanReadableDueDate(date_created);
 
                         return(
-                            <p className="pt-3" variant='contained'>
+                            <p className="pt-3">
                                 {date_created ? dateCreatedString : "N/A"}
                             </p>
                         )

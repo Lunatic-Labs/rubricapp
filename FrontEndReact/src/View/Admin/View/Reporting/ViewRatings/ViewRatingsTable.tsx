@@ -3,8 +3,9 @@ import MUIDataTable from 'mui-datatables';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 class ViewRatingsTable extends Component {
+  props: any;
   render() {
-    var allRatings = [];
+    var allRatings: any = [];
 
     let nameLabel = "";
     var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
@@ -14,7 +15,7 @@ class ViewRatingsTable extends Component {
       } else {
         nameLabel = "Team Name";
       }
-    this.props.ratings.map((currentRating) => {
+    this.props.ratings.map((currentRating: any) => {
       var rating = {};
 
       if (currentRating["first_name"] && currentRating["last_name"]) {
@@ -58,7 +59,7 @@ class ViewRatingsTable extends Component {
     ]
 
     // Add in the rest of the columns with the categories that correspond to the chosen rubric
-    this.props.categories.map((i) => {
+    this.props.categories.map((i: any) => {
       columns.push({
         name: i["category_name"],
         label: i["category_name"],

@@ -3,12 +3,13 @@ import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
-import CustomDataTable from "../../../Components/CustomDataTable.js";
+import CustomDataTable from "../../../Components/CustomDataTable";
 import Cookies from 'universal-cookie';
-import { genericResourceDELETE } from "../../../../utility.js";
+import { genericResourceDELETE } from "../../../../utility";
 
 class ViewUsers extends Component {
-  async deleteUser(userId) {
+  props: any;
+  async deleteUser(userId: any) {
     try {
       const result = await genericResourceDELETE(`/user?uid=${userId}`, this, {
         dest: "users",
@@ -76,7 +77,7 @@ class ViewUsers extends Component {
             filter: true,
             setCellHeaderProps: () => { return { width: "10%" } },
             setCellProps: () => { return { width: "10%" } },
-            customBodyRender: (roleId) => {
+            customBodyRender: (roleId: any) => {
               return (
                 <p>{roleNames[roleId]}</p>
               )
@@ -106,7 +107,7 @@ class ViewUsers extends Component {
         sort: false,
         setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId) => {
+        customBodyRender: (userId: any) => {
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersEditButton" + userId}
@@ -132,7 +133,7 @@ class ViewUsers extends Component {
         sort: false,
         setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId) => {
+        customBodyRender: (userId: any) => {
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersDeleteButton" + userId}

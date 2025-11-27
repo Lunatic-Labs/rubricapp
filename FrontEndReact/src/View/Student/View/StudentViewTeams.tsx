@@ -1,14 +1,20 @@
 import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
-import ViewTeams from './ViewTeams.js';
-import ErrorMessage from '../../Error/ErrorMessage.js';
-import { genericResourceGET, parseUserNames } from '../../../utility.js';
-import Loading from '../../Loading/Loading.js';
+import ViewTeams from './ViewTeams';
+import ErrorMessage from '../../Error/ErrorMessage';
+import { genericResourceGET, parseUserNames } from '../../../utility';
+import Loading from '../../Loading/Loading';
 
 
 
-class StudentViewTeams extends Component {
-    constructor(props) {
+interface StudentViewTeamsProps {
+    navbar: any;
+    updateUserTeamsIds: (teamIds: any[]) => void;
+}
+
+class StudentViewTeams extends Component<StudentViewTeamsProps> {
+    constructor(props: StudentViewTeamsProps) {
         super(props);
 
         this.state = {
@@ -29,8 +35,8 @@ class StudentViewTeams extends Component {
         genericResourceGET(
             `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${adhocMode}`, "teams", this
         ).then(data =>{
-            let newTeams = [];
-            data.teams.forEach(team => {
+            let newTeams: any = [];
+            data.teams.forEach((team: any) => {
                 newTeams.push(team.team_id);
             });
             this.props.updateUserTeamsIds(newTeams);
@@ -59,7 +65,6 @@ class StudentViewTeams extends Component {
             return(
                 <div className='container'>
                     <ErrorMessage
-                        fetchedResource={"Teams"}
                         errorMessage={errorMessage}
                     />
                 </div>
@@ -76,7 +81,7 @@ class StudentViewTeams extends Component {
                     <ViewTeams
                         navbar={this.props.navbar}
                         teams={teams}
-                        users={users ? parseUserNames(users) : []}
+                        users={users ? parseUserNames(users) : {}}
                     />
                 </div>
             )

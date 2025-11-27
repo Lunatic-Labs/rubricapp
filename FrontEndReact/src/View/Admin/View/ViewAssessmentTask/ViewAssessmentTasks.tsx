@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomDataTable from '../../../Components/CustomDataTable.js';
+import CustomDataTable from '../../../Components/CustomDataTable';
 import { Button } from '@mui/material';
 import { Tooltip } from '@mui/material';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { genericResourceGET, genericResourcePUT, getHumanReadableDueDate } from '../../../../utility.js';
-import Loading from '../../../Loading/Loading.js';
+import { genericResourceGET, genericResourcePUT, getHumanReadableDueDate } from '../../../../utility';
+import Loading from '../../../Loading/Loading';
 import { IconButton } from '@mui/material';
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
@@ -14,7 +14,11 @@ import PublishIcon from '@mui/icons-material/Publish';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 
 class ViewAssessmentTasks extends Component {
-    constructor(props) {
+    handleDownloadCsv: any;
+    handleLockToggle: any;
+    handlePublishToggle: any;
+    props: any;
+    constructor(props: any) {
         super(props);
 
         this.state = {
@@ -29,7 +33,7 @@ class ViewAssessmentTasks extends Component {
             publishedStatus: {},
         }
 
-        this.handleDownloadCsv = (atId, exportButtonId, assessmentTaskIdToAssessmentTaskName) => {
+        this.handleDownloadCsv = (atId: any, exportButtonId: any, assessmentTaskIdToAssessmentTaskName: any) => {
             let promise = genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}&format=0`,
                 "csv_creation",
@@ -53,8 +57,8 @@ class ViewAssessmentTasks extends Component {
             });
         }
 
-        this.handleLockToggle = (assessmentTaskId, task) => {
-          this.setState((prevState) => {
+        this.handleLockToggle = (assessmentTaskId: any, task: any) => {
+          this.setState((prevState: any) => {
               const newLockStatus = { ...prevState.lockStatus };
               newLockStatus[assessmentTaskId] = !newLockStatus[assessmentTaskId];
               return { lockStatus: newLockStatus };
@@ -69,8 +73,8 @@ class ViewAssessmentTasks extends Component {
           });
         };
 
-        this.handlePublishToggle = (assessmentTaskId, task) => {
-          this.setState((prevState) => {
+        this.handlePublishToggle = (assessmentTaskId: any, task: any) => {
+          this.setState((prevState: any) => {
               const newPublishedStatus = { ...prevState.publishedStatus };
               newPublishedStatus[assessmentTaskId] = !newPublishedStatus[assessmentTaskId];
               return { publishedStatus: newPublishedStatus };
@@ -138,7 +142,7 @@ class ViewAssessmentTasks extends Component {
         const initialLockStatus = {};
         const initialPublishedStatus = {};
 
-        assessmentTasks.forEach((task) => {
+        assessmentTasks.forEach((task: any) => {
             initialLockStatus[task.assessment_task_id] = task.locked;
             initialPublishedStatus[task.assessment_task_id] = task.published;
         });
@@ -187,7 +191,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (assessmentTaskName) => {
+                    customBodyRender: (assessmentTaskName: any) => {
                         return(
                             <>
                                 {assessmentTaskName ? assessmentTaskName : "N/A"}
@@ -203,7 +207,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"160px"}},
                     setCellProps: () => { return { width:"160px"} },
-                    customBodyRender: (assessmentTaskId) => {
+                    customBodyRender: (assessmentTaskId: any) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]["due_date"],
                             assessmentTasksToDueDates[assessmentTaskId]["time_zone"]
@@ -224,7 +228,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"80px"}},
                     setCellProps: () => { return { width:"80px"} },
-                    customBodyRender: (roleId) => {
+                    customBodyRender: (roleId: any) => {
                         return (
                             <>
                                 {roleNames && roleId ? roleNames[roleId] : "N/A"}
@@ -240,7 +244,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"117px"}},
                     setCellProps: () => { return { width:"117px"} },
-                    customBodyRender: (rubricId) => {
+                    customBodyRender: (rubricId: any) => {
                         return (
                             <>
                                 {rubricNames && rubricId ? rubricNames[rubricId] : "N/A"}
@@ -290,7 +294,7 @@ class ViewAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"80px"}},
                     setCellProps: () => { return { width:"80px"} },
-                    customBodyRender: (unitOfAssessment) => {
+                    customBodyRender: (unitOfAssessment: any) => {
                         return(
                             <>
                                 {unitOfAssessment ? "Yes" : "No"}
@@ -307,8 +311,8 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                    customBodyRender: (atId: any) => {
+                        const task = assessmentTasks.find((task: any) => task["assessment_task_id"] === atId);
                         const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
                         return (
                             <Tooltip 
@@ -339,8 +343,8 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                    customBodyRender: (atId: any) => {
+                        const task = assessmentTasks.find((task: any) => task["assessment_task_id"] === atId);
                         const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
 
                         return (
@@ -371,7 +375,7 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (assessmentTaskId) => {
+                    customBodyRender: (assessmentTaskId: any) => {
                         if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
                             return (
                                 <Tooltip
@@ -418,10 +422,10 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
-                    customBodyRender: (assessmentTaskId) => {
+                    customBodyRender: (assessmentTaskId: any) => {
                         if (assessmentTaskId && assessmentTasks) {
-                            const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
-                            const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === assessmentTaskId);
+                            const selectedTask = assessmentTasks.find((task: any) => task.assessment_task_id === assessmentTaskId);
+                            const completedAssessments = this.state.completedAssessments.filter((ca: any) => ca.assessment_task_id === assessmentTaskId);
                             const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
                             if (completedCount === 0) {
@@ -489,8 +493,8 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const assessmentTask = assessmentTasks.find(task => task.assessment_task_id === atId);
+                    customBodyRender: (atId: any) => {
+                        const assessmentTask = assessmentTasks.find((task: any) => task.assessment_task_id === atId);
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
 
@@ -543,8 +547,8 @@ class ViewAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
-                    customBodyRender: (atId) => {
-                        const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === atId);
+                    customBodyRender: (atId: any) => {
+                        const completedAssessments = this.state.completedAssessments.filter((ca: any) => ca.assessment_task_id === atId);
                         const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
                         if (completedCount === 0) {                                     // this code makes the export button and its text darker when disabled.

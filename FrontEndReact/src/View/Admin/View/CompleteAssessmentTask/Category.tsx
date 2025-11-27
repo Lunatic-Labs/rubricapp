@@ -5,6 +5,7 @@ import { Tab } from '@mui/material';
 
 
 class Category extends Component {
+    props: any;
     render() {
         var navbar = this.props.navbar;
         var categoryComponent = navbar.categoryComponent;

@@ -1,12 +1,13 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTask.js';
-import MainHeader from '../../../Components/MainHeader.js';
+import AdminViewAssessmentTask from '../ViewAssessmentTask/AdminViewAssessmentTask';
+import MainHeader from '../../../Components/MainHeader';
 import { Box, Typography, Button } from '@mui/material';
 
 
 
 class AssessmentDashboard extends Component {
+    props: any;
     render() {
         var navbar = this.props.navbar;
         var setNewTab = navbar.setNewTab;
