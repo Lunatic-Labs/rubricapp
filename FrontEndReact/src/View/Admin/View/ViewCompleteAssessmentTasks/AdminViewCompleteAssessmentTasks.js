@@ -6,18 +6,18 @@ import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 
-
+// Fetches all necessary data and decided which child component to display //
 
 class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            errorMessage: null,
-            isLoaded: false,
-            completedAssessments: null,
-            roles: null,
-            users: null,
+            errorMessage: null,             // Stores an API errors
+            isLoaded: false,                // Becomes true when all data loads
+            completedAssessments: null,     // The submissions from submissions
+            roles: null,                    // User role information (admin, student)
+            users: null,                    // User name for displaying who submitted
         }
     }
 
@@ -26,8 +26,9 @@ class AdminViewCompleteAssessmentTasks extends Component {
         var state = navbar.state;
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
-
+        // Determines assessment type and fetch appropriate data
         if (chosenAssessmentTask["unit_of_assessment"]) {
+            // Fetch Team assessments
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=team`,
                 "completed_assessments",
@@ -35,6 +36,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                 {dest: "completedAssessments"}
             );
         } else {
+            // Fetch Indivdual assessments
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=individual`,
                 "completed_assessments",
@@ -44,6 +46,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         }
         genericResourceGET(
+            // Fetch role definitions (for user role mapping)
             `/role`,
             'roles',
             this
@@ -51,6 +54,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         if(chosenCourse) {
             genericResourceGET(
+                // Fetch users for the course (for name lookup)
                 `/user?course_id=${chosenCourse["course_id"]}`,
                 'users',
                 this
@@ -70,9 +74,9 @@ class AdminViewCompleteAssessmentTasks extends Component {
         var unitOfAssessment = navbar.state.chosenAssessmentTask["unit_of_assessment"];
 
         navbar.adminViewCompleteAssessmentTasks = {};
-        navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;
-        navbar.adminViewCompleteAssessmentTasks.roleNames = roles ? parseRoleNames(roles) : [];
-        navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users) : [];
+        navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments; // Raw assessment data
+        navbar.adminViewCompleteAssessmentTasks.roleNames = roles ? parseRoleNames(roles) : []; // Role ID -> Role name map
+        navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users) : []; // USer ID -> Display name map
 
         if (errorMessage) {
             return(
@@ -91,6 +95,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         } else {
             if (unitOfAssessment) {
+                // Show team view (rubric for teams) True = Team Assessment
                 return(
                     <>
                         <Box>
@@ -102,6 +107,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                     </>
                 )
             } else {
+                // Show Indivdual view (rubric for indivdual student) False = Indivdual assessment
                 return(
                     <>
                         <Box>
