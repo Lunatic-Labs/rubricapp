@@ -6,28 +6,29 @@ import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 
-
+//
 
 class AdminViewCompleteAssessmentTasks extends Component {
     constructor(props) {
         super(props);
 
         this.state = {
-            errorMessage: null,
-            isLoaded: false,
-            completedAssessments: null,
-            roles: null,
-            users: null,
+            errorMessage: null,                  // Stores any API errors
+            isLoaded: false,                    // Loading state for all resources and becomes true when data loads
+            completedAssessments: null,        // Array of completed assesment data
+            roles: null,                      // Role Definitions for the system
+            users: null,                    // User data for name on completed assignment
         }
     }
 
-    componentDidMount() {
+    componentDidMount() {       // Determine assessment type and fetch appropriate data
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenAssessmentTask = state.chosenAssessmentTask;
         var chosenCourse = state.chosenCourse;
 
-        if (chosenAssessmentTask["unit_of_assessment"]) {
+        if (chosenAssessmentTask["unit_of_assessment"]) { 
+            // Fetch TEAM assessments
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=team`,
                 "completed_assessments",
@@ -35,7 +36,8 @@ class AdminViewCompleteAssessmentTasks extends Component {
                 {dest: "completedAssessments"}
             );
         } else {
-            genericResourceGET(
+             //Fetch Indivdual assessments
+            genericResourceGET(                        
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=individual`,
                 "completed_assessments",
                 this,
@@ -43,7 +45,8 @@ class AdminViewCompleteAssessmentTasks extends Component {
             );
 
         }
-        genericResourceGET(
+        genericResourceGET( 
+            // Fetch roles definitions
             `/role`,
             'roles',
             this
@@ -51,6 +54,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         if(chosenCourse) {
             genericResourceGET(
+                // Fetch users for the course
                 `/user?course_id=${chosenCourse["course_id"]}`,
                 'users',
                 this
@@ -70,9 +74,9 @@ class AdminViewCompleteAssessmentTasks extends Component {
         var unitOfAssessment = navbar.state.chosenAssessmentTask["unit_of_assessment"];
 
         navbar.adminViewCompleteAssessmentTasks = {};
-        navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;
-        navbar.adminViewCompleteAssessmentTasks.roleNames = roles ? parseRoleNames(roles) : [];
-        navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users) : [];
+        navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;     // All completed submissions Raw assessment data
+        navbar.adminViewCompleteAssessmentTasks.roleNames = roles ? parseRoleNames(roles) : [];     // Role ID -> Role Name
+        navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users) : [];     // User ID -> Display Name Map
 
         if (errorMessage) {
             return(
@@ -91,6 +95,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
 
         } else {
             if (unitOfAssessment) {
+                // Show team view (rubric for team) when True = Team assessment
                 return(
                     <>
                         <Box>
@@ -102,6 +107,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                     </>
                 )
             } else {
+                // Show indivdual view (rubrics for indivdual students) False = Indivdual Assessment
                 return(
                     <>
                         <Box>

@@ -8,30 +8,26 @@ import { genericResourceGET } from '../../../../utility.js';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 
-
-
 class CourseDropdown extends Component {
   constructor(props) {
     super(props);
-
     this.state = {
       selectedOption: 'option1',
       selectedCourse: '',
       courses: []
     };
-
+    
     this.handleCourseChange = (newSelectedCourse) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
-
       this.setState({
         selectedCourse: newSelectedCourse.target.value
       });
     }
   }
 
-  componentDidMount() {
-    genericResourceGET(`/course`, 'courses', this);
-  }
+componentDidMount() {
+  genericResourceGET(`/course`, 'courses', this);
+}
 
   render() {
     var courseChoices = [
@@ -39,6 +35,7 @@ class CourseDropdown extends Component {
         <em>None</em>
       </MenuItem>
     ];
+    
     this.state.courses && this.state.courses.map((course, index) => {
       return(
         courseChoices = [...courseChoices,
@@ -48,10 +45,28 @@ class CourseDropdown extends Component {
         ]
       )
     })
+
     if(this.state.courses) {
       return (
-        <Box>
-          <FormControl fullWidth>
+        <Box className="dropdown-colors">
+          <FormControl 
+            fullWidth
+            sx={{ 
+              '& .MuiInputBase-root': {
+                backgroundColor: 'var(--dropdown-bg)',
+                color: 'var(--dropdown-text)',
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'var(--dropdown-border)',
+              },
+              '& .MuiInputLabel-root': {
+                color: 'var(--dropdown-label)',
+              },
+              '& .MuiSelect-icon': {
+                color: 'var(--dropdown-icon)',
+              }
+            }}
+          >
             <InputLabel id="courseLabel">Select a Course</InputLabel>
             <Select
               required
@@ -60,13 +75,32 @@ class CourseDropdown extends Component {
               value={this.state.selectedCourse}
               onChange={this.handleCourseChange}
               aria-label="adminImportAssessmentCourseDropdown"
+              MenuProps={{
+                PaperProps: {
+                  className: 'dropdown-colors',
+                  sx: {
+                    backgroundColor: 'var(--dropdown-bg)',
+                    color: 'var(--dropdown-text)',
+                    '& .MuiMenuItem-root': {
+                      '&:hover': {
+                        backgroundColor: 'var(--dropdown-hover)',
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: 'var(--dropdown-selected)',
+                        '&:hover': {
+                          backgroundColor: 'var(--dropdown-selected)',
+                        },
+                      },
+                    },
+                  },
+                },
+              }}
             >
               {courseChoices}
             </Select>
           </FormControl>
         </Box>
-        );
-
+      );
     } else {
       return(
         <Loading />
