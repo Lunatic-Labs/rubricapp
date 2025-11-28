@@ -51,9 +51,6 @@ class AdminViewTeamMembers extends Component {
      * Usage:
      * This method is called automatically when the component is mounted to fetch the team members.
      * 
-     * TODO:
-     * Verify if ViewTeamMembers component also fetches user data.
-     * 
      */
     componentDidMount() {
         var navbar = this.props.navbar;
