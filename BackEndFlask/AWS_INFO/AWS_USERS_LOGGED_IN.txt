@@ -1,0 +1,8 @@
+to check if there are users who are currently logged into the EC2 instance:
+    use the w command shell
+
+to check the list of users who were logged into the EC2 instance:
+    use lastlog command
+
+to get a full accounting of all users who are and were in the EC2 instance:
+    use /var/log/auth.log

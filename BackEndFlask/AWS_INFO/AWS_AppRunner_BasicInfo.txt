@@ -1,0 +1,18 @@
+Everything below is not necessary for now as it will take a lot upfront work to setup.
+Also, there is a stepper learning curve as it involves Fargate which is similar to Docker.
+
+What is App Runner?
+    It is a an AWS service that provides a fast, simple, and cost-effective way 
+    to deploy from source code or a container image directly to a scalable and 
+    secure web application in the AWS Cloud. 
+
+Why use it?
+    App Runner connects directly to the code repo and it provides an automatic integration and
+    delivery pipeline with fully managed operations, high performance, scalability, and security.
+
+What else can it do?
+    App Runner can simplify the process of deploying the repo and it can 
+    automatically deploy the repo each a commit is pushed to the repo.
+
+Need to checkout the site below this sentence to connect App Runner and Github Repo.
+    https://www.apprunnerworkshop.com/intermediate/github/connect-github/
