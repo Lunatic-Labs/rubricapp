@@ -1,4 +1,0 @@
-# The key will be overwritten
-SQLALCHEMY_TRACK_MODIFICATIONS = False
-SECRET_KEY = 'NOTHING_HERE'
-JSON_SORT_KEYS = False
