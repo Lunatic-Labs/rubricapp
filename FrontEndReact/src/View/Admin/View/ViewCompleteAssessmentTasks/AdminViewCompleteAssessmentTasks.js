@@ -21,8 +21,8 @@ class AdminViewCompleteAssessmentTasks extends Component {
         }
     }
 
-    componentDidMount() {                   // Executes once immediately after copponet mounts to fetch all necessary data from backend
-        var navbar = this.props.navbar;     // Navigates object from rops containing application state and methods
+    componentDidMount() {                   // Executes once immediately after component mounts to fetch all necessary data from backend
+        var navbar = this.props.navbar;     // Navigates object from props containing application state and methods
         var state = navbar.state;           //application state extracted from navbar
         var chosenAssessmentTask = state.chosenAssessmentTask;      // Specific assessment/rubric being viewd, contains assessment_task_id
         var chosenCourse = state.chosenCourse;
@@ -83,7 +83,7 @@ class AdminViewCompleteAssessmentTasks extends Component {
                 <div className='container'>
                     <ErrorMessage
                         fetchedResource={"Completed Assessment Task"}  // describes what failed to load
-                        errorMessage={errorMessage}     // the actual error text from the faile API call
+                        errorMessage={errorMessage}     // the actual error text from the failed API call
                     />
                 </div>
             )
