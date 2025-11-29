@@ -13,19 +13,21 @@ import CourseInfo from "../../../Components/CourseInfo";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 
+// Shows a table of completed indivdual student rubrics with notifications and has privilages to who can edit submissions//
+
 class ViewCompleteIndividualAssessmentTasks extends Component {
     constructor(props) {
         super(props);
-
+    // Intialize component state
     this.state = {
-        errorMessage: null,
-        isLoaded: null,
-        showDialog: false,
-        notes: '',
-        notificationSent: false,
+        errorMessage: null, // Stores API error messages
+        isLoaded: null,     //Loading state indicator
+        showDialog: false,    //controls notifcation dialog visibility
+        notes: '',            // Notification message content typr by instructor
+        notificationSent: false,    //tracks if notification sent this also block duplicate sends
         isSingleMsg: false,
-        compATId: null,
-        lockStatus: {},
+        compATId: null,         //Completed assessment ID for indivdual notifications
+        lockStatus: {}, // Maps completed_assessment_id -> boolean (locked state)
 
         errors: {
             notes:''
@@ -33,41 +35,53 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       };
     }
 
-    componentDidMount() {
+    componentDidMount() {       // Initialize Lock Status from server data when components first loads
+        // extract assessment data from props
         const completedAssessmentTasks = this.props.navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+        // Create empty object to store lock status
         const initialLockStatus = {};
-
-        completedAssessmentTasks.forEach((task) => {
+        // Preload lock status from server data to avoid UI flicker //
+        completedAssessmentTasks.forEach((task) => {        
             initialLockStatus[task.completed_assessment_id] = task.locked;
         });
-
+        // Update component stat with lock status
         this.setState({ lockStatus: initialLockStatus });
     }
 
-    handleLockToggle = (completedAssessmentId, task) => {
+    handleLockToggle = (completedAssessmentId, task) => {        //Toggles lock state from a single student assessment 
+        // Update local lock status state
         this.setState((prevState) => {
-            const newLockStatus = { ...prevState.lockStatus };
+            //create copy of lock status object
+            const newLockStatus = { ...prevState.lockStatus }; 
+            //Flip the boolean value for this assessment
             newLockStatus[completedAssessmentId] = !newLockStatus[completedAssessmentId];
             return { lockStatus: newLockStatus };
         }, () => {
+            //callback executes after states update completes
             const lockStatus = this.state.lockStatus[completedAssessmentId];
-
+            // Sync with server (in calllback)
+            //PUT /completed_assessment_toggle_lock?completed_assessment_id={id} into true/false
             genericResourcePUT(
                 `/completed_assessment_toggle_lock?completed_assessment_id=${completedAssessmentId}&locked=${lockStatus}`,
                 this,
                 JSON.stringify({ locked: lockStatus })
             );
+            // No error handling if API fails the Ui shows wrong state until it is refresh
         });
     };
 
-    handleUnlockAllCats = (assessmentTaskIds) => {
+    handleUnlockAllCats = (assessmentTaskIds) => {      // unlocks all student assessments in bulk (allows all students to edit submissions)    
+        // Loop through each assessment ID
         assessmentTaskIds.forEach((completedAssessmentId) => {
+            // Update local state to unlocked for this assessment
             this.setState((prevState) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = false;
                 return { lockStatus: newLockStatus };
             }, () => {
+                // Callback executes after state update
                 const lockStatus = this.state.lockStatus[completedAssessmentId];
+                // sync with server
                 genericResourcePUT(
                     `/completed_assessment_unlock?completed_assessment_id=${completedAssessmentId}`,
                     this,
@@ -77,15 +91,18 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleLockAllCats = (assessmentTaskIds) => {
+    handleLockAllCats = (assessmentTaskIds) => { // Locks all student assessment in bluk (prevents all student from editing)
+        // Loop through each assessment ID
         assessmentTaskIds.forEach((completedAssessmentId) => {
+            // Update local state to locked for this assessment
             this.setState((prevState) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = true;
                 return { lockStatus: newLockStatus };
             }, () => {
+                // Callback executes after state updat
                 const lockStatus = this.state.lockStatus[completedAssessmentId];
-
+                // API Call: locks assessment on server
                 genericResourcePUT(
                     `/completed_assessment_lock?completed_assessment_id=${completedAssessmentId}`,
                     this,
@@ -95,48 +112,60 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         });
     };
 
-    handleChange = (e) => {
+    handleChange = (e) => {     // Updates notification message as instructor types and validates input
+        // Extract field ID and value from input event
         const { id, value } = e.target;
-
+        // Update state with new value and validation error
         this.setState({
-            [id]: value,
+            [id]: value,    //Updates the field
             errors: {
-                ...this.state.errors,
+                ...this.state.errors,   //Preserve other error messages
+                // Set error if empty, clears if has content
                 [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
             },
         });
     };
 
-  handleDialog = (isSingleMessage, singleCompletedAT) => {
+  handleDialog = (isSingleMessage, singleCompletedAT) => {      // Opens or closes the notification dialog and sets notification mode
     this.setState({
+        // toggle dialoog visibility
         showDialog: this.state.showDialog === false ? true : false,
+        // Store whether this is single or mass notification
         isSingleMsg: isSingleMessage,
+        // Store assessment ID for single notifications
         compATId: singleCompletedAT,
     });
   }
 
-  handleSendNotification = () => {
+  handleSendNotification = () => {      //Sends notification email to students that thier assessment results are available
+    // Gets notification message from state
     var notes = this.state.notes;
 
+    //Create timestamp for notification
     var navbar = this.props.navbar;
-
     var state = navbar.state;
-
     var chosenAssessmentTask = state.chosenAssessmentTask;
-
+    // Create timestamp for notification
     var date = new Date();
 
+    //Validates if the message is empty
     if (notes.trim() === '') {
+        //Set error message in state
         this.setState({
             errors: {
                 notes: 'Notification Message cannot be empty',
             },
         });
-
+        //Exit early without sending
       return;
     }
+
+    // Check if this is single student or mass notification
     if(this.state.isSingleMsg) {
+        //Indivdual Student notification Path
+        // Resets single message flag, then send
       this.setState({isSingleMsg: false}, () => {
+        //API Call: Send email to one student
         genericResourcePOST(
           `/send_single_email?team=${false}&completed_assessment_id=${this.state.compATId}`, 
           this, JSON.stringify({ 
