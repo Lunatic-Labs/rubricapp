@@ -6,8 +6,49 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import Cookies from 'universal-cookie';
 import { genericResourceDELETE } from "../../../../utility.js";
+/**
+ * Creates an instance of the ViewUsers component.
+ * Displays a table of users with options to edit and delete.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @property {Object} props.navbar - The navbar object containing state and methods for navigation.
+ * @property {Function} props.onSuccess - Callback function to handle success messages.
+ * @property {Function} props.onError - Callback function to handle error messages.
+ * @property {Function} props.refreshData - Function to refresh the user data after deletion.
+ * 
+ * Source:
+ * @see AdminViewUsers.js
+ * 
+ * Permissions:
+ * - Users cannot delete themselves (buttons hidden when userId matches logged-in user).
+ *    - Only applies when the logged-in user is an admin.
+ * 
+ */
 
 class ViewUsers extends Component {
+  /**
+   * @method deleteUser - Deletes a user by their user ID.
+   * 
+   * API Endpoint: /user
+   * HTTP Method: DELETE
+   * 
+   * Parameters:
+   * @param {string} userId - The ID of the user to be deleted.
+   * 
+   * Operation:
+   * - Deletes specified user.
+   * - Single user deletion only.
+   * 
+   * Flow:
+   * 1. Calls genericResourceDELETE with userId.
+   * 2. Calls onSuccess or onError based on result.
+   * 3. Waits 1 second before refreshing data.
+   * 4. Calls refreshData to update user list.
+   * 
+   * Error Handling:
+   * - displays error message via window.alert
+   */
   async deleteUser(userId) {
     try {
       const result = await genericResourceDELETE(`/user?uid=${userId}`, this, {
@@ -97,7 +138,18 @@ class ViewUsers extends Component {
         }
       );
     }
-
+/**
+ * Edit and Delete Buttons:
+ * - Added as custom columns to the table.
+ * - Edit Button:
+ *   - Opens the AddUser tab with the selected user's data for editing.
+ * - Delete Button:
+ *   - Prompts for confirmation before deleting the user.
+ *   - Calls deleteUser method to perform deletion.
+ * - Permissions:
+ *   - Buttons are hidden if the userId matches the logged-in user and the user is an admin.
+ * 
+ */
     columns.push({
       name: "user_id",
       label: "Edit",

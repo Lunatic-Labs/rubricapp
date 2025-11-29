@@ -4,7 +4,21 @@ import AdminViewTeams from '../ViewTeams/AdminViewTeams.js';
 import MainHeader from '../../../Components/MainHeader.js';
 import { Box } from '@mui/material';
 
-
+/**
+ * Creates an instance of the TeamDashboard component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @property {Object} props.navbar - The navbar object containing state and methods for navigation.
+ * 
+ * Components:
+ * @see MainHeader.js
+ * @see AdminViewTeams.js
+ * 
+ * Data:
+ * No direct data fetching or management in this component.
+ * - Handled by AdminViewTeams component.
+ */
 
 class TeamDashboard extends Component {
     render() {
