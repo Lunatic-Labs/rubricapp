@@ -115,7 +115,7 @@ class ViewCourses extends Component {
                 }}
                   aria-label='editCourseIconButton'
                  >
-                  <EditIcon sx={{color:"black"}}/>
+                  <EditIcon sx={{color:"var(--table-text)"}}/>
                 </IconButton>
               )
             },
@@ -146,7 +146,7 @@ class ViewCourses extends Component {
                     }
                 }}
                 aria-label="viewCourseIconButton">
-                  <VisibilityIcon sx={{color:"black"}} />
+                  <VisibilityIcon sx={{color:"var(--table-text)"}} />
                 </IconButton>
             )
           },
