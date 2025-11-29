@@ -12,7 +12,7 @@ import Loading from '../Loading/Loading.js';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 /**
- * Create an instance of the login page.
+ * Create an instance of the login component.
  * 
  * @constructor
  * @param {Object} props - The properties passed to the component.

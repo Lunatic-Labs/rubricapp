@@ -10,9 +10,27 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 /**
- * Cre
+ * Creates an isnteance of the SetNewPassword componenet.
+ * 
+ * @constructor
+ * @param {object} props - The properties passed to the component.
+ * @param {string} props.email - - The user's email address (used when submitting the new password).
+ * 
+ * @property {string|null} state.errorMessage - Error message displayed when password validation or API submission fails.
+ * @property {boolean} state.isPasswordSet - Indicates whether the new password has been successfully set.
+ * @property {string} state.password - The user's newly entered password.
+ * @property {string} state.confirmationPassword - Second password input used for match validation.
+ * @property {boolean} state.showPassword - Controls the visibility of the password input.
+ *
+ * @property {Object} state.errors - Input-specific error messages.
+ * @property {string} state.errors.password - Error message for the password field.
+ * @property {string} state.errors.confirmationPassword - Error message for the confirmation password field.
+ *
+ * @property {Object} state.PasswordStrength - Enum representing password strength.
+ * @property {string} state.PasswordStrength.STRONG - Strong password flag.
+ * @property {string} state.PasswordStrength.MEDIUM - Medium password flag.
+ * @property {string} state.PasswordStrength.WEAK - Weak password flag.
  */
-
 
 class SetNewPassword extends Component {
     constructor(props) {
@@ -36,6 +54,13 @@ class SetNewPassword extends Component {
                 WEAK: 'WEAK'
             }
         }
+
+        /**
+         * @method handleChange - Updates password and confirmation password fields while applying validation rules such as:
+         *  - Required fields
+         *  - Password length not exceeding MAX_PASSWORD_LENGTH
+         * @param {*} e - the input event.
+         */
 
         // handleChange has been altered to account for the 20 character limit for password
         this.handleChange = (e) => {
@@ -65,6 +90,11 @@ class SetNewPassword extends Component {
             });
         };
 
+        /**
+         * @method getIcon - Returns the Material UI icon component corresponding to the provided password strength.
+         * @param {enum} strength - The strength of the password.
+         * @returns {import} Returns the Material UI icon component.
+         */
         this.getIcon = (strength) => {
             switch(strength) {
                 case 'STRONG':
@@ -79,6 +109,11 @@ class SetNewPassword extends Component {
             }
         };
 
+        /**
+         * @method generateColors - Returns the appropriate strength bar colors (weak / medium / strong) for UI visualization.
+         * @param {enum} strength - The strength of the password.
+         * @returns {string} Returns the appropriate strength bar colors.
+         */
         this.generateColors = (strength) => {
             const COLORS = {
                 NEUTRAL: '#E2E2E2',
@@ -99,6 +134,9 @@ class SetNewPassword extends Component {
             }
         };
 
+        /**
+         * @method handleTogglePasswordVisibility - Toggles whether the password field displays plain text or masked characters.
+         */
         this.handleTogglePasswordVisibility = () => {
             this.setState({
                 showPassword: !this.state.showPassword,
@@ -109,6 +147,16 @@ class SetNewPassword extends Component {
             });
         };
 
+        /**
+         * @method testPasswordStrength - Computes password strength using criteria including:
+         *  - Minimum length
+         *  - Uppercase letters
+         *  - Lowercase letters
+         *  - Numbers
+         *  - Special characters
+         * @param {string} password - The password inputed by the user.
+         * @returns {string} Returns the password strength level: "STRONG", "MEDIUM", "WEAK".
+         */
         this.testPasswordStrength = (password) => {
             const atLeastMinimumLength = (password) => new RegExp(/(?=.{8,})/).test(password);
             const atLeastOneUppercaseLetter = (password) => new RegExp(/(?=.*?[A-Z])/).test(password);
@@ -132,6 +180,16 @@ class SetNewPassword extends Component {
             return 'WEAK';
         }
         
+        /**
+         * @method setPassword - Validates user input and submits the new password to the backend via a PUT request, performs the following checks:
+         *  - Password cannot be empty
+         *  - Confirmation password cannot be empty
+         *  - Password fields cannot exceed MAX_PASSWORD_LENGTH
+         *  - Passwords must match
+         *  - Password must be STRONG
+         * 
+         * On successful API submission, transitions the component to show the Login page.
+         */
 
         // 2 new 'validation' / error handling statemetns where added below
         // both check that character length does not exceed 20
