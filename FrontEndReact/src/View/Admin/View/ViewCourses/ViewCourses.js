@@ -115,7 +115,7 @@ class ViewCourses extends Component {
                     }
                 }}
                  >
-                  <EditIcon sx={{color:"black"}}/>
+                  <EditIcon sx={{color:"var(--table-text)"}}/>
                 </IconButton>
               )
             },
@@ -146,8 +146,8 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                >
-                  <VisibilityIcon sx={{color:"black"}} />
+                aria-label="viewCourseIconButton">
+                  <VisibilityIcon sx={{color:"var(--table-text)"}} />
                 </IconButton>
             )
           },
