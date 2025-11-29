@@ -21,6 +21,7 @@ const CustomButton = ({ label, onClick, style, isOutlined, position, disabled,'a
   return (
 		<div style={{ position: 'relative' }}>
     	<Button
+        variant={isOutlined ? "outlined" : "contained"}
         onClick={onClick}
         style={buttonStyle}
         position={position}
