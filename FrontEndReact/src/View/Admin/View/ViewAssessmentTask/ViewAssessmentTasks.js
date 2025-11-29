@@ -159,19 +159,23 @@ class ViewAssessmentTasks extends Component {
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
 
+        const sortedAssessmentTasks = [...assessmentTasks].sort((a, b) => {
+            return b.assessment_task_id - a.assessment_task_id;
+        });
+
         let assessmentTasksToDueDates = {};
 
         for(let index = 0; index < assessmentTasks.length; index++) {
-            assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
-                "due_date": assessmentTasks[index]["due_date"],
-                "time_zone": assessmentTasks[index]["time_zone"]
+            assessmentTasksToDueDates[sortedAssessmentTasks[index]["assessment_task_id"]] = {
+                "due_date": sortedAssessmentTasks[index]["due_date"],
+                "time_zone": sortedAssessmentTasks[index]["time_zone"]
             };
         }
 
         var assessmentTaskIdToAssessmentTaskName = {};
 
-        for(let index = 0; index < assessmentTasks.length; index++) {
-            assessmentTaskIdToAssessmentTaskName[assessmentTasks[index]["assessment_task_id"]] = assessmentTasks[index]["assessment_task_name"];
+        for(let index = 0; index < sortedAssessmentTasks.length; index++) {
+            assessmentTaskIdToAssessmentTaskName[sortedAssessmentTasks[index]["assessment_task_id"]] = sortedAssessmentTasks[index]["assessment_task_name"];
         }
 
         var state = navbar.state;
@@ -603,7 +607,7 @@ class ViewAssessmentTasks extends Component {
         return(
             <>
                 <CustomDataTable
-                    data={assessmentTasks}
+                    data={sortedAssessmentTasks}
                     columns={columns}
                     options={options}
                 />
