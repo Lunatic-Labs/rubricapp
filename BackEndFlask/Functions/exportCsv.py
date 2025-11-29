@@ -113,8 +113,8 @@ class Csv_Creation(ABC):
         self._writer.writerow(['\ufeff']) # A dom that helps excel auto use utf-8. Downside is that it uses up a line.
         self._writer.writerow(["Course Name"])
         self._writer.writerow([get_course_name_by_at_id(self._at_id)])
-        self._writer.writerow(["Task Name"])  # Add this line
-        self._writer.writerow([get_assessment_task_name_by_at_id(self._at_id)])  # Add this line
+        self._writer.writerow(["Task Name"])
+        self._writer.writerow([get_assessment_task_name_by_at_id(self._at_id)])
         self._writer.writerow([' '])
 
         
