@@ -312,7 +312,7 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
-                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                        const task = sortedAssessmentTasks.find((task) => task["assessment_task_id"] === atId);
                         const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
                         return (
                             <Tooltip 
@@ -344,7 +344,7 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
-                        const task = assessmentTasks.find((task) => task["assessment_task_id"] === atId);
+                        const task = sortedAssessmentTasks.find((task) => task["assessment_task_id"] === atId);
                         const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
 
                         return (
@@ -376,7 +376,7 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
-                        if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
+                        if (assessmentTaskId && sortedAssessmentTasks && chosenCourse && rubricNames) {
                             return (
                                 <Tooltip
                                     title={
@@ -390,7 +390,7 @@ class ViewAssessmentTasks extends Component {
                                         id=""
                                         onClick={() => {
                                             setAddAssessmentTaskTabWithAssessmentTask(
-                                                assessmentTasks,
+                                                sortedAssessmentTasks,
                                                 assessmentTaskId,
                                                 chosenCourse,
                                                 roleNames,
@@ -423,8 +423,8 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
                     customBodyRender: (assessmentTaskId) => {
-                        if (assessmentTaskId && assessmentTasks) {
-                            const selectedTask = assessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
+                        if (assessmentTaskId && sortedAssessmentTasks) {
+                            const selectedTask = sortedAssessmentTasks.find(task => task.assessment_task_id === assessmentTaskId);
                             const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === assessmentTaskId);
                             const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
@@ -494,7 +494,7 @@ class ViewAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
                     customBodyRender: (atId) => {
-                        const assessmentTask = assessmentTasks.find(task => task.assessment_task_id === atId);
+                        const assessmentTask = sortedAssessmentTasks.find(task => task.assessment_task_id === atId);
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
 
@@ -528,7 +528,7 @@ class ViewAssessmentTasks extends Component {
                                     className='primary-color'
                                     variant='contained'
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                        navbar.setAssessmentTaskInstructions(sortedAssessmentTasks, atId);
                                     }}
                                     aria-label='startAssessmentTasksButton'
                                 >
