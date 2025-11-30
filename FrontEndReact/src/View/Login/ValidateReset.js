@@ -7,7 +7,22 @@ import Login from './Login.js';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 
-
+/**
+ * Creats an instance of the ValidateReset component
+ * 
+ * @constructor
+ * @param {object} props - The properties passed to the component.
+ * 
+ * @property {string} state.activeTab - Controls which stage of the reset process is shown. Possible values:
+ *  - "ValidateResetPage"     → User enters email  
+ *  - "SendCodePage"          → User enters verification code  
+ *  - "SetNewPasswordPage"    → User creates new password  
+ *  - "LoginPage"             → Return to login screen
+ *
+ * @property {string|null} state.errorMessage - Error message for invalid input or backend failures.
+ * @property {string} state.email - The email entered by the user for password reset.
+ * @property {string} state.code - The 6-digit verification code entered by the user.
+ */
 
 class ValidateReset extends Component {
     constructor(props) {
@@ -20,6 +35,13 @@ class ValidateReset extends Component {
             code: '',
         };
 
+        /**
+         * @method sendEmail - Sends a request to the backend to generate and deliver a password reset code. Validates that:
+         *  - Email field is not empty.
+         * 
+         * On success: advances to "SendCodePage".  
+         * On failure: updates `errorMessage`.
+         */
         this.sendEmail = () => {
             let email = this.state.email;
 
@@ -56,6 +78,13 @@ class ValidateReset extends Component {
             }
         }
 
+        /**
+         * @method validateCode - Sends the user-entered reset code to the backend for validation. Validates that:
+         *  - Code is exactly 6 digits.
+         * 
+         * On success: advances to "SetNewPasswordPage".  
+         * On failure: updates `errorMessage`.
+         */
         this.validateCode = () => {
             let email = this.state.email;
             let code = this.state.code;
