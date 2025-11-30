@@ -38,7 +38,7 @@ import ViewNotification from '../Admin/View/ViewDashboard/Notifications.js';
  * Creates an instance of the AppState component.
  * 
  * @constructor
- * @param {Object} props - Component properties.
+ * @param {Object} props - The properties passed to the component..
  * @param {string} props.userName - Displayed in the navigation bar.
  * @param {function} props.logout - Callback for user logout.
  * @param {boolean} props.isSuperAdmin - Determines whether the user has Super Admin privileges.
