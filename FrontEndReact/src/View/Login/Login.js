@@ -12,7 +12,7 @@ import Loading from '../Loading/Loading.js';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 /**
- * Create an instance of the login component.
+ * Creates an instance of the login component.
  * 
  * @constructor
  * @param {Object} props - The properties passed to the component.
@@ -55,8 +55,8 @@ class Login extends Component {
 
         /**
          * @method handleChange - Updates email or password fields while applying validation rules such as:
-         *  - Required fields
-         *  - Maximum password length
+         *  - Required fields.
+         *  - Maximum password length.
          * @param {*} e - the input event.
          */
 
@@ -101,8 +101,8 @@ class Login extends Component {
 
         /**
          * @method login - Attempts to authenticate the user against the backend:
-         *  - Stores access + refresh tokens on success
-         *  - Displays backend error message on failure
+         *  - Stores access + refresh tokens on success.
+         *  - Displays backend error message on failure.
          */
         this.login = () => {
             var {
@@ -174,8 +174,8 @@ class Login extends Component {
 
         /**
          * @method handleNewAccessToken - Attempts to refresh an expired access token using the stored refresh token:
-         *  - Updates tokens on success
-         *  - Forces logout on failure
+         *  - Updates tokens on success.
+         *  - Forces logout on failure.
          */
         this.handleNewAccessToken = () => {
             const refreshToken = this.cookies.get('refresh_token');
@@ -285,9 +285,9 @@ class Login extends Component {
 
     /**
      * @method checkAuthStatus - Determines whether:
-     *  - User has valid tokens → login automatically
-     *  - User has expired tokens → require login again
-     *  - User state is inconsistent → clear cookies and force logout
+     *  - User has valid tokens → login automatically.
+     *  - User has expired tokens → require login again.
+     *  - User state is inconsistent → clear cookies and force logout.
      */
     checkAuthStatus = () => {
         const hasAccessToken = !!this.cookies.get('access_token');

@@ -14,10 +14,10 @@ import { MuiOtpInput } from 'mui-one-time-password-input';
  * @param {object} props - The properties passed to the component.
  * 
  * @property {string} state.activeTab - Controls which stage of the reset process is shown. Possible values:
- *  - "ValidateResetPage"     → User enters email  
- *  - "SendCodePage"          → User enters verification code  
- *  - "SetNewPasswordPage"    → User creates new password  
- *  - "LoginPage"             → Return to login screen
+ *  - "ValidateResetPage"     → User enters email.
+ *  - "SendCodePage"          → User enters verification code.
+ *  - "SetNewPasswordPage"    → User creates new password.
+ *  - "LoginPage"             → Return to login screen.
  *
  * @property {string|null} state.errorMessage - Error message for invalid input or backend failures.
  * @property {string} state.email - The email entered by the user for password reset.

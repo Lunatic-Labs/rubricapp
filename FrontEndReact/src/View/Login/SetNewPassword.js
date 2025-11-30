@@ -57,8 +57,8 @@ class SetNewPassword extends Component {
 
         /**
          * @method handleChange - Updates password and confirmation password fields while applying validation rules such as:
-         *  - Required fields
-         *  - Password length not exceeding MAX_PASSWORD_LENGTH
+         *  - Required fields.
+         *  - Password length not exceeding MAX_PASSWORD_LENGTH.
          * @param {*} e - the input event.
          */
 
@@ -149,11 +149,11 @@ class SetNewPassword extends Component {
 
         /**
          * @method testPasswordStrength - Computes password strength using criteria including:
-         *  - Minimum length
-         *  - Uppercase letters
-         *  - Lowercase letters
-         *  - Numbers
-         *  - Special characters
+         *  - Minimum length.
+         *  - Uppercase letters.
+         *  - Lowercase letters.
+         *  - Numbers.
+         *  - Special characters.
          * @param {string} password - The password inputed by the user.
          * @returns {string} Returns the password strength level: "STRONG", "MEDIUM", "WEAK".
          */
@@ -182,11 +182,11 @@ class SetNewPassword extends Component {
         
         /**
          * @method setPassword - Validates user input and submits the new password to the backend via a PUT request, performs the following checks:
-         *  - Password cannot be empty
-         *  - Confirmation password cannot be empty
-         *  - Password fields cannot exceed MAX_PASSWORD_LENGTH
-         *  - Passwords must match
-         *  - Password must be STRONG
+         *  - Password cannot be empty.
+         *  - Confirmation password cannot be empty.
+         *  - Password fields cannot exceed MAX_PASSWORD_LENGTH.
+         *  - Passwords must match.
+         *  - Password must be STRONG.
          * 
          * On successful API submission, transitions the component to show the Login page.
          */
