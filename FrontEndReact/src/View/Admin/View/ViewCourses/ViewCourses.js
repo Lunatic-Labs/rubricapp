@@ -146,7 +146,7 @@ class ViewCourses extends Component {
                       navbar.setStudentDashboardWithCourse(courseId, courses);
                     }
                 }}
-                aria-label="viewCourseIconButton">
+                >
                   <VisibilityIcon sx={{color:"var(--table-text)"}} />
                 </IconButton>
             )
