@@ -75,7 +75,6 @@ class AdminImportAssessmentTask extends Component<any, AdminImportAssessmentTask
 
         var navbar = this.props.navbar;
         var state = navbar.state;
-        var addAssessmentTask = state.addAssessmentTask;
         
         return (
             <>

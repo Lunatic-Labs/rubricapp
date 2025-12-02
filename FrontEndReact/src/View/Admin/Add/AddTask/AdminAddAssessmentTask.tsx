@@ -361,7 +361,6 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
         var adminViewAssessmentTask = navbar.adminViewAssessmentTask;
         var roleNames = adminViewAssessmentTask.roleNames;
         var rubricNames = adminViewAssessmentTask.rubricNames;
-        var addAssessmentTask = adminViewAssessmentTask.addAssessmentTask;
         const { isHelpOpen } = this.state;
 
         var roleOptions: any = [];

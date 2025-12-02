@@ -7,11 +7,11 @@ export const StatusIndicatorState = Object.freeze({
   COMPLETED: "COMPLETED"
 });
 
-interface StatusIndicatorState {
+interface StatusIndicatorComponentState {
   status: string;
 }
 
-class StatusIndicator extends Component<any, StatusIndicatorState> {
+class StatusIndicator extends Component<any, StatusIndicatorComponentState> {
   getStatusIcon: any;
   constructor(props: any) {
     super(props);

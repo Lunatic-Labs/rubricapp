@@ -192,8 +192,6 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
 
         var state = navbar.state;
 
-        var addTeam = state.addTeam;
-
         const {
             errorMessage,
             errors,
