@@ -24,6 +24,7 @@ Tab mapping:
  - "Reporting" → Reporting
 
 This component does not manage application state directly, but instead delegates all navigation updates to the parent `AppState` component.
+
 ==================================================================================================================================
 `Navbar.js`
 
@@ -47,4 +48,5 @@ The component renders:
     • Logout — logs out via <Logout logout={props.logout} />
 
 The component uses Material UI for layout and styling, and is intended as the primary navigation bar throughout the user-facing application.
+
 ==================================================================================================================================

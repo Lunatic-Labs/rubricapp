@@ -3,6 +3,8 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
+// For further documentation look inside the README
+
 /**
  * Creates a function, BasicTabs.
  * 

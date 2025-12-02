@@ -18,6 +18,8 @@ import Divider from '@mui/material/Divider';
 import Logout from '../Logout/Logout.js';
 import Logo from "./sbText.png";
 
+// For further documentation look inside the README
+
 /**
  * Creates a function, ButtonAppBar.
  * 
