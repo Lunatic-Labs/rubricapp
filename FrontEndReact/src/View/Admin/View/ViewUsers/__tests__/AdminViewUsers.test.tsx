@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -31,12 +32,12 @@ var auf = "addUserForm";
 test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminViewUsers.test.js Test 1: should render Login Form component", () => {
+test("AdminViewUsers.test.tsx Test 1: should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
-test("AdminViewUsers.test.js Test 2: Should show roster page of the users for admin view using demo admin credentials", async () => {
+test("AdminViewUsers.test.tsx Test 2: Should show roster page of the users for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -55,7 +56,7 @@ test("AdminViewUsers.test.js Test 2: Should show roster page of the users for ad
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
-test("AdminViewUsers.test.js Test 3: Should show Edit User Form when clicking the Edit Icon for admin view using demo admin credentials", async () => {
+test("AdminViewUsers.test.tsx Test 3: Should show Edit User Form when clicking the Edit Icon for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -76,7 +77,7 @@ test("AdminViewUsers.test.js Test 3: Should show Edit User Form when clicking th
         expectElementWithAriaLabelToBeInDocument(eut);
     });
 });
-test("AdminViewUsers.test.js Test 4: Should show Student Bulk Upload Form when clicking the Student Bulk Upload Button for admin view using demo admin credentials", async () => {
+test("AdminViewUsers.test.tsx Test 4: Should show Student Bulk Upload Form when clicking the Student Bulk Upload Button for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -95,7 +96,7 @@ test("AdminViewUsers.test.js Test 4: Should show Student Bulk Upload Form when c
         expectElementWithAriaLabelToBeInDocument(abut);
     });
 });
-test("AdminViewUsers.test.js Test 5: Should show Add User Form when clicking the Add User Button for admin view using demo admin credentials", async () => {
+test("AdminViewUsers.test.tsx Test 5: Should show Add User Form when clicking the Add User Button for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     await waitFor(() => {

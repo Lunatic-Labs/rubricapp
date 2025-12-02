@@ -1,6 +1,7 @@
+import { test, expect } from "@jest/globals";
 // import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-// import Login from "../../../../Login/Login.js";
+// import Login from "../../../../Login/Login";
 
 // import {
 //     clickElementWithAriaLabel,
@@ -8,11 +9,11 @@ import "@testing-library/jest-dom";
 //     changeElementWithAriaLabelWithInput,
 //     expectElementWithAriaLabelToHaveErrorMessage,
 //     clickFirstElementWithAriaLabel
-// } from "../../../../../testUtilities.js";
+// } from "../../../../../testUtilities";
 
 // import {
 //     demoAdminPassword
-// } from "../../../../../App.js";
+// } from "../../../../../App";
 
 
 
@@ -44,7 +45,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // Tests will be redone at a future time as Custom Rubrics is still making changes.
 
 
-// test("AdminAddCustomRubric.test.js Test 1: Should render the Customize Your Rubric page given the Add Custom Rubric button is clicked.", async () => {
+// test("AdminAddCustomRubric.test.tsx Test 1: Should render the Customize Your Rubric page given the Add Custom Rubric button is clicked.", async () => {
 //     render(<Login />);
 
 //     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -85,7 +86,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("AdminAddCustomRubric.test.js Test 2: Should render the My Custrom Rubric page if the back button on the Customize Your Rubric page is clicked.", async () => {
+// test("AdminAddCustomRubric.test.tsx Test 2: Should render the My Custrom Rubric page if the back button on the Customize Your Rubric page is clicked.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -122,7 +123,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("AdminAddCustomRubric.test.js Test 3: HelperText error should show for the Rubric Name field when it is left empty and the rest is filled.", async () => {
+// test("AdminAddCustomRubric.test.tsx Test 3: HelperText error should show for the Rubric Name field when it is left empty and the rest is filled.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -175,7 +176,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("AdminAddCustomRubric.test.js Test 4: Should render an error message on the page when no input for Rubric Description is given.", async () => {
+// test("AdminAddCustomRubric.test.tsx Test 4: Should render an error message on the page when no input for Rubric Description is given.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -228,7 +229,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("AdminAddCustomRubric.test.js Test 5: Should successfully place the selected categories from the Rubrics in the Your Selected Categories lists.", async () => {
+// test("AdminAddCustomRubric.test.tsx Test 5: Should successfully place the selected categories from the Rubrics in the Your Selected Categories lists.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -285,7 +286,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("AdminAddCustomRubric.test.js Test 6: Should render an error message on the page when no category from the Rubric Table is selected.", async () => {
+// test("AdminAddCustomRubric.test.tsx Test 6: Should render an error message on the page when no category from the Rubric Table is selected.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {

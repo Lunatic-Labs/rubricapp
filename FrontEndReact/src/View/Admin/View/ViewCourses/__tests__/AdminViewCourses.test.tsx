@@ -1,19 +1,20 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword,
     demoTaInstructorPassword,
     demoStudentPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -32,12 +33,12 @@ var rt = "rosterTitle";
 test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminViewCourses.test.js Test 1: Should render Login Form component", () => {
+test("AdminViewCourses.test.tsx Test 1: Should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
-test("AdminViewCourses.test.js Test 2: Should show courses page for admin view using demo admin credentials", async () => {
+test("AdminViewCourses.test.tsx Test 2: Should show courses page for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -58,7 +59,7 @@ test("AdminViewCourses.test.js Test 2: Should show courses page for admin view u
         expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
-test("AdminViewCourses.test.js Test 3: Should show courses page for ta/instructor view using demo ta/instructor credentials", async () => {
+test("AdminViewCourses.test.tsx Test 3: Should show courses page for ta/instructor view using demo ta/instructor credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
@@ -79,7 +80,7 @@ test("AdminViewCourses.test.js Test 3: Should show courses page for ta/instructo
         expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
-test("AdminViewCourses.test.js Test 4: Should show courses page for student view using demo student credentials", async () => {
+test("AdminViewCourses.test.tsx Test 4: Should show courses page for student view using demo student credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
@@ -100,7 +101,7 @@ test("AdminViewCourses.test.js Test 4: Should show courses page for student view
         expectElementWithAriaLabelToBeInDocument(lf);
     });
 });
-test("AdminViewCourses.test.js Test 5: Should show add course page for admin view using demo admin credentials and clicking add course button", async () =>{
+test("AdminViewCourses.test.tsx Test 5: Should show add course page for admin view using demo admin credentials and clicking add course button", async () =>{
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -119,7 +120,7 @@ test("AdminViewCourses.test.js Test 5: Should show add course page for admin vie
         expectElementWithAriaLabelToBeInDocument(act);
     });
 });
-test("AdminViewCourses.test.js Test 6: Should show edit course page for admin view using demo admin credentials and clicking edit course button", async () =>{
+test("AdminViewCourses.test.tsx Test 6: Should show edit course page for admin view using demo admin credentials and clicking edit course button", async () =>{
     render(<Login />);
 
     await waitFor(() => {
@@ -132,7 +133,7 @@ test("AdminViewCourses.test.js Test 6: Should show edit course page for admin vi
         expectElementWithAriaLabelToBeInDocument(act);
     });
 });
-test("AdminViewCourses.test.js Test 7: Should show view course page for admin view using demo admin credentials and clicking view course button", async () =>{
+test("AdminViewCourses.test.tsx Test 7: Should show view course page for admin view using demo admin credentials and clicking view course button", async () =>{
     render(<Login />);
 
     await waitFor(() => {

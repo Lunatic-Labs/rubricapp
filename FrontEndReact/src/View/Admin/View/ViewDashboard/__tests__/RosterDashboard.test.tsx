@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
-    demoAdminPassword,
-} from "../../../../../App.js";
+    demoAdminPassword
+} from "../../../../../App";
 
 
 
@@ -33,12 +34,12 @@ var dut = "dropUserTitle";
 test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("RosterDashboard.test.js Test 1: Should render Login Form component", () => {
+test("RosterDashboard.test.tsx Test 1: Should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
-test("RosterDashboard.test.js Test 2: Should show Admin View Courses when logging with Admin credentials", async () => {
+test("RosterDashboard.test.tsx Test 2: Should show Admin View Courses when logging with Admin credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -51,7 +52,7 @@ test("RosterDashboard.test.js Test 2: Should show Admin View Courses when loggin
         expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
-test("RosterDashboard.test.js Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
+test("RosterDashboard.test.tsx Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -64,7 +65,7 @@ test("RosterDashboard.test.js Test 3: Should show Roster Dashboard when clicking
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
-test("RosterDashboard.test.js Test 4: Should show Student Bulkupload when clicking the student bulk upload button", async () => {
+test("RosterDashboard.test.tsx Test 4: Should show Student Bulkupload when clicking the student bulk upload button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -83,7 +84,7 @@ test("RosterDashboard.test.js Test 4: Should show Student Bulkupload when clicki
         expectElementWithAriaLabelToBeInDocument(abut);
     });
 });
-test("RosterDashboard.test.js Test 5: Should show Add User page when clicking the add user button", async () => {
+test("RosterDashboard.test.tsx Test 5: Should show Add User page when clicking the add user button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -102,7 +103,7 @@ test("RosterDashboard.test.js Test 5: Should show Add User page when clicking th
         expectElementWithAriaLabelToBeInDocument(aut);
     });
 });
-test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking the edit user button", async () => {
+test("RosterDashboard.test.tsx Test 6: Should show Edit User page when clicking the edit user button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -123,7 +124,7 @@ test("RosterDashboard.test.js Test 6: Should show Edit User page when clicking t
         expectElementWithAriaLabelToBeInDocument(eut);
     });
 });
-test("RosterDashboard.test.js Test 7: Should drop a user when clicking on the drop user button", async () => {
+test("RosterDashboard.test.tsx Test 7: Should drop a user when clicking on the drop user button", async () => {
     render(<Login/>);
 
     await waitFor(() => {

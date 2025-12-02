@@ -1,18 +1,19 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import ResizeObserver from "resize-observer-polyfill";
-import Login from "../../Login/Login.js";
+import { ResizeObserver } from "@juggle/resize-observer";
+import Login from "../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../testUtilities.js";
+} from "../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../App.js";
+} from "../../../App";
 global.ResizeObserver = ResizeObserver;
 
 var lb = "loginButton";
@@ -33,7 +34,7 @@ var repd = "reportingDashboard";
 test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("Header.test.js Test 1: Should render the MainHeader component given the View Course button is clicked", async () => {
+test("Header.test.tsx Test 1: Should render the MainHeader component given the View Course button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -52,7 +53,7 @@ test("Header.test.js Test 1: Should render the MainHeader component given the Vi
         expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 });
-test("MainHeader.test.js Test 2: Clicking the back button on the MainHeader component should go to the page that came before the current (ViewCourseAdmin)", async () => {
+test("MainHeader.test.tsx Test 2: Clicking the back button on the MainHeader component should go to the page that came before the current (ViewCourseAdmin)", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -71,7 +72,7 @@ test("MainHeader.test.js Test 2: Clicking the back button on the MainHeader comp
         expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
-test("MainHeader.test.js Test 3: Clicking the view button for a given course provides the correct course title", async () => {
+test("MainHeader.test.tsx Test 3: Clicking the view button for a given course provides the correct course title", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -84,7 +85,7 @@ test("MainHeader.test.js Test 3: Clicking the view button for a given course pro
         expectElementWithAriaLabelToBeInDocument(vcmh);
     });
 });
-test("MainHeader.test.js Test 4: Clicking a View Course button on the main page should render all four tabs", async () => {
+test("MainHeader.test.tsx Test 4: Clicking a View Course button on the main page should render all four tabs", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -103,7 +104,7 @@ test("MainHeader.test.js Test 4: Clicking a View Course button on the main page 
         expectElementWithAriaLabelToBeInDocument(rept);
     });
 });
-test("MainHeader.test.js Test 5: Ensure that clicking the view button for a given course will render the rosterDashboard by default", async () => {
+test("MainHeader.test.tsx Test 5: Ensure that clicking the view button for a given course will render the rosterDashboard by default", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -116,7 +117,7 @@ test("MainHeader.test.js Test 5: Ensure that clicking the view button for a give
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
-test("MainHeader.test.js Test 6: Ensure that clicking the rosterTab will render the rosterDashboard", async () => {
+test("MainHeader.test.tsx Test 6: Ensure that clicking the rosterTab will render the rosterDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -135,7 +136,7 @@ test("MainHeader.test.js Test 6: Ensure that clicking the rosterTab will render 
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
-test("MainHeader.test.js Test 7: Ensure that clicking the teamTab will render the teamDashboard", async () => {
+test("MainHeader.test.tsx Test 7: Ensure that clicking the teamTab will render the teamDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -154,7 +155,7 @@ test("MainHeader.test.js Test 7: Ensure that clicking the teamTab will render th
         expectElementWithAriaLabelToBeInDocument(td);
     });
 });
-test("MainHeader.test.js Test 8: Ensure that clicking the assessmentTab will render the assessmentDashboard", async () => {
+test("MainHeader.test.tsx Test 8: Ensure that clicking the assessmentTab will render the assessmentDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -173,7 +174,7 @@ test("MainHeader.test.js Test 8: Ensure that clicking the assessmentTab will ren
         expectElementWithAriaLabelToBeInDocument(ad);
     });
 });
-test("MainHeader.test.js Test 9: Ensure that clicking the reportingTab will render the reportingDashboard", async () => {
+test("MainHeader.test.tsx Test 9: Ensure that clicking the reportingTab will render the reportingDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {

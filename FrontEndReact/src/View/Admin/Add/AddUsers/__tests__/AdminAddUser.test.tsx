@@ -1,6 +1,7 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
@@ -8,11 +9,11 @@ import {
     changeElementWithAriaLabelWithInput,
     expectElementWithAriaLabelToHaveErrorMessage,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -35,7 +36,7 @@ var ueai = "userEmailAddressInput";
 test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminAddUser.test.js Test 1: Should render the AdminAddUser component given the Add User button is clicked.", async () => {
+test("AdminAddUser.test.tsx Test 1: Should render the AdminAddUser component given the Add User button is clicked.", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -60,7 +61,7 @@ test("AdminAddUser.test.js Test 1: Should render the AdminAddUser component give
         expectElementWithAriaLabelToBeInDocument(aut);
     });
 });
-test("AdminAddUser.test.js Test 2: Should render the roster dashboard if the back button on the Add User page is clicked.", async () => {
+test("AdminAddUser.test.tsx Test 2: Should render the roster dashboard if the back button on the Add User page is clicked.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -85,7 +86,7 @@ test("AdminAddUser.test.js Test 2: Should render the roster dashboard if the bac
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
-test("AdminAddUser.test.js Test 3: Should render the roster dashboard if the cancel button on the Add User page is clicked.", async () => {
+test("AdminAddUser.test.tsx Test 3: Should render the roster dashboard if the cancel button on the Add User page is clicked.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -110,7 +111,7 @@ test("AdminAddUser.test.js Test 3: Should render the roster dashboard if the can
         expectElementWithAriaLabelToBeInDocument(rt);
     },{ timeout: 3000 });
 });
-test("AdminAddUser.test.js Test 4: HelperText errors should show for each text field when no information is filled.", async () => {
+test("AdminAddUser.test.tsx Test 4: HelperText errors should show for each text field when no information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -141,7 +142,7 @@ test("AdminAddUser.test.js Test 4: HelperText errors should show for each text f
         expectElementWithAriaLabelToHaveErrorMessage(ueai,"Email cannot be empty");
     });
 });
-test("AdminAddUser.test.js Test 5: HelperText error should show for the firstName text field when it is left blank while all other information is filled.", async () => {
+test("AdminAddUser.test.tsx Test 5: HelperText error should show for the firstName text field when it is left blank while all other information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -174,7 +175,7 @@ test("AdminAddUser.test.js Test 5: HelperText error should show for the firstNam
         expectElementWithAriaLabelToHaveErrorMessage(ufni,"First name cannot be empty");
     });
 });
-test("AdminAddUser.test.js Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled.", async () => {
+test("AdminAddUser.test.tsx Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -207,7 +208,7 @@ test("AdminAddUser.test.js Test 6: HelperText error should show for the LastName
         expectElementWithAriaLabelToHaveErrorMessage(ulni,"Last name cannot be empty");
     });
 });
-test("AdminAddUser.test.js Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled.", async () => {
+test("AdminAddUser.test.tsx Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -240,7 +241,7 @@ test("AdminAddUser.test.js Test 7: HelperText error should show for the Email Ad
         expectElementWithAriaLabelToHaveErrorMessage(ueai,"Email cannot be empty");
     });
 });
-test("AdminAddUser.test.js Test 8: HelperText error should show for the Email Address text field when the input is invalid.", async () => {
+test("AdminAddUser.test.tsx Test 8: HelperText error should show for the Email Address text field when the input is invalid.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -277,7 +278,7 @@ test("AdminAddUser.test.js Test 8: HelperText error should show for the Email Ad
 });
 
 
-// test("AdminAddUser.test.js Test 9: HelperText error should show for the Role dropdown text field when it is left blank while all other information is filled.", async () => {
+// test("AdminAddUser.test.tsx Test 9: HelperText error should show for the Role dropdown text field when it is left blank while all other information is filled.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {

@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 // import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-// import Login from "../../Login/Login.js";
+// import Login from "../../Login/Login.tsx";
 
 // import {
 //     clickElementWithAriaLabel,
 //     expectElementWithAriaLabelToBeInDocument,
 //     changeElementWithAriaLabelWithInput,
 //     clickFirstElementWithAriaLabel
-// } from "../../../testUtilities.js";
+// } from "../../../testUtilities";
 
 // import {
 //     demoTaInstructorPassword
-// } from "../../../App.js";
+// } from "../../../App";
 
 
 
@@ -41,7 +42,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-// test("TADashboard.test.js Test 1: Should render both assessment tables if valid TA information is input to login.", async () => {
+// test("TADashboard.test.tsx Test 1: Should render both assessment tables if valid TA information is input to login.", async () => {
 //     render(<Login />);
 
 //     changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
@@ -65,7 +66,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("TADashboard.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked.", async () => {
+// test("TADashboard.test.tsx Test 2: Should render the completed assessment task page if the complete assessment task button is clicked.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -92,7 +93,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("TADashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked.", async () => {
+// test("TADashboard.test.tsx Test 3: Should render the view completed assessment task page if the view button is clicked.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -117,7 +118,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("TADashboard.test.js Test 4: Should render to the course dashboard when the back button is clicked on my Assessment Tasks and Completed Assessments page.", async () => {
+// test("TADashboard.test.tsx Test 4: Should render to the course dashboard when the back button is clicked on my Assessment Tasks and Completed Assessments page.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -144,7 +145,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("TADashboard.test.js Test 5: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on the viewAssessmentTaskInstructions page.", async () => {
+// test("TADashboard.test.tsx Test 5: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on the viewAssessmentTaskInstructions page.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -182,7 +183,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("TADashboard.test.js Test 6: Should render to the Feedback page of the Assessment Task when the continue button is selected.", async () => {
+// test("TADashboard.test.tsx Test 6: Should render to the Feedback page of the Assessment Task when the continue button is selected.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -223,7 +224,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("TADashboard.test.js Test 7: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on the sections page.", async () => {
+// test("TADashboard.test.tsx Test 7: Should render to the my Assessment Tasks and Completed Assessments page when the back button is clicked on the sections page.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -273,7 +274,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 //     });
 // });
 
-// test("TADashboard.test.js Test 8: Should render to the sections page when the refresh button is clicked, which ensures that everything you tried to select gets reverted back to its original state.", async () => {
+// test("TADashboard.test.tsx Test 8: Should render to the sections page when the refresh button is clicked, which ensures that everything you tried to select gets reverted back to its original state.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -318,7 +319,7 @@ test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("TADashboard.test.js Test 9: Should successfully save all the changes when the save button is clicked on the sections page.", async () => {
+// test("TADashboard.test.tsx Test 9: Should successfully save all the changes when the save button is clicked on the sections page.", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {

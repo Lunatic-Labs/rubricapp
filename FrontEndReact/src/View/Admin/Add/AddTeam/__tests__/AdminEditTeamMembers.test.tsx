@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -36,7 +37,7 @@ var rtmt = "RemoveTeamMembersTitle";
 test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminEditTeamMembers.test.js Test 1: Should render the TeamDashboard", async () => {
+test("AdminEditTeamMembers.test.tsx Test 1: Should render the TeamDashboard", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -61,7 +62,7 @@ test("AdminEditTeamMembers.test.js Test 1: Should render the TeamDashboard", asy
         expectElementWithAriaLabelToBeInDocument(td);
     });
 });
-test("AdminEditTeamMembers.test.js Test 2: Should render the View Team Members page if the adminViewTeam button is clicked", async () => {
+test("AdminEditTeamMembers.test.tsx Test 2: Should render the View Team Members page if the adminViewTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -88,7 +89,7 @@ test("AdminEditTeamMembers.test.js Test 2: Should render the View Team Members p
         expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
-test("AdminEditTeamMembers.test.js Test 3: Should render the Add Team Members page if the Add Member button is clicked", async () => {
+test("AdminEditTeamMembers.test.tsx Test 3: Should render the Add Team Members page if the Add Member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -121,7 +122,7 @@ test("AdminEditTeamMembers.test.js Test 3: Should render the Add Team Members pa
         expectElementWithAriaLabelToBeInDocument(atmt);
     });
 });
-test("AdminEditTeamMembers.test.js Test 4: Should render the View Team Members page if the back button is clicked on the Add Members page", async () => {
+test("AdminEditTeamMembers.test.tsx Test 4: Should render the View Team Members page if the back button is clicked on the Add Members page", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -162,7 +163,7 @@ test("AdminEditTeamMembers.test.js Test 4: Should render the View Team Members p
 });
 
 
-// test("AdminEditTeamMembers.test.js Test 5: Should render the View Team Members page if the Save Team button is clicked on the Add Members page", async () => {
+// test("AdminEditTeamMembers.test.tsx Test 5: Should render the View Team Members page if the Save Team button is clicked on the Add Members page", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -201,7 +202,7 @@ test("AdminEditTeamMembers.test.js Test 4: Should render the View Team Members p
 //         expectElementWithAriaLabelToBeInDocument(avtmt);
 //     },{ timeout: 3000 });
 // });
-test("AdminEditTeamMembers.test.js Test 6: Should render the Remove Team Members page if the remove member button is clicked", async () => {
+test("AdminEditTeamMembers.test.tsx Test 6: Should render the Remove Team Members page if the remove member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -234,7 +235,7 @@ test("AdminEditTeamMembers.test.js Test 6: Should render the Remove Team Members
         expectElementWithAriaLabelToBeInDocument(rtmt);
     });
 });
-test("AdminEditTeamMembers.test.js Test 7: Should render the View Team Members page if the back button is clicked on the remove member page", async () => {
+test("AdminEditTeamMembers.test.tsx Test 7: Should render the View Team Members page if the back button is clicked on the remove member page", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -275,7 +276,7 @@ test("AdminEditTeamMembers.test.js Test 7: Should render the View Team Members p
 });
 
 
-// test("AdminEditTeamMembers.test.js Test 8: Should render the View Team Members page if the save team button is clicked on the remove member page", async () => {
+// test("AdminEditTeamMembers.test.tsx Test 8: Should render the View Team Members page if the save team button is clicked on the remove member page", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {

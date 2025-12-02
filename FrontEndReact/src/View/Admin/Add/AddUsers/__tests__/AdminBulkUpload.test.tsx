@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -33,7 +34,7 @@ var abub = "adminBulkUploadButton";
 test("NOTE: Tests 1-10 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminBulkUpload.test.js Test 1: Should render the AdminBulkUpload component given the Student Bulk Upload button is clicked", async () => {
+test("AdminBulkUpload.test.tsx Test 1: Should render the AdminBulkUpload component given the Student Bulk Upload button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -58,7 +59,7 @@ test("AdminBulkUpload.test.js Test 1: Should render the AdminBulkUpload componen
         expectElementWithAriaLabelToBeInDocument(abut);
     });
 });
-test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the back button on the Student Bulk Upload page is clicked", async () => {
+test("AdminBulkUpload.test.tsx Test 2: Should render the roster dashboard if the back button on the Student Bulk Upload page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -83,7 +84,7 @@ test("AdminBulkUpload.test.js Test 2: Should render the roster dashboard if the 
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
-test("AdminBulkUpload.test.js Test 3: Should render your files when the Choose File button is clicked on Student Bulk Upload page", async () => {
+test("AdminBulkUpload.test.tsx Test 3: Should render your files when the Choose File button is clicked on Student Bulk Upload page", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -106,7 +107,7 @@ test("AdminBulkUpload.test.js Test 3: Should render your files when the Choose F
 });
 
 
-// test("AdminBulkUpload.test.js Test 4: Should render an error message when no file is uploaded on Student Bulk Upload page", async () => {
+// test("AdminBulkUpload.test.tsx Test 4: Should render an error message when no file is uploaded on Student Bulk Upload page", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -131,7 +132,7 @@ test("AdminBulkUpload.test.js Test 3: Should render your files when the Choose F
 //         expectElementWithAriaLabelToHaveErrorMessage(abuem,"Please Select a File to Upload!");
 //     },{ timeout: 3000 });
 // });
-test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the cancel button on the Student Bulk Upload page is clicked", async () => {
+test("AdminBulkUpload.test.tsx Test 5: Should render the roster dashboard if the cancel button on the Student Bulk Upload page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -156,7 +157,7 @@ test("AdminBulkUpload.test.js Test 5: Should render the roster dashboard if the 
         expectElementWithAriaLabelToBeInDocument(rt);
     },{ timeout: 3000 });
 });
-test("AdminBulkUpload.test.js Test 6: Should render the AdminBulkUpload component given the Team Bulk Upload button is clicked", async () => {
+test("AdminBulkUpload.test.tsx Test 6: Should render the AdminBulkUpload component given the Team Bulk Upload button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -183,7 +184,7 @@ test("AdminBulkUpload.test.js Test 6: Should render the AdminBulkUpload componen
         expectElementWithAriaLabelToBeInDocument(abut);
     });
 });
-test("AdminBulkUpload.test.js Test 7: Should render the roster dashboard if the back button on the Team Bulk Upload page is clicked", async () => {
+test("AdminBulkUpload.test.tsx Test 7: Should render the roster dashboard if the back button on the Team Bulk Upload page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -216,7 +217,7 @@ test("AdminBulkUpload.test.js Test 7: Should render the roster dashboard if the 
         expectElementWithAriaLabelToBeInDocument(td);
     });
 });
-test("AdminBulkUpload.test.js Test 8: Should render your files when the Choose File button is clicked on Team Bulk Upload page", async () => {
+test("AdminBulkUpload.test.tsx Test 8: Should render your files when the Choose File button is clicked on Team Bulk Upload page", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -247,7 +248,7 @@ test("AdminBulkUpload.test.js Test 8: Should render your files when the Choose F
 });
 
 
-// test("AdminBulkUpload.test.js Test 9: Should render an error message when no file is uploaded on Team Bulk Upload page", async () => {
+// test("AdminBulkUpload.test.tsx Test 9: Should render an error message when no file is uploaded on Team Bulk Upload page", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -280,7 +281,7 @@ test("AdminBulkUpload.test.js Test 8: Should render your files when the Choose F
 //         expectElementWithAriaLabelToBeInDocument(abuem);
 //     });
 // });
-test("AdminBulkUpload.test.js Test 10: Should render the roster dashboard if the cancel button on the Team Bulk Upload page is clicked", async () => {
+test("AdminBulkUpload.test.tsx Test 10: Should render the roster dashboard if the cancel button on the Team Bulk Upload page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {

@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -39,12 +40,12 @@ var lb = "loginButton";
 test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminViewAssessmentTask.test.js Test 1: Should render Login Form component.", () => {
+test("AdminViewAssessmentTask.test.tsx Test 1: Should render Login Form component.", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
-test("AdminViewAssessmentTask.test.js Test 2: Should render the Assessment Task Dashboard in Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 2: Should render the Assessment Task Dashboard in Admin View.",  async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -69,7 +70,7 @@ test("AdminViewAssessmentTask.test.js Test 2: Should render the Assessment Task 
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 });
-test("AdminViewAssessmentTask.test.js Test 3: Should render the My Custom Rubrics page given the My Custom Rubrics Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 3: Should render the My Custom Rubrics page given the My Custom Rubrics Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -94,7 +95,7 @@ test("AdminViewAssessmentTask.test.js Test 3: Should render the My Custom Rubric
         expectElementWithAriaLabelToBeInDocument(acrt);
     });
 });
-test("AdminViewAssessmentTask.test.js Test 4: Should render the Import Assessment Tasks page given the Import Tasks Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 4: Should render the Import Assessment Tasks page given the Import Tasks Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -119,7 +120,7 @@ test("AdminViewAssessmentTask.test.js Test 4: Should render the Import Assessmen
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 });
-test("AdminViewAssessmentTask.test.js Test 5: Should render the Add Assessment Task page given the Add Task Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 5: Should render the Add Assessment Task page given the Add Task Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -144,7 +145,7 @@ test("AdminViewAssessmentTask.test.js Test 5: Should render the Add Assessment T
         expectElementWithAriaLabelToBeInDocument(aaatt);
     });
 });
-test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment Task page given the Edit Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 6: Should render the Edit Assessment Task page given the Edit Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -171,7 +172,7 @@ test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment 
         expectElementWithAriaLabelToBeInDocument(aeatt);
     });
 });
-test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assessment Tasks page given the View Icon Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 7: Should render the Completed Assessment Tasks page given the View Icon Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -198,7 +199,7 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
-test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {

@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -35,12 +36,12 @@ var lb = "loginButton";
 test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminViewTeams.test.js Test 1: Should render Login Form component", () => {
+test("AdminViewTeams.test.tsx Test 1: Should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
-test("AdminViewTeams.test.js Test 2: Should render the Team Dashboard in Admin View",  async () => {
+test("AdminViewTeams.test.tsx Test 2: Should render the Team Dashboard in Admin View",  async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -65,7 +66,7 @@ test("AdminViewTeams.test.js Test 2: Should render the Team Dashboard in Admin V
         expectElementWithAriaLabelToBeInDocument(td);
     });
 });
-test("AdminViewTeams.test.js Test 3: Should render the Team Bulk Upload page given the Team Bulk Upload Button is clicked on Admin View.",  async () => {
+test("AdminViewTeams.test.tsx Test 3: Should render the Team Bulk Upload page given the Team Bulk Upload Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -92,7 +93,7 @@ test("AdminViewTeams.test.js Test 3: Should render the Team Bulk Upload page giv
         expectElementWithAriaLabelToBeInDocument(abut);
     });
 });
-test("AdminViewTeams.test.js Test 4: Should render the Add Team Form given the Add Team Button is clicked on Admin View.",  async () => {
+test("AdminViewTeams.test.tsx Test 4: Should render the Add Team Form given the Add Team Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -119,7 +120,7 @@ test("AdminViewTeams.test.js Test 4: Should render the Add Team Form given the A
         expectElementWithAriaLabelToBeInDocument(aatt);
     });
 });
-test("AdminViewTeams.test.js Test 5: Should render the Edit Team Form given the Edit Icon is clicked on Admin View.",  async () => {
+test("AdminViewTeams.test.tsx Test 5: Should render the Edit Team Form given the Edit Icon is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -146,7 +147,7 @@ test("AdminViewTeams.test.js Test 5: Should render the Edit Team Form given the 
         expectElementWithAriaLabelToBeInDocument(aett);
     });
 });
-test("AdminViewTeams.test.js Test 6: Should render the Team Name page given the View Team Members button is clicked on Admin View.",  async () => {
+test("AdminViewTeams.test.tsx Test 6: Should render the Team Name page given the View Team Members button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {

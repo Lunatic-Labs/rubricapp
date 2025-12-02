@@ -1,5 +1,6 @@
+import { test, expect } from "@jest/globals";
 import { getDueDateString } from "../utility";
-test("utility.test.js Test 1: Verify getDueDateString output is correct", () => {
+test("utility.test.ts Test 1: Verify getDueDateString output is correct", () => {
 	// Test some dates
 	expect(getDueDateString(new Date(2024, 7, 12, 6, 32, 10, 354))).toBe("2024-8-12T6:32:10.354Z");
 	expect(getDueDateString(new Date(2001, 0, 1, 0, 0, 1, 999))).toBe("2001-1-1T0:0:1.999Z");

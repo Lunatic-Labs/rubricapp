@@ -1,18 +1,19 @@
+import { test, expect } from "@jest/globals";
 // import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import ResizeObserver from "resize-observer-polyfill";
-// import Login from "../../../../Login/Login.js";
+// import Login from "../../../../Login/Login.tsx";
 
 // import {
 //     clickElementWithAriaLabel,
 //     expectElementWithAriaLabelToBeInDocument,
 //     changeElementWithAriaLabelWithInput,
 //     clickFirstElementWithAriaLabel
-// } from "../../../../../testUtilities.js";
+// } from "../../../../../testUtilities";
 
 // import {
 //     demoAdminPassword,
-// } from "../../../../../App.js";
+// } from "../../../../../App";
 global.ResizeObserver = ResizeObserver;
 
 // var lf = "loginForm";
@@ -32,14 +33,14 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-// test("ReportingDashboard.test.js Test 1: Should render Login Form component", () => {
+// test("ReportingDashboard.test.tsx Test 1: Should render Login Form component", () => {
 //     render(<Login />);
 
 //     expectElementWithAriaLabelToBeInDocument(lf);
 // });
 
 
-// test("ReportingDashboard.test.js Test 2: Should show Admin View Courses when logging with Admin credentials", async () => {
+// test("ReportingDashboard.test.tsx Test 2: Should show Admin View Courses when logging with Admin credentials", async () => {
 //     render(<Login />);
 
 //     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -54,7 +55,7 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("ReportingDashboard.test.js Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
+// test("ReportingDashboard.test.tsx Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
 //     render(<Login/>);
 
 //     await waitFor(() => {
@@ -69,7 +70,7 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("ReportingDashboard.test.js Test 4: Should show Assessment Status page when clicking the reporting tab", async () => {
+// test("ReportingDashboard.test.tsx Test 4: Should show Assessment Status page when clicking the reporting tab", async () => {
 //     render(<Login/>);
 
 //     await waitFor(() => {
@@ -90,7 +91,7 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("ReportingDashboard.test.js Test 5: Should show Roster Dashboard when clicking the back button from the AssessmentStatus page.", async () => {
+// test("ReportingDashboard.test.tsx Test 5: Should show Roster Dashboard when clicking the back button from the AssessmentStatus page.", async () => {
 //     render(<Login/>);
 
 //     await waitFor(() => {
@@ -117,7 +118,7 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("ReportingDashboard.test.js Test 6: Should show Ratings and Feedback page when clicking the ratings and feedback tab", async () => {
+// test("ReportingDashboard.test.tsx Test 6: Should show Ratings and Feedback page when clicking the ratings and feedback tab", async () => {
 //     render(<Login/>);
 
 //     await waitFor(() => {
@@ -144,7 +145,7 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("ReportingDashboard.test.js Test 7: Should show Roster Dashboard when clicking the back button from the Ratings and Feedback page.", async () => {
+// test("ReportingDashboard.test.tsx Test 7: Should show Roster Dashboard when clicking the back button from the Ratings and Feedback page.", async () => {
 //     render(<Login/>);
 
 //     await waitFor(() => {

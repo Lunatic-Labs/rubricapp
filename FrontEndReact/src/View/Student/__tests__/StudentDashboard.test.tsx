@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 // import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-// import Login from "../../Login/Login.js";
+// import Login from "../../Login/Login";
 
 // import {
 //     clickElementWithAriaLabel,
 //     expectElementWithAriaLabelToBeInDocument,
 //     changeElementWithAriaLabelWithInput,
 //     clickFirstElementWithAriaLabel
-// } from "../../../testUtilities.js";
+// } from "../../../testUtilities";
 
 // import {
 //     demoStudentPassword
-// } from "../../../App.js";
+// } from "../../../App";
 
 
 
@@ -32,7 +33,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 });
 
 
-// test("StudentDashboard.test.js Test 1: Should render assessment tasks, completed assessments and team tables if valid Student information is input to login", async () => {
+// test("StudentDashboard.test.tsx Test 1: Should render assessment tasks, completed assessments and team tables if valid Student information is input to login", async () => {
 //     render(<Login />);
 
 //     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
@@ -59,7 +60,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("StudentDashboard.test.js Test 2: Should render the completed assessment task page if the complete assessment task button is clicked", async () => {
+// test("StudentDashboard.test.tsx Test 2: Should render the completed assessment task page if the complete assessment task button is clicked", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -88,7 +89,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("StudentDashboard.test.js Test 3: Should render the view completed assessment task page if the view button is clicked", async () => {
+// test("StudentDashboard.test.tsx Test 3: Should render the view completed assessment task page if the view button is clicked", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -117,7 +118,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("StudentDashboard.test.js Test 4: Should render the course dashboard if the back button on assessment tasks, completed assessments and team tables page is clicked", async () => {
+// test("StudentDashboard.test.tsx Test 4: Should render the course dashboard if the back button on assessment tasks, completed assessments and team tables page is clicked", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -147,7 +148,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("StudentDashboard.test.js Test 5: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on viewAssessmentTaskInstructions is clicked", async () => {
+// test("StudentDashboard.test.tsx Test 5: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on viewAssessmentTaskInstructions is clicked", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -188,7 +189,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("StudentDashboard.test.js Test 6: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on CompletedAssessmentTaskInstructions is clicked", async () => {
+// test("StudentDashboard.test.tsx Test 6: Should render the assessment tasks, completed assessments and team tables dashboard if the back button on CompletedAssessmentTaskInstructions is clicked", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {

@@ -1,6 +1,7 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
@@ -8,11 +9,11 @@ import {
     changeElementWithAriaLabelWithInput,
     expectElementWithAriaLabelToHaveErrorMessage,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -34,7 +35,7 @@ var adt = "assessmentDashboardTitle";
 test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAssessmentTasks component given the Import Assessments button is clicked", async () => {
+test("AdminImportAssessmentTasks.test.tsx Test 1: Should render the AdminImportAssessmentTasks component given the Import Assessments button is clicked", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -65,7 +66,7 @@ test("AdminImportAssessmentTasks.test.js Test 1: Should render the AdminImportAs
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 });
-test("AdminImportAssessmentTasks.test.js Test 2: Should render the page that came before given that the Cancel button is clicked", async () => {
+test("AdminImportAssessmentTasks.test.tsx Test 2: Should render the page that came before given that the Cancel button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -96,7 +97,7 @@ test("AdminImportAssessmentTasks.test.js Test 2: Should render the page that cam
         expectElementWithAriaLabelToBeInDocument(adt);
     },{ timeout: 3000 });
 });
-test("AdminImportAssessmentTasks.test.js Test 3: Should render the assessment dashboard title page given that the back button is clicked on the ImportAssessmentTasks page", async () => {
+test("AdminImportAssessmentTasks.test.tsx Test 3: Should render the assessment dashboard title page given that the back button is clicked on the ImportAssessmentTasks page", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -127,7 +128,7 @@ test("AdminImportAssessmentTasks.test.js Test 3: Should render the assessment da
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 });
-test("AdminImportAssessmentTasks.test.js Test 4: Should render an error message on the page when no input is given", async () => {
+test("AdminImportAssessmentTasks.test.tsx Test 4: Should render an error message on the page when no input is given", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -158,7 +159,7 @@ test("AdminImportAssessmentTasks.test.js Test 4: Should render an error message 
         expectElementWithAriaLabelToHaveErrorMessage(aiacs, "Missing Course to Import Tasks From");
     });
 });
-test("AdminImportAssessmentTasks.test.js Test 5: Should refresh and return back to Assessment Dashboard page when valid information is input and submit button is clicked", async() => {
+test("AdminImportAssessmentTasks.test.tsx Test 5: Should refresh and return back to Assessment Dashboard page when valid information is input and submit button is clicked", async() => {
     render(<Login />);
 
     await waitFor(() => {

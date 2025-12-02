@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
-    demoAdminPassword,
-} from "../../../../../App.js";
+    demoAdminPassword
+} from "../../../../../App";
 
 
 
@@ -40,12 +41,12 @@ var aeatt = "adminEditAssessmentTaskTitle";
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AssessmentDashboard.test.js Test 1: Should render Login Form component", () => {
+test("AssessmentDashboard.test.tsx Test 1: Should render Login Form component", () => {
     render(<Login />);
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
-test("AssessmentDashboard.test.js Test 2: Should show Admin View Courses when logging with Admin credentials", async () => {
+test("AssessmentDashboard.test.tsx Test 2: Should show Admin View Courses when logging with Admin credentials", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -58,7 +59,7 @@ test("AssessmentDashboard.test.js Test 2: Should show Admin View Courses when lo
         expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
-test("AssessmentDashboard.test.js Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
+test("AssessmentDashboard.test.tsx Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -71,7 +72,7 @@ test("AssessmentDashboard.test.js Test 3: Should show Roster Dashboard when clic
         expectElementWithAriaLabelToBeInDocument(rt);
     });
 });
-test("AssessmentDashboard.test.js Test 4: Should show Assessment Dashboard when clicking the Assessment tab", async () => {
+test("AssessmentDashboard.test.tsx Test 4: Should show Assessment Dashboard when clicking the Assessment tab", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -90,7 +91,7 @@ test("AssessmentDashboard.test.js Test 4: Should show Assessment Dashboard when 
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 });
-test("AssessmentDashboard.test.js Test 5: Should show View Courses page when clicking the back button", async () => {
+test("AssessmentDashboard.test.tsx Test 5: Should show View Courses page when clicking the back button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -115,7 +116,7 @@ test("AssessmentDashboard.test.js Test 5: Should show View Courses page when cli
         expectElementWithAriaLabelToBeInDocument(ct);
     });
 });
-test("AssessmentDashboard.test.js Test 6: Should show My Custom Rubrics page when clicking the My Custom Rubrics button", async () => {
+test("AssessmentDashboard.test.tsx Test 6: Should show My Custom Rubrics page when clicking the My Custom Rubrics button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -140,7 +141,7 @@ test("AssessmentDashboard.test.js Test 6: Should show My Custom Rubrics page whe
         expectElementWithAriaLabelToBeInDocument(acrt);
     });
 });
-test("AssessmentDashboard.test.js Test 7: Should show Import Assessment page when clicking the import assessment button", async () => {
+test("AssessmentDashboard.test.tsx Test 7: Should show Import Assessment page when clicking the import assessment button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -165,7 +166,7 @@ test("AssessmentDashboard.test.js Test 7: Should show Import Assessment page whe
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 });
-test("AssessmentDashboard.test.js Test 8: Should show Add Assessment page when clicking the add assessment button", async () => {
+test("AssessmentDashboard.test.tsx Test 8: Should show Add Assessment page when clicking the add assessment button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -190,7 +191,7 @@ test("AssessmentDashboard.test.js Test 8: Should show Add Assessment page when c
         expectElementWithAriaLabelToBeInDocument(aaatt);
     });
 });
-test("AssessmentDashboard.test.js Test 9: Should show Edit Assessment page when clicking the edit assessment button", async () => {
+test("AssessmentDashboard.test.tsx Test 9: Should show Edit Assessment page when clicking the edit assessment button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -217,7 +218,7 @@ test("AssessmentDashboard.test.js Test 9: Should show Edit Assessment page when 
         expectElementWithAriaLabelToBeInDocument(aeatt);
     });
 });
-test("AssessmentDashboard.test.js Test 10: Should show View Completed Assessments page when clicking the view completed assessment button", async () => {
+test("AssessmentDashboard.test.tsx Test 10: Should show View Completed Assessments page when clicking the view completed assessment button", async () => {
     render(<Login/>);
 
     await waitFor(() => {
@@ -244,7 +245,7 @@ test("AssessmentDashboard.test.js Test 10: Should show View Completed Assessment
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
-test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessment page when clicking the complete assessment button", async () => {
+test("AssessmentDashboard.test.tsx Test 11: Should show Instructions for Assessment page when clicking the complete assessment button", async () => {
     render(<Login/>);
 
     await waitFor(() => {

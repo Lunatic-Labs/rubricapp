@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import Login from "../../../../Login/Login.js";
+import Login from "../../../../Login/Login";
 
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
-} from "../../../../../App.js";
+} from "../../../../../App";
 
 
 
@@ -34,7 +35,7 @@ var aetmstb = "adminEditTeamMembersSaveTeamButton";
 test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
-test("AdminViewTeamMembers.test.js Test 1: Should render the TeamDashboard", async () => {
+test("AdminViewTeamMembers.test.tsx Test 1: Should render the TeamDashboard", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -59,7 +60,7 @@ test("AdminViewTeamMembers.test.js Test 1: Should render the TeamDashboard", asy
         expectElementWithAriaLabelToBeInDocument(td);
     });
 });
-test("AdminViewTeamMembers.test.js Test 2: Should render the View Team page if the adminViewTeam button is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 2: Should render the View Team page if the adminViewTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -86,7 +87,7 @@ test("AdminViewTeamMembers.test.js Test 2: Should render the View Team page if t
         expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
-test("AdminViewTeamMembers.test.js Test 3: Should render the View Team page if the back button is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 3: Should render the View Team page if the back button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -119,7 +120,7 @@ test("AdminViewTeamMembers.test.js Test 3: Should render the View Team page if t
         expectElementWithAriaLabelToBeInDocument(td);
     });
 });
-test("AdminViewTeamMembers.test.js Test 4: Should render the Add Team Members page if the add member button is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 4: Should render the Add Team Members page if the add member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -152,7 +153,7 @@ test("AdminViewTeamMembers.test.js Test 4: Should render the Add Team Members pa
         expectElementWithAriaLabelToBeInDocument(atmt);
     });
 });
-test("AdminViewTeamMembers.test.js Test 5: Should render the Remove Team Members page if the remove member button is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 5: Should render the Remove Team Members page if the remove member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -185,7 +186,7 @@ test("AdminViewTeamMembers.test.js Test 5: Should render the Remove Team Members
         expectElementWithAriaLabelToBeInDocument(rtmt);
     });
 });
-test("AdminViewTeamMembers.test.js Test 6: Should render the AdminViewTeamMembers page if the back button on the AddMembers page is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 6: Should render the AdminViewTeamMembers page if the back button on the AddMembers page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -224,7 +225,7 @@ test("AdminViewTeamMembers.test.js Test 6: Should render the AdminViewTeamMember
         expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
-test("AdminViewTeamMembers.test.js Test 7: Should render the AdminViewTeamMembers page if the back button on the RemoveMembers page is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 7: Should render the AdminViewTeamMembers page if the back button on the RemoveMembers page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -263,7 +264,7 @@ test("AdminViewTeamMembers.test.js Test 7: Should render the AdminViewTeamMember
         expectElementWithAriaLabelToBeInDocument(avtmt);
     });
 });
-test("AdminViewTeamMembers.test.js Test 8: Should render the AdminViewTeamMembers page if the save team button on the AddMembers page is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 8: Should render the AdminViewTeamMembers page if the save team button on the AddMembers page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -298,7 +299,7 @@ test("AdminViewTeamMembers.test.js Test 8: Should render the AdminViewTeamMember
     
     clickElementWithAriaLabel(aetmstb);
 });
-test("AdminViewTeamMembers.test.js Test 9: Should render the AdminViewTeamMembers page if the save team button on the RemoveMembers page is clicked", async () => {
+test("AdminViewTeamMembers.test.tsx Test 9: Should render the AdminViewTeamMembers page if the save team button on the RemoveMembers page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {

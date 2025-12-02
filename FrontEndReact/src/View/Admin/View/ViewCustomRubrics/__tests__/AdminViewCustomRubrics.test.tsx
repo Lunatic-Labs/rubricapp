@@ -1,17 +1,18 @@
+import { test, expect } from "@jest/globals";
 // import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
-// import Login from "../../../../Login/Login.js";
+// import Login from "../../../../Login/Login";
 
 // import {
 //     clickElementWithAriaLabel,
 //     expectElementWithAriaLabelToBeInDocument,
 //     changeElementWithAriaLabelWithInput,
 //     clickFirstElementWithAriaLabel
-// } from "../../../../../testUtilities.js";
+// } from "../../../../../testUtilities";
 
 // import {
 //     demoAdminPassword
-// } from "../../../../../App.js";
+// } from "../../../../../App";
 
 
 
@@ -33,7 +34,7 @@ test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
 
 /* The rest of the tests will be redone due to updates that were made in my Custrom Rubrics*/
 
-// test("AdminViewCustomRubrics.test.js Test 1: Should render the View Custom Rubrics page if the My Custom Rubrics button is clicked", async () => {
+// test("AdminViewCustomRubrics.test.tsx Test 1: Should render the View Custom Rubrics page if the My Custom Rubrics button is clicked", async () => {
 //     render(<Login />);
 
 //     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -66,7 +67,7 @@ test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("AdminViewCustomRubrics.test.js Test 2: Should render the Add Custom Rubrics page if the Add Custom Rubrics button is clicked", async () => {
+// test("AdminViewCustomRubrics.test.tsx Test 2: Should render the Add Custom Rubrics page if the Add Custom Rubrics button is clicked", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
@@ -97,7 +98,7 @@ test("NOTE: Tests 1-3 will not pass if Demo Data is not loaded!", () => {
 // });
 
 
-// test("AdminViewCustomRubrics.test.js Test 3: Should render the Assessment Dashboard if the Back button on the My Custom Rubrics page is clicked", async () => {
+// test("AdminViewCustomRubrics.test.tsx Test 3: Should render the Assessment Dashboard if the Back button on the My Custom Rubrics page is clicked", async () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
