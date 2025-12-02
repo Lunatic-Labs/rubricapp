@@ -1,7 +1,12 @@
 import { Component } from "react";
 import { Box, CircularProgress } from "@mui/material";
 
-
+/**
+ * Creates an instance of the Loading component.
+ * 
+ * @constructor
+ * @param {object} props - The properties passed to the component.
+ */
 
 class Loading extends Component {
     render() {

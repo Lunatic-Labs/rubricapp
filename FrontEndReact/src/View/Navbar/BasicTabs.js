@@ -3,6 +3,16 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
+/**
+ * Creates a function, BasicTabs.
+ * 
+ * @function BasicTabs
+ * @param {Object} props - Component properties.
+ * @param {Object} props.navbar - A reference to the AppState component, used for accessing global state and navigation callbacks.
+ * 
+ * @returns 
+ */
+
 export default function BasicTabs (props){
   var navbar = props.navbar;
   var state = navbar.state;

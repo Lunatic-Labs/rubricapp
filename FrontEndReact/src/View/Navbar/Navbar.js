@@ -18,14 +18,31 @@ import Divider from '@mui/material/Divider';
 import Logout from '../Logout/Logout.js';
 import Logo from "./sbText.png";
 
+/**
+ * Creates a function, ButtonAppBar.
+ * 
+ * @function ButtonAppBar
+ * @param {Object} props - The properties passed to this navigation component.
+ * @param {string} props.userName - The name of the currently logged-in user, displayed in the navigation bar.
+ * 
+ * @returns 
+ */
+
 export default function ButtonAppBar(props) {
   const [anchorEl, setAnchorEl] = React.useState(null);
   const open = Boolean(anchorEl);
 
+  /**
+   * @method handleClick - Opens the user account dropdown menu by setting `anchorEl` to the clicked element.
+   * @param {*} event - the input event.
+   */
   const handleClick = (event) => {
     setAnchorEl(event.currentTarget);
   };
 
+  /**
+   * @method handleClose - Closes the user account dropdown menu by clearing `anchorEl`.
+   */
   const handleClose = () => {
     setAnchorEl(null);
   };
