@@ -8,6 +8,18 @@ import { Box, Button, Typography } from "@mui/material";
 import Loading from "../../../Loading/Loading.js";
 import SuccessMessage from "../../../Success/SuccessMessage.js";
 
+/**
+ * Creates an instance of the AdminViewTeams component.
+ * 
+ * @constructor
+ * @param {Object} props
+ *
+ * @param {Object} props.navbar - The global AppState navigation controller.
+ * This object is an instance of the AppState component and provides global navigation,
+ * shared state, and helper methods used throughout the system.
+ * 
+ * 
+ */
 class AdminViewTeams extends Component {
   constructor(props) {
     super(props);
