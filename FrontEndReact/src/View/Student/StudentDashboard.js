@@ -200,7 +200,7 @@ class StudentDashboard extends Component {
                 let CATviewable = false;
                 let viewable = false;
                 
-                if (task.roleId === 5) {
+                if (task.role_id === 5) {
                     viewable = !done && correctUser && !locked && published && !pastDue;
                     CATviewable = correctUser === true && done === true;
                 } else {
