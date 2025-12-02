@@ -1,4 +1,4 @@
-import { test, expect } from "@jest/globals";
+import { test } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../Login";
