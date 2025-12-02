@@ -5,8 +5,22 @@ import ErrorMessage from '../../../Error/ErrorMessage.js';
 import { genericResourceGET } from '../../../../utility.js';
 import Loading from '../../../Loading/Loading.js';
 
-
-
+/**
+ * @description
+ * Student-facing wrapper for the "Build Team" view.
+ *
+ * Responsibilities:
+ *  - Fetches the list of users for the currently selected course.
+ *  - Handles loading and error states.
+ *  - Once loaded, passes the user list to <BuildTeamTable /> so the student
+ *    can build or adjust a team roster.
+ *
+ * @prop {Object} navbar - Navbar instance; expects state.chosenCourse.course_id.
+ *
+ * @property {boolean|null} state.isLoaded     - True once the /user fetch has resolved.
+ * @property {string|null}  state.errorMessage - Error message from the fetch, if any.
+ * @property {Array|null}   state.users        - Users returned for the current course.
+ */
 class StudentManageCurrentTeam extends Component {
     constructor(props) {
         super(props);
@@ -18,6 +32,29 @@ class StudentManageCurrentTeam extends Component {
         };
     }
 
+    /**
+     * @method componentDidMount
+     * @description
+     * On mount, fetches all users for the currently selected course so the
+     * student can build a team from the full roster.
+     *
+     * Fetch:
+     *  - GET /user?course_id={course_id}
+     *    - Query params:
+     *        * course_id — course ID from navbar.state.chosenCourse["course_id"].
+     *    - genericResourceGET stores the result in state.users and updates
+     *      isLoaded/errorMessage.
+     *
+     * Sorting:
+     *  - No explicit sorting is done here; data is passed to BuildTeamTable as-is.
+     *    Any column sorting is handled by CustomDataTable inside BuildTeamTable.
+     *
+     * Notes / JIRA candidate:
+     *  - This call retrieves all users for the course. If other components in the
+     *    same flow (e.g., other team views or dashboards) also call /user?course_id
+     *    for the same course, those duplicate fetches could be consolidated and
+     *    tracked via a JIRA task.
+     */
     componentDidMount() {
         var courseId = this.props.navbar.state.chosenCourse["course_id"];
 
