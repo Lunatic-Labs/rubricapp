@@ -12,7 +12,7 @@ import ImageModal from "../AddCustomRubric/CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
 import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
-import { MAX_PASSWORD_LENGTH } from '../../../../Constants/password.js';
+import { MAX_PASSWORD_LENGTH } from '../../../../Constants/Password.js';
 
 
 
