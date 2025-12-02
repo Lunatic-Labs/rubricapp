@@ -115,7 +115,7 @@ class ViewCourses extends Component {
                     }
                 }}
                  >
-                  <EditIcon sx={{color:"black"}}/>
+                  <EditIcon sx={{color:"var(--table-text)"}}/>
                 </IconButton>
               )
             },
@@ -147,7 +147,7 @@ class ViewCourses extends Component {
                     }
                 }}
                 >
-                  <VisibilityIcon sx={{color:"black"}} />
+                  <VisibilityIcon sx={{color:"var(--table-text)"}} />
                 </IconButton>
             )
           },
