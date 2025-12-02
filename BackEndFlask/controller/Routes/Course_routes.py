@@ -49,7 +49,6 @@ def get_all_courses():
         if str(jwt_identity) != str(user_id):
             user = User.query.get(user_id)
             if not (user and user.email and user.email.startswith("teststudent")):
-                print(f" ERROR: Access denied: JWT {jwt_identity} != user_id {user_id}")
                 return create_bad_response("Unauthorized", "courses", 403)
         
         if request.args and request.args.get("admin_id"):
