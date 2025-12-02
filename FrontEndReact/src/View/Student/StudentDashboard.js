@@ -335,6 +335,7 @@ class StudentDashboard extends Component {
             console.log('Restoring admin:', adminCredentials.user);
 
             try {
+                // Blacklist test student tokens
                 await fetch(`${apiUrl}/api/logout?user_id=${adminCredentials.user.user_id}`, {
                     method: 'POST',
                     headers: {
