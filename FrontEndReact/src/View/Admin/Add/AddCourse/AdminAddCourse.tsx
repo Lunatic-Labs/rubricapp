@@ -260,7 +260,6 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
         } = this.state;
 
         var navbar = this.props.navbar;
-        var state = navbar.state;
         const open = Boolean(this.state.anchorEl);
         const id = open ? 'simple-popover' : undefined;
 
