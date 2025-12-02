@@ -134,19 +134,22 @@ class ViewCourses extends Component {
           setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
-                <IconButton id={courseId}
-                role = "img" aria-label="viewCourseIconButton"
-                   onClick={() => {
-                    // The logged in user is an Admin in the course
-                    if(courseRoles[courseId] === 3) {
-                      setAddCourseTabWithCourse(courses, courseId, "Users");
+                  <IconButton 
+    id={courseId}
+    role="img"
+    aria-label="viewCourseIconButton"
+    onClick={() => {
+      // The logged in user is an Admin in the course
+      if(courseRoles[courseId] === 3) {
+        setAddCourseTabWithCourse(courses, courseId, "Users");
 
-                    // The logged in user is a TA/Instructor or Student in the course
-                    } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
-                      navbar.setStudentDashboardWithCourse(courseId, courses);
-                    }
-                }}
-                aria-label="viewCourseIconButton">
+      // The logged in user is a TA/Instructor or Student in the course
+      } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
+        navbar.setStudentDashboardWithCourse(courseId, courses);
+      }
+    }}
+  >     
+
                   <VisibilityIcon sx={{color:"var(--table-text)"}} />
                 </IconButton>
             )

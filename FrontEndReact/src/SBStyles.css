@@ -545,7 +545,6 @@ body.mode {
   --box-shadow: #848484b8;
 }
 
-
 /* Dark mode text colors for general content */
 body.mode {
   color: #e0e0e0;
@@ -566,6 +565,9 @@ body.mode {
   --table-text: #e0e0e0;
 }
 
+.icon-color {
+  color: var(--table-text);
+}
 
 
 /* ============================================ */
