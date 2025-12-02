@@ -54,6 +54,9 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
                 }
             );
         } catch (error) {
+            console.error(`=== UTILITY: ${type} ERROR ===`);
+            console.error('Error:', error);
+            
             component.setState({
                 isLoaded: true,
                 errorMessage: error,
@@ -62,11 +65,7 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             throw error;
         }
 
-        console.log('📡 Response status:', response.status);
-        console.log('📡 Response ok:', response.ok);
-
         const result = await response.json();
-        console.log('📋 API Response result:', result); // ADD THIS LINE
         if (result['success']) {
             let state = {};
 
@@ -98,7 +97,6 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
             response.status === 422  // Catch all 422 errors as potential token issues
         ) {
             if (isRetry) {
-                console.log('Token refresh retry failed, logging out...');
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
@@ -106,67 +104,62 @@ async function genericResourceFetch(fetchURL, resource, component, type, body, o
                 return undefined;
             }
 
-            // Try to refresh the token
-            console.log(' Token expired, attempting refresh...');
-            console.log(' Refresh token:', cookies.get('refresh_token')); // ← ADD THIS
-            console.log(' User ID:', cookies.get('user')?.["user_id"]); // ← ADD THIS
 
             const refreshToken = cookies.get('refresh_token');
             const userId = cookies.get('user')?.["user_id"];
 
             try {
-                console.log('Making refresh request...'); // ← ADD THIS
-                const refreshResponse = await fetch(`${apiUrl}/refresh?user_id=${userId}`, {
+                // Add &refresh_token=${refreshToken}
+                const refreshResponse = await fetch(`${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshToken}`, {
                     method: 'POST',
                     headers: {
                         'Authorization': 'Bearer ' + refreshToken
                     }
                 });
 
-                console.log('Refresh response status:', refreshResponse.status); // ← ADD THIS
                 const refreshResult = await refreshResponse.json();
-                console.log('Refresh result:', refreshResult); // ← ADD THIS
 
                 if (refreshResult["success"]) {
                     // Set new access token
                     cookies.set('access_token', refreshResult['headers']['access_token'], { sameSite: 'strict' });
 
-                    console.log('Token refreshed, retrying original request...');
+                    // Set new refresh token
+                    cookies.set('refresh_token', refreshResult['headers']['refresh_token'], { sameSite: 'strict' });
+
 
                     // Retry the original request with new token
                     return await genericResourceFetch(fetchURL, resource, component, type, body, {
                         ...options,
-                        isRetry: true // Mark as retry to prevent infinite loops
+                        isRetry: true
                     });
-                } else {
-                    // Refresh failed - kick user out
-                    console.log('Token refresh failed, logging out...');
-                    cookies.remove('access_token');
-                    cookies.remove('refresh_token');
-                    cookies.remove('user');
-                    window.location.reload(false);
-                    return undefined;
-                }
-            } catch (refreshError) {
-                console.error('Refresh error:', refreshError);
+                    
+            } else {
+                // Refresh failed - kick user out
                 cookies.remove('access_token');
                 cookies.remove('refresh_token');
                 cookies.remove('user');
                 window.location.reload(false);
                 return undefined;
             }
-
-        } else {
-            const state = {
-                isLoaded: true,
-                errorMessage: result['message'],
-            };
-
-            component.setState(state);
-
-            return rawResponse ? result : state;
+        } catch (refreshError) {
+            cookies.remove('access_token');
+            cookies.remove('refresh_token');
+            cookies.remove('user');
+            window.location.reload(false);
+            return undefined;
         }
+
+    } else {
+        const state = {
+            isLoaded: true,
+            errorMessage: result['message'],
+        };
+
+        component.setState(state);
+
+        return rawResponse ? result : state;
     }
+}
 }
 
 export function createEventSource(fetchURL, onMessage) {

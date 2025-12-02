@@ -1,11 +1,9 @@
-from core import app
-import threading
-
 import time
-
+import threading
+from core import app
 from models.email_validation import *
 from models.logger import logger
-from datetime import datetime
+
 
 def spawn_thread(f, *args, **kwargs):
     threading.Thread(
@@ -30,7 +28,7 @@ def validate_pending_emails():
         send_bounced_email_notification,
     )
 
-    time.sleep(30)
+    time.sleep(60)
 
     with app.app_context():
         try:
@@ -54,7 +52,7 @@ def validate_pending_emails():
                 # to update these.
                 mark_emails_as_checked(all_pending_emails)
 
-                bounced = check_bounced_emails(int(oldest_time.timestamp()))
+                bounced = check_bounced_emails(int(oldest_time.timestamp()) - (2*60))
 
                 if bounced is None:
                     return
