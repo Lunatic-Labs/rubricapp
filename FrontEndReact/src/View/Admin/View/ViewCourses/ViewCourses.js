@@ -175,7 +175,42 @@ class ViewCourses extends Component {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            alignSelf: "stretch"
+            alignSelf: "stretch",
+            className: "dropdown-colors",
+            setFilterChipProps: () => ({
+              sx: {
+                className: 'dropdown-colors',
+                backgroundColor: 'var(--dropdown-bg)',
+                color: 'var(--dropdown-text)',
+              }
+            }),
+            setTableProps: () => ({
+              sx: {
+                className: 'dropdown-colors',
+                '& .MuiPopover-paper': {
+                  backgroundColor: 'var(--dropdown-bg)',
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiTableCell-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiCheckbox-root': {
+                  color: 'var(--dropdown-icon)',
+                },
+                '& .MuiInput-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiInput-underline:before': {
+                  borderBottomColor: 'var(--dropdown-border)',
+                },
+                '& .MuiTypography-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiButton-root': {
+                  color: 'var(--button-text)',
+                },
+              }
+            }),
           }}>
             <Box sx={{ width: "100%" }} className="content-spacing">
               <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="activeCourses">
