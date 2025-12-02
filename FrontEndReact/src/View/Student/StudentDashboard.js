@@ -9,6 +9,7 @@ import { genericResourceGET, parseRubricNames } from '../../utility.js';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks.js';
 import Loading from '../Loading/Loading.js';
 import Cookies from 'universal-cookie';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 // StudentDashboard is used for both students and TAs.
 // StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
@@ -306,7 +307,7 @@ class StudentDashboard extends Component {
     }
 
     // Method to handle switching back to admin with spam protection
-    handleSwitchBack = () => {
+    handleSwitchBack = async () => {
         // Prevent multiple clicks
         if (this.state.isSwitchingBack) {
             console.log('Already switching back, ignoring click');
@@ -332,13 +333,28 @@ class StudentDashboard extends Component {
         try {
             const adminCredentials = JSON.parse(adminCredentialsStr);
             console.log('Restoring admin:', adminCredentials.user);
-            
-            // Clear test student cookies
+
+            try {
+                await fetch(`${apiUrl}/api/logout?user_id=${adminCredentials.user.user_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${cookies.get('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        access_token: cookies.get('access_token'),
+                        refresh_token: cookies.get('refresh_token')
+                    })
+                });
+                console.log('Test student tokens blacklisted');
+            } catch (logoutError) {
+                console.error('Failed to blacklist test student tokens:', logoutError);
+            }
+
             cookies.remove('access_token', { path: '/' });
             cookies.remove('refresh_token', { path: '/' });
             cookies.remove('user', { path: '/' });
-            
-            // Restore admin cookies
+
             cookies.set('access_token', adminCredentials.access_token, { 
                 path: '/', 
                 sameSite: 'strict' 
@@ -352,19 +368,17 @@ class StudentDashboard extends Component {
                 sameSite: 'strict' 
             });
             
-            // Clear saved data from sessionStorage
             sessionStorage.removeItem('adminCredentials');
             sessionStorage.removeItem('chosenCourse');
             sessionStorage.removeItem('testStudentCourse');
             
             console.log('Admin cookies restored');
-            
-            // Reload to apply changes
             window.location.reload();
+            
         } catch (error) {
             console.error('Error switching back:', error);
             alert('Error switching back to admin view');
-            this.setState({ isSwitchingBack: false });  // Reset flag on error
+            this.setState({ isSwitchingBack: false });
         }
     };
 
