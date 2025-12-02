@@ -129,12 +129,12 @@ def add_rubric():
 
         rc = {}
         rc["rubric_id"] = rubric.rubric_id
-
+        
         for category in request.json["categories"]:
             rc["category_id"] = category 
 
             create_rubric_category(rc)
-
+        
         return create_good_response(rubric_schema.dump(rubric), 200, "rubrics")
 
     except Exception as e:
@@ -148,7 +148,7 @@ def get_all_categories():
     try:
         if request.args and request.args.get("rubric_id"):
             all_categories_by_rubric_id=get_categories_per_rubric(int(request.args.get("rubric_id")))
-
+            
             return create_good_response(categories_schema.dump(all_categories_by_rubric_id), 200, "categories")
 
         user_id = int(request.args.get("user_id"))

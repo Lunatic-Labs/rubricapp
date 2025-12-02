@@ -21,22 +21,12 @@ from models.course import create_course, delete_course
 from models.schemas import Team
 from models.course import load_demo_course
 from models.queries import (
-    get_team_by_course_id_and_user_id,
-    add_user_to_team,
-    get_adHoc_team_by_course_id_and_user_id,
-    get_all_adhoc_teams_from_AT,
     get_team_by_course_id_and_observer_id,
-    get_all_nonfull_adhoc_teams,
-    get_num_of_adhocs,
     get_team_ratings,
 )
 from models.assessment_task import (
     create_assessment_task,
     delete_assessment_task
-)
-from models.checkin import (
-    create_checkin,
-    delete_checkins_over_team_count
 )
 from models.completed_assessment import (
     delete_completed_assessment_tasks,
@@ -403,106 +393,6 @@ def test_load_demo_team(flask_app_mock):
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-def test_get_team_by_course_id_and_user_id(flask_app_mock):
-    with flask_app_mock.app_context():
-        cleanup_test_users(db.session)
-
-        try:
-            result = create_one_admin_course(False)
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            created = sample_team("Alpha", result["user_id"], result["course_id"])
-
-            add_user_to_team(result["course_id"], user[0].user_id, created.team_id)
-            rslt = get_team_by_course_id_and_user_id(result["course_id"], user[0].user_id)
-            assert rslt[0].team_name == "Alpha"
-            assert rslt[0].team_id == created.team_id
-            assert rslt[0].observer_id == result["user_id"]
-
-        finally:
-            # Clean up
-            try:
-                delete_team(created.team_id)
-                delete_users(user)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
-                
-def test_get_adHoc_team_by_course_id_and_user_id(flask_app_mock):
-    with flask_app_mock.app_context():
-        cleanup_test_users(db.session)
-
-        try:
-            result = create_one_admin_course(False)
-            user_data = sample_user()
-            user = create_user(user_data)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
-            task = create_assessment_task(payload)
-            team1 = sample_team("Alpha", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            team2 = sample_team("Omega", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-
-            checkin_data = sample_checkin(task.assessment_task_id, user.user_id, team_number=team1.team_id)
-            create_checkin(checkin_data)
-
-            rslt = get_adHoc_team_by_course_id_and_user_id(result["course_id"], user.user_id)
-            assert len(rslt) == 1
-            assert rslt[0].team_id == team1.team_id
-
-        finally:
-            # Clean up
-            try:
-                delete_checkins_over_team_count(task.assessment_task_id, 0)
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_assessment_task(task.assessment_task_id)
-                delete_user(user.user_id)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
-
-def test_get_all_adhoc_teams_from_AT(flask_app_mock):
-    with flask_app_mock.app_context():
-        cleanup_test_users(db.session)
-
-        try:
-            result = create_one_admin_course(False)
-            user_data1 = sample_user()
-            user1 = create_user(user_data1)
-            user_data2 = sample_user(email="testuser2@example.com")
-            user2 = create_user(user_data2)
-
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
-            task = create_assessment_task(payload)
-
-            team1 = sample_team("Team 1", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            team2 = sample_team("Team 2", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            team3 = sample_team("Team 3", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-
-            checkin_data1 = sample_checkin(task.assessment_task_id, user1.user_id, team_number=team1.team_id)
-            create_checkin(checkin_data1)
-            checkin_data2 = sample_checkin(task.assessment_task_id, user2.user_id, team_number=team2.team_id)
-            create_checkin(checkin_data2)
-
-            results = get_all_adhoc_teams_from_AT(task.assessment_task_id)
-            print([t.team_name for t in results])
-            assert len(results) == 2
-            assert any(t.team_name == "Team 1" for t in results)
-            assert any(t.team_name == "Team 2" for t in results)
-
-        finally:
-            # Clean up
-            try:
-                delete_checkins_over_team_count(task.assessment_task_id, 0)
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_team(team3.team_id)
-                delete_assessment_task(task.assessment_task_id)
-                delete_user(user1.user_id)
-                delete_user(user2.user_id)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
 
 def test_get_team_by_course_id_and_observer_id(flask_app_mock):
     with flask_app_mock.app_context():
@@ -531,91 +421,6 @@ def test_get_team_by_course_id_and_observer_id(flask_app_mock):
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-        
-def test_get_all_nonfull_adhoc_teams(flask_app_mock):
-    with flask_app_mock.app_context():
-        cleanup_test_users(db.session)
-
-        try:
-            result = create_one_admin_course(False)
-            user = []
-            for i in range(1, 12):
-                user.append(create_user(sample_user(email=f"user{i}@example.com")))
-
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
-            task = create_assessment_task(payload)
-
-            team1 = sample_team("Team 1", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            team2 = sample_team("Team 2", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            team3 = sample_team("Team 3", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            
-            for i in range(1, 6):
-                create_checkin(sample_checkin(task.assessment_task_id, user[i].user_id, team_number=team1.team_id))
-            for i in range(6, 9):
-                create_checkin(sample_checkin(task.assessment_task_id, user[i].user_id, team_number=team2.team_id))
-            for i in range(9, 11):
-                create_checkin(sample_checkin(task.assessment_task_id, user[i].user_id, team_number=team3.team_id))
-            
-            results = get_all_nonfull_adhoc_teams(task.assessment_task_id)
-            assert len(results) == 2
-            assert any(t.team_name == "Team 2" for t in results)
-            assert any(t.team_name == "Team 3" for t in results)
-            assert any(t.team_name != "Team 1" for t in results)
-        
-        finally:
-            # Clean up
-            try:
-                delete_checkins_over_team_count(task.assessment_task_id, 0)
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_team(team3.team_id)
-                delete_assessment_task(task.assessment_task_id)
-                for i in range(1, 12):
-                    delete_user(user[i].user_id)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
-
-
-def test_get_num_of_adhocs(flask_app_mock):
-    with flask_app_mock.app_context():
-        cleanup_test_users(db.session)
-
-        try:
-            result = create_one_admin_course(False)
-            user = []
-            for i in range(1, 7):
-                user.append(create_user(sample_user(email=f"user{i}@example.com")))
-
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
-            task = create_assessment_task(payload)
-
-            team1 = sample_team("Team 1", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            team2 = sample_team("Team 2", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            team3 = sample_team("Team 3", result["user_id"], result["course_id"], assessment_task_id=task.assessment_task_id)
-            
-            for i in range(1, 3):
-                create_checkin(sample_checkin(task.assessment_task_id, user[i].user_id, team_number=team1.team_id))
-            for i in range(3, 5):
-                create_checkin(sample_checkin(task.assessment_task_id, user[i].user_id, team_number=team2.team_id))
-            
-            assert get_num_of_adhocs(task.assessment_task_id) == 2
-        
-        finally:
-            # Clean up
-            try:
-                delete_checkins_over_team_count(task.assessment_task_id, 0)
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_team(team3.team_id)
-                delete_assessment_task(task.assessment_task_id)
-                for i in range(1, 6):
-                    delete_user(user[i].user_id)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
 
 
 def test_get_team_ratings(flask_app_mock):

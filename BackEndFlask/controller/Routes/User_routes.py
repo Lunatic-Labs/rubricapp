@@ -84,10 +84,10 @@ def get_all_users():
             team_ids = request.args.get("team_ids").split(",")
 
             teams_and_team_members = {}
-
+           
             for team_id in team_ids:
                 get_team(team_id)  # Trigger an error if not exists.
-
+        
                 all_users = []
 
                 for team_user in get_team_users_by_team_id(team_id):
@@ -98,7 +98,7 @@ def get_all_users():
             return create_good_response(teams_and_team_members, 200, "teams_users")
 
         if(request.args and request.args.get("course_id") and request.args.get("team_id")):
-            team_id = request.args.get("team_id")
+            team_id = int(request.args.get("team_id"))
 
             get_team(team_id)  # Trigger an error if not exists.
 
@@ -116,12 +116,12 @@ def get_all_users():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("course_id")):
-            course_id = request.args.get("course_id")
+            course_id = int(request.args.get("course_id"))
 
             get_course(course_id)  # Trigger an error if not exists.
 
             if(request.args.get("role_id")):
-                role_id = request.args.get("role_id")
+                role_id = int(request.args.get("role_id"))
 
                 get_role(role_id)  # Trigger an error if not exists.
 
@@ -153,10 +153,11 @@ def get_all_users():
 @AuthCheck()
 def get_all_team_members():
     try:
+        print("I'm here")
         if request.args and request.args.get("course_id") and request.args.get("observer_id"):
-            course_id=request.args.get("course_id")
+            course_id=int(request.args.get("course_id"))
 
-            user_id=request.args.get("observer_id")
+            user_id=int(request.args.get("observer_id"))
 
             team_list = get_team_members_in_course(course_id)
             result = {}
@@ -194,7 +195,7 @@ def get_all_team_members():
             result["team_name"] = get_team(team_id).team_name
 
             return create_good_response(result, 200, "team_members")
-
+        raise ValueError("Missing required query parameters")
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
@@ -232,7 +233,7 @@ def add_user():
             get_course(course_id)  # Trigger an error if not exists.
 
             user_exists = user_already_exists(request.json)
-
+            
             if user_exists is not None:
                 user_course_exists = get_user_course_by_user_id_and_course_id(
                     user_exists.user_id, course_id)
@@ -291,7 +292,9 @@ def update_user():
 
             get_role(role_id)  # Trigger an error if not exists.
 
-            replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
+            user = replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
+
+            return create_good_response(user_schema.dump(user), 201, "users")
 
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
@@ -307,7 +310,7 @@ def update_user():
 
             return create_good_response([], 201, "users")
 
-        user_id = request.args.get("uid")
+        user_id = int(request.args.get("uid"))
         new_email = request.args.get("new_email")
         owner_id = request.args.get("owner_id")
 
@@ -316,7 +319,10 @@ def update_user():
         request.json["password"] = get_user_password(user_id)
 
         # The email was updated, update the email validation table for that entry.
-        if new_email is not None and owner_id is not None:
+        is_email_valid = new_email not in (None, 'None', "") and new_email is not None
+        is_owner_valid = owner_id not in (None, 'None', "") and owner_id is not None
+        
+        if is_email_valid and is_owner_valid:
             update_email_to_pending(user_id)
             send_email_for_updated_email(new_email)            
 
@@ -341,9 +347,7 @@ def delete_selected_user():
     try:
         if request.args and request.args.get("uid"):
             user_id = int(request.args.get("uid"))
-            user = get_user(user_id)
-            if not user:
-                return create_bad_response("User does not exist", "users", 400)
+            get_user(user_id)       # Trigger an error if not exists.
             
             associated_task = completed_assessment_team_or_user_exists(team_id=None, user_id=user_id)
             if associated_task and len(associated_task) > 0:
