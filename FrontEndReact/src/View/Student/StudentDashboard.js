@@ -192,20 +192,26 @@ class StudentDashboard extends Component {
 
                 // Qualities for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
-                const locked = task.locked;                                
+                const correctUser = roleId === task.role_id || (roleId === 5 && task.role_id === 4);
+                const locked = task.locked;
                 const published = task.published;
                 const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                let CATviewable = false;
-                let viewable = false;
-                
-                if (task.role_id === 5) {
-                    viewable = !done && correctUser && !locked && published && !pastDue;
-                    CATviewable = correctUser === true && done === true;
+                const isStudent = roles.role_id === 5;
+                const isStudentTask = task.role_id === 5;
+                const baseConditions = correctUser && !locked && published;
+
+                let viewable, CATviewable;
+
+                if (isStudent && isStudentTask) {
+                    viewable = !done && baseConditions && !pastDue;
+                    CATviewable = correctUser && done;
+                } else if (isStudent) {
+                    viewable = baseConditions && !pastDue && !task.notification_sent;
+                    CATviewable = (pastDue || task.notification_sent) && published && correctUser;
                 } else {
-                    viewable = correctUser && !locked && published && !pastDue && !task.notification_sent;
-                    CATviewable = (pastDue || task.notification_sent) && published;
+                    viewable = baseConditions && !pastDue;
+                    CATviewable = pastDue && correctUser;
                 }
 
                 if (CATviewable && cat !== undefined) {
