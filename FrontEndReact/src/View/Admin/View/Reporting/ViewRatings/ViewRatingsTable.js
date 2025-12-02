@@ -3,98 +3,163 @@ import MUIDataTable from 'mui-datatables';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
 /**
- * Renders Ratings table for both Individual and Team ATs.
- * - Individual: shows "Feedback Time Lag" per student.
- * - Team: shows a single "Feedback Information" column. Each entry lists team members,
- *         colors the name GREEN if they've viewed feedback (has a lag), RED if not,
- *         and shows the lag (e.g., "1d 10h") or "-" beneath the name.
+ * Ratings table for both Individual and Team ATs.
+ *
+ * - Individual:
+ *    • One row per student.
+ *    • Shows "Feedback Time Lag" as a separate column.
+ *
+ * - Team:
+ *    • One row per team.
+ *    • "Feedback Information" column shows all team members.
+ *      - Name is RED if they have not viewed feedback (no lag_time).
+ *      - Name is GREEN if they have viewed feedback (lag_time present).
+ *      - Lag text is shown under the name (or "-" if none).
  */
 class ViewRatingsTable extends Component {
+
   /**
-   * Normalize any "student" payload into an array of { name, lag } objects.
-   * Handles a few common shapes so we don't need exact schema right now.
+   * Helper to get a clean student name string.
    */
-  normalizeFeedbackArray = (raw) => {
-    if (!raw) return [];
+  getStudentName = (ratingRow) => {
+    // Backend may send a single "student" string, or first_name / last_name
+    if (ratingRow.student) {
+      return String(ratingRow.student);
+    }
 
-    const toName = (obj) => {
-      // Try a few possibilities
-      if (!obj) return '';
-      const nameFromParts = [obj.first_name, obj.last_name].filter(Boolean).join(' ').trim();
-      return (
-        nameFromParts ||
-        obj.name ||
-        obj.student_name ||
-        obj.full_name ||
-        String(obj) // fallback if raw strings are provided
-      );
-    };
+    const first = ratingRow.first_name || '';
+    const last = ratingRow.last_name || '';
+    const full = `${first} ${last}`.trim();
 
-    const toLag = (obj) => {
-      if (!obj) return null;
-      return (
-        obj.lag_time ??
-        obj.lag ??
-        obj.feedback_time_lag ??
-        (typeof obj === 'string' ? null : null)
-      );
-    };
+    if (full) return full;
+    if (ratingRow.student_name) return String(ratingRow.student_name);
 
-    // If backend returns a single object, wrap it.
-    if (!Array.isArray(raw)) raw = [raw];
+    return 'Unknown';
+  };
 
-    return raw.map((entry) => ({
-      name: toName(entry),
-      lag: toLag(entry),
-    }));
+  /**
+   * Helper to extract lag string (if any) from a row.
+   */
+  getLagFromRow = (ratingRow) => {
+    if (ratingRow.lag_time != null) return ratingRow.lag_time;
+    if (ratingRow.feedback_time_lag != null) return ratingRow.feedback_time_lag;
+    return null;
   };
 
   render() {
     const isTeamMap = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
     const isTeam = isTeamMap[this.props.chosenAssessmentId] === true;
 
-    // Transform API rows into flat table rows for MUIDataTable
     const allRatings = [];
     const nameLabel = isTeam ? 'Team Name' : 'Student Name';
 
-    this.props.ratings.map((currentRating) => {
-      const row = {};
+    if (isTeam) {
+      /**
+       * TEAM MODE
+       * ---------
+       * Backend returns one row per team with:
+       *   - team_name
+       *   - rating_observable_characteristics_suggestions_data
+       *   - students: [{ first_name, last_name, lag_time }, ...]
+       *
+       * We map that into one table row per team, and render the students
+       * in the "Feedback Information" column.
+       *
+       * If the backend is still returning the older "one row per student"
+       * shape (no `students` array), we fall back to grouping by team_name
+       * and treating each rating row as a single student.
+       */
+      const teamMap = new Map();
 
-      // Left-most name cell
-      if (currentRating['first_name'] && currentRating['last_name']) {
-        row['name'] = `${currentRating['first_name']} ${currentRating['last_name']}`;
-      } else if (currentRating['team_name']) {
-        row['name'] = currentRating['team_name'];
-      }
+      this.props.ratings.forEach((ratingRow) => {
+        const ratingData = ratingRow['rating_observable_characteristics_suggestions_data'];
+        if (!ratingData) return;
 
-      // Rating values per category
-      if (currentRating['rating_observable_characteristics_suggestions_data']) {
-        Object.keys(currentRating['rating_observable_characteristics_suggestions_data']).forEach((category) => {
-          row[category] =
-            currentRating['rating_observable_characteristics_suggestions_data'][category]['rating'];
+        const teamName = ratingRow.team_name || 'Unknown Team';
+
+        // Get existing aggregated row or create a new one
+        let teamRow = teamMap.get(teamName);
+        if (!teamRow) {
+          teamRow = {
+            name: teamName,
+            feedback_info: [],
+          };
+
+          // Copy the rating values (same for all members of the team)
+          Object.keys(ratingData).forEach((category) => {
+            teamRow[category] = ratingData[category]['rating'];
+          });
+
+          teamMap.set(teamName, teamRow);
+        }
+
+        // Normal path: backend sends `students` array on each team row.
+        // Fallback: if no `students`, treat this row itself as a single student.
+        const studentsArray =
+          Array.isArray(ratingRow.students) && ratingRow.students.length > 0
+            ? ratingRow.students
+            : [ratingRow];
+
+        studentsArray.forEach((student) => {
+          const first = student.first_name || '';
+          const last = student.last_name || '';
+          const fullName = `${first} ${last}`.trim() || 'Unknown';
+
+          const lag =
+            student.lag_time != null
+              ? student.lag_time
+              : this.getLagFromRow(student);
+
+          teamRow.feedback_info.push({
+            name: fullName,
+            lag: lag,
+          });
         });
-      }
+      });
 
-      // Feedback info
-      if (!isTeam) {
-        // Individual AT: one lag per row
-        row['feedback_time_lag'] = currentRating['lag_time'] ?? currentRating['feedback_time_lag'] ?? null;
-      } else {
-        // Team AT: possibly many students — render as grid in one cell
-        // Prefer explicit "student" field if it's an array; otherwise try to synthesize from whatever we have.
-        const rawStudents = currentRating['student'] ?? currentRating['students'] ?? [];
-        row['feedback_info'] = this.normalizeFeedbackArray(rawStudents);
-      }
-
-      // Only push when we have category payload (matches your previous guard)
-      if (currentRating['rating_observable_characteristics_suggestions_data']) {
+      // Flatten map into an array
+      teamMap.forEach((row) => {
         allRatings.push(row);
-      }
+      });
 
-      return allRatings;
-    });
+    } else {
+      /**
+       * INDIVIDUAL MODE
+       * ---------------
+       * One row per student, with “Feedback Time Lag” in its own column.
+       */
+      this.props.ratings.forEach((currentRating) => {
+        const ratingData = currentRating['rating_observable_characteristics_suggestions_data'];
+        if (!ratingData) return;
 
-    // Base columns
+        const row = {};
+
+        // Name column
+        if (currentRating.first_name || currentRating.last_name) {
+          const first = currentRating.first_name || '';
+          const last = currentRating.last_name || '';
+          row.name = `${first} ${last}`.trim();
+        } else if (currentRating.student_name) {
+          row.name = currentRating.student_name;
+        } else if (currentRating.team_name) {
+          row.name = currentRating.team_name;
+        } else {
+          row.name = 'Unknown';
+        }
+
+        // Category ratings
+        Object.keys(ratingData).forEach((category) => {
+          row[category] = ratingData[category]['rating'];
+        });
+
+        // Feedback lag
+        row.feedback_time_lag = this.getLagFromRow(currentRating);
+
+        allRatings.push(row);
+      });
+    }
+
+    // === Columns ===
     const columns = [
       {
         name: 'name',
@@ -107,60 +172,35 @@ class ViewRatingsTable extends Component {
       },
     ];
 
-    // Category columns (retain the rotated header styling for team ATs)
+    // Category columns – same for individual & team, no diagonal text.
     this.props.categories.map((cat) => {
-      const common = {
+      columns.push({
         name: cat['category_name'],
         label: cat['category_name'],
-        options: { filter: true },
-      };
-
-      if (isTeam) {
-        common.options.customHeadLabelRender = (columnMeta) => (
-          <div
-            style={{
-              transform: 'rotate(45deg)',
-              transformOrigin: 'center',
-              whiteSpace: 'wrap',
-              height: '150px',
-              width: '80px',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'left',
-            }}
-          >
-            {columnMeta.label}
-          </div>
-        );
-        common.options.setCellHeaderProps = () => ({
-          style: {
-            minWidth: '40px',
-            maxWidth: '40px',
-            padding: 0,
-            margin: 0,
-            height: 'auto',
-            verticalAlign: 'middle',
-          },
-        });
-      }
-
-      columns.push(common);
+        options: {
+          filter: true,
+        },
+      });
       return cat;
     });
 
-    // Feedback columns (differs for team vs individual)
+    // Feedback column(s)
     if (!isTeam) {
+      // Individual AT: simple “Feedback Time Lag” column
       columns.splice(1, 0, {
         name: 'feedback_time_lag',
         label: 'Feedback Time Lag',
-        options: { filter: true },
+        options: {
+          filter: true,
+        },
       });
     } else {
+      // Team AT: “Feedback Information” with member grid
       columns.push({
         name: 'feedback_info',
         label: 'Feedback Information',
         options: {
-          filter: false,
+          filter: true,
           sort: false,
           setCellProps: () => ({
             style: {
@@ -175,7 +215,6 @@ class ViewRatingsTable extends Component {
               return <span style={{ color: '#d32f2f' }}>No team members</span>;
             }
 
-            // Layout as a simple responsive grid; each person shows name (colored) and small lag text below.
             return (
               <div
                 style={{

@@ -590,64 +590,113 @@ def remove_user_from_team(user_id, team_id):
 def get_individual_ratings(assessment_task_id):
     """
     Description:
-    Gets all students and their rating information
-    given the assessment task.
+        Gets all students and their rating information
+        for an INDIVIDUAL assessment task.
 
-    Parameters:
-    assessment_task_id: int (The id of an assessment task)
+    Returns rows shaped as:
+        0: User.first_name
+        1: User.last_name
+        2: CompletedAssessment.rating_observable_characteristics_suggestions_data
+        3: Feedback.feedback_time (may be NULL if not viewed yet)
+        4: CompletedAssessment.last_update (submission time)
+        5: Feedback.feedback_id (may be NULL)
     """
-    return db.session.query(
-        User.first_name,
-        User.last_name,
-        CompletedAssessment.rating_observable_characteristics_suggestions_data,
-        Feedback.feedback_time,
-        CompletedAssessment.last_update,
-        Feedback.feedback_id
-    ).join(
-        Feedback,
-        Feedback.completed_assessment_id == CompletedAssessment.completed_assessment_id,
-        isouter=True # allows to still get students who haven't viewed their feedback yet
-    ).join(
-        User,
-        CompletedAssessment.user_id == User.user_id
-    ).filter(
-        CompletedAssessment.team_id == None,
-        CompletedAssessment.assessment_task_id == assessment_task_id
-    ).all()
-    
+    return (
+        db.session.query(
+            User.first_name,
+            User.last_name,
+            CompletedAssessment.rating_observable_characteristics_suggestions_data,
+            Feedback.feedback_time,
+            CompletedAssessment.last_update,
+            Feedback.feedback_id,
+        )
+        .select_from(CompletedAssessment)
+        .join(
+            User,
+            CompletedAssessment.user_id == User.user_id,
+        )
+        .outerjoin(
+            Feedback,
+            and_(
+                Feedback.completed_assessment_id
+                == CompletedAssessment.completed_assessment_id,
+                Feedback.user_id == User.user_id,
+            ),
+        )
+        .filter(
+            CompletedAssessment.team_id == None,
+            CompletedAssessment.assessment_task_id == assessment_task_id,
+        )
+        .all()
+    )
+
 
 @error_log
 def get_team_ratings(assessment_task_id):
     """
     Description:
-    Gets all teams and their rating information
-    given the assessment task.
-    Parameters:
-    assessment_task_id: int (The id of an assessment task)
+        Gets all teams and their rating information for the given
+        TEAM assessment task.
+
+    For each *team member* on a team that has a CompletedAssessment for
+    this AT, this returns one row:
+
+        0: Team.team_id
+        1: Team.team_name
+        2: CompletedAssessment.rating_observable_characteristics_suggestions_data
+        3: Feedback.feedback_time (may be NULL)
+        4: CompletedAssessment.last_update (submission time)
+        5: Feedback.feedback_id (may be NULL)
+        6: User.first_name
+        7: User.last_name
+
+    Rating_routes.py groups these rows by team_id and builds the per-team
+    "students" array, coloring names red/green based on whether lag_time
+    is present.
     """
-    return db.session.query(
-        Team.team_id,
-        Team.team_name,
-        CompletedAssessment.rating_observable_characteristics_suggestions_data,
-        Feedback.feedback_time,
-        CompletedAssessment.last_update,
-        Feedback.feedback_id,
-        User.first_name,
-        User.last_name
-    ).join(
-        Feedback,
-        CompletedAssessment.completed_assessment_id == Feedback.completed_assessment_id,
-        isouter=True # allows to still get teams who haven't viewed their feedback yet
-    ).join(
-        Team,
-        CompletedAssessment.team_id == Team.team_id
-    ).join(
-        User,
-        Feedback.user_id == User.user_id
-    ).filter(
-        CompletedAssessment.team_id != None,
-        CompletedAssessment.assessment_task_id == assessment_task_id
-    ).all()
+    return (
+        db.session.query(
+            Team.team_id,
+            Team.team_name,
+            CompletedAssessment.rating_observable_characteristics_suggestions_data,
+            Feedback.feedback_time,
+            CompletedAssessment.last_update,
+            Feedback.feedback_id,
+            User.first_name,
+            User.last_name,
+        )
+        .select_from(CompletedAssessment)
+        # One CompletedAssessment per team for this AT
+        .join(
+            Team,
+            CompletedAssessment.team_id == Team.team_id,
+        )
+        # All users assigned to that team
+        .join(
+            TeamUser,
+            TeamUser.team_id == Team.team_id,
+        )
+        # User info for each team member
+        .join(
+            User,
+            User.user_id == TeamUser.user_id,
+        )
+        # Feedback (if it exists) for that user + completed assessment
+        .outerjoin(
+            Feedback,
+            and_(
+                Feedback.completed_assessment_id
+                == CompletedAssessment.completed_assessment_id,
+                Feedback.user_id == User.user_id,
+            ),
+        )
+        .filter(
+            CompletedAssessment.team_id != None,
+            CompletedAssessment.assessment_task_id == assessment_task_id,
+        )
+        .all()
+    )
+
 @error_log
 def get_all_checkins_for_student_for_course(user_id, course_id):
     """

@@ -1,8 +1,8 @@
+// ViewAssessmentTaskInstructions.js
 import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-import {genericResourcePOST} from '../../../../utility.js';
-import Cookies from 'universal-cookie';
+import { genericResourcePOST } from '../../../../utility.js';
 
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {
@@ -18,57 +18,55 @@ class ViewAssessmentTaskInstructions extends Component {
     handleContinueClick = async () => {
         const navbar = this.props.navbar;
         const state = navbar.state;
-        const cookies = new Cookies();
+        const completedAssessment = state.chosenCompleteAssessmentTask;
 
         try {
-            const userId = cookies.get('user')?.user_id;
-            if (!userId) {
-                console.error('User ID not found in cookies');
-                this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
-                return;
-            }
+            const completedAssessmentId = completedAssessment?.completed_assessment_id;
 
-            const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
             if (!completedAssessmentId) {
                 console.error('Completed assessment ID not found');
-                this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+                navbar.setNewTab("ViewStudentCompleteAssessmentTask");
                 return;
             }
 
+            const teamId = completedAssessment?.team_id ?? null;
+
+            // Hit the new /rating endpoint so we can track when the student views feedback
             await genericResourcePOST(
-                '/feedback',
+                '/rating',
                 this,
                 JSON.stringify({
-                    user_id: userId,
-                    completed_assessment_id: completedAssessmentId
+                    completed_assessment_id: completedAssessmentId,
+                    // For individual assessments this will be null and the backend
+                    // will go down the non-team branch.
+                    team_id: teamId,
                 })
             );
-
         } catch (error) {
             console.error('Error recording feedback view:', error);
         }
 
-        this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+        navbar.setNewTab("ViewStudentCompleteAssessmentTask");
     }
 
     render() {
         const skipInstructions = this.state.skipInstructions;
 
-        var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+        const assessmentTaskName =
+            this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
 
-        var rubricName = this.props.rubrics["rubric_name"];
+        const rubricName = this.props.rubrics["rubric_name"];
+        const rubricDescription = this.props.rubrics["rubric_description"];
 
-        var rubricDescription = this.props.rubrics["rubric_description"];
-
-        var categoryList = Object.keys(this.state.categories).map((category, index) => {
-
-            if(index !== Object.keys(this.state.categories).length-1) {
+        const categoryList = Object.keys(this.state.categories).map((category, index) => {
+            if (index !== Object.keys(this.state.categories).length - 1) {
                 category += ", ";
             }
 
             return category;
         });
 
+        // If the user chose to skip instructions, immediately continue
         if (skipInstructions) {
             this.handleContinueClick();
             return <></>;
@@ -95,13 +93,13 @@ class ViewAssessmentTaskInstructions extends Component {
                 >
                     <div
                         style={{
-                            borderTop: '3px solid #4A89E8', 
+                            borderTop: '3px solid #4A89E8',
                             border: '3px, 0px, 0px, 0px',
-                            borderRadius: '10px', 
-                            marginTop: '30px', 
-                            paddingLeft:'5rem',
-                            paddingRight:'5rem',
-                            paddingTop:'2rem',
+                            borderRadius: '10px',
+                            marginTop: '30px',
+                            paddingLeft: '5rem',
+                            paddingRight: '5rem',
+                            paddingTop: '2rem',
                             backgroundColor: "white",
                             width: '90%',
                             height: 'fit-content'
@@ -176,9 +174,7 @@ class ViewAssessmentTaskInstructions extends Component {
                                         marginTop: "1rem",
                                         marginBottom: "0.5rem"
                                     }}
-                                    onClick={() => {
-                                        this.handleContinueClick();
-                                    }}
+                                    onClick={this.handleContinueClick}
                                     aria-label="viewAssessmentTaskInstructionsContinueButton"
                                 >
                                     Complete rubric

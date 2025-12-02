@@ -26,6 +26,7 @@ from models.assessment_task import (
     replace_assessment_task,
     toggle_lock_status,
     toggle_published_status,
+    toggle_notification_sent_to_true,
 )
 
 from models.completed_assessment import (
