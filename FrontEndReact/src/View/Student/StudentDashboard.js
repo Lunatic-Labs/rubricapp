@@ -197,10 +197,18 @@ class StudentDashboard extends Component {
                 const published = task.published;
                 const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const viewable = !done && correctUser && !locked && published && !pastDue;
-                const CATviewable = correctUser === false && done === false;
+                let CATviewable = false;
+                let viewable = false;
+                
+                if (task.roleId === 5) {
+                    viewable = !done && correctUser && !locked && published && !pastDue;
+                    CATviewable = correctUser === true && done === true;
+                } else {
+                    viewable = correctUser && !locked && published && !pastDue;
+                    CATviewable = (pastDue || task.notification_sent) && published;
+                } 
 
-                if (!CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                if (CATviewable && cat !== undefined) {
                     viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
                     filteredAvgData.push(avg);
                 }
