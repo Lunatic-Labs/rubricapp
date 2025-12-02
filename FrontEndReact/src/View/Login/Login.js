@@ -9,6 +9,7 @@ import { apiUrl } from '../../App.js';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
 
 
 
@@ -22,9 +23,10 @@ class Login extends Component {
             loggedIn: null,
             hasSetPassword: null,
             resettingPassword: null,
+            isRefreshing: false,
             email: '',
             password: '',
-            showPassword: '',
+            showPassword: false,
 
             errors: {
                 email: '',
@@ -32,14 +34,28 @@ class Login extends Component {
             }
         }
 
+        // handleChange has been altered to account for the 20 character limit for password
         this.handleChange = (e) => {
             const { id, value } = e.target;
 
+            // This will create an error message if password is empty and/or exceeding the 20 character limit
+            let errorMessage = '';
+            if(value.trim() === '') {
+                errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
+            } else if(id === 'password' && value.length > MAX_PASSWORD_LENGTH) {
+                errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;
+            }
+
+            // this.setState() used to contain the code below.
+            //
+            //[id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+            //
+            // part of it was moved to errrorMessage and replaced with [id]: errorMessage,
             this.setState({
                 [id]: value,
                 errors: {
                     ...this.state.errors,
-                    [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                    [id]: errorMessage,
                 },
             });
         };
@@ -86,12 +102,10 @@ class Login extends Component {
                     .then(res => res.json())
                     .then(
                         (result) => {
-                            const cookies = new Cookies();
-
                             if (result["success"]) {
-                                cookies.set('access_token', result['headers']['access_token'], { sameSite: 'strict' });
-                                cookies.set('refresh_token', result['headers']['refresh_token'], { sameSite: 'strict' });
-                                cookies.set('user', result['content']['login'][0], { sameSite: 'strict' });
+                                this.cookies.set('access_token', result['headers']['access_token'], { sameSite: 'strict' });
+                                this.cookies.set('refresh_token', result['headers']['refresh_token'], { sameSite: 'strict' });
+                                this.cookies.set('user', result['content']['login'][0], { sameSite: 'strict' });
 
                                 this.setState(() => ({
                                     isLoaded: true,
@@ -100,9 +114,9 @@ class Login extends Component {
                                 }));
 
                             } else {
-                                cookies.remove('access_token');
-                                cookies.remove('refresh_token');
-                                cookies.remove('user');
+                                this.cookies.remove('access_token');
+                                this.cookies.remove('refresh_token');
+                                this.cookies.remove('user');
 
                                 this.setState(() => ({
                                     isLoaded: true,
@@ -111,11 +125,9 @@ class Login extends Component {
                             }
                         },
                         (error) => {
-                            const cookies = new Cookies();
-
-                            cookies.remove('access_token');
-                            cookies.remove('refresh_token');
-                            cookies.remove('user');
+                            this.cookies.remove('access_token');
+                            this.cookies.remove('refresh_token');
+                            this.cookies.remove('user');
 
                             this.setState(() => ({
                                 isLoaded: true,
@@ -127,15 +139,14 @@ class Login extends Component {
         };
 
         this.handleNewAccessToken = () => {
-            const cookies = new Cookies();
-            const refreshToken = cookies.get('refresh_token');
-            const user = cookies.get('user');
+            const refreshToken = this.cookies.get('refresh_token');
+            const user = this.cookies.get('user');
 
             // Check if we have the necessary data
             if (!refreshToken || !user || !user["user_id"]) {
-                cookies.remove('access_token');
-                cookies.remove('refresh_token');
-                cookies.remove('user');
+                this.cookies.remove('access_token');
+                this.cookies.remove('refresh_token');
+                this.cookies.remove('user');
 
                 this.setState({
                     isLoaded: true,
@@ -161,16 +172,16 @@ class Login extends Component {
                 .then(
                     (result) => {
                         if (result["success"]) {
-                            cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
+                            this.cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
 
                             this.setState({
-                                loggedIn: null,
+                                loggedIn: true,
                                 isRefreshing: false
                             });
                         } else {
-                            cookies.remove('access_token');
-                            cookies.remove('refresh_token');
-                            cookies.remove('user');
+                            this.cookies.remove('access_token');
+                            this.cookies.remove('refresh_token');
+                            this.cookies.remove('user');
 
                             this.setState({
                                 isLoaded: true,
@@ -181,9 +192,9 @@ class Login extends Component {
                         }
                     },
                     (error) => {
-                        cookies.remove('user');
-                        cookies.remove('access_token');
-                        cookies.remove('refresh_token');
+                        this.cookies.remove('user');
+                        this.cookies.remove('access_token');
+                        this.cookies.remove('refresh_token');
 
                         this.setState({
                             isLoaded: true,
@@ -218,6 +229,49 @@ class Login extends Component {
         }
     }
 
+    componentDidMount() {
+        this.cookies = new Cookies();
+        this.checkAuthStatus();
+    }
+
+    checkAuthStatus = () => {
+        const hasAccessToken = !!this.cookies.get('access_token');
+        const hasRefreshToken = !!this.cookies.get('refresh_token');
+        const hasUser = !!this.cookies.get('user');
+
+        // No tokens - show login
+        if (!hasAccessToken && !hasRefreshToken && !hasUser) {
+            return;
+        }
+
+        // Has refresh token but no access token - try to refresh
+        if (!hasAccessToken && hasRefreshToken && hasUser && !this.state.isRefreshing) {
+            this.setState({ isRefreshing: true });
+            this.handleNewAccessToken();
+            return;
+        }
+
+        // Inconsistent state - clear everything
+        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken)) {
+            this.cookies.remove('access_token');
+            this.cookies.remove('refresh_token');
+            this.cookies.remove('user');
+
+            this.setState({
+                isLoaded: true,
+                loggedIn: false,
+                isRefreshing: false,
+                errorMessage: "Session expired. Please log in again."
+            });
+            return;
+        }
+
+        // Has both tokens - user is logged in
+        if (hasAccessToken && hasRefreshToken) {
+            this.setState({ loggedIn: true });
+        }
+    }
+
     render() {
         const {
             isLoaded,
@@ -225,26 +279,29 @@ class Login extends Component {
             loggedIn,
             hasSetPassword,
             resettingPassword,
+            isRefreshing,
             email,
             password,
             showPassword,
             errors
         } = this.state;
 
-        const cookies = new Cookies();
-
         // Handle password reset flow
         if (resettingPassword) {
             return (<ValidateReset />)
         }
 
-        // Handle case where user has no tokens at all - show login page
-        else if (!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
+        // Loading while checking auth or refreshing token
+        if (isRefreshing) {
+            return (<Loading />)
+        }
+
+        // Show login page if not logged in
+        if (!loggedIn) {
             return (
                 <>
                     {isLoaded && errorMessage &&
                         <>
-                            {/* A response has been received and an error occurred */}
                             <Box>
                                 <ErrorMessage errorMessage={errorMessage} />
                             </Box>
@@ -305,6 +362,7 @@ class Login extends Component {
                                                 onChange={this.handleChange}
                                                 onKeyDown={this.keyPress}
                                                 aria-label="passwordInput"
+                                                inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of MAX_PASSWORD_LENGTH password has been changed to 21, this accounts for browsers handling characters differently
                                                 InputProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">
@@ -354,73 +412,24 @@ class Login extends Component {
             )
         }
 
-        // Handle case where user has no access token but has refresh token - try to refresh
-        else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user')) && !this.state.isRefreshing) {
-            this.setState({ isRefreshing: true });
-            this.handleNewAccessToken();
-
-            return (
-                <Loading />
-            )
-        }
-
-        // Handle case where user has no refresh token but still has user data - clear everything and show login
-        else if (!loggedIn && !cookies.get('refresh_token') && cookies.get('user')) {
-            cookies.remove('access_token');
-            cookies.remove('refresh_token');
-            cookies.remove('user');
-
-            // Reset state and show login
-            this.setState({
-                isLoaded: true,
-                loggedIn: false,
-                isRefreshing: false,
-                errorMessage: "Session expired. Please log in again."
-            });
-
-            return (
-                <Loading />
-            )
-        }
-
-        // Handle case where access token exists but refresh token is missing - clear everything and show login
-        else if (!loggedIn && cookies.get('access_token') && !cookies.get('refresh_token')) {
-            cookies.remove('access_token');
-            cookies.remove('refresh_token');
-            cookies.remove('user');
-
-            this.setState({
-                isLoaded: true,
-                loggedIn: false,
-                isRefreshing: false,
-                errorMessage: "Session expired. Please log in again."
-            });
-
-            return (
-                <Loading />
-            )
-        }
-
         // User is authenticated
-        else {
-            if (hasSetPassword === false) {
-                return (
-                    <SetNewPassword
-                        email={email}
-                    />
-                )
-            }
-            else {
-                return (
-                    <AppState
-                        userName={cookies.get('user')['user_name']}
-                        isSuperAdmin={cookies.get('user')['isSuperAdmin']}
-                        isAdmin={cookies.get('user')['isAdmin']}
-                        logout={this.logout}
-                    />
-                )
-            }
+        if (hasSetPassword === false) {
+            return (
+                <SetNewPassword
+                    email={email}
+                />
+            )
         }
+
+        // User logged in and has set password
+        return (
+            <AppState
+                userName={this.cookies.get('user')['user_name']}
+                isSuperAdmin={this.cookies.get('user')['isSuperAdmin']}
+                isAdmin={this.cookies.get('user')['isAdmin']}
+                logout={this.logout}
+            />
+        )
     }
 }
 
