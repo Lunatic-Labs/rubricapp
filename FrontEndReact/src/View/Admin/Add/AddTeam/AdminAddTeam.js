@@ -258,7 +258,7 @@ class AdminAddTeam extends Component {
                                         error={!!errors.observerId} 
                                         required 
                                         fullWidth 
-                                        className="dropdown-colors"
+                                        
                                         sx={{
                                             mb: 3,
                                             '& .MuiInputBase-root': {
@@ -294,10 +294,10 @@ class AdminAddTeam extends Component {
                                             required
                                             error={!!errors.observerId}
                                             aria-label="userObserverDropDown"
-                                            className="dropdown-colors"
+                                            
                                             MenuProps={{
                                                 PaperProps: {
-                                                    className: 'dropdown-colors',
+                                                    
                                                     sx: {
                                                         backgroundColor: 'var(--dropdown-bg)',
                                                         color: 'var(--dropdown-text)',

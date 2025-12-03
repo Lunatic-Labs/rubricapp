@@ -568,7 +568,7 @@ class AdminAddUser extends Component {
                       error={!!errors.role}
                       required
                       fullWidth
-                      className="dropdown-colors"
+                      
                       sx={{
                         mb: 3,
                         "& .MuiInputBase-root": {
@@ -606,7 +606,7 @@ class AdminAddUser extends Component {
                         aria-label="addUserRoleDropDown"
                         MenuProps={{
                           PaperProps: {
-                            className: "dropdown-colors",
+                            
                             sx: {
                               backgroundColor: "var(--dropdown-bg)",
                               color: "var(--dropdown-text)",

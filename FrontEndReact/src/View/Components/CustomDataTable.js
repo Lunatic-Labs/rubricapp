@@ -104,6 +104,9 @@ const customTheme = createTheme({
       styleOverrides: {
         root: {
           backgroundColor: 'var(--table-toolbar)',
+          '&.MuiPopover-paper': {
+            backgroundColor: 'var(--dropdown-bg) !important',
+          },
         },
       },
     },
@@ -126,6 +129,43 @@ const customTheme = createTheme({
         root: {
           color: 'var(--table-text) !important',
           fill: 'var(--table-text) !important',
+        },
+      },
+    },
+    MUIDataTableFilter: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'var(--dropdown-bg) !important',
+          color: 'var(--dropdown-text) !important',
+        },
+      },
+    },
+    MuiPopover: {
+      styleOverrides: {
+        paper: {
+          backgroundColor: 'var(--dropdown-bg) !important',
+          color: 'var(--dropdown-text) !important',
+        },
+      },
+    },
+    MuiTypography: {
+      styleOverrides: {
+        root: {
+          color: 'var(--dropdown-text) !important',
+        },
+      },
+    },
+    MuiCheckbox: {
+      styleOverrides: {
+        root: {
+          color: 'var(--dropdown-icon)',
+        },
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          color: 'var(--dropdown-label)',
         },
       },
     },

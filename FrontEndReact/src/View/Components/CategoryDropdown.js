@@ -45,7 +45,7 @@ export default function CategoryDropdown(props) {
 
   return (
     <FormControl
-    className="dropdown-colors" 
+    
     // controls the way the 'dropdown' is displayed.
       sx={{ 
         m: 3,           // margin
@@ -89,7 +89,7 @@ export default function CategoryDropdown(props) {
         }}
         MenuProps={{
           PaperProps: {
-            className: 'dropdown-colors',
+            
             sx: {
               backgroundColor: 'var(--dropdown-bg)',
               color: 'var(--dropdown-text)',

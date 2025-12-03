@@ -176,17 +176,17 @@ class ViewCourses extends Component {
             justifyContent: "space-between",
             alignItems: "center",
             alignSelf: "stretch",
-            className: "dropdown-colors",
+            
             setFilterChipProps: () => ({
               sx: {
-                className: 'dropdown-colors',
+                
                 backgroundColor: 'var(--dropdown-bg)',
                 color: 'var(--dropdown-text)',
               }
             }),
             setTableProps: () => ({
               sx: {
-                className: 'dropdown-colors',
+                
                 '& .MuiPopover-paper': {
                   backgroundColor: 'var(--dropdown-bg)',
                   color: 'var(--dropdown-text)',
