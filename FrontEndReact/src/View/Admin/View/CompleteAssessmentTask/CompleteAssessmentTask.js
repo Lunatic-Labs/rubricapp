@@ -235,6 +235,8 @@ class CompleteAssessmentTask extends Component {
                     users: userSort,
                     fixedTeams: teamSort,
                     fixedTeamMembers: teamsUsers,
+                    // userFixedTeam is actually a list of a single team,
+                    //   so index to get the first entry of the list.
                     userFixedTeam: userFixedTeam?.[0],
                 });
 
