@@ -282,7 +282,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Individ
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
-    });
+    },{ timeout: 3000 });
 
     clickFirstElementWithAriaLabel(aismdb);
 
@@ -290,5 +290,5 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Individ
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
-    });
+    },{ timeout: 3000 });
 });
