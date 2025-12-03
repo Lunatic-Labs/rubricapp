@@ -199,18 +199,18 @@ class StudentDashboard extends Component {
 
                 const isStudent = roles.role_id === 5;
                 const isStudentTask = task.role_id === 5;
-                const baseConditions = correctUser && !locked && published;
+                const baseConditions = correctUser && !locked && published && !pastDue;
 
                 let viewable, CATviewable;
 
                 if (isStudent && isStudentTask) {
-                    viewable = !done && baseConditions && !pastDue;
+                    viewable = !done && baseConditions;
                     CATviewable = correctUser && done;
                 } else if (isStudent) {
-                    viewable = baseConditions && !pastDue && !task.notification_sent;
+                    viewable = baseConditions && !task.notification_sent;
                     CATviewable = (pastDue || task.notification_sent) && published && correctUser;
                 } else {
-                    viewable = baseConditions && !pastDue;
+                    viewable = baseConditions;
                     CATviewable = pastDue && correctUser;
                 }
 
