@@ -14,7 +14,7 @@
 }
 
 .primary-color:disabled {
-  background-color: #bcbcbc !important;
+  background-color: var(--primary-disabled-bg) !important;
 }
 
 /* Table aligment */
@@ -192,7 +192,7 @@ h4, h5 {
 
 
 :root {
-  --light_grey_ADA: #f8f6f6;
+  --light_grey_ADA: #f8f6f6; /* Fix */
   --light_grey_hover: #d0d0d0;
   --export_disabled_text: #4b4b4b;
   /* Data table light mode colors */
@@ -201,6 +201,8 @@ h4, h5 {
   --table-toolbar: white;
   --table-header: #A4C4F4;
   --table-text: #000000;
+  --table-border: #e0e0e0;
+  --primary-disabled-bg: #bcbcbc;
 }
 
 /* used in line 23 of CustomDataTable.js */
@@ -286,7 +288,7 @@ h4, h5 {
 }
 
 /* Dropdown Menu Colors */
-.dropdown-colors {
+:root {
   --dropdown-bg: #ffffffff;
   --dropdown-text: #000000;
   --dropdown-border: #0000003b;
@@ -319,6 +321,27 @@ h4, h5 {
   --button-text: #2E8BEF;
   --button-hover: rgba(46, 139, 239, 0.08);
 }
+
+/* MUI DataTable Filter Styling */
+.MUIDataTableFilter-root {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+}
+
+.MUIDataTableFilter-header {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+}
+
+.MUIDataTableFilter-reset,
+.MUIDataTableFilter-filtersSelected {
+  color: var(--dropdown-text) !important;
+}
+
+.MUIDataTableFilter-gridListTile {
+  color: var(--dropdown-text) !important;
+}
+
 
 /* Shadow color variable */
 :root {
@@ -360,7 +383,7 @@ body.mode .primary-color-text {
 }
 
 body.mode .primary-color:disabled {
-  background-color: #4a4a4a !important;
+  background-color: var(--primary-disabled-bg) !important;
 }
 
 body.mode h4, 
@@ -412,11 +435,13 @@ body.mode .table-row {
   color: #e0e0e0;
 }
 
+/*
 body.mode :root {
   --light_grey_ADA: #2a2a2a;
   --light_grey_hover: #3a3a3a;
   --export_disabled_text: #888888;
 }
+*/
 
 body.mode .light_grey_ADA {
   background-color: #2a2a2a;
@@ -426,9 +451,11 @@ body.mode .light_grey_ADA_hover {
   background-color: #3a3a3a;
 }
 
+
 body.mode .export_disabled_text {
   color: #888888 !important;
 }
+
 
 body.mode .navbar {
   --navbar-bg: #1a1a1a;
@@ -507,7 +534,7 @@ body.mode .generic-text-color {
   color: #e0e0e0;
 }
 
-body.mode .dropdown-colors {
+body.mode {
   --dropdown-bg: #262626ff;
   --dropdown-text: #e0e0e0;
   --dropdown-border: #ffffff3b;
@@ -518,11 +545,33 @@ body.mode .dropdown-colors {
   --dropdown-disabled-text: #ffffff61;
   --dropdown-icon: #ffffffb3;
 }
+
  
 /*Dropdown border for dark mode*/
-body.mode .dropdown-colors .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+body.mode .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
   border-color: #ffffff !important;
 }
+
+/* Dark mode overrides */
+body.mode .MUIDataTableFilter-root {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+}
+
+body.mode .MUIDataTableFilter-header {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--dropdown-text) !important;
+}
+
+body.mode .MUIDataTableFilter-reset,
+body.mode .MUIDataTableFilter-filtersSelected {
+  color: var(--dropdown-text) !important;
+}
+
+body.mode .MUIDataTableFilter-gridListTile {
+  color: var(--dropdown-text) !important;
+}
+
 
 /* Dark mode text box colors */
 body.mode .text-box-colors {
@@ -555,14 +604,16 @@ body.mode .MuiSlider-markLabel {
 }
 
 body.mode {
-  --light_grey_ADA: #5b5b5b;
-  --light_grey_hover: #4a4a4a;
-  --export_disabled_text: #4b4b4b;
-  --table-odd-row: #1f1f1f;
-  --table-odd-row-hover: #353535;
+  --light_grey_ADA: #464646;
+  --light_grey_hover: #4c4c4c;
+  --export_disabled_text: #888888;
+  --table-odd-row: #252525;
+  --table-odd-row-hover: #2c2c2c;
   --table-toolbar: #2a2a2a;
-  --table-header: #32485d;
+  --table-header: #2d4a6b;
   --table-text: #e0e0e0;
+  --table-border: #404040;
+  --primary-disabled-bg: #3a3a3a;
 }
 
 .icon-color {

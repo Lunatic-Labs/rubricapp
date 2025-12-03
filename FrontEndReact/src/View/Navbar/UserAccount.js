@@ -275,7 +275,7 @@ class UserAccount extends Component {
                             open={resetPasswordDialogOpen}
                             onClose={this.handleDialogClose}
                             PaperProps={{
-                                className: 'dropdown-colors textarea-colors',
+                                className: 'textarea-colors',
                                 sx: {
                                     backgroundColor: 'var(--dropdown-bg)',
                                     color: 'var(--textarea-color)',

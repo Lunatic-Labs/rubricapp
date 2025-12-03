@@ -48,7 +48,7 @@ componentDidMount() {
 
     if(this.state.courses) {
       return (
-        <Box className="dropdown-colors">
+        <Box>
           <FormControl 
             fullWidth
             sx={{ 
@@ -77,7 +77,7 @@ componentDidMount() {
               aria-label="adminImportAssessmentCourseDropdown"
               MenuProps={{
                 PaperProps: {
-                  className: 'dropdown-colors',
+                  
                   sx: {
                     backgroundColor: 'var(--dropdown-bg)',
                     color: 'var(--dropdown-text)',
