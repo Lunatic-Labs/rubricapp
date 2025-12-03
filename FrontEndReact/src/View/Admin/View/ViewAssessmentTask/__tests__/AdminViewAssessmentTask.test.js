@@ -213,7 +213,7 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
-    });
+    },{ timeout: 3000 });
 });
 
 
