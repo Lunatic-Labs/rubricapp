@@ -27,3 +27,21 @@ export function changeElementWithAriaLabelWithCode(ariaLabel, code) { // types i
         fireEvent.change(children[index].firstChild.firstChild, { target: { value: code[index] } });
     }
 }
+
+export const clickFirstEnabledElementWithAriaLabel = (ariaLabel) => {
+    const elements = screen.getAllByLabelText(ariaLabel);
+    const enabledElement = elements.find(el => !el.disabled);
+    
+    if (!enabledElement) {
+        throw new Error(`No enabled element found with aria-label: ${ariaLabel}`);
+    }
+    
+    enabledElement.click();
+};
+
+export const expectEnabledElementWithAriaLabelToExist = (ariaLabel) => {
+    const elements = screen.queryAllByLabelText(ariaLabel);
+    const hasEnabledElement = elements.some(el => !el.disabled);
+    
+    expect(hasEnabledElement).toBe(true);
+};

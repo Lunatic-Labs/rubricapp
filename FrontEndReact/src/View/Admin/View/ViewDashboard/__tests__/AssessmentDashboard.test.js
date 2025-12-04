@@ -6,7 +6,8 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickFirstElementWithAriaLabel,
+    clickFirstEnabledElementWithAriaLabel
 } from "../../../../../testUtilities.js";
 
 import {
@@ -260,7 +261,7 @@ test("AssessmentDashboard.test.js Test 10: Should show View Completed Assessment
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
@@ -289,7 +290,7 @@ test("AssessmentDashboard.test.js Test 11: Should show Instructions for Assessme
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(satb);
+        clickFirstEnabledElementWithAriaLabel(satb);
     },{ timeout: 3000 });
 
 

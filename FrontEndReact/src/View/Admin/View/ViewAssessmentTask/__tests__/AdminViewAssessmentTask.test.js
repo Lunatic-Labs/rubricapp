@@ -6,7 +6,8 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickFirstElementWithAriaLabel,
+    clickFirstEnabledElementWithAriaLabel
 } from "../../../../../testUtilities.js";
 
 import {
@@ -179,7 +180,7 @@ test("AdminViewAssessmentTask.test.js Test 6: Should render the Edit Assessment 
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(eaib);
+        clickFirstEnabledElementWithAriaLabel(eaib);
     },{ timeout: 3000 });
     
     await waitFor(() => {
@@ -208,7 +209,7 @@ test("AdminViewAssessmentTask.test.js Test 7: Should render the Completed Assess
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
@@ -237,7 +238,7 @@ test("AdminViewAssessmentTask.test.js Test 8: Should render the Instructions for
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(satb);
+        clickFirstEnabledElementWithAriaLabel(satb);
     },{ timeout: 3000 });
 
     await waitFor(() => {

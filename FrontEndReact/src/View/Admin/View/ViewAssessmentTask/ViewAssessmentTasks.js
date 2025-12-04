@@ -24,7 +24,7 @@ class ViewAssessmentTasks extends Component {
             downloadedAssessment: null,
             exportButtonId: {},
             completedAssessments: null,
-            sortedAssessmentTasks: null,
+            assessmentTasks: null,
             lockStatus: {},
             publishedStatus: {},
         }
@@ -87,6 +87,36 @@ class ViewAssessmentTasks extends Component {
 
     }
 
+    componentDidUpdate () {
+        if(this.state.isLoaded && this.state.csvCreation) {
+            const fileData = this.state.csvCreation["csv_data"];
+
+            const blob = new Blob([fileData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.download = this.state.downloadedAssessment + ".csv";
+            link.href = url;
+            link.setAttribute('download', this.props.navbar.state.chosenCourse['course_name']+'.csv');
+            link.click();
+
+            var assessmentName = this.state.downloadedAssessment;
+
+            const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
+
+            setTimeout(() => {
+                if(exportAssessmentTask) {
+                    exportAssessmentTask.removeAttribute("disabled");
+                }
+            }, 10000);
+
+            this.setState({
+                isLoaded: null,
+                csvCreation: null
+            });
+        }
+    }
+
     componentDidMount() {
         const courseId = this.props.navbar.state.chosenCourse.course_id;
 
@@ -103,29 +133,17 @@ class ViewAssessmentTasks extends Component {
             this,
             {dest: "completedAssessments"}
         );
-    }
 
-    componentDidUpdate(prevProps) {
         const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
-        const prevAssessmentTasks = prevProps.navbar.adminViewAssessmentTask.assessmentTasks;
-    
-        if (assessmentTasks && assessmentTasks.length > 0 && 
-            (!prevAssessmentTasks || prevAssessmentTasks.length === 0) &&
-            Object.keys(this.state.lockStatus).length === 0) {
-            
-            const initialLockStatus = {};
-            const initialPublishedStatus = {};
+        const initialLockStatus = {};
+        const initialPublishedStatus = {};
 
-            assessmentTasks.forEach((task) => {
-                initialLockStatus[task.assessment_task_id] = task.locked;
-                initialPublishedStatus[task.assessment_task_id] = task.published;
-            });
+        assessmentTasks.forEach((task) => {
+            initialLockStatus[task.assessment_task_id] = task.locked;
+            initialPublishedStatus[task.assessment_task_id] = task.published;
+        });
 
-            this.setState({ 
-                lockStatus: initialLockStatus, 
-                publishedStatus: initialPublishedStatus 
-            });
-        }
+        this.setState({ lockStatus: initialLockStatus, publishedStatus: initialPublishedStatus });
     }
 
     render() {
