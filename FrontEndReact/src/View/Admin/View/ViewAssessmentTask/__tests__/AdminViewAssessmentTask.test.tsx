@@ -7,8 +7,9 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
-} from "../../../../../testUtilities";
+    clickFirstElementWithAriaLabel,
+    clickFirstEnabledElementWithAriaLabel
+} from "../../../../../testUtilities.js";
 
 import {
     demoAdminPassword
@@ -45,7 +46,7 @@ test("AdminViewAssessmentTask.test.tsx Test 1: Should render Login Form componen
 
     expectElementWithAriaLabelToBeInDocument(lf);
 });
-test("AdminViewAssessmentTask.test.tsx Test 2: Should render the Assessment Task Dashboard in Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 2: Should render the Assessment Task Dashboard in Admin View.", async () => {
     render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
@@ -70,7 +71,7 @@ test("AdminViewAssessmentTask.test.tsx Test 2: Should render the Assessment Task
         expectElementWithAriaLabelToBeInDocument(adt);
     });
 });
-test("AdminViewAssessmentTask.test.tsx Test 3: Should render the My Custom Rubrics page given the My Custom Rubrics Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 3: Should render the My Custom Rubrics page given the My Custom Rubrics Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -95,7 +96,7 @@ test("AdminViewAssessmentTask.test.tsx Test 3: Should render the My Custom Rubri
         expectElementWithAriaLabelToBeInDocument(acrt);
     });
 });
-test("AdminViewAssessmentTask.test.tsx Test 4: Should render the Import Assessment Tasks page given the Import Tasks Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 4: Should render the Import Assessment Tasks page given the Import Tasks Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -120,7 +121,7 @@ test("AdminViewAssessmentTask.test.tsx Test 4: Should render the Import Assessme
         expectElementWithAriaLabelToBeInDocument(aiatt);
     });
 });
-test("AdminViewAssessmentTask.test.tsx Test 5: Should render the Add Assessment Task page given the Add Task Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 5: Should render the Add Assessment Task page given the Add Task Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -145,7 +146,7 @@ test("AdminViewAssessmentTask.test.tsx Test 5: Should render the Add Assessment 
         expectElementWithAriaLabelToBeInDocument(aaatt);
     });
 });
-test("AdminViewAssessmentTask.test.tsx Test 6: Should render the Edit Assessment Task page given the Edit Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 6: Should render the Edit Assessment Task page given the Edit Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -165,14 +166,14 @@ test("AdminViewAssessmentTask.test.tsx Test 6: Should render the Edit Assessment
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(eaib);
-    },{ timeout: 3000 });
-    
+        clickFirstEnabledElementWithAriaLabel(eaib);
+    }, { timeout: 3000 });
+
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aeatt);
     });
 });
-test("AdminViewAssessmentTask.test.tsx Test 7: Should render the Completed Assessment Tasks page given the View Icon Button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 7: Should render the Completed Assessment Tasks page given the View Icon Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -192,14 +193,14 @@ test("AdminViewAssessmentTask.test.tsx Test 7: Should render the Completed Asses
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
-test("AdminViewAssessmentTask.test.tsx Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.",  async () => {
+test("AdminViewAssessmentTask.test.tsx Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
@@ -219,8 +220,8 @@ test("AdminViewAssessmentTask.test.tsx Test 8: Should render the Instructions fo
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(satb);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(satb);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vatit);
