@@ -144,13 +144,27 @@ class AppState extends Component {
         this.setAssessmentTaskInstructions = (assessmentTasks, assessmentTaskId, completedAssessments=null, {
             readOnly = false,
             skipInstructions = false
-        }={}) => { // wip
+        }={}) => {
+            
             var completedAssessment = null;
 
             if (completedAssessments) {
-               completedAssessment = completedAssessments.find(completedAssessment => completedAssessment.assessment_task_id === assessmentTaskId) ?? null;
+                if (!Array.isArray(completedAssessments) && 
+                    completedAssessments.assessment_task_id === assessmentTaskId) {
+                    // Single CAT object passed - use it directly
+                    completedAssessment = completedAssessments;
+                } 
+                // If it's an array, search for matching assessment_task_id
+                else if (Array.isArray(completedAssessments)) {
+                    completedAssessment = completedAssessments.find(
+                        cat => cat.assessment_task_id === assessmentTaskId
+                    ) ?? null;
+                }
             }
-            const assessmentTask = assessmentTasks.find(assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId);
+            
+            const assessmentTask = assessmentTasks.find(
+                assessmentTask => assessmentTask["assessment_task_id"] === assessmentTaskId
+            );
 
             this.setState({
                 activeTab: "AssessmentTaskInstructions",

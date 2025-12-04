@@ -2,24 +2,56 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton.js';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
-import { Grid } from '@mui/material';
+import { Grid, Alert } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility.js';
 
 
 
 class ConfirmCurrentTeamTable extends Component {
+	constructor(props) {
+		super(props);
+
+		this.state = {
+			errorMessage: null
+		};
+	}
+
 	handleEditClick = () => {
-		this.props.navbar.setNewTab("CodeRequired");
+    	const navbar = this.props.navbar;
+    	const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
+    	const hasPassword = chosenAssessmentTask.create_team_password && chosenAssessmentTask.create_team_password.trim() !== '';
+    
+    	if (hasPassword) {
+        	navbar.setNewTab("CodeRequired");
+   		} else {
+        	navbar.setNewTab("SelectTeam");
+    	}
 	};
 
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
 		var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
 		
-		genericResourcePOST(`/checkin?assessment_task_id=${atId}&team_id=${this.props.teamId}`, this, {}).then((result) => {
+		const password = navbar.state.teamSwitchPassword || "";
+		const requestBody = password ? JSON.stringify({ password: password }) : JSON.stringify({});
+		
+		genericResourcePOST(
+			`/checkin?assessment_task_id=${atId}&team_id=${this.props.teamId}`, 
+			this, 
+			requestBody
+		).then((result) => {
 			if (result !== undefined && result.errorMessage === null) {
+				navbar.setState({ teamSwitchPassword: null });
 				navbar.setNewTab("StudentDashboard");
+			} else if (result && result.errorMessage) {
+				this.setState({
+					errorMessage: result.errorMessage
+				});
 			}
+		}).catch((error) => {
+			this.setState({
+				errorMessage: "An error occurred while checking in. Please try again."
+			});
 		});
 	};
 
@@ -93,6 +125,12 @@ class ConfirmCurrentTeamTable extends Component {
 								paddingBottom: '20px',
 								gap: 20,
 							}}>
+							{this.state.errorMessage && (
+								<Alert severity="error" sx={{ mb: 2, width: '100%' }}>
+									{this.state.errorMessage}
+								</Alert>
+							)}
+
 							{this.props.teamId &&
 								<>
 									<div className='container' style={{ marginTop: '15px' }}>
@@ -119,6 +157,7 @@ class ConfirmCurrentTeamTable extends Component {
 										label="Choose different team"
 										onClick={this.handleEditClick}
 										isOutlined={true}
+										aria-label="chooseDifferentTeamButton"
 									/>
 								</Grid>
 
@@ -128,6 +167,7 @@ class ConfirmCurrentTeamTable extends Component {
 											label="Check in to this team"
 											onClick={this.handleConfirmClick}
 											isOutlined={false}
+											aria-label="checkInToTeamButton"
 										/>
 									</Grid>
 								}

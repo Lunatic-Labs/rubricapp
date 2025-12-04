@@ -107,46 +107,68 @@ class AdminAddUser extends Component {
         })
     }
 
-   
+    // handleChange has been altered to account for the 50 character limit for first / last names
     handleChange = (e) => {
         const { id, value } = e.target;
       
-        let formatString = "";
-        for (let i = 0; i < id.length; i++) {
-          if (i === 0) formatString += id.charAt(0).toUpperCase();
-          else if (id.charAt(i) === id.charAt(i).toUpperCase()) formatString += (" " + id.charAt(i).toLowerCase());
-          else formatString += id.charAt(i);
+        // Special case: email with inline validation
+        if (id === 'email') {
+          this.setState(prev => ({
+            email: value,
+            errors: {
+              ...prev.errors,
+              email:
+                value.trim() === '' ? 'Email cannot be empty'
+                : validator.isEmail(value) ? ''
+                : 'Please enter a valid email address',
+            },
+          }));
+          return;
         }
       
-        if (id === 'lmsId') {
-          // non-digit?
-          if (/[^0-9]/.test(value)) {
-            this.setState({
-              errors: { ...this.state.errors, [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.' }
-            });
-            return; // don't update value
+        // Build a readable field label (e.g., "firstName" -> "First name")
+        let formatString = "";
+        for (let i = 0; i < id.length; i++) {
+            if (i === 0) {
+                formatString += id.charAt(0).toUpperCase();
+            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
+                formatString += (" " + id.charAt(i).toLowerCase()); 
+            } else {
+                formatString += id.charAt(i);
+            }
+        }
+
+        // This will create an error message if first_name or last_name is empty and/or exceeding
+        // the 50 character limit
+        let errorMessage = '';
+        if (value.trim() === '') {
+            errorMessage = `${formatString} cannot be empty`;
+        } else if ((id === 'firstName' || id === 'lastName') && value.length > 50) {
+            errorMessage = `${formatString} cannot exceed 50 characters`;
+        }
+
+        if (id === 'email') {
+          let emailError = '';
+          if (value.trim() === '') {
+            emailError = 'Email cannot be empty';
+          } else if (!validator.isEmail(value)) {
+            emailError = 'Please enter a valid email address';
           }
-      
-          // too long?
-          if (value.length > MAX_LMS_ID_LENGTH) {
-            this.setState({
-              errors: { ...this.state.errors, [id]: `Max ${MAX_LMS_ID_LENGTH} digits.` }
-            });
-            return; // don't update value
-          }
-      
-          const atMax = value.length === MAX_LMS_ID_LENGTH;
           this.setState({
             [id]: value,
-            errors: { ...this.state.errors, [id]: atMax ? `Max ${MAX_LMS_ID_LENGTH} digits reached.` : '' }
+            errors: { ...this.state.errors, [id]: emailError }
           });
           return;
         }
       
+
         // other fields
         this.setState({
           [id]: value,
-          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
+          errors: {
+            ...this.state.errors,
+            [id]: errorMessage,
+          },
         });
       };
 
@@ -160,7 +182,7 @@ class AdminAddUser extends Component {
         });
       };
 
-      
+    // handleSubmit has been altered to account for the 50 character limit on first / last name
     handleSubmit = () => {
         const {
             firstName,
@@ -197,11 +219,16 @@ class AdminAddUser extends Component {
             "role": ""
         };
 
+        // validation checks have been altered
         if (firstName.trim() === '')
-            newErrors["firstName"] = "First name cannot be empty";
+            newErrors["firstName"] = "First name cannot be empty";              // this is an error check to see if first_name is not empty
+        else if (firstName.length > 50)
+            newErrors["firstName"] = "First name cannot exceed 50 characters";  // this is an error check to see if first_name is not exceeding 50 characters
 
         if (lastName.trim() === '')
-            newErrors["lastName"] = "Last name cannot be empty";
+            newErrors["lastName"] = "Last name cannot be empty";                // this is an error check to see if last_name is not empty
+        else if (lastName.length > 50)
+            newErrors["lastName"] = "Last name cannot exceed 50 characters";    // this is an error check to see if last_name is not exceeding 50 characters
 
         if (email.trim() === '')
             newErrors["email"] = "Email cannot be empty";
@@ -256,17 +283,42 @@ class AdminAddUser extends Component {
                 : genericResourcePUT(`/user?uid=${user["user_id"]}&course_id=${chosenCourse["course_id"]}`, this, body);
         }
 
-        promise.then(result => {
-            if (result !== undefined && result.errorMessage === null) {
-                confirmCreateResource("User");
-            }
-        });
+        promise
+  .then((result) => {
+    if (result && result.errorMessage == null) {
+      // success: ensure any old email error is cleared
+      this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
+      confirmCreateResource("User");
+      return;
     }
 
-    hasErrors = () => {
-        const { errors } = this.state;
+    // Duplicate email → inline field error (no global toast)
+    if (result && typeof result.errorMessage === 'string') {
+      const msg = result.errorMessage;
 
-        return Object.values(errors).some((error) => !!error);
+      // make each engine's pattern explicit to avoid mixed-operator lint
+      const isMysqlDup   = /\b1062\b.*duplicate entry/i.test(msg) && /email/i.test(msg);
+      const isPgDup      = /duplicate key value/i.test(msg) && /unique constraint/i.test(msg) && /email/i.test(msg);
+      const isSqliteDup  = /UNIQUE constraint failed/i.test(msg) && /email/i.test(msg);
+      const isDup = isMysqlDup || isPgDup || isSqliteDup;
+
+      if (isDup) {
+        this.setState((prev) => ({
+          errors: { ...prev.errors, email: 'Email is already in use.' },
+          errorMessage: null, // suppress big red toast
+        }));
+        return;
+      }
+    }
+
+    // Other backend errors → keep your existing toast
+    if (result && result.errorMessage) {
+      this.setState({ errorMessage: result.errorMessage });
+    }
+  })
+  .catch(() => {
+    this.setState({ errorMessage: 'Unable to save right now. Please try again.' });
+  });
     };
 
     render() {
@@ -361,6 +413,7 @@ class AdminAddUser extends Component {
                                         error={!!errors.firstName}
                                         helperText={errors.firstName}
                                         onChange={this.handleChange}
+                                        inputProps={{ maxLength: 51 }}      // the maximum character length of first_name has been changed to 51, this accounts for browsers handling characters differently
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userFirstNameInput"
@@ -376,6 +429,7 @@ class AdminAddUser extends Component {
                                         error={!!errors.lastName}
                                         helperText={errors.lastName}
                                         onChange={this.handleChange}
+                                        inputProps={{ maxLength: 51 }}      // the maximum character length of last_name has been changed to 51, this accounts for browsers handling characters differently
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userLastNameInput"
