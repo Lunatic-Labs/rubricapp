@@ -1,19 +1,20 @@
 # Use a valid Node.js version as base
 FROM node:20
 
-# Set the working directory
+# Set working directory
 WORKDIR /app
 
-# Copy package files and install dependencies
-COPY FrontEndReact/package*.json /app/
-RUN npm install
+# Copy only package files first to leverage Docker cache
+COPY FrontEndReact/package*.json ./
+
+# Install dependencies (faster & deterministic)
+RUN npm ci --legacy-peer-deps
 
 # Copy the rest of the frontend code
-COPY FrontEndReact/ /app/
+COPY FrontEndReact/ ./
 
-# Expose the Frontend port
+# Expose frontend port
 EXPOSE 3000
 
-# Start the Frontend server
+# Start the frontend server
 CMD ["npm", "start"]
-

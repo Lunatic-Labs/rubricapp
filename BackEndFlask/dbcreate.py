@@ -167,7 +167,7 @@ with app.app_context():
             load_demo_team()
             print("[dbcreate] successfully loaded demo Team")
             time.sleep(sleep_time)
-        if(get_team_users().__len__()==0):
+        if(get_all_team_users().__len__()==0):
             print("[dbcreate] attempting to load demo TeamUser...")
             time.sleep(sleep_time)
             load_demo_team_user()

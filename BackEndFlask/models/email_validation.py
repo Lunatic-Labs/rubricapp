@@ -1,13 +1,13 @@
 from core import db
 from models.schemas import EmailValidation
-from datetime import datetime
+from datetime import datetime, timezone
 
 def create_validation(user_id, email):
     email_validation = EmailValidation(
         user_id=user_id,
         email=email,
         status="pending",
-        validation_time=datetime.now(),
+        validation_time=datetime.now(timezone.utc),
     )
 
     db.session.add(email_validation)
@@ -25,14 +25,18 @@ def update_email_to_pending(user_id):
         db.session.commit()
 
 def mark_emails_as_checked(emails):
-    if len(emails) == 0:
+    if not emails:
         return
 
-    EmailValidation.query.filter(EmailValidation.email.in_(emails)).update(
-        {"status": "checked", "validation_time": datetime.utcnow()}
-    )
+    now_utc = datetime.now(timezone.utc)
+    records = EmailValidation.query.filter(EmailValidation.email.in_(emails)).all()
+
+    for record in records:
+        record.status = "checked"
+        record.validation_time = now_utc
 
     db.session.commit()
+
 
 def mark_emails_as_pending(emails):
     if len(emails) == 0:
