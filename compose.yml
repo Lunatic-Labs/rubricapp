@@ -4,7 +4,7 @@ services:
       context: .
       dockerfile: Dockerfile.backend
     ports:
-      - "5050:5050"
+      - "5050:5000"
     depends_on:
       redis:
         condition: service_started
@@ -24,7 +24,7 @@ services:
       - FLASK_DEBUG=1
       - MYSQL_HOST=mysql
       - MYSQL_USER=skillbuilder
-      - MYSQL_PASSWORD="WasPogil1#"
+      - MYSQL_PASSWORD=WasPogil1#
       - MYSQL_DATABASE=account
 
   redis:
@@ -67,7 +67,7 @@ services:
       MYSQL_ROOT_PASSWORD: rootpassword
       MYSQL_DATABASE: account
       MYSQL_USER: skillbuilder
-      MYSQL_PASSWORD: "WasPogil1#"
+      MYSQL_PASSWORD: WasPogil1#
     ports:
       - "5551:3306"
     volumes:
