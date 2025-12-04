@@ -5,17 +5,38 @@ import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 
-
 /**
- * @description Column logic.
- * 
- * @prop {object} navbar - Passed navbar.
- * @prop {object} assessmentTasks - ATs. Note we need the original ATs to load the rest of the columns.
- * @prop {object} completedAssessments - Filtered CATs.
- * 
+ * @description
+ * Defines the columns and behavior for the "Completed Assessments" table.
+ *
+ * Responsibilities:
+ *  - Displays completed assessments with timing and unit-of-assessment info.
+ *  - On "View" click, records that the rubric has been viewed (via POST /rating),
+ *    then navigates to the instructions/feedback view in read-only mode.
+ *
+ * Props:
+ *  @prop {object} navbar              - Navbar instance; used for navigation.
+ *  @prop {Array}  assessmentTasks     - All ATs needed to derive column data
+ *                                       (unit_of_assessment, role_id, etc.).
+ *  @prop {Array}  completedAssessments - Completed CATs to display as rows.
  */
-
 class ViewCompletedAssessmentTasks extends Component {
+    /**
+     * @method render
+     * @description
+     * Builds the column definitions for CustomDataTable, including:
+     *  - Task name
+     *  - Initial time
+     *  - Last update
+     *  - Unit of assessment (Team/Individual)
+     *  - Completed by (Student vs TA/Instructor)
+     *  - View button (records rating view via POST and navigates)
+     *
+     * Sorting:
+     *  - Column-level sorting is handled by CustomDataTable.
+     *  - This component does not pre-sort completedAssessments; they are passed
+     *    to the table in the order received from the parent.
+     */
     render() {
         const completedAssessments = this.props.completedAssessments;
         const assessmentTasks = this.props.assessmentTasks;
@@ -87,7 +108,7 @@ class ViewCompletedAssessmentTasks extends Component {
                     setCellProps: () => { return { width:"140px" } },
                     customBodyRender: (atId) => {
                         const at = assessmentTasks.find(at => at.assessment_task_id === atId);
-                        const completer = at.role_id;
+                        const completer = at?.role_id;
                         return <>{completer === 5 ? "Student" : "TA/Instructor"}</>;
                     }
                 }
@@ -105,28 +126,55 @@ class ViewCompletedAssessmentTasks extends Component {
                             <div>
                                 <IconButton
                                     onClick={() => {
-                              var singularCompletedAssessment = null;
-                              if (completedAssessments) {
-                                  singularCompletedAssessment
-                                      = completedAssessments.find(
-                                          completedAssessment => completedAssessment.assessment_task_id === atId
-                                      ) ?? null;
-                              }
-                              genericResourcePOST(
-                                `/rating`,
-                                this,
-                                JSON.stringify({
-                                    "user_id" : singularCompletedAssessment.user_id,
-                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
-                                }),
-                              );
-                              this.props.navbar.setAssessmentTaskInstructions(
-                                  assessmentTasks,
-                                  atId,
-                                  completedAssessments,
-                                  { readOnly: true, skipInstructions: true }
-                              );
-                                      }}
+                                        let singularCompletedAssessment = null;
+
+                                        if (completedAssessments) {
+                                            singularCompletedAssessment =
+                                                completedAssessments.find(
+                                                    completedAssessment =>
+                                                        completedAssessment.assessment_task_id === atId
+                                                ) ?? null;
+                                        }
+
+                                        /**
+                                         * POST /rating
+                                         *
+                                         * Purpose:
+                                         *  - Record that a user has viewed the rating/feedback for a
+                                         *    specific completed assessment.
+                                         *
+                                         * Endpoint:
+                                         *  - POST /rating
+                                         *
+                                         * Body (JSON):
+                                         *  {
+                                         *    "user_id": <number>,                 // singularCompletedAssessment.user_id
+                                         *    "completed_assessment_id": <number>  // singularCompletedAssessment.completed_assessment_id
+                                         *  }
+                                         *
+                                         * Notes:
+                                         *  - No query parameters are used on this endpoint.
+                                         *  - This call runs each time the "View" icon is clicked before
+                                         *    navigating to the instructions/feedback view.
+                                         */
+                                        if (singularCompletedAssessment) {
+                                            genericResourcePOST(
+                                                `/rating`,
+                                                this,
+                                                JSON.stringify({
+                                                    "user_id" : singularCompletedAssessment.user_id,
+                                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
+                                                }),
+                                            );
+                                        }
+
+                                        this.props.navbar.setAssessmentTaskInstructions(
+                                            assessmentTasks,
+                                            atId,
+                                            completedAssessments,
+                                            { readOnly: true, skipInstructions: true }
+                                        );
+                                    }}
                                     aria-label="completedAssessmentTasksViewIconButton"
                                 >
                                     <VisibilityIcon sx={{color:"black"}} />
