@@ -7,6 +7,8 @@ import {
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
+    clickFirstEnabledElementWithAriaLabel
+
 } from "../../../../../testUtilities.js";
 
 import {
@@ -65,7 +67,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 1: Should render the AdminVi
     });
     
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
@@ -94,7 +96,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 2: Should render the Assessm
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
@@ -129,7 +131,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 3: Should render the Add Mes
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
@@ -164,7 +166,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 4: Should render the Individ
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
     
     await waitFor(() => {
@@ -195,7 +197,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 5: Should render the Individ
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
@@ -236,7 +238,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 6: Should render the Individ
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
@@ -277,7 +279,7 @@ test("AdminViewCompleteAssessmentTasks.test.js Test 7: Should render the Individ
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithAriaLabel(vcaib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
