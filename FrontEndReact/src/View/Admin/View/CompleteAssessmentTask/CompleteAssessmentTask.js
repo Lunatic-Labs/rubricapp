@@ -98,8 +98,6 @@ class CompleteAssessmentTask extends Component {
             "teams", this
         ).then((teamsResult) => {
             if (isTeamAssessment && teamsResult.teams && teamsResult.teams.length > 0) {
-                const teamIds = teamsResult.teams.map(team => team.team_id);
-                
                 genericResourceGET(
                     `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
                     "checkin", this
