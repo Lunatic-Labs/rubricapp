@@ -18,14 +18,21 @@ import Divider from '@mui/material/Divider';
 import Logout from '../Logout/Logout.js';
 import Logo from "./sbText.png";
 
+// For further documentation look inside the README
+
 /**
  * Creates a function, ButtonAppBar.
  * 
  * @function ButtonAppBar
  * @param {Object} props - The properties passed to this navigation component.
  * @param {string} props.userName - The name of the currently logged-in user, displayed in the navigation bar.
- * 
- * @returns 
+ * @param {function} props.setNewTab - A callback used for in-app navigation. Triggered when the user selects:
+ *  - "My account"
+ *  - "Privacy Policy"
+ * @param {function} props.logout - Function passed to the <Logout> component to log the user out.
+*
+ * @property {HTMLElement|null} anchorEl - (React state) The element that the account dropdown menu is anchored to.
+ * @property {boolean} open - Derived state that indicates whether the dropdown menu is currently open.
  */
 
 export default function ButtonAppBar(props) {
