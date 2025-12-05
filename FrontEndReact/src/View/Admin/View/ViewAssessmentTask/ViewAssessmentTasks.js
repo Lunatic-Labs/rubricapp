@@ -224,8 +224,9 @@ class ViewAssessmentTasks extends Component {
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
 
+        //Create Loookup table: assessment ID -> {due dtae, timezone}
+        //Make it faster to look up due dates later
         let assessmentTasksToDueDates = {};
-
         for(let index = 0; index < assessmentTasks.length; index++) {
             assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
                 "due_date": assessmentTasks[index]["due_date"],
@@ -233,18 +234,22 @@ class ViewAssessmentTasks extends Component {
             };
         }
 
+        //Create lookup table: assessment ID -> assessment name
+        //Used when exporting CSV file
         var assessmentTaskIdToAssessmentTaskName = {};
-
         for(let index = 0; index < assessmentTasks.length; index++) {
             assessmentTaskIdToAssessmentTaskName[assessmentTasks[index]["assessment_task_id"]] = assessmentTasks[index]["assessment_task_name"];
         }
-
+        //Get other needed data
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
         var setAddAssessmentTaskTabWithAssessmentTask = navbar.setAddAssessmentTaskTabWithAssessmentTask;
         var setCompleteAssessmentTaskTabWithID = navbar.setCompleteAssessmentTaskTabWithID;
 
+        //define all tbale columns
         const columns = [
+            //Column 1: Task Name
+            //Shows the name of the assessment
             {
                 name: "assessment_task_name",
                 label: "Task Name",
@@ -261,6 +266,10 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+
+            //Column 2: Due dtae
+            //Shows when the assessment is due, converted to human-readable
+
             {
                 name: "assessment_task_id",
                 label: "Due Date",
@@ -282,6 +291,7 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            //Column 3: Completed by shows who fills out this assessment
             {
                 name: "role_id",
                 label: "Completed By",
@@ -298,6 +308,8 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            //Cloum 4 Rubric used
+            //SHows which rubric template is used
             {
                 name: "rubric_id",
                 label: "Rubric Used",
@@ -364,6 +376,7 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            //Column 6: Publish button click to make assessment visible or hidden to students
             {
                 name: "assessment_task_id",
                 label: "Publish",
@@ -396,6 +409,7 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            //Column 7: Lock button click to prevent or allow student edits
             {
                 name: "assessment_task_id",
                 label: "Lock",
@@ -428,6 +442,9 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            //Colum 8: Edit button
+            //Clcik to change assessment details
+            //Opens AdmindAddAssessementTask in eidt mode
             {
                 name: "assessment_task_id",
                 label: "Edit",
@@ -475,6 +492,9 @@ class ViewAssessmentTasks extends Component {
                     },
                 }
             },
+            //Colum 9: View Button
+            //Click to see completed assessment and scores
+            //Opens AdmindAddAssessementTask 
             {
                 name: "assessment_task_id",
                 label: "View",
@@ -489,6 +509,7 @@ class ViewAssessmentTasks extends Component {
                             const completedAssessments = this.state.completedAssessments.filter(ca => ca.assessment_task_id === assessmentTaskId);
                             const completedCount = completedAssessments.length > 0 ? completedAssessments[0].completed_count : 0;
 
+                            //If no completed assessments, show disabled button
                             if (completedCount === 0) {
                                 return (
                                     <>
@@ -513,6 +534,7 @@ class ViewAssessmentTasks extends Component {
                                     </>
                                 );
                             }
+                            //If has completed assessments, shoe enabled button
                             if (selectedTask) {
                                 return (
                                     <>
@@ -546,6 +568,10 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            //Column 10: Start button
+            //Click to begin completing an assessment (grading)
+            //Opens instuctions page
+            //Disable if team assessment but no teams exist
             {
                 name: "assessment_task_id",
                 label: "To Do",
@@ -600,6 +626,10 @@ class ViewAssessmentTasks extends Component {
                     }
                 }
             },
+            //Column 11: Export Button
+            //Clicked to downloa all results as CSV file
+            //Disabled if no completed assessment
+            //Gets temporarily disabled for 10 seconds after clicking tp prevent rapid re-exports
             {
                 name: "assessment_task_id",
                 label: "Export",
@@ -653,18 +683,18 @@ class ViewAssessmentTasks extends Component {
                 }
             },
         ]
-
+        //Table configuration options
         const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "50vh"
+            onRowsDelete: false,            // Don't allow deleting rows
+            download: false,                // Don't show built-in download button
+            print: false,                   //Don't show print button
+            viewColumns: false,             //Don't show column visbility toggle
+            selectableRows: "none",         //don't allow selecting rows
+            selectableRowsHeader: false,    //Don't show select all checkbox
+            responsive: "vertical",         //Stack columns on mobile
+            tableBodyMaxHeight: "50vh"      //Maximum height before scrolling
         };
-
+        //Display the table
         return(
             <>
                 <CustomDataTable
