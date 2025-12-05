@@ -116,7 +116,7 @@ class Settings extends Component {
         promise.then(result => {
             if (result !== undefined && result.errorMessage === null) {
                 // Update the state
-                this.state.darkMode = newDarkMode; // warning to not mutate state directly
+                this.setState({ darkMode: newDarkMode });
             }
         }).catch(error => {
             console.error("Error updating dark mode:", error);
