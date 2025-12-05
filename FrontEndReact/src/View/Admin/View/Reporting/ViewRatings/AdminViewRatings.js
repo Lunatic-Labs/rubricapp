@@ -8,6 +8,9 @@ import { Box, Button, Tooltip } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
+//Main purpose to display team rating data in a table format using MUI DataTable
+//Recieves an arrray of rating objects via props.ratings
+//Extracts student names and rating values
 
 class AdminViewRatings extends Component {
   constructor(props) {
