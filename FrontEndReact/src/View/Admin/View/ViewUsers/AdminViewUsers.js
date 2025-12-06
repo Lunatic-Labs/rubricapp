@@ -8,7 +8,24 @@ import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading.js';
 import SuccessMessage from '../../../Success/SuccessMessage.js';
 
-
+/**
+ * Creates an instance of the AdminViewUsers component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @property {Object} props.navbar - The navbar object containing state and methods for navigation.
+ * 
+ * @property {string|null} state.errorMessage - The error message to display if an error occurs during data fetching.
+ * @property {boolean} state.isLoaded - Indicates whether the data has been loaded.
+ * @property {Array|null} state.users - The list of users in the course or system.
+ * @property {Array|null} state.roles - The list of roles available in the system.
+ * @property {number} state.prevUsersLength - The previous length of the users array for comparison.
+ * @property {string|null} state.successMessage - The success message to display after successful operations.
+ * 
+ * Conditional Rendering:
+ * - if navbar.state.user or navbar.state.addUser is set, renders AdminAddUser component.
+ * - else, renders ViewUsers component with fetched users and roles.
+ */
 
 class AdminViewUsers extends Component {
     constructor(props) {
@@ -23,7 +40,37 @@ class AdminViewUsers extends Component {
             successMessage: null
         }
     }
-
+    /**
+     * @method fetchData - Fetches users and roles data from the server.
+     * 
+     * == USER DATA FETCHING ==
+     * API Endpoint: /user
+     * HTTP Method: GET
+     * 
+     * Parameters => Conditional
+     * SUPER ADMIN:
+     * @param {boolean} isAdmin=True - Fetches all admin users across the system.
+     *      - Data fetched: All users with admin privileges.
+     * 
+     * ADMIN/INSTRUCTOR:
+     * @param {string} course_id - The ID of the course to fetch users for.
+     *      - Data fetched: All users enrolled in the specified course.
+     * 
+     * == ROLE DATA FETCHING ==
+     * API Endpoint: /role
+     * HTTP Method: GET
+     * 
+     * Parameters:
+     * None
+     * 
+     * Response:
+     * - List of roles available in the system.
+     * 
+     * TODO: Optimizations
+     * - Optimize data fetching to reduce redundant calls.
+     * - the roles data could be cached if it doesn't change often.
+     * 
+     */
     fetchData = () => {
         var navbar = this.props.navbar;
 
@@ -40,25 +87,42 @@ class AdminViewUsers extends Component {
         genericResourceGET(
             "/role?", "roles", this); 
     }
-    
+    /**
+     * @method componentDidMount - Lifecycle method called when the component is mounted.
+     * Initiates data fetching for users and roles.
+     */
     componentDidMount() {
         this.fetchData();
     }
-
+    /**
+     * @method componentDidUpdate - Lifecycle method called when the component is updated.
+     * Compares the current users length with the previous length.
+     * If there is a change, it triggers data fetching to refresh the user list.
+     * 
+     * Potential Issue:
+     * - This could lead to an infinite loop if not handled carefully.
+     *      - length changes > fetchData > setState > componentDidUpdate > length changes...
+     */
   componentDidUpdate(){
     if (this.state.users && this.state.users.length !== this.state.prevUsersLength) {
       this.setState({ prevUsersLength: this.state.users.length });
       this.fetchData();
     }
   }
-
+  /**
+   * @method setErrorMessage - Sets an error message in the component state.
+   * @param {string} errorMessage - The error message to set.
+   */
   setErrorMessage = (errorMessage) => {
     this.setState({errorMessage: errorMessage});
     setTimeout(() => {
         this.setState({errorMessage: null,});
     }, 3000);
   }
-
+  /**
+   * @method setSuccessMessage - Sets a success message in the component state.
+   * @param {string} successMessage - The success message to set.
+   */
   setSuccessMessage = (successMessage) => {
     this.setState({successMessage: successMessage});
     setTimeout(() => {
