@@ -12,30 +12,34 @@ const customTheme = createTheme({
           fontSize: "1.5rem",
           padding: ".01rem .5rem",
           margin: ".01rem",
-          alignItems:"center"
+          alignItems: "center",
+          color: "var(--table-text)",
         },
       },
     },
-    MUIDataTableBodyRow: {                // This code creates an alternating background color for indivual rows.
+    MUIDataTableBodyRow: {
       styleOverrides: {
         root: {
           '&:nth-of-type(even)': {
-            backgroundColor: 'var(--light_grey_ADA)', // Light gray for even rows
+            backgroundColor: 'var(--light_grey_ADA)',
             '&:hover': {
               backgroundColor: 'var(--light_grey_hover) !important',
             },
           },
           '&:nth-of-type(odd)': {
-            backgroundColor: 'white',     // White for odd rows
+            backgroundColor: 'var(--table-odd-row)',
+            '&:hover': {
+              backgroundColor: 'var(--table-odd-row-hover) !important',
+            },
           },
-          
         },
       },
     },
     MUIDataTableToolbar: {
       styleOverrides: {
         root: {
-          backgroundColor: "white",
+          backgroundColor: "var(--table-toolbar)",
+          color: "var(--table-text)",
         },
       },
     },
@@ -45,10 +49,11 @@ const customTheme = createTheme({
           fontSize: "1.2rem",
           padding: ".01rem .5rem",
           margin: ".01rem",
+          color: "var(--table-text)",
         },
       },
     },
-    MuiDataTableFooter: {
+    MuiTableFooter: {
       styleOverrides: {
         root: {
           padding: ".01rem .5rem",
@@ -70,13 +75,15 @@ const customTheme = createTheme({
         root: {
           fontSize: "1rem",
           padding: ".01rem .5rem",
+          color: "var(--table-text)",
         },
       },
     },
     MUIDataTableHeadCell: {
       styleOverrides: {
         root: {
-          backgroundColor: "#A4C4F4",
+          backgroundColor: "var(--table-header)",
+          color: "var(--table-text)",
           padding: ".01rem .5rem", 
           fontSize: "1.4rem",
         },
@@ -90,6 +97,34 @@ const customTheme = createTheme({
           justifyContent: 'space-around',
           //fontSize: "1.5rem",
           //padding: ".01rem 2rem",
+        },
+      },
+    },
+    MuiPaper: {
+      styleOverrides: {
+        root: {
+          backgroundColor: 'var(--table-toolbar)',
+        },
+      },
+    },
+    MuiTablePagination: {
+      styleOverrides: {
+        root: {
+          color: 'var(--table-text)',
+        },
+      },
+    },
+    MuiIconButton: {
+      styleOverrides: {
+        root: {
+          color: 'var(--table-text)',
+        },
+      },
+    },
+    MuiSvgIcon: {
+      styleOverrides: {
+        root: {
+          color: 'var(--table-text)',
         },
       },
     },

@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
 
 
 
@@ -14,44 +15,65 @@ export default function TabManager (props) {
   };
 
   return (
-    <Tabs value={value} onChange={handleChange} centered>
-      <Tab
-        label="Assessment Status"
+    <Box className="tab-colors">
+      <Tabs 
+        value={value} 
+        onChange={handleChange} 
+        centered
+        sx={{
+            '& .MuiTab-root': {
+              color: 'var(--tab-text)',
+              textTransform: 'uppercase',
+              fontWeight: 450,
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: 'var(--tab-text-selected)',
+              fontWeight: 550,
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'var(--tab-text-selected)',
+              height: '2px',
+            },
+          }}
+      >
+        <Tab
+          label="Assessment Status"
 
-        onClick={() => {
-          props.setTab("Assessment Status");
-        }}
+          onClick={() => {
+            props.setTab("Assessment Status");
+          }}
 
-        aria-label='assessmentStatusTab'
-      />
+          aria-label='assessmentStatusTab'
+        />
 
-      <Tab
-        label="Ratings and Feedback"
+        <Tab
+          label="Ratings and Feedback"
 
-        onClick={() => {
-          props.setTab("Ratings and Feedback");
-        }}
+          onClick={() => {
+            props.setTab("Ratings and Feedback");
+          }}
 
-        aria-label='ratingAndFeedbackTab'
-      />
+          aria-label='ratingAndFeedbackTab'
+        />
 
-      {/* wip */}
-      {/* <Tab
-        label="Improvement"
+        {/* wip */}
+        {/* <Tab
+          label="Improvement"
 
-        onClick={() => {
-          props.setTab("Improvement");
-        }}
-      /> */}
+          onClick={() => {
+            props.setTab("Improvement");
+          }}
+        /> */}
 
-      {/* wip */}
-      {/* <Tab
-        label="Calibrations"
+        {/* wip */}
+        {/* <Tab
+          label="Calibrations"
 
-        onClick={() => {
-          props.setTab("Calibrations");
-        }}
-      /> */}
-    </Tabs>
+          onClick={() => {
+            props.setTab("Calibrations");
+          }}
+        /> */}
+      </Tabs>
+    </Box>
   );
 }
