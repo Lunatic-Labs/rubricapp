@@ -17,7 +17,10 @@ def get_courses():
 
 @error_log
 def get_course(course_id):
-    return Course.query.filter_by(course_id=course_id).first()
+    course = Course.query.filter_by(course_id=course_id).first()
+    if not course:
+        raise ValueError(f"Course with id {course_id} not found")
+    return course
 
 
 @error_log
@@ -30,7 +33,10 @@ def get_course_use_tas(course_id):
 
 @error_log
 def get_courses_by_admin_id(admin_id):
-    return Course.query.filter_by(admin_id=admin_id).all()
+    courses = Course.query.filter_by(admin_id=admin_id).all()
+    if not courses:
+        raise ValueError(f"Courses with admin id {admin_id} not found")
+    return courses
 
 
 @error_log
@@ -104,7 +110,7 @@ def replace_course(course_data, course_id):
     one_course = Course.query.filter_by(course_id=course_id).first()
 
     if one_course is None:
-        return InvalidCourseID.error
+        raise InvalidCourseID(course_id)
 
     one_course.course_number = course_data["course_number"]
     one_course.course_name = course_data["course_name"]

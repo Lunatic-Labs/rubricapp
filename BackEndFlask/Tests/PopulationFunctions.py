@@ -9,29 +9,10 @@ import re
 import uuid
 
 # TODO: Need to write a test for both student_import and team_import to make sure
-#   that is_valid_email works as should!
-
-def is_valid_email(email: str) -> bool:
-    return bool(re.fullmatch(
-        r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}",
-        email.strip()
-    ))
-
 
 # TODO: Need to write a test for both student_import and team_import to make sure
-#   that xlsx file is converted to csv
-def xlsx_to_csv(csv_file):
-    read_file = pd.read_excel(csv_file)
-    sample_files = os.getcwd() + os.path.join(os.path.sep, "Functions") + os.path.join(os.path.sep, "sample_files")
-    temp_file = "/temp_"+ uuid.uuid4().hex +".csv"
-    read_file.to_csv(sample_files+temp_file, index=None, header=True)
-    return sample_files + os.path.join(os.path.sep, temp_file)
 
 # TODO: Need to write a test for both student_import and team_import to make sure
-#   that the xlsx file is deleted when there is success and when there are errors!
-def delete_xlsx(student_file, is_xlsx):
-    if is_xlsx:
-        os.remove(student_file)
 
 # template_user
 #   - is a json object that holds the keys and default values needed to create a new test user
@@ -103,6 +84,7 @@ def create_one_admin_course(use_tas):
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
     teacher["owner_id"] = 1
+    teacher["role_id"] = 3
     new_teacher = create_user(teacher)
     new_course = create_course({
         "course_number": "CRS001",
@@ -178,7 +160,7 @@ def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, s
         "use_tas": use_tas,
         "use_fixed_teams": False
     })
-    print(f"use_tas: {new_course.use_tas}")
+    
     if use_tas:
         ta = template_user
         ta["first_name"] = "Test TA"
@@ -377,25 +359,6 @@ def delete_all_teams_team_members(course_id):
             delete_team_user(team_user.team_user_id)
 
         team = delete_team(team.team_id)
-
-# filter_users_by_role()
-#   - takes two parameter:
-#       - an array of test users enrolled in the test course
-#       - the id a role
-#   - filters the array of test users to only contain test users with the specified role
-#   - returns an array of the filtered test users
-#       - unless an error occurs
-#           - returns the error message
-def filter_users_by_role(user_courses, role_id):
-    users = []
-    for user_course in user_courses:
-        user = get_user(user_course.user_id)
-        if type(user) is type(""):
-            return user
-        if user_course.role_id == role_id:
-            users.append(user)
-            
-    return users
 
 # ta_is_assigned_to_team()
 #   - takes two parameters:

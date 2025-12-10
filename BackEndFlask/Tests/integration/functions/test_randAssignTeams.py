@@ -1,9 +1,11 @@
+# test_randAssignTeams.py
+from Functions.helper import *
 from Functions.customExceptions import *
-from Functions.test_files.PopulationFunctions import *
+from Tests.PopulationFunctions import *
 from models.team import *
 from models.user import *
 from models.team_user import *
-from Functions.randAssign import RandomAssignTeams
+from Functions.randAssign import *
 import pytest
 
 # test_one_ta_ten_students()
@@ -196,7 +198,7 @@ def test_TA_true_but_no_TAs_recorded_error(flask_app_mock):
                 delete_one_admin_ta_student_course(result)
 
             except Exception as e:
-                print(f"Cleanup skipped: {e}")                          
+                print(f"Cleanup skipped: {e}")        
 
 
 # test_no_students_in_course_error()
@@ -215,7 +217,6 @@ def test_no_students_in_course_error(flask_app_mock):
             )
         
         # Clean up
-        if result:
             try:
                 delete_all_teams_team_members(result["course_id"])
                 delete_all_users_user_courses(result["course_id"])

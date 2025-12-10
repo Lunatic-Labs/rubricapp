@@ -9,7 +9,7 @@ def register_user():
     try:
         email, password = request.args.get('email'), request.args.get('password')
         if not email or not password:
-            response = create_bad_response("bad request: Both email and password required", "user", 400)
+            raise ValueError("Both email and password required")
         else:
             if not get_user_by_email(email):
                 response = create_good_response([], 200, "user")

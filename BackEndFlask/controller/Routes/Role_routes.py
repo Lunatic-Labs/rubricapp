@@ -13,9 +13,9 @@ from models.queries import get_role_in_course
 def get_all_roles():
     try:
         if request.args and request.args.get("course_id") and request.args.get("user_id"):
-            course_id=request.args.get("course_id")
+            course_id=int(request.args.get("course_id"))
 
-            user_id=request.args.get("user_id")
+            user_id=int(request.args.get("user_id"))
 
             role = get_role_in_course(user_id, course_id)
 
@@ -31,12 +31,13 @@ def get_all_roles():
 
 
 # Fix
-@bp.route('/role/<int:role_id>', methods =['GET'])
+@bp.route('/role_id', methods =['GET'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def post_details(role_id):  # Fix: should not have the role_id
+def post_details():  
     try:
+        role_id = int(request.args.get("role_id"))
         single_role = get_role(role_id)
         result = role_schema.dump(single_role)
 
