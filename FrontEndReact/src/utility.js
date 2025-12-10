@@ -352,4 +352,53 @@ const modules = {
     genericResourceFetch
 };
 
+export function saveAdminCredentialsToSession(cookies) {
+    const adminCreds = {
+        user: cookies.get('user'),
+        access_token: cookies.get('access_token'),
+        refresh_token: cookies.get('refresh_token')
+    };
+    sessionStorage.setItem('adminCredentials', JSON.stringify(adminCreds));
+}
+
+export function restoreAdminCredentialsFromSession() {
+    const cookies = new Cookies();
+    const stored = JSON.parse(sessionStorage.getItem('adminCredentials') || '{}');
+    if (stored.user) cookies.set('user', stored.user, { path: '/' });
+    if (stored.access_token) cookies.set('access_token', stored.access_token, { path: '/' });
+    if (stored.refresh_token) cookies.set('refresh_token', stored.refresh_token, { path: '/' });
+    sessionStorage.removeItem('adminCredentials');
+    sessionStorage.removeItem('viewingAsStudent');
+    window.location.reload();
+}
+
+export function setTestStudentCookies(data) {
+    const cookies = new Cookies();
+    
+    console.log('setTestStudentCookies called with:', data);
+    
+    // Clear old cookies
+    cookies.remove('access_token', { path: '/' });
+    cookies.remove('refresh_token', { path: '/' });
+    cookies.remove('user', { path: '/' });
+    
+    // Check if data has the expected structure
+    if (!data.access_token || !data.user) {
+        console.error('Invalid data structure for setTestStudentCookies:', data);
+        throw new Error('Invalid test student data');
+    }
+    
+    // Set new cookies exactly like Login.js does
+    cookies.set('access_token', data.access_token, {sameSite: 'strict'});
+    cookies.set('refresh_token', data.refresh_token, {sameSite: 'strict'});
+    
+    const userWithFlag = {
+        ...data.user,
+        viewingAsStudent: true
+    };
+    cookies.set('user', userWithFlag, {sameSite: 'strict'});
+    
+    console.log('Test student cookies set successfully');
+}
+
 export default modules;
