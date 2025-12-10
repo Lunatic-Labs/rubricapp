@@ -195,16 +195,29 @@ class StudentDashboard extends Component {
 
                 // Qualities for if an AT is viewable.
                 const done = isATDone(cat);
-                const isStudent = roleId === 5 || roleId === 6;
-                const correctUser = (roleId === task.role_id || (isStudent && task.role_id === 4));
-                const locked = task.locked;                                
+                const correctUser = roleId === task.role_id || (roleId === 5 && task.role_id === 4);
+                const locked = task.locked;
                 const published = task.published;
                 const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const viewable = !done && correctUser && !locked && published && !pastDue;
-                const CATviewable = correctUser === false && done === false;
+                const isStudent = roles.role_id === 5;
+                const isStudentTask = task.role_id === 5;
+                const baseConditions = correctUser && !locked && published && !pastDue;
 
-                if (!CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                let viewable, CATviewable;
+
+                if (isStudent && isStudentTask) {
+                    viewable = !done && baseConditions;
+                    CATviewable = correctUser && done;
+                } else if (isStudent) {
+                    viewable = baseConditions && !task.notification_sent;
+                    CATviewable = (pastDue || task.notification_sent) && published && correctUser;
+                } else {
+                    viewable = baseConditions;
+                    CATviewable = pastDue && correctUser;
+                }
+
+                if (CATviewable && cat !== undefined) {
                     viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
                     filteredAvgData.push(avg);
                 }
