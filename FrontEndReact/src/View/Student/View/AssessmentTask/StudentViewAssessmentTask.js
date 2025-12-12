@@ -87,6 +87,7 @@ class StudentViewAssessmentTask extends Component {
                         checkin={checkin}
                         rubricNames={rubrics ? parseRubricNames(rubrics) : []}
                         counts={counts}
+                        userTeamIds={this.props.userTeamIds}
                     />
                 </div>
             )
