@@ -1,13 +1,12 @@
-from datetime import datetime
 from flask import request
 from marshmallow import fields
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check, admin_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
 from enums.http_status_codes import HttpStatus
-from core import red, app
+from core import red
 from models.assessment_task import get_assessment_task
 
 from models.queries import (
@@ -88,9 +87,9 @@ def get_checked_in():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def checkin_to_assessmet():
+def checkin_to_assessment():
     """
-    Called by student/TA views to log that they are checked into a specific assessement task.
+    Called by a Student/TA views to checkin to a specific assessement task.
 
     Args:
         assessment_task_id (int): Assessment task that they are logged into.

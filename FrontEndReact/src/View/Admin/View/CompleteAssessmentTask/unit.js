@@ -494,7 +494,6 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	}
 
 	getCheckedInTooltip(checkinsTracker) {
-		console.log(checkinsTracker );
 		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
 		const checkedInMembers = teamMembersArray.filter(user => {
 			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);

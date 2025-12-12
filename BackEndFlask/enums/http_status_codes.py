@@ -1,5 +1,5 @@
 #---------------------------------------------------
-# Contains system-wide http status code enums.
+# Contains system-wide http status code enums. 
 #---------------------------------------------------
 
 from enum import Enum
