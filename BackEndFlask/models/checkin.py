@@ -107,31 +107,13 @@ def find_latest_team_user_checkin(assessment_task_id:int, team_or_user_id:int, i
 @error_log
 def update_checkin_to_server_time(checkin_record:object) -> None:
     """
-    Updates the time for a given record.
+    Updates the time for a given checkin record.
 
     Args:
         checkin_record (object): Checkin sqlalchemy record.
     """
     checkin_record.time = datetime.now()
     db.session.commit()
-
-@error_log
-def fetch_checkins_for_at_within_hr(assessment_task_id:int) -> object:
-    """
-    Returns all records that are related to the assessment task within 1 hr of calling this function.
-
-    Args:
-        assessment_task_id (int): The id of the assessment task to fetch checkins from.
-
-    Returns:
-        Object: Sqlalchemy fetched records containint checkin *user_id* and checkin *team_number*.
-    """
-    hr_ago = datetime.now() - timedelta(hours=1)
-    return (
-        Checkin.query.
-        filter(Checkin.assessment_task_id==assessment_task_id, Checkin.time>=hr_ago).
-        all()
-    )
 
 @error_log
 def find_checkin_team_number(assessment_task_id:int, user_id:int) -> int:

@@ -1,7 +1,7 @@
 from flask import request
 from marshmallow import fields
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check, admin_check
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
@@ -127,6 +127,7 @@ def checkin_to_assessment():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
+@admin_check()
 def check_checkedin():
     """
     Called by Admins/teachers views to get who is logged in for a specific requested assessment task.
@@ -136,7 +137,7 @@ def check_checkedin():
     """
     try:
         assessment_task_id = int(request.args.get("assessment_task_id"))
-        checkins = fetch_checkins_for_at_within_hr(assessment_task_id)
+        checkins = get_all_checkins_for_assessment(assessment_task_id)
 
         return create_good_response(checkins_schema.dump(checkins), HttpStatus.OK.value, "checkin")
     except Exception as e:
