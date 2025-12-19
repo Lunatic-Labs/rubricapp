@@ -129,6 +129,7 @@ class ValidateReset extends Component {
                                             component="div"
 
                                             sx={{
+                                                color: 'var(--text-color)',
                                                 fontFeatureSettings: "'clig' off, 'liga' off",
                                                 fontFamily: "Roboto",
                                                 fontSize: {xs:"16px", md:"24px"},
@@ -156,6 +157,31 @@ class ValidateReset extends Component {
                                                 type="text"
                                                 name="email"
                                                 value={email}
+                                                sx={{
+                                                    '& .MuiInputBase-input': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiInputLabel-root': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiInputLabel-root.Mui-focused': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root': {
+                                                        '& fieldset': {
+                                                            borderColor: 'var(--border-color)',
+                                                        },
+                                                        '&:hover fieldset': {
+                                                            borderColor: 'var(--border-hover-color)',
+                                                        },
+                                                        '&.Mui-focused fieldset': {
+                                                            borderColor: '#2E8BEF',
+                                                        },
+                                                    },
+                                                    '& .MuiFormHelperText-root': {
+                                                        color: 'var(--error-color)',
+                                                    },
+                                                }}
 
                                                 onChange={
                                                     (e) => {
@@ -180,6 +206,13 @@ class ValidateReset extends Component {
                                                     this.setState({
                                                         activeTab: "LoginPage"
                                                     });
+                                                }}
+                                                sx={{
+                                                    color: 'var(--text-color)',
+                                                    borderColor: 'var(--border-color)',
+                                                    '&:hover': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
                                                 }}
 
                                                 aria-label="validateResetBackButton"
@@ -223,6 +256,7 @@ class ValidateReset extends Component {
                                     <Box>
                                         <Typography variant="h4" component="div"
                                             sx={{
+                                                color: 'var(--text-color)',
                                                 fontFeatureSettings: "'clig' off, 'liga' off",
                                                 fontFamily: "Roboto",
                                                 fontSize: {xs:"16px", md:"24px"},
@@ -241,7 +275,7 @@ class ValidateReset extends Component {
                                                 fontFamily: "Roboto",
                                                 fontSize: {xs:"12px", md:"18px"},
                                                 fontStyle: "normal",
-                                                color: "#B8B5BB",
+                                                color: 'var(--text-color-secondary)',
                                                 fontWeight: "500",
                                                 lineHeight: "160%",
                                                 letterSpacing: "0.15px",
@@ -270,6 +304,23 @@ class ValidateReset extends Component {
 
                                             length={6}
                                             aria-label='sendCodeInput'
+                                            sx={{
+                                                '& .MuiOutlinedInput-root': {
+                                                    color: 'var(--text-color)',
+                                                    '& fieldset': {
+                                                        borderColor: 'var(--border-color)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: '#2E8BEF',
+                                                    },
+                                                },
+                                                '& input': {
+                                                    color: 'var(--text-color)',
+                                                },
+                                            }}
                                         />
                                     </Box>
 
@@ -288,6 +339,13 @@ class ValidateReset extends Component {
                                                 }}
 
                                                 aria-label="sendCodeBackButton"
+                                                sx={{
+                                                    color: 'var(--text-color)',
+                                                    borderColor: 'var(--border-color)',
+                                                    '&:hover': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
+                                                }}
                                             >
                                                 Back
                                             </Button>
