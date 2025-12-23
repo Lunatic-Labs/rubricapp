@@ -1,0 +1,117 @@
+import { test, expect } from "@jest/globals";
+import { render, waitFor } from "@testing-library/react";
+import "@testing-library/jest-dom";
+import Login from "../../../../Login/Login";
+
+import {
+    clickElementWithAriaLabel,
+    expectElementWithAriaLabelToBeInDocument,
+    changeElementWithAriaLabelWithInput,
+    clickFirstElementWithAriaLabel
+} from "../../../../../testUtilities";
+
+import {
+    demoAdminPassword
+} from "../../../../../App";
+
+
+
+var lf = "loginForm";
+var lb = "loginButton";
+var ei = "emailInput";
+var pi = "passwordInput";
+var ct = "coursesTitle";
+var vcib = "viewCourseIconButton";
+var rt = "rosterTitle";
+var eub = "editUserButton";
+var eut = "editUserTitle";
+var sbub = "studentBulkUploadButton";
+var abut = "adminBulkUploadTitle";
+var aub = "addUserButton";
+var auf = "addUserForm";
+test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
+    expect(true).toBe(true);
+});
+test("AdminViewUsers.test.tsx Test 1: should render Login Form component", () => {
+    render(<Login />);
+
+    expectElementWithAriaLabelToBeInDocument(lf);
+});
+test("AdminViewUsers.test.tsx Test 2: Should show roster page of the users for admin view using demo admin credentials", async () => {
+    render(<Login />);
+
+    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+
+    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+
+    clickElementWithAriaLabel(lb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+});
+test("AdminViewUsers.test.tsx Test 3: Should show Edit User Form when clicking the Edit Icon for admin view using demo admin credentials", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(eub);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(eut);
+    });
+});
+test("AdminViewUsers.test.tsx Test 4: Should show Student Bulk Upload Form when clicking the Student Bulk Upload Button for admin view using demo admin credentials", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(sbub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(abut);
+    });
+});
+test("AdminViewUsers.test.tsx Test 5: Should show Add User Form when clicking the Add User Button for admin view using demo admin credentials", async () => {
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+
+    clickFirstElementWithAriaLabel(vcib);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(rt);
+    });
+
+    clickElementWithAriaLabel(aub);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(auf);
+    });
+});
