@@ -3,7 +3,8 @@ import IconButton from '@mui/material/IconButton';
 import EditIcon from '@mui/icons-material/Edit';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable';
-import { Typography, Box } from "@mui/material";
+import { Typography, Box} from "@mui/material";
+import Cookies from 'universal-cookie';
 
 class ViewCourses extends Component<any> {
   render() {
@@ -12,6 +13,11 @@ class ViewCourses extends Component<any> {
     var courses = adminViewCourses.courses;
     var courseRoles = adminViewCourses.courseRoles;
     var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
+    
+    // Initialize cookies here
+    const cookies = new Cookies();
+    const user = cookies.get('user');
+    const isViewingAsStudent = user?.viewingAsStudent || false;
 
     const columns = [
       {
@@ -124,32 +130,36 @@ class ViewCourses extends Component<any> {
 
       columns.push(
       {
-        name: "course_id",
-        label: "VIEW",
-        options: {
-          filter: false,
-          setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-          setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-          customBodyRender: (courseId) => {
-            return (
-                <IconButton id={courseId}
+      name: "course_id",
+      label: "VIEW",
+      options: {
+        filter: false,
+        //sort: false, There is no sort on an action column for ts
+        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+        customBodyRender: (courseId) => {
+          return (
+            <IconButton id={courseId}
                 role = "img" aria-label="viewCourseIconButton"
-                   onClick={() => {
-                    // The logged in user is an Admin in the course
-                    if(courseRoles[courseId] === 3) {
-                      setAddCourseTabWithCourse(courses, courseId, "Users");
-
-                    // The logged in user is a TA/Instructor or Student in the course
-                    } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
-                      navbar.setStudentDashboardWithCourse(courseId, courses);
-                    }
-                }}
-                >
-                  <VisibilityIcon sx={{color:"black"}} />
-                </IconButton>
-            )
-          },
-        }
+              onClick={() => {
+                // If viewing as student, always go to student dashboard
+                if (isViewingAsStudent) {
+                  navbar.setStudentDashboardWithCourse(courseId, courses);
+                } else {
+                  // Normal behavior based on role
+                  if(courseRoles[courseId] === 3) {
+                    setAddCourseTabWithCourse(courses, courseId, "Users");
+                  } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
+                    navbar.setStudentDashboardWithCourse(courseId, courses);
+                  }
+                }
+              }}
+              >
+              <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
+            </IconButton>
+          )
+        },
+      }
     });
 
     const options = {

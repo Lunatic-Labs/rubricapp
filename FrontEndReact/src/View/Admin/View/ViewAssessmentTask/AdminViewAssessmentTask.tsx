@@ -7,13 +7,14 @@ import AdminAddAssessmentTask from '../../Add/AddTask/AdminAddAssessmentTask';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 
-interface AdminViewAssessmentTaskState {
+import Cookies from 'universal-cookie';interface AdminViewAssessmentTaskState {
     errorMessage: any;
     isLoaded: boolean;
     assessmentTasks: any;
     roles: any;
     rubrics: any;
     teams?: any;
+    isViewingAsStudent: boolean;
 }
 
 class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskState> {
@@ -25,11 +26,17 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
             isLoaded: false,
             assessmentTasks: null,
             roles: null,
-            rubrics: null
+            rubrics: null,
+            isViewingAsStudent: false,  // Add this state
         }
     }
 
     componentDidMount() {
+        // Check if viewing as student
+        const cookies = new Cookies();
+        const user = cookies.get('user');
+        const isViewingAsStudent = user?.viewingAsStudent || false;
+        
         var navbar = this.props.navbar;
         var state = navbar.state;
         var chosenCourse = state.chosenCourse;
@@ -46,6 +53,9 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
         genericResourceGET(`/role?`,'roles', this);
 
         genericResourceGET(`/rubric?all=${true}`, 'rubrics', this);
+        
+        // Set the viewing mode in state
+        this.setState({ isViewingAsStudent });
     }
 
     render() {
@@ -55,7 +65,8 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
             assessmentTasks,
             roles,
             rubrics,
-            teams
+            teams,
+            isViewingAsStudent  // Get from state
         } = this.state;
 
         var navbar = this.props.navbar;
@@ -82,7 +93,8 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
                 <Loading />
             )
 
-        } else if (this.props.show === "AdminAddAssessmentTask") {
+        } else if (this.props.show === "AdminAddAssessmentTask" && !isViewingAsStudent) {
+            // Only show Add Assessment Task if NOT viewing as student
             return (
                 <AdminAddAssessmentTask
                     navbar={navbar}
@@ -90,11 +102,13 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
             )
 
         } else {
+            // Pass the viewing mode to ViewAssessmentTasks
             return(
                 <Box>
                     <ViewAssessmentTasks
                         navbar={navbar}
-                        teams = {teams}
+                        teams={teams}
+                        isViewingAsStudent={isViewingAsStudent}  // Pass as prop
                     />
                 </Box>
             )

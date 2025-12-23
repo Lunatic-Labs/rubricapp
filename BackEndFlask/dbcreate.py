@@ -72,9 +72,9 @@ with app.app_context():
         inspector = inspect(db.engine)
         table_names = inspector.get_table_names()
         if table_names:
-            subprocess.run(["flask db upgrade"], shell=True, check=True)
+            subprocess.run(["flask db upgrade"], shell=True, check=True) #Try running "flask db upgrade " if you need to merge multiple and docker compose up is not letting the backend work.
         else:
-            db.create_all()
+            db.create_all() #extra test
             subprocess.run(["flask db stamp head"], shell=True, check=True)
 
 

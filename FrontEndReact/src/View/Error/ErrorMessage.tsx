@@ -7,7 +7,7 @@ type ErrorMessageProps = { errorMessage: string };
 
 class ErrorMessage extends Component<ErrorMessageProps> {
     render() {
-        var displayedMessage = this.props.errorMessage;
+        const displayedMessage : string = this.props.errorMessage;
 
         return(
             <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
