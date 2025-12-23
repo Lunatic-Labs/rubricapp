@@ -39,13 +39,13 @@ class AdminViewCourses extends Component<any, AdminViewCoursesState> {
       } = this.state;
 
       if (errorMessage) {
-          return(
-              <div className='container'>
-                  <ErrorMessage
-                      errorMessage={errorMessage}
-                  />
-              </div>
-          )
+        return(
+            <div className='container'>
+                <ErrorMessage
+                    errorMessage={errorMessage}
+                />
+            </div>
+        )
 
       } else if (!isLoaded || !courses) {
           return(
@@ -64,45 +64,47 @@ class AdminViewCourses extends Component<any, AdminViewCoursesState> {
       navbar.adminViewCourses.courseRoles = parseCourseRoles(courses);
 
       if(course === null && addCourse === null) {
-          return(
-              <>
-                  <Box sx={{ 
-                      display: "flex",
-                      justifyContent: "space-between",
-                      alignItems: "center",
-                      alignSelf: "stretch"}}>
-                          <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h4">
-                              Courses
-                          </Typography>
-                  
-                          { navbar.props.isAdmin &&
-                              <Button className='primary-color'
-                                  variant='contained'
-                                  onClick={() => {
-                                      setAddCourseTabWithCourse([], null, "AddCourse");
-                                  }}
-                                  aria-label='addCourse'
-                              >   
-                                  Add Course
-                              </Button>
-                          }
-                  </Box>
-                  <Box>
-                      <ViewCourses
-                          navbar={navbar}
-                      />
-                 </Box>
-              </> 
-          )
+        return(
+            <>
+                <Box sx={{ 
+                    display: "flex",
+                    justifyContent: "space-between",
+                    alignItems: "right",
+                    alignSelf: "stretch"}}>
+                        <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h4">
+                            Courses
+                        </Typography>
+                
+                        { navbar.props.isAdmin &&
+                            <>
+                                <Button className='primary-color'
+                                    variant='contained'
+                                    onClick={() => {
+                                        setAddCourseTabWithCourse([], null, "AddCourse");
+                                    }}
+                                    aria-label='addCourse'
+                                >   
+                                    Add Course
+                                </Button>   
+                            </>
+                        }
+                </Box>
+                <Box>
+                    <ViewCourses
+                        navbar={navbar}
+                    />
+               </Box>
+            </> 
+        )
 
-      } else {
-          return(
-              <AdminAddCourse
-                  navbar={navbar}
-              />
-          )
-      }
+    } else {
+        return(
+            <AdminAddCourse
+                navbar={navbar}
+            />
+        )
     }
+  }
 }
 
 export default AdminViewCourses;
