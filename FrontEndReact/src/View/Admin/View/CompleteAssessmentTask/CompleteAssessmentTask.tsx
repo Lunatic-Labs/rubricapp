@@ -139,9 +139,11 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                             const userId = checkin.user_id;
                             const teamId = checkin.team_number;
                             const user = users.find((u:any) => u.user_id === userId);
-                             
-                            if (user && teamsUsersMap[teamId]) {
-                                teamsUsersMap[teamId].push(user);
+                            
+                            const teamsUsers: any  = teamsUsersMap[teamId];
+
+                            if (user && teamsUsers) {
+                                teamsUsers.push(user);
                             }
                         });
                         
