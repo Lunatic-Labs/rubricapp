@@ -12,6 +12,7 @@ import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import PublishIcon from '@mui/icons-material/Publish';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
+import Cookies from 'universal-cookie';
 
 interface ViewAssessmentTasksState {
     isLoaded: any;
@@ -23,6 +24,7 @@ interface ViewAssessmentTasksState {
     assessmentTasks: any;
     lockStatus: any;
     publishedStatus: any;
+    isViewingAsStudent?: boolean;
 }
 
 class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
@@ -133,22 +135,32 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
     }
 
     componentDidMount() {
+        //const isViewingAsStudent = user?.viewingAsStudent || false;
+        
         const courseId = this.props.navbar.state.chosenCourse.course_id;
-
+        const isViewingAsStudent = this.props.isViewingAsStudent !== undefined 
+        ? this.props.isViewingAsStudent 
+        : (() => {
+            const cookies = new Cookies();
+            const user = cookies.get('user');
+            return user?.viewingAsStudent || false;
+        })();
+    
         genericResourceGET(
             `/assessment_task?course_id=${courseId}`,
             "assessment_tasks",
             this,
             {dest: "assessmentTasks"}
         );
-
+    
         genericResourceGET(
             `/completed_assessment?course_id=${courseId}&only_course=true`,
             "completed_assessments",
             this,
             {dest: "completedAssessments"}
         );
-
+        
+    
         const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
         const initialLockStatus: any = {};
         const initialPublishedStatus: any = {};
@@ -157,8 +169,12 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
             initialLockStatus[task.assessment_task_id] = task.locked;
             initialPublishedStatus[task.assessment_task_id] = task.published;
         });
-
-        this.setState({ lockStatus: initialLockStatus, publishedStatus: initialPublishedStatus });
+    
+        this.setState({ 
+            lockStatus: initialLockStatus, 
+            publishedStatus: initialPublishedStatus,
+            isViewingAsStudent: isViewingAsStudent  // Store this in state
+        });
     }
 
     render() {
@@ -477,7 +493,13 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
                                             <IconButton
                                                 id=""
                                                 onClick={() => {
-                                                    setCompleteAssessmentTaskTabWithID(selectedTask);
+                                                    if (this.state.isViewingAsStudent) {
+                                                        // Call student view method
+                                                        navbar.setStudentAssessmentView(selectedTask);
+                                                    } else {
+                                                        // Call admin view method
+                                                        setCompleteAssessmentTaskTabWithID(selectedTask);
+                                                    }
                                                 }}
                                                 aria-label='viewCompletedAssessmentIconButton'
                                             >
@@ -517,7 +539,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
                                             className='primary-color'
                                             variant='contained'
                                             disabled
-                                            aria-label='startAssessmentTasksButton'
+                                            aria-label="startAssessmentTasksButton"
                                         >
                                             START
                                         </Button>

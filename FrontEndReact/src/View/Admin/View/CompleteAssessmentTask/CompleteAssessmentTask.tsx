@@ -97,6 +97,7 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
         const chosenCourse = state.chosenCourse;
         const cookies = new Cookies();
         const adHocMode = this.state.usingAdHoc;
+        const isTeamAssessment = this.state.usingTeams;
 
         this.currentUserId = cookies.get("user")["user_id"];
 
@@ -110,60 +111,65 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
             "roles", this, { dest: "currentUserRole" }
         );
 
-        if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
-            genericResourceGET(
-                `/team_by_user?user_id=${this.currentUserId}&course_id=${chosenCourse["course_id"]}&adhoc_mode=${adHocMode}`,
-                "teams", this, { dest: "userFixedTeam" }
-            );
-        }
-
         genericResourceGET(
             `/${adHocMode ? 'team/adhoc':'team'}?${adHocMode ?`assessment_task_id=${chosenAssessmentTask.assessment_task_id}`:`course_id=${chosenCourse["course_id"]}`}`,
             "teams", this
-        ).then((result) => {
-            if (this.state.usingTeams && result.teams && result.teams.length > 0) {
-                const teamIds = result.teams.map((team: any) => team.team_id);
-                if(!adHocMode){
+        ).then((teamsResult) => {
+            if (isTeamAssessment && teamsResult.teams && teamsResult.teams.length > 0) {
+                genericResourceGET(
+                    `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
+                    "checkin", this
+                ).then((checkinResponse) => {
+                    const checkins = checkinResponse.checkin || [];
+                    
                     genericResourceGET(
-                        `/user?team_ids=${teamIds}`,
-                        "teams_users", this, { dest: "teamsUsers" }
-                    );
-                } else {
-                    // Fetch checkins and users to map them for adhoc mode
-                    Promise.all([
-                        genericResourceGET(
-                            `/checkin?assessment_task_id=${chosenAssessmentTask.assessment_task_id}`,
-                            "checkin", this
-                        ),
-                        genericResourceGET(
-                            `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
-                            "users", this
-                        )
-                    ]).then(([checkinResponse, userResponse]) => {
-                        // Map users to teams based on checkins
-                        const teamsUsersMap: { [key: string]: any[] } = {};
-                        const checkins = checkinResponse.checkin || [];
+                        `/user?course_id=${chosenCourse["course_id"]}&role_id=5`,
+                        "users", this
+                    ).then((userResponse) => {
                         const users = userResponse.users || [];
-
-                        result.teams.forEach((team: any) => {
+                         
+                        const teamsUsersMap: {[key: string]: any[]} = {};
+                        
+                        teamsResult.teams.forEach((team:any) => {
                             teamsUsersMap[team.team_id] = [];
                         });
-                    
+                        
                         // Add users to teams based on their checkins
-                        checkins.forEach((checkin: any) => {
+                        checkins.forEach((checkin: any)=> {
                             const userId = checkin.user_id;
                             const teamId = checkin.team_number;
-                            const user = users.find((u: any) => u.user_id === userId);
-                            if (user && teamsUsersMap[teamId] !== undefined) {
-                                teamsUsersMap[teamId]!.push(user);
+                            const user = users.find((u:any) => u.user_id === userId);
+                             
+                            if (user && teamsUsersMap[teamId]) {
+                                teamsUsersMap[teamId].push(user);
                             }
                         });
-                    
-                        this.setState({
-                            teamsUsers: teamsUsersMap,
-                        });
+                        
+                        if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
+                            const userCheckin = checkins.find((checkin:any) => checkin.user_id === this.currentUserId);
+                                                        
+                            if (userCheckin) {
+                                const userTeamId = userCheckin.team_number;
+                                const userTeam = teamsResult.teams.find((team:any) => team.team_id === userTeamId);
+                                
+                                this.setState({
+                                    userFixedTeam: userTeam ? [userTeam] : null,
+                                    teamsUsers: teamsUsersMap,
+                                });
+                            } else {
+                                this.setState({
+                                    userFixedTeam: null,
+                                    teamsUsers: teamsUsersMap,
+                                });
+                            }
+                        } else {
+                            // For admins/TAs, just set the teams-users map
+                            this.setState({
+                                teamsUsers: teamsUsersMap,
+                            });
+                        }
                     });
-                }
+                });
             }
         });
 
@@ -177,11 +183,6 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
             "completed_assessments", this, { dest: "completedAssessments" }
         );
 
-        genericResourceGET(
-            `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=${this.state.usingTeams ? "team" : "individual"}`,
-            "completed_assessments", this, { dest: "completedAssessments" }
-        );
-        
         //const checkinEventSource = createEventSource(
         //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
         //    ({data}) => {
@@ -195,12 +196,11 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
         //    checkinEventSource: checkinEventSource,
         //});
 
-
         this.setState({
             checkinEventSource: null,
-        })
+        });
     }
-
+     
     componentWillUnmount() {
         this.state.checkinEventSource?.close();
     }
@@ -227,7 +227,11 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam) return;
+                
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) {
+                    return;
+                }
+                
                 if (this.state.usingTeams && !teamsUsers) return;
                 
                 const userSort = [...users].sort((firstUser,secondUser) => {
@@ -247,8 +251,8 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                 });
 
                 const unitClass = this.state.usingTeams ? (this.state.usingAdHoc ? UnitType.AD_HOC_TEAM:UnitType.FIXED_TEAM)
-                                                         : UnitType.INDIVIDUAL;
-                                                         
+                                                        : UnitType.INDIVIDUAL;
+                                                        
                 const unitList = generateUnitList({
                     roleName: roleName,
                     currentUserId: this.currentUserId,

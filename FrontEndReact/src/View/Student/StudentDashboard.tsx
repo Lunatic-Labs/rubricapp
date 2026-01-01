@@ -5,10 +5,12 @@ import StudentViewTeams from './View/StudentViewTeams';
 import TAViewTeams from './View/TAViewTeams';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip , Cell} from 'recharts';
-import { Box, Typography } from '@mui/material';
+import { Box, Typography, Button, Alert, CircularProgress } from '@mui/material';
 import { genericResourceGET, parseRubricNames } from '../../utility';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks';
 import Loading from '../Loading/Loading';
+import Cookies from 'universal-cookie';
+const apiUrl = process.env.REACT_APP_API_URL;
 
 // StudentDashboard is used for both students and TAs.
 // StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
@@ -69,6 +71,7 @@ interface StudentDashboardState {
     averageData: any;
     filteredATs: any;
     filteredCATs: any;
+    isSwitchingBack: boolean;
     userTeamIds: any[];
     fullyDoneCATS: any;
     rubrics: any;
@@ -89,6 +92,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
             filteredATs: null,
             filteredCATs: null,
+            isSwitchingBack: false,  // Add spam protection flag
             userTeamIds: [],
             fullyDoneCATS: null,
 
@@ -212,15 +216,29 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
                 // Qualities for if an AT is viewable.
                 const done = isATDone(cat);
-                const correctUser = (roleId === task.role_id || (roleId === 5 && task.role_id === 4));
-                const locked = task.locked;                                
+                const correctUser = roleId === task.role_id || (roleId === 5 && task.role_id === 4);
+                const locked = task.locked;
                 const published = task.published;
                 const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const viewable = !done && correctUser && !locked && published && !pastDue;
-                const CATviewable = correctUser === false && done === false;
+                const isStudent = roles.role_id === 5;
+                const isStudentTask = task.role_id === 5;
+                const baseConditions = correctUser && !locked && published && !pastDue;
 
-                if (!CATviewable && cat !== undefined) {    // TA/Instructor CATs will appear when done.
+                let viewable, CATviewable;
+
+                if (isStudent && isStudentTask) {
+                    viewable = !done && baseConditions;
+                    CATviewable = correctUser && done;
+                } else if (isStudent) {
+                    viewable = baseConditions && !task.notification_sent;
+                    CATviewable = (pastDue || task.notification_sent) && published && correctUser;
+                } else {
+                    viewable = baseConditions;
+                    CATviewable = pastDue && correctUser;
+                }
+
+                if (CATviewable && cat !== undefined) {
                     viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
                     filteredAvgData.push(avg);
                 }
@@ -334,14 +352,97 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         }
     }
 
+    // Method to handle switching back to admin with spam protection
+    handleSwitchBack = async () => {
+        // Prevent multiple clicks
+        if (this.state.isSwitchingBack) {
+            console.log('Already switching back, ignoring click');
+            return;
+        }
+        
+        console.log('=== SWITCHING BACK TO ADMIN ===');
+        
+        // Set switching flag
+        this.setState({ isSwitchingBack: true });
+        
+        const cookies = new Cookies();
+        const adminCredentialsStr = sessionStorage.getItem('adminCredentials');
+        
+        if (!adminCredentialsStr) {
+            console.error('No admin credentials found!');
+            alert('Admin credentials not found. Please login again.');
+            this.setState({ isSwitchingBack: false });  // Reset flag
+            window.location.href = '/login';
+            return;
+        }
+        
+        try {
+            const adminCredentials = JSON.parse(adminCredentialsStr);
+            console.log('Restoring admin:', adminCredentials.user);
+
+            try {
+                // Blacklist test student tokens
+                await fetch(`${apiUrl}/api/logout?user_id=${adminCredentials.user.user_id}`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${cookies.get('access_token')}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ 
+                        access_token: cookies.get('access_token'),
+                        refresh_token: cookies.get('refresh_token')
+                    })
+                });
+                console.log('Test student tokens blacklisted');
+            } catch (logoutError) {
+                console.error('Failed to blacklist test student tokens:', logoutError);
+            }
+
+            cookies.remove('access_token', { path: '/' });
+            cookies.remove('refresh_token', { path: '/' });
+            cookies.remove('user', { path: '/' });
+
+            cookies.set('access_token', adminCredentials.access_token, { 
+                path: '/', 
+                sameSite: 'strict' 
+            });
+            cookies.set('refresh_token', adminCredentials.refresh_token, { 
+                path: '/', 
+                sameSite: 'strict' 
+            });
+            cookies.set('user', adminCredentials.user, { 
+                path: '/', 
+                sameSite: 'strict' 
+            });
+            
+            sessionStorage.removeItem('adminCredentials');
+            sessionStorage.removeItem('chosenCourse');
+            sessionStorage.removeItem('testStudentCourse');
+            
+            console.log('Admin cookies restored');
+            window.location.reload();
+            
+        } catch (error) {
+            console.error('Error switching back:', error);
+            alert('Error switching back to admin view');
+            this.setState({ isSwitchingBack: false });
+        }
+    };
+
     render() {
         const {
             roles,
             assessmentTasks,
             filteredATs,
             filteredCATs,
+            isSwitchingBack,  // Get flag from state
             fullyDoneCATS,
         } = this.state; 
+
+        // Check if viewing as test student
+        const cookies = new Cookies();
+        const user = cookies.get('user');
+        const isViewingAsStudent = user?.viewingAsStudent;
 
         // Wait for information to be filtered.
         if (!roles) {
@@ -354,7 +455,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         navbar.studentViewTeams.team = null;
         navbar.studentViewTeams.addTeam = null;
         navbar.studentViewTeams.users = null;
-
         const innerGridStyle = {
           borderRadius: '1px',
           height: '100%',
@@ -366,20 +466,84 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
 
-        return <>
-            <Box className="page-spacing">
-                <Box sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    alignSelf: "stretch"
-                }}>
-                    <Box sx={{ width: "100%" }} className="content-spacing">
-                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
-                            My Assessment Tasks
-                        </Typography>
+        return (
+            <>
+                {/* Switch Back Alert - Only shows when viewing as test student */}
+                {isViewingAsStudent && (
+                    <Alert 
+                        severity="info"
+                        sx={{ 
+                            mb: 3,
+                            mx: 2,
+                            alignItems: 'center',
+                            backgroundColor: '#e3f2fd',  // Light blue background
+                            '& .MuiAlert-icon': {
+                                color: '#2196f3'  // Blue icon
+                            }
+                        }}
+                        action={
+                            <Button 
+                                color="primary"
+                                size="small"
+                                variant="outlined"
+                                disabled={isSwitchingBack}  // Disable during switch
+                                onClick={this.handleSwitchBack}
+                                startIcon={isSwitchingBack ? <CircularProgress size={16} color="inherit" /> : null}
+                                sx={{ 
+                                    fontWeight: 'bold',
+                                    borderColor: '#2196f3',  // Blue border
+                                    color: '#2196f3',  // Blue text
+                                    backgroundColor: 'white',
+                                    '&:hover': {
+                                        backgroundColor: '#f5f5f5',
+                                        borderColor: '#1976d2'
+                                    },
+                                    '&:disabled': {
+                                        borderColor: '#90caf9',
+                                        color: '#90caf9'
+                                    }
+                                }}
+                            >
+                                {isSwitchingBack ? 'Switching...' : 'Switch Back to Admin'}
+                            </Button>
+                        }
+                    >
+                        <Box>
+                            <Typography 
+                                variant="body1" 
+                                sx={{ 
+                                    fontWeight: 'bold',
+                                    color: '#1565c0'  // Darker blue for title
+                                }}
+                            >
+                                Viewing as Test Student
+                            </Typography>
+                            <Typography 
+                                variant="body2"
+                                sx={{ 
+                                    color: '#424242'  // Dark gray for details
+                                }}
+                            >
+                                ID: {user.user_id} | Email: {user.email}
+                                {user.viewingCourseName && ` | Course: ${user.viewingCourseName}`}
+                            </Typography>
+                        </Box>
+                    </Alert>
+                )}
+
+                <Box className="page-spacing">
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"
+                    }}>
+                        <Box sx={{ width: "100%" }} className="content-spacing">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
+                                My Assessment Tasks
+                            </Typography>
+                        </Box>
                     </Box>
-                </Box>
 
                 <Box>
                     <StudentViewAssessmentTask
@@ -522,7 +686,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     }
                 </Box>
             }
-        </>;
+        </>)
     }
 }
 

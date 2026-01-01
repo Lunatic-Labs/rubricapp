@@ -69,7 +69,7 @@ class AdminViewCourses extends Component<any, AdminViewCoursesState> {
                   <Box sx={{ 
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "center",
+                      alignItems: "right",
                       alignSelf: "stretch"}}>
                           <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h4">
                               Courses

@@ -114,6 +114,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             courseName: 50,
             courseNumber: 20,
             term: 20,
+            year: 10,
         };
 
         //Check for Validation
@@ -194,6 +195,8 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             newErrors["year"] = "Year should be at least 2023 or later";
         else if (typeof(year) === "string" && !validator.isNumeric(year))
             newErrors["year"] = "Year must be a numeric value";
+        else if (year.length > 10)
+            newErrors["year"] = "Year cannot exceed 10 characters";
 
         //Term Validation
         if (term.trim() === "")
