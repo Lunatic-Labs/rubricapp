@@ -16,6 +16,7 @@ services:
       - "./BackEndFlask/controller:/app/controller:rw"
       - "./BackEndFlask/core:/app/core:rw"
       - "./BackEndFlask/models:/app/models:rw"
+      #- ./BackEndFlask:/app This will add the migration file into vs code and create the realitme link can be useful.
     networks:
       - app-network
     environment:
