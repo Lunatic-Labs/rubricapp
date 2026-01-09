@@ -1,6 +1,7 @@
+import json
 import string
 import secrets
-import time
+from time import time
 from typing import Any
 from models.logger import logger
 from core import sendgrid_client, config
@@ -8,7 +9,7 @@ from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
 from constants.Email import DEFAULT_SENDER_EMAIL
 from enums.Email_type import EmailContentType
-from functools import wraps
+
 
 def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     """
@@ -54,7 +55,8 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
         )
 
         if response.status_code == 200 and response.body:
-            email_json = response.body
+            decoded_body = response.body.decode('utf-8')  # Convert bytes to string
+            email_json = json.loads(decoded_body)
             for entry in email_json:
                 bounced_emails.append({
                     'id': entry['created'],
@@ -80,7 +82,7 @@ def send_bounced_email_notification(dest_addr: str, msg: str, failure: str) -> N
         failure (str)  : Specific error from the system.
     """
     subject = "Student's email failed to send."
-    message = f'''The email could not sent due to:
+    message = f'''The email could not send due to:
 
                 {msg}
 
@@ -223,17 +225,12 @@ def error_log(f:Any) -> Any:
         Use as a decorator @error_log above functions you want to have
         error logging
     '''
-    @wraps(f)  # Preserves function metadata
-    def wrapper(*args, **kwargs):  
+    def wrapper(*args, **kwargs):
         try:
-            return f(*args, **kwargs) 
+            return f(*args, *kwargs)
+
         except BaseException as e:
-            logger.error(
-                f"{e.__traceback__.tb_frame.f_code.co_filename} "
-                f"{e.__traceback__.tb_lineno} "
-                f"Error Type: {type(e).__name__} "
-                f"Message: {e}"
-            )
+            logger.error(f"{e.__traceback__.tb_frame.f_code.co_filename} { e.__traceback__.tb_lineno} Error Type: {type(e).__name__} Message: {e}")
             raise e
-    
+
     return wrapper

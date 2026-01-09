@@ -11,7 +11,7 @@ class InvalidTeamUserID(Exception):
 
 
 @error_log
-def get_all_team_users():
+def get_team_users():
     return TeamUser.query.all()
 
 @error_log
@@ -19,7 +19,7 @@ def get_team_user(team_user_id):
     one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
 
     if one_team_user is None:
-        raise InvalidTeamUserID(team_user_id)
+        raise InvalidTeamUserID
 
     return one_team_user
 
@@ -47,7 +47,7 @@ def get_team_users_by_team_id(team_id):
 
 
 @error_log
-def get_all_team_members(team_user_id):
+def get_team_members(team_user_id):
     one_team_user = TeamUser.query.filter_by(team_user_id=team_user_id).first()
 
     if one_team_user is None:

@@ -56,14 +56,13 @@ def get_all_courses():
             return create_good_response(student_count, 200, "course_count")
 
         all_courses = get_courses_by_user_courses_by_user_id(int(request.args.get("user_id")))
-        print(all_courses)
         return create_good_response(courses_schema.dump(all_courses), 200, "courses")
 
     except Exception as e:
         return create_bad_response(f"An error occurred fetching all courses: {e}", "courses", 400)
 
 
-@bp.route('/one_course', methods=['GET'])
+@bp.route('/course', methods=['GET'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()

@@ -25,9 +25,6 @@ def already_checked_in(user_id, assessment_task_id):
 def update_checkin(new_checkin):
     checkin = Checkin.query.filter_by(user_id=new_checkin["user_id"], assessment_task_id=new_checkin["assessment_task_id"]).first()
     
-    if not checkin:
-        raise ValueError(f"checkin with id {new_checkin["user_id"]} and at_id {new_checkin["assessment_task_id"]} not found")
-        
     setattr(checkin, "team_number", new_checkin["team_number"])
 
     db.session.commit()

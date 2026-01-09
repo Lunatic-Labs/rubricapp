@@ -12,6 +12,7 @@ from models.checkin import *
 from controller import bp
 from controller.Route_response import *
 from core import red, app
+from models.assessment_task import get_assessment_task
 
 from models.queries import (
     get_all_checkins_for_assessment,
@@ -27,15 +28,30 @@ CHECK_IN_REDIS_CHANNEL = "check_in_updated"
 def checkin_user():
     # needs json with AT id, user id, and team id
     try:
-        user_id = int(request.args.get("user_id"))
-        assessment_task_id = int(request.args.get("assessment_task_id"))
+        user_id = request.args.get("user_id")
+        assessment_task_id = request.args.get("assessment_task_id")
+        team_id = request.args.get("team_id")
+        provided_password = request.json.get("password", "") if request.json else ""
+
+        is_switching_teams = already_checked_in(user_id, assessment_task_id)
+        if is_switching_teams:
+            assessment_task = get_assessment_task(assessment_task_id)
+            
+            # Validate password if the assessment task has one set
+            if assessment_task and assessment_task.create_team_password:
+                if provided_password != assessment_task.create_team_password:
+                    return create_bad_response(
+                        "Incorrect team password. Please contact your instructor if you need to switch teams.", 
+                        "checkin", 
+                        403
+                    )
 
         new_checkin = {}
         new_checkin["user_id"] = user_id
         new_checkin["assessment_task_id"] = assessment_task_id
-        new_checkin["team_number"] = int(request.args.get("team_id"))
+        new_checkin["team_number"] = team_id
 
-        if already_checked_in(user_id, assessment_task_id): 
+        if is_switching_teams: 
             update_checkin(new_checkin)
         else:
             create_checkin(new_checkin)

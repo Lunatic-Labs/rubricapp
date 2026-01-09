@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy import ForeignKey, func, DateTime, Interval, Index
-from datetime import datetime, timezone
+from datetime import datetime
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
@@ -26,20 +26,24 @@ from datetime import datetime, timezone
 class Role(db.Model):
     __tablename__ = "Role"
     role_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    role_name = db.Column(db.Text, nullable=False)
+    role_name = db.Column(db.String(20), nullable=False)
 
+"""
+    The code for User has been changed to pair the character limit in the database with the character limit in the front-end UI's
+    currently the code
+"""
 class User(db.Model):
     __tablename__ = "User"
     user_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    first_name = db.Column(db.Text, nullable=False)
-    last_name = db.Column(db.Text, nullable=False)
+    first_name = db.Column(db.String(50), nullable=False)   # first_name has been changed from 'text to 'string', and now has a 50 character limit
+    last_name = db.Column(db.String(50), nullable=False)    # last_name has been changed from 'text to 'string', and now has a 50 character limit
     email = db.Column(db.String(254), unique=True, nullable=False)
-    password = db.Column(db.Text, nullable=False)
+    password = db.Column(db.String(256), nullable=False)           # password has been changed from 'text to 'string', and now has a 256 character limit.
     lms_id = db.Column(db.Integer, nullable=True)
     consent = db.Column(db.Boolean, nullable=True)
     owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=True)
     has_set_password = db.Column(db.Boolean, nullable=False)
-    reset_code = db.Column(db.Text, nullable=True)
+    reset_code = db.Column(db.String(256), nullable=True)          # reset_code has been changed from 'text to 'string', and now has a 256 character limit.
     is_admin = db.Column(db.Boolean, nullable=False)
     last_update = db.Column(DateTime(timezone=True), nullable=True)
     team = db.relationship('TeamUser', backref='user', cascade='all, delete')
@@ -133,7 +137,7 @@ class AssessmentTask(db.Model):
 class Team(db.Model): # keeps track of default teams for a fixed team scenario
     __tablename__ = "Team"
     team_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    team_name = db.Column(db.Text, nullable=False)
+    team_name = db.Column(db.String(50), nullable=False)
     course_id = db.Column(db.Integer, ForeignKey(Course.course_id), nullable=False)
     assessment_task_id = db.Column(db.Integer, ForeignKey(AssessmentTask.assessment_task_id), nullable=True)
     observer_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
@@ -181,7 +185,7 @@ class Feedback(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
     team_id = db.Column(db.Integer, ForeignKey(Team.team_id), nullable=True)
     completed_assessment_id = db.Column(db.Integer, ForeignKey(CompletedAssessment.completed_assessment_id), nullable=False)
-    feedback_time = db.Column(db.DateTime(timezone=True), nullable=True) # time the student viewed their feedback
+    feedback_time = db.Column(DateTime(timezone=True), nullable=True) # time the student viewed their feedback
 
 class EmailValidation(db.Model):
     __tablename__ = "EmailValidation"
@@ -190,7 +194,7 @@ class EmailValidation(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete="CASCADE"), nullable=False)
     email = db.Column(db.String(254), nullable=False)
     status = db.Column(db.String(50), nullable=False)
-    validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+    validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
     validation_error = db.Column(db.String(500), nullable=True)
 
     user = db.relationship('User', backref=db.backref('email_validations', lazy=True, passive_deletes=True))

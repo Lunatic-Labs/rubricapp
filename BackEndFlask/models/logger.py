@@ -42,41 +42,41 @@ class Logger:
         filehandler.setFormatter(formatter)
         self.logger.addHandler(filehandler)
 
+
     def __try_clear(self):
         """
         Description:
         Clears all entries that are older than 90 days.
         """
         now = datetime.now()
+
         for handler in self.logger.handlers:
             if isinstance(handler, logging.FileHandler):
-                self.__ensure_log_exists(handler.baseFilename)
                 with open(handler.baseFilename, 'r+') as f:
                     lines = f.readlines()
+
                     f.seek(0)
-                    kept_lines = []
+
+                    last_parsed_time = None
+
                     for line in lines:
                         try:
-                            timestamp_str = line.split(' - ')[0]
-                            try:
-                                entry_time = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S,%f")
-                            except ValueError:
-                                entry_time = datetime.strptime(timestamp_str, "%Y-%m-%d %H:%M:%S")
+                            date = datetime.strptime(line[:19], "%Y-%m-%d %H:%M:%S")
 
-                            # Keep only entries newer than 90 days
-                            if (now - entry_time).days <= 90:
-                                kept_lines.append(line)
-                        except Exception:
-                            kept_lines.append(line)
-                    f.seek(0)
+                            if now - date < timedelta(days=90):
+                                f.write(line)
+
+                            last_parsed_time = date
+
+                        except:
+                            if last_parsed_time != None and now - last_parsed_time < timedelta(days=90):
+                                f.write(line)
+
+                        else:
+                            break
+
                     f.truncate()
-                    f.writelines(kept_lines)
 
-
-    def __ensure_log_exists(self, filepath):
-        if not os.path.exists(filepath):
-            open(filepath, "w").close()
-    
 
     def debug(self, msg: str) -> None:
         """

@@ -20,7 +20,7 @@ def get_suggestion(suggestion_id):
     one_suggestion = SuggestionsForImprovement.query.filter_by(suggestion_id=suggestion_id).first()
 
     if one_suggestion is None:
-        raise Invalid_Suggestion_ID(suggestion_id)
+        raise Invalid_Suggestion_ID
 
     return one_suggestion
 
@@ -49,8 +49,9 @@ def replace_suggestion(suggestion, id):
     if one_suggestion is None:
         raise Invalid_Suggestion_ID(id)
 
-    one_suggestion.category_id = suggestion[0]
-    one_suggestion.suggestion_text = suggestion[1]
+    one_suggestion.rubric_id = suggestion[0]
+    one_suggestion.category_id = suggestion[1]
+    one_suggestion.text = suggestion[2]
 
     db.session.commit()
 

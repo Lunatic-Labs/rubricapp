@@ -9,7 +9,6 @@ from models.email_validation import create_validation
 from models.completed_assessment import completed_assessment_team_or_user_exists
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails
-from core import config
 
 load_dotenv()
 
@@ -103,6 +102,11 @@ def get_user_user_id_by_first_name(first_name):
 
 
 @error_log
+def get_user_user_id_by_email(email):
+    return get_user_by_email(email).user_id
+
+
+@error_log
 def get_user_by_email(email):
     return User.query.filter_by(email=email).first()
 
@@ -188,10 +192,9 @@ def create_user(user_data, validate_emails=True):
     db.session.commit()
 
     # Avoid adding validation to demo users.
-    if config.rubricapp_running_locally is False:
-        if validate_emails and not has_set_password:
-            create_validation(user_data.user_id, user_data.email)
-            spawn_thread(validate_pending_emails)
+    if validate_emails and not has_set_password:
+        create_validation(user_data.user_id, user_data.email)
+        spawn_thread(validate_pending_emails)
 
     return user_data
 
@@ -347,7 +350,7 @@ def replace_user(user_data, user_id):
     one_user = User.query.filter_by(user_id=user_id).first()
 
     if one_user is None:
-        raise InvalidUserID(user_id)
+        raise InvalidUserID
 
     if one_user.email != user_data["email"]:
         spawn_thread(validate_pending_emails)

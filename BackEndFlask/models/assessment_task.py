@@ -2,9 +2,8 @@ from core import db
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
 from models.utility import error_log
-from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 from sqlalchemy.exc import SQLAlchemyError
-from sqlalchemy import and_, or_
+from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 
 """
 Something to consider may be the due_date as the default
@@ -63,25 +62,17 @@ def get_assessment_tasks_by_course_id(course_id):
 def get_assessment_tasks_by_role_id(role_id):
     return AssessmentTask.query.filter_by(role_id=role_id).all()
 
-
 @error_log
 def get_assessment_tasks_by_team_id(team_id):
-    return db.session.query(AssessmentTask).join(
-        Team, AssessmentTask.course_id == Team.course_id
-    ).filter(
-        Team.team_id == team_id,
-        or_(
-            and_(
-                AssessmentTask.due_date >= Team.date_created,
-                Team.active_until.is_(None)
-            ),
-            and_(
-                AssessmentTask.due_date >= Team.date_created,
-                AssessmentTask.due_date <= Team.active_until
+    db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+            Team.team_id == team_id
+            and
+            (
+                (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
+                or
+                (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
             )
-        )
-    ).all()
-
+        ).all()
 @error_log
 def get_assessment_task(assessment_task_id):
     one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
@@ -232,7 +223,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 5,
-            "rubric_id": 7,
+            "rubric_id": 1,
             "show_ratings": False,
             "show_suggestions": True,
             "time_zone": "EST",
@@ -248,7 +239,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 8,
+            "rubric_id": 1,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "CST",
@@ -264,7 +255,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 9,
+            "rubric_id": 2,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "EST",
@@ -280,7 +271,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 10,
+            "rubric_id": 2,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
@@ -296,7 +287,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 11,
+            "rubric_id": 7,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
@@ -312,7 +303,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 5,
-            "rubric_id": 12,
+            "rubric_id": 6,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "EST",
@@ -328,7 +319,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 5,
-            "rubric_id": 13,
+            "rubric_id": 6,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
@@ -344,7 +335,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 14,
+            "rubric_id": 3,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
@@ -360,7 +351,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": 7,
             "max_team_size": 4,
             "role_id": 4,
-            "rubric_id": 15,
+            "rubric_id": 4,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
@@ -376,7 +367,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 16,
+            "rubric_id": 1,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
@@ -392,7 +383,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 11,
+            "rubric_id": 2,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "PST",
@@ -424,7 +415,7 @@ def load_demo_admin_assessment_task():
             "number_of_teams": None,
             "max_team_size": None,
             "role_id": 4,
-            "rubric_id": 10,
+            "rubric_id": 3,
             "show_ratings": True,
             "show_suggestions": True,
             "time_zone": "MST",

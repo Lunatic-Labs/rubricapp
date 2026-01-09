@@ -4,7 +4,7 @@ from models.utility import error_log
 
 class InvalidObservableCharacteristicID(Exception):
     def __init__(self, id):
-        self.message = f"Invalid observable_characteristics_id {id}."
+        self.message = f"Invalid observable_characteristic_id {id}."
 
     def __str__(self):
         return self.message
@@ -16,18 +16,18 @@ def get_observable_characteristics():
 
 
 @error_log
-def get_observable_characteristic(observable_characteristics_id):
-    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristics_id=observable_characteristics_id).first()
+def get_observable_characteristic(observable_characteristic_id):
+    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
 
     if one_observable_characteristic is None:
-        raise InvalidObservableCharacteristicID(observable_characteristics_id)
+        raise InvalidObservableCharacteristicID(observable_characteristic_id)
     
     return one_observable_characteristic
 
 
 @error_log
 def get_observable_characteristic_per_category(category_id):
-    observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id).all()
+    observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id)
 
     return observable_characteristic_per_category
 
@@ -46,14 +46,15 @@ def create_observable_characteristic(observable_characteristic):
 
 
 @error_log
-def replace_observable_characteristic(observable_characteristic, observable_characteristics_id):
-    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristics_id=observable_characteristics_id).first()
+def replace_observable_characteristic(observable_characteristic, observable_characteristic_id):
+    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
 
     if one_observable_characteristic is None:
-        raise InvalidObservableCharacteristicID(observable_characteristics_id)
+        raise InvalidObservableCharacteristicID(observable_characteristic_id)
     
-    one_observable_characteristic.category_id = observable_characteristic[0]
-    one_observable_characteristic.observable_characteristic_text = observable_characteristic[1]
+    one_observable_characteristic.rubric_id = observable_characteristic[0]
+    one_observable_characteristic.category_id = observable_characteristic[1]
+    one_observable_characteristic.observable_characteristic_text = observable_characteristic[2]
 
     db.session.commit()
 

@@ -2,7 +2,6 @@ from core import db
 from models.schemas import Team
 from datetime import datetime
 from models.utility import error_log
-from models.course import InvalidCourseID
 
 class InvalidTeamID(Exception):
     def __init__(self, id):
@@ -23,14 +22,16 @@ def get_teams():
 
 @error_log
 def get_team_by_course_id(course_id):
-    all_teams = Team.query.filter_by(course_id=course_id).all()
-    
-    return all_teams
-
+    return Team.query.filter_by(course_id=course_id).all()
 
 @error_log
 def get_team_count_by_course_id(course_id):
     return Team.query.filter_by(course_id=course_id,active_until=None).count()
+
+@error_log
+def get_team_by_team_name_and_course_id(team_name, course_id):
+    return Team.query.filter_by(team_name=team_name, course_id=course_id).first()
+
 
 @error_log
 def get_team_by_team_name_and_course_id(team_name, course_id):

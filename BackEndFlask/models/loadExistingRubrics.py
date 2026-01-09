@@ -574,10 +574,6 @@ def load_existing_observable_characteristics():
         [74, "Body language directed the delivery toward the audience and indicated the speaker was open to engagement"],
         [74, "None"],
     ]
-
-    for cid in range(1, 75):
-        create_category({"name": f"Observable Characteristics Category {cid}", "description": f"Description for Observable Characteristics Category {cid}", "rating_json": consistently})       
-        
     for observable in observable_characteristics:
         create_observable_characteristic(observable)
 
@@ -1142,8 +1138,5 @@ def load_existing_suggestions():
         [74, "Make eye contact with multiple members of the audience."],
         [74, "Nothing specific at this time"],        
         ]
-    for cid in range(1, 75):
-        create_category({"name": f"Observable Characteristics Category {cid}", "description": f"Description for Observable Characteristics Category {cid}", "rating_json": consistently})       
-
     for suggestion in suggestions:
         create_suggestion(suggestion)

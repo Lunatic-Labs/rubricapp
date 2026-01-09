@@ -28,7 +28,7 @@ def login():
         JSON = {
             "email": email,
             "user_id": user.user_id,
-            "isSuperAdmin": user.user_id==1,
+            "isSuperAdmin": user.user_id == 1,
             "isAdmin": user.is_admin,
             "has_set_password": user.has_set_password,
             "user_name": user.first_name + " " + user.last_name

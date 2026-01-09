@@ -26,27 +26,22 @@ def parse_and_convert_timezone(time_str, assessment_task):
     Timezone-aware datetime in the assessment task's timezone
     """
 
-    # Remove Z if present
-    if time_str.endswith("Z"):
-        time_str = time_str[:-1]
+    if "." not in time_str:
+        time_str = time_str + ".000"
     
-    # Determine format based on presence of milliseconds
-    if "." in time_str:
-        format_str = '%Y-%m-%dT%H:%M:%S.%f'
-    else:
-        format_str = '%Y-%m-%dT%H:%M:%S'
+    if "Z" not in time_str:
+        time_str = time_str + "Z"
+
     
-    # Parse the time string
-    utc_time = datetime.strptime(time_str, format_str).replace(tzinfo=pytz.UTC)
+    # Parse the time string into a UTC datetime object
+    utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
     
-    # Convert to target timezone
-    if assessment_task and hasattr(assessment_task, 'time_zone') and assessment_task.time_zone:
-        tz_name = timezone_list.get(assessment_task.time_zone, "UTC")
-        target_tz = pytz.timezone(tz_name)
-        return utc_time.astimezone(target_tz)
+    # Handles the conversion of the chosen assessment task timezone
+    if assessment_task and assessment_task.time_zone:
+        pytz_timezone = pytz.timezone(timezone_list.get(assessment_task.time_zone, "UTC"))
+        return utc_time.astimezone(pytz_timezone)
     
     return utc_time
-
 def ensure_utc_datetime(dt):
     """
     Ensure a datetime object is timezone-aware and in UTC.

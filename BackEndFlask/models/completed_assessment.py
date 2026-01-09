@@ -2,7 +2,7 @@ from core import db
 from sqlalchemy import and_, func, or_
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
-from datetime import datetime, timezone
+from datetime import datetime
 from models.utility import error_log
 from Functions.time import *
 
@@ -80,17 +80,18 @@ def delete_completed_assessment_tasks(completed_assessment_id):
         return False
 
     return one_completed_assessment
+
 @error_log
 def create_completed_assessment(completed_assessment_data):
     assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=completed_assessment_data["assessment_task_id"]).first()
     
     # Default to current time in UTC if no initial time provided
     if not completed_assessment_data.get("initial_time"):
-        completed_assessment_data["initial_time"] = datetime.now(timezone.utc).isoformat() + "Z"
+        completed_assessment_data["initial_time"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
     
     # Default to current time in UTC if no last update provided
     if not completed_assessment_data.get("last_update"):
-        completed_assessment_data["last_update"] = datetime.now(timezone.utc).isoformat() + "Z"
+        completed_assessment_data["last_update"] = datetime.now(datetime.timezone.utc).isoformat() + "Z"
     
     # Convert times to UTC before saving
     initial_time_utc = ensure_utc_datetime(completed_assessment_data["initial_time"])
@@ -113,41 +114,65 @@ def create_completed_assessment(completed_assessment_data):
     
     return completed_assessment
 
-@error_log
-def toggle_lock_status(completed_assessment_id):
-    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
-
-    if one_completed_assessment is None:
-        raise InvalidCRID(completed_assessment_id)
-
-    one_completed_assessment.locked = not one_completed_assessment.locked
+def toggle_individual_lock_status(completed_assessment_id, locked):
+    """
+    Toggle the lock status for a single completed assessment
+    
+    Args:
+        completed_assessment_id: The ID of the completed assessment to toggle
+        locked: Boolean indicating the new lock status
+    """
+    completed_assessment = CompletedAssessment.query.filter_by(
+        completed_assessment_id=completed_assessment_id
+    ).first()
+    
+    if not completed_assessment:
+        raise ValueError(f"Completed assessment with id {completed_assessment_id} not found")
+    
+    completed_assessment.locked = locked
     db.session.commit()
+    
+    return completed_assessment
 
-    return one_completed_assessment
 
-@error_log
-def make_complete_assessment_locked(completed_assessment_id):
-    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
-
-    if one_completed_assessment is None:
-        raise InvalidCRID(completed_assessment_id)
-
-    one_completed_assessment.locked = True
+def lock_individual_assessment(completed_assessment_id):
+    """
+    Lock a single completed assessment
+    
+    Args:
+        completed_assessment_id: The ID of the completed assessment to lock
+    """
+    completed_assessment = CompletedAssessment.query.filter_by(
+        completed_assessment_id=completed_assessment_id
+    ).first()
+    
+    if not completed_assessment:
+        raise ValueError(f"Completed assessment with id {completed_assessment_id} not found")
+    
+    completed_assessment.locked = True
     db.session.commit()
+    
+    return completed_assessment
 
-    return one_completed_assessment
 
-@error_log
-def make_complete_assessment_unlocked(completed_assessment_id):
-    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
-
-    if one_completed_assessment is None:
-        raise InvalidCRID(completed_assessment_id)
-
-    one_completed_assessment.locked = False
+def unlock_individual_assessment(completed_assessment_id):
+    """
+    Unlock a single completed assessment
+    
+    Args:
+        completed_assessment_id: The ID of the completed assessment to unlock
+    """
+    completed_assessment = CompletedAssessment.query.filter_by(
+        completed_assessment_id=completed_assessment_id
+    ).first()
+    
+    if not completed_assessment:
+        raise ValueError(f"Completed assessment with id {completed_assessment_id} not found")
+    
+    completed_assessment.locked = False
     db.session.commit()
-
-    return one_completed_assessment
+    
+    return completed_assessment
 
 #----------------------------------------
 # Get the average of all ratings
@@ -1102,7 +1127,7 @@ def replace_completed_assessment(completed_assessment_data, completed_assessment
     assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=one_completed_assessment.assessment_task_id).first()
     
     if not completed_assessment_data.get("last_update"):
-        completed_assessment_data["last_update"] = datetime.now(timezone.utc).isoformat() + "Z"
+        completed_assessment_data["last_update"] = datetime.utcnow().isoformat() + "Z"
     
     # Convert to UTC
     last_update_utc = ensure_utc_datetime(completed_assessment_data["last_update"])

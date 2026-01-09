@@ -90,9 +90,31 @@ def get_all_assessment_tasks():
                 200, "assessment_tasks",
             )
 
+        if request.args and request.args.get("user_id"):
+            user_id = int(request.args.get("user_id"))
+
+            get_user(user_id)
+
+            user_courses = get_user_courses_by_user_id(user_id)
+
+            all_assessment_tasks = []
+
+            for user_course in user_courses:
+                assessment_tasks = get_assessment_tasks_by_course_id(
+                    user_course.course_id
+                )
+
+                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
         if request.args and request.args.get("role_id"):
             role_id = int(request.args.get("role_id"))
-            
+
             get_role(role_id)  # Trigger an error if not exists.
 
             all_assessment_tasks = get_assessment_tasks_by_role_id(role_id)
@@ -116,29 +138,7 @@ def get_all_assessment_tasks():
                 "assessment_tasks",
             )
 
-        if request.args and request.args.get("user_id"):
-            user_id = int(request.args.get("user_id"))
-
-            get_user(user_id)
-
-            user_courses = get_user_courses_by_user_id(user_id)
-
-            all_assessment_tasks = []
-
-            for user_course in user_courses:
-                assessment_tasks = get_assessment_tasks_by_course_id(
-                    user_course.course_id
-                )
-
-                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
-
-            return create_good_response(
-                assessment_tasks_schema.dump(all_assessment_tasks),
-                200,
-                "assessment_tasks",
-            )
-
-        #all_assessment_tasks = get_assessment_tasks()
+        all_assessment_tasks = get_assessment_tasks()
 
         return create_good_response(
             assessment_task_schema.dump(all_assessment_tasks), 200, "assessment_tasks"
@@ -203,13 +203,13 @@ def update_assessment_task():
     try:
         if request.args and request.args.get("notification"):
             assessment_task_id = request.args.get("assessment_task_id")
-            
+
             notification_date = request.json["notification_date"]
 
             notification_message = request.json["notification_message"]
 
             one_assessment_task = get_assessment_task(assessment_task_id)   # Trigger an error if not exists
-            
+
             if one_assessment_task.notification_sent == None:
                 list_of_completed_assessments = get_completed_assessments_by_assessment_task_id(assessment_task_id)
 

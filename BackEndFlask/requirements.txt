@@ -11,8 +11,8 @@ flask_cors == 6.0.1
 Flask-Limiter == 4.0.0
 
 # Tools for serialization and validation
-marshmallow >= 4.0.1
-marshmallow-sqlalchemy >= 1.4.2
+marshmallow == 4.0.1
+marshmallow-sqlalchemy == 1.4.2
 
 # SendGrid API for emails
 sendgrid == 6.12.5

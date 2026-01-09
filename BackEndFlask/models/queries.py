@@ -37,8 +37,8 @@ from sqlalchemy import (
     case,
     literal_column
 )
+
 import sqlalchemy
-from sqlalchemy import and_
 
 
 @error_log
@@ -283,7 +283,7 @@ def get_all_adhoc_teams_from_AT(assessment_task_id):
 
 # HERE
 @error_log
-def get_team_users(course_id: int, team_id: int):
+def get_team_users(course_id: int, team_id: int, user_id: int):
     """
     Description:
     Gets all users associated with the given team in the given course.
@@ -327,6 +327,8 @@ def get_team_by_course_id_and_observer_id(course_id, observer_id):
     """
     teams = db.session.query(
         Team
+    ).join(
+        TeamUser, TeamUser.team_id == Team.team_id
     ).filter(
         and_(
             Team.course_id == course_id,
@@ -695,10 +697,10 @@ def get_rubrics_and_total_categories(user_id):
         Category, RubricCategory.category_id == Category.category_id
     ).filter(
         or_(
-            Rubric.owner == 1,                  # default rubrics
+            Rubric.owner == 1,
             or_(
-                Rubric.owner == user_id,        # rubrics created by the user
-                Rubric.owner == user.owner_id   # rubrics created by the user's owner (e.g. admin/instructor)
+                Rubric.owner == user_id,
+                Rubric.owner == user.owner_id
             )
         )
     ).group_by(
@@ -732,17 +734,26 @@ def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
         Category, RubricCategory.category_id == Category.category_id
     )
 
+    # Include rubrics owned by the user and rubrics owned by the user's owner (other admins
+    # within the same organization). If get_all is True, also include the default rubrics
+    # (owner == 1).
+    user = get_user(user_id)
+    owner_id = user.owner_id
+
     if get_all:
         all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
             or_(
                 Rubric.owner == 1,
-                Rubric.owner == user_id
+                Rubric.owner == user_id,
+                Rubric.owner == owner_id
             )
         )
-
     else:
         all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
-            Rubric.owner == user_id
+            or_(
+                Rubric.owner == user_id,
+                Rubric.owner == owner_id
+            )
         )
 
     all_rubrics_and_total_categories = all_rubrics_and_total_categories.group_by(
@@ -763,6 +774,11 @@ def get_categories_for_user_id(user_id):
     Parameters:
     user_id = int (The id of a user)
     """
+    # Include categories for rubrics owned by the user and by the user's owner
+    # (so admins under the same owner can see each other's custom rubric categories).
+    user = get_user(user_id)
+    owner_id = user.owner_id
+
     all_custom_category_ids = db.session.query(
         Category.category_id,
         Category.category_name,
@@ -778,7 +794,10 @@ def get_categories_for_user_id(user_id):
         Rubric,
         Rubric.rubric_id == RubricCategory.rubric_id
     ).filter(
-        Rubric.owner == user_id
+        or_(
+            Rubric.owner == user_id,
+            Rubric.owner == owner_id
+        )
     ).subquery()
 
     all_default_categories = db.session.query(
@@ -960,7 +979,7 @@ def get_completed_assessment_with_user_name(assessment_task_id):
     Gets all of the completed assessments with user names
     for the given assessment task.
 
-    Parameters: 
+    Parameters:
     assessment_task_id: int (The id of an assessment task)
     """
     complete_assessments=db.session.query(
@@ -1035,17 +1054,13 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
-    ).join(
-        TeamUser,
-        and_(
-            CompletedAssessment.team_id == TeamUser.team_id,
-            TeamUser.user_id == user_id
-        )
     ).filter(
         AssessmentTask.course_id == course_id
+    ).join(
+        TeamUser,
+        CompletedAssessment.team_id == TeamUser.team_id and TeamUser.user_id == user_id  
     )
 
-    # Individual assessments
     complete_assessments_ind = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -1064,10 +1079,9 @@ def get_completed_assessment_by_user_id(course_id, user_id):
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
-        CompletedAssessment.user_id == user_id
+        CompletedAssessment.user_id == user_id,
     )
 
-    # Ad-hoc (checkin) assessments
     complete_assessments_adhoc = db.session.query(
         CompletedAssessment.completed_assessment_id,
         CompletedAssessment.assessment_task_id,
@@ -1085,6 +1099,8 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
+    ).filter(
+        AssessmentTask.course_id == course_id
     ).join(
         Checkin,
         and_(
@@ -1092,16 +1108,12 @@ def get_completed_assessment_by_user_id(course_id, user_id):
             Checkin.user_id == user_id,
             CompletedAssessment.assessment_task_id == Checkin.assessment_task_id
         )
-    ).filter(
-        AssessmentTask.course_id == course_id
     )
 
-    # Combine all queries
-    combined_query = complete_assessments_team.union(complete_assessments_ind).union(complete_assessments_adhoc)
+    complete_assessments = complete_assessments_team.union(complete_assessments_ind)
+    final_result = complete_assessments.union(complete_assessments_adhoc)
 
-    # Execute query
-    return combined_query.all()
-
+    return final_result
 
 @error_log
 def get_completed_assessment_by_ta_user_id(course_id, user_id):
@@ -1282,6 +1294,24 @@ def get_course_name_by_at_id(at_id:int) -> str :
 
     return course_name[0][0]
 
+def get_assessment_task_name_by_at_id(at_id: int) -> str:
+    """
+    Retrieves the assessment task name for a given assessment task ID.
+    
+    Parameters:
+    at_id: int - The assessment task ID
+    
+    Returns:
+    str - The assessment task name
+    """
+    assessment_task_name = db.session.query(
+        AssessmentTask.assessment_task_name
+    ).filter(
+        AssessmentTask.assessment_task_id == at_id
+    ).first()
+
+    return assessment_task_name[0]
+
 def get_course_total_students(course_id: int, assessment_task_id: int) -> int:
     """
     Description:
@@ -1292,9 +1322,6 @@ def get_course_total_students(course_id: int, assessment_task_id: int) -> int:
     assessment_task_id : int (The id of an assessment task)
 
     Return: int (The total number of students or teams in a course.)
-
-    Note: only if the assessment is completed by at least one user of a course
-          then the total number of students in the course will be returned.
     """
     course_total = 0
 
@@ -1379,7 +1406,7 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
     if at_id is not None:
         student_info = student_info.filter(
             CompletedAssessment.assessment_task_id == at_id
-        ).distinct() # Avoid duplicates when multiple assessments exits
+        )
     else:
         student_info = student_info.filter(
             CompletedAssessment.completed_assessment_id == completed_at_id
@@ -1429,27 +1456,10 @@ def get_num_of_adhocs(assessment_task_id:int):
     """
 
     pattern = '^Team [0-9]+$'
-
-    # Get the course for the AT
-    course_id = get_course_from_at(assessment_task_id)
-    course_id = 0 if course_id is None else course_id[0]
-
-    count = (
-        db.session.query(func.count(func.distinct(Team.team_id)))
-        .join(
-            Checkin,
-            and_(
-                Checkin.assessment_task_id == assessment_task_id,
-                Checkin.team_number == Team.team_id,
-            )
-        )
-        .filter(
-            Team.course_id == course_id,
-            Team.team_name.op('REGEXP')(pattern),
-        )
-        .scalar()
-    )
-
+    count = db.session.query(func.count(Team.team_id)).filter(
+        Team.team_name.op('REGEXP')(pattern),
+        Team.assessment_task_id == assessment_task_id
+    ).scalar()
     return count
 
 def get_adhoc_team_users(team_id):
