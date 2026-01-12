@@ -24,7 +24,7 @@ def already_checked_in(user_id, assessment_task_id):
 @error_log
 def update_checkin(new_checkin):
     checkin = Checkin.query.filter_by(user_id=new_checkin["user_id"], assessment_task_id=new_checkin["assessment_task_id"]).first()
-
+    
     setattr(checkin, "team_number", new_checkin["team_number"])
 
     db.session.commit()

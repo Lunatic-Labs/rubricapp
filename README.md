@@ -301,13 +301,32 @@ Before running tests locally, you need to set up your environment:
    cd BackEndFlask/
    
    # Run all tests
-   python3 -m pytest
+   python3 -m pytest Tests/
    
    # Run tests with verbose output
-   python3 -m pytest -v
+   python3 -m pytest -v Tests
    
    # Run specific test file
-   python3 -m pytest -k test_specific_file.py
+   python3 -m pytest -k "test_specific_file.py"
+
+   # Run all tests with Backend coverage report
+   python -m pytest Tests/ \
+        --cov=models \
+        --cov=functions \
+        --cov=controller \
+        --cov=constants \
+        --cov=core \
+        --cov=enums \
+        --cov=env \
+        --cov=logs \
+        --cov=migrations \
+        --cov=path \
+        --cov=AWS_INFO \
+        --cov-report=term-missing
+    
+    # Run a specific component test with a coverage report
+    python -m pytest -k "models" --cov=models --cov-report=term-missing  or
+    python -m pytest Tests/integration/models/ --cov=models --cov-report=term-missing
 ```
 #### Docker Testing  
 

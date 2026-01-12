@@ -4,6 +4,7 @@ from models.utility import error_log
 from sqlalchemy import (
     or_
 )
+from models.rubric import InvalidRubricID
 
 class InvalidCategoryID(Exception):
     def __init__(self, id):
@@ -47,6 +48,9 @@ def get_categories_per_rubric(rubric_id):
         rubric_id=rubric_id
     ).all()
 
+    if not category_per_rubric:
+        raise InvalidRubricID(rubric_id)
+    
     return category_per_rubric
 
 
@@ -85,7 +89,7 @@ def create_category(category):
 
 @error_log
 def replace_category(category, category_id):
-    one_category = Category.query.filery_by(category_id=category_id).first()
+    one_category = Category.query.filter_by(category_id=category_id).first()
 
     if one_category is None:
         raise InvalidCategoryID(category_id)

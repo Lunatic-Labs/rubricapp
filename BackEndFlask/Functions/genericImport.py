@@ -1,7 +1,6 @@
 from typing import List, Dict, Tuple as TypingTuple
 
 from core import db
-from Functions.test_files.PopulationFunctions import *
 from Functions.helper import *
 from Functions.customExceptions import *
 from models.user import *
@@ -159,8 +158,6 @@ def generic_csv_to_db(user_file: str, owner_id: int, course_id: int) -> None|str
             student_csv = open(user_file, mode='r', encoding='utf-8-sig')
 
         except FileNotFoundError:
-            delete_xlsx(user_file, is_xlsx)
-
             raise FileNotFound
 
         # Renamed `reader` -> `roster`.

@@ -9,7 +9,6 @@
 #----------------------------------------------------------------------------------------------------
 import csv
 import io
-from core import app
 from models.queries import *
 from enum import Enum
 from datetime import datetime

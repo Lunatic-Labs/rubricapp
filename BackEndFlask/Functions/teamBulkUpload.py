@@ -1,4 +1,4 @@
-from Functions.helper import helper_verify_email_syntax, helper_create_user
+from Functions.helper import *
 from Functions.customExceptions import *
 from models.user import *
 from models.team import *
@@ -6,7 +6,6 @@ from models.team_user import *
 from models.user_course import *
 from models.course import *
 from models.queries import does_team_user_exist
-from Functions.test_files.PopulationFunctions import xlsx_to_csv
 from enum import Enum
 
 from datetime import date
@@ -30,7 +29,7 @@ class TBUTeam:
         self.ta_email :str = ta_email
         self.students :list[TBUStudent] = students
 
-def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
+def _expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     """
     Description:
         Pops off the "top" row of the csv data and sanitizes it. At the same
@@ -51,7 +50,7 @@ def __expect(lst: list[list[str]], cols: int | None = None) -> list[str]:
     
     return cleaned
 
-def __parse(lst: list[list[str]]) -> list[TBUTeam]:
+def _parse(lst: list[list[str]]) -> list[TBUTeam]:
     """
     DESCRIPTION:
         Reads the teams and associates sudents/tas with their respective team.
@@ -66,7 +65,7 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
     current_state = ParseState.TA
     
     while len(lst) > 0:
-        hd = __expect(lst)
+        hd = _expect(lst)
         current_row += 1
         
         # Handles the end of one team
@@ -81,11 +80,11 @@ def __parse(lst: list[list[str]]) -> list[TBUTeam]:
                 empty_space = False
 
                 if len(lst) >= 1:
-                    lookAhead = __expect(lst)
+                    lookAhead = _expect(lst)
                     if len(hd) == 0:
                         empty_space = True
                         hd = lookAhead
-                        lookAhead = __expect(lst)
+                        lookAhead = _expect(lst)
                     lst.insert(0, lookAhead)
                     lst.insert(0, hd)
                     multiple_observers = (len(hd) == len(lookAhead) == 1)
@@ -257,7 +256,6 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
                 "date_created": str(date.today().strftime("%m/%d/%Y")),
                 "course_id": course_id,
                 "assessment_task_id": None,
-                
             })
 
         team_id = team.team_id
@@ -302,7 +300,7 @@ def __create_team(team: TBUTeam, owner_id: int, course_id: int):
 #            if not helper_verify_email_syntax(student.email):
 #                raise SuspectedMisformatting
 
-def __verify_information(teams: list[TBUTeam]):
+def _verify_information(teams: list[TBUTeam]):
     for team in teams:
         if team.ta_email == "":
             raise EmptyTAEmail
@@ -321,7 +319,7 @@ def __verify_information(teams: list[TBUTeam]):
             if student.email == "":
                 raise EmptyStudentEmail
             if not helper_verify_email_syntax(student.email):
-                raise SuspectedMisformatting
+                raise SuspectedMisformatting()
 
 # First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
@@ -339,13 +337,13 @@ def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
             rows: list[list[str]] = [list(map(str.strip, row)) for row in csvr]
 
         # Gather teams and verify the correctness of all emails.
-        teams = __parse(rows)
+        teams = _parse(rows)
 
         if len(teams) == 0:
             raise EmptyTeamMembers
 
         # __verify_emails(teams)
-        __verify_information(teams)
+        _verify_information(teams)
 
         # Actually add people to the DB.
         for team in teams:

@@ -1,4 +1,4 @@
-from Functions.test_files.PopulationFunctions import *
+from Functions.helper import *
 from Functions.customExceptions import *
 from models.user import *
 from models.user_course import *
@@ -164,3 +164,5 @@ def student_csv_to_db(student_file, owner_id, course_id):
     except Exception as e:
         delete_xlsx(student_file, is_xlsx)
         raise e
+
+

@@ -1,5 +1,5 @@
-from Functions.test_files.PopulationFunctions import *
 from Functions.customExceptions import *
+from Functions.helper import *
 from models.user import *
 from models.course import *
 from models.user_course import *
@@ -81,7 +81,7 @@ def team_csv_to_db(team_file, owner_id, course_id):
                 else:
                     user = get_user(owner_id)
                     if user is None:
-                        raise UserDoesNotExist
+                        raise UserDoesNotExist()
 
                     course = get_course(course_id)
                     courses = get_courses_by_admin_id(owner_id)
@@ -91,7 +91,7 @@ def team_csv_to_db(team_file, owner_id, course_id):
                         if course is admin_course:
                             course_found = True
                     if not course_found:
-                        raise OwnerIDDidNotCreateTheCourse
+                        raise OwnerIDDidNotCreateTheCourse()
             
                 students = []
                 lower_bound = 1 if course_uses_tas == 0 else 2
@@ -103,7 +103,7 @@ def team_csv_to_db(team_file, owner_id, course_id):
                     user = get_user_by_email(student_email)
 
                     if user is None:
-                        raise UserDoesNotExist
+                        raise UserDoesNotExist()
 
                     user_id = get_user_user_id_by_email(student_email)
                     user_course = get_user_course_by_user_id_and_course_id(

@@ -14,7 +14,7 @@ arr: The list of string elements to check if missing.
 """
 def is_any_variable_in_array_missing(arr: list) -> bool:
     for var in arr:
-        if var is None or var == "" or var == "undefined":
+        if var is None or var in ["", "undefined", "None"]:
             return True
 
     return False
