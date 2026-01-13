@@ -10,6 +10,7 @@ import { genericResourceGET, parseRubricNames } from '../../utility';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks';
 import Loading from '../Loading/Loading';
 import Cookies from 'universal-cookie';
+import { Role } from '../../Enums/Role';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // StudentDashboard is used for both students and TAs.
@@ -25,7 +26,7 @@ const apiUrl = process.env.REACT_APP_API_URL;
  *  @property {Array}  assessmentTasks - All the related ATs to this course & user.
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
- *  @property {Array}  filteredCATs - All valid CATs for the course and user.
+ *  @property {Array}  filteredCATs - All valid CATs for the course and user that should be displayed in the my assignments section.
  *  @property {Array}  fullyDoneCATS - All CATs that should display in the completed assessments section only.
  *  @property {Array}  userTeamIds - Figured out user teams.
  *  @property {Array}  averageData  - Averages for all completed assessment task rubrics.
@@ -77,7 +78,7 @@ interface StudentDashboardState {
     rubrics: any;
     rubricNames: any;
     chartData: any;
-    teamsFetched?: boolean;
+    teamsFetched: boolean;
 }
 
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
@@ -101,6 +102,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames: null,
 
             chartData: null,
+            teamsFetched: false,
         }
     }
 
@@ -151,9 +153,25 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             return;
         }
 
-        const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
+        /**
+         * what do i need done by this point?
+         * - what role i am: roles["role_id"]
+         * - fetched ats: assessmentTasks
+         * - fetched cats: completedAssessments
+         * - avgdata: averageData
+         * - that I have not done any filtering logic: filteredATs === Null
+         */
 
-        if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
+        // Need to const and type define most of the filtering logic code to figure out how things get handled
+
+        const isStudent: boolean = roles.role_id === Role.Student;
+        const teamInfoReady: boolean = userTeamIds.length > 0 || this.state.teamsFetched;
+        const canFilterIndividualByTeam : boolean = isStudent && teamInfoReady;
+
+
+        // + const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
+
+        /* if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
             const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
 
             let filteredCompletedAssessments: any = [];
@@ -349,7 +367,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 rubricNames: rubricNameMap,
                 chartData,
             });
-        }
+         *///}
     }
 
     // Method to handle switching back to admin with spam protection
