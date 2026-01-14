@@ -148,52 +148,44 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames,
         } = this.state;
 
-        const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
-        if (!roles) {
-            return;
-        }
+        const canFilter: boolean = Boolean(
+            roles && 
+            assessmentTasks && 
+            completedAssessments && 
+            averageData && 
+            rubrics && 
+            (filteredATs === null)
+        );
 
-        /**
-         * what do i need done by this point?
-         * - what role i am: roles["role_id"]
-         * - fetched ats: assessmentTasks
-         * - fetched cats: completedAssessments
-         * - avgdata: averageData
-         * - that I have not done any filtering logic: filteredATs === Null
-         */
+        if (canFilter === false){return;}
 
-        // need to const and type define most of the filtering logic code to figure out how things get handled
-
-        // Students need their team info ready to correctly match student to team cat.
+        // Students need their team info ready to correctly match the student to team CATs.
         const roleId: number = roles.role_id;
         const isStudent: boolean = roleId === Role.Student;
         const teamInfoReady: boolean = userTeamIds.length > 0 || this.state.teamsFetched;
         const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
 
-        // + const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
+        if (roleId === Role.TA_Instructor || canFilterStudentByTeam) {
+            const rubricNameMap: Map<number, string> = rubricNames ?? parseRubricNames(rubrics);
+            //const rubricNameMap: any = rubricNames ?? parseRubricNames(rubrics);
 
-        if (canFilter && (roleId === Role.TA_Instructor || canFilterStudentByTeam)) {
-            //const rubricNameMap: Map<number, string> = rubricNames ?? parseRubricNames(rubrics);
-            const rubricNameMap: any = rubricNames ?? parseRubricNames(rubrics);
-
-            let filteredCompletedAssessments: any = [];
-            // let editableCats: any = [];
+            //let filteredCompletedAssessments: any = [];
+            let editableCats: any = [];
             let filteredAvgData: any = [];
-            let finishedCats: any = [];
-            // let showableDoneCats: any = [];
+            //let finishedCats: any = [];
+            let showableDoneCats: any = [];
 
-            const CATmap = new Map();
-            const AVGmap = new Map();
+            const CATmap: any = new Map();
+            const AVGmap: any = new Map();
             
-            const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean) => {
-                if (isTeamAssessment && team_id !== null) {
-                    return `${assessment_task_id}-${team_id}`;
-                }
-                return `${assessment_task_id}`;
+            const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean): string => {
+                return `${assessment_task_id}${
+                    isTeamAssessment && team_id !== null ? `-${team_id}`:''
+                }`
             };
 
             completedAssessments.forEach((cat: any) => {
-                const team_id:number|null = cat.team_id;
+                const team_id: number|null = cat.team_id;
                 
                 if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){                    
                     const at = assessmentTasks.find((task: any) => task.assessment_task_id === cat.assessment_task_id);
