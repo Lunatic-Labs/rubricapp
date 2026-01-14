@@ -162,27 +162,30 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
          * - that I have not done any filtering logic: filteredATs === Null
          */
 
-        // Need to const and type define most of the filtering logic code to figure out how things get handled
+        // need to const and type define most of the filtering logic code to figure out how things get handled
 
-        const isStudent: boolean = roles.role_id === Role.Student;
+        // Students need their team info ready to correctly match student to team cat.
+        const roleId: number = roles.role_id;
+        const isStudent: boolean = roleId === Role.Student;
         const teamInfoReady: boolean = userTeamIds.length > 0 || this.state.teamsFetched;
-        const canFilterIndividualByTeam : boolean = isStudent && teamInfoReady;
-
+        const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
 
         // + const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
 
-        /* if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
-            const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
+        if (canFilter && (roleId === Role.TA_Instructor || canFilterStudentByTeam)) {
+            //const rubricNameMap: Map<number, string> = rubricNames ?? parseRubricNames(rubrics);
+            const rubricNameMap: any = rubricNames ?? parseRubricNames(rubrics);
 
             let filteredCompletedAssessments: any = [];
+            // let editableCats: any = [];
             let filteredAvgData: any = [];
             let finishedCats: any = [];
+            // let showableDoneCats: any = [];
 
             const CATmap = new Map();
             const AVGmap = new Map();
-            const roleId = roles["role_id"];
             
-            const getCATKey = (assessment_task_id: any, team_id: any, isTeamAssessment: any) => {
+            const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean) => {
                 if (isTeamAssessment && team_id !== null) {
                     return `${assessment_task_id}-${team_id}`;
                 }
@@ -190,7 +193,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             };
 
             completedAssessments.forEach((cat: any) => {
-                const team_id = cat.team_id;
+                const team_id:number|null = cat.team_id;
                 
                 if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){                    
                     const at = assessmentTasks.find((task: any) => task.assessment_task_id === cat.assessment_task_id);
@@ -208,6 +211,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     }
                 }
             });
+
+            console.log("all cats", completedAssessments);
             
             averageData.forEach((cat: any) => { AVGmap.set(cat.assessment_task_id, cat) });
 
@@ -232,6 +237,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 const cat = CATmap.get(catKey);
                 const avg = AVGmap.get(task.assessment_task_id);
 
+                console.log("current cat:", cat);
+
                 // Qualities for if an AT is viewable.
                 const done = isATDone(cat);
                 const correctUser = roleId === task.role_id || (roleId === 5 && task.role_id === 4);
@@ -243,22 +250,41 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 const isStudentTask = task.role_id === 5;
                 const baseConditions = correctUser && !locked && published && !pastDue;
 
+                console.log([
+                    `done: ${done}`,
+                    `corrrectUser: ${correctUser}`,
+                    `locked: ${locked}`,
+                    `published: ${published}`,
+                    `pastdue: ${pastDue}`,
+                    `isStudent: ${isStudent}`,
+                    `isstudenttask: ${isStudentTask}`,
+                    `baseconditions: ${baseConditions}`,
+                ])
+
                 let viewable, CATviewable;
 
                 if (isStudent && isStudentTask) {
+                    console.log("first if");
                     viewable = !done && baseConditions;
                     CATviewable = correctUser && done;
                 } else if (isStudent) {
+                    console.log("second if");
                     viewable = baseConditions && !task.notification_sent;
                     CATviewable = (pastDue || task.notification_sent) && published && correctUser;
                 } else {
+                    console.log("third if");
                     viewable = baseConditions;
                     CATviewable = pastDue && correctUser;
                 }
 
+                console.log("viewable", viewable);
+                console.log("catviewable", CATviewable);
+
                 if (CATviewable && cat !== undefined) {
                     viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
                     filteredAvgData.push(avg);
+                } else if (viewable && cat !== undefined){
+                    filteredCompletedAssessments.push(cat);
                 }
                 return viewable;
             });
@@ -367,7 +393,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 rubricNames: rubricNameMap,
                 chartData,
             });
-         *///}
+        }
     }
 
     // Method to handle switching back to admin with spam protection
