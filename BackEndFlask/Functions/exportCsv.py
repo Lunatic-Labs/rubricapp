@@ -270,6 +270,149 @@ class Comments_Csv(Csv_Creation):
             
             self._writer.writerow(row_info) 
 
+class Aggregates_Csv(Csv_Creation):
+    """
+    Description: Creates a csv string of aggregate percentages for characteristics and improvements.
+    This exports the same data shown in the reporting graphs.
+    """
+    def __init__(self, at_id: int) -> None:
+        """
+        Parameters:
+        at_id: <class 'int'>
+        """
+        super().__init__(at_id)
+        self._category_name = None
+
+    def set_category(self, category_name: str) -> None:
+        """
+        Description: Sets the category to export aggregates for.
+        If None, exports all categories.
+
+        Parameters:
+        category_name: str (The category name to filter by, or None for all)
+        """
+        self._category_name = category_name
+
+    def _format(self) -> None:
+        """
+        Description: Formats the aggregate data in the csv string.
+        Exports percentages for observable characteristics and suggestions for improvement.
+        """
+        from models.category import get_categories_per_rubric
+        from models.observable_characteristics import get_observable_characteristic_per_category
+        from models.suggestions import get_suggestions_per_category
+        from models.completed_assessment import get_completed_assessments_by_assessment_task_id
+
+        # Get rubric_id from the first completed assessment
+        rubric_id = self._singular[Csv_Data.RUBRIC_ID.value]
+
+        # Get total students/teams for percentage calculation
+        course_id = get_course_from_at(self._at_id)
+        course_id = course_id[0] if course_id else 0
+        total = get_course_total_students(course_id, self._at_id)
+
+        if total == 0:
+            self._writer.writerow(["No students/teams found for percentage calculation"])
+            return
+
+        # Get completed assessments with the 'done' field directly from the model
+        # This matches how the frontend fetches data via /completed_assessment endpoint
+        completed_assessments = get_completed_assessments_by_assessment_task_id(self._at_id)
+
+        # Get categories for this rubric (same way the rubric route does it)
+        all_categories = get_categories_per_rubric(rubric_id)
+
+        # Build category_json structure the same way the rubric route does
+        category_json = {}
+        for index, category in enumerate(all_categories):
+            category_json[category.category_name] = {
+                "observable_characteristics": [],
+                "suggestions": [],
+                "index": index
+            }
+
+            # Get observable characteristics for this category
+            observable_characteristics = get_observable_characteristic_per_category(category.category_id)
+            for oc in observable_characteristics:
+                category_json[category.category_name]["observable_characteristics"].append(oc.observable_characteristic_text)
+
+            # Get suggestions for this category
+            suggestions = get_suggestions_per_category(category.category_id)
+            for sfi in suggestions:
+                category_json[category.category_name]["suggestions"].append(sfi.suggestion_text)
+
+        # Sort categories by index
+        categories = sorted(category_json.keys(), key=lambda x: category_json[x].get('index', 0))
+
+        # Filter to specific category if set
+        if self._category_name and self._category_name in categories:
+            categories = [self._category_name]
+
+        for category in categories:
+            category_data = category_json.get(category, {})
+            observable_characteristics = category_data.get('observable_characteristics', [])
+            suggestions = category_data.get('suggestions', [])
+
+            # Initialize counters
+            oc_counts = [0] * len(observable_characteristics)
+            sfi_counts = [0] * len(suggestions)
+            completed_count = 0
+
+            # Count occurrences from completed assessments
+            # Use the completed_assessments query which has the 'done' field directly
+            for ca in completed_assessments:
+                # Check if assessment is done (using the model's done field, not JSON)
+                if not ca.done:
+                    continue
+
+                json_data = ca.rating_observable_characteristics_suggestions_data
+                if not json_data or category not in json_data:
+                    continue
+
+                completed_count += 1
+                cat_data = json_data[category]
+
+                # Count observable characteristics
+                oc_bits = cat_data.get('observable_characteristics', '')
+                for i, bit in enumerate(oc_bits):
+                    if i < len(oc_counts) and bit == '1':
+                        oc_counts[i] += 1
+
+                # Count suggestions for improvement
+                sfi_bits = cat_data.get('suggestions', '')
+                for i, bit in enumerate(sfi_bits):
+                    if i < len(sfi_counts) and bit == '1':
+                        sfi_counts[i] += 1
+
+            # Write category header
+            self._writer.writerow([f"Category: {category}"])
+            self._writer.writerow([f"Completed Assessments: {completed_count} / {total}"])
+            self._writer.writerow([''])
+
+            # Write Observable Characteristics section
+            self._writer.writerow(["Observable Characteristics"])
+            self._writer.writerow(["Characteristic", "Count", "Percentage"])
+
+            for i, oc in enumerate(observable_characteristics):
+                count = oc_counts[i] if i < len(oc_counts) else 0
+                percentage = round((count / total) * 100, 2) if total > 0 else 0
+                self._writer.writerow([oc, count, f"{percentage}%"])
+
+            self._writer.writerow([''])
+
+            # Write Suggestions for Improvement section
+            self._writer.writerow(["Suggestions for Improvement"])
+            self._writer.writerow(["Suggestion", "Count", "Percentage"])
+
+            for i, sfi in enumerate(suggestions):
+                count = sfi_counts[i] if i < len(sfi_counts) else 0
+                percentage = round((count / total) * 100, 2) if total > 0 else 0
+                self._writer.writerow([sfi, count, f"{percentage}%"])
+
+            self._writer.writerow([''])
+            self._writer.writerow([''])
+
+
 class CSV_Type(Enum):
     """
     Description: This is the enum for the different types of csv file formats the clients have requested.
@@ -277,15 +420,17 @@ class CSV_Type(Enum):
     OCS_SFI_CSV = 0
     RATING_CSV = 1
     COMMENTS_CSV = 2
+    AGGREGATES_CSV = 3
 
-def create_csv_strings(at_id:int, type_csv:int=0) -> str:
+def create_csv_strings(at_id:int, type_csv:int=0, category_name:str=None) -> str:
     """
     Description: Creates a csv file with the data in the format specified by type_csv.
 
     Parameters:
     at_id: <class 'int'> (Desired assessment task)
     type_csv: <class 'int'> (Desired format)
-    
+    category_name: <class 'str'> (Optional category name for filtering aggregates export)
+
     Returns:
     <class 'str'>
 
@@ -302,5 +447,10 @@ def create_csv_strings(at_id:int, type_csv:int=0) -> str:
             return Ocs_Sfis_Csv(at_id).return_csv_str()
         case CSV_Type.COMMENTS_CSV:
             return Comments_Csv(at_id).return_csv_str()
+        case CSV_Type.AGGREGATES_CSV:
+            aggregates_csv = Aggregates_Csv(at_id)
+            if category_name:
+                aggregates_csv.set_category(category_name)
+            return aggregates_csv.return_csv_str()
         case _:
             return "Error in create_csv_strings()."
