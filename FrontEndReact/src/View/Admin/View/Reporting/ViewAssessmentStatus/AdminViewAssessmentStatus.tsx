@@ -16,6 +16,9 @@ interface AdminViewAssessmentStatusState {
     showSuggestions: boolean;
     completedByTAs: boolean;
     courseTotalStudents: any;
+    csvCreation: any;
+    downloadedAssessment: any;
+    chosenCategoryId: string;
 }
 
 class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatusState> {
@@ -32,8 +35,11 @@ class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatus
             rubrics: null,
             showRatings: true,
             showSuggestions: true,
-            completedByTAs: true, 
+            completedByTAs: true,
             courseTotalStudents: null,
+            csvCreation: null,
+            downloadedAssessment: null,
+            chosenCategoryId: '',
         }
 
         this.fetchData = () => {
@@ -98,6 +104,61 @@ class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatus
         if (this.props.chosenAssessmentId !== this.state.loadedAssessmentId) {
             this.fetchData();
         }
+
+        // Handle CSV download when csvCreation is populated
+        if (this.state.isLoaded && this.state.csvCreation) {
+            let fileName = this.props.navbar.state.chosenCourse['course_name'];
+
+            let assessment = this.props.assessmentTasks.find((obj: any) => obj["assessment_task_id"] === this.props.chosenAssessmentId);
+            if (assessment) {
+                const atName = assessment["assessment_task_name"].split(' ');
+                const abbreviationLetters = atName.map((word: any) => word.charAt(0).toUpperCase());
+                fileName += '-' + abbreviationLetters.join('');
+            }
+
+            fileName += '-aggregates';
+            if (this.state.chosenCategoryId) {
+                fileName += '-' + this.state.chosenCategoryId.replace(/\s+/g, '_');
+            }
+            fileName += '.csv';
+
+            const fileData = this.state.csvCreation["csv_data"];
+            const blob = new Blob([fileData], { type: 'text/csv;charset=utf-8;' });
+            const url = URL.createObjectURL(blob);
+
+            const link = document.createElement("a");
+            link.href = url;
+            link.setAttribute('download', fileName);
+            link.click();
+
+            URL.revokeObjectURL(url);
+
+            this.setState({
+                csvCreation: null
+            });
+        }
+    }
+
+    handleExportAggregates = (categoryName: string) => {
+        const promise = genericResourceGET(
+            `/csv_assessment_export?assessment_task_id=${this.state.loadedAssessmentId}&format=3&category_name=${encodeURIComponent(categoryName)}`,
+            "csv_creation",
+            this,
+            { dest: "csvCreation" }
+        );
+
+        promise.then((result: any) => {
+            if (result !== undefined && result.errorMessage === null) {
+                this.setState({
+                    downloadedAssessment: "aggregates",
+                    chosenCategoryId: categoryName,
+                });
+            }
+        }).catch(() => {
+            this.setState({
+                csvCreation: null,
+            });
+        });
     }
 
     render() {
@@ -140,6 +201,7 @@ class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatus
                         showSuggestions={showSuggestions}
                         completedByTAs={completedByTAs}
                         courseTotalStudents={courseTotalStudents}
+                        onExportAggregates={this.handleExportAggregates}
                     />
                 </div>
             )

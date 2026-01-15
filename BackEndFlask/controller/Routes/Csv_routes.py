@@ -30,14 +30,16 @@ def get_completed_assessment_csv() -> dict:
     Parameter:
     assessment_task_id: int (desired at_id)
     format: int (desired data and format for the csv)
-    
+    category_name: str (optional, for filtering aggregates export by category)
+
     Return:
     Response dictionary and possibly the file.
     """
     try:
         assessment_task_id = request.args.get("assessment_task_id")
         format = request.args.get("format")
-    
+        category_name = request.args.get("category_name")
+
         if format == None: raise ValueError("Format should be an int.")
         format = int(format)
 
@@ -47,8 +49,8 @@ def get_completed_assessment_csv() -> dict:
 
         get_user(user_id)   # Trigger an error if not exist
 
-        csv_data = create_csv_strings(assessment_task_id, format)
-        
+        csv_data = create_csv_strings(assessment_task_id, format, category_name)
+
         return create_good_response({ "csv_data": csv_data.strip() }, 200, "csv_creation")
 
     except Exception as e:
