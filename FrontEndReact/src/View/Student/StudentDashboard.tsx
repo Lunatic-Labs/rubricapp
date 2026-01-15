@@ -187,8 +187,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             completedAssessments.forEach((cat: any) => {
                 const team_id: number|null = cat.team_id;
                 
-                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){                    
-                    const at = assessmentTasks.find((task: any) => task.assessment_task_id === cat.assessment_task_id);
+                if (roleId === Role.TA_Instructor || team_id === null || userTeamIds.includes(team_id)){                    
+                    const at: any = assessmentTasks.find((task: any) => task.assessment_task_id === cat.assessment_task_id);
                     const isTeamAssessment = at?.unit_of_assessment === true;                    
 
                     const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
