@@ -4,6 +4,11 @@ import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import { genericResourcePOST } from '../../../../utility.js';
 
+interface ViewAssessmentTaskInstructionsProps {
+    navbar: any;
+    rubrics: any;
+}
+
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {
         super(props);

@@ -5,6 +5,11 @@ import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 
+interface ViewCompletedAssessmentTasksProps {
+    navbar: any;
+    assessmentTasks: any[];
+    completedAssessments: any[];
+}
 
 /**
  * @description Column logic.
@@ -14,6 +19,8 @@ import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utilit
  * @prop {object} filteredCompleteAssessments - Filtered CATs.
  * 
  */
+
+
 
 class ViewCompletedAssessmentTasks extends Component {
     render() {
