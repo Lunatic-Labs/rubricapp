@@ -86,17 +86,29 @@ class AdminAddCourse extends Component {
             }
         }
 
+        //Define max lengths for course fields
+        const maxLengths = {
+            courseName: 50,
+            courseNumber: 20,
+            term: 20,
+        };
+
+        //Check for Validation
+        let errorMessage = "";
+        if (value.trim() === "") {
+            errorMessage = `${formatString} cannot be empty`;
+        } else if (maxLengths[id] && value.length > maxLengths[id]) {
+            errorMessage = `${formatString} cannot exceed ${maxLengths[id]} characters`;
+        }
+
+
         this.setState({
             [id]: value,
 
             errors: {
                 ...this.state.errors,
 
-                [id]:
-
-                    value.trim() === ""
-                        ? `${formatString} cannot be empty`
-                        : "",
+                [id]: errorMessage,
             },
         });
     };
@@ -140,31 +152,39 @@ class AdminAddCourse extends Component {
             "term": ""
         };
 
+//Course Name Validation
         if (courseName.trim() === "")
             newErrors["courseName"] = "Course Name cannot be empty";
+        else if (courseName.length > 50)
+            newErrors["courseName"] = "Course Name cannot exceed 50 characters";
 
+        //Course Number Validation
         if (courseNumber.trim() === "")
             newErrors["courseNumber"] = "Course Number cannot be empty";
+        else if (courseNumber.length > 20)
+            newErrors["courseNumber"] = "Course Number cannot exceed 20 characters";
 
+        //Year Validation
         if (year.trim() === "")
             newErrors["year"] = "Year cannot be empty";
-
         else if (parseInt(year) < 2023)
             newErrors["year"] = "Year should be at least 2023 or later";
-
         else if (typeof(year) === "string" && !validator.isNumeric(year))
             newErrors["year"] = "Year must be a numeric value";
 
+        //Term Validation
         if (term.trim() === "")
             newErrors["term"] = "Term cannot be empty";
+        else if (term.length > 20)
+            newErrors["term"] = "Term cannot exceed 20 characters";
 
-        if (newErrors["courseName"] !== "" || newErrors["courseNumber"] !== "" ||newErrors["year"] !== "" ||newErrors["term"] !== "") {
+       if (Object.values(newErrors).some(error => error !== "")) {
             this.setState({
                 errors: newErrors
             });
-
             return;
         }
+
 
         var cookies = new Cookies();
 
@@ -257,6 +277,7 @@ class AdminAddCourse extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        inputProps={{ maxLength: 50 }}
                                         aria-label="courseNameInput"
                                     />
 
@@ -272,6 +293,7 @@ class AdminAddCourse extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        inputProps={{ maxLength: 20 }}
                                         aria-label="courseNumberInput"
                                     />
 
@@ -287,6 +309,7 @@ class AdminAddCourse extends Component {
                                         onChange={this.handleChange}
                                         required
                                         sx={{ mb: 3 }}
+                                        inputProps={{ maxLength: 20 }}
                                         aria-label="courseTermInput"
                                     />
                     

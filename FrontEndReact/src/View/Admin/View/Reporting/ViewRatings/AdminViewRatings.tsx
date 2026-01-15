@@ -218,6 +218,7 @@ class AdminViewRatings extends Component {
                   <span>
                     <Button
                       variant='contained'
+                      disabled={!this.props.assessmentTasks || this.props.assessmentTasks.length === 0}
                       onClick={()=>{this.handleCsvDownloads(0)}}
                     >
                       Export SFIS & OCS
@@ -227,6 +228,7 @@ class AdminViewRatings extends Component {
                 
                 <Button
                   variant='contained'
+                  disabled={!this.props.assessmentTasks || this.props.assessmentTasks.length === 0}
                   onClick={()=>{this.handleCsvDownloads(1)}}
                 >
                   Export Ratings
@@ -234,6 +236,7 @@ class AdminViewRatings extends Component {
 
                 <Button
                   variant='contained'
+                  disabled={!this.props.assessmentTasks || this.props.assessmentTasks.length === 0}
                   onClick={()=>{this.handleCsvDownloads(2)}}
                 >
                   Export Comments

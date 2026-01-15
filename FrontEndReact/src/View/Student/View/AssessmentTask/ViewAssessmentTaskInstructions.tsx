@@ -17,6 +17,7 @@ class ViewAssessmentTaskInstructions extends Component {
             categories: this.props.rubrics["category_json"],
             instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
             skipInstructions: this.props.navbar.state.skipInstructions,
+            errorMessage: null
         }
     }
 
@@ -79,6 +80,9 @@ class ViewAssessmentTaskInstructions extends Component {
 
         return (
             <>
+                {this.state.errorMessage && (
+                    <ErrorMessage errorMessage={this.state.errorMessage} />
+                )}
                 <h2
                     style={{
                         textAlign: "start",

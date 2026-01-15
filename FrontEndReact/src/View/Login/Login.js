@@ -22,9 +22,10 @@ class Login extends Component {
             loggedIn: null,
             hasSetPassword: null,
             resettingPassword: null,
+            isRefreshing: false,
             email: '',
             password: '',
-            showPassword:'',
+            showPassword: false,
 
             errors: {
                 email: '',
@@ -36,11 +37,11 @@ class Login extends Component {
             const { id, value } = e.target;
 
             this.setState({
-              [id]: value,
-              errors: {
-                ...this.state.errors,
-                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
-              },
+                [id]: value,
+                errors: {
+                    ...this.state.errors,
+                    [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
+                },
             });
         };
 
@@ -83,54 +84,65 @@ class Login extends Component {
                         }),
                     }
                 )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        const cookies = new Cookies();
+                    .then(res => res.json())
+                    .then(
+                        (result) => {
+                            if (result["success"]) {
+                                this.cookies.set('access_token', result['headers']['access_token'], { sameSite: 'strict' });
+                                this.cookies.set('refresh_token', result['headers']['refresh_token'], { sameSite: 'strict' });
+                                this.cookies.set('user', result['content']['login'][0], { sameSite: 'strict' });
 
-                        if(result["success"]) {
-                            cookies.set('access_token', result['headers']['access_token'], {sameSite: 'strict'});
-                            cookies.set('refresh_token', result['headers']['refresh_token'], {sameSite: 'strict'});
-                            cookies.set('user', result['content']['login'][0], {sameSite: 'strict'});
+                                this.setState(() => ({
+                                    isLoaded: true,
+                                    loggedIn: true,
+                                    hasSetPassword: result['content']['login'][0]['has_set_password']
+                                }));
+
+                            } else {
+                                this.cookies.remove('access_token');
+                                this.cookies.remove('refresh_token');
+                                this.cookies.remove('user');
+
+                                this.setState(() => ({
+                                    isLoaded: true,
+                                    errorMessage: result["message"]
+                                }));
+                            }
+                        },
+                        (error) => {
+                            this.cookies.remove('access_token');
+                            this.cookies.remove('refresh_token');
+                            this.cookies.remove('user');
 
                             this.setState(() => ({
                                 isLoaded: true,
-                                loggedIn: true,
-                                hasSetPassword: result['content']['login'][0]['has_set_password']
-                            }));
-
-                        } else {
-                            cookies.remove('access_token');
-                            cookies.remove('refresh_token');
-                            cookies.remove('user');
-
-                            this.setState(() => ({
-                                isLoaded: true,
-                                errorMessage: result["message"]
+                                errorMessage: error
                             }));
                         }
-                    },
-                    (error) => {
-                        const cookies = new Cookies();
-
-                        cookies.remove('access_token');
-                        cookies.remove('refresh_token');
-                        cookies.remove('user');
-
-                        this.setState(() => ({
-                            isLoaded: true,
-                            errorMessage: error
-                        }));
-                    }
-                )
+                    )
             }
         };
 
         this.handleNewAccessToken = () => {
-            const cookies = new Cookies();
+            const refreshToken = this.cookies.get('refresh_token');
+            const user = this.cookies.get('user');
 
-            const refreshToken = cookies.get('refresh_token');
-            const userId = cookies.get('user')["user_id"];
+            // Check if we have the necessary data
+            if (!refreshToken || !user || !user["user_id"]) {
+                this.cookies.remove('access_token');
+                this.cookies.remove('refresh_token');
+                this.cookies.remove('user');
+
+                this.setState({
+                    isLoaded: true,
+                    loggedIn: false,
+                    isRefreshing: false,
+                    errorMessage: "Session expired. Please log in again."
+                });
+                return;
+            }
+
+            const userId = user["user_id"];
 
             fetch(
                 apiUrl + `/refresh?user_id=${userId}`,
@@ -141,39 +153,42 @@ class Login extends Component {
                     }
                 }
             )
-            .then(res => res.json())
-            .then(
-                (result) => {
+                .then(res => res.json())
+                .then(
+                    (result) => {
+                        if (result["success"]) {
+                            this.cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
 
-                    if(result["success"]) {
-                        cookies.set('access_token', result['headers']['access_token'], {'sameSite': 'strict'});
+                            this.setState({
+                                loggedIn: null,
+                                isRefreshing: false
+                            });
+                        } else {
+                            this.cookies.remove('access_token');
+                            this.cookies.remove('refresh_token');
+                            this.cookies.remove('user');
+
+                            this.setState({
+                                isLoaded: true,
+                                loggedIn: false,
+                                isRefreshing: false,
+                                errorMessage: "Session expired. Please log in again."
+                            });
+                        }
+                    },
+                    (error) => {
+                        this.cookies.remove('user');
+                        this.cookies.remove('access_token');
+                        this.cookies.remove('refresh_token');
 
                         this.setState({
-                            loggedIn: null
-                        });
-                    } else {
-                        cookies.remove('access_token');
-                        cookies.remove('refresh_token');
-                        cookies.remove('user');
-
-                        this.setState(() => ({
                             isLoaded: true,
-                            errorMessage: result["message"]
-                        }));
+                            loggedIn: false,
+                            isRefreshing: false,
+                            errorMessage: "Session expired. Please log in again.",
+                        });
                     }
-                },
-                (error) => {
-                    cookies.remove('user');
-                    cookies.remove('access_token');
-                    cookies.remove('refresh_token');
-
-                    this.setState(() => ({
-                        isLoaded: true,
-                        errorMessage: error
-                    }));
-
-                }
-            )
+                )
         }
 
         this.resetPassword = () => {
@@ -199,6 +214,49 @@ class Login extends Component {
         }
     }
 
+    componentDidMount() {
+        this.cookies = new Cookies();
+        this.checkAuthStatus();
+    }
+
+    checkAuthStatus = () => {
+        const hasAccessToken = !!this.cookies.get('access_token');
+        const hasRefreshToken = !!this.cookies.get('refresh_token');
+        const hasUser = !!this.cookies.get('user');
+
+        // No tokens - show login
+        if (!hasAccessToken && !hasRefreshToken && !hasUser) {
+            return;
+        }
+
+        // Has refresh token but no access token - try to refresh
+        if (!hasAccessToken && hasRefreshToken && hasUser && !this.state.isRefreshing) {
+            this.setState({ isRefreshing: true });
+            this.handleNewAccessToken();
+            return;
+        }
+
+        // Inconsistent state - clear everything
+        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken)) {
+            this.cookies.remove('access_token');
+            this.cookies.remove('refresh_token');
+            this.cookies.remove('user');
+
+            this.setState({
+                isLoaded: true,
+                loggedIn: false,
+                isRefreshing: false,
+                errorMessage: "Session expired. Please log in again."
+            });
+            return;
+        }
+
+        // Has both tokens - user is logged in
+        if (hasAccessToken && hasRefreshToken) {
+            this.setState({ loggedIn: true });
+        }
+    }
+
     render() {
         const {
             isLoaded,
@@ -206,31 +264,36 @@ class Login extends Component {
             loggedIn,
             hasSetPassword,
             resettingPassword,
+            isRefreshing,
             email,
             password,
             showPassword,
             errors
         } = this.state;
 
-        const cookies = new Cookies();
-
-        if (resettingPassword){
-            return (<ValidateReset/>)
+        // Handle password reset flow
+        if (resettingPassword) {
+            return (<ValidateReset />)
         }
 
-        else if(!loggedIn && (!cookies.get('access_token') && !cookies.get('refresh_token') && !cookies.get('user'))) {
-            return(
+        // Loading while checking auth or refreshing token
+        if (isRefreshing) {
+            return (<Loading />)
+        }
+
+        // Show login page if not logged in
+        if (!loggedIn) {
+            return (
                 <>
-                    { isLoaded && errorMessage &&
+                    {isLoaded && errorMessage &&
                         <>
-                            {/* A response has been received and an error occurred */}
                             <Box>
                                 <ErrorMessage errorMessage={errorMessage} />
                             </Box>
                         </>
                     }
 
-                    <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
+                    <Box sx={{ justifyContent: "center", minHeight: "100vh", width: "100%" }} className="card-spacing">
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
@@ -240,17 +303,17 @@ class Login extends Component {
                                                 color: "#2E8BEF",
                                                 fontFeatureSettings: "'clig' off, 'liga' off",
                                                 fontFamily: "Roboto",
-                                                fontSize: {xs:"24px", md:"30px"},
+                                                fontSize: { xs: "24px", md: "30px" },
                                                 fontStyle: "normal",
                                                 fontWeight: "500",
                                                 lineHeight: "160%",
                                                 letterSpacing: "0.15px",
-                                                textAlign:"center"
+                                                textAlign: "center"
                                             }}
                                         >
                                             SkillBuilder
                                         </Typography>
-            
+
                                         <Box>
                                             <TextField
                                                 margin="normal"
@@ -286,24 +349,24 @@ class Login extends Component {
                                                 aria-label="passwordInput"
                                                 InputProps={{
                                                     endAdornment: (
-                                                      <InputAdornment position="end">
-                                                        <IconButton
-                                                          aria-label="toggle password visibility"
-                                                          onClick={this.handleTogglePasswordVisibility}
-                                                          edge="end"
-                                                        >
-                                                          {showPassword ? <VisibilityOff /> : <Visibility />}
-                                                        </IconButton>
-                                                      </InputAdornment>
+                                                        <InputAdornment position="end">
+                                                            <IconButton
+                                                                aria-label="toggle password visibility"
+                                                                onClick={this.handleTogglePasswordVisibility}
+                                                                edge="end"
+                                                            >
+                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                            </IconButton>
+                                                        </InputAdornment>
                                                     ),
                                                 }}
                                             />
 
-                                            <Grid sx={{textAlign:'right', mb:1}}>
+                                            <Grid sx={{ textAlign: 'right', mb: 1 }}>
                                                 <Grid>
                                                     <Link
-                                                        href= "#"
-                                                        sx={{color: "#2E8BEF"}}
+                                                        href="#"
+                                                        sx={{ color: "#2E8BEF" }}
                                                         onClick={this.resetPassword}
                                                         aria-label='resetPasswordButton'
                                                     >
@@ -333,34 +396,24 @@ class Login extends Component {
             )
         }
 
-        else if (!loggedIn && (!cookies.get('access_token') && cookies.get('refresh_token') && cookies.get('user'))) {
-            this.handleNewAccessToken();
-
-            return(
-                <Loading />
+        // User is authenticated
+        if (hasSetPassword === false) {
+            return (
+                <SetNewPassword
+                    email={email}
+                />
             )
         }
 
-        else {
-            if (hasSetPassword === false) {
-                return(
-                    <SetNewPassword
-                        email={email}
-                    />
-                )
-            }
-
-            else {
-                return(
-                    <AppState
-                        userName={cookies.get('user')['user_name']}
-                        isSuperAdmin={cookies.get('user')['isSuperAdmin']}
-                        isAdmin={cookies.get('user')['isAdmin']}
-                        logout={this.logout}
-                    />
-                )
-            }
-        }
+        // User logged in and has set password
+        return (
+            <AppState
+                userName={this.cookies.get('user')['user_name']}
+                isSuperAdmin={this.cookies.get('user')['isSuperAdmin']}
+                isAdmin={this.cookies.get('user')['isAdmin']}
+                logout={this.logout}
+            />
+        )
     }
 }
 

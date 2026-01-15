@@ -3,17 +3,24 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
-
-
 export default function BasicTabs (props){
   var navbar = props.navbar;
   var state = navbar.state;
   var activeTab = state.activeTab;
   var setNewTab = navbar.setNewTab;
+  var useFixedTeams = state.chosenCourse?.use_fixed_teams === "Yes" || state.chosenCourse?.use_fixed_teams === true;
 
-  var idTab = activeTab==="Users"? 0 : (activeTab==="Teams" ? 1 : (activeTab==="AssessmentTasks") ? 2 : 0);
+
+  var idTab = activeTab === "Users" ? 0 : 
+            (activeTab === "Teams" && useFixedTeams ? 1 : 
+            (activeTab === "AssessmentTasks" ? (useFixedTeams ? 2 : 1) : 
+            (activeTab === "Reporting" ? (useFixedTeams ? 3 : 2) : 0)));
 
   const [value, setValue] = React.useState(idTab);
+
+  React.useEffect(() => {
+    setValue(idTab);
+  }, [activeTab, useFixedTeams, idTab]);
 
   const handleChange = (event, newValue) => {
     setValue(newValue);
@@ -32,6 +39,7 @@ export default function BasicTabs (props){
             aria-label="rosterTab"
           />
 
+        {useFixedTeams && 
           <Tab
             onClick={() => {
               setNewTab("Teams");
@@ -40,6 +48,7 @@ export default function BasicTabs (props){
             label="Teams"
             aria-label="teamsTab"
           />
+        }  
 
           <Tab
             onClick={() => {

@@ -1,59 +1,53 @@
 import pytest
-import os
-import pymysql
-from core import app
+from urllib.parse import quote_plus
+from core import app, db
+from urllib.parse import quote_plus
 from Functions.test_files.PopulationFunctions import *
 from sqlalchemy.orm.session import close_all_sessions
 from models.role import *
+from sqlalchemy import create_engine, text
+from core import config
+from dotenv import load_dotenv
+import os
+
+load_dotenv()  
 
 @pytest.fixture
 def flask_app_mock():
     mock_app = app
 
-    MYSQL_HOST=os.getenv('MYSQL_HOST')
+    # Disable email sending in tests
+    config.rubricapp_running_locally = True
+  
+    MYSQL_PASSWORD_ENC = quote_plus(os.getenv('MYSQL_PASSWORD'))
+    base_uri = f"mysql+pymysql://{os.getenv('MYSQL_USER')}:{MYSQL_PASSWORD_ENC}@{os.getenv('MYSQL_HOST')}"
+    engine = create_engine(base_uri)
 
-    MYSQL_USER="root"
+    # Create database safely
+    with engine.connect() as conn:
+        conn.execute(text(f"CREATE DATABASE IF NOT EXISTS `{os.getenv('MYSQL_DATABASE')}`"))
 
-    MYSQL_PASSWORD="rootpassword"
-
-    MYSQL_DATABASE="TestDB"
-
-    connection = pymysql.connect(
-        host=MYSQL_HOST,
-        user=MYSQL_USER,
-        password=MYSQL_PASSWORD
-    )
-
-    # Make temp db
-    with connection.cursor() as cursor:
-        cursor.execute(f"CREATE DATABASE {MYSQL_DATABASE}")
-    connection.commit()
-    connection.close()
-
-    db_uri = (f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}")
-
+    # Configure Flask app to use the test database
+    db_uri = f"{base_uri}/{os.getenv('MYSQL_DATABASE')}"
     mock_app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
+
     with mock_app.app_context():
         db.create_all()
-        if(get_users().__len__()==0):
+        if len(get_users()) == 0:
             load_SuperAdminUser()
-        if(get_roles().__len__()==0):
+        if len(get_roles()) == 0:
             load_existing_roles()
+
+
     mock_app.db = db
     yield mock_app
 
-    connection = pymysql.connect(
-            host=MYSQL_HOST,
-            user=MYSQL_USER,
-            password=MYSQL_PASSWORD
-        )
-    with connection.cursor() as cursor:
-        cursor.execute(f"DROP DATABASE IF EXISTS `{MYSQL_DATABASE}`")
-    connection.commit()
-    connection.close()
+    # Drop the database after test
+    with engine.connect() as conn:
+        conn.execute(text(f"DROP DATABASE IF EXISTS `{os.getenv('MYSQL_DATABASE')}`"))
 
-    with mock_app.app_context():
+    with app.app_context():
         db.session.close()
-        engine_container = db.engine
-        engine_container.dispose()
+        db.engine.dispose()
     close_all_sessions()
+

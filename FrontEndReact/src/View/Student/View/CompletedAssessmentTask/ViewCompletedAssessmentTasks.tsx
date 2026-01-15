@@ -16,7 +16,7 @@ interface ViewCompletedAssessmentTasksProps {
  * 
  * @prop {object} navbar - Passed navbar.
  * @prop {object} assessmentTasks - ATs. Note we need the original ATs to load the rest of the columns.
- * @prop {object} filteredCompleteAssessments - Filtered CATs.
+ * @prop {object} completedAssessments - Filtered CATs.
  * 
  */
 

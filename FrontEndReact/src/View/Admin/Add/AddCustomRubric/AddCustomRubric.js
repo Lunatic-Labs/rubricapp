@@ -9,6 +9,7 @@ import CustomDataTable from "../../../Components/CustomDataTable.js";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable.js";
 import ImageModal from "./CustomRubricModal.js";
 import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
+import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
 import Loading from '../../../Loading/Loading.js';
 import FormHelperText from '@mui/material/FormHelperText';
 
@@ -113,14 +114,36 @@ class AddCustomRubric extends React.Component {
                 }
             });
         };
-        
-        this.handleDeleteRubric = (rubricId) => {
-            var navbar = this.props.navbar;
 
-            genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
+        this.handleDeleteRubric = async (rubricId) => {
+            try {
+                const result = await genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
+                if (result && result.errorMessage) {
+                throw new Error(result.errorMessage);
+                }
 
-            navbar.confirmCreateResource("MyCustomRubrics");
-        };
+                // Success: behave like your current flow (navigate back / reload list)
+                this.props.navbar.confirmCreateResource("MyCustomRubrics");
+            } catch (error) {
+                // Prefer backend message if present; otherwise use the exact copy you asked for.
+                const errorMessage = "An error occurred: Cannot delete custom rubric with associated tasks.";
+
+                window.alert(errorMessage);
+
+                // Bubble to parent like ViewUsers does so the inline <ErrorMessage/> shows and clears.
+                if (typeof this.props.onError === "function") {
+                this.props.onError(errorMessage);
+                }
+
+                // Refresh data after a short delay (same pattern used in ViewUsers).
+                setTimeout(() => {
+                if (typeof this.props.refreshData === "function") {
+                    this.props.refreshData();
+                }
+                }, 1000);
+            }
+            };
+
     }
 
     handleCategorySelect = (categoryId, isSelected) => {
@@ -352,6 +375,7 @@ class AddCustomRubric extends React.Component {
                             isOpen={isHelpOpen}
                             handleClose={this.toggleHelp}
                             imageUrl={RubricDescriptionsImage}
+                            imageUrl2={RubricDescriptionsImage2}
                         />
                     </Grid>
                 </div>
