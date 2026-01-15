@@ -5,6 +5,12 @@ import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 
+interface ViewCompletedAssessmentTasksProps {
+    navbar: any;
+    assessmentTasks: any[];
+    completedAssessments: any[];
+}
+
 /**
  * @description
  * Defines the columns and behavior for the "Completed Assessments" table.

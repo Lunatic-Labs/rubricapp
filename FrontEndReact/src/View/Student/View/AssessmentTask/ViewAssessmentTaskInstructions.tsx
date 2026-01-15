@@ -5,6 +5,11 @@ import {genericResourcePOST} from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 
+interface ViewAssessmentTaskInstructionsProps {
+    navbar: any;
+    rubrics: any;
+}
+
 /**
  * @description
  * Displays the assessment task instructions and rubric summary for a student

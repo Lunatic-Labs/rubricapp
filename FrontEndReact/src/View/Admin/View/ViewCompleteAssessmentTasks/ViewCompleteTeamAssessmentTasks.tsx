@@ -12,6 +12,19 @@ import CourseInfo from "../../../Components/CourseInfo";
 import { getHumanReadableDueDate } from "../../../../utility";
 import { Tooltip } from '@mui/material';
 
+interface ViewCompleteTeamAssessmentTasksState {
+    errorMessage: any;
+    isLoaded: any;
+    showDialog: boolean;
+    notes: string;
+    notificationSent: any;
+    isSingleMsg: boolean;
+    compATId: any;
+    errors: {
+        notes: string;
+    };
+}
+
 class ViewCompleteTeamAssessmentTasks extends Component { // Displays table of completed team-based rubrics with notifications capabilities
     constructor(props) {
         super(props);
