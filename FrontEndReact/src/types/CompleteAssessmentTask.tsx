@@ -3,7 +3,7 @@ import { ISODateString } from "./StringLables"
 /**
  * Represents a completed assessment task object typically returned from the backend.
  */
-export interface CompletedAssessment{
+export interface CompleteAssessmentTask{
     /** Related assessment task ID. */
     assessment_task_id: number
     /** Related assessment task name. */
@@ -33,4 +33,4 @@ export interface CompletedAssessment{
 /*
  * A version of CompletedAssessment where all fields are optional.
  */
-export type PartialCompletedAssessment = Partial<CompletedAssessment>;
+export type PartialCompleteAssessmentTask = Partial<CompleteAssessmentTask>;

@@ -11,6 +11,8 @@ import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/Stud
 import Loading from '../Loading/Loading';
 import Cookies from 'universal-cookie';
 import { Role } from '../../Enums/Role';
+import { AssessmentTask } from '../../types/AssessmentTask';
+import { CompleteAssessmentTask } from '../../types/CompleteAssessmentTask';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // StudentDashboard is used for both students and TAs.
@@ -170,13 +172,13 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             //const rubricNameMap: any = rubricNames ?? parseRubricNames(rubrics);
 
             //let filteredCompletedAssessments: any = [];
-            let editableCats: any = [];
-            let filteredAvgData: any = [];
+            let editableCats: CompleteAssessmentTask[] = [];
+            let filteredAvgData: any = [];// Figure out its typing 
             //let finishedCats: any = [];
-            let showableDoneCats: any = [];
+            let showableDoneCats: CompleteAssessmentTask[] = [];
 
-            const CATmap: any = new Map();
-            const AVGmap: any = new Map();
+            const CATmap: Map<string, CompleteAssessmentTask> = new Map();
+            const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
             
             const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean): string => {
                 return `${assessment_task_id}${
@@ -184,17 +186,17 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 }`
             };
 
-            completedAssessments.forEach((cat: any) => {
+            completedAssessments.forEach((cat: CompleteAssessmentTask) => {
                 const team_id: number|null = cat.team_id;
                 
                 if (roleId === Role.TA_Instructor || team_id === null || userTeamIds.includes(team_id)){                    
-                    const at: any = assessmentTasks.find((task: any) => task.assessment_task_id === cat.assessment_task_id);
-                    const isTeamAssessment = at?.unit_of_assessment === true;                    
+                    const at: AssessmentTask | undefined = assessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
+                    const isTeamAssessment: boolean = at?.unit_of_assessment === true;                    
 
-                    const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
-                    const existing = CATmap.get(key);
+                    const key: string = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
+                    const existing: CompleteAssessmentTask | undefined = CATmap.get(key);
         
-                    const shouldReplace = !existing ||
+                    const shouldReplace: boolean = !existing ||
                         (cat.done && !existing.done) ||
                         (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
                                 
@@ -203,16 +205,14 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     }
                 }
             });
-
-            console.log("all cats", completedAssessments);
             
-            averageData.forEach((cat: any) => { AVGmap.set(cat.assessment_task_id, cat) });
+            averageData.forEach((cat: CompleteAssessmentTask) => { AVGmap.set(cat.assessment_task_id, cat) });
 
-            const currentDate = new Date();
-            const isATDone = (cat: any) => cat !== undefined && cat.done;
-            const isATPastDue = (at: any, today: any) => (new Date(at.due_date)) < today; 
+            const currentDate: Date = new Date();
+            const isATDone = (cat: CompleteAssessmentTask | undefined) : boolean => cat !== undefined && cat.done;
+            const isATPastDue = (at: AssessmentTask, today: Date): boolean => (new Date(at.due_date)) < today; 
 
-            let filteredAssessmentTasks = assessmentTasks.filter((task: any) => {
+            let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks.filter((task: AssessmentTask) => {
                 
                 const isTeamAssessment = task.unit_of_assessment === true;
                 let relevantTeamId = null;

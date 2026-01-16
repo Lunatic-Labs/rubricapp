@@ -36,7 +36,7 @@ export interface AssessmentTask {
     show_suggestions: boolean
     /** Time zone of the assessment task. */
     time_zone: string
-    /** Team or individual type of assessment. */
+    /** Team or individual type of assessment. True means that it is a team assessment. */
     unit_of_assessment: boolean
 };
 
