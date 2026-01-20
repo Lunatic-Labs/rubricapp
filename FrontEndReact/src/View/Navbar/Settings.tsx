@@ -24,7 +24,9 @@ interface SettingsState {
   darkMode: boolean;
 }
 
-interface SettingsProps {}
+interface SettingsProps {
+  navbar?: any;
+}
 
 class Settings extends Component<SettingsProps, SettingsState> {
   constructor(props: SettingsProps) {

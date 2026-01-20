@@ -34,6 +34,8 @@ import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCus
 import UserAccount from './UserAccount';
 import PrivacyPolicy from './PrivacyPolicy';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
+import Settings from './Settings';
+import { genericResourceGET } from "../../utility";
 
 
 interface AppStateProps {
@@ -141,7 +143,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
             addCustomRubric: null,
             jumpToSection: null,
 
-            darkmode: false,
+            isLoaded: null,
+            darkMode: false,
         }
 
         this.setNewTab = (newTab: any) => {
@@ -576,8 +579,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
         // if darkmode is not saved in cookies, the API will be called to check
         // the backend if the user has darkmode preferance set to 'true'
         if (user !== null) {
-            let promise;            // promise is used because we do not yet have the 'data' from the backend
-            let userData;           // promise tells the app that it will recieve data
+            let promise: Promise<any>;            // promise is used because we do not yet have the 'data' from the backend
+            let userData: any;           // promise tells the app that it will recieve data
 
             // get all the neccessary resources from the backend, the 'user' from the 'users' array.
             promise = genericResourceGET(
