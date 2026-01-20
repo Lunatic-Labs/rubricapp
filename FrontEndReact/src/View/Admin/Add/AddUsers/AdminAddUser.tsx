@@ -11,31 +11,8 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 const MAX_LMS_ID_LENGTH = 10;
 
-interface AdminAddUserState {
-    errorMessage: string | null;
-    validMessage: string;
-    editUser: boolean;
-    showDialog: boolean;
-    mode: string;
-    firstName: string;
-    lastName: string;
-    email: string;
-    originalEmail: string;
-    role: string;
-    lmsId: string;
-    errors: {
-        firstName: string;
-        lastName: string;
-        email: string;
-        role: string;
-        lmsId: string;
-    };
-}
-
-class AdminAddUser extends Component<any, AdminAddUserState> {
-    deleteUser: any;
-    unenrollUser: any;
-    constructor(props: any) {
+class AdminAddUser extends Component {
+    constructor(props) {
         super(props);
 
     this.state = {
@@ -67,10 +44,10 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
             genericResourcePUT(
                 `/user?uid=${navbar.state.user["user_id"]}&course_id=${navbar.state.chosenCourse["course_id"]}&unenroll_user=${true}`,
                 this,
-                JSON.stringify({
+                {
                     userId: navbar.state.user["user_id"],
                     courseId: navbar.state.chosenCourse["course_id"]
-                })
+                }
             ).then(result => {
                 if (result !== undefined && result.errorMessage === null) {
                 navbar.confirmCreateResource("User");
@@ -127,22 +104,21 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
         })
     }
 
-    // handleChange has been altered to account for the 50 character limit for first / last names
-    handleChange = (e: any) => {
+   
+    handleChange = (e) => {
         const { id, value } = e.target;
       
         // Special case: email with inline validation
         if (id === 'email') {
-          this.setState((prev: any) => ({
-              email: value,
-
-              errors: {
-                ...prev.errors,
-                email:
-                  value.trim() === '' ? 'Email cannot be empty'
-                  : validator.isEmail(value) ? ''
-                  : 'Please enter a valid email address',
-              }
+          this.setState(prev => ({
+            email: value,
+            errors: {
+              ...prev.errors,
+              email:
+                value.trim() === '' ? 'Email cannot be empty'
+                : validator.isEmail(value) ? ''
+                : 'Please enter a valid email address',
+            },
           }));
           return;
         }
@@ -150,35 +126,36 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
         // Build a readable field label (e.g., "firstName" -> "First name")
         let formatString = "";
         for (let i = 0; i < id.length; i++) {
-            if (i === 0) {
-                formatString += id.charAt(0).toUpperCase();
-            } else if (id.charAt(i) === id.charAt(i).toUpperCase()) {
-                formatString += (" " + id.charAt(i).toLowerCase()); 
-            } else {
-                formatString += id.charAt(i);
-            }
+          if (i === 0) formatString += id.charAt(0).toUpperCase();
+          else if (id.charAt(i) === id.charAt(i).toUpperCase())
+            formatString += (" " + id.charAt(i).toLowerCase());
+          else formatString += id.charAt(i);
         }
-
-        // This will create an error message if first_name or last_name is empty and/or exceeding
-        // the 50 character limit
-        let errorMessage = '';
-        if (value.trim() === '') {
-            errorMessage = `${formatString} cannot be empty`;
-        } else if ((id === 'firstName' || id === 'lastName') && value.length > 50) {
-            errorMessage = `${formatString} cannot exceed 50 characters`;
-        }
-
-        if (id === 'email') {
-          let emailError = '';
-          if (value.trim() === '') {
-            emailError = 'Email cannot be empty';
-          } else if (!validator.isEmail(value)) {
-            emailError = 'Please enter a valid email address';
+      
+        // LMS ID: digits only + max length
+        if (id === 'lmsId') {
+          if (/[^0-9]/.test(value)) {
+            this.setState({
+              errors: {
+                ...this.state.errors,
+                [id]: 'LMS ID can only contain numbers. Letters and special characters are not allowed.'
+              }
+            });
+            return; // don’t update value
           }
+      
+          if (typeof MAX_LMS_ID_LENGTH === 'number' && value.length > MAX_LMS_ID_LENGTH) {
+            this.setState({
+              errors: { ...this.state.errors, [id]: `Max ${MAX_LMS_ID_LENGTH} digits.` }
+            });
+            return; // don’t update value
+          }
+      
+          const atMax = typeof MAX_LMS_ID_LENGTH === 'number' && value.length === MAX_LMS_ID_LENGTH;
           this.setState({
             [id]: value,
-            errors: { ...this.state.errors, [id]: emailError }
-          } as any);
+            errors: { ...this.state.errors, [id]: atMax ? `Max ${MAX_LMS_ID_LENGTH} digits reached.` : '' }
+          });
           return;
         }
       
@@ -186,24 +163,21 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
         // other fields
         this.setState({
           [id]: value,
-          errors: {
-            ...this.state.errors,
-            [id]: errorMessage,
-          },
-        } as any);
+          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
+        });
       };
 
+    
+    
 
 
-
-
-    handleSelect = (event: any) => {
+    handleSelect = (event) => {
         this.setState({
             role: event.target.value
         });
       };
 
-    // handleSubmit has been altered to account for the 50 character limit on first / last name
+      
     handleSubmit = () => {
         const {
             firstName,
@@ -236,20 +210,14 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
             "firstName": "",
             "lastName": "",
             "email": "",
-            "role": "",
-            "lmsId": ""
+            "role": ""
         };
 
-        // validation checks have been altered
         if (firstName.trim() === '')
-            newErrors["firstName"] = "First name cannot be empty";              // this is an error check to see if first_name is not empty
-        else if (firstName.length > 50)
-            newErrors["firstName"] = "First name cannot exceed 50 characters";  // this is an error check to see if first_name is not exceeding 50 characters
+            newErrors["firstName"] = "First name cannot be empty";
 
         if (lastName.trim() === '')
-            newErrors["lastName"] = "Last name cannot be empty";                // this is an error check to see if last_name is not empty
-        else if (lastName.length > 50)
-            newErrors["lastName"] = "Last name cannot exceed 50 characters";    // this is an error check to see if last_name is not exceeding 50 characters
+            newErrors["lastName"] = "Last name cannot be empty";
 
     if (email.trim() === "") newErrors["email"] = "Email cannot be empty";
 
@@ -323,9 +291,7 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
   .then((result) => {
     if (result && result.errorMessage == null) {
       // success: ensure any old email error is cleared
-      this.setState((prev: any) => ({
-          errors: { ...prev.errors, email: '' }
-      }));
+      this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
       confirmCreateResource("User");
       return;
     }
@@ -346,11 +312,9 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
           const isDup = isMysqlDup || isPgDup || isSqliteDup;
 
       if (isDup) {
-        this.setState((prev: any) => ({
-            errors: { ...prev.errors, email: 'Email is already in use.' },
-
-            // suppress big red toast
-            errorMessage: null
+        this.setState((prev) => ({
+          errors: { ...prev.errors, email: 'Email is already in use.' },
+          errorMessage: null, // suppress big red toast
         }));
         return;
       }
@@ -384,17 +348,21 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
         var navbar = this.props.navbar;
         var state = navbar.state;
         var confirmCreateResource = navbar.confirmCreateResource;
+        var addUser = state.addUser;
         return (
             <React.Fragment>
                 { errorMessage &&
                     <ErrorMessage
+                        add={addUser}
+                        resource={"User"}
                         errorMessage={errorMessage}
                     />
                 }
 
                 { validMessage!=="" &&
                     <ErrorMessage
-                        errorMessage={validMessage}
+                        add={addUser}
+                        error={validMessage}
                     />
                 }
 
@@ -473,7 +441,6 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
                                         error={!!errors.firstName}
                                         helperText={errors.firstName}
                                         onChange={this.handleChange}
-                                        inputProps={{ maxLength: 51 }}      // the maximum character length of first_name has been changed to 51, this accounts for browsers handling characters differently
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userFirstNameInput"
@@ -489,7 +456,6 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
                                         error={!!errors.lastName}
                                         helperText={errors.lastName}
                                         onChange={this.handleChange}
-                                        inputProps={{ maxLength: 51 }}      // the maximum character length of last_name has been changed to 51, this accounts for browsers handling characters differently
                                         required
                                         sx={{mb: 3}}
                                         aria-label="userLastNameInput"
@@ -624,8 +590,8 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
-                                       onPaste={(e: any) => {
-                                            const text = (e.clipboardData || (window as any).clipboardData).getData('text') || '';
+                                       onPaste={(e) => {
+                                            const text = (e.clipboardData || window.clipboardData).getData('text') || '';
                                             if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
                                                 e.preventDefault();
                                                 this.setState({
@@ -676,7 +642,8 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
                     </Box>
                 </Box>
             </React.Fragment>
-        );
+        )
     }
+
 }
 export default AdminAddUser;

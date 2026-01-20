@@ -90,6 +90,17 @@ const customTheme = createTheme({
         },
       },
     },
+    MUIDataTableHead: {
+      styleOverrides: {
+        root: {
+          display: "flex",
+          flexDirection: "row",
+          justifyContent: 'space-around',
+          //fontSize: "1.5rem",
+          //padding: ".01rem 2rem",
+        },
+      },
+    },
   },
 });
 

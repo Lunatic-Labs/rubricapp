@@ -19,11 +19,10 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 // import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
-import Settings from '@mui/icons-material/Settings';
+// import Settings from '@mui/icons-material/Settings';
 import Logout from '../Logout/Logout';
 // @ts-ignore: allow importing images without type declarations
-// sbTextFixed.png is the skill builder logo but with a transparent background
-import Logo from "./sbTextFixed.png";
+import Logo from "./sbText.png";
 
 export default function ButtonAppBar(props: any) {
   const [anchorEl, setAnchorEl] = React.useState(null);
