@@ -6,9 +6,13 @@ import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
 import { genericResourceGET } from '../../../../utility';
 import { Box } from '@mui/material';
-import Loading from '../../../Loading/Loading.js';
+import Loading from '../../../Loading/Loading';
 
-
+interface CourseDropdownState {
+  selectedOption: string;
+  selectedCourse: string;
+  courses: any[] | null;
+}
 
 class CourseDropdown extends Component<any, CourseDropdownState> {
   handleCourseChange: any;
@@ -20,7 +24,7 @@ class CourseDropdown extends Component<any, CourseDropdownState> {
       courses: []
     };
 
-    this.handleCourseChange = (newSelectedCourse) => {
+    this.handleCourseChange = (newSelectedCourse: any) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
       this.setState({
         selectedCourse: newSelectedCourse.target.value
@@ -38,7 +42,7 @@ componentDidMount() {
         <em>None</em>
       </MenuItem>
     ];
-    this.state.courses && this.state.courses.map((course, index) => {
+    this.state.courses && this.state.courses.map((course: any, index: any) => {
       return(
         courseChoices = [...courseChoices,
           <MenuItem key={index} value={course["course_id"]} aria-label="adminImportAssessmentCourseChoice">
