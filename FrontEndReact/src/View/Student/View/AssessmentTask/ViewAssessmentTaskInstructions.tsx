@@ -1,10 +1,8 @@
-import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
+// ViewAssessmentTaskInstructions.js
+import React, { Component } from "react";
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-import {genericResourcePOST} from '../../../../utility';
-import Cookies from 'universal-cookie';
-import ErrorMessage from "../../../Error/ErrorMessage";
+import { genericResourcePOST } from '../../../../utility.js';
 
 interface ViewAssessmentTaskInstructionsProps {
     navbar: any;
@@ -18,84 +16,69 @@ interface ViewAssessmentTaskInstructionsState {
     errorMessage: string | null;
 }
 
-class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstructionsProps, ViewAssessmentTaskInstructionsState> {
-    constructor(props: ViewAssessmentTaskInstructionsProps) {
+class ViewAssessmentTaskInstructions extends Component {
+    constructor(props) {
         super(props);
+
         this.state = {
             categories: this.props.rubrics["category_json"],
             instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
             skipInstructions: this.props.navbar.state.skipInstructions,
-            errorMessage: null
         }
     }
 
     handleContinueClick = async () => {
         const navbar = this.props.navbar;
         const state = navbar.state;
-        const cookies = new Cookies();
+        const completedAssessment = state.chosenCompleteAssessmentTask;
 
         try {
-            const userId = cookies.get('user')?.user_id;
-            
-            if (!userId) {
-                console.error('User ID not found in cookies');
-                this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+            const completedAssessmentId = completedAssessment?.completed_assessment_id;
+
+            if (!completedAssessmentId) {
+                console.error('Completed assessment ID not found');
+                navbar.setNewTab("ViewStudentCompleteAssessmentTask");
                 return;
             }
 
-            const assessmentTaskId = state.chosenAssessmentTask?.assessment_task_id;
-            const completedAssessmentId = state.chosenCompleteAssessmentTask?.completed_assessment_id;
-            
-            // Check if coming from completed assessments page
-            if (state.chosenCompleteAssessmentTask) {
-                if (completedAssessmentId) {
-                    console.error('Completed Assessment Task ID not found');
-                    this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
-                    return;
-                }
-                
-                await genericResourcePOST(
-                    '/feedback',
-                    this as any,
-                    JSON.stringify({
-                        user_id: userId,
-                        completed_assessment_id: completedAssessmentId
-                    })
-                );
-            } else {
-                // Coming from assessments page
-                if (!assessmentTaskId) {
-                    this.setState({
-                        errorMessage: "Assessment Task ID not found"
-                    });
-                    return;
-                }
-            }
+            const teamId = completedAssessment?.team_id ?? null;
 
+            // Hit the new /rating endpoint so we can track when the student views feedback
+            await genericResourcePOST(
+                '/rating',
+                this,
+                JSON.stringify({
+                    completed_assessment_id: completedAssessmentId,
+                    // For individual assessments this will be null and the backend
+                    // will go down the non-team branch.
+                    team_id: teamId,
+                })
+            );
         } catch (error) {
-            console.error('Error in recording feedback view:', error);
+            console.error('Error recording feedback view:', error);
         }
-        this.props.navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+
+        navbar.setNewTab("ViewStudentCompleteAssessmentTask");
     }
 
     render() {
         const skipInstructions = this.state.skipInstructions;
 
-        var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+        const assessmentTaskName =
+            this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
 
-        var rubricName = this.props.rubrics["rubric_name"];
+        const rubricName = this.props.rubrics["rubric_name"];
+        const rubricDescription = this.props.rubrics["rubric_description"];
 
-        var rubricDescription = this.props.rubrics["rubric_description"];
-
-        var categoryList = Object.keys(this.state.categories).map((category, index) => {
-
-            if(index !== Object.keys(this.state.categories).length-1) {
+        const categoryList = Object.keys(this.state.categories).map((category, index) => {
+            if (index !== Object.keys(this.state.categories).length - 1) {
                 category += ", ";
             }
 
             return category;
         });
 
+        // If the user chose to skip instructions, immediately continue
         if (skipInstructions) {
             this.handleContinueClick();
             return <></>;
@@ -103,9 +86,6 @@ class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstruc
 
         return (
             <>
-                {this.state.errorMessage && (
-                    <ErrorMessage errorMessage={this.state.errorMessage} />
-                )}
                 <h2
                     style={{
                         textAlign: "start",
@@ -125,13 +105,13 @@ class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstruc
                 >
                     <div
                         style={{
-                            borderTop: '3px solid #4A89E8', 
+                            borderTop: '3px solid #4A89E8',
                             border: '3px, 0px, 0px, 0px',
-                            borderRadius: '10px', 
-                            marginTop: '30px', 
-                            paddingLeft:'5rem',
-                            paddingRight:'5rem',
-                            paddingTop:'2rem',
+                            borderRadius: '10px',
+                            marginTop: '30px',
+                            paddingLeft: '5rem',
+                            paddingRight: '5rem',
+                            paddingTop: '2rem',
                             backgroundColor: "white",
                             width: '90%',
                             height: 'fit-content'
@@ -140,9 +120,11 @@ class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstruc
                         <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
                             {"Rubric for " + rubricName}
                         </h3>
+
                         <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
                             Rubric Description: {rubricDescription}
                         </h6>
+
                         <div
                             style={{
                                 display: 'flex',
@@ -204,9 +186,7 @@ class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstruc
                                         marginTop: "1rem",
                                         marginBottom: "0.5rem"
                                     }}
-                                    onClick={() => {
-                                        this.handleContinueClick();
-                                    }}
+                                    onClick={this.handleContinueClick}
                                     aria-label="viewAssessmentTaskInstructionsContinueButton"
                                 >
                                     Complete rubric
