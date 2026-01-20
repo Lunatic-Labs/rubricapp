@@ -225,7 +225,16 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
       tableBodyMaxHeight: '70%',
     };
 
-    return <MUIDataTable data={allRatings} columns={columns} options={options} />;
+    const title = isTeam ? 'Team Ratings' : 'Student Ratings';
+
+    return (
+      <MUIDataTable
+        title={title}
+        data={allRatings}
+        columns={columns}
+        options={options}
+      />
+    );
   }
 }
 

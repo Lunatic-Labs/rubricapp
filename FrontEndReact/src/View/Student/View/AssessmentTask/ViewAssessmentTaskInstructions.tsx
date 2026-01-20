@@ -1,8 +1,8 @@
-// ViewAssessmentTaskInstructions.js
+// ViewAssessmentTaskInstructions.tsx
 import React, { Component } from "react";
-import 'bootstrap/dist/css/bootstrap.css';
-import Button from '@mui/material/Button';
-import { genericResourcePOST } from '../../../../utility.js';
+import "bootstrap/dist/css/bootstrap.css";
+import Button from "@mui/material/Button";
+import { genericResourcePOST } from "../../../../utility";
 
 interface ViewAssessmentTaskInstructionsProps {
     navbar: any;
@@ -16,36 +16,47 @@ interface ViewAssessmentTaskInstructionsState {
     errorMessage: string | null;
 }
 
-class ViewAssessmentTaskInstructions extends Component {
-    constructor(props) {
+class ViewAssessmentTaskInstructions extends Component<
+    ViewAssessmentTaskInstructionsProps,
+    ViewAssessmentTaskInstructionsState
+> {
+    constructor(props: ViewAssessmentTaskInstructionsProps) {
         super(props);
 
         this.state = {
-            categories: this.props.rubrics["category_json"],
-            instructions: this.props.navbar.state.chosenAssessmentTask["comment"],
-            skipInstructions: this.props.navbar.state.skipInstructions,
+            categories: props.rubrics?.["category_json"] ?? {},
+            instructions: String(props.navbar?.state?.chosenAssessmentTask?.["comment"] ?? ""),
+            skipInstructions: Boolean(props.navbar?.state?.skipInstructions),
+            errorMessage: null,
+        };
+    }
+
+    componentDidMount() {
+        // If the user chose to skip instructions, immediately continue.
+        if (this.state.skipInstructions) {
+            void this.handleContinueClick();
         }
     }
 
-    handleContinueClick = async () => {
+    handleContinueClick = async (): Promise<void> => {
         const navbar = this.props.navbar;
-        const state = navbar.state;
-        const completedAssessment = state.chosenCompleteAssessmentTask;
+        const state = navbar?.state;
+        const completedAssessment = state?.chosenCompleteAssessmentTask;
 
         try {
             const completedAssessmentId = completedAssessment?.completed_assessment_id;
 
             if (!completedAssessmentId) {
-                console.error('Completed assessment ID not found');
-                navbar.setNewTab("ViewStudentCompleteAssessmentTask");
+                console.error("Completed assessment ID not found");
+                navbar?.setNewTab("ViewStudentCompleteAssessmentTask");
                 return;
             }
 
             const teamId = completedAssessment?.team_id ?? null;
 
-            // Hit the new /rating endpoint so we can track when the student views feedback
+            // Hit the /rating endpoint so we can track when the student views feedback.
             await genericResourcePOST(
-                '/rating',
+                "/rating",
                 this,
                 JSON.stringify({
                     completed_assessment_id: completedAssessmentId,
@@ -55,34 +66,33 @@ class ViewAssessmentTaskInstructions extends Component {
                 })
             );
         } catch (error) {
-            console.error('Error recording feedback view:', error);
+            console.error("Error recording feedback view:", error);
         }
 
-        navbar.setNewTab("ViewStudentCompleteAssessmentTask");
-    }
+        navbar?.setNewTab("ViewStudentCompleteAssessmentTask");
+    };
 
-    render() {
-        const skipInstructions = this.state.skipInstructions;
+    render(): JSX.Element | null {
+        const { skipInstructions, categories, instructions } = this.state;
+
+        // If we skipped, componentDidMount will navigate; render nothing.
+        if (skipInstructions) {
+            return null;
+        }
 
         const assessmentTaskName =
-            this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+            this.props.navbar?.state?.chosenAssessmentTask?.assessmentTaskName;
 
-        const rubricName = this.props.rubrics["rubric_name"];
-        const rubricDescription = this.props.rubrics["rubric_description"];
+        const rubricName = this.props.rubrics?.["rubric_name"];
+        const rubricDescription = this.props.rubrics?.["rubric_description"];
 
-        const categoryList = Object.keys(this.state.categories).map((category, index) => {
-            if (index !== Object.keys(this.state.categories).length - 1) {
-                category += ", ";
+        const categoryKeys = Object.keys(categories ?? {});
+        const categoryList = categoryKeys.map((category, index) => {
+            if (index !== categoryKeys.length - 1) {
+                return `${category}, `;
             }
-
             return category;
         });
-
-        // If the user chose to skip instructions, immediately continue
-        if (skipInstructions) {
-            this.handleContinueClick();
-            return <></>;
-        }
 
         return (
             <>
@@ -91,7 +101,7 @@ class ViewAssessmentTaskInstructions extends Component {
                         textAlign: "start",
                         paddingLeft: "3rem",
                         paddingTop: "1rem",
-                        fontWeight: '700'
+                        fontWeight: "700",
                     }}
                     aria-label="viewAssessmentTaskInstructionsTitle"
                 >
@@ -99,49 +109,50 @@ class ViewAssessmentTaskInstructions extends Component {
                 </h2>
                 <div
                     style={{
-                        display: 'flex',
-                        justifyContent: 'center',
+                        display: "flex",
+                        justifyContent: "center",
                     }}
                 >
                     <div
                         style={{
-                            borderTop: '3px solid #4A89E8',
-                            border: '3px, 0px, 0px, 0px',
-                            borderRadius: '10px',
-                            marginTop: '30px',
-                            paddingLeft: '5rem',
-                            paddingRight: '5rem',
-                            paddingTop: '2rem',
+                            borderTop: "3px solid #4A89E8",
+                            border: "3px, 0px, 0px, 0px",
+                            borderRadius: "10px",
+                            marginTop: "30px",
+                            paddingLeft: "5rem",
+                            paddingRight: "5rem",
+                            paddingTop: "2rem",
                             backgroundColor: "white",
-                            width: '90%',
-                            height: 'fit-content'
+                            width: "90%",
+                            height: "fit-content",
                         }}
                     >
-                        <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
+                        <h3 style={{ textAlign: "left", fontWeight: "700" }}>
                             {"Rubric for " + rubricName}
                         </h3>
 
-                        <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
+                        <h6 style={{ textAlign: "left", fontWeight: "600" }}>
                             Rubric Description: {rubricDescription}
                         </h6>
 
                         <div
                             style={{
-                                display: 'flex',
-                                flexDirection: 'column',
-                                justifyContent: 'flex-start'
-                            }}>
+                                display: "flex",
+                                flexDirection: "column",
+                                justifyContent: "flex-start",
+                            }}
+                        >
                             <div
                                 style={{
                                     padding: "20px",
-                                    border: "solid 1px #0000003b"
+                                    border: "solid 1px #0000003b",
                                 }}
                             >
                                 <div
                                     style={{
                                         width: "100%",
                                         display: "flex",
-                                        justifyContent: "center"
+                                        justifyContent: "center",
                                     }}
                                 >
                                     <h4
@@ -149,7 +160,7 @@ class ViewAssessmentTaskInstructions extends Component {
                                             margin: "1rem",
                                             fontWeight: "bold",
                                             width: "80%",
-                                            textAlign: "center"
+                                            textAlign: "center",
                                         }}
                                     >
                                         Assessment Categories: {categoryList}
@@ -157,17 +168,18 @@ class ViewAssessmentTaskInstructions extends Component {
                                 </div>
                                 <h2
                                     style={{
-                                        textAlign: 'left',
-                                        marginLeft: "8px"
-                                    }}>
+                                        textAlign: "left",
+                                        marginLeft: "8px",
+                                    }}
+                                >
                                     Instructions
                                 </h2>
                                 <textarea
                                     style={{
                                         width: "98%",
-                                        minHeight: "15rem"
+                                        minHeight: "15rem",
                                     }}
-                                    defaultValue={this.state.instructions}
+                                    defaultValue={instructions}
                                     readOnly
                                 ></textarea>
                             </div>
@@ -175,7 +187,7 @@ class ViewAssessmentTaskInstructions extends Component {
                                 style={{
                                     width: "100%",
                                     display: "flex",
-                                    justifyContent: "end"
+                                    justifyContent: "end",
                                 }}
                             >
                                 <Button
@@ -184,7 +196,7 @@ class ViewAssessmentTaskInstructions extends Component {
                                         backgroundColor: "#2E8BEF",
                                         borderRadius: "4px",
                                         marginTop: "1rem",
-                                        marginBottom: "0.5rem"
+                                        marginBottom: "0.5rem",
                                     }}
                                     onClick={this.handleContinueClick}
                                     aria-label="viewAssessmentTaskInstructionsContinueButton"
@@ -196,7 +208,7 @@ class ViewAssessmentTaskInstructions extends Component {
                     </div>
                 </div>
             </>
-        )
+        );
     }
 }
 

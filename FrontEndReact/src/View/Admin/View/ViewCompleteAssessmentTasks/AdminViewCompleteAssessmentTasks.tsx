@@ -6,16 +6,23 @@ import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 
+interface AdminViewCompleteAssessmentTasksProps {
+    navbar: any;
+}
+
 interface AdminViewCompleteAssessmentTasksState {
     errorMessage: any;
     isLoaded: boolean;
-    completedAssessments: any;
-    roles: any;
-    users: any;
+    completedAssessments: any | null;
+    roles: any | null;
+    users: any | null;
 }
 
-class AdminViewCompleteAssessmentTasks extends Component<any, AdminViewCompleteAssessmentTasksState> {
-    constructor(props: any) {
+class AdminViewCompleteAssessmentTasks extends Component<
+    AdminViewCompleteAssessmentTasksProps,
+    AdminViewCompleteAssessmentTasksState
+> {
+    constructor(props: AdminViewCompleteAssessmentTasksProps) {
         super(props);
 
         this.state = {
@@ -24,101 +31,85 @@ class AdminViewCompleteAssessmentTasks extends Component<any, AdminViewCompleteA
             completedAssessments: null,
             roles: null,
             users: null,
-        }
+        };
     }
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenAssessmentTask = state.chosenAssessmentTask;
-        var chosenCourse = state.chosenCourse;
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const chosenCourse = state.chosenCourse;
 
         if (chosenAssessmentTask["unit_of_assessment"]) {
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=team`,
                 "completed_assessments",
-                this,
-                {dest: "completedAssessments"}
+                this as any,
+                { dest: "completedAssessments" }
             );
         } else {
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=individual`,
                 "completed_assessments",
-                this,
-                {dest: "completedAssessments"}
+                this as any,
+                { dest: "completedAssessments" }
             );
-
         }
-        genericResourceGET(
-            `/role`,
-            'roles',
-            this
-        );
 
-        if(chosenCourse) {
+        genericResourceGET(`/role`, 'roles', this as any);
+
+        if (chosenCourse) {
             genericResourceGET(
                 `/user?course_id=${chosenCourse["course_id"]}`,
                 'users',
-                this
+                this as any
             );
         }
     }
+
     render() {
-        const {
-            errorMessage,
-            isLoaded,
-            completedAssessments,
-            roles,
-            users
-        } = this.state;
+        const { errorMessage, isLoaded, completedAssessments, roles, users } = this.state;
 
-        var navbar = this.props.navbar;
-        var unitOfAssessment = navbar.state.chosenAssessmentTask["unit_of_assessment"];
+        const navbar = this.props.navbar;
+        const unitOfAssessment = navbar.state.chosenAssessmentTask["unit_of_assessment"];
 
+        // Keep existing app pattern: store parsed lookups on navbar for children to use
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;
         navbar.adminViewCompleteAssessmentTasks.roleNames = roles ? parseRoleNames(roles) : [];
         navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users) : [];
 
         if (errorMessage) {
-            return(
+            return (
                 <div className='container'>
-                    <ErrorMessage
-                        errorMessage={errorMessage}
-                    />
+                    <ErrorMessage errorMessage={errorMessage} />
                 </div>
-            )
-
-        } else if (!isLoaded || !completedAssessments || !roles || !users) {
-            return(
-                <Loading />
-            )
-
-        } else {
-            if (unitOfAssessment) {
-                return(
-                    <>
-                        <Box>
-                            <ViewCompleteTeamAssessmentTasks
-                                navbar={navbar}
-                                completedAssessment={completedAssessments}
-                            />
-                        </Box>
-                    </>
-                )
-            } else {
-                return(
-                    <>
-                        <Box>
-                            <ViewCompleteIndividualAssessmentTasks
-                                navbar={navbar}
-                                completedAssessment={completedAssessments}
-                            />
-                        </Box>
-                    </>
-                )
-            }
+            );
         }
+
+        if (!isLoaded || !completedAssessments || !roles || !users) {
+            return <Loading />;
+        }
+
+        if (unitOfAssessment) {
+            return (
+                <Box>
+                    <ViewCompleteTeamAssessmentTasks
+                        navbar={navbar}
+                        completedAssessment={completedAssessments}
+                    />
+                </Box>
+            );
+        }
+
+        return (
+            <Box>
+                <ViewCompleteIndividualAssessmentTasks
+                    navbar={navbar}
+                    completedAssessment={completedAssessments}
+                />
+            </Box>
+        );
     }
 }
 
