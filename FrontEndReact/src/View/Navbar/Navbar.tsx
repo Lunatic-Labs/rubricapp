@@ -142,7 +142,10 @@ export default function ButtonAppBar(props: any) {
               <MenuItem  onClick={() => {
                 props.setNewTab("Settings");
               }}>
-                <Settings sx={{ mr: 1 }} /> Settings
+                <Box sx={{ mr: 1 }}>
+                  <Settings />
+                </Box>
+                Settings
               </MenuItem>
 
               <Divider />
