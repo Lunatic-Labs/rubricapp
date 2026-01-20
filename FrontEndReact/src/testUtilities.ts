@@ -56,7 +56,7 @@ export function changeElementWithAriaLabelWithCode(ariaLabel: any, code: any) { 
 
 export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
     const elements = screen.getAllByLabelText(ariaLabel);
-    const enabledElement = elements.find(el => !el.disabled);
+    const enabledElement = elements.find(el => !(el as HTMLButtonElement).disabled);
     
     if (!enabledElement) {
         throw new Error(`No enabled element found with aria-label: ${ariaLabel}`);
@@ -67,7 +67,7 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
 
 export const expectEnabledElementWithAriaLabelToExist = (ariaLabel: any) => {
     const elements = screen.queryAllByLabelText(ariaLabel);
-    const hasEnabledElement = elements.some(el => !el.disabled);
+    const hasEnabledElement = elements.some(el => !(el as HTMLButtonElement).disabled);
     
     expect(hasEnabledElement).toBe(true);
 };
