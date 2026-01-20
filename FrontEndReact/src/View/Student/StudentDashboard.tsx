@@ -168,12 +168,12 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
 
         if (roleId === Role.TA_Instructor || canFilterStudentByTeam) {
-            const rubricNameMap: Map<number, string> = rubricNames ?? parseRubricNames(rubrics);
+            const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics);
             //const rubricNameMap: any = rubricNames ?? parseRubricNames(rubrics);
 
             //let filteredCompletedAssessments: any = [];
             let editableCats: CompleteAssessmentTask[] = [];
-            let filteredAvgData: any = [];// Figure out its typing 
+            let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];// Figure out its typing 
             //let finishedCats: any = [];
             let showableDoneCats: CompleteAssessmentTask[] = [];
 
@@ -214,69 +214,50 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
             let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks.filter((task: AssessmentTask) => {
                 
-                const isTeamAssessment = task.unit_of_assessment === true;
-                let relevantTeamId = null;
+                const isTeamAssessment: boolean = task.unit_of_assessment === true;
+                let relevantTeamId: number | null = null;
                                 
                 if (isTeamAssessment && userTeamIds.length > 0) {
                     // For team assessments, find which team this user is on for this task
-                    const userCAT = completedAssessments.find((cat: any) => cat.assessment_task_id === task.assessment_task_id && 
-                    userTeamIds.includes(cat.team_id)
+                    const userCAT: CompleteAssessmentTask | undefined = completedAssessments.find((cat: CompleteAssessmentTask) => 
+                        cat.assessment_task_id === task.assessment_task_id && userTeamIds.includes(cat.team_id)
                     );
                     relevantTeamId = userCAT?.team_id || null;
                 }
                 
-                const catKey = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
-                const cat = CATmap.get(catKey);
-                const avg = AVGmap.get(task.assessment_task_id);
-
-                console.log("current cat:", cat);
+                const catKey: string = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
+                const cat: CompleteAssessmentTask | undefined = CATmap.get(catKey);
+                const avg: CompleteAssessmentTask| undefined = AVGmap.get(task.assessment_task_id);
 
                 // Qualities for if an AT is viewable.
-                const done = isATDone(cat);
-                const correctUser = roleId === task.role_id || (roleId === 5 && task.role_id === 4);
-                const locked = task.locked;
-                const published = task.published;
-                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
+                const done: boolean = isATDone(cat);
+                const correctUser: boolean = roleId === task.role_id || (roleId === Role.Student && task.role_id === Role.TA_Instructor);
+                const locked: boolean = task.locked;
+                const published: boolean = task.published;
+                const pastDue: boolean = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const isStudent = roles.role_id === 5;
-                const isStudentTask = task.role_id === 5;
-                const baseConditions = correctUser && !locked && published && !pastDue;
+                const isStudent: boolean = roles.role_id === Role.Student;
+                const isStudentTask: boolean = task.role_id === Role.Student;
+                const baseConditions: boolean = correctUser && !locked && published && !pastDue;
 
-                console.log([
-                    `done: ${done}`,
-                    `corrrectUser: ${correctUser}`,
-                    `locked: ${locked}`,
-                    `published: ${published}`,
-                    `pastdue: ${pastDue}`,
-                    `isStudent: ${isStudent}`,
-                    `isstudenttask: ${isStudentTask}`,
-                    `baseconditions: ${baseConditions}`,
-                ])
-
-                let viewable, CATviewable;
+                let viewable: boolean, CATviewable: boolean;
 
                 if (isStudent && isStudentTask) {
-                    console.log("first if");
                     viewable = !done && baseConditions;
                     CATviewable = correctUser && done;
                 } else if (isStudent) {
-                    console.log("second if");
                     viewable = baseConditions && !task.notification_sent;
-                    CATviewable = (pastDue || task.notification_sent) && published && correctUser;
+                    CATviewable = Boolean(pastDue || task.notification_sent) && published && correctUser;
                 } else {
-                    console.log("third if");
                     viewable = baseConditions;
                     CATviewable = pastDue && correctUser;
                 }
 
-                console.log("viewable", viewable);
-                console.log("catviewable", CATviewable);
-
                 if (CATviewable && cat !== undefined) {
-                    viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
+                    viewable ? editableCats.push(cat): showableDoneCats.push(cat);
                     filteredAvgData.push(avg);
                 } else if (viewable && cat !== undefined){
-                    filteredCompletedAssessments.push(cat);
+                    editableCats.push(cat);
                 }
                 return viewable;
             });
@@ -327,7 +308,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 createdDate: Date;
             }
 
-            let chartDataCore: ChartDataCoreItem[] = filteredCompletedAssessments
+            let chartDataCore: ChartDataCoreItem[] = editableCats
                 .map((cat: any, i: number): ChartDataCoreItem => {
                     const avgObj = filteredAvgData[i];
                     const at = assessmentTasks.find((a: any) => a.assessment_task_id === cat.assessment_task_id);
@@ -379,8 +360,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
             this.setState({
                 filteredATs: filteredAssessmentTasks,
-                filteredCATs: filteredCompletedAssessments,
-                fullyDoneCATS: finishedCats,
+                filteredCATs: editableCats,
+                fullyDoneCATS: showableDoneCats,
 
                 rubricNames: rubricNameMap,
                 chartData,
