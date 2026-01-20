@@ -734,17 +734,26 @@ def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
         Category, RubricCategory.category_id == Category.category_id
     )
 
+    # Include rubrics owned by the user and rubrics owned by the user's owner (other admins
+    # within the same organization). If get_all is True, also include the default rubrics
+    # (owner == 1).
+    user = get_user(user_id)
+    owner_id = user.owner_id
+
     if get_all:
         all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
             or_(
                 Rubric.owner == 1,
-                Rubric.owner == user_id
+                Rubric.owner == user_id,
+                Rubric.owner == owner_id
             )
         )
-
     else:
         all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
-            Rubric.owner == user_id
+            or_(
+                Rubric.owner == user_id,
+                Rubric.owner == owner_id
+            )
         )
 
     all_rubrics_and_total_categories = all_rubrics_and_total_categories.group_by(
@@ -765,6 +774,11 @@ def get_categories_for_user_id(user_id):
     Parameters:
     user_id = int (The id of a user)
     """
+    # Include categories for rubrics owned by the user and by the user's owner
+    # (so admins under the same owner can see each other's custom rubric categories).
+    user = get_user(user_id)
+    owner_id = user.owner_id
+
     all_custom_category_ids = db.session.query(
         Category.category_id,
         Category.category_name,
@@ -780,7 +794,10 @@ def get_categories_for_user_id(user_id):
         Rubric,
         Rubric.rubric_id == RubricCategory.rubric_id
     ).filter(
-        Rubric.owner == user_id
+        or_(
+            Rubric.owner == user_id,
+            Rubric.owner == owner_id
+        )
     ).subquery()
 
     all_default_categories = db.session.query(
@@ -1276,6 +1293,24 @@ def get_course_name_by_at_id(at_id:int) -> str :
     ).all()
 
     return course_name[0][0]
+
+def get_assessment_task_name_by_at_id(at_id: int) -> str:
+    """
+    Retrieves the assessment task name for a given assessment task ID.
+    
+    Parameters:
+    at_id: int - The assessment task ID
+    
+    Returns:
+    str - The assessment task name
+    """
+    assessment_task_name = db.session.query(
+        AssessmentTask.assessment_task_name
+    ).filter(
+        AssessmentTask.assessment_task_id == at_id
+    ).first()
+
+    return assessment_task_name[0]
 
 def get_course_total_students(course_id: int, assessment_task_id: int) -> int:
     """

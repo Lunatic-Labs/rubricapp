@@ -1,0 +1,399 @@
+﻿Backend: get_test_student_token() Function
+Location: BackEndFlask/controller/Routes/Course_routes.py
+python
+@bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def get_test_student_token(course_id):
+    try:
+        # Get the admin making the request
+        admin_id = get_jwt_identity()
+        
+        # Verify the course exists
+        course = get_course(course_id)
+        if not course:
+            return jsonify({
+                "success": False,
+                "error": f"Course {course_id} not found"
+            }), 404
+        
+        # Create unique email for test student tied to this course
+        test_email = f"teststudent{course_id}@skillbuilder.edu"
+        
+        # Check if test student already exists
+        test_student = User.query.filter_by(email=test_email).first()
+        
+        if not test_student:
+            # Create new test student
+            test_student = User(
+                first_name="Test",
+                last_name="Student",
+                email=test_email,
+                password="TestPassword123!",
+                owner_id=course.admin_id if hasattr(course, 'admin_id') else admin_id,
+                has_set_password=True,
+                is_admin=False,
+                consent=True,
+                lms_id=None,
+                reset_code=None
+            )
+            
+            db.session.add(test_student)
+            db.session.commit()
+            
+            # Refresh to get the user_id
+            test_student = User.query.filter_by(email=test_email).first()
+            
+            if test_student:
+                # Check if already enrolled
+                existing = UserCourse.query.filter_by(
+                    user_id=test_student.user_id,
+                    course_id=course_id
+                ).first()
+                
+                if not existing:
+                    # Enroll test student in course with TestStudent role
+                    test_user_course = UserCourse(
+                        user_id=test_student.user_id,
+                        course_id=course_id,
+                        role_id=6,  # TestStudent role
+                        active=True
+                    )
+                    db.session.add(test_user_course)
+                    db.session.commit()
+            else:
+                return jsonify({
+                    "success": False,
+                    "error": "Failed to create test student"
+                }), 500
+        else:
+            # Test student exists, ensure they're enrolled
+            existing = UserCourse.query.filter_by(
+                user_id=test_student.user_id,
+                course_id=course_id
+            ).first()
+            
+            if not existing:
+                test_user_course = UserCourse(
+                    user_id=test_student.user_id,
+                    course_id=course_id,
+                    role_id=6,
+                    active=True
+                )
+                db.session.add(test_user_course)
+                db.session.commit()
+        
+        # Generate JWT tokens for the test student
+        access_token = create_access_token(identity=str(test_student.user_id))
+        refresh_token = create_refresh_token(identity=str(test_student.user_id))
+        
+        # Return test student credentials
+        response_data = {
+            "success": True,
+            "user": {
+                "user_id": test_student.user_id,
+                "user_name": f"{test_student.first_name} {test_student.last_name}",
+                "first_name": test_student.first_name,
+                "last_name": test_student.last_name,
+                "email": test_student.email,
+                "isAdmin": False,
+                "isSuperAdmin": False,
+                "has_set_password": True,
+                "role_id": 6
+            },
+            "access_token": access_token,
+            "refresh_token": refresh_token
+        }
+        
+        return jsonify(response_data), 200
+        
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({
+            "success": False,
+            "error": str(e)
+        }), 500
+What it does:
+1. Verifies admin is logged in and course exists
+2. Creates or retrieves test student with email teststudent{course_id}@skillbuilder.edu
+3. Enrolls test student in the course with role_id 6 (TestStudent)
+4. Generates real JWT tokens for the test student
+5. Returns test student credentials to frontend
+________________
+
+
+Frontend: "View as Student" Button in RosterDashboard.js
+Location: FrontEndReact/src/View/Admin/View/ViewDashboard/RosterDashboard.js
+javascript
+<Button
+    className='primary-color'
+    variant='contained'
+    disabled={isSwitchingToStudent}
+    onClick={async () => {
+        // Prevent multiple clicks
+        if (this.state.isSwitchingToStudent) {
+            console.log('Already switching to student view, ignoring click');
+            return;
+        }
+
+
+        const cookies = new Cookies();
+
+
+        // Check for course ID
+        if (!courseId) {
+            alert('No course selected');
+            return;
+        }
+
+
+        // Set switching flag to prevent spam
+        this.setState({ isSwitchingToStudent: true });
+        console.log('Starting switch to student view for course:', courseId);
+
+
+        try {
+            // STEP 1: Save admin credentials to sessionStorage
+            const adminCredentials = {
+                user: cookies.get('user'),
+                access_token: cookies.get('access_token'),
+                refresh_token: cookies.get('refresh_token')
+            };
+            sessionStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
+            console.log('Admin credentials saved');
+
+
+            // STEP 2: Request test student token from backend
+            const response = await fetch(`${apiUrl}/courses/${courseId}/test_student_token`, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${cookies.get('access_token')}`,
+                    'Content-Type': 'application/json'
+                }
+            });
+
+
+            if (!response.ok) {
+                const errorData = await response.json();
+                console.error('Error response:', errorData);
+                throw new Error(errorData.error || 'Failed to get test student token');
+            }
+
+
+            const data = await response.json();
+            console.log('Test student data received:', data);
+
+
+            if (data.access_token && data.user) {
+                // STEP 3: Clear admin cookies
+                cookies.remove('access_token', { path: '/' });
+                cookies.remove('refresh_token', { path: '/' });
+                cookies.remove('user', { path: '/' });
+
+
+                // STEP 4: Set test student cookies
+                cookies.set('access_token', data.access_token, { 
+                    path: '/', 
+                    sameSite: 'strict' 
+                });
+                cookies.set('refresh_token', data.refresh_token, { 
+                    path: '/', 
+                    sameSite: 'strict' 
+                });
+
+
+                // Add viewing flags to user object
+                const testUser = {
+                    ...data.user,
+                    viewingAsStudent: true,
+                    originalCourseId: courseId,
+                    viewingCourseName: course?.course_name || ''
+                };
+                cookies.set('user', testUser, { 
+                    path: '/', 
+                    sameSite: 'strict' 
+                });
+
+
+                // STEP 5: Store course info for navigation
+                const courseData = {
+                    course_id: courseId,
+                    course_name: course?.course_name || 'Test Course',
+                    role_id: 6
+                };
+                sessionStorage.setItem('chosenCourse', JSON.stringify(courseData));
+
+
+                console.log('Cookies set, reloading page...');
+
+
+                // STEP 6: Reload page to apply new credentials
+                window.location.reload();
+
+
+            } else {
+                console.error('Unexpected response format:', data);
+                throw new Error('Invalid response format from server');
+            }
+        } catch (error) {
+            console.error('Error switching to student view:', error);
+
+
+            // Restore admin credentials on error
+            const adminCredentialsStr = sessionStorage.getItem('adminCredentials');
+            if (adminCredentialsStr) {
+                try {
+                    const adminCredentials = JSON.parse(adminCredentialsStr);
+
+
+                    // Clear partial test student cookies
+                    cookies.remove('access_token', { path: '/' });
+                    cookies.remove('refresh_token', { path: '/' });
+                    cookies.remove('user', { path: '/' });
+
+
+                    // Restore admin cookies
+                    cookies.set('access_token', adminCredentials.access_token, { 
+                        path: '/', 
+                        sameSite: 'strict' 
+                    });
+                    cookies.set('refresh_token', adminCredentials.refresh_token, { 
+                        path: '/', 
+                        sameSite: 'strict' 
+                    });
+                    cookies.set('user', adminCredentials.user, { 
+                        path: '/', 
+                        sameSite: 'strict' 
+                    });
+
+
+                    console.log('Admin credentials restored after error');
+                } catch (restoreError) {
+                    console.error('Failed to restore admin credentials:', restoreError);
+                }
+            }
+
+
+            // Clear saved credentials
+            sessionStorage.removeItem('adminCredentials');
+
+
+            // Reset switching flag
+            this.setState({ isSwitchingToStudent: false });
+
+
+            alert(`Failed to switch to student view: ${error.message}`);
+        }
+    }}
+    aria-label='viewAsStudentButton'
+    startIcon={isSwitchingToStudent ? <CircularProgress size={20} color="inherit" /> : null}
+>
+    {isSwitchingToStudent ? 'Switching...' : 'View as Student'}
+</Button>
+What it does:
+1. Saves admin credentials to sessionStorage (for switching back later)
+2. Calls backend API to get test student token
+3. Backend: get_test_student_token
+4. Clears admin cookies
+5. Sets test student cookies with viewingAsStudent: true flag
+6. Reloads page so app sees test student credentials
+7. If error occurs, restores admin credentials
+________________
+Frontend: "Switch Back to Admin" Button in StudentDashboard.js
+Location: FrontEndReact/src/View/Student/StudentDashboard.js
+javascript
+handleSwitchBack = () => {
+    // Prevent multiple clicks
+    if (this.state.isSwitchingBack) {
+        console.log('Already switching back, ignoring click');
+        return;
+    }
+
+
+    console.log('=== SWITCHING BACK TO ADMIN ===');
+
+
+    // Set switching flag
+    this.setState({ isSwitchingBack: true });
+
+
+    const cookies = new Cookies();
+    const adminCredentialsStr = sessionStorage.getItem('adminCredentials');
+
+
+    if (!adminCredentialsStr) {
+        console.error('No admin credentials found!');
+        alert('Admin credentials not found. Please login again.');
+        this.setState({ isSwitchingBack: false });
+        window.location.href = '/login';
+        return;
+    }
+
+
+    try {
+        const adminCredentials = JSON.parse(adminCredentialsStr);
+        console.log('Restoring admin:', adminCredentials.user);
+
+
+        // Clear test student cookies
+        cookies.remove('access_token', { path: '/' });
+        cookies.remove('refresh_token', { path: '/' });
+        cookies.remove('user', { path: '/' });
+
+
+        // Restore admin cookies
+        cookies.set('access_token', adminCredentials.access_token, { 
+            path: '/', 
+            sameSite: 'strict' 
+        });
+        cookies.set('refresh_token', adminCredentials.refresh_token, { 
+            path: '/', 
+            sameSite: 'strict' 
+        });
+        cookies.set('user', adminCredentials.user, { 
+            path: '/', 
+            sameSite: 'strict' 
+        });
+
+
+        // Clear saved data
+        sessionStorage.removeItem('adminCredentials');
+        sessionStorage.removeItem('chosenCourse');
+        sessionStorage.removeItem('testStudentCourse');
+
+
+        console.log('Admin cookies restored');
+
+
+        // Reload page
+        window.location.reload();
+    } catch (error) {
+        console.error('Error switching back:', error);
+        alert('Error switching back to admin view');
+        this.setState({ isSwitchingBack: false });
+    }
+};
+What it does:
+1. Retrieves saved admin credentials from sessionStorage
+2. Clears test student cookies
+3. Restores admin cookies
+4. Clears sessionStorage
+5. Reloads page so app sees admin credentials again
+________________
+
+
+Summary of Flow
+Switching TO Student:
+1. Admin clicks "View as Student" → Frontend saves admin credentials
+2. Frontend calls backend /courses/{id}/test_student_token
+3. Backend creates/retrieves test student, returns JWT tokens
+4. Frontend swaps cookies (admin → test student)
+5. Page reloads with test student logged in
+Switching BACK to Admin:
+1. Test student clicks "Switch Back to Admin"
+2. Frontend retrieves saved admin credentials
+3. Frontend swaps cookies (test student → admin)
+4. Page reloads with admin logged in again
+The key is that it's a complete credential swap - the app genuinely logs in as the test student with real JWT tokens, not a fake/bypass mechanism.
