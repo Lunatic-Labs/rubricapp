@@ -160,8 +160,8 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
             { dest: "completedAssessments" }
         );
         const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
-        const initialLockStatus = {};
-        const initialPublishedStatus = {};
+        const initialLockStatus: any = {};
+        const initialPublishedStatus: any = {};
 
         assessmentTasks.forEach((task: any) => {
             initialLockStatus[task.assessment_task_id] = task.locked;
