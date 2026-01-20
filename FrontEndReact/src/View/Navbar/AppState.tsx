@@ -69,6 +69,8 @@ interface AppStateState {
     addCustomRubric: any;
     jumpToSection: any;
     skipInstructions?: boolean;
+    isLoaded?: boolean | null;
+    darkMode?: boolean;
 }
 
 class AppState extends Component<AppStateProps, AppStateState> {

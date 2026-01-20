@@ -2,16 +2,32 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Box, Typography, Switch, FormControlLabel } from "@mui/material";
 import Cookies from "universal-cookie";
-import { genericResourcePUT, genericResourceGET } from "../../utility.js";
-import Loading from "../Loading/Loading.js";
+import { genericResourcePUT, genericResourceGET } from "../../utility";
+import Loading from "../Loading/Loading";
 
 // 'mode' refers to the darkmode classlist in the SBStyles.css, by adding 'mode' to the
 // document body, the darkmode css will be applied.
 
 // currently settings has only one option and that is to toggle darkmode, more options
 // will be added later as the app grows.
-class Settings extends Component {
-  constructor(props) {
+
+// Define interfaces for type safety
+interface UserData {
+  user_id: string;
+  user_dark_mode: boolean;
+}
+
+interface SettingsState {
+  isLoaded: boolean | null;
+  errorMessage: string | null;
+  user: string | null;
+  darkMode: boolean;
+}
+
+interface SettingsProps {}
+
+class Settings extends Component<SettingsProps, SettingsState> {
+  constructor(props: SettingsProps) {
     super(props);
 
     this.state = {
@@ -27,8 +43,8 @@ class Settings extends Component {
     const user = cookies.get("user");
 
     if (user !== null) {
-      let promise; // promise is used because we do not yet have the 'data' from the backend
-      let userData; // promise tells the app that it will recieve data
+      let promise: Promise<any>; // promise is used because we do not yet have the 'data' from the backend
+      let userData: UserData; // promise tells the app that it will recieve data
 
       // get all the neccessary resources from the backend, the 'user' from the 'users' array.
       promise = genericResourceGET(`/user`, "users", this);
@@ -84,11 +100,11 @@ class Settings extends Component {
 
   // for future refernace handleChange should be changed to handleDarkMode, as not to conflict with
   // any other 'changes' on the page.
-  handleChange = () => {
+  handleChange = (): void => {
     const newDarkMode = !this.state.darkMode; // take the users current prefernace and invert it
     const user_id = this.state["user"];
 
-    let promise; // promise that data will be provided later
+    let promise: Promise<any>; // promise that data will be provided later
 
     var body = JSON.stringify({
       user_id: user_id,
