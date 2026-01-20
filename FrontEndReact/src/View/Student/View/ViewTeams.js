@@ -3,6 +3,27 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 import { getHumanReadableDueDate } from "../../../utility";
 
+/**
+ * @description
+ * Read-only table of teams for the current student view.
+ *
+ * Responsibilities:
+ *  - Receives a teams[] array (each with team_name, observer_id, team_users, date_created).
+ *  - Receives a users map (observer_id → observer display name).
+ *  - Renders a CustomDataTable with columns for team name, TA/instructor name,
+ *    members, and date created.
+ *
+ * Props:
+ *  @prop {Array}  teams   - List of team objects to show in the table.
+ *  @prop {Object} users   - Map of user_id → "First Last" (from parseUserNames).
+ *  @prop {Object} navbar  - Navbar instance to inspect chosenCourse.use_tas
+ *                           (to label the observer column).
+ *
+ * Notes:
+ *  - This component does not perform any fetches.
+ *  - Sorting is handled by CustomDataTable’s built-in column sorting; this file
+ *    simply defines column metadata and uses getHumanReadableDueDate for dates.
+ */
 class ViewTeams extends Component{
     render() {
         var teams = this.props.teams;

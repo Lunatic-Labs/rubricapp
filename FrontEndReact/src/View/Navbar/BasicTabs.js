@@ -3,6 +3,22 @@ import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 import Box from '@mui/material/Box';
 
+// For further documentation look inside the README
+
+/**
+ * Creates a function, BasicTabs.
+ * 
+ * @function BasicTabs
+ * @param {Object} props - Component properties.
+ * @param {Object} props.navbar - A reference to the AppState component, used for accessing global state and navigation callbacks.
+ * 
+ * Internally derived values:
+ * @property {Object} navbar.state - The global application state.
+ * @property {string} navbar.state.activeTab - The currently active application tab.
+ * @property {function} navbar.setNewTab - Callback used to update the active tab.
+ * @property {boolean} useFixedTeams - Determines whether the "Teams" tab is shown, based on the selected course's `use_fixed_teams` configuration.
+ */
+
 export default function BasicTabs (props){
   var navbar = props.navbar;
   var state = navbar.state;
@@ -22,6 +38,11 @@ export default function BasicTabs (props){
     setValue(idTab);
   }, [activeTab, useFixedTeams, idTab]);
 
+  /**
+   * @method handleChange - Handles internal tab selection changes for the MUI Tabs component.
+   * @param {React.SyntheticEvent} event - The event triggered when the user interacts with the tabs.
+   * @param {number} newValue - The index of the newly selected tab within the MUI Tabs component.
+   */
   const handleChange = (event, newValue) => {
     setValue(newValue);
   };

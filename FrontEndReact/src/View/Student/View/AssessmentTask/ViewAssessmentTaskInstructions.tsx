@@ -5,6 +5,31 @@ import {genericResourcePOST} from '../../../../utility.js';
 import Cookies from 'universal-cookie';
 import ErrorMessage from "../../../Error/ErrorMessage.js";
 
+interface ViewAssessmentTaskInstructionsProps {
+    navbar: any;
+    rubrics: any;
+}
+
+/**
+ * @description
+ * Displays the assessment task instructions and rubric summary for a student
+ * before they complete the rubric. When the user continues, this component
+ * optionally records a feedback view (via POST /feedback) and then navigates
+ * to "ViewStudentCompleteAssessmentTask".
+ *
+ * @prop {object} navbar         - Navbar instance; uses state.chosenAssessmentTask,
+ *                                 state.chosenCompleteAssessmentTask, and skipInstructions.
+ * @prop {object} rubrics        - Rubric metadata for the chosen assessment task.
+ *                                 Expects keys: "category_json", "rubric_name",
+ *                                 "rubric_description".
+ *
+ * @property {object} state.categories     - Category JSON for the rubric (from rubrics.category_json).
+ * @property {string} state.instructions   - Assessment instructions (from navbar.state.chosenAssessmentTask.comment).
+ * @property {boolean} state.skipInstructions - If true, skips rendering instructions
+ *                                             and immediately proceeds to handleContinueClick.
+ * @property {string|null} state.errorMessage - Error message to display if we cannot
+ *                                              proceed (e.g., missing assessmentTaskId).
+ */
 class ViewAssessmentTaskInstructions extends Component {
     constructor(props) {
         super(props);
@@ -16,6 +41,33 @@ class ViewAssessmentTaskInstructions extends Component {
         }
     }
 
+    /**
+     * @method handleContinueClick
+     * @description
+     * Handles the "Complete rubric" / continue action.
+     *
+     * Behavior:
+     *  - Reads user_id from cookies and assessment context from navbar.state.
+     *  - If the user navigated here from a completed assessment (state.chosenCompleteAssessmentTask):
+     *      * Sends a POST to /feedback to record that this user viewed feedback.
+     *  - If the user navigated here from the "My Assessment Tasks" section:
+     *      * Verifies that an assessment_task_id exists; if not, sets an error and stays.
+     *  - On success (or on recoverable error), navigates to "ViewStudentCompleteAssessmentTask".
+     *
+     * POST:
+     *  - Endpoint: POST /feedback
+     *  - Query params: none
+     *  - Body (JSON):
+     *      {
+     *        "user_id": <number>,                // from cookies.get('user').user_id
+     *        "completed_assessment_id": <number> // from navbar.state.chosenCompleteAssessmentTask.completed_assessment_id
+     *      }
+     *
+     * Notes:
+     *  - This method does not perform any sorting; it only writes feedback and changes tabs.
+     *  - Any issues with missing IDs or cookies result in logging an error and redirecting
+     *    to "ViewStudentCompleteAssessmentTask" or setting an errorMessage.
+     */
     handleContinueClick = async () => {
         const navbar = this.props.navbar;
         const state = navbar.state;
@@ -83,6 +135,7 @@ class ViewAssessmentTaskInstructions extends Component {
             return category;
         });
 
+        // If instructions should be skipped, immediately run the continue handler.
         if (skipInstructions) {
             this.handleContinueClick();
             return <></>;

@@ -12,80 +12,99 @@ import CourseInfo from "../../../Components/CourseInfo";
 import { getHumanReadableDueDate } from "../../../../utility";
 import { Tooltip } from '@mui/material';
 
-class ViewCompleteTeamAssessmentTasks extends Component {
+interface ViewCompleteTeamAssessmentTasksState {
+    errorMessage: any;
+    isLoaded: any;
+    showDialog: boolean;
+    notes: string;
+    notificationSent: any;
+    isSingleMsg: boolean;
+    compATId: any;
+    errors: {
+        notes: string;
+    };
+}
+
+class ViewCompleteTeamAssessmentTasks extends Component { // Displays table of completed team-based rubrics with notifications capabilities
     constructor(props) {
         super(props);
 
     this.state = {
-      errorMessage: null,
-      isLoaded: null,
-      showDialog: false,
-      notes: '',
-      notificationSent: false,
-      isSingleMsg: false,
-      compATId: null,
+      errorMessage: null,   //Stores API error messages
+      isLoaded: null,       // Loading state indicator
+      showDialog: false,    // Controls notificartion dialog visiblity
+      notes: '',            //Notification message content typed by instructor
+      notificationSent: false,    // Tracks if notifcation sent  
+      isSingleMsg: false,         //True notifies one team if false notifies all teams
+      compATId: null,             // completed assessment ID for indivduals team notifications
 
             errors: {
-                notes:''
+                notes:''      // validation error for notification message
             }
         };
     }
 
-    handleChange = (e) => {
+    handleChange = (e) => {     //Updates notifcion message as instructor types and validates input in real-time
         const { id, value } = e.target;
-
+      //Updates state with new value and validation error
         this.setState({
-            [id]: value,
+            [id]: value,      // Upadtes the field dynamically
             errors: {
                 ...this.state.errors,
+                //Validates if empty after trim, set error, otherwise error is cleared
                 [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
             },
         });
     };
 
-  handleDialog = (isSingleMessage, singleCompletedAT) => {
+  handleDialog = (isSingleMessage, singleCompletedAT) => {    // Opens or closes the notification dialog and configure notification mode
     this.setState({
         showDialog: this.state.showDialog === false ? true : false,
-        isSingleMsg: isSingleMessage,
-        compATId: singleCompletedAT,
+        isSingleMsg: isSingleMessage, //Store whether this is single team or mass notification
+        compATId: singleCompletedAT, //stores assessment ID for single team notifications
       });
   }
 
-    handleSendNotification = () => {
+    handleSendNotification = () => {    // Sends notification email to teams that their assessment are available
         var notes =  this.state.notes;
 
         var navbar = this.props.navbar;
-
         var state = navbar.state;
-
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
-        var date = new Date();
+        var date = new Date(); // creates timestamp
 
-        if (notes.trim() === '') {
+        if (notes.trim() === '') {    //validates if message is empty
             this.setState({
                 errors: {
                     notes: 'Notification Message cannot be empty',
                 },
             });
-
+            //exit early without sending notification
             return;
         }
 
-    if(this.state.isSingleMsg){
+    if(this.state.isSingleMsg){ // Check notification mode either single team or all
+      // reset single message flag before sending
       this.setState({isSingleMsg: false}, () => {
+        //API caall - sends email to one specfic team
+        //POST /send_single_email?team=true&completed_assessment_id={id}
+        //Query param team=true indicates team notification
         genericResourcePOST(
           `/send_single_email?team=${true}&completed_assessment_id=${this.state.compATId}`, 
           this, JSON.stringify({ 
             "notification_message": notes,
           }) 
         ).then((result) => {
+          // Sucess handling: check result is valid and no errors
           if(result !== undefined && result.errorMessage === null){
             this.setState({ 
               showDialog: false, 
               notificationSent: date, 
             });
           }
+          //If error occurs, dialog stays open for user to retry
+          // notificatinSent stays false, button remains enable
         });
       });
     }else{
@@ -107,22 +126,23 @@ class ViewCompleteTeamAssessmentTasks extends Component {
 
   };
 
-    render() {
+    render() {    //Renders the component UI with team assessment table and notification buttons
         var navbar = this.props.navbar;
 
         var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
 
-        var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;
+        var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;  //Maps user ID to name
 
         var state = navbar.state;
 
         var chosenAssessmentTask = state.chosenAssessmentTask;
 
-        var notificationSent = state.notificationSent;
+        var notificationSent = state.notificationSent;    //From navbar state, not component state
 
         var chosenCourse = state.chosenCourse;
 
         const columns = [
+          //Column 1 assessment task name
             {
                 name: "assessment_task_id",
                 label: "Assessment Task",

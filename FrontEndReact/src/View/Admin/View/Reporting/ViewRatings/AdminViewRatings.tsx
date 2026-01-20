@@ -8,6 +8,18 @@ import { Box, Button, Tooltip } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
+interface AdminViewRatingsState {
+  errorMessage: any;
+  isLoaded: any;
+  loadedAssessmentId: any;
+  ratings: any;
+  categories: any;
+  csvCreation: any;
+  exportButtonId: any;
+  downloadedAssessment: any;
+  lastSeenCsvType: any;
+}
+
 
 class AdminViewRatings extends Component {
   constructor(props) {

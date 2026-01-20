@@ -174,8 +174,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         ).then((result) => {
           if(result !== undefined && result.errorMessage === null){
             this.setState({ 
-              showDialog: false, 
-              notificationSent: date, 
+              showDialog: false,    //Close notification dialog
+              notificationSent: date,  // Set timestamp (disables all notify buttons)
             });
           }
         });
@@ -190,8 +190,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
       ).then((result) => {
         if (result !== undefined && result.errorMessage === null) {
           this.setState({
-            showDialog: false,
-            notificationSent: date,
+            showDialog: false,      //Close notifcation dialog
+            notificationSent: date, // Set timestamp
           });
         }
       });
@@ -199,7 +199,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
 
   };
 
-    render() {
+    render() {      // Renders the component UI with assessemt table, lock controls, and notification buttons
         var navbar = this.props.navbar;
 
         var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
@@ -217,12 +217,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
         var catIds = completedAssessmentTasks.map((task) => task.completed_assessment_id);
 
         const columns = [
+            // Column 1 - assessment task name
             {
                 name: "assessment_task_id",
                 label: "Assessment Task",
                 options: {
                     filter: true,
-
+                    //Custom rendering: SHows assessment name instead of ID
                     customBodyRender: () => {
                         return (
                             <p variant="contained" align="left">
@@ -232,12 +233,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     },
                 },
             },
+            //Column 2 - student name
             {
                 name: "last_name",
                 label: "Student Name",
                 options: {
                     filter: true,
-
+                    // custom rendering shows last name or N/A if missing
                     customBodyRender: (last_name) => {
                         return (
                             <p variant="contained" align="left">
@@ -247,12 +249,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     },
                 },
             },
+            // column 3 - assessor (who graded the assessment)
             {
                 name: "completed_by",
                 label: "Assessor",
                 options: {
                     filter: true,
-
+                    // Customer rendering Maps user ID to readable name
                     customBodyRender: (completed_by) => {
                         return (
                             <p variant="contained" align="left">
@@ -262,12 +265,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     },
                 },
             },
+            // Column 4 - Initial Time (when asessment was first started)
             {
                 name: "initial_time",
                 label: "Initial Time",
                 options: {
                     filter: true,
-
+                    // custom rendering converts timestamp to human-readable format in cousr timezone
                     customBodyRender: (initialTime) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
 
@@ -279,12 +283,13 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     },
                 },
             },
+            // Column 5: last upadted (when assessment was last modified)
             {
                 name: "last_update",
                 label: "Last Updated",
                 options: {
                     filter: true,
-
+                    // custom rendering: converts timezone to human readable
                     customBodyRender: (lastUpdate) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                       
@@ -296,6 +301,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     },
                 },
             },
+            // Column 6 - lock/unlock toggle
             {
                 name: "completed_assessment_id",
                 label: "Lock",
@@ -303,6 +309,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     filter: true,
                     customBodyRender: (completedAssessmentId) => {
                         const task = completedAssessmentTasks.find((task) => task["completed_assessment_id"] === completedAssessmentId);
+                        // determine lock status by first checking local state (recent) and fallback to server data if state not set yet
                         const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
 
                             return (
@@ -325,6 +332,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     },
                 }
             },
+            //Column 7 - sees more detail
             {
                 name: "completed_assessment_id",
                 label: "See More Details",
@@ -334,13 +342,17 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
                     setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
                     customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
+                        // Get row index to access user_id from props array
                         const rowIndex = completeAssessmentTasks.rowIndex;
+                        // Extract user_id from completedAssessment prop 
                         const userId = this.props.completedAssessment[rowIndex].user_id;
                         if (completedAssessmentId) {
                             return (
                                 <IconButton // problem : need to pass who im looking at
                                     align="center"
                                     onClick={() => {
+                                        // Navigate to detailed assessment view
+                                        //Passes assessment data, userID/ID, task info
                                         navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
                                             completedAssessmentTasks,
                                             completedAssessmentId,
@@ -362,6 +374,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           }
         }
       },
+      // Column 8 - indivudal notification button
       {
         name: "Student/Team Id",
         label: "Notify",
@@ -372,6 +385,9 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
           customBodyRender: (completedAssessmentId, completeAssessmentTasks) => {
             const rowIndex = completeAssessmentTasks.rowIndex;
+            //Hardcoded in
+            // Assumes completed_assessment_id is always at index 5 in tableData array
+            //If columns are redordered this breaks
             const completedATIndex = 5;
             completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
             if (completedAssessmentId !== null) {
@@ -407,16 +423,17 @@ class ViewCompleteIndividualAssessmentTasks extends Component {
     ];
 
         const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            selectableRows: "none",
-            viewColumns: false,
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "21rem",
+            onRowsDelete: false,            //Disable row deletion
+            download: false,                //Disable download button
+            print: false,                   //Disable print button
+            selectableRows: "none",         //Disable row selection checkboxes
+            viewColumns: false,             //Disable view columns button
+            selectableRowsHeader: false,    //Disable select all checkbox in header
+            responsive: "vertical",         //table responsiveness scrolling
+            tableBodyMaxHeight: "21rem",    //max height beofre scrolling
         };
 
+        //Render UI
         return (
             <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
                 <Box className="content-spacing">

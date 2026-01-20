@@ -7,7 +7,25 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import CustomDataTable from "../../../Components/CustomDataTable.js";
 import { genericResourceDELETE } from "../../../../utility.js";
 
+/**
+ * Creates an instance of the ViewTeams component.
+ * 
+ * @constructor
+ * @param {object} props - The properties passed to the component.
+ * @param {Object} props.navbar - A reference to the AppState component, provides access to global navigation, state, and helper methods.
+ * @param {Object[]} props.teams - Array of team objects to be displayed. These originate from the API.
+ * @param {Object[]} props.users - Array of user objects used to map observer_id → observer name.
+ * @param {function(string):void} props.onError - Displays an error message when deletion fails.
+ * @param {function(string):void} props.onSuccess - Displays a success message after deletion succeeds.
+ * @param {function():void} props.refreshData - Refetches team data after delete or modification.
+ */
+
 class ViewTeams extends Component {
+
+  /**
+   * @method deleteTeam - Attempts to delete a team using the backend API.
+   * @param {number|string} teamId - The ID of the team to delete.
+   */
   async deleteTeam(teamId) {
     try {
       const result = await genericResourceDELETE(`/team?team_id=${teamId}`, this, {
