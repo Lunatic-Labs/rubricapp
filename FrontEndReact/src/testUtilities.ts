@@ -54,7 +54,7 @@ export function changeElementWithAriaLabelWithCode(ariaLabel: any, code: any) { 
     }
 }
 
-export const clickFirstEnabledElementWithAriaLabel = (ariaLabel) => {
+export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
     const elements = screen.getAllByLabelText(ariaLabel);
     const enabledElement = elements.find(el => !el.disabled);
     
@@ -65,7 +65,7 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel) => {
     enabledElement.click();
 };
 
-export const expectEnabledElementWithAriaLabelToExist = (ariaLabel) => {
+export const expectEnabledElementWithAriaLabelToExist = (ariaLabel: any) => {
     const elements = screen.queryAllByLabelText(ariaLabel);
     const hasEnabledElement = elements.some(el => !el.disabled);
     

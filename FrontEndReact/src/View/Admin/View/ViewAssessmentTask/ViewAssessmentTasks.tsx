@@ -163,7 +163,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
         const initialLockStatus = {};
         const initialPublishedStatus = {};
 
-        assessmentTasks.forEach((task) => {
+        assessmentTasks.forEach((task: any) => {
             initialLockStatus[task.assessment_task_id] = task.locked;
             initialPublishedStatus[task.assessment_task_id] = task.published;
         });
