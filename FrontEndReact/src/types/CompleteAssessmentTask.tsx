@@ -1,4 +1,4 @@
-import { ISODateString } from "./StringLables"
+import { ISODateString } from "./StringLabels"
 
 /**
  * Represents a completed assessment task object typically returned from the backend.
