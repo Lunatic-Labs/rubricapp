@@ -169,12 +169,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         if (roleId === Role.TA_Instructor || canFilterStudentByTeam) {
             const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics);
-            //const rubricNameMap: any = rubricNames ?? parseRubricNames(rubrics);
 
-            //let filteredCompletedAssessments: any = [];
             let editableCats: CompleteAssessmentTask[] = [];
-            let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];// Figure out its typing 
-            //let finishedCats: any = [];
+            let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];
             let showableDoneCats: CompleteAssessmentTask[] = [];
 
             const CATmap: Map<string, CompleteAssessmentTask> = new Map();
@@ -246,8 +243,13 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     viewable = !done && baseConditions;
                     CATviewable = correctUser && done;
                 } else if (isStudent) {
-                    viewable = baseConditions && !task.notification_sent;
-                    CATviewable = Boolean(pastDue || task.notification_sent) && published && correctUser;
+                    if (task.role_id === Role.TA_Instructor && done){
+                        viewable = false;
+                        CATviewable = true;
+                    } else {
+                        viewable = baseConditions && !task.notification_sent;
+                        CATviewable = Boolean(pastDue || task.notification_sent) && published && correctUser;
+                    }
                 } else {
                     viewable = baseConditions;
                     CATviewable = pastDue && correctUser;
@@ -308,7 +310,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 createdDate: Date;
             }
 
-            let chartDataCore: ChartDataCoreItem[] = editableCats
+            let chartDataCore: ChartDataCoreItem[] = showableDoneCats
                 .map((cat: any, i: number): ChartDataCoreItem => {
                     const avgObj = filteredAvgData[i];
                     const at = assessmentTasks.find((a: any) => a.assessment_task_id === cat.assessment_task_id);
