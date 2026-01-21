@@ -1,5 +1,5 @@
 from Functions.customExceptions import *
-from Functions.test_files.PopulationFunctions import *
+from Functions.helper import *
 from models.course import *
 from models.user_course import *
 from models.team import *

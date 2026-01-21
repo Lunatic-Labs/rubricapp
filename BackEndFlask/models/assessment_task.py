@@ -2,6 +2,7 @@ from core import db
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
 from models.utility import error_log
+from sqlalchemy.exc import SQLAlchemyError
 from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 
 """
