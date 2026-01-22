@@ -7,7 +7,7 @@
 #       If a completed assessments last update is after
 #       assessment.notification_sent, then they are 
 #       considered to be new and elligble to send a msg
-#       to agian. Any more complex feture will require
+#       again. Any more complex feature will require
 #       another table or trigger table to be added.        
 #------------------------------------------------------------
 
@@ -64,9 +64,9 @@ def mass_notify_new_ca_users():
         if at_time == None : at_time = datetime.datetime(1,1,1,0,0,0,0)
 
         collection = get_students_for_emailing(is_teams, at_id=at_id)
-
+        
         left_to_notifiy = [singular_student for singular_student in collection if singular_student.last_update > at_time]
-
+        
         email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
 
         # Updating AT notification time
@@ -113,7 +113,7 @@ def send_single_email():
         msg = request.json['notification_message']
 
         collection = get_students_for_emailing(is_teams, completed_at_id= completed_assessment_id)
-
+        
         # Putting into a list as thats what the function wants.
         left_to_notifiy = [singular_student for singular_student in collection]
 
