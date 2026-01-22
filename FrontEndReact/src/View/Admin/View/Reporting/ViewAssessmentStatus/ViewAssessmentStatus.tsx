@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Box from '@mui/material/Box';
-import { Container } from '@mui/material';
-//import Button from '@mui/material/Button';
+import { Button, Container, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
@@ -211,6 +210,21 @@ export default function ViewAssessmentStatus(props: any) {
                         chosenCategoryId={chosenCategoryId}
                         setChosenCategoryId={handleChosenCategoryIdChange}
                       />
+                    </Grid>
+                    <Grid item xs={12}>
+                      <Tooltip title="Export aggregate percentages for characteristics and improvements to CSV">
+                        <span>
+                          <Button
+                            variant="contained"
+                            size="small"
+                            disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
+                            onClick={() => props.onExportAggregates && props.onExportAggregates(chosenCategoryId)}
+                            sx={{ mt: 1 }}
+                          >
+                            Export Aggregates
+                          </Button>
+                        </span>
+                      </Tooltip>
                     </Grid>
                   </Grid>
                 </div>
