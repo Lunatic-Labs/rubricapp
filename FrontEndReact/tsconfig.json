@@ -1,10 +1,10 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "6.0",
+    "ignoreDeprecations": "5.0",
     "module": "esnext",
     "target": "esnext",
     "lib": ["esnext", "dom", "dom.iterable"],
-    "types": ["jest", "react", "react-dom", "@testing-library/jest-dom"],
+    "types": ["jest", "react", "@testing-library/jest-dom"],
     
     "sourceMap": true,
     "declaration": true,

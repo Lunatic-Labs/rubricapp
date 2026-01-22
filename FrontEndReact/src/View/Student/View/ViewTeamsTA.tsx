@@ -3,7 +3,23 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 
-
+/**
+ * @description
+ * Read-only table of teams for TA/observer view.
+ *
+ * Responsibilities:
+ *  - Receives a simplified teams[] array built in TAViewTeams:
+ *      { teamName: string, studentNames: string }
+ *  - Renders a CustomDataTable showing team names and member names.
+ *
+ * Props:
+ *  @prop {Array} teams - List of team summary objects.
+ *
+ * Notes:
+ *  - No fetches occur here; input is purely via props.
+ *  - Sorting is handled by CustomDataTable (columns are filterable;
+ *    any sort options use default behavior).
+ */
 
 interface ViewTeamsTAProps {
   // `navbar` is passed from the parent `TAViewTeams` component

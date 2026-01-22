@@ -6,6 +6,26 @@ import { IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable'
 import { genericResourceGET } from '../../../../utility';
 
+/**
+ * @description
+ * Shows the current members of the selected team in a table, with an
+ * option to remove/unassign members on the client side.
+ *
+ * Responsibilities:
+ *  - Watches navbar.buildTeam.selectedTeam for changes.
+ *  - When the selected team changes, fetches the users for that team.
+ *  - Renders a CustomDataTable of team members with an "Unassign" action.
+ *
+ * @prop {Object} navbar - Navbar instance; expects:
+ *                         navbar.state.chosenCourse.course_id and
+ *                         navbar.buildTeam.selectedTeam.
+ *
+ * @property {string|null} state.errorMessage - Error string if the user fetch fails.
+ * @property {boolean}     state.isLoaded     - True once the current team’s users have been loaded.
+ * @property {number|null} state.selectedTeam - Team_id last loaded (used to avoid unnecessary refetches).
+ * @property {Array|null}  state.users        - Users in the currently selected team.
+ */
+
 interface ShowTeamMembersProps {
     navbar: any;
 }
@@ -29,6 +49,16 @@ class ShowTeamMembers extends Component<ShowTeamMembersProps, ShowTeamMembersSta
             users: null
         }
 
+        /**
+         * @method removeUser
+         * @description
+         * Removes a user from the local users array (front-end only).
+         * This does not call the backend; it just updates state.users so the
+         * table refreshes.
+         *
+         * @param {number} userId - ID of the user to remove from the table.
+         */
+        
         this.removeUser = (userId: any) => {
             var students = this.state.users;
             var studentsRemaining: any = [];
@@ -47,6 +77,31 @@ class ShowTeamMembers extends Component<ShowTeamMembersProps, ShowTeamMembersSta
         }
     }
 
+    /**
+     * @method componentDidUpdate
+     * @description
+     * Whenever the selected team changes in navbar.buildTeam, fetch the roster
+     * for that team.
+     *
+     * Fetch:
+     *  - GET /user?course_id={course_id}&team_id={team_id}
+     *    - Query params:
+     *        * course_id — ID of the chosen course (navbar.state.chosenCourse.course_id).
+     *        * team_id   — ID of the team whose members should be returned.
+     *    - genericResourceGET stores the result in state.users and updates isLoaded/errorMessage.
+     *
+     * Sorting:
+     *  - No explicit sorting is done here; ordering is whatever the backend returns.
+     *    Column sorting is handled by CustomDataTable.
+     *
+     * Notes / JIRA candidate:
+     *  - state.selectedTeam is only used for comparison here. If it is not updated
+     *    when the fetch completes (e.g., inside genericResourceGET’s success path),
+     *    this condition can trigger repeated fetches for the same team.
+     *  - If other team-management views also call /user?course_id&team_id for the
+     *    same team, consider consolidating this into a shared fetch to avoid
+     *    multiple requests for identical data.
+     */
     componentDidUpdate() {
         var navbar = this.props.navbar;
         var teamId = navbar.buildTeam.selectedTeam;
