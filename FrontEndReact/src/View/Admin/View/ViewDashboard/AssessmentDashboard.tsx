@@ -13,8 +13,8 @@ import { Box, Typography, Button } from '@mui/material';
  * @property {Object} props.navbar - The navbar object containing state and methods for navigation.
  * 
  * Components Used:
- * @see MainHeader.js
- * @see AdminViewAssessmentTask.js
+ * @see MainHeader
+ * @see AdminViewAssessmentTask
  * 
  * Actions:
  * - View My Custom Rubrics

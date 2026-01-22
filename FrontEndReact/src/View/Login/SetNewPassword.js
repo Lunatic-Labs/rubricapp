@@ -1,13 +1,13 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from '../Error/ErrorMessage.js';
-import Login from './Login.js';
+import ErrorMessage from '../Error/ErrorMessage';
+import Login from './Login';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { apiUrl } from '../../App.js';
+import { apiUrl } from '../../App';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { MAX_PASSWORD_LENGTH } from '../../Constants/password.js';
+import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 
 /**
  * Creates an isnteance of the SetNewPassword componenet.

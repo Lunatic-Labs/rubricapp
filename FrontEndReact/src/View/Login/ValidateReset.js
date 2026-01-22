@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import ErrorMessage from '../Error/ErrorMessage.js';
-import { apiUrl } from '../../App.js';
-import SetNewPassword from './SetNewPassword.js';
-import Login from './Login.js';
+import ErrorMessage from '../Error/ErrorMessage';
+import { apiUrl } from '../../App';
+import SetNewPassword from './SetNewPassword';
+import Login from './Login';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 

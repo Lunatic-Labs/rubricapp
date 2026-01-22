@@ -12,8 +12,8 @@ import { Box } from '@mui/material';
  * @property {Object} props.navbar - The navbar object containing state and methods for navigation.
  * 
  * Components:
- * @see MainHeader.js
- * @see AdminViewTeams.js
+ * @see MainHeader
+ * @see AdminViewTeams
  * 
  * Data:
  * No direct data fetching or management in this component.

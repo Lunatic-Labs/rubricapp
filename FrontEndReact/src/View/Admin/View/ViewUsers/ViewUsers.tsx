@@ -5,7 +5,7 @@ import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import Cookies from 'universal-cookie';
-import { genericResourceDELETE } from "../../../../utility.js";
+import { genericResourceDELETE } from "../../../../utility";
 /**
  * Creates an instance of the ViewUsers component.
  * Displays a table of users with options to edit and delete.
