@@ -361,34 +361,6 @@ min-width:280px;
   }
 }
 
-/* Mobile zoom detection (phones @175%+) */
-@media only screen and (max-width: 840px) and (min-width: 481px) {
-  .MuiTableRow-root {
-    display: flex !important;
-    flex-direction: column !important;
-    border: 1px solid #ddd !important;
-    margin-bottom: 10px !important;
-    background: white !important;
-    border-radius: 8px !important;
-    padding: 10px !important;
-  }
-  .MuiTableCell-root {
-    display: flex !important;
-    justify-content: space-between !important;
-    align-items: center !important;
-    border-bottom: 1px solid #eee !important;
-    padding: 8px 0 !important;
-    white-space: normal !important;
-    min-width: unset !important;
-  }
-  .MuiTableCell-root:last-child { border-bottom: none !important; }
-  .MuiTableCell-root::before {
-    content: attr(data-label) ": " !important;
-    font-weight: bold !important;
-    color: #2E8BEF !important;
-    margin-right: 10px !important;
-  }
-  .MuiTableHead-root { display: none !important; }
 
   /* remove scrollbars when zoomed mobile */
   .MuiTableContainer-root,
@@ -403,12 +375,34 @@ min-width:280px;
     min-width: unset !important;
     width: 100% !important;
   }
-}
+
 
 /* Tablets/laptops always horizontal */
 @media only screen and (min-width: 841px) {
   .MuiTableRow-root { display: table-row !important; }
   .MuiTableCell-root { display: table-cell !important; }
+}
+
+/* Force table layout on all screens wider than phones, regardless of zoom */
+@media only screen and (min-width: 481px) {
+  .MuiTableRow-root { 
+    display: table-row !important; 
+  }
+  
+  .MuiTableCell-root { 
+    display: table-cell !important;
+    border-bottom: 1px solid rgba(224, 224, 224, 1) !important;
+  }
+  
+  .MuiTableHead-root .MuiTableCell-root {
+    border-bottom: 2px solid #D9D9D9 !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Keep the table header visible */
+  .MuiTableHead-root {
+    display: table-header-group !important;
+  }
 }
 
 /* these colors regulate the display for custom data table and the text inside the 'disabled' export button. */
