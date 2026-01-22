@@ -11,8 +11,61 @@ import FormHelperText from '@mui/material/FormHelperText';
 
 const MAX_LMS_ID_LENGTH = 10;
 
-class AdminAddUser extends Component {
-    constructor(props) {
+interface NavbarState {
+    user: {
+        user_id: number;
+        first_name: string;
+        last_name: string;
+        email: string;
+        role_id: string;
+        lms_id: string;
+    } | null;
+    chosenCourse: {
+        course_id: number;
+    };
+    addUser: boolean;
+}
+
+interface NavbarProps {
+    isSuperAdmin?: boolean;
+}
+
+interface NavbarComponent {
+    state: NavbarState;
+    props: NavbarProps;
+    confirmCreateResource: (resource: string) => void;
+}
+
+interface AdminAddUserProps {
+    navbar: NavbarComponent;
+}
+
+interface AdminAddUserState {
+    errorMessage: string | null;
+    validMessage: string;
+    editUser: boolean;
+    showDialog: boolean;
+    mode: string;
+    firstName: string;
+    lastName: string;
+    email: string;
+    originalEmail: string;
+    role: string;
+    lmsId: string;
+    errors: {
+        firstName: string;
+        lastName: string;
+        email: string;
+        role: string;
+        lmsId: string;
+    };
+}
+
+class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
+    unenrollUser: () => void;
+    deleteUser: () => void;
+
+    constructor(props: AdminAddUserProps) {
         super(props);
 
     this.state = {
@@ -41,26 +94,30 @@ class AdminAddUser extends Component {
     this.unenrollUser = () => {
       var navbar = this.props.navbar;
 
+      if (navbar.state.user && navbar.state.chosenCourse) {
             genericResourcePUT(
                 `/user?uid=${navbar.state.user["user_id"]}&course_id=${navbar.state.chosenCourse["course_id"]}&unenroll_user=${true}`,
                 this,
-                {
+                JSON.stringify({
                     userId: navbar.state.user["user_id"],
                     courseId: navbar.state.chosenCourse["course_id"]
-                }
+                })
             ).then(result => {
                 if (result !== undefined && result.errorMessage === null) {
                 navbar.confirmCreateResource("User");
                 }
             });
         }
+        }
 
     this.deleteUser = () => {
       var navbar = this.props.navbar;
 
+      if (navbar.state.user) {
       genericResourceDELETE(`/user?uid=${navbar.state.user["user_id"]}`, this);
 
       navbar.confirmCreateResource("User");
+      }
     };
   }
 
@@ -105,7 +162,7 @@ class AdminAddUser extends Component {
     }
 
    
-    handleChange = (e) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
       
         // Special case: email with inline validation
@@ -161,19 +218,20 @@ class AdminAddUser extends Component {
       
 
         // other fields
-        this.setState({
+        this.setState((prev) => ({
+          ...prev,
           [id]: value,
-          errors: { ...this.state.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
-        });
+          errors: { ...prev.errors, [id]: value.trim() === '' ? `${formatString} cannot be empty` : '' }
+        }));
       };
 
     
     
 
 
-    handleSelect = (event) => {
+    handleSelect = (event: { target: { value: unknown; }; }) => {
         this.setState({
-            role: event.target.value
+            role: event.target.value as string
         });
       };
 
@@ -210,7 +268,8 @@ class AdminAddUser extends Component {
             "firstName": "",
             "lastName": "",
             "email": "",
-            "role": ""
+            "role": "",
+            "lmsId": ""
         };
 
         if (firstName.trim() === '')
@@ -252,7 +311,7 @@ class AdminAddUser extends Component {
       role_id: navbar.props.isSuperAdmin ? 3 : role,
     });
 
-    let promise;
+    let promise: Promise<any> | undefined;
     let owner_id = cookies.get("user")["user_id"];
 
     // Case 1: Super Admin adding a new user (user is null, addUser can be true or false)
@@ -287,6 +346,7 @@ class AdminAddUser extends Component {
             );
     }
 
+    if (promise) {
         promise
   .then((result) => {
     if (result && result.errorMessage == null) {
@@ -330,9 +390,10 @@ class AdminAddUser extends Component {
           errorMessage: "Unable to save right now. Please try again.",
         });
       });
+    }
   };
 
-    render() {
+  public render() {
         const {
             errors,
             errorMessage,
@@ -353,16 +414,13 @@ class AdminAddUser extends Component {
             <React.Fragment>
                 { errorMessage &&
                     <ErrorMessage
-                        add={addUser}
-                        resource={"User"}
                         errorMessage={errorMessage}
                     />
                 }
 
                 { validMessage!=="" &&
                     <ErrorMessage
-                        add={addUser}
-                        error={validMessage}
+                        errorMessage={validMessage}
                     />
                 }
 
@@ -591,7 +649,8 @@ class AdminAddUser extends Component {
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
                                        onPaste={(e) => {
-                                            const text = (e.clipboardData || window.clipboardData).getData('text') || '';
+                                            const clipboardData = e.clipboardData;
+                                            const text = clipboardData ? clipboardData.getData('text') : '';
                                             if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
                                                 e.preventDefault();
                                                 this.setState({
