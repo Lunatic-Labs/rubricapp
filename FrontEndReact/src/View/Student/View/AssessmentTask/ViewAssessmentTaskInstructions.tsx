@@ -1,9 +1,10 @@
-import React, { Component } from "react";
+import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
-import {genericResourcePOST} from '../../../../utility.js';
+import {genericResourcePOST} from '../../../../utility';
 import Cookies from 'universal-cookie';
-import ErrorMessage from "../../../Error/ErrorMessage.js";
+import ErrorMessage from "../../../Error/ErrorMessage";
 
 interface ViewAssessmentTaskInstructionsProps {
     navbar: any;
@@ -30,8 +31,16 @@ interface ViewAssessmentTaskInstructionsProps {
  * @property {string|null} state.errorMessage - Error message to display if we cannot
  *                                              proceed (e.g., missing assessmentTaskId).
  */
-class ViewAssessmentTaskInstructions extends Component {
-    constructor(props) {
+
+interface ViewAssessmentTaskInstructionsState {
+    categories: any;
+    instructions: string;
+    skipInstructions: boolean;
+    errorMessage: string | null;
+}
+
+class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstructionsProps, ViewAssessmentTaskInstructionsState> {
+    constructor(props: ViewAssessmentTaskInstructionsProps) {
         super(props);
         this.state = {
             categories: this.props.rubrics["category_json"],
@@ -95,7 +104,7 @@ class ViewAssessmentTaskInstructions extends Component {
                 
                 await genericResourcePOST(
                     '/feedback',
-                    this,
+                    this as any,
                     JSON.stringify({
                         user_id: userId,
                         completed_assessment_id: completedAssessmentId
@@ -180,11 +189,9 @@ class ViewAssessmentTaskInstructions extends Component {
                         <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
                             {"Rubric for " + rubricName}
                         </h3>
-
                         <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
                             Rubric Description: {rubricDescription}
                         </h6>
-
                         <div
                             style={{
                                 display: 'flex',

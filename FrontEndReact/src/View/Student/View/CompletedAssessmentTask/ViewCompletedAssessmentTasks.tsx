@@ -1,4 +1,5 @@
-import React, { Component } from "react"
+import React, { Component } from 'react';
+// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
@@ -26,23 +27,14 @@ interface ViewCompletedAssessmentTasksProps {
  *                                       (unit_of_assessment, role_id, etc.).
  *  @prop {Array}  completedAssessments - Completed CATs to display as rows.
  */
-class ViewCompletedAssessmentTasks extends Component {
-    /**
-     * @method render
-     * @description
-     * Builds the column definitions for CustomDataTable, including:
-     *  - Task name
-     *  - Initial time
-     *  - Last update
-     *  - Unit of assessment (Team/Individual)
-     *  - Completed by (Student vs TA/Instructor)
-     *  - View button (records rating view via POST and navigates)
-     *
-     * Sorting:
-     *  - Column-level sorting is handled by CustomDataTable.
-     *  - This component does not pre-sort completedAssessments; they are passed
-     *    to the table in the order received from the parent.
-     */
+
+interface ViewCompletedAssessmentTasksProps {
+    navbar: any;
+    assessmentTasks: any[];
+    completedAssessments: any[];
+}
+
+class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTasksProps> {
     render() {
         const completedAssessments = this.props.completedAssessments;
         const assessmentTasks = this.props.assessmentTasks;
@@ -64,7 +56,7 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (initial_time) => {
+                    customBodyRender: (initial_time: any) => {
                         return(
                             <>
                                 {initial_time ? getHumanReadableDueDate(initial_time) : "N/A"}
@@ -80,7 +72,7 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (last_update) => {
+                    customBodyRender: (last_update: any) => {
                         return(
                             <>
                                 {last_update ? getHumanReadableDueDate(last_update) : "N/A"}
@@ -96,8 +88,8 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId) => {
-                        const chosenAT = assessmentTasks.find(at => at.assessment_task_id === atId);
+                    customBodyRender: (atId: any) => {
+                        const chosenAT = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
                         if (!chosenAT) {
                             return <>UNDEFINED</>
                         }
@@ -112,9 +104,9 @@ class ViewCompletedAssessmentTasks extends Component {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"140px" } },
                     setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId) => {
-                        const at = assessmentTasks.find(at => at.assessment_task_id === atId);
-                        const completer = at?.role_id;
+                    customBodyRender: (atId: any) => {
+                        const at = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
+                        const completer = at.role_id;
                         return <>{completer === 5 ? "Student" : "TA/Instructor"}</>;
                     }
                 }
@@ -127,66 +119,60 @@ class ViewCompletedAssessmentTasks extends Component {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
                     setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
-                    customBodyRender: (atId) => {
+                    customBodyRender: (atId: any) => {
                         return (
                             <div>
                                 <IconButton
                                     onClick={() => {
-                                        let singularCompletedAssessment = null;
-
-                                        if (completedAssessments) {
-                                            singularCompletedAssessment =
-                                                completedAssessments.find(
-                                                    completedAssessment =>
-                                                        completedAssessment.assessment_task_id === atId
-                                                ) ?? null;
-                                        }
-
-                                        /**
-                                         * POST /rating
-                                         *
-                                         * Purpose:
-                                         *  - Record that a user has viewed the rating/feedback for a
-                                         *    specific completed assessment.
-                                         *
-                                         * Endpoint:
-                                         *  - POST /rating
-                                         *
-                                         * Body (JSON):
-                                         *  {
-                                         *    "user_id": <number>,                 // singularCompletedAssessment.user_id
-                                         *    "completed_assessment_id": <number>  // singularCompletedAssessment.completed_assessment_id
-                                         *  }
-                                         *
-                                         * Notes:
-                                         *  - No query parameters are used on this endpoint.
-                                         *  - This call runs each time the "View" icon is clicked before
-                                         *    navigating to the instructions/feedback view.
-                                         */
-                                        if (singularCompletedAssessment) {
-                                            genericResourcePOST(
-                                                `/rating`,
-                                                this,
-                                                JSON.stringify({
-                                                    "user_id" : singularCompletedAssessment.user_id,
-                                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
-                                                }),
-                                            );
-                                        }
-
-                                        this.props.navbar.setAssessmentTaskInstructions(
-                                            assessmentTasks,
-                                            atId,
-                                            completedAssessments,
-                                            { readOnly: true, skipInstructions: true }
-                                        );
-                                    }}
+                              var singularCompletedAssessment = null;
+                              if (completedAssessments) {
+                                  singularCompletedAssessment
+                                      = completedAssessments.find(
+                                          (completedAssessment: any) => completedAssessment.assessment_task_id === atId
+                                      ) ?? null;
+                              }
+                                /**
+                                 * POST /rating
+                                 *
+                                 * Purpose:
+                                 *  - Record that a user has viewed the rating/feedback for a
+                                 *    specific completed assessment.
+                                 *
+                                 * Endpoint:
+                                 *  - POST /rating
+                                 *
+                                 * Body (JSON):
+                                 *  {
+                                 *    "user_id": <number>,                 // singularCompletedAssessment.user_id
+                                 *    "completed_assessment_id": <number>  // singularCompletedAssessment.completed_assessment_id
+                                 *  }
+                                 *
+                                 * Notes:
+                                 *  - No query parameters are used on this endpoint.
+                                 *  - This call runs each time the "View" icon is clicked before
+                                 *    navigating to the instructions/feedback view.
+                                 */
+                              genericResourcePOST(
+                                `/rating`,
+                                this,
+                                JSON.stringify({
+                                    "user_id" : singularCompletedAssessment.user_id,
+                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
+                                }),
+                              );
+                              this.props.navbar.setAssessmentTaskInstructions(
+                                  assessmentTasks,
+                                  atId,
+                                  completedAssessments,
+                                  { readOnly: true, skipInstructions: true }
+                              );
+                                      }}
                                     aria-label="completedAssessmentTasksViewIconButton"
                                 >
                                     <VisibilityIcon sx={{color:"black"}} />
                                 </IconButton>
                             </div>
-                        )
+                        );
                     }
                 }
             },

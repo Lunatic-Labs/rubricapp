@@ -20,9 +20,9 @@ interface AdminViewRatingsState {
   lastSeenCsvType: any;
 }
 
-
-class AdminViewRatings extends Component {
-  constructor(props) {
+class AdminViewRatings extends Component<any, AdminViewRatingsState> {
+  fetchData: any;
+  constructor(props: any) {
     super(props);
 
     /**
@@ -106,9 +106,9 @@ class AdminViewRatings extends Component {
       const suffix = ["-sfis_ocs", "-ratings", "-comments"];
       let fileName = this.props.navbar.state.chosenCourse['course_name'];
 
-      let assessment = this.props.assessmentTasks.find(obj => obj["assessment_task_id"] === this.props.chosenAssessmentId);
+      let assessment = this.props.assessmentTasks.find((obj: any) => obj["assessment_task_id"] === this.props.chosenAssessmentId);
       const atName = assessment["assessment_task_name"].split(' ');
-      const abreviationLetters = atName.map(word => word.charAt(0).toUpperCase());
+      const abreviationLetters = atName.map((word: any) => word.charAt(0).toUpperCase());
       fileName += '-' + abreviationLetters.join('');
 
       fileName += suffix[this.state.lastSeenCsvType];
@@ -145,7 +145,7 @@ class AdminViewRatings extends Component {
    * Calls api to recive csv data and stores it.
    * @param {int} type: INT that informs what csv is to be retived; sif/ocs,ratings,comments are respecitvley 1,2,3.
    */
-  handleCsvDownloads(type) {
+  handleCsvDownloads(type: any) {
     let promise = genericResourceGET(
       `/csv_assessment_export?assessment_task_id=${this.state.loadedAssessmentId}&format=${type}`,
       "csv_creation",
@@ -189,7 +189,6 @@ class AdminViewRatings extends Component {
       return(
         <Box>
             <ErrorMessage
-                fetchedResource={"Ratings"}
                 errorMessage={errorMessage}
             />
         </Box>
