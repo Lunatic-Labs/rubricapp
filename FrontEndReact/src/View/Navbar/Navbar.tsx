@@ -22,7 +22,8 @@ import Divider from '@mui/material/Divider';
 import Settings from './Settings';
 import Logout from '../Logout/Logout';
 // @ts-ignore: allow importing images without type declarations
-import Logo from "./sbText.png";
+import Logo from "./sbTextFixed.png";
+import SettingsIcon from '@mui/icons-material/Settings';
 
 export default function ButtonAppBar(props: any) {
   const [anchorEl, setAnchorEl] = React.useState(null);
@@ -142,9 +143,7 @@ export default function ButtonAppBar(props: any) {
               <MenuItem  onClick={() => {
                 props.setNewTab("Settings");
               }}>
-                <Box sx={{ mr: 1 }}>
-                  <Settings />
-                </Box>
+                <SettingsIcon sx={{ mr: 1 }} />
                 Settings
               </MenuItem>
 
