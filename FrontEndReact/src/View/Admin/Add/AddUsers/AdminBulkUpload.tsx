@@ -15,8 +15,8 @@ import { Box, Typography, Tooltip, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { RequestState } from '../../../../Enums/RequestState.js';
-import DynamicLoadingSpinner from '../../../Loading/DynamicLoading.js';
+import { RequestStateType, RequestState } from '../../../../Enums/RequestState';
+import DynamicLoadingSpinner from '../../../Loading/DynamicLoading';
 import debounce from 'debounce';
 
 interface AdminBulkUploadState {
@@ -26,6 +26,7 @@ interface AdminBulkUploadState {
     teamsPics: string[];
     teamsMsgs: string[];
     currentTeamPic: number;
+    uploadRequestStatus: RequestStateType;
 }
 
 class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
@@ -78,17 +79,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
      * This function makes sure one request is sent and we have awaited for a failure or success.
      * @param {*} e 
      */
-    blockMultipleRequests = (e) => {
-        if (this.state.uploadRequestStatus !== RequestState.LOADING){
-            this.onFormSubmit(e);
-        }
-    }
-
-    /**
-     * This function makes sure one request is sent and we have awaited for a failure or success.
-     * @param {*} e 
-     */
-    blockMultipleRequests = (e) => {
+    blockMultipleRequests = (e:any) => {
         if (this.state.uploadRequestStatus !== RequestState.LOADING){
             this.onFormSubmit(e);
         }
@@ -181,12 +172,12 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
         var confirmCreateResource = navbar.confirmCreateResource;
 
         const {uploadRequestStatus} = this.state; 
+        const isLoading: boolean = uploadRequestStatus === RequestState.LOADING;
 
         return (
             <Box>
                 {this.state.errorMessage &&
                     <ErrorMessage
-                        navbar={this.props.navbar}
                         errorMessage={String(this.state.errorMessage)}
                         aria-label="adminBulkUploadErrorMessage"
                     />
@@ -311,7 +302,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
 
                                                 <Button className='primary-color' 
                                                     variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"
-                                                    style={{ display: uploadRequestStatus === RequestState.LOADING ? 'none' : 'inline-flex' }}
+                                                    style={{ display:  isLoading ? 'none' : 'inline-flex' }}
                                                 >
                                                     Upload
                                                 </Button>

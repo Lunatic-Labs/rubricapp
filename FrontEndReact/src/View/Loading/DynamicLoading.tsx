@@ -2,6 +2,11 @@ import { Component } from "react";
 import { SPINNER_COLOR, SPINNER_SIZE } from "../../Constants/ButtonSpinner";
 import { Box, CircularProgress } from "@mui/material";
 
+interface DynamicLoadingSpinnerProps{
+    size?: number;
+    thickness?: number;
+}
+
 /**
  * Displays a centered MUI circular progress spinner that does not have a fixed size.
  * 
@@ -19,7 +24,7 @@ import { Box, CircularProgress } from "@mui/material";
  *  // Custom size and stroke
  *      <DynamicLoadingSpinner size={50} thickness={70}/>
  */
-class DynamicLoadingSpinner extends Component {
+class DynamicLoadingSpinner extends Component<DynamicLoadingSpinnerProps> {
 
     render() {
         const {size = SPINNER_SIZE, thickness = 2} = this.props;
