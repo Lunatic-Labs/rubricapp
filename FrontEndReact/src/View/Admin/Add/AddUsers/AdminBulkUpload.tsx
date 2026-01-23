@@ -152,6 +152,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                     errorMessage: error,
                     uploadRequestStatus: RequestState.ERROR,
                 })
+                
             });
         }
     }
@@ -173,6 +174,8 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
 
         const {uploadRequestStatus} = this.state; 
         const isLoading: boolean = uploadRequestStatus === RequestState.LOADING;
+
+        console.log(this.state.errorMessage);
 
         return (
             <Box>
