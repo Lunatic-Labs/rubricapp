@@ -1,0 +1,839 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+<!-- 2025-12-05 Fri -->
+<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title><code>syscontrol_alma.sh</code> Docs (AlmaLinux / HostGator)</title>
+<meta name="generator" content="Org mode (adapted)" />
+<meta name="author" content="Beshoy Iskandar (based on original by Zachary Haskins)" />
+<style type="text/css">
+ <!--/*--><![CDATA[/*><!--*/
+  .title  { text-align: center;
+             margin-bottom: .2em; }
+  .subtitle { text-align: center;
+              font-size: medium;
+              font-weight: bold;
+              margin-top:0; }
+  .todo   { font-family: monospace; color: red; }
+  .done   { font-family: monospace; color: green; }
+  .priority { font-family: monospace; color: orange; }
+  .tag    { background-color: #eee; font-family: monospace;
+            padding: 2px; font-size: 80%; font-weight: normal; }
+  .timestamp { color: #bebebe; }
+  .timestamp-kwd { color: #5f9ea0; }
+  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
+  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
+  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
+  .underline { text-decoration: underline; }
+  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  p.verse { margin-left: 3%; }
+  pre {
+    border: 1px solid #ccc;
+    box-shadow: 3px 3px 3px #eee;
+    padding: 8pt;
+    font-family: monospace;
+    overflow: auto;
+    margin: 1.2em;
+  }
+  pre.src {
+    position: relative;
+    overflow: visible;
+    padding-top: 1.2em;
+  }
+  pre.src:before {
+    display: none;
+    position: absolute;
+    background-color: white;
+    top: -10px;
+    right: 10px;
+    padding: 3px;
+    border: 1px solid black;
+  }
+  pre.src:hover:before { display: inline;}
+  /* Languages per Org manual */
+  pre.src-asymptote:before { content: 'Asymptote'; }
+  pre.src-awk:before { content: 'Awk'; }
+  pre.src-C:before { content: 'C'; }
+  /* pre.src-C++ doesn't work in CSS */
+  pre.src-clojure:before { content: 'Clojure'; }
+  pre.src-css:before { content: 'CSS'; }
+  pre.src-D:before { content: 'D'; }
+  pre.src-ditaa:before { content: 'ditaa'; }
+  pre.src-dot:before { content: 'Graphviz'; }
+  pre.src-calc:before { content: 'Emacs Calc'; }
+  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
+  pre.src-fortran:before { content: 'Fortran'; }
+  pre.src-gnuplot:before { content: 'gnuplot'; }
+  pre.src-haskell:before { content: 'Haskell'; }
+  pre.src-hledger:before { content: 'hledger'; }
+  pre.src-java:before { content: 'Java'; }
+  pre.src-js:before { content: 'Javascript'; }
+  pre.src-latex:before { content: 'LaTeX'; }
+  pre.src-ledger:before { content: 'Ledger'; }
+  pre.src-lisp:before { content: 'Lisp'; }
+  pre.src-lilypond:before { content: 'Lilypond'; }
+  pre.src-lua:before { content: 'Lua'; }
+  pre.src-matlab:before { content: 'MATLAB'; }
+  pre.src-mscgen:before { content: 'Mscgen'; }
+  pre.src-ocaml:before { content: 'Objective Caml'; }
+  pre.src-octave:before { content: 'Octave'; }
+  pre.src-org:before { content: 'Org mode'; }
+  pre.src-oz:before { content: 'OZ'; }
+  pre.src-plantuml:before { content: 'Plantuml'; }
+  pre.src-processing:before { content: 'Processing.js'; }
+  pre.src-python:before { content: 'Python'; }
+  pre.src-R:before { content: 'R'; }
+  pre.src-ruby:before { content: 'Ruby'; }
+  pre.src-sass:before { content: 'Sass'; }
+  pre.src-scheme:before { content: 'Scheme'; }
+  pre.src-screen:before { content: 'Gnu Screen'; }
+  pre.src-sed:before { content: 'Sed'; }
+  pre.src-sh:before { content: 'shell'; }
+  pre.src-sql:before { content: 'SQL'; }
+  pre.src-sqlite:before { content: 'SQLite'; }
+  /* additional languages in org.el's org-babel-load-languages alist */
+  pre.src-forth:before { content: 'Forth'; }
+  pre.src-io:before { content: 'IO'; }
+  pre.src-J:before { content: 'J'; }
+  pre.src-makefile:before { content: 'Makefile'; }
+  pre.src-maxima:before { content: 'Maxima'; }
+  pre.src-perl:before { content: 'Perl'; }
+  pre.src-picolisp:before { content: 'Pico Lisp'; }
+  pre.src-scala:before { content: 'Scala'; }
+  pre.src-shell:before { content: 'Shell Script'; }
+  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
+  /* additional language identifiers per "defun org-babel-execute"
+       in ob-*.el */
+  pre.src-cpp:before  { content: 'C++'; }
+  pre.src-abc:before  { content: 'ABC'; }
+  pre.src-coq:before  { content: 'Coq'; }
+  pre.src-groovy:before  { content: 'Groovy'; }
+  /* additional language identifiers from org-babel-shell-names in
+     ob-shell.el: ob-shell is the only babel language using a lambda to put
+     the execution function name together. */
+  pre.src-bash:before  { content: 'bash'; }
+  pre.src-csh:before  { content: 'csh'; }
+  pre.src-ash:before  { content: 'ash'; }
+  pre.src-dash:before  { content: 'dash'; }
+  pre.src-ksh:before  { content: 'ksh'; }
+  pre.src-mksh:before  { content: 'mksh'; }
+  pre.src-posh:before  { content: 'posh'; }
+  /* Additional Emacs modes also supported by the LaTeX listings package */
+  pre.src-ada:before { content: 'Ada'; }
+  pre.src-asm:before { content: 'Assembler'; }
+  pre.src-caml:before { content: 'Caml'; }
+  pre.src-delphi:before { content: 'Delphi'; }
+  pre.src-html:before { content: 'HTML'; }
+  pre.src-idl:before { content: 'IDL'; }
+  pre.src-mercury:before { content: 'Mercury'; }
+  pre.src-metapost:before { content: 'MetaPost'; }
+  pre.src-modula-2:before { content: 'Modula-2'; }
+  pre.src-pascal:before { content: 'Pascal'; }
+  pre.src-ps:before { content: 'PostScript'; }
+  pre.src-prolog:before { content: 'Prolog'; }
+  pre.src-simula:before { content: 'Simula'; }
+  pre.src-tcl:before { content: 'tcl'; }
+  pre.src-tex:before { content: 'TeX'; }
+  pre.src-plain-tex:before { content: 'Plain TeX'; }
+  pre.src-verilog:before { content: 'Verilog'; }
+  pre.src-vhdl:before { content: 'VHDL'; }
+  pre.src-xml:before { content: 'XML'; }
+  pre.src-nxml:before { content: 'XML'; }
+  /* add a generic configuration mode; LaTeX export needs an additional
+     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
+  pre.src-conf:before { content: 'Configuration File'; }
+
+  table { border-collapse:collapse; }
+  caption.t-above { caption-side: top; }
+  caption.t-bottom { caption-side: bottom; }
+  td, th { vertical-align:top;  }
+  th.org-right  { text-align: center;  }
+  th.org-left   { text-align: center;   }
+  th.org-center { text-align: center; }
+  td.org-right  { text-align: right;  }
+  td.org-left   { text-align: left;   }
+  td.org-center { text-align: center; }
+  dt { font-weight: bold; }
+  .footpara { display: inline; }
+  .footdef  { margin-bottom: 1em; }
+  .figure { padding: 1em; }
+  .figure p { text-align: center; }
+  .equation-container {
+    display: table;
+    text-align: center;
+    width: 100%;
+  }
+  .equation {
+    vertical-align: middle;
+  }
+  .equation-label {
+    display: table-cell;
+    text-align: right;
+    vertical-align: middle;
+  }
+  .inlinetask {
+    padding: 10px;
+    border: 2px solid gray;
+    margin: 10px;
+    background: #ffffcc;
+  }
+  #org-div-home-and-up
+   { text-align: right; font-size: 70%; white-space: nowrap; }
+  textarea { overflow-x: auto; }
+  .linenr { font-size: smaller }
+  .code-highlighted { background-color: #ffff00; }
+  .org-info-js_info-navigation { border-style: none; }
+  #org-info-js_console-label
+    { font-size: 10px; font-weight: bold; white-space: nowrap; }
+  .org-info-js_search-highlight
+    { background-color: #ffff00; color: #000000; font-weight: bold; }
+  .org-svg { width: 90%; }
+  /*]]>*/-->
+</style>
+<script type="text/javascript">
+/*
+@licstart  The following is the entire license notice for the
+JavaScript code in this tag.
+
+Copyright (C) 2012-2020 Free Software Foundation, Inc.
+
+The JavaScript code in this tag is free software: you can
+redistribute it and/or modify it under the terms of the GNU
+General Public License (GNU GPL) as published by the Free Software
+Foundation, either version 3 of the License, or (at your option)
+any later version.  The code is distributed WITHOUT ANY WARRANTY;
+without even the implied warranty of MERCHANTABILITY or FITNESS
+FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
+
+As additional permission under GNU GPL version 3 section 7, you
+may distribute non-source (e.g., minimized or compacted) forms of
+that code without the copy of the GNU GPL normally required by
+section 4, provided you include this license notice and a URL
+through which recipients can access the Corresponding Source.
+
+
+@licend  The above is the entire license notice
+for the JavaScript code in this tag.
+*/
+<!--/*--><![CDATA[/*><!--*/
+ function CodeHighlightOn(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(null != target) {
+     elem.cacheClassElem = elem.className;
+     elem.cacheClassTarget = target.className;
+     target.className = "code-highlighted";
+     elem.className   = "code-highlighted";
+   }
+ }
+ function CodeHighlightOff(elem, id)
+ {
+   var target = document.getElementById(id);
+   if(elem.cacheClassElem)
+     elem.className = elem.cacheClassElem;
+   if(elem.cacheClassTarget)
+     target.className = elem.cacheClassTarget;
+ }
+/*]]>*///-->
+</script>
+</head>
+<body>
+<div id="content">
+<h1 class="title"><code>syscontrol_alma.sh</code> Docs (AlmaLinux / HostGator)</h1>
+<div id="table-of-contents">
+<h2>Table of Contents</h2>
+<div id="text-table-of-contents">
+<ul>
+<li><a href="#org-tldr">1: TL;DR</a></li>
+<li><a href="#org-first-time">2: First Time Setup (AlmaLinux / HostGator)</a></li>
+<li><a href="#org-options">3: Available Options</a>
+<ul>
+<li><a href="#org-help">3.1. Help</a></li>
+<li><a href="#org-fresh">3.2. Fresh</a></li>
+<li><a href="#org-init">3.3. Init</a></li>
+<li><a href="#org-install">3.4. Install</a></li>
+<li><a href="#org-configure">3.5. Configure</a></li>
+<li><a href="#org-serve">3.6. Serve</a></li>
+<li><a href="#org-update">3.7. Update</a></li>
+<li><a href="#org-status">3.8. Status</a></li>
+<li><a href="#org-kill">3.9. Kill</a></li>
+</ul>
+</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org-tldr" class="outline-2">
+<h2 id="org-tldr"><span class="section-number-2">1</span> TL;DR</h2>
+<div class="outline-text-2" id="text-1">
+<ol class="org-ol">
+<li>Clone the repo onto the AlmaLinux server.</li>
+<li><code>cd</code> into the HostGator deploy directory (where <code>syscontrol_alma.sh</code> lives), e.g. <code>./rubricapp/Hostgator</code>.</li>
+<li>Run <code>./syscontrol_alma.sh --fresh</code> to create the production directory under <code>/home/$USER/RUBRICAPP_PRODUCTION/</code>.</li>
+<li><code>cd</code> into the new production copy:
+<pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Hostgator</pre></li>
+<li>Optionally, remove the original cloned repo from your home directory (the production copy is now under <code>RUBRICAPP_PRODUCTION</code>).</li>
+<li>Make sure the <code>DOMAIN</code> in <code>syscontrol_alma.sh</code> points to this server (Route 53 A record -&gt; server IP).</li>
+<li>Run full initialization (installs deps, configures SSL/Nginx/Gunicorn/Firewall/SELinux, resets DB):
+<pre class="src src-bash">./syscontrol_alma.sh --init</pre></li>
+<li>Start everything and serve the app:
+<pre class="src src-bash">./syscontrol_alma.sh --serve</pre></li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org-first-time" class="outline-2">
+<h2 id="org-first-time"><span class="section-number-2">2</span> First Time Setup</h2>
+<div class="outline-text-2" id="text-2">
+<p>
+Clone the repo into the AlmaLinux instance and <code>cd</code> into the HostGator deployment directory (where the new <code>syscontrol_alma.sh</code> is).
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">git clone https://github.com/Lunatic-Labs/rubricapp.git
+cd ./rubricapp/Hostgator/
+</pre>
+</div>
+
+<p>
+Then run <code>syscontrol_alma.sh</code> with the <code>--fresh</code> option:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --fresh
+</pre>
+</div>
+
+<p>
+This will create a production directory at:
+</p>
+
+<pre class="src src-bash">/home/$USER/RUBRICAPP_PRODUCTION/</pre>
+
+<p>
+The original repo you cloned is no longer needed for deployment, because the entire directory was copied into this new production directory. You can remove the original clone later if you want to keep things clean.
+</p>
+
+<p>
+Now, <code>cd</code> into the production copy:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Hostgator/
+</pre>
+</div>
+
+<p>
+Before running initialization, make sure the <code>DOMAIN</code> variable in <code>syscontrol_alma.sh</code> (default <code>skill-builder-testing.net</code> or your real domain) is correctly pointing to this server’s public IP via your DNS (Route 53).
+</p>
+
+<p>
+Once DNS is correct, run the following to install dependencies, configure services, obtain SSL certificates, configure the database, and harden the server:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --init
+</pre>
+</div>
+
+<p>
+See <i>section 3.3</i>: <b>Init</b> for more information on this option.
+</p>
+
+<p>
+After that, everything should be installed, up-to-date, and configured to run <i>rubricapp</i> behind Nginx with Gunicorn, Redis, firewalld, SELinux, and Let’s Encrypt SSL. Finally, run the following
+to launch <i>rubricapp</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --serve
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org-options" class="outline-2">
+<h2 id="org-options"><span class="section-number-2">3</span> Available Options</h2>
+<div class="outline-text-2" id="text-3">
+</div>
+
+<div id="outline-container-org-help" class="outline-3">
+<h3 id="org-help"><span class="section-number-3">3.1</span> Help</h3>
+<div class="outline-text-3" id="text-3-1">
+<p>
+<i>Usage</i>:
+</p>
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --help
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Displays all of the different options that can be passed to <code>syscontrol_alma.sh</code>.
+</p>
+
+<p>
+The order of the options displayed in the help message is the logical order
+for deploying the project on a brand new AlmaLinux / HostGator environment.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org-fresh" class="outline-3">
+<h3 id="org-fresh"><span class="section-number-3">3.2</span> Fresh</h3>
+<div class="outline-text-3" id="text-3-2">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --fresh
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Creates the production directory structure at:
+</p>
+
+<pre class="src src-bash">/home/$USER/RUBRICAPP_PRODUCTION/</pre>
+
+<p>
+The script:
+</p>
+<ul class="org-ul">
+<li>Creates <code>$PROD_NAME</code> (defaults to <code>RUBRICAPP_PRODUCTION</code>) in your home directory.</li>
+<li>Copies the current repo directory into:
+<pre class="src src-bash">/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/</pre></li>
+<li>Sets up the expected structure:
+<ul class="org-ul">
+<li><code>rubricapp-env/</code> for the Python virtual environment</li>
+<li><code>rubricapp/</code> for the application code (Frontend React, Backend Flask, Hostgator scripts, etc.)</li>
+</ul></li>
+</ul>
+
+<p>
+After running <code>--fresh</code>, you should switch to using the production copy of the script under:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Hostgator/
+</pre>
+</div>
+</div>
+</div>
+
+<div id="outline-container-org-init" class="outline-3">
+<h3 id="org-init"><span class="section-number-3">3.3</span> Init</h3>
+<div class="outline-text-3" id="text-3-3">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --init
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+This is intended to be the option you use after running <code>--fresh</code> and switching into the production directory. It is meant for first-time setup on a new AlmaLinux server.
+</p>
+
+<p>
+It runs the following internal steps:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --install
+./syscontrol_alma.sh --configure
+# plus: configure_db (database reset + initial setup)
+</pre>
+</div>
+
+<p>
+Specifically, <code>--init</code>:
+</p>
+
+<ul class="org-ul">
+<li>Installs AlmaLinux system dependencies via <code>dnf</code> (Python, Node.js, Redis, Nginx, firewalld, Certbot, SELinux tools, etc.).</li>
+<li>Creates the Python virtual environment and installs backend dependencies from <code>BackEndFlask/requirements.txt</code>.</li>
+<li>Installs Node.js (via NVM), <code>serve</code>, and frontend dependencies under <code>FrontEndReact/</code>.</li>
+<li>Obtains or renews SSL certificates using <code>certbot</code> in standalone mode for the configured <code>DOMAIN</code>.</li>
+<li>Creates the <code>rubricapp</code> Gunicorn systemd service in <code>/etc/systemd/system/rubricapp.service</code>.</li>
+<li>Creates Nginx site configs for the backend and frontend under:
+<ul class="org-ul">
+<li><code>/etc/nginx/sites-available/rubricapp</code> (backend: port 5000 ssl → Gunicorn unix socket)</li>
+<li><code>/etc/nginx/sites-available/rubricapp-frontend</code> (frontend: HTTP redirect + HTTPS → React on port 3000)</li>
+<li>Symlinks them into <code>/etc/nginx/sites-enabled/</code> and ensures <code>sites-enabled</code> is included from <code>/etc/nginx/nginx.conf</code>.</li>
+</ul></li>
+<li>Configures firewalld to allow HTTP/HTTPS (and, by default, ports 3000, 5000, 5001).</li>
+<li>Configures SELinux to allow Nginx to access the app files and Unix sockets under <code>/home/$USER/RUBRICAPP_PRODUCTION/</code>.</li>
+<li>Runs <code>dbcreate.py</code> and creates a <code>hidden.py</code> file for email-related secrets.</li>
+</ul>
+
+<p>
+<b>[WARNING]</b>
+</p>
+
+<p>
+This option completely wipes and recreates the database as part of <code>configure_db</code>. Do not run <code>--init</code> on a production system you want to preserve without backups.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org-install" class="outline-3">
+<h3 id="org-install"><span class="section-number-3">3.4</span> Install</h3>
+<div class="outline-text-3" id="text-3-4">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --install
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Installs necessary dependencies for:
+</p>
+
+<ul class="org-ul">
+<li><b>System packages (via <code>dnf</code>)</b>:  
+Installs all packages listed in <code>DEPS</code>, including:
+<ul class="org-ul">
+<li>Python 3, <code>python3-pip</code>, <code>python3-devel</code>, <code>python3-setuptools</code>, <code>python3-virtualenv</code></li>
+<li>Build tools (<code>gcc</code>, <code>gcc-c++</code>, <code>make</code>, <code>openssl-devel</code>, <code>libffi-devel</code>)</li>
+<li>Git, Node.js, npm</li>
+<li>Redis</li>
+<li>firewalld, Nginx</li>
+<li>SELinux utilities (<code>policycoreutils-python-utils</code>)</li>
+<li>Certbot (for Let’s Encrypt)</li>
+<li><code>lsof</code> for port/process inspection</li>
+</ul></li>
+
+<li><b>Python packages (via <code>pip</code>)</b>:  
+Creates/ensures the virtual environment at:
+<pre class="src src-bash">$VENV_DIR = /home/$USER/RUBRICAPP_PRODUCTION/rubricapp-env</pre>
+then installs backend dependencies from:
+<pre class="src src-bash">$PROJ_DIR/BackEndFlask/requirements.txt</pre></li>
+
+<li><b>Node.js / npm packages</b>:  
+Installs NVM, Node.js v20.11.1, globally installs <code>serve</code>, and runs:
+<pre class="src src-bash">npm install</pre>
+inside <code>$PROJ_DIR/FrontEndReact</code>.</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org-configure" class="outline-3">
+<h3 id="org-configure"><span class="section-number-3">3.5</span> Configure</h3>
+<div class="outline-text-3" id="text-3-5">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --configure
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Configures SSL, Gunicorn, Nginx, firewalld, and SELinux for the AlmaLinux environment. It assumes:
+</p>
+<ul class="org-ul">
+<li>The production directory structure created by <code>--fresh</code> exists.</li>
+<li><code>DOMAIN</code> is correctly set and its DNS A record points to this server’s IP.</li>
+</ul>
+
+<p>
+This option runs the following internal configuration helpers:
+</p>
+
+<ul class="org-ul">
+<li><b><code>configure_ssl</code></b>:
+<ul class="org-ul">
+<li>Stops Nginx and frees ports 80 and 443.</li>
+<li>Uses <code>certbot certonly --standalone</code> to obtain or renew Let’s Encrypt certificates for <code>$DOMAIN</code>.</li>
+<li>Stores certs under <code>/etc/letsencrypt/live/$DOMAIN/</code>.</li>
+</ul></li>
+
+<li><b><code>configure_gunicorn</code></b>:
+<ul class="org-ul">
+<li>Writes the Gunicorn systemd service file to:
+<pre class="src src-bash">/etc/systemd/system/rubricapp.service</pre></li>
+<li>Configures:
+<ul class="org-ul">
+<li><code>WorkingDirectory=/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask</code></li>
+<li><code>Environment="PATH=$VENV_DIR/bin"</code></li>
+<li><code>ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app</code></li>
+</ul></li>
+</ul></li>
+
+<li><b><code>configure_nginx</code></b>:
+<ul class="org-ul">
+<li>Writes the backend Nginx config to:
+<pre class="src src-bash">/etc/nginx/sites-available/rubricapp</pre>
+Backend:
+<ul class="org-ul">
+<li><code>listen 5000 ssl;</code></li>
+<li>Uses Let’s Encrypt certificates for <code>$DOMAIN</code>.</li>
+<li>Proxies to the Gunicorn Unix socket:
+<pre class="src src-bash">proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;</pre></li>
+</ul></li>
+<li>Writes the frontend Nginx config to:
+<pre class="src src-bash">/etc/nginx/sites-available/rubricapp-frontend</pre>
+Frontend:
+<ul class="org-ul">
+<li><code>listen 80;</code> → redirect to HTTPS</li>
+<li><code>listen 443 ssl;</code> → proxies to <code>http://localhost:3000/</code> where the React app is served.</li>
+<li>Includes WebSocket headers for dev tools / React features.</li>
+</ul></li>
+<li>Symlinks both into:
+<pre class="src src-bash">/etc/nginx/sites-enabled/</pre></li>
+<li>Ensures <code>sites-enabled</code> is included in <code>/etc/nginx/nginx.conf</code>.</li>
+<li>Runs <code>nginx -t</code> to validate the configuration.</li>
+</ul></li>
+
+<li><b><code>configure_firewalld</code></b>:
+<ul class="org-ul">
+<li>Enables and starts firewalld.</li>
+<li>Opens:
+<ul class="org-ul">
+<li>HTTP (80)</li>
+<li>HTTPS (443)</li>
+<li>Ports 3000, 5000, 5001 (for React / backend debugging if needed).</li>
+</ul></li>
+<li>Reloads firewalld to apply changes.</li>
+</ul></li>
+
+<li><b><code>configure_selinux</code></b>:
+<ul class="org-ul">
+<li>Enables SELinux booleans allowing Nginx (httpd) to:
+<ul class="org-ul">
+<li>Connect to network services and relay connections.</li>
+<li>Read user home directories and serve content from <code>/home/$USER/$PROD_NAME</code>.</li>
+</ul></li>
+<li>Labels the project directory so Nginx can read/write files and access the Unix socket:
+<pre class="src src-bash">semanage fcontext -a -t httpd_sys_rw_content_t "/home/$USER/$PROD_NAME(/.*)?"
+restorecon -Rv "/home/$USER/$PROD_NAME"</pre></li>
+</ul></li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org-serve" class="outline-3">
+<h3 id="org-serve"><span class="section-number-3">3.6</span> Serve</h3>
+<div class="outline-text-3" id="text-3-6">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --serve
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Serves the application. This is the option to use once everything has been installed and configured (typically after <code>--init</code>). It:
+</p>
+
+<ul class="org-ul">
+<li>Ensures the project directory exists and enters the Python virtual environment.</li>
+<li>Stops existing services and cleans up previous processes using <code>kill_procs</code>.</li>
+<li>Starts and enables:
+<ul class="org-ul">
+<li><code>redis.service</code></li>
+<li><code>rubricapp.service</code> (Gunicorn)</li>
+<li><code>nginx.service</code></li>
+</ul></li>
+<li>Reloads Nginx configuration.</li>
+<li>Adjusts permissions so Nginx can read your home directory (<code>chmod 755 /home/$USER</code>).</li>
+<li>Builds the React frontend:
+<pre class="src src-bash">cd "$PROJ_DIR/FrontEndReact"
+npm run build</pre></li>
+<li>Serves the React build on port 3000 using <code>serve</code>:
+<pre class="src src-bash">serve -s -l tcp://0.0.0.0:3000 build &amp;</pre></li>
+</ul>
+
+<p>
+After running <code>--serve</code>, the application should be reachable at:
+</p>
+<ul class="org-ul">
+<li><code>https://$DOMAIN</code> (frontend, proxied by Nginx to React on port 3000)</li>
+<li><code>https://$DOMAIN:5000</code> (backend, proxied via Nginx to Gunicorn’s Unix socket, if needed)</li>
+</ul>
+</div>
+</div>
+
+<div id="outline-container-org-update" class="outline-3">
+<h3 id="org-update"><span class="section-number-3">3.7</span> Update</h3>
+<div class="outline-text-3" id="text-3-7">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --update
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+<b>[Note]</b>: This option currently:
+</p>
+
+<ul class="org-ul">
+<li>Stops running processes/services using <code>kill_procs</code>.</li>
+<li>Runs <code>update_repo</code> to fetch and pull the latest changes from <code>origin/master</code> in <code>$PROJ_DIR</code> if the local HEAD differs.</li>
+</ul>
+
+<p>
+It does <b>not</b> automatically re-run <code>--serve</code> afterward. Typical manual workflow:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --update
+./syscontrol_alma.sh --serve
+</pre>
+</div>
+
+<p>
+That pattern:
+</p>
+<ol class="org-ol">
+<li>Stops current services.</li>
+<li>Pulls new code from the remote repo.</li>
+<li>Restarts everything using the latest code.</li>
+</ol>
+</div>
+</div>
+
+<div id="outline-container-org-status" class="outline-3">
+<h3 id="org-status"><span class="section-number-3">3.8</span> Status</h3>
+<div class="outline-text-3" id="text-3-8">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --status
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Prints the current status of key services and port usage required for <i>rubricapp</i>.
+</p>
+
+<p>
+Specifically, it shows:
+</p>
+<ul class="org-ul">
+<li><code>systemctl status nginx.service</code></li>
+<li><code>systemctl status rubricapp.service</code></li>
+<li><code>systemctl status redis.service</code></li>
+</ul>
+
+<p>
+And then checks which processes are bound to ports:
+</p>
+
+<ul class="org-ul">
+<li>5001</li>
+<li>5000</li>
+<li>3000</li>
+<li>80</li>
+</ul>
+
+<p>
+using <code>lsof -i :&lt;port&gt;</code>. This is helpful for debugging conflicts if something else is listening on ports the app needs.
+</p>
+</div>
+</div>
+
+<div id="outline-container-org-kill" class="outline-3">
+<h3 id="org-kill"><span class="section-number-3">3.9</span> Kill</h3>
+<div class="outline-text-3" id="text-3-9">
+<p>
+<i>Usage</i>:
+</p>
+
+<div class="org-src-container">
+<pre class="src src-bash">./syscontrol_alma.sh --kill
+</pre>
+</div>
+
+<p>
+<i>Description</i>:
+</p>
+
+<p>
+Stops and cleans up all processes required for running <i>rubricapp</i>. It:
+</p>
+
+<ul class="org-ul">
+<li>Stops:
+<ul class="org-ul">
+<li><code>redis.service</code></li>
+<li><code>rubricapp.service</code></li>
+<li><code>nginx.service</code></li>
+</ul></li>
+<li>Calls <code>kill_pids</code> on ports:
+<ul class="org-ul">
+<li>5000</li>
+<li>5001</li>
+<li>3000</li>
+</ul>
+to terminate any leftover processes bound to those ports.</li>
+<li>Recursively removes Python bytecode caches in the current tree:
+<ul class="org-ul">
+<li><code>__pycache__</code> directories</li>
+<li><code>.pyc</code> files</li>
+</ul></li>
+</ul>
+
+<p>
+Use this when you want a completely clean slate before reconfiguring, reinstalling, or re-serving the application.
+</p>
+</div>
+</div>
+</div>
+</div>
+<div id="postamble" class="status">
+<p class="author">Author: Beshoy Iskandar (original docs by Zachary Haskins)</p>
+<p class="date">Created: 2025-12-05</p>
+</div>
+</body>
+</html>
