@@ -1,16 +1,18 @@
 #!/bin/bash
 
 set -e
-
-# =====================================================
-# This script is made for Ubunut / Debian-Based Distros
-# =====================================================
+# ============================================================
+# Skill-Builder script for ALma Linux / Red Hat(RHEL) Distros
+# 
+# This script automates deployment of Flask and React
+# Also configures out Gunicorn, Nginx, Redis, MySQL 
+# ============================================================
 
 # ===================================================================
 # SCRIPT OPTIONS
 # These are the command-line flags you can use with this script
 # PSA: When adding new options, must add them in the usage function
-# ===================================================================
+# ====================================================================
 FRESH="--fresh"
 INIT="--init"
 CONFIGURE="--configure"
@@ -22,26 +24,29 @@ STATUS="--status"
 KILL="--kill"
 
 # ======================================
-# System Dependencies (For Ubuntu/Debian)
+# System Dependencies (For AlmaLinux)
 # to add new packages, add them to the DEPS below
 # ======================================
  DEPS='python3
       curl
-      build-essential
-      libssl-dev
-      libffi-dev
+      gcc
+      gcc-c++
+      make
+      openssl-devel
+      libffi-devel
       git
+      nodejs
       npm
-      redis-server
+      redis
       python3-pip
-      python3-gdbm
-      python3-dev
+      python3-devel
       python3-setuptools
-      python3-venv
-      ufw
+      python3-virtualenv
+      firewalld
       nginx
+      policycoreutils-python-utils
       certbot
-      python3-certbot-nginx'
+      lsof'
 
 # =====================================================
 # DIRECTORY STRUCTURE
@@ -62,7 +67,7 @@ DOMAIN="skill-builder-testing.net"
 # This gets put into /etc/nginx/sites-available/rubricapp
 # ========================================================
 
-# Port 5000 SSL Proxy to Gunicorn
+# Port 5000 SSL proxy to Gunicorn
 NGINX_BACKEND_CONFIG="server {
     listen 5000 ssl;
     server_name $DOMAIN;
@@ -84,16 +89,16 @@ NGINX_BACKEND_CONFIG="server {
 # Redirect HTTP -> HTTPS and port 433 proxy to React (Port 3000)
 NGINX_FRONTEND_CONFIG="server {
     listen 80;
-    server_name ${DOMAIN};
+    server_name $DOMAIN;
     return 301 https://\$host\$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name ${DOMAIN};
+    server_name $DOMAIN;
 
-    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
@@ -106,7 +111,7 @@ server {
         # WebSocket support
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection "upgrade";
+        proxy_set_header Connection \"upgrade\";
     }
 }"
 
@@ -120,10 +125,11 @@ After=network.target
 
 [Service]
 User=$USER
-Group=www-data
+Group=nginx
 WorkingDirectory=/home/$USER/$PROD_NAME/rubricapp/BackEndFlask
 Environment=\"PATH=$VENV_DIR/bin\"
-ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock wsgi:app
+ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
+
 [Install]
 WantedBy=multi-user.target
 "
@@ -137,7 +143,7 @@ function log() {
     local green="\033[0;32m"
     local bold="\033[1m"
     local nc="\033[0m"
-    local msg="${green}${BASH_SOURCE[1]}:${FUNCNAME[1]}:${LINENO} ::: ${bold}$1${nc}"
+    local msg="${green}${BASH_SOURCE[1]}:${FUNCNAME[1]}:${BASH_LINENO} ::: ${bold}$1${nc}"
     echo -e "$msg"
 }
 
@@ -157,12 +163,12 @@ function usage() {
     echo "    $FRESH            :: sets up the initial root project"
     echo "    $INIT             :: inits the project by calling $INSTALL and $CONFIGURE"
     echo "    $INSTALL          :: only installs dependencies"
-    echo "    $CONFIGURE        :: configure SSL certificate,gunicorn and nginx"
+    echo "    $CONFIGURE        :: configure SSL certificate, gunicorn, nginx, firewalld and SELinux"
     echo "    $SERVE <dev|prod> :: serve the application with either development environment or production environment"
     echo "    $UPDATE           :: updates the repository and calls $SERVE"
     echo "    $STATUS           :: shows the status of everything running"
     echo "    $KILL             :: kills running processes"
-    echo "If this is a brand new instance, run with $FRESH, change to root proj directory, then $INIT"
+    echo "If this is a brand new HostGator instance, run with $FRESH, change to root proj directory, then $INIT"
     exit 1
 }
 
@@ -187,6 +193,7 @@ function assure_proj_dir() {
     fi
 }
 
+
 # =============================
 # STATUS AND MONITORING
 # =============================
@@ -201,8 +208,8 @@ function show_status() {
     log "rubricapp.service"
     systemctl status rubricapp.service --no-pager || true
 
-    log "redis-server.service"
-    systemctl status redis-server.service --no-pager || true
+    log "redis.service"
+    systemctl status redis.service --no-pager || true
 
     echo ""
     echo "===Port Usage==="
@@ -226,7 +233,7 @@ function show_status() {
 function kill_procs() {
     log "killing all processes"
 
-    sudo systemctl stop redis-server.service || true
+    sudo systemctl stop redis.service || true
     sudo systemctl stop rubricapp.service
     sudo systemctl stop nginx.service
 
@@ -235,13 +242,9 @@ function kill_procs() {
     kill_pids 3000
 
     log "cleaning pycache files"
-    if [ -d "$PROJ_DIR" ]; then
-      find "$PROJ_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
-      find "$PROJ_DIR" -type f -name "*.pyc" -delete 2>/dev/null || true
-    fi
+    find "$PROJ_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+    find "$PROJ_DIR" -type f -name "*.pyc" -delete 2>/dev/null || true
 
-    cd -
-    
     log "done"
 }
 
@@ -266,8 +269,8 @@ function kill_pids() {
     log "done"
 }
 
-# Start a process in the background. It expects
-# `dir` (the directory to change to) and
+# Start a process in the background. 
+# It expects `dir` (the directory to change to) &
 # `proc` (the process to run).
 function start_bgproc() {
     log "starting background processes $1 and $2"
@@ -316,17 +319,14 @@ function install_npm_deps() {
     source ~/.bashrc
 
     cd "$PROJ_DIR/FrontEndReact"
-    sudo npm install -g serve
+    npm install -g serve
     npm install
-
-    cd -
 
     log "done"
 }
 
-# Installs the dependencies that the
-# project needs through pip3. This requires
-# that the venv has been set up already
+# Installs python packages from requirements.txt
+# This requires that the venv has been set up already
 # and that --fresh has already been ran.
 function install_pip_reqs() {
     configure_venv
@@ -344,16 +344,18 @@ function install_pip_reqs() {
     log "done"
 }
 
-# Install system packages via apt (EPEL + upgrades + DEPS)
+# Install system packages via dnf (EPEL + upgrades + DEPS)
 function install_sys_deps() {
     log "updating/upgrading packages"
 
-    sudo apt update || true
-    sudo apt upgrade -y
+    sudo dnf install -y epel-release
+
+    sudo dnf check-update || true
+    sudo dnf upgrade -y
 
     log "installing dependencies"
 
-    sudo apt install $DEPS -y
+    sudo dnf install $DEPS -y
 
     log "done"
 }
@@ -410,6 +412,7 @@ function configure_ssl() {
 function configure_nginx() {
     log "configuring nginx"
 
+
     echo "$NGINX_BACKEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
     echo "$NGINX_FRONTEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp-frontend > /dev/null
     
@@ -431,19 +434,46 @@ function configure_nginx() {
     log "done"
 }
 
-# Configure UFW firewall to allow necessary ports
-function configure_ufw() {
-    log "configuring UFW firewall"
-    sudo ufw --force enable
-    sudo ufw allow ssh
-    sudo ufw allow 80/tcp
-    sudo ufw allow 443/tcp
-    sudo ufw allow 5000/tcp
-    sudo ufw allow 3000/tcp
-    sudo ufw status verbose
+# Configures Firewalld
+function configure_firewalld() {
+    log "configuring firewalld"
+    
+    # Start and enable firewalld
+    sudo systemctl start firewalld
+    sudo systemctl enable firewalld
+    
+    # Open necessary ports
+    sudo firewall-cmd --permanent --add-service=http
+    sudo firewall-cmd --permanent --add-service=https
+    sudo firewall-cmd --permanent --add-port=3000/tcp
+    sudo firewall-cmd --permanent --add-port=5000/tcp
+    sudo firewall-cmd --permanent --add-port=5001/tcp
+    
+    # Reload firewall to apply changes
+    sudo firewall-cmd --reload
+    
+    log "firewall configured - ports 80, 443, 3000, 5000, 5001 are open"
     log "done"
 }
 
+function configure_selinux() {
+    log "configuring SELinux permissions for Nginx"
+    
+    # Allow Nginx to connect to network and Unix sockets
+    sudo setsebool -P httpd_can_network_connect 1
+    sudo setsebool -P httpd_can_network_relay 1
+    
+    # Allow Nginx to read/write in the home directory and connect to the socket
+    sudo semanage fcontext -a -t httpd_sys_rw_content_t "/home/$USER/$PROD_NAME(/.*)?"
+    sudo restorecon -Rv "/home/$USER/$PROD_NAME"
+    
+    # Allow Nginx to access user home directories
+    sudo setsebool -P httpd_read_user_content 1
+    sudo setsebool -P httpd_enable_homedirs 1
+    
+    log "SELinux configured - Nginx can now access application files and sockets"
+    log "done"
+}
 # Configure gunicorn. It uses the configuration
 # file that is stored in the same directory as
 # this script. See `SERVICE_NAME` for the name
@@ -462,7 +492,7 @@ function configure_gunicorn() {
 # already been created or not. If it hasn't,
 # it creates it. Otherwise it does nothing.
 function configure_venv() {
-    log "setting up the virtual environment"
+    log "settup up the virtual environment"
 
     if [ ! -d "$VENV_DIR" ];
     then
@@ -488,7 +518,7 @@ function setup_proj_root() {
 
     log "The project has been successfully setup.
     The main project has been cloned into: $PROJ_DIR.
-    Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
+    Next, re-run this script which is located in $PROJ_DIR/Hostgator with $CONFIGURE"
 }
 
 # ======================
@@ -509,10 +539,10 @@ function serve_rubricapp() {
 
     sudo chmod 644 /etc/systemd/system/rubricapp.service
 
-    # Start redis-server
-    log "starting redis-server"
-    sudo systemctl start redis-server.service
-    sudo systemctl enable redis-server.service
+    # Start redis
+    log "starting redis"
+    sudo systemctl start redis.service
+    sudo systemctl enable redis.service
 
     # Start gunicorn
     log "Starting gunicorn"
@@ -552,7 +582,7 @@ function configure_db() {
 
     # Creating hidden.py with password to enable emails
     echo "PASSWORD = \"nzdh hnyf bafo ovtm\"" > ./models/hidden.py
-
+    #
     exit_venv
 
     cd -
@@ -564,13 +594,14 @@ function configure_db() {
 # ADVANCED COMMANDS
 # ===================
 
-# Runs all configuration steps: Gunicorn, Nginx, UFW
+# Runs all configuration steps: Gunicorn, Nginx, Firewalld, SELinux
 function configure() {
     assure_proj_dir
-    configure_ssl
+    configure_ssl 
     configure_gunicorn
     configure_nginx
-    configure_ufw
+    configure_firewalld
+    configure_selinux
 }
 
 # Install all dependencies: sytem packages, Python Packages, Node.js
@@ -592,13 +623,11 @@ function fresh() {
 # ============================================================
 
 # Check if any arguments were provided
-if [ "$#" -eq 0 ];
-then
+if [ "$#" -eq 0 ]; then
     usage
 fi
 
 # Process the command-line argument
-# Add new options here.
 case "$1" in
     "$FRESH")
         fresh
