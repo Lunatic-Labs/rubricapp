@@ -44,10 +44,14 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (initial_time: any) => {
+                    customBodyRender: (initial_time: any, tableMeta: any) => {
+                        const atId = tableMeta.rowData[3];
+                        const chosenAT = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
+                        const timeZone = chosenAT?.time_zone || '';
+                        
                         return(
                             <>
-                                {initial_time ? getHumanReadableDueDate(initial_time) : "N/A"}
+                                {initial_time ? getHumanReadableDueDate(initial_time, timeZone) : "N/A"}
                             </>
                         );
                     }
@@ -60,10 +64,14 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (last_update: any) => {
+                    customBodyRender: (last_update: any, tableMeta: any) => {
+                        const atId = tableMeta.rowData[3];
+                        const chosenAT = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
+                        const timeZone = chosenAT?.time_zone || '';
+
                         return(
                             <>
-                                {last_update ? getHumanReadableDueDate(last_update) : "N/A"}
+                                {last_update ? getHumanReadableDueDate(last_update, timeZone) : "N/A"}
                             </>
                         );
                     }
