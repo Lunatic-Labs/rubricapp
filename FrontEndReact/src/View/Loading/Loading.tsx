@@ -6,6 +6,12 @@ import { Box, CircularProgress } from "@mui/material";
  * 
  * @constructor
  * @param {object} props - The properties passed to the component.
+ * 
+ * Displays a centered MUI circular progress spinner that has a fixed 125 px diameter.
+ * 
+ * @example
+ *  // Default spinner
+ *      <Loading/>
  */
 
 class Loading extends Component {
@@ -13,7 +19,7 @@ class Loading extends Component {
         return(
             <Box sx={{
                 width: "100%",
-                heigh: "100%",
+                height: "100%",
                 display: "flex",
                 flexDirection: "row",
                 justifyContent: "center",

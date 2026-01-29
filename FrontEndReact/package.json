@@ -8,6 +8,7 @@
     ]
   },
   "dependencies": {
+    "typescript": "^5.0.0",
     "@babel/plugin-proposal-private-property-in-object": "",
     "@babel/preset-react": "^7.25.9",
     "@emotion/react": "^11.13.5",

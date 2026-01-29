@@ -15,6 +15,7 @@ interface ApiResponse {
   content?: Record<string, any>;
   message?: string;
   headers?: Record<string, string>;
+  errorMessage?: string;
 }
 
 interface User {
@@ -146,6 +147,15 @@ async function genericResourceFetch(
     }
 
     const result: ApiResponse = await response.json();
+
+    //if (!response.ok) {   
+    //  const errorContent = result?.content || null;
+    //  const errorMessage = result?.message || `HTTP ${response.status}`;
+//
+    //  const err = new Error(errorMessage);
+    //  (err as any).content = errorContent;
+    //  throw err;
+    //}
 
     if (result.success) {
       const state: any = {
