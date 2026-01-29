@@ -23,13 +23,29 @@ def output(x):
 
 def _compute_lag(feedback_time, baseline_time):
     """
-    Safely compute feedback_time - baseline_time and return a string,
+    Safely compute feedback_time - baseline_time and return a human-readable string,
     or None if either value is missing or invalid.
     """
     if feedback_time and baseline_time:
         try:
             delta = feedback_time - baseline_time
-            return str(delta)
+            total_seconds = int(delta.total_seconds())
+
+            if total_seconds < 0:
+                return "0s"
+
+            days = total_seconds // 86400
+            hours = (total_seconds % 86400) // 3600
+            minutes = (total_seconds % 3600) // 60
+            seconds = total_seconds % 60
+
+            if days > 0:
+                return f"{days}d {hours}h {minutes}m {seconds}s"
+            if hours > 0:
+                return f"{hours}h {minutes}m {seconds}s"
+            if minutes > 0:
+                return f"{minutes}m {seconds}s"
+            return f"{seconds}s"
         except Exception:
             return None
     return None
@@ -97,13 +113,13 @@ def get_ratings():
 
         team_flag = request.args.get("team_id")
 
+        # Fetch notification_sent for both team and individual branches
+        from models.assessment_task import get_assessment_task
+        at_obj = get_assessment_task(assessment_task_id)
+        notification_sent_time = getattr(at_obj, "notification_sent", None)
+
         # --- TEAM RATINGS BRANCH ---
         if team_flag:
-            from models.assessment_task import get_assessment_task
-
-            # Used as the baseline time for team lag computations
-            at_obj = get_assessment_task(assessment_task_id)
-            notification_sent_time = getattr(at_obj, "notification_sent", None)
 
             ratings = get_team_ratings(assessment_task_id)
 
@@ -141,6 +157,7 @@ def get_ratings():
                         "first_name": first_name,
                         "last_name": last_name,
                         "lag_time": lag_time_str,
+                        "notification_sent": notification_sent_time is not None,
                     }
                 )
 
@@ -175,6 +192,7 @@ def get_ratings():
                         "last_name": last_name,
                         "rating_observable_characteristics_suggestions_data": rating_data,
                         "lag_time": lag_time_str,
+                        "notification_sent": notification_sent_time is not None,
                     }
                 )
 

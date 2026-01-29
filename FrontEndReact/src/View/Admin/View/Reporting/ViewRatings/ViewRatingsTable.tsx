@@ -81,9 +81,12 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
               ? student.lag_time
               : this.getLagFromRow(student);
 
+          const notificationSent = student.notification_sent ?? ratingRow.notification_sent ?? false;
+
           teamRow.feedback_info.push({
             name: fullName,
             lag: lag,
+            notification_sent: notificationSent,
           });
         });
       });
@@ -117,8 +120,9 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
           row[category] = ratingData[category]['rating'];
         });
 
-        // Feedback lag
+        // Feedback lag and notification status
         row.feedback_time_lag = this.getLagFromRow(currentRating);
+        row.notification_sent = currentRating.notification_sent ?? false;
 
         allRatings.push(row);
       });
@@ -156,6 +160,25 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
         label: 'Feedback Time Lag',
         options: {
           filter: true,
+          customBodyRender: (value: any, tableMeta: any) => {
+            const rowData = allRatings[tableMeta.rowIndex];
+            const viewed = !!value;
+            const notified = rowData?.notification_sent;
+
+            const color = viewed
+              ? '#2e7d32'   // Green - feedback viewed
+              : notified
+              ? '#ed6c02'  // Orange - notification sent, not viewed
+              : '#d32f2f'; // Red - not notified
+
+            const text = viewed
+              ? (typeof value === 'string' ? value : String(value))
+              : notified
+              ? 'Sent, not viewed'
+              : 'Not notified';
+
+            return <span style={{ color, fontWeight: 500 }}>{text}</span>;
+          },
         },
       });
     } else {
@@ -188,17 +211,26 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
               >
                 {people.map((p: any, idx: number) => {
                   const viewed = !!p.lag;
+                  const notified = p.notification_sent;
+
+                  // 3 states: viewed (green), sent but not viewed (orange), not notified (red)
+                  const color = viewed
+                    ? '#2e7d32'   // Green - feedback viewed
+                    : notified
+                    ? '#ed6c02'  // Orange - notification sent, not viewed
+                    : '#d32f2f'; // Red - not notified
+
                   const nameStyle: React.CSSProperties = {
                     fontWeight: 600,
-                    color: viewed ? '#2e7d32' : '#d32f2f',
+                    color: color,
                     lineHeight: 1.1,
                   };
-                  const lagText =
-                    typeof p.lag === 'string'
-                      ? p.lag
-                      : p.lag == null || p.lag === false
-                      ? '-'
-                      : String(p.lag);
+
+                  const lagText = viewed
+                    ? (typeof p.lag === 'string' ? p.lag : String(p.lag))
+                    : notified
+                    ? 'Sent, not viewed'
+                    : 'Not notified';
 
                   return (
                     <div key={`${p.name || 'member'}-${idx}`} style={{ minWidth: 0 }}>
