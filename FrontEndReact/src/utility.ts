@@ -11,6 +11,7 @@ interface FetchOptions {
 
 interface ApiResponse {
   success: boolean;
+  status?: number;
   msg?: string;
   content?: Record<string, any>;
   message?: string;
@@ -123,6 +124,7 @@ async function genericResourceFetch(
 
     let response: Response;
 
+    // Note: This catches and throws on just network errors.
     try {
       const fetchInit: RequestInit = {
         method: type,
@@ -148,16 +150,10 @@ async function genericResourceFetch(
 
     const result: ApiResponse = await response.json();
 
-    //if (!response.ok) {   
-    //  const errorContent = result?.content || null;
-    //  const errorMessage = result?.message || `HTTP ${response.status}`;
-//
-    //  const err = new Error(errorMessage);
-    //  (err as any).content = errorContent;
-    //  throw err;
-    //}
+    console.log(result);
 
     if (result.success) {
+      console.log("success");
       const state: any = {
         isLoaded: true,
         errorMessage: null,
@@ -171,18 +167,15 @@ async function genericResourceFetch(
       return rawResponse ? result : state;
 
     } else if (result.msg === "BlackListed" || result.msg === "No Authorization") {
+      console.log("first else if");
       cookies.remove('access_token');
       cookies.remove('refresh_token');
       cookies.remove('user');
       window.location.reload();
       return undefined;
 
-    } else if (
-      result.msg === "Token has expired" ||
-      result.msg === "Not enough segments" ||
-      result.msg === "Invalid token" ||
-      response.status === 422
-    ) {
+    } else if (result.msg === "Token has expired" || result.msg === "Not enough segments" || result.msg === "Invalid token" || response.status === 422) {
+      console.log("second if");
       if (isRetry) {
         cookies.remove('access_token');
         cookies.remove('refresh_token');
@@ -231,6 +224,7 @@ async function genericResourceFetch(
       }
     }
   } else {
+    //This else belongs to the outter if not the closest if statement meaning that is skips other checks
     const state: any = {
       isLoaded: true,
       errorMessage: "Not authenticated",
@@ -239,9 +233,13 @@ async function genericResourceFetch(
     component.setState(state);
     return state;
   }
+
+  
 }
 
-/** @deprecated */
+
+
+/** @deprecated The website should not have to use this since backend will not work with it. */
 export function createEventSource(
   fetchURL: string,
   onMessage: (message: any) => void
