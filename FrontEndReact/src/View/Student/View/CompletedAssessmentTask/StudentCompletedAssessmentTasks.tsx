@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewCompletedAssessmentTasks from './ViewCompletedAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';

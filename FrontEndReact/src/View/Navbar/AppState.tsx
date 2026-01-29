@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
