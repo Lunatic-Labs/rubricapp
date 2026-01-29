@@ -188,7 +188,7 @@ class ViewCourses extends Component {
       viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical",
+      responsive: "simple",
       tableBodyMaxHeight: "35vh",
     };
 
