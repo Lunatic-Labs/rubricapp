@@ -13,7 +13,6 @@ interface FetchOptions {
 interface ApiResponse {
   success: boolean;
   status?: number;
-  msg?: string;
   content?: Record<string, any>;
   message?: string;
   headers?: Record<string, string>;
@@ -171,17 +170,24 @@ async function genericResourceFetch(
     return rawResponse ? result : state;
 
   } else {
-    // Catch and throw server related errors.
+    // Catch and report server related errors.
     let issueFound, issue:any|undefined = await tokenServerErrorAndResolver(result, resource, component, 
                                                         cookies, response, isRetry, 
                                                         fetchURL, type, body, options);
-    if (!issueFound){issue = undefined;}
-    return issue
-    
+    if (!issueFound){
+      const state = {
+        isLoaded: true,
+        errorMessage: result?.message ?? "Server error",
+      }
+      component.setState(state);
 
+      return rawResponse ? result : state;
+    }
 
+    return issue;
   }
 }
+
 
 /**
  * 
