@@ -143,9 +143,6 @@ async function genericResourceFetch(
 
     response = await fetch(url, fetchInit);
   } catch(error){
-    console.error(`=== UTILITY: ${type} ERROR ===`);
-    console.error('Error:', error);
-
     component.setState({
       isLoaded: true,
       errorMessage: error instanceof Error ? error.message : String(error),
@@ -511,8 +508,6 @@ export function restoreAdminCredentialsFromSession() {
 export function setTestStudentCookies(data: any ) {
     const cookies = new Cookies();
     
-    console.log('setTestStudentCookies called with:', data);
-    
     // Clear old cookies
     cookies.remove('access_token', { path: '/' });
     cookies.remove('refresh_token', { path: '/' });
@@ -520,7 +515,6 @@ export function setTestStudentCookies(data: any ) {
     
     // Check if data has the expected structure
     if (!data.access_token || !data.user) {
-        console.error('Invalid data structure for setTestStudentCookies:', data);
         throw new Error('Invalid test student data');
     }
     
@@ -533,8 +527,6 @@ export function setTestStudentCookies(data: any ) {
         viewingAsStudent: true
     };
     cookies.set('user', userWithFlag, {sameSite: 'strict'});
-    
-    console.log('Test student cookies set successfully');
 }
 
 export default modules;
