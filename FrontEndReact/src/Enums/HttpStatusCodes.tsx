@@ -3,9 +3,9 @@
  */
 export const HTTP_STATUS = {
     OK: 200,
-    BadRequest: 400,
-    Unauthorized: 401,
-    UnprocessableEntity: 422,
+    BAD_REQUEST:  400,
+    UNAUTHORIZED: 401,
+    UNPROCESSABLE_ENTITY: 422,
 } as const;
 
 // Https status code type

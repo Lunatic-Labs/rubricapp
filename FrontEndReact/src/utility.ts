@@ -225,7 +225,7 @@ async function tokenServerErrorAndResolver(
     window.location.reload();
     return [true, undefined];
   } else if (["Token has expired", "Not enough segments", "Invalid token"].includes(msg) || 
-              status === HTTP_STATUS.UnprocessableEntity){
+              status === HTTP_STATUS.UNPROCESSABLE_ENTITY){
     if (isRetry){
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
