@@ -31,7 +31,6 @@ KILL="--kill"
       libssl-dev
       libffi-dev
       git
-      npm
       redis-server
       python3-pip
       python3-gdbm
@@ -41,7 +40,8 @@ KILL="--kill"
       ufw
       nginx
       certbot
-      python3-certbot-nginx'
+      python3-certbot-nginx
+      lsof'
 
 # =====================================================
 # DIRECTORY STRUCTURE
@@ -54,6 +54,7 @@ PROD_NAME="RUBRICAPP_PRODUCTION"
 VENV_DIR="/home/$USER/$PROD_NAME/rubricapp-env"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
 SERVICE_NAME="rubricapp.service"
+FRONTEND_SERVICE_NAME="rubricapp-frontend.service"
 DOMAIN="skill-builder-testing.net"
 # =====================================================
 
@@ -103,6 +104,7 @@ server {
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
+        
         # WebSocket support
         proxy_http_version 1.1;
         proxy_set_header Upgrade \$http_upgrade;
@@ -201,6 +203,9 @@ function show_status() {
     log "rubricapp.service"
     systemctl status rubricapp.service --no-pager || true
 
+    log "rubricapp-frontend.service"
+    systemctl status rubricapp-frontend.service --no-pager || true
+
     log "redis-server.service"
     systemctl status redis-server.service --no-pager || true
 
@@ -222,13 +227,18 @@ function show_status() {
     log "done"
 }
 
+# ===================
+# PROCESS MANAGEMENT
+# ===================
+
 # Stop all services, kill processes and clear PyCache
 function kill_procs() {
-    log "killing all processes"
+    log "killing all processes/services"
 
-    sudo systemctl stop redis-server.service || true
-    sudo systemctl stop rubricapp.service
-    sudo systemctl stop nginx.service
+    sudo systemctl stop rubricapp-frontend.service 2>/dev/null || true
+    sudo systemctl stop redis-server.service 2>/dev/null || true
+    sudo systemctl stop rubricapp.service 2>/dev/null || true
+    sudo systemctl stop nginx.service 2>/dev/null || true
 
     kill_pids 5000
     kill_pids 5001
@@ -240,26 +250,21 @@ function kill_procs() {
       find "$PROJ_DIR" -type f -name "*.pyc" -delete 2>/dev/null || true
     fi
 
-    cd -
-    
+    cd - >/dev/null 2>&1 || true
     log "done"
 }
 
-# ===================
-# PROCESS MANAGEMENT
-# ===================
-
 # Kill PIDS given a port using lsof
 function kill_pids() {
-    log "killing pids"
-
     local port=$1
-    local pids=$(lsof -ti :$port)
+    log "killing pids on port $port"
 
-    # If PIDs are not empty, kill them.
+    local pids
+    pids=$(lsof -ti :$port 2>/dev/null || true)
+
     if [ -n "$pids" ]; then
         kill $pids 2>/dev/null || true
-    else 
+    else
         log "no processes found on port"
     fi
 
@@ -300,27 +305,70 @@ function update_repo() {
 # DEPENDENCY INSTALLATION
 # ===========================
 
+# Install system packages via apt (EPEL + upgrades + DEPS)
+function install_sys_deps() {
+    log "updating/upgrading packages"
+
+    sudo apt update || true
+    sudo apt upgrade -y
+
+    log "installing dependencies"
+
+    sudo apt install $DEPS -y
+
+    log "done"
+}
+
+# Configure the python virtual environment.
+# It checks if the virtual environment has
+# already been created or not. If it hasn't,
+# it creates it. Otherwise it does nothing.
+function configure_venv() {
+    log "setting up the virtual environment"
+
+    if [ ! -d "$VENV_DIR" ]; then
+        python3 -m venv "$VENV_DIR"
+    fi
+
+    log "done"
+}
+
 # Installs NVM, Nodejs v20.11.1, serve and npm packages
 function install_npm_deps() {
     log "installing npm dependencies"
 
-    # Install NVM
-    curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    # Install NVM (idempotent)
+    if [ ! -d "$HOME/.nvm" ]; then
+        curl -o- https://raw.githubusercontent.com/nvm-sh/nvm/v0.39.7/install.sh | bash
+    fi
 
     export NVM_DIR="$HOME/.nvm"
-    [ -s "$NVM_DIR/nvm.sh" ] && \. "$NVM_DIR/nvm.sh"
-    [ -s "$NVM_DIR/bash_completion" ] && \. "$NVM_DIR/bash_completion"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
     nvm install 20.11.1
     nvm use 20.11.1
-    source ~/.bashrc
+
+    # Ensure global serve exists (systemd will call it)
+    npm list -g --depth=0 serve >/dev/null 2>&1 || sudo npm install -g serve
 
     cd "$PROJ_DIR/FrontEndReact"
-    sudo npm install -g serve
-    npm install
+
+    # CRA5 expects TS 4.x. Force pin.
+    if [ -f package.json ]; then
+        npm pkg set devDependencies.typescript="4.9.5" >/dev/null 2>&1 || true
+    fi
+
+    # Clean partial installs if needed
+    rm -rf node_modules
+
+    if [ -f package-lock.json ]; then
+        npm ci --legacy-peer-deps
+    else
+        npm install --legacy-peer-deps
+    fi
 
     cd -
-
     log "done"
 }
 
@@ -336,24 +384,10 @@ function install_pip_reqs() {
 
     cd "$PROJ_DIR/BackEndFlask"
 
-    pip3 install wheel
+    pip3 install --upgrade pip wheel
     pip3 install -r requirements.txt
 
     exit_venv
-
-    log "done"
-}
-
-# Install system packages via apt (EPEL + upgrades + DEPS)
-function install_sys_deps() {
-    log "updating/upgrading packages"
-
-    sudo apt update || true
-    sudo apt upgrade -y
-
-    log "installing dependencies"
-
-    sudo apt install $DEPS -y
 
     log "done"
 }
@@ -362,44 +396,68 @@ function install_sys_deps() {
 # CONFIGURATION
 # ======================
 
+function ensure_le_nginx_files() {
+    log "ensuring letsencrypt nginx ssl include files exist"
+
+    if ! sudo test -f /etc/letsencrypt/options-ssl-nginx.conf; then
+        sudo mkdir -p /etc/letsencrypt
+        sudo tee /etc/letsencrypt/options-ssl-nginx.conf > /dev/null <<'EOF'
+        ssl_session_cache shared:le_nginx_SSL:10m;
+        ssl_session_timeout 1d;
+        ssl_session_tickets off;
+
+        ssl_protocols TLSv1.2 TLSv1.3;
+        ssl_prefer_server_ciphers off;
+
+        ssl_stapling on;
+        ssl_stapling_verify on;
+
+        resolver 1.1.1.1 8.8.8.8 valid=300s;
+        resolver_timeout 5s;
+EOF
+    fi
+
+    if ! sudo test -f /etc/letsencrypt/ssl-dhparams.pem; then
+        sudo openssl dhparam -out /etc/letsencrypt/ssl-dhparams.pem 2048
+    fi
+
+    log "done"
+}
+
 # Get SSL certificates using certbot standalone mode
 # Domain must be pointing to server IP before attempting this
 function configure_ssl() {
     log "obtaining SSL certificates"
-    
-     # Stop nginx to free up port 80/443
+
+    DOMAIN="$(echo "$DOMAIN" | tr -d '\r' | xargs)"
+    CERT_DIR="/etc/letsencrypt/live/$DOMAIN"
+
     log "ensuring ports 80 and 443 are available"
     sudo systemctl stop nginx.service 2>/dev/null || true
     kill_pids 80
     kill_pids 443
-    
-    # Check if certificates already exist
-    if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
+
+    if sudo test -d "$CERT_DIR"; then
         log "certificates already exist for $DOMAIN"
-        
-        # Check if they're expiring soon
-        if sudo certbot certificates | grep -q "VALID"; then
-            log "certificates are still valid"
-        else
-            log "renewing certificates"
-            sudo certbot renew --quiet
-        fi
     else
         log "obtaining new certificates for $DOMAIN"
-        # Use standalone mode to get certificates
         sudo certbot certonly --standalone \
             --non-interactive \
             --agree-tos \
             --register-unsafely-without-email \
-            -d $DOMAIN \
+            -d "$DOMAIN" \
             || panic "Failed to obtain SSL certificates"
     fi
-    
-    # Verify certificates were created
-    if [ ! -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
+
+    if ! sudo test -e "$CERT_DIR/fullchain.pem" || ! sudo test -e "$CERT_DIR/privkey.pem"; then
+        sudo ls -la "$CERT_DIR" || true
+        sudo ls -la "/etc/letsencrypt/archive/$DOMAIN" || true
         panic "SSL certificate files not found after certbot run"
     fi
-    
+
+    # Make sure nginx include files exist (prevents your earlier error)
+    ensure_le_nginx_files
+
     log "SSL certificates successfully obtained"
     log "done"
 }
@@ -457,19 +515,36 @@ function configure_gunicorn() {
     log "done"
 }
 
-# Configure the python virtual environment.
-# It checks if the virtual environment has
-# already been created or not. If it hasn't,
-# it creates it. Otherwise it does nothing.
-function configure_venv() {
-    log "setting up the virtual environment"
+function configure_frontend_service() {
+    log \"configuring frontend systemd service\"
 
-    if [ ! -d "$VENV_DIR" ];
-    then
-        python3 -m venv "$VENV_DIR"
+    local serve_path
+    serve_path=\"$(command -v serve || true)\"
+    if [ -z \"$serve_path\" ]; then
+        panic \"serve not found. Run --install first.\"
     fi
 
-    log "done"
+    sudo tee \"/etc/systemd/system/$FRONTEND_SERVICE_NAME\" > /dev/null <<EOF
+[Unit]
+Description=Rubricapp React Frontend (serve)
+After=network.target
+
+[Service]
+User=$USER
+WorkingDirectory=$PROJ_DIR/FrontEndReact
+ExecStart=$serve_path -s build -l 3000
+Restart=always
+RestartSec=2
+Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+
+[Install]
+WantedBy=multi-user.target
+EOF
+
+    sudo systemctl daemon-reload
+    sudo systemctl enable \"$FRONTEND_SERVICE_NAME\"
+
+    log \"done\"
 }
 
 # Sets up the root of the project, namely
@@ -498,45 +573,42 @@ function setup_proj_root() {
 # Starts all relevant services needed
 # Stops existing processes first for clean deployment
 function serve_rubricapp() {
-
     assure_proj_dir
-    enter_venv
 
     log "serving rubricapp"
-
     log "stopping services"
     kill_procs
 
-    sudo chmod 644 /etc/systemd/system/rubricapp.service
+    # Backend
+    configure_venv
+    enter_venv
 
-    # Start redis-server
     log "starting redis-server"
-    sudo systemctl start redis-server.service
-    sudo systemctl enable redis-server.service
+    sudo systemctl enable --now redis-server.service
 
-    # Start gunicorn
-    log "Starting gunicorn"
+    log "starting gunicorn"
     sudo systemctl daemon-reload
-    sudo systemctl start rubricapp.service
-    sudo systemctl enable rubricapp.service
+    sudo systemctl enable --now rubricapp.service
 
-    # Start nginx
-    log "starting NGINX"
-    sudo systemctl start nginx.service || panic "Failed to start Nginx"
-    sudo systemctl enable nginx.service
+    # Nginx
+    log "starting nginx"
+    sudo systemctl enable --now nginx.service
     sudo nginx -s reload || log "Warning: Nginx reload failed but running"
 
-    # Makes sure Nginx can read user home directory
+    # Allows nginx to read home directory (needed sometimes for socket paths)
     sudo chmod 755 "/home/$USER"
 
-    # Start react
-    log "serving front-end"
+    exit_venv
+
+    # Frontend build + systemd restart
+    log "building front-end"
     cd "$PROJ_DIR/FrontEndReact"
+    npm run build || panic "Failed NPM run build"
+    cd - >/dev/null 2>&1 || true
 
-    npm run build || panic "Failed NPM run"
-
-    serve -s -l tcp://0.0.0.0:3000 build &
-    cd -
+    log "starting front-end service"
+    sudo systemctl reset-failed "$FRONTEND_SERVICE_NAME" 2>/dev/null || true
+    sudo systemctl restart "$FRONTEND_SERVICE_NAME"
 
     log "done"
 }
@@ -570,6 +642,7 @@ function configure() {
     configure_ssl
     configure_gunicorn
     configure_nginx
+    configure_frontend_service
     configure_ufw
 }
 
