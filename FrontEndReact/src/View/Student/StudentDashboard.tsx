@@ -10,6 +10,9 @@ import { genericResourceGET, parseRubricNames } from '../../utility';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks';
 import Loading from '../Loading/Loading';
 import Cookies from 'universal-cookie';
+import { ROLE } from '../../Enums/Role';
+import { AssessmentTask } from '../../types/AssessmentTask';
+import { CompleteAssessmentTask } from '../../types/CompleteAssessmentTask';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // StudentDashboard is used for both students and TAs.
@@ -25,7 +28,7 @@ const apiUrl = process.env.REACT_APP_API_URL;
  *  @property {Array}  assessmentTasks - All the related ATs to this course & user.
  *  @property {Array}  completedAssessments - All the related CATs to this course & user.
  *  @property {Array}  filteredATs - All valid ATs for the course and user.
- *  @property {Array}  filteredCATs - All valid CATs for the course and user.
+ *  @property {Array}  filteredCATs - All valid CATs for the course and user that should be displayed in the my assignments section.
  *  @property {Array}  fullyDoneCATS - All CATs that should display in the completed assessments section only.
  *  @property {Array}  userTeamIds - Figured out user teams.
  *  @property {Array}  averageData  - Averages for all completed assessment task rubrics.
@@ -77,7 +80,7 @@ interface StudentDashboardState {
     rubrics: any;
     rubricNames: any;
     chartData: any;
-    teamsFetched?: boolean;
+    teamsFetched: boolean;
 }
 
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
@@ -101,6 +104,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames: null,
 
             chartData: null,
+            teamsFetched: false,
         }
     }
 
@@ -146,42 +150,50 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames,
         } = this.state;
 
-        const canFilter = roles && assessmentTasks && completedAssessments && averageData && rubrics && (filteredATs === null);
-        if (!roles) {
-            return;
-        }
+        const canFilter: boolean = Boolean(
+            roles && 
+            assessmentTasks && 
+            completedAssessments && 
+            averageData && 
+            rubrics && 
+            (filteredATs === null)
+        );
 
-        const canFilterStudent = roles.role_id === 5 && (userTeamIds.length > 0 || this.state.teamsFetched);
+        if (canFilter === false){return;}
 
-        if (canFilter && (roles.role_id === 4 || canFilterStudent)) {
-            const rubricNameMap = rubricNames ?? parseRubricNames(rubrics);
+        // Students need their team info ready to correctly match the student to team CATs.
+        const roleId: number = roles.role_id;
+        const isStudent: boolean = roleId === ROLE.STUDENT;
+        const teamInfoReady: boolean = userTeamIds.length > 0 || this.state.teamsFetched;
+        const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
 
-            let filteredCompletedAssessments: any = [];
-            let filteredAvgData: any = [];
-            let finishedCats: any = [];
+        if (roleId === ROLE.TA_INSTRUCTOR || canFilterStudentByTeam) {
+            const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics);
 
-            const CATmap = new Map();
-            const AVGmap = new Map();
-            const roleId = roles["role_id"];
+            let editableCats: CompleteAssessmentTask[] = [];
+            let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];
+            let showableDoneCats: CompleteAssessmentTask[] = [];
+
+            const CATmap: Map<string, CompleteAssessmentTask> = new Map();
+            const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
             
-            const getCATKey = (assessment_task_id: any, team_id: any, isTeamAssessment: any) => {
-                if (isTeamAssessment && team_id !== null) {
-                    return `${assessment_task_id}-${team_id}`;
-                }
-                return `${assessment_task_id}`;
+            const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean): string => {
+                return `${assessment_task_id}${
+                    isTeamAssessment && team_id !== null ? `-${team_id}`:''
+                }`
             };
 
-            completedAssessments.forEach((cat: any) => {
-                const team_id = cat.team_id;
+            completedAssessments.forEach((cat: CompleteAssessmentTask) => {
+                const team_id: number|null = cat.team_id;
                 
-                if (roles.role_id === 4 || team_id === null || userTeamIds.includes(team_id)){                    
-                    const at = assessmentTasks.find((task: any) => task.assessment_task_id === cat.assessment_task_id);
-                    const isTeamAssessment = at?.unit_of_assessment === true;                    
+                if (roleId === ROLE.TA_INSTRUCTOR || team_id === null || userTeamIds.includes(team_id)){                    
+                    const at: AssessmentTask | undefined = assessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
+                    const isTeamAssessment: boolean = at?.unit_of_assessment === true;                    
 
-                    const key = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
-                    const existing = CATmap.get(key);
+                    const key: string = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
+                    const existing: CompleteAssessmentTask | undefined = CATmap.get(key);
         
-                    const shouldReplace = !existing ||
+                    const shouldReplace: boolean = !existing ||
                         (cat.done && !existing.done) ||
                         (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
                                 
@@ -191,56 +203,63 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 }
             });
             
-            averageData.forEach((cat: any) => { AVGmap.set(cat.assessment_task_id, cat) });
+            averageData.forEach((cat: CompleteAssessmentTask) => { AVGmap.set(cat.assessment_task_id, cat) });
 
-            const currentDate = new Date();
-            const isATDone = (cat: any) => cat !== undefined && cat.done;
-            const isATPastDue = (at: any, today: any) => (new Date(at.due_date)) < today; 
+            const currentDate: Date = new Date();
+            const isATDone = (cat: CompleteAssessmentTask | undefined) : boolean => cat !== undefined && cat.done;
+            const isATPastDue = (at: AssessmentTask, today: Date): boolean => (new Date(at.due_date)) < today; 
 
-            let filteredAssessmentTasks = assessmentTasks.filter((task: any) => {
+            let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks.filter((task: AssessmentTask) => {
                 
-                const isTeamAssessment = task.unit_of_assessment === true;
-                let relevantTeamId = null;
+                const isTeamAssessment: boolean = task.unit_of_assessment === true;
+                let relevantTeamId: number | null = null;
                                 
                 if (isTeamAssessment && userTeamIds.length > 0) {
                     // For team assessments, find which team this user is on for this task
-                    const userCAT = completedAssessments.find((cat: any) => cat.assessment_task_id === task.assessment_task_id && 
-                    userTeamIds.includes(cat.team_id)
+                    const userCAT: CompleteAssessmentTask | undefined = completedAssessments.find((cat: CompleteAssessmentTask) => 
+                        cat.assessment_task_id === task.assessment_task_id && userTeamIds.includes(cat.team_id)
                     );
                     relevantTeamId = userCAT?.team_id || null;
                 }
                 
-                const catKey = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
-                const cat = CATmap.get(catKey);
-                const avg = AVGmap.get(task.assessment_task_id);
+                const catKey: string = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
+                const cat: CompleteAssessmentTask | undefined = CATmap.get(catKey);
+                const avg: CompleteAssessmentTask| undefined = AVGmap.get(task.assessment_task_id);
 
                 // Qualities for if an AT is viewable.
-                const done = isATDone(cat);
-                const correctUser = roleId === task.role_id || (roleId === 5 && task.role_id === 4);
-                const locked = task.locked;
-                const published = task.published;
-                const pastDue = !correctUser || locked || !published || isATPastDue(task, currentDate);
+                const done: boolean = isATDone(cat);
+                const correctUser: boolean = roleId === task.role_id || (roleId === ROLE.STUDENT && task.role_id === ROLE.TA_INSTRUCTOR);
+                const locked: boolean = task.locked;
+                const published: boolean = task.published;
+                const pastDue: boolean = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const isStudent = roles.role_id === 5;
-                const isStudentTask = task.role_id === 5;
-                const baseConditions = correctUser && !locked && published && !pastDue;
+                const isStudent: boolean = roles.role_id === ROLE.STUDENT;
+                const isStudentTask: boolean = task.role_id === ROLE.STUDENT;
+                const baseConditions: boolean = correctUser && !locked && published && !pastDue;
 
-                let viewable, CATviewable;
+                let viewable: boolean, CATviewable: boolean;
 
                 if (isStudent && isStudentTask) {
                     viewable = !done && baseConditions;
                     CATviewable = correctUser && done;
                 } else if (isStudent) {
-                    viewable = baseConditions && !task.notification_sent;
-                    CATviewable = (pastDue || task.notification_sent) && published && correctUser;
+                    if (task.role_id === ROLE.TA_INSTRUCTOR && done){
+                        viewable = false;
+                        CATviewable = true;
+                    } else {
+                        viewable = baseConditions && !task.notification_sent;
+                        CATviewable = Boolean(pastDue || task.notification_sent) && published && correctUser;
+                    }
                 } else {
                     viewable = baseConditions;
                     CATviewable = pastDue && correctUser;
                 }
 
                 if (CATviewable && cat !== undefined) {
-                    viewable ? filteredCompletedAssessments.push(cat): finishedCats.push(cat);
+                    viewable ? editableCats.push(cat): showableDoneCats.push(cat);
                     filteredAvgData.push(avg);
+                } else if (viewable && cat !== undefined){
+                    editableCats.push(cat);
                 }
                 return viewable;
             });
@@ -291,7 +310,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 createdDate: Date;
             }
 
-            let chartDataCore: ChartDataCoreItem[] = filteredCompletedAssessments
+            let chartDataCore: ChartDataCoreItem[] = showableDoneCats
                 .map((cat: any, i: number): ChartDataCoreItem => {
                     const avgObj = filteredAvgData[i];
                     const at = assessmentTasks.find((a: any) => a.assessment_task_id === cat.assessment_task_id);
@@ -343,8 +362,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
             this.setState({
                 filteredATs: filteredAssessmentTasks,
-                filteredCATs: filteredCompletedAssessments,
-                fullyDoneCATS: finishedCats,
+                filteredCATs: editableCats,
+                fullyDoneCATS: showableDoneCats,
 
                 rubricNames: rubricNameMap,
                 chartData,
