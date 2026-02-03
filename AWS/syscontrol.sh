@@ -2,11 +2,15 @@
 
 set -e
 
-# Available options to run this script with.
-# To add a new one, put it here and update
-# the `case` statement located in the `driver`
-# section. Also be sure to put the new option
-# in the `usage` function.
+# =====================================================
+# This script is made for Ubunut / Debian-Based Distros
+# =====================================================
+
+# ===================================================================
+# SCRIPT OPTIONS
+# These are the command-line flags you can use with this script
+# PSA: When adding new options, must add them in the usage function
+# ===================================================================
 FRESH="--fresh"
 INIT="--init"
 CONFIGURE="--configure"
@@ -17,10 +21,11 @@ SERVE="--serve"
 STATUS="--status"
 KILL="--kill"
 
-# List of programs to check/install for apt.
-# Add to this list when a new program
-# is needed. No further action is needed.
-DEPS='python3
+# ======================================
+# System Dependencies (For Ubuntu/Debian)
+# to add new packages, add them to the DEPS below
+# ======================================
+ DEPS='python3
       curl
       build-essential
       libssl-dev
@@ -34,73 +39,81 @@ DEPS='python3
       python3-setuptools
       python3-venv
       ufw
-      nginx'
+      nginx
+      certbot
+      python3-certbot-nginx'
 
-# Variables for keeping track of important directories.
+# =====================================================
+# DIRECTORY STRUCTURE
+# =====================================================
+# /home/$USER/RUBRICAPP_PRODUCTION/
+#   ├── rubricapp-env/  (Python venv)
+#   └── rubricapp/      (Application code)
+# =====================================================
 PROD_NAME="RUBRICAPP_PRODUCTION"
 VENV_DIR="/home/$USER/$PROD_NAME/rubricapp-env"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
-
-# Service name for use with systemctl.
 SERVICE_NAME="rubricapp.service"
+DOMAIN="skill-builder-testing.net"
+# =====================================================
 
-# ///////////////////////////////////
+# ========================================================
 # NGINX CONFIG
 # This gets put into /etc/nginx/sites-available/rubricapp
-# ///////////////////////////////////
+# ========================================================
 
+# Port 5000 SSL Proxy to Gunicorn
 NGINX_BACKEND_CONFIG="server {
     listen 5000 ssl;
-    server_name skill-builder.net;
+    server_name $DOMAIN;
 
-    ssl_certificate /etc/letsencrypt/live/skill-builder.net/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/skill-builder.net/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
-        proxy_pass http://unix/home/ubuntu/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
+        proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
     }
 }"
 
+# Redirect HTTP -> HTTPS and port 433 proxy to React (Port 3000)
 NGINX_FRONTEND_CONFIG="server {
     listen 80;
-    server_name skill-builder.net;
-    return 301 https://$host$request_uri/;
+    server_name ${DOMAIN};
+    return 301 https://\$host\$request_uri;
 }
 
 server {
     listen 443 ssl;
-    server_name skill-builder.net;
+    server_name ${DOMAIN};
 
-    ssl_certificate /etc/letsencrypt/live/skill-builder.net/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/skill-builder.net/privkey.pem;
+    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
         proxy_pass http://localhost:3000/;
-        proxy_set_header Host $host;
-        proxy_set_header X-Real-IP $remote_addr;
-        proxy_set_header X-Forwarded-For $proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto $scheme;
-
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
         # WebSocket support
         proxy_http_version 1.1;
-        proxy_set_header Upgrade $http_upgrade;
+        proxy_set_header Upgrade \$http_upgrade;
         proxy_set_header Connection "upgrade";
     }
 }"
 
-# ///////////////////////////////////
+# ========================================================
 # GUNICORN CONFIG
 # This gets put into /etc/systemd/system/rubricapp.service
-# ///////////////////////////////////
-
+# ========================================================
 GUNICORN_CONFIG="[Unit]
 Description=Gunicorn instance to serve rubricapp
 After=network.target
@@ -109,20 +122,17 @@ After=network.target
 User=$USER
 Group=www-data
 WorkingDirectory=/home/$USER/$PROD_NAME/rubricapp/BackEndFlask
-Environment="PATH=/home/$USER/$PROD_NAME/$VENV_DIR/bin/"
-ExecStart=/home/$USER/$PROD_NAME/$VENV_DIR/bin/gunicorn --workers 3 --bind unix:rubricapp.sock -m 007 wsgi:app
-
+Environment=\"PATH=$VENV_DIR/bin\"
+ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock wsgi:app
 [Install]
 WantedBy=multi-user.target
 "
 
-# ///////////////////////////////////
-# UTILS
-# ///////////////////////////////////
+# ================
+# UTIL FUNCTIONS
+# ================
 
-# Prints a log message to stdout. Appends the
-# `msg` variable to `logstr`. Use this function
-# for general IO messages.
+# Print colored log messages with file/function/line context
 function log() {
     local green="\033[0;32m"
     local bold="\033[1m"
@@ -131,9 +141,7 @@ function log() {
     echo -e "$msg"
 }
 
-# Prints a panic message to stdout. Appends the
-# `msg` variable to `logstr`. Exits with 1. Use
-# this function when an error is encountered.
+# Prints error and exit with status 1
 function panic() {
     local msg="$1"
     echo "[ERR] $msg"
@@ -149,12 +157,12 @@ function usage() {
     echo "    $FRESH            :: sets up the initial root project"
     echo "    $INIT             :: inits the project by calling $INSTALL and $CONFIGURE"
     echo "    $INSTALL          :: only installs dependencies"
-    echo "    $CONFIGURE        :: configure gunicorn and nginx"
+    echo "    $CONFIGURE        :: configure SSL certificate,gunicorn and nginx"
     echo "    $SERVE <dev|prod> :: serve the application with either development environment or production environment"
     echo "    $UPDATE           :: updates the repository and calls $SERVE"
     echo "    $STATUS           :: shows the status of everything running"
     echo "    $KILL             :: kills running processes"
-    echo "If this is a brand new AWS instance, run with $FRESH, change to root proj directory, then $INIT"
+    echo "If this is a brand new instance, run with $FRESH, change to root proj directory, then $INIT"
     exit 1
 }
 
@@ -171,7 +179,7 @@ function exit_venv() {
     deactivate
     log "done"
 }
-
+# Validate project directory exists, exit if not
 function assure_proj_dir() {
     if [ ! -d "$PROJ_DIR" ];
     then
@@ -179,6 +187,11 @@ function assure_proj_dir() {
     fi
 }
 
+# =============================
+# STATUS AND MONITORING
+# =============================
+
+# Status for all services and ports
 function show_status() {
     log "showing status"
 
@@ -190,6 +203,9 @@ function show_status() {
 
     log "redis-server.service"
     systemctl status redis-server.service --no-pager || true
+
+    echo ""
+    echo "===Port Usage==="
 
     log "port 5001"
     lsof -i :5001 || true
@@ -206,10 +222,11 @@ function show_status() {
     log "done"
 }
 
+# Stop all services, kill processes and clear PyCache
 function kill_procs() {
     log "killing all processes"
 
-    sudo systemctl stop redis-server.service
+    sudo systemctl stop redis-server.service || true
     sudo systemctl stop rubricapp.service
     sudo systemctl stop nginx.service
 
@@ -217,21 +234,22 @@ function kill_procs() {
     kill_pids 5001
     kill_pids 3000
 
-    cd ../
-    find . -type d -name "*.pyc" -exec rm -r {} +
-    find . -type d -name "__pycache__" -exec rm -r {} +
-    cd - > /dev/null
+    log "cleaning pycache files"
+    if [ -d "$PROJ_DIR" ]; then
+      find "$PROJ_DIR" -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
+      find "$PROJ_DIR" -type f -name "*.pyc" -delete 2>/dev/null || true
+    fi
 
+    cd -
+    
     log "done"
 }
 
-# ///////////////////////////////////
-# UPDATES
-# ///////////////////////////////////
+# ===================
+# PROCESS MANAGEMENT
+# ===================
 
-# Kill PIDS given a port num.
-# It uses the terse option from lsof
-# to accomplish this.
+# Kill PIDS given a port using lsof
 function kill_pids() {
     log "killing pids"
 
@@ -240,7 +258,9 @@ function kill_pids() {
 
     # If PIDs are not empty, kill them.
     if [ -n "$pids" ]; then
-        kill $pids
+        kill $pids 2>/dev/null || true
+    else 
+        log "no processes found on port"
     fi
 
     log "done"
@@ -259,19 +279,28 @@ function start_bgproc() {
     log "done"
 }
 
-# Updates the repo by comparing the hash of what is
-# local vs what is remote.
+# Pull latest changes from git if remote differs from local
 function update_repo() {
     log "updating repo"
+
+    cd "$PROJ_DIR"
+
     git fetch
     if [ "$(git rev-parse HEAD)" != "$(git rev-parse origin/master)" ];
     then
         # Get the most up-to-date version of the repo.
         git pull origin master
     fi
+
+    cd -
     log "done"
 }
 
+# ===========================
+# DEPENDENCY INSTALLATION
+# ===========================
+
+# Installs NVM, Nodejs v20.11.1, serve and npm packages
 function install_npm_deps() {
     log "installing npm dependencies"
 
@@ -289,6 +318,8 @@ function install_npm_deps() {
     cd "$PROJ_DIR/FrontEndReact"
     sudo npm install -g serve
     npm install
+
+    cd -
 
     log "done"
 }
@@ -313,15 +344,11 @@ function install_pip_reqs() {
     log "done"
 }
 
-# Install all requirements needed
-# through aptitude. NOTE: if more
-# packages are needed, append them
-# to the `DEPS` variable at the top
-# of the file.
+# Install system packages via apt (EPEL + upgrades + DEPS)
 function install_sys_deps() {
     log "updating/upgrading packages"
 
-    sudo apt update
+    sudo apt update || true
     sudo apt upgrade -y
 
     log "installing dependencies"
@@ -331,9 +358,51 @@ function install_sys_deps() {
     log "done"
 }
 
-# ///////////////////////////////////
+# ======================
 # CONFIGURATION
-# ///////////////////////////////////
+# ======================
+
+# Get SSL certificates using certbot standalone mode
+# Domain must be pointing to server IP before attempting this
+function configure_ssl() {
+    log "obtaining SSL certificates"
+    
+     # Stop nginx to free up port 80/443
+    log "ensuring ports 80 and 443 are available"
+    sudo systemctl stop nginx.service 2>/dev/null || true
+    kill_pids 80
+    kill_pids 443
+    
+    # Check if certificates already exist
+    if [ -d "/etc/letsencrypt/live/$DOMAIN" ]; then
+        log "certificates already exist for $DOMAIN"
+        
+        # Check if they're expiring soon
+        if sudo certbot certificates | grep -q "VALID"; then
+            log "certificates are still valid"
+        else
+            log "renewing certificates"
+            sudo certbot renew --quiet
+        fi
+    else
+        log "obtaining new certificates for $DOMAIN"
+        # Use standalone mode to get certificates
+        sudo certbot certonly --standalone \
+            --non-interactive \
+            --agree-tos \
+            --register-unsafely-without-email \
+            -d $DOMAIN \
+            || panic "Failed to obtain SSL certificates"
+    fi
+    
+    # Verify certificates were created
+    if [ ! -f "/etc/letsencrypt/live/$DOMAIN/fullchain.pem" ]; then
+        panic "SSL certificate files not found after certbot run"
+    fi
+    
+    log "SSL certificates successfully obtained"
+    log "done"
+}
 
 # Configure NGINX. It uses the configuration
 # that is in the same directory as this script
@@ -341,17 +410,37 @@ function install_sys_deps() {
 function configure_nginx() {
     log "configuring nginx"
 
-    cd "$PROJ_DIR/AWS"
+    echo "$NGINX_BACKEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
+    echo "$NGINX_FRONTEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp-frontend > /dev/null
+    
+    # Creates site-enabled directory if it does not exist
+    sudo mkdir -p /etc/nginx/sites-enabled
 
-    echo -e "$NGINX_BACKEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
-    echo -e "$NGINX_FRONTEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp-frontend > /dev/null
+    # use -sf consistently for symbolic links
+    sudo ln -sf /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled/
+    sudo ln -sf /etc/nginx/sites-available/rubricapp-frontend /etc/nginx/sites-enabled/
 
-    sudo ln -bs /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled
-    sudo ln -bs /etc/nginx/sites-available/rubricapp-frontend /etc/nginx/sites-enabled
+    # Include sites-enabled in nginx.conf if not already there
+    if ! grep -q "include /etc/nginx/sites-enabled/\*;" /etc/nginx/nginx.conf; then
+        sudo sed -i '/include \/etc\/nginx\/conf.d\/\*.conf;/a\    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
+    fi
 
-    # A temporary file can be created, remove it.
-    sudo rm -f /etc/nginx/sites-enabled/rubricapp~
+    # Test Nginx configuration
+    sudo nginx -t || panic "Nginx configuration test failed"
 
+    log "done"
+}
+
+# Configure UFW firewall to allow necessary ports
+function configure_ufw() {
+    log "configuring UFW firewall"
+    sudo ufw --force enable
+    sudo ufw allow ssh
+    sudo ufw allow 80/tcp
+    sudo ufw allow 443/tcp
+    sudo ufw allow 5000/tcp
+    sudo ufw allow 3000/tcp
+    sudo ufw status verbose
     log "done"
 }
 
@@ -373,7 +462,7 @@ function configure_gunicorn() {
 # already been created or not. If it hasn't,
 # it creates it. Otherwise it does nothing.
 function configure_venv() {
-    log "settup up the virtual environment"
+    log "setting up the virtual environment"
 
     if [ ! -d "$VENV_DIR" ];
     then
@@ -398,18 +487,17 @@ function setup_proj_root() {
     log "done"
 
     log "The project has been successfully setup.
-The main project has been cloned into: $PROJ_DIR.
-Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
+    The main project has been cloned into: $PROJ_DIR.
+    Next, re-run this script which is located in $PROJ_DIR/AWS with $CONFIGURE"
 }
 
-# ///////////////////////////////////
-# SERVING
-# ///////////////////////////////////
+# ======================
+# APPLICATION SERVING
+# ======================
 
-# Serve the rubricapp app. Starts all
-# relevant services needed.
+# Starts all relevant services needed
+# Stops existing processes first for clean deployment
 function serve_rubricapp() {
-    local environment="$1"
 
     assure_proj_dir
     enter_venv
@@ -421,28 +509,31 @@ function serve_rubricapp() {
 
     sudo chmod 644 /etc/systemd/system/rubricapp.service
 
-    # Start redis
-    log "starting redis"
+    # Start redis-server
+    log "starting redis-server"
     sudo systemctl start redis-server.service
+    sudo systemctl enable redis-server.service
 
     # Start gunicorn
     log "Starting gunicorn"
-    cd "$PROJ_DIR/BackEndFlask"
-    # gunicorn --reload --bind unix:rubricapp.sock wsgi:app &
+    sudo systemctl daemon-reload
     sudo systemctl start rubricapp.service
+    sudo systemctl enable rubricapp.service
 
     # Start nginx
     log "starting NGINX"
-    sudo systemctl start nginx.service
-    sudo nginx -s reload
+    sudo systemctl start nginx.service || panic "Failed to start Nginx"
+    sudo systemctl enable nginx.service
+    sudo nginx -s reload || log "Warning: Nginx reload failed but running"
 
+    # Makes sure Nginx can read user home directory
     sudo chmod 755 "/home/$USER"
 
     # Start react
     log "serving front-end"
     cd "$PROJ_DIR/FrontEndReact"
 
-    npm run build
+    npm run build || panic "Failed NPM run"
 
     serve -s -l tcp://0.0.0.0:3000 build &
     cd -
@@ -469,13 +560,20 @@ function configure_db() {
     log "done"
 }
 
+# ===================
+# ADVANCED COMMANDS
+# ===================
+
+# Runs all configuration steps: Gunicorn, Nginx, UFW
 function configure() {
     assure_proj_dir
+    configure_ssl
     configure_gunicorn
     configure_nginx
     configure_ufw
 }
 
+# Install all dependencies: sytem packages, Python Packages, Node.js
 function install() {
     assure_proj_dir
     install_sys_deps
@@ -483,35 +581,42 @@ function install() {
     install_npm_deps
 }
 
+# Sets up production directory structure (run First on a new server)
 function fresh() {
     setup_proj_root
 }
 
-# Driver.
+# ============================================================
+# MAIN SCRIPT EXECUTION
+# Usage: ./syscontrol.sh --fresh (then --init, then --serve)
+# ============================================================
 
-# Check for arguments.
+# Check if any arguments were provided
 if [ "$#" -eq 0 ];
 then
     usage
 fi
 
+# Process the command-line argument
 # Add new options here.
 case "$1" in
     "$FRESH")
         fresh
         ;;
     "$INIT")
+        # Full initialization with warning
         red="\033[0;31m"
         nc="\033[0m"
-        echo -e "${red}You are running $INIT. This resets the DATABASE COMPLETELY. Do you want to continue? Y/n${nc}"
+        echo -e "${red}WARNING: Running $INIT will RESET THE DATABASE COMPLETELY.${nc}"
+        echo -e "${red}Do you want to continue? (Y/n)${nc}"
         read ans
-        if [ "$ans" == "Y" ] || [ "$ans" == "y" ];
-        then
+        
+        if [ "$ans" == "Y" ] || [ "$ans" == "y" ]; then
             install
             configure
-            configure_db # NOTE: resets the DB!
+            configure_db  # Resets database!
         else
-            panic "Aborting"
+            panic "Initialization aborted by user"
         fi
         ;;
     "$INSTALL")
@@ -521,7 +626,7 @@ case "$1" in
         configure
         ;;
     "$SERVE")
-        serve_rubricapp "$2"
+        serve_rubricapp
         ;;
     "$UPDATE")
         kill_procs
@@ -537,8 +642,8 @@ case "$1" in
         usage
         ;;
     *)
-        panic "unknown option: $1"
+        panic "Unknown option: $1 (use $HELP for usage info)"
         ;;
 esac
 
-log "syscontrol.sh END"
+log "syscontrol.sh completed successfully"
