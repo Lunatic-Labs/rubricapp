@@ -16,10 +16,10 @@ from models.completed_assessment import (
     replace_completed_assessment,
     completed_assessment_exists,
     get_completed_assessment_count,
-    toggle_lock_status,
-    make_complete_assessment_locked,
-    make_complete_assessment_unlocked,
     fetch_average,
+    toggle_individual_lock_status,
+    lock_individual_assessment,
+    unlock_individual_assessment,
 )
 
 from models.queries import (
@@ -39,8 +39,27 @@ from models.assessment_task import get_assessment_tasks_by_course_id
 @AuthCheck()
 def toggle_complete_assessment_lock_status():
     try:
-        assessmentTaskId = request.args.get('assessment_task_id')
-        toggle_lock_status(assessmentTaskId)
+        # Changed to accept completed_assessment_id for individual toggle
+        completed_assessment_id = request.args.get('completed_assessment_id')
+        
+        if not completed_assessment_id:
+            return create_bad_response(
+                "completed_assessment_id is required", "completed_assessments", 400
+            )
+        
+        # Get the locked status from query params
+        locked_status = request.args.get('locked')
+        
+        if locked_status is None:
+            return create_bad_response(
+                "locked parameter is required", "completed_assessments", 400
+            )
+        
+        # Convert string 'true'/'false' to boolean
+        locked = locked_status.lower() == 'true'
+        
+        toggle_individual_lock_status(completed_assessment_id, locked)
+        
         return create_good_response(None, 201, "completed_assessments")
 
     except Exception as e:
@@ -54,8 +73,16 @@ def toggle_complete_assessment_lock_status():
 @AuthCheck()
 def lock_complete_assessment():
     try:
-        assessmentTaskId = request.args.get('assessment_task_id')
-        make_complete_assessment_locked(assessmentTaskId)
+        # Changed to accept completed_assessment_id for individual lock
+        completed_assessment_id = request.args.get('completed_assessment_id')
+        
+        if not completed_assessment_id:
+            return create_bad_response(
+                "completed_assessment_id is required", "completed_assessments", 400
+            )
+        
+        lock_individual_assessment(completed_assessment_id)
+        
         return create_good_response(None, 201, "completed_assessments")
 
     except Exception as e:
@@ -69,8 +96,16 @@ def lock_complete_assessment():
 @AuthCheck()
 def unlock_complete_assessment():
     try:
-        assessmentTaskId = request.args.get('assessment_task_id')
-        make_complete_assessment_unlocked(assessmentTaskId)
+        # Changed to accept completed_assessment_id for individual unlock
+        completed_assessment_id = request.args.get('completed_assessment_id')
+        
+        if not completed_assessment_id:
+            return create_bad_response(
+                "completed_assessment_id is required", "completed_assessments", 400
+            )
+        
+        unlock_individual_assessment(completed_assessment_id)
+        
         return create_good_response(None, 201, "completed_assessments")
 
     except Exception as e:

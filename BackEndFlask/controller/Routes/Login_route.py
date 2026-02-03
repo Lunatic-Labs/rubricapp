@@ -28,7 +28,7 @@ def login():
         JSON = {
             "email": email,
             "user_id": user.user_id,
-            "isSuperAdmin": user.user_id==1,
+            "isSuperAdmin": user.user_id == 1,
             "isAdmin": user.is_admin,
             "has_set_password": user.has_set_password,
             "user_name": user.first_name + " " + user.last_name
@@ -105,7 +105,7 @@ def check_reset_code():
             raise MissingException(["Email", "Code"])
 
         user = get_user_by_email(email)
-
+        
         if user is None or not check_password_hash(user.reset_code, code):
             raise InvalidCredentialsException
 

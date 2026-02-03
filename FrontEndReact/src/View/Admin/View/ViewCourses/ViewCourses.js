@@ -5,33 +5,13 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable.js';
 import { Typography, Box } from "@mui/material";
 
-
 class ViewCourses extends Component {
   render() {
-    const { navbar } = this.props;
-    
-    // Safety check - if data isn't loaded yet, show loading state
-    if (!navbar || !navbar.adminViewCourses) {
-      return (
-        <Box sx={{ p: 3 }}>
-          <Typography>Loading...</Typography>
-        </Box>
-      );
-    }
-    
-    const adminViewCourses = navbar.adminViewCourses;
-    const courses = adminViewCourses.courses;
-    const courseRoles = adminViewCourses.courseRoles;
-    const setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
-    
-    // Additional safety check
-    if (!courses || !courseRoles) {
-      return (
-        <Box sx={{ p: 3 }}>
-          <Typography>Loading courses...</Typography>
-        </Box>
-      );
-    }
+    var navbar = this.props.navbar;
+    var adminViewCourses = navbar.adminViewCourses;
+    var courses = adminViewCourses.courses;
+    var courseRoles = adminViewCourses.courseRoles;
+    var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
 
     const columns = [
       {
@@ -109,17 +89,44 @@ class ViewCourses extends Component {
         }
       }];
 
+      // If the logged in user is an Admin of at least one course then the edit column will show.
+      // Otherwise the edit column will not be shown!
+      if (navbar.props.isAdmin) {
+        columns.push(
+        {
+          // If the logged in user is an Admin in the course, they can edit the course.
+          // Otherwise the edit button is disabled because they did not make the course
+          // and are either a TA/Instructor or Student in the course!
+          name: "course_id",
+          label: "EDIT",
+          options: {
+            filter: false,
+            sort: false,
+            setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+            setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
+            customBodyRender: (courseId) => {
+              return (
+                <IconButton id={courseId}
+                  className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
+                  onClick={() => {
+                    if(courseRoles[courseId]===3) {
+                      setAddCourseTabWithCourse(courses, courseId, "AddCourse")
+                    }
+                }}
+                  aria-label='editCourseIconButton'
+                 >
+                  <EditIcon sx={{color:"black"}}/>
+                </IconButton>
+              )
+            },
+          }
+        });
+      }
 
-    // If the logged in user is an Admin of at least one course then the edit column will show.
-    // Otherwise the edit column will not be shown!
-    if (navbar.props.isAdmin) {
       columns.push(
       {
-        // If the logged in user is an Admin in the course, they can edit the course.
-        // Otherwise the edit button is disabled because they did not make the course
-        // and are either a TA/Instructor or Student in the course!
         name: "course_id",
-        label: "EDIT",
+        label: "VIEW",
         options: {
           filter: false,
           sort: false,
@@ -127,59 +134,24 @@ class ViewCourses extends Component {
           setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
-              <IconButton 
-                id={courseId}
-                role="img" 
-                aria-label='editCourseIconButton'
-                className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
-                disabled={courseRoles[courseId]!==3}
-                onClick={() => {
-                  if(courseRoles[courseId]===3) {
-                    setAddCourseTabWithCourse(courses, courseId, "AddCourse")
-                  }
+                <IconButton id={courseId}
+                   onClick={() => {
+                    // The logged in user is an Admin in the course
+                    if(courseRoles[courseId] === 3) {
+                      setAddCourseTabWithCourse(courses, courseId, "Users");
+
+                    // The logged in user is a TA/Instructor or Student in the course
+                    } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
+                      navbar.setStudentDashboardWithCourse(courseId, courses);
+                    }
                 }}
-              >
-                <EditIcon sx={{color:"black"}}/>
-              </IconButton>
+                aria-label="viewCourseIconButton">
+                  <VisibilityIcon sx={{color:"black"}} />
+                </IconButton>
             )
           },
         }
-      });
-    }
-
-
-    columns.push(
-    {
-      name: "course_id",
-      label: "VIEW",
-      options: {
-        filter: false,
-        sort: false,
-        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-        customBodyRender: (courseId) => {
-          return (
-            <IconButton 
-              id={courseId}
-              role="img" 
-              aria-label="viewCourseIconButton"
-              onClick={() => {
-                // The logged in user is an Admin in the course
-                if(courseRoles[courseId] === 3) {
-                  setAddCourseTabWithCourse(courses, courseId, "Users");
-                // The logged in user is a TA/Instructor or Student in the course
-                } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
-                  navbar.setStudentDashboardWithCourse(courseId, courses);
-                }
-              }}
-            >
-              <VisibilityIcon sx={{color:"black"}} />
-            </IconButton>
-          )
-        },
-      }
     });
-
 
     const options = {
       onRowsDelete: false,
@@ -188,14 +160,12 @@ class ViewCourses extends Component {
       viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "simple",
+      responsive: "simple",  // Changed from "vertical" to "simple"
       tableBodyMaxHeight: "35vh",
     };
 
-
     const activeCourses = courses ? courses.filter(course => course.active) : [];
     const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
-
 
     return (
       <Box aria-label="viewCourseDiv">
@@ -250,6 +220,5 @@ class ViewCourses extends Component {
     );
   }
 }
-
 
 export default ViewCourses;

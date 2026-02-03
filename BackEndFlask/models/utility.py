@@ -1,3 +1,4 @@
+import json
 import string
 import secrets
 from time import time
@@ -8,6 +9,7 @@ from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
 from constants.Email import DEFAULT_SENDER_EMAIL
 from enums.Email_type import EmailContentType
+
 
 def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     """
@@ -53,7 +55,8 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
         )
 
         if response.status_code == 200 and response.body:
-            email_json = response.body
+            decoded_body = response.body.decode('utf-8')  # Convert bytes to string
+            email_json = json.loads(decoded_body)
             for entry in email_json:
                 bounced_emails.append({
                     'id': entry['created'],
@@ -79,7 +82,7 @@ def send_bounced_email_notification(dest_addr: str, msg: str, failure: str) -> N
         failure (str)  : Specific error from the system.
     """
     subject = "Student's email failed to send."
-    message = f'''The email could not sent due to:
+    message = f'''The email could not send due to:
 
                 {msg}
 
