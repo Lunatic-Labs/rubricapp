@@ -2,6 +2,7 @@ import { apiUrl } from './App';
 import Cookies from 'universal-cookie';
 import * as eventsource from "eventsource-client";
 import { Component as ReactComponent } from 'react';
+import { HTTP_STATUS } from './Enums/HttpStatusCodes';
 
 interface FetchOptions {
   dest?: string;
@@ -11,7 +12,7 @@ interface FetchOptions {
 
 interface ApiResponse {
   success: boolean;
-  msg?: string;
+  status?: number;
   content?: Record<string, any>;
   message?: string;
   headers?: Record<string, string>;
@@ -106,131 +107,11 @@ async function genericResourceFetch(
   } = options;
 
   const cookies = new Cookies();
-  const accessToken = cookies.get('access_token');
-  const refreshToken = cookies.get('refresh_token');
-  const user = cookies.get('user');
+  const accessToken : string = cookies.get('access_token');
+  const refreshToken: string = cookies.get('refresh_token');
+  const user: string = cookies.get('user');
 
-  if (accessToken && refreshToken && user) {
-    const url = createApiRequestUrl(fetchURL, cookies);
-
-    const headers: Record<string, string> = {
-      "Authorization": "Bearer " + accessToken
-    };
-
-    if (url.indexOf('bulk_upload') === -1) {
-      headers["Content-Type"] = "application/json";
-    }
-
-    let response: Response;
-
-    try {
-      const fetchInit: RequestInit = {
-        method: type,
-        headers: headers
-      };
-      
-      if (body !== null) {
-        fetchInit.body = body;
-      }
-      
-      response = await fetch(url, fetchInit);
-    } catch (error) {
-      console.error(`=== UTILITY: ${type} ERROR ===`);
-      console.error('Error:', error);
-
-      component.setState({
-        isLoaded: true,
-        errorMessage: error instanceof Error ? error.message : String(error),
-      });
-
-      throw error;
-    }
-
-    const result: ApiResponse = await response.json();
-
-    //if (!response.ok) {   
-    //  const errorContent = result?.content || null;
-    //  const errorMessage = result?.message || `HTTP ${response.status}`;
-//
-    //  const err = new Error(errorMessage);
-    //  (err as any).content = errorContent;
-    //  throw err;
-    //}
-
-    if (result.success) {
-      const state: any = {
-        isLoaded: true,
-        errorMessage: null,
-      };
-
-      if (resource && result.content) {
-        state[dest || resource] = result.content[resource][0];
-      }
-
-      component.setState(state);
-      return rawResponse ? result : state;
-
-    } else if (result.msg === "BlackListed" || result.msg === "No Authorization") {
-      cookies.remove('access_token');
-      cookies.remove('refresh_token');
-      cookies.remove('user');
-      window.location.reload();
-      return undefined;
-
-    } else if (
-      result.msg === "Token has expired" ||
-      result.msg === "Not enough segments" ||
-      result.msg === "Invalid token" ||
-      response.status === 422
-    ) {
-      if (isRetry) {
-        cookies.remove('access_token');
-        cookies.remove('refresh_token');
-        cookies.remove('user');
-        window.location.reload();
-        return undefined;
-      }
-
-      const refreshTokenValue = cookies.get('refresh_token');
-      const userId = (cookies.get('user') as User)?.user_id;
-
-      try {
-        const refreshResponse = await fetch(
-          `${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshTokenValue}`,
-          {
-            method: 'POST',
-            headers: {
-              'Authorization': 'Bearer ' + refreshTokenValue
-            }
-          }
-        );
-
-        const refreshResult: ApiResponse = await refreshResponse.json();
-
-        if (refreshResult.success && refreshResult.headers) {
-          cookies.set('access_token', refreshResult.headers.access_token, { sameSite: 'strict' });
-          cookies.set('refresh_token', refreshResult.headers.refresh_token, { sameSite: 'strict' });
-
-          return await genericResourceFetch(fetchURL, resource, component, type, body, {
-            ...options,
-            isRetry: true
-          });
-        } else {
-          cookies.remove('access_token');
-          cookies.remove('refresh_token');
-          cookies.remove('user');
-          window.location.reload();
-          return undefined;
-        }
-      } catch (refreshError) {
-        cookies.remove('access_token');
-        cookies.remove('refresh_token');
-        cookies.remove('user');
-        window.location.reload();
-        return undefined;
-      }
-    }
-  } else {
+  if (!accessToken || !refreshToken || !user){
     const state: any = {
       isLoaded: true,
       errorMessage: "Not authenticated",
@@ -239,9 +120,158 @@ async function genericResourceFetch(
     component.setState(state);
     return state;
   }
+
+  const url: string = createApiRequestUrl(fetchURL, cookies);
+  const headers: Record<string, string> = {"Authorization": "Bearer " + accessToken};
+
+  if (url.indexOf('bulk_upload') === -1) {
+    headers["Content-Type"] = "application/json";
+  }
+
+  let response: Response;
+
+  // try block handles network related errors.
+  try {
+    const fetchInit: RequestInit = {
+      method: type,
+      headers: headers
+    };
+
+    if (body !== null) {
+      fetchInit.body = body;
+    }
+
+    response = await fetch(url, fetchInit);
+  } catch(error){
+    component.setState({
+      isLoaded: true,
+      errorMessage: error instanceof Error ? error.message : String(error),
+    });
+
+    throw error;
+  }
+
+  const result: ApiResponse = await response.json();
+
+  if (result.success){
+    const state: any = {
+      isLoaded: true,
+      errorMessage: null,
+    };
+
+    if (resource && result.content) {
+      state[dest || resource] = result.content[resource][0];
+    }
+
+    component.setState(state);
+    return rawResponse ? result : state;
+
+  } else {
+    // Catch and report server related errors.
+    let issueFound, issue:any|undefined = await tokenServerErrorAndResolver(result, resource, component, 
+                                                        cookies, response, isRetry, 
+                                                        fetchURL, type, body, options);
+    if (!issueFound){
+      const state = {
+        isLoaded: true,
+        errorMessage: result?.message ?? "Server error",
+      }
+      component.setState(state);
+
+      return rawResponse ? result : state;
+    }
+
+    return issue;
+  }
 }
 
-/** @deprecated */
+
+/**
+ * 
+ * @param result - The result from the server.
+ * @param resource - Connection destination.
+ * @param component - Components state to set.
+ * @param cookies - Cookies.
+ * @param response - Response data sent.
+ * @param isRetry - If allowed to attempt the same message.
+ * @param fetchURL - URL to connect to.
+ * @param type - Type of connection.
+ * @param body - Message contained from the response.
+ * @param options - Fetch options.
+ * @returns An array where the first element is if it found an issue and the second element is the issue to bubble up.
+ */
+async function tokenServerErrorAndResolver(
+  result: ApiResponse, resource: string|null, 
+  component: ReactComponent<any, any, any>, 
+  cookies: Cookies, response: Response,
+  isRetry: boolean, fetchURL: string,
+  type: string, body: string|null,
+  options: FetchOptions
+  ): Promise<[boolean, any|undefined]> {
+  
+  const msg: string = result?.message ?? "Server Error";
+  const status: number = response.status;
+  const accessTokenKey = 'access_token';
+  const refreshTokenKey = 'refresh_token';
+  const userKey = 'user';  
+
+  if (["BlackListed", "No Authorization"].includes(msg)){
+    cookies.remove(accessTokenKey);
+    cookies.remove(refreshTokenKey);
+    cookies.remove(userKey);
+    window.location.reload();
+    return [true, undefined];
+  } else if (["Token has expired", "Not enough segments", "Invalid token"].includes(msg) || 
+              status === HTTP_STATUS.UNPROCESSABLE_ENTITY){
+    if (isRetry){
+      cookies.remove(accessTokenKey);
+      cookies.remove(refreshTokenKey);
+      cookies.remove(userKey);
+      window.location.reload();
+      return [true, undefined];
+    }
+
+    const refreshTokenValue: string = cookies.get(refreshTokenKey);
+    const userId: string = (cookies.get(userKey) as User)?.user_id;
+
+    try {
+      const refreshResponse = await fetch(
+        `${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshTokenValue}`,
+        {
+          method: 'POST',
+          headers: {
+            'Authorization': 'Bearer ' + refreshTokenValue
+          }
+        }
+      );
+      const refreshResult: ApiResponse = await refreshResponse.json();
+      if (refreshResult.success && refreshResult.headers) {
+        cookies.set(accessTokenKey, refreshResult.headers.access_token, { sameSite: 'strict' });
+        cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
+        return [true, await genericResourceFetch(fetchURL, resource, component, type, body, {
+          ...options, 
+          isRetry: true
+        })];
+      } else {
+        cookies.remove(accessTokenKey);
+        cookies.remove(refreshTokenKey);
+        cookies.remove(userKey);
+        window.location.reload();
+        return [true, undefined];
+      }
+    } catch (refreshError) {
+      cookies.remove(accessTokenKey);
+      cookies.remove(refreshTokenKey);
+      cookies.remove(userKey);
+      window.location.reload();
+      return [true, undefined];
+    }
+  }
+  return [false, null];
+}
+
+
+/** @deprecated The website should not have to use this since backend will not work with it. */
 export function createEventSource(
   fetchURL: string,
   onMessage: (message: any) => void
@@ -478,8 +508,6 @@ export function restoreAdminCredentialsFromSession() {
 export function setTestStudentCookies(data: any ) {
     const cookies = new Cookies();
     
-    console.log('setTestStudentCookies called with:', data);
-    
     // Clear old cookies
     cookies.remove('access_token', { path: '/' });
     cookies.remove('refresh_token', { path: '/' });
@@ -487,7 +515,6 @@ export function setTestStudentCookies(data: any ) {
     
     // Check if data has the expected structure
     if (!data.access_token || !data.user) {
-        console.error('Invalid data structure for setTestStudentCookies:', data);
         throw new Error('Invalid test student data');
     }
     
@@ -500,8 +527,6 @@ export function setTestStudentCookies(data: any ) {
         viewingAsStudent: true
     };
     cookies.set('user', userWithFlag, {sameSite: 'strict'});
-    
-    console.log('Test student cookies set successfully');
 }
 
 export default modules;
