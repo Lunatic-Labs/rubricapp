@@ -81,7 +81,7 @@ class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstruc
     render() {
         const skipInstructions = this.state.skipInstructions;
 
-        var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask.assessmentTaskName;
+        var assessmentTaskName = this.props.navbar.state.chosenAssessmentTask["assessment_task_name"];
 
         var rubricName = this.props.rubrics["rubric_name"];
 
@@ -138,7 +138,7 @@ class ViewAssessmentTaskInstructions extends Component<ViewAssessmentTaskInstruc
                         }}
                     >
                         <h3 style={{ textAlign: 'left', fontWeight: '700' }}>
-                            {"Rubric for " + rubricName}
+                            {assessmentTaskName + " - " + rubricName}
                         </h3>
                         <h6 style={{ textAlign: 'left', fontWeight: '600' }}>
                             Rubric Description: {rubricDescription}
