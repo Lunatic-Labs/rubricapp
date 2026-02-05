@@ -1,0 +1,52 @@
+==================================================================================================================================
+`BasicTabs.js`
+
+Creates an instance of the BasicTabs component.
+
+This component renders the top-level tab navigation used within instructor and admin dashboard views. It allows switching between:
+ - Roster
+ - Teams (conditionally shown depending on course settings)
+ - Assessment Tasks
+ - Reporting
+
+The available tabs and the selected tab are synchronized with state stored in the parent `AppState` component.
+
+Component behavior:
+ - Computes which tab index should be active based on `activeTab`
+ - Syncs internal tab state (`value`) by reacting to changes in `activeTab`
+ - Renders Material UI `Tabs` and `Tab` components for navigation
+ - Notifies the `AppState` parent when the user selects a new tab
+
+Tab mapping:
+ - "Users" → Roster
+ - "Teams" → Teams (only when fixed teams are enabled)
+ - "AssessmentTasks" → Assessment Task
+ - "Reporting" → Reporting
+
+This component does not manage application state directly, but instead delegates all navigation updates to the parent `AppState` component.
+
+==================================================================================================================================
+`Navbar.js`
+
+Creates an instance of the ButtonAppBar component.
+
+This component renders the main top navigation bar for the SkillBuilder application.
+It provides:
+ - Branding and application logo
+ - Display of the currently logged-in user's name
+ - An account dropdown menu with navigation and support options
+ - A logout option via the <Logout> component
+
+The component renders:
+ - A top AppBar that remains consistent across pages
+ - The SkillBuilder logo on the left
+ - The user’s name and an expand/collapse button on the right
+ - A Material UI dropdown menu with the following items:
+    • My Account — switches to "UserAccount" tab
+    • Support Center — opens external support link in new tab
+    • Privacy Policy — switches to "PrivacyPolicy" tab
+    • Logout — logs out via <Logout logout={props.logout} />
+
+The component uses Material UI for layout and styling, and is intended as the primary navigation bar throughout the user-facing application.
+
+==================================================================================================================================
