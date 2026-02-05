@@ -22,7 +22,7 @@ import { Box, Typography, Button } from '@mui/material';
  * - Add Task
  * 
  * Data:
- * No fetchig or managing data directly in this component.
+ * No fetching or managing data directly in this component.
  * - Handled by AdminViewAssessmentTask component.
  * 
  */

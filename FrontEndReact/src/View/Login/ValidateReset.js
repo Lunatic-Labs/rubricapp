@@ -8,7 +8,7 @@ import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
 
 /**
- * Creats an instance of the ValidateReset component
+ * Creates an instance of the ValidateReset component
  * 
  * @constructor
  * @param {object} props - The properties passed to the component.
