@@ -85,7 +85,7 @@ def RandomAssignTeams(observer_id, course_id, team_size=4):
     
     number_of_teams = group_num(students.__len__(), team_size)
     teams = []
-    for team in range(number_of_teams):
+    for team in range(1, number_of_teams + 1):
         teams.append(make_teams(team, (lambda: observer_id, lambda: tas[team%tas.__len__()].user_id)[use_tas](), course_id))
     team_users = assign_users_to_teams(students, teams)
 
