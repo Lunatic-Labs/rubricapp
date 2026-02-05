@@ -71,6 +71,7 @@ def mass_notify_new_ca_users():
             if singular_student.last_update > at_time
         ]
 
+
         email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
 
         # Updating AT notification time
