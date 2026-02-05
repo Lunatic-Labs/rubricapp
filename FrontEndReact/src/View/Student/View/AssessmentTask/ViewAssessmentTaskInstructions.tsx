@@ -9,6 +9,27 @@ interface ViewAssessmentTaskInstructionsProps {
     rubrics: any;
 }
 
+/**
+ * @description
+ * Displays the assessment task instructions and rubric summary for a student
+ * before they complete the rubric. When the user continues, this component
+ * optionally records a feedback view (via POST /feedback) and then navigates
+ * to "ViewStudentCompleteAssessmentTask".
+ *
+ * @prop {object} navbar         - Navbar instance; uses state.chosenAssessmentTask,
+ *                                 state.chosenCompleteAssessmentTask, and skipInstructions.
+ * @prop {object} rubrics        - Rubric metadata for the chosen assessment task.
+ *                                 Expects keys: "category_json", "rubric_name",
+ *                                 "rubric_description".
+ *
+ * @property {object} state.categories     - Category JSON for the rubric (from rubrics.category_json).
+ * @property {string} state.instructions   - Assessment instructions (from navbar.state.chosenAssessmentTask.comment).
+ * @property {boolean} state.skipInstructions - If true, skips rendering instructions
+ *                                             and immediately proceeds to handleContinueClick.
+ * @property {string|null} state.errorMessage - Error message to display if we cannot
+ *                                              proceed (e.g., missing assessmentTaskId).
+ */
+
 interface ViewAssessmentTaskInstructionsState {
     categories: any;
     instructions: string;

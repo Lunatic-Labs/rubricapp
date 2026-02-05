@@ -6,6 +6,20 @@ import { genericResourceGET, parseUserNames } from '../../../../utility';
 import { Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 
+/**
+ * Creates an instance of the Admin////viewTeamMembers component.
+ * Displays team members for a specific team with the option to add or remove members.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @property {Object} props.navbar - The navbar object containing state and methods for navigation.
+ * 
+ * @property {string|null} state.errorMessage - The error message to display if an error occurs during data fetching.
+ * @property {boolean|null} state.isLoaded - Indicates whether the data has been loaded.
+ * @property {Array} state.users - The list of users who are members of the team.
+ * 
+ */
+
 interface AdminViewTeamMembersState {
     errorMessage: any;
     isLoaded: any;
@@ -22,6 +36,28 @@ class AdminViewTeamMembers extends Component<any, AdminViewTeamMembersState> {
             users: []
         }
     }
+    
+    /**
+     * @method componentDidMount - Fetches the team members when the component is mounted.
+     * 
+     * API Endpoint: /user 
+     * HTTP Method: GET
+     * 
+     * Parameters:
+     * @param {string} course_id - The ID of the course.
+     * @param {string} team_id - The ID of the team.
+     * @param {boolean} assign - Flag to indicate fetching assigned users.
+     * 
+     * Response:
+     * Users assigned to the specified team within the course.
+     * Filtered records based on ...
+     * 
+     * Sorting:
+     * 
+     * Usage:
+     * This method is called automatically when the component is mounted to fetch the team members.
+     * 
+     */
 
     componentDidMount() {
         var navbar = this.props.navbar;
@@ -72,6 +108,9 @@ class AdminViewTeamMembers extends Component<any, AdminViewTeamMembersState> {
                             {team["team_name"]}
                         </Typography>
                         <div className='d-flex justify-content-end gap-3'>
+                            {/**
+                             * @button Add Member - Button to add a new member to the team.
+                             */}
                             <Button
                                 className='mt-3 mb-3 btn btn-primary'
                                 style={{
@@ -91,7 +130,9 @@ class AdminViewTeamMembers extends Component<any, AdminViewTeamMembersState> {
                             >
                                 Add Member
                             </Button>
-
+                                {/**
+                                 * @button Remove Member - Button to remove an existing member from the team.
+                                 */}
                             <Button
                                 className='mt-3 mb-3 btn btn-primary'
                                 style={{

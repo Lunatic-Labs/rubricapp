@@ -41,6 +41,7 @@ class AdminViewCompleteAssessmentTasks extends Component<
         const chosenCourse = state.chosenCourse;
 
         if (chosenAssessmentTask["unit_of_assessment"]) {
+            // Fetch Team assessments
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=team`,
                 "completed_assessments",
@@ -48,6 +49,7 @@ class AdminViewCompleteAssessmentTasks extends Component<
                 { dest: "completedAssessments" }
             );
         } else {
+            // Fetch Indivdual assessments
             genericResourceGET(
                 `/completed_assessment?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&unit=individual`,
                 "completed_assessments",
