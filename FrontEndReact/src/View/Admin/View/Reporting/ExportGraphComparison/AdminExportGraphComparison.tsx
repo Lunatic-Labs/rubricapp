@@ -237,8 +237,9 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
             // Rating
             const rating = catRocs.rating;
             allRatings.push(rating);
-            if (ratingsData[rating]) {
-              ratingsData[rating].number += 1;
+            const ratingEntry = ratingsData[rating];
+            if (ratingEntry) {
+              ratingEntry.number += 1;
             }
 
             // Observable characteristics (binary string of 0/1)

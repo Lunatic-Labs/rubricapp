@@ -8,7 +8,6 @@ import {
   CartesianGrid,
   LabelList,
   ResponsiveContainer,
-  Tooltip,
 } from 'recharts';
 import { GraphItem } from './AdminExportGraphComparison';
 
@@ -94,8 +93,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
               <XAxis dataKey="rating" type="category" style={{ fontSize: '0.65rem' }} />
               <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.65rem' }} />
               <CartesianGrid vertical={false} />
-              <Tooltip />
-              <Bar dataKey="number" fill="#2e8bef">
+              <Bar dataKey="number" fill="#2e8bef" isAnimationActive={false}>
                 <LabelList dataKey="number" fill="#ffffff" position="inside" style={{ fontSize: '0.6rem' }} />
               </Bar>
             </BarChart>
@@ -122,14 +120,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.6rem' }} />
             <YAxis dataKey="label" type="category" width={90} style={{ fontSize: '0.55rem' }} />
             <CartesianGrid horizontal={false} />
-            <Tooltip
-              formatter={(value: any) => `${value}%`}
-              labelFormatter={(label: any) => {
-                const item = graph_data.characteristics.find((c: any) => truncateLabel(c.characteristic) === label);
-                return item ? item.characteristic : label;
-              }}
-            />
-            <Bar dataKey="percentage" fill="#4CAF50">
+            <Bar dataKey="percentage" fill="#4CAF50" isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
@@ -157,14 +148,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.6rem' }} />
             <YAxis dataKey="label" type="category" width={90} style={{ fontSize: '0.55rem' }} />
             <CartesianGrid horizontal={false} />
-            <Tooltip
-              formatter={(value: any) => `${value}%`}
-              labelFormatter={(label: any) => {
-                const item = graph_data.improvements.find((i: any) => truncateLabel(i.improvement) === label);
-                return item ? item.improvement : label;
-              }}
-            />
-            <Bar dataKey="percentage" fill="#FF9800">
+            <Bar dataKey="percentage" fill="#FF9800" isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
