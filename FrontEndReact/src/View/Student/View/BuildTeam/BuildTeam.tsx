@@ -8,6 +8,24 @@ import { Grid, IconButton, Button } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import TextField from '@mui/material/TextField';
 
+/**
+ * @description
+ * Team-building table for students. Displays two tables:
+ *  - Roster (unselected students)
+ *  - Selected team members
+ * and lets the user move students between them.
+ *
+ * Fetches:
+ *  - This component does not perform any fetches itself. All user data is
+ *    provided as props from the parent component.
+ *
+ * @prop {Object} navbar - Navbar instance with current course context (not used yet).
+ * @prop {Array}  users  - Array of user objects for this course (first_name, last_name, user_id).
+ *
+ * @property {Object} state.selected   - Map of user_id → true when the user is in the "selected" list.
+ * @property {Object} state.unselected - Map of user_id → true when the user is explicitly marked unselected.
+ */
+
 interface BuildTeamTableProps {
   navbar: any;
   users: any[];
@@ -35,6 +53,21 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
   // console.log('Confirm Team Button Clicked');
   // };
 
+  /**
+   * @method handleChange
+   * @description
+   * Toggles a user between the "Roster" and "Selected" tables when the
+   * add/remove icon is clicked.
+   *
+   * Sorting:
+   *  - No explicit sorting is done here; rows stay in the order provided
+   *    by props.users. Column-level sorting (if any) is handled by
+   *    CustomDataTable.
+   *
+   * @param {number} userId - ID of the user whose selection state is being toggled.
+   * @returns {function(Event):void} React handler used by the IconButton.
+   */
+  
   handleChange = (userId: any) => (event: any) => {
     const { selected, unselected } = this.state;
     const targetTable = selected[userId] ? 'unselected' : 'selected';
