@@ -1,4 +1,4 @@
-import { apiUrl } from './App.js';
+import { apiUrl } from './App';
 import Cookies from 'universal-cookie';
 import * as eventsource from "eventsource-client";
 
