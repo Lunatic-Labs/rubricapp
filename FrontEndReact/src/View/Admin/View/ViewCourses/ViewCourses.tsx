@@ -6,35 +6,6 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 import { Typography, Box} from "@mui/material";
 import Cookies from 'universal-cookie';
 
-<<<<<<< HEAD:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.js
-
-class ViewCourses extends Component {
-  render() {
-    const { navbar } = this.props;
-    
-    // Safety check - if data isn't loaded yet, show loading state
-    if (!navbar || !navbar.adminViewCourses) {
-      return (
-        <Box sx={{ p: 3 }}>
-          <Typography>Loading...</Typography>
-        </Box>
-      );
-    }
-    
-    const adminViewCourses = navbar.adminViewCourses;
-    const courses = adminViewCourses.courses;
-    const courseRoles = adminViewCourses.courseRoles;
-    const setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
-    
-    // Additional safety check
-    if (!courses || !courseRoles) {
-      return (
-        <Box sx={{ p: 3 }}>
-          <Typography>Loading courses...</Typography>
-        </Box>
-      );
-    }
-=======
 class ViewCourses extends Component<any> {
   render() {
     var navbar = this.props.navbar;
@@ -47,7 +18,6 @@ class ViewCourses extends Component<any> {
     const cookies = new Cookies();
     const user = cookies.get('user');
     const isViewingAsStudent = user?.viewingAsStudent || false;
->>>>>>> master:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.tsx
 
     const columns = [
       {
@@ -125,8 +95,6 @@ class ViewCourses extends Component<any> {
         }
       }];
 
-<<<<<<< HEAD:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.js
-=======
       // If the logged in user is an Admin of at least one course then the edit column will show.
       // Otherwise the edit column will not be shown!
       if (navbar.props.isAdmin) {
@@ -159,7 +127,6 @@ class ViewCourses extends Component<any> {
           }
         });
       }
->>>>>>> master:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.tsx
 
     // If the logged in user is an Admin of at least one course then the edit column will show.
     // Otherwise the edit column will not be shown!
@@ -177,55 +144,6 @@ class ViewCourses extends Component<any> {
           setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           customBodyRender: (courseId) => {
             return (
-<<<<<<< HEAD:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.js
-              <IconButton 
-                id={courseId}
-                role="img" 
-                aria-label='editCourseIconButton'
-                className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
-                disabled={courseRoles[courseId]!==3}
-                onClick={() => {
-                  if(courseRoles[courseId]===3) {
-                    setAddCourseTabWithCourse(courses, courseId, "AddCourse")
-                  }
-                }}
-              >
-                <EditIcon sx={{color:"black"}}/>
-              </IconButton>
-            )
-          },
-        }
-      });
-    }
-
-
-    columns.push(
-    {
-      name: "course_id",
-      label: "VIEW",
-      options: {
-        filter: false,
-        sort: false,
-        setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-        setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-        customBodyRender: (courseId) => {
-          return (
-            <IconButton 
-              id={courseId}
-              role="img" 
-              aria-label="viewCourseIconButton"
-              onClick={() => {
-                // The logged in user is an Admin in the course
-                if(courseRoles[courseId] === 3) {
-                  setAddCourseTabWithCourse(courses, courseId, "Users");
-                // The logged in user is a TA/Instructor or Student in the course
-                } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
-                  navbar.setStudentDashboardWithCourse(courseId, courses);
-                }
-              }}
-            >
-              <VisibilityIcon sx={{color:"black"}} />
-=======
                 <IconButton id={courseId}
                 role = "img" aria-label="viewCourseIconButton"
               onClick={() => {
@@ -243,7 +161,6 @@ class ViewCourses extends Component<any> {
               }}
               >
               <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
->>>>>>> master:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.tsx
             </IconButton>
           )
         },
@@ -262,14 +179,8 @@ class ViewCourses extends Component<any> {
       tableBodyMaxHeight: "35vh",
     };
 
-<<<<<<< HEAD:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.js
-
-    const activeCourses = courses ? courses.filter(course => course.active) : [];
-    const inactiveCourses = courses ? courses.filter(course => !course.active) : [];
-=======
     const activeCourses = courses ? courses.filter((course: any) => course.active) : [];
     const inactiveCourses = courses ? courses.filter((course: any) => !course.active) : [];
->>>>>>> master:FrontEndReact/src/View/Admin/View/ViewCourses/ViewCourses.tsx
 
 
     return (
@@ -324,6 +235,7 @@ class ViewCourses extends Component<any> {
       </Box>
     );
   }
+}
 }
 
 
