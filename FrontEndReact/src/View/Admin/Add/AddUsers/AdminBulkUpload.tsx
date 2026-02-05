@@ -15,6 +15,8 @@ import { Box, Typography, Tooltip, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
+import { RequestState, REQUEST_STATE } from '../../../../Enums/RequestState';
+import DynamicLoadingSpinner from '../../../Loading/DynamicLoading';
 import debounce from 'debounce';
 
 interface AdminBulkUploadState {
@@ -24,6 +26,7 @@ interface AdminBulkUploadState {
     teamsPics: string[];
     teamsMsgs: string[];
     currentTeamPic: number;
+    uploadRequestStatus: RequestState;
 }
 
 class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
@@ -35,6 +38,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
             errorMessage: null,
             selectedFile: null,
             isLoaded: false,
+            uploadRequestStatus: REQUEST_STATE.IDLE,
 
             // Used for displaying the appropriate image
             // when clicking the "next example" button.
@@ -58,7 +62,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
             currentTeamPic: 0,
         }
 
-        this.debouncedSubmit = debounce(this.onFormSubmit.bind(this), 3000);
+        this.debouncedSubmit = debounce(this.blockMultipleRequests.bind(this), 1000);
         this.changeTeamsExamplePic = this.changeTeamsExamplePic.bind(this);
     }
 
@@ -71,8 +75,22 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
       });
     }
 
+    /**
+     * This function makes sure one request is sent and we have awaited for a failure or success.
+     * @param {*} e 
+     */
+    blockMultipleRequests = (e:any) => {
+        if (this.state.uploadRequestStatus !== REQUEST_STATE.LOADING){
+            this.onFormSubmit(e);
+        }
+    }
+
     onFormSubmit = (e: any) => {
         e.preventDefault();
+
+        this.setState({
+            uploadRequestStatus: REQUEST_STATE.LOADING,
+        });
 
         var fileName;
         var lastDot;
@@ -86,11 +104,13 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
 
         if(this.state.selectedFile === null) {
             this.setState({
-                errorMessage: "Please Select a File to Upload!"
+                errorMessage: "Please Select a File to Upload!",
+                uploadRequestStatus: REQUEST_STATE.IDLE,
             });
         } else if (fileExtension !== "csv" && fileExtension !== "xlsx") {
             this.setState({
-                errorMessage: "Please Select a File using the .csv or .xlsx format!"
+                errorMessage: "Please Select a File using the .csv or .xlsx format!",
+                uploadRequestStatus: REQUEST_STATE.IDLE,
             });
         } else {
             var navbar = this.props.navbar;
@@ -119,7 +139,20 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                     } else {
                         confirmCreateResource("TeamBulkUpload");
                     }
+                    this.setState({
+                        uploadRequestStatus: REQUEST_STATE.SUCCESS,
+                    });
+                } else {
+                    this.setState({
+                        uploadRequestStatus: REQUEST_STATE.ERROR,
+                    });
                 }
+            }).catch((error) => { 
+                this.setState({
+                    errorMessage: error,
+                    uploadRequestStatus: REQUEST_STATE.ERROR,
+                })
+                
             });
         }
     }
@@ -139,11 +172,17 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
         var navbar = this.props.navbar;
         var confirmCreateResource = navbar.confirmCreateResource;
 
+        const {uploadRequestStatus} = this.state; 
+        const isLoading: boolean = uploadRequestStatus === REQUEST_STATE.LOADING;
+
+        console.log(this.state.errorMessage);
+
         return (
             <Box>
                 {this.state.errorMessage &&
                     <ErrorMessage
-                        errorMessage={this.state.errorMessage}
+                        errorMessage={String(this.state.errorMessage)}
+                        aria-label="adminBulkUploadErrorMessage"
                     />
                 }
 
@@ -252,15 +291,26 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                                             }}
                                         />
 
-                                        <Button 
-                                        onClick={() => {
-                                            confirmCreateResource("User")
-                                        }}
-                                        id="" className="" aria-label="cancelAdminBulkUploadButton">   
-                                            Cancel
-                                        </Button>
+                                        {uploadRequestStatus === REQUEST_STATE.LOADING ?(
+                                            <DynamicLoadingSpinner/>
+                                        ):(
+                                            <>
+                                                <Button 
+                                                onClick={() => {
+                                                    confirmCreateResource("User")
+                                                }}
+                                                id="" className="" aria-label="cancelAdminBulkUploadButton">   
+                                                    Cancel
+                                                </Button>
 
-                                        <Button className='primary-color' variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"> Upload </Button>
+                                                <Button className='primary-color' 
+                                                    variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"
+                                                    style={{ display:  isLoading ? 'none' : 'inline-flex' }}
+                                                >
+                                                    Upload
+                                                </Button>
+                                            </>
+                                        )}
                                     </form>
 
                                     {this.props.tab === "AdminTeamBulkUpload" &&

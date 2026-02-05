@@ -7,7 +7,25 @@ import { genericResourceGET } from '../../../utility';
 import Loading from '../../Loading/Loading';
 import Cookies from 'universal-cookie';
 
-
+/**
+ * @description
+ * TA-facing (or observer-facing) view of teams.
+ *
+ * Responsibilities:
+ *  - Reads the current TA's user_id from cookies.
+ *  - Fetches team membership data for the current course.
+ *  - Filters the returned data down to teams where observer_id matches this TA.
+ *  - Passes a simplified teams[] array to <ViewTeamsTA />.
+ *
+ * Props:
+ *  @prop {Object} navbar - Navbar instance with state.chosenCourse.
+ *
+ * State:
+ *  @property {string|null} errorMessage - Error message from the fetch, if any.
+ *  @property {boolean}     isLoaded     - True once team_members has been loaded.
+ *  @property {Array|null}  team_members - Raw response from /team_members (array of teams).
+ *  @property {number|null} user_id      - Current TA's user_id (from cookie).
+ */
 
 interface TAViewTeamsProps {
     navbar: any;
@@ -36,6 +54,39 @@ class TAViewTeams extends Component<TAViewTeamsProps, TAViewTeamsState> {
 
     }
 
+    /**
+     * @method componentDidMount
+     * @description
+     * On mount, obtains the TA's user_id and loads team membership data.
+     *
+     * Steps:
+     *  1. Reads user_id from the "user" cookie and stores it in state.user_id.
+     *
+     *  2. Fetch:
+     *     - GET /team_members?course_id={course_id}&observer_id=user_id
+     *       - course_id : navbar.state.chosenCourse.course_id
+     *       - observer_id: currently passed as the literal string "user_id" in the query.
+     *         (Likely intended to be the numeric user_id → JIRA candidate: fix query param.)
+     *       - genericResourceGET stores the response array in state.team_members.
+     *
+     * Data shape (per comment):
+     *  - Each element in team_members has keys:
+     *      * users       : array of team members
+     *      * team_id     : numeric ID
+     *      * team_name   : string
+     *      * observer_id : ID of TA/observer responsible for this team
+     *
+     * Sorting:
+     *  - This component does not sort team_members; it iterates in the order returned
+     *    by the backend and builds a teams[] array for <ViewTeamsTA />.
+     *
+     * Possible JIRA notes:
+     *  - /team_members may be returning all teams for the course, with filtering done
+     *    on the front end via observer_id === this.state.user_id. If so, that is more
+     *    data than needed and could be narrowed server-side.
+     *  - If other TA views also call /team_members for the same course/user, those
+     *    calls could be consolidated.
+     */
     componentDidMount() {
         var navbar = this.props.navbar;
         var state = navbar.state;

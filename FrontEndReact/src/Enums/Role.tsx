@@ -1,8 +1,13 @@
-export const enum Role {
-    Researcher = 1,
-    SuperAdmin = 2,
-    Admin      = 3,
-    TA_Instructor = 4,
-    Student       = 5,
-    Test_Student  = 6
-}
+/**
+ * This enum holds the common values and the role names associated with each value.
+ */
+export const ROLE = {
+    RESEARCHER :   1,
+    SUPER_ADMIN:   2,
+    ADMIN:         3,
+    TA_INSTRUCTOR: 4,
+    STUDENT:       5,
+    TEST_STUDENT:  6,
+} as const;
+
+export type Role = typeof ROLE[keyof typeof ROLE];

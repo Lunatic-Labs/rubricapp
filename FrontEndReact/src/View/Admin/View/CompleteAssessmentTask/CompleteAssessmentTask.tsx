@@ -348,7 +348,7 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
             <Box>
                 <Box className="assessment-title-spacing">
                     <Box className='d-flex flex-column justify-content-start'>
-                        <h4>{assessmentTaskRubric["rubric_name"]}</h4>
+                        <h4>{chosenAssessmentTask["assessment_task_name"]} - {assessmentTaskRubric["rubric_name"]}</h4>
                         <h5>{assessmentTaskRubric["rubric_description"]}</h5>
                     </Box>
                 </Box>

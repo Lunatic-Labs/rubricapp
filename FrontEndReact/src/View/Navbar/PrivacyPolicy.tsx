@@ -1,6 +1,10 @@
 import React, { Component } from 'react';
 import { Box, Typography, ListItem } from '@mui/material';
 
+/**
+ * Creates an instance of the PrivacyPolicy component.
+ */
+
 interface PrivacyPolicyProps {
     navbar?: any;
 }
