@@ -19,7 +19,6 @@ import Menu from '@mui/material/Menu';
 import MenuItem from '@mui/material/MenuItem';
 // import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
-import Settings from './Settings';
 import Logout from '../Logout/Logout';
 // @ts-ignore: allow importing images without type declarations
 import Logo from "./sbTextFixed.png";
