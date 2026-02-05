@@ -439,7 +439,14 @@ export function getDueDateString(dueDate: Date): string {
 }
 
 export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
-  const date = new Date(dueDate);
+  
+  let dateString: string | Date = dueDate;
+  
+  if (typeof dueDate === 'string' && !dueDate.endsWith('Z')) {
+    dateString = `${dueDate}Z`;
+  }
+  
+  const date = new Date(dateString);
   const month = date.getMonth();
   const day = date.getDate();
   const hour = date.getHours();
