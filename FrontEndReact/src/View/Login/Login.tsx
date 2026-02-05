@@ -280,7 +280,7 @@ class Login extends Component<{}, LoginState> {
         }
 
         /**
-         * @method logout - lears login-related state and resets UI to pre-authentication mode.
+         * @method logout - Clears login-related state and resets UI to pre-authentication mode.
          */
         this.logout = () => {
             this.setState({

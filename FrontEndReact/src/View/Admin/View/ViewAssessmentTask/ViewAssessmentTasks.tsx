@@ -14,7 +14,7 @@ import PublishIcon from '@mui/icons-material/Publish';
 import UnpublishedIcon from '@mui/icons-material/Unpublished';
 import Cookies from 'universal-cookie';
 
-//Child component that display a table of all assessment tasks (rubric) for a course comprehensive management capabilites 
+//Child component that display a table of all assessment tasks (rubric) for a course comprehensive management capabilities
 // including publish/lock controls, editing, viewing completed
 //assessment, starting new assessments and exporting results to Csv.
 
@@ -42,16 +42,16 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
             isLoaded: null,                     // Loading state for data fetching
             errorMessage: null,                 // stores API error message
             csvCreation: null,                  // Holds CSV data from export API call
-            downloadedAssessment: null,         //Name of assessemtn being downloads 
+            downloadedAssessment: null,         //Name of assessment being downloaded
             exportButtonId: {},                 //Maps assessment name to button IDS for re-enabling 
             completedAssessments: null,         //Array of completed assessment counts per task
-            assessmentTasks: null,              //Array of assessment taks 
+            assessmentTasks: null,              //Array of assessment tasks
             lockStatus: {},                     // Maps assessment_task_id -> boolean (locked state)
             publishedStatus: {},                //Maps assessment_task_id -> boolean (published state)
         }
 
-        // Fetched CSV export data for an assessment task and triggers browser download
-        // Temporarily disables export button to prevent duplicate  requests
+        // Fetches CSV export data for an assessment task and triggers browser download
+        // Temporarily disables export button to prevent duplicate requests
         this.handleDownloadCsv = (atId: any, exportButtonId: any, assessmentTaskIdToAssessmentTaskName: any) => {
             let promise = genericResourceGET(
                 `/csv_assessment_export?assessment_task_id=${atId}&format=0`,
@@ -64,7 +64,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
 
             promise.then(result => {
                 if (result !== undefined && result.errorMessage === null) {
-                    //Look up human-readbable assessment name from ID
+                    //Look up human-readable assessment name from ID
                     var assessmentName = assessmentTaskIdToAssessmentTaskName[atId];
                     //Store button ID for later re-enabling (after download completes)
                     var newExportButtonJSON = this.state.exportButtonId;
@@ -80,7 +80,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
             });
         }
 
-        //Toggles lock state fir an assessment task
+        //Toggles lock state for an assessment task
         //Lock prevents students from editing their submissions
         //This updates lock state, sends PUT request to server in setState callback
         this.handleLockToggle = (assessmentTaskId: any, task: any) => {
@@ -93,7 +93,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
             //Callback executes after state update completes
               const lockStatus = this.state.lockStatus[assessmentTaskId];
             //API call: Sync lock state with server
-            //PUT /assessement_task_toggle_lock?
+            //PUT /assessment_task_toggle_lock?
               genericResourcePUT(
                   `/assessment_task_toggle_lock?assessmentTaskId=${assessmentTaskId}`,
                   this,
@@ -157,7 +157,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
 
             setTimeout(() => {
                 if(exportAssessmentTask) {
-                    //Remove disabled atrribute to make button clickable again
+                    //Remove disabled attribute to make button clickable again
                     exportAssessmentTask.removeAttribute("disabled");
                 }
             }, 10000);
@@ -199,8 +199,8 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
             {dest: "assessmentTasks"}
         );
 
-        //API Call 2: FEtch completed Assessment Counts
-        //Determined if View or export button should be enabled
+        //API Call 2: Fetch completed Assessment Counts
+        //Determines if View or export button should be enabled
         //Query Parameters: course_id: filters to this course, only_course=true: returns aggregated counts
     
         genericResourceGET(
@@ -210,7 +210,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
             {dest: "completedAssessments"}  //maps to state.completedAssessments
         );
         
-        //Initialization: Extract assessment taks from Parent's data
+        //Initialization: Extract assessment tasks from Parent's data
         //Note The PARENT already fetched this via API
         const assessmentTasks = this.props.navbar.adminViewAssessmentTask.assessmentTasks;
         //Create empty objects to store initial lock and published states
@@ -231,7 +231,7 @@ class ViewAssessmentTasks extends Component<any, ViewAssessmentTasksState> {
     }
 
     //Renders comprehensive assessment task management table with columns including 
-    //task details, publish/lock controls and action buttons fro each/view/start/export.
+    //task details, publish/lock controls and action buttons for edit/view/start/export.
     //This checks if assessment task or completed assessments are null, if null: will show loading spinner (API calls)
 
     render() {

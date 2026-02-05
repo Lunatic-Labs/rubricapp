@@ -32,11 +32,11 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
     this.state = {
       errorMessage: null,   //Stores API error messages
       isLoaded: null,       // Loading state indicator
-      showDialog: false,    // Controls notificartion dialog visiblity
+      showDialog: false,    // Controls notification dialog visibility
       notes: '',            //Notification message content typed by instructor
-      notificationSent: false,    // Tracks if notifcation sent  
+      notificationSent: false,    // Tracks if notification sent
       isSingleMsg: false,         //True notifies one team if false notifies all teams
-      compATId: null,             // completed assessment ID for indivduals team notifications
+      compATId: null,             // completed assessment ID for individual team notifications
 
             errors: {
                 notes:''      // validation error for notification message
@@ -48,7 +48,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
         const { id, value } = e.target;
       //Updates state with new value and validation error
         this.setState({
-            [id]: value,      // Upadtes the field dynamically
+            [id]: value,      // Updates the field dynamically
             errors: {
                 ...this.state.errors,
                 //Validates if empty after trim, set error, otherwise error is cleared
@@ -65,7 +65,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
         });
     }
 
-    handleSendNotification = () => {    // Sends notification email to teams that their assessment are available
+    handleSendNotification = () => {    // Sends notification email to teams that their assessments are available
         var notes =  this.state.notes;
 
         var navbar = this.props.navbar;
@@ -87,7 +87,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
     if(this.state.isSingleMsg){ // Check notification mode either single team or all
       // reset single message flag before sending
       this.setState({isSingleMsg: false}, () => {
-        //API caall - sends email to one specfic team
+        //API call - sends email to one specific team
         //POST /send_single_email?team=true&completed_assessment_id={id}
         //Query param team=true indicates team notification
         genericResourcePOST(
@@ -96,7 +96,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
             "notification_message": notes,
           }) 
         ).then((result) => {
-          // Sucess handling: check result is valid and no errors
+          // Success handling: check result is valid and no errors
           if(result !== undefined && result.errorMessage === null){
             this.setState({ 
               showDialog: false, 
@@ -104,7 +104,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
             });
           }
           //If error occurs, dialog stays open for user to retry
-          // notificatinSent stays false, button remains enable
+          // notificationSent stays false, button remains enabled
         });
       });
     }else{
