@@ -5,6 +5,29 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 import { Grid, Alert } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility';
 
+/**
+ * @description
+ * Confirmation screen for the student's current (fixed) team.
+ *
+ * Responsibilities:
+ *  - Shows the default/fixed team members in a table.
+ *  - Lets the student:
+ *      * Go back and choose a different team, or
+ *      * Confirm "check in" to this team for the current assessment task.
+ *
+ * Props:
+ *  @prop {Object} navbar       - Navbar instance; expects:
+ *                                - state.chosenAssessmentTask (assessment_task_id, create_team_password)
+ *                                - state.chosenCourse (use_fixed_teams)
+ *                                - state.teamSwitchPassword (optional, for switching teams)
+ *  @prop {Array}  students     - Array of student objects for this team (first_name, last_name, email).
+ *  @prop {number} teamId       - ID of the team being confirmed.
+ *  @prop {string} teamName     - Display name of the team.
+ *
+ * State:
+ *  @property {string|null} errorMessage - Error message from the check-in POST, if any.
+ */
+
 interface ConfirmCurrentTeamTableProps {
 	students: any[];
 	teamId: string | number;
@@ -24,6 +47,21 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 		};
 	}
 
+	/**
+	 * @method handleEditClick
+	 * @description
+	 * Navigates back so the student can choose a different team.
+	 *
+	 * Behavior:
+	 *  - Looks at navbar.state.chosenAssessmentTask.create_team_password.
+	 *  - If a team password is defined and non-empty:
+	 *      → navbar.setNewTab("CodeRequired")
+	 *    Else:
+	 *      → navbar.setNewTab("SelectTeam")
+	 *
+	 * Networking:
+	 *  - No fetch/POST is performed here; this is purely navigation logic.
+	 */
 	handleEditClick = () => {
     	const navbar = this.props.navbar;
     	const chosenAssessmentTask = navbar.state.chosenAssessmentTask;
@@ -36,6 +74,38 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
     	}
 	};
 
+	/**
+	 * @method handleConfirmClick
+	 * @description
+	 * Confirms that the student is checking in to the selected team for the
+	 * current assessment task.
+	 *
+	 * POST:
+	 *  - Endpoint:
+	 *      POST /checkin?assessment_task_id={atId}&team_id={teamId}
+	 *
+	 *  - Query parameters:
+	 *      * assessment_task_id — from navbar.state.chosenAssessmentTask.assessment_task_id
+	 *      * team_id            — from this.props.teamId
+	 *
+	 *  - Body:
+	 *      - If navbar.state.teamSwitchPassword is set and non-empty:
+	 *          { "password": "<teamSwitchPassword>" }
+	 *        Else:
+	 *          { }
+	 *
+	 *  - genericResourcePOST arguments:
+	 *      genericResourcePOST(url, thisComponent, requestBody)
+	 *      → expected to resolve to an object with errorMessage (null on success).
+	 *
+	 * On success:
+	 *  - Clears navbar.state.teamSwitchPassword.
+	 *  - Navigates to "StudentDashboard".
+	 *
+	 * On failure:
+	 *  - Sets state.errorMessage to either the returned errorMessage
+	 *    or a generic error if the request throws.
+	 */
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
 		var atId = navbar.state.chosenAssessmentTask["assessment_task_id"];
@@ -107,6 +177,8 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 			viewColumns: false,
 		};
 
+		// If this course is not using fixed teams, immediately route to SelectTeam instead.
+		// (No sorting or network call happens here; this is navigation only.)
 		if (!fixedTeams) { 
 			this.props.navbar.setNewTab("SelectTeam")
 		}
@@ -132,6 +204,7 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 								paddingBottom: '20px',
 								gap: 20,
 							}}>
+
 							{this.state.errorMessage && (
 								<Alert severity="error" sx={{ mb: 2, width: '100%' }}>
 									{this.state.errorMessage}

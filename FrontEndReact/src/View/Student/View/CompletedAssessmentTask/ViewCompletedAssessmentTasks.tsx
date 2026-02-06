@@ -5,14 +5,26 @@ import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 
+interface ViewCompletedAssessmentTasksProps {
+    navbar: any;
+    assessmentTasks: any[];
+    completedAssessments: any[];
+}
 
 /**
- * @description Column logic.
- * 
- * @prop {object} navbar - Passed navbar.
- * @prop {object} assessmentTasks - ATs. Note we need the original ATs to load the rest of the columns.
- * @prop {object} completedAssessments - Filtered CATs.
- * 
+ * @description
+ * Defines the columns and behavior for the "Completed Assessments" table.
+ *
+ * Responsibilities:
+ *  - Displays completed assessments with timing and unit-of-assessment info.
+ *  - On "View" click, records that the rubric has been viewed (via POST /rating),
+ *    then navigates to the instructions/feedback view in read-only mode.
+ *
+ * Props:
+ *  @prop {object} navbar              - Navbar instance; used for navigation.
+ *  @prop {Array}  assessmentTasks     - All ATs needed to derive column data
+ *                                       (unit_of_assessment, role_id, etc.).
+ *  @prop {Array}  completedAssessments - Completed CATs to display as rows.
  */
 
 interface ViewCompletedAssessmentTasksProps {
@@ -118,6 +130,27 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                                           (completedAssessment: any) => completedAssessment.assessment_task_id === atId
                                       ) ?? null;
                               }
+                                /**
+                                 * POST /rating
+                                 *
+                                 * Purpose:
+                                 *  - Record that a user has viewed the rating/feedback for a
+                                 *    specific completed assessment.
+                                 *
+                                 * Endpoint:
+                                 *  - POST /rating
+                                 *
+                                 * Body (JSON):
+                                 *  {
+                                 *    "user_id": <number>,                 // singularCompletedAssessment.user_id
+                                 *    "completed_assessment_id": <number>  // singularCompletedAssessment.completed_assessment_id
+                                 *  }
+                                 *
+                                 * Notes:
+                                 *  - No query parameters are used on this endpoint.
+                                 *  - This call runs each time the "View" icon is clicked before
+                                 *    navigating to the instructions/feedback view.
+                                 */
                               genericResourcePOST(
                                 `/rating`,
                                 this,

@@ -4,6 +4,30 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 import { Box, Button } from '@mui/material';
 import { getHumanReadableDueDate } from '../../../../utility';
 
+/**
+ * @description
+ * Displays the "My Assessment Tasks" table for a student/TA.
+ * This component:
+ *  - Receives already-filtered assessmentTasks and completedAssessments from the parent
+ *    (no fetches are done here).
+ *  - Determines per-row completion state (for START button enable/disable).
+ *  - Delegates all visual rendering/sorting to CustomDataTable.
+ *
+ * @prop {Object} navbar                  - Navbar instance for navigation helpers.
+ * @prop {Object} role                    - Current user role (contains role_id).
+ * @prop {Array}  assessmentTasks         - Assessment tasks to display (ATs).
+ * @prop {Array}  completedAssessments    - Completed assessment tasks (CATs) relevant to these ATs.
+ * @prop {Array}  rubricNames             - Map/object of rubric_id → rubric name (for "Rubric Used" column).
+ * @prop {Array}  checkin                 - Array of assessment_task_ids the student has already checked into.
+ * @prop {Array}  counts                  - Course counts (students/teams) used by areAllATsComplete().
+ * @prop {Array}  userTeamIds             - IDs of teams the current student belongs to (for team AT logic).
+ *
+ * Notes on sorting:
+ *  - Rows are passed directly to CustomDataTable in the order of assessmentTasks.
+ *  - Column-level sorting (where enabled) is driven by the table component itself.
+ *  - The "TO DO" column explicitly sets sort: false.
+ */
+
 interface ViewAssessmentTasksProps {
     navbar: any;
     role: any;
@@ -20,6 +44,19 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
     isObjectFound: any;
     constructor(props: ViewAssessmentTasksProps) {
         super(props);
+
+        /**
+         * @method isObjectFound
+         * @description
+         * Returns true if there is at least one completed CAT for this assessment_task_id
+         * that belongs to the current user (either their individual CAT or their team CAT).
+         *
+         * Used to disable the START button for students once their relevant team/individual
+         * assessment is fully done.
+         *
+         * @param {number} atId - assessment_task_id to check.
+         * @returns {boolean} True if a matching completed assessment is found and done.
+         */
 
         this.isObjectFound = (atId: any) => {
             var completedAssessments = this.props.completedAssessments;
@@ -48,8 +85,30 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
             }
 
             return false;
-        }
+        };
 
+        /**
+         * @method areAllATsComplete
+         * @description
+         * For a given assessment_task_id, determines whether all required CATs have been completed.
+         * This is used for the TA/Instructor view to decide whether the START button should be disabled.
+         *
+         * Logic:
+         *  - Filters CATs and ATs down to this assessment_task_id.
+         *  - Derives the expected count:
+         *      * For team assessments:
+         *          - Uses number_of_teams if present on the AT, otherwise counts[1] (fixed teams).
+         *      * For individual assessments:
+         *          - Uses counts[0] (number of students).
+         *  - Returns true only if:
+         *      * There is at least one CAT, and
+         *      * The number of CATs matches the expected count, and
+         *      * All CATs for this AT are marked done.
+         *
+         * @param {number} atId - assessment_task_id to check.
+         * @returns {boolean} True if all expected CATs for this AT are completed.
+         */
+        
         this.areAllATsComplete = (atId: any) => {
             // Contains all Assessments completed by the TA
             var completedAssessments = this.props.completedAssessments.filter((at: any) => at.assessment_task_id === atId);
@@ -72,7 +131,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
             if (completedAssessments.length === 0) {
                 return false;
             }
-            if(completedAssessments) {
+            if (completedAssessments) {
                 if (completedAssessments.length < count) {
                     return false;
                 }
@@ -83,7 +142,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                 }
             }
             return true;
-        }
+        };
     }
 
     render() {
@@ -277,7 +336,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     }
                 }
             }
-        ]
+        ];
 
         const options = {
             onRowsDelete: false,

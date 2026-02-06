@@ -11,6 +11,27 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 
+/**
+ * Creates an instance of the login component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * 
+ * @property {boolean|null} state.isLoaded - Indicates if the login request or auth refresh has completed.
+ * @property {string|null} state.errorMessage - Error message for failed login or expired session.
+ * @property {boolean|null} state.loggedIn - Whether the user is authenticated.
+ * @property {boolean|null} state.hasSetPassword - Whether the authenticated user has set their password.
+ * @property {boolean|null} state.resettingPassword - Whether the password reset flow should be shown.
+ * @property {boolean} state.isRefreshing - Indicates if the component is refreshing the access token in the background.
+ * @property {string} state.email - The user-entered email.
+ * @property {string} state.password - The user-entered password.
+ * @property {boolean} state.showPassword - Controls the visibility of the password text.
+ * 
+ * @property {Object} state.errors - Input-specific error messages.
+ * @property {string} state.errors.email - Error message for email field.
+ * @property {string} state.errors.password - Error message for password field.
+ */
+
 interface LoginState {
     isLoaded: any;
     errorMessage: any;
@@ -56,6 +77,13 @@ class Login extends Component<{}, LoginState> {
             }
         }
 
+        /**
+         * @method handleChange - Updates email or password fields while applying validation rules such as:
+         *  - Required fields.
+         *  - Maximum password length.
+         * @param {*} e - the input event.
+         */
+
         // handleChange has been altered to account for the 20 character limit for password
         this.handleChange = (e: any) => {
             const { id, value } = e.target;
@@ -82,6 +110,9 @@ class Login extends Component<{}, LoginState> {
             } as any);
         };
 
+        /**
+         * @method handleTogglePasswordVisibility - Toggles whether the password input is displayed as text or masked.
+         */
         this.handleTogglePasswordVisibility = () => {
             this.setState({
                 showPassword: !this.state.showPassword,
@@ -92,6 +123,11 @@ class Login extends Component<{}, LoginState> {
             });
         };
 
+        /**
+         * @method login - Attempts to authenticate the user against the backend:
+         *  - Stores access + refresh tokens on success.
+         *  - Displays backend error message on failure.
+         */
         this.login = () => {
             var {
                 email,
@@ -160,6 +196,11 @@ class Login extends Component<{}, LoginState> {
             }
         };
 
+        /**
+         * @method handleNewAccessToken - Attempts to refresh an expired access token using the stored refresh token:
+         *  - Updates tokens on success.
+         *  - Forces logout on failure.
+         */
         this.handleNewAccessToken = () => {
             const refreshToken = this.cookies.get('refresh_token');
             const user = this.cookies.get('user');
@@ -228,12 +269,18 @@ class Login extends Component<{}, LoginState> {
                 )
         }
 
+        /**
+         * @method resetPassword - Activates the password-reset workflow by navigating to <ValidateReset>.
+         */
         this.resetPassword = () => {
             this.setState(() => ({
                 resettingPassword: true
             }));
         }
 
+        /**
+         * @method logout - Clears login-related state and resets UI to pre-authentication mode.
+         */
         this.logout = () => {
             this.setState({
                 isLoaded: null,
@@ -243,6 +290,11 @@ class Login extends Component<{}, LoginState> {
                 resettingPassword: null
             });
         }
+
+        /**
+         * @method keyPress - Listens for the Enter key to submit the login form.
+         * @param {*} e - the keyboard input event.
+         */
 
         this.keyPress = (e: any) => {
             if (e.key === 'Enter') {
@@ -256,6 +308,12 @@ class Login extends Component<{}, LoginState> {
         this.checkAuthStatus();
     }
 
+    /**
+     * @method checkAuthStatus - Determines whether:
+     *  - User has valid tokens → login automatically.
+     *  - User has expired tokens → require login again.
+     *  - User state is inconsistent → clear cookies and force logout.
+     */
     checkAuthStatus = () => {
         const hasAccessToken = !!this.cookies.get('access_token');
         const hasRefreshToken = !!this.cookies.get('refresh_token');
