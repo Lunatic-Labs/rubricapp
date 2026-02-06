@@ -1,3 +1,5 @@
+import '@mui/material/styles';
+
 // CSS module imports (with named exports)
 declare module '*.css' {
   const content: { [className: string]: string };
@@ -36,8 +38,6 @@ declare module '*.svg' {
   const value: string;
   export default value;
 }
-
-import '@mui/material/styles';
 
 // MUIDataTable module declaration
 declare module 'mui-datatables' {
