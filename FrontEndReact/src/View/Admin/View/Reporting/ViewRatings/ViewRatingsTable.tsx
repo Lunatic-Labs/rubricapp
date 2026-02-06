@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// @ts-ignore
 import MUIDataTable from 'mui-datatables';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 

@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ErrorMessage from '../Error/ErrorMessage';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
 import AppState from '../Navbar/AppState';
