@@ -37,6 +37,8 @@ declare module '*.svg' {
   export default value;
 }
 
+import '@mui/material/styles';
+
 // MUIDataTable module declaration
 declare module 'mui-datatables' {
   import { ComponentType } from 'react';
