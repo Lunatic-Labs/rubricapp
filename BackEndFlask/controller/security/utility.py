@@ -24,7 +24,7 @@ def create_tokens(user_id: any) -> tuple[str, str]:
         jwt = create_access_token(
             identity=str(user_id),
             fresh=True,  # token is fresh because it comes from login
-            expires_delta=datetime.timedelta(minutes=15)  # adjust as needed
+            expires_delta=datetime.timedelta(minutes=1)  # adjust as needed
         )
 
         # Try to get existing refresh token from request args
@@ -33,7 +33,7 @@ def create_tokens(user_id: any) -> tuple[str, str]:
             # Create new refresh token (long-lived)
             refresh = create_refresh_token(
                 identity=str(user_id),
-                expires_delta=datetime.timedelta(days=30)
+                expires_delta=datetime.timedelta(minutes=3)
             )
 
     return jwt, refresh

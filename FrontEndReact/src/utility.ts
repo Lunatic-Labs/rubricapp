@@ -14,7 +14,7 @@ interface ApiResponse {
   success: boolean;
   status?: number;
   content?: Record<string, any>;
-  message?: string;
+  msg?: string;
   headers?: Record<string, string>;
   errorMessage?: string;
 }
@@ -168,13 +168,15 @@ async function genericResourceFetch(
 
   } else {
     // Catch and report server related errors.
+    //console.log("yes it is a server error; request:", result);
+    //console.log("response:", response);
     let issueFound, issue:any|undefined = await tokenServerErrorAndResolver(result, resource, component, 
                                                         cookies, response, isRetry, 
                                                         fetchURL, type, body, options);
     if (!issueFound){
       const state = {
         isLoaded: true,
-        errorMessage: result?.message ?? "Server error",
+        errorMessage: result?.msg ?? "Server error",
       }
       component.setState(state);
 
@@ -185,6 +187,10 @@ async function genericResourceFetch(
   }
 }
 
+
+function sleep(ms:number){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 /**
  * 
@@ -209,24 +215,32 @@ async function tokenServerErrorAndResolver(
   options: FetchOptions
   ): Promise<[boolean, any|undefined]> {
   
-  const msg: string = result?.message ?? "Server Error";
+  const msg: string = result?.msg ?? "Server Error";
   const status: number = response.status;
   const accessTokenKey = 'access_token';
   const refreshTokenKey = 'refresh_token';
   const userKey = 'user';  
+ 
+  console.log("mesgage:", msg);
+  console.log("response:", response);
+  console.log("result", result);
 
   if (["BlackListed", "No Authorization"].includes(msg)){
+    console.log("first situation");
     cookies.remove(accessTokenKey);
     cookies.remove(refreshTokenKey);
     cookies.remove(userKey);
+    await sleep(10*60*1000);
     window.location.reload();
     return [true, undefined];
   } else if (["Token has expired", "Not enough segments", "Invalid token"].includes(msg) || 
               status === HTTP_STATUS.UNPROCESSABLE_ENTITY){
+    console.log("second if");
     if (isRetry){
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
       cookies.remove(userKey);
+      //await sleep(10*60*1000);
       window.location.reload();
       return [true, undefined];
     }
@@ -246,6 +260,7 @@ async function tokenServerErrorAndResolver(
       );
       const refreshResult: ApiResponse = await refreshResponse.json();
       if (refreshResult.success && refreshResult.headers) {
+        console.log("succeeded once");
         cookies.set(accessTokenKey, refreshResult.headers.access_token, { sameSite: 'strict' });
         cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
         return [true, await genericResourceFetch(fetchURL, resource, component, type, body, {
@@ -256,17 +271,21 @@ async function tokenServerErrorAndResolver(
         cookies.remove(accessTokenKey);
         cookies.remove(refreshTokenKey);
         cookies.remove(userKey);
+        await sleep(10*60*1000);
         window.location.reload();
         return [true, undefined];
       }
     } catch (refreshError) {
+      console.log("failed to refresh?");
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
       cookies.remove(userKey);
+      await sleep(10*60*1000);
       window.location.reload();
       return [true, undefined];
     }
   }
+  await sleep(10*60*1000);
   return [false, null];
 }
 
