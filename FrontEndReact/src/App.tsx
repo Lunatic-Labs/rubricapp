@@ -1,6 +1,5 @@
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import Login from './View/Login/Login';
-// @ts-ignore: No type declarations for side-effect import of './SBStyles.css'
 import './SBStyles.css';
 
 function App() {
