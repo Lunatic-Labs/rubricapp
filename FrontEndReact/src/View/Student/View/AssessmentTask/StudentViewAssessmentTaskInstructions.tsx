@@ -1,5 +1,6 @@
 import React, { Component } from "react";
-import 'bootstrap/dist/css/bootstrap.css';
+// @ts-ignore: allow importing CSS without type declarations
+import "bootstrap/dist/css/bootstrap.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
 import { genericResourceGET } from "../../../../utility";
@@ -27,20 +28,25 @@ interface StudentViewAssessmentTaskInstructionsProps {
 }
 
 interface StudentViewAssessmentTaskInstructionsState {
+  error: any;
   errorMessage: string | null;
   isLoaded: boolean;
   rubrics: any | null;
 }
 
-class StudentViewAssessmentTaskInstructions extends Component<StudentViewAssessmentTaskInstructionsProps, StudentViewAssessmentTaskInstructionsState> {
+class StudentViewAssessmentTaskInstructions extends Component<
+  StudentViewAssessmentTaskInstructionsProps,
+  StudentViewAssessmentTaskInstructionsState
+> {
   constructor(props: StudentViewAssessmentTaskInstructionsProps) {
     super(props);
 
     this.state = {
+      error: null,
       errorMessage: null,
       isLoaded: false,
-      rubrics: null
-    }
+      rubrics: null,
+    };
   }
 
   /**
@@ -62,51 +68,46 @@ class StudentViewAssessmentTaskInstructions extends Component<StudentViewAssessm
    *  - No sorting is performed here; data is simply passed down to the child component.
    */
   componentDidMount() {
-    var state = this.props.navbar.state;
+    const state = this.props.navbar?.state;
+    const rubricId = state?.chosenAssessmentTask?.["rubric_id"];
+
+    if (!rubricId) {
+      this.setState({
+        errorMessage: "Rubric ID not found for the selected assessment task.",
+        isLoaded: true,
+      });
+      return;
+    }
 
     genericResourceGET(
-      `/rubric?rubric_id=${state.chosenAssessmentTask["rubric_id"]}`,
-      "rubrics", this as any, {dest: "rubrics"}
-    )
+      `/rubric?rubric_id=${rubricId}`,
+      "rubrics",
+      this as any,
+      { dest: "rubrics" }
+    );
   }
 
-  /**
-   * @method render
-   * @description
-   * Renders:
-   *  - <ErrorMessage /> if rubric fetch failed.
-   *  - <Loading /> while rubric data is still being fetched.
-   *  - <ViewAssessmentTaskInstructions /> once rubrics are loaded.
-   */
-  render() {
-    const {
-      errorMessage,
-      isLoaded,
-      rubrics
-    } = this.state;
+  render(): JSX.Element {
+    const { errorMessage, isLoaded, rubrics } = this.state;
 
     if (errorMessage) {
-      return(
+      return (
         <div className="container">
-          <ErrorMessage
-            errorMessage={errorMessage}
-          />
+          <ErrorMessage errorMessage={errorMessage} />
         </div>
-      )
-
-    } else if (!isLoaded || !rubrics) {
-      return(
-        <Loading />
-      )
-
-    } else {
-      return(
-        <ViewAssessmentTaskInstructions
-          navbar={this.props.navbar}
-          rubrics={rubrics}
-        />
-      )
+      );
     }
+
+    if (!isLoaded || !rubrics) {
+      return <Loading />;
+    }
+
+    return (
+      <ViewAssessmentTaskInstructions
+        navbar={this.props.navbar}
+        rubrics={rubrics}
+      />
+    );
   }
 }
 
