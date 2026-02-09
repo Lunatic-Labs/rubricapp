@@ -1,7 +1,14 @@
-.app-body { 
+html, body {
+  overflow-x: auto;
+  overflow-y:auto;
+  min-width: 320px; /*to prevent extreme squashing*/
+}
+
+.app-body {
   background-color: #F8F8F8;
   min-height: 100vh;
-  max-height: auto;
+  min-width: 100%; /*allow expand beyond viewport*/
+  overflow-x: auto;
 }
 
 /* Primary Color */
@@ -17,6 +24,12 @@
   background-color: #bcbcbc !important;
 }
 
+/* Title font */
+h4, h5 {
+  font-family: Roboto !important;
+  font-weight: 700 !important;
+}
+
 /* Table aligment */
 @media only screen and (max-width: 768px) {
   .button-column-alignment {
@@ -27,17 +40,13 @@
   }
 }
 
-/* Title font */
-h4, h5 {
-  font-family: Roboto !important;
-  font-weight: 700 !important;
-}
-
 /* Page alignment */
 .page-spacing {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-x: auto; /* to ensure the horizontal scrolling works with flex containers */
+
   @media (max-width: 600px) {
     padding: var(--2, 8px) var(--6, 8px);
   }
@@ -56,46 +65,51 @@ h4, h5 {
 }
 
 /* Secondary elements alignment */
-.content-spacing {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  align-self: stretch;
-  padding: var(--none, 0px) var(--none, 0px);
-  border-bottom: 1px solid #D9D9D9;
-}
-
+.content-spacing,
 .subcontent-spacing {
   display: flex;
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
-  padding: var(--none, 0px) var(--none, 16px);
+  min-width: max-content;
+  flex-shrink: 0;
+}
+.content-spacing {
+  padding: 0;
+  border-bottom: 1px solid #D9D9D9;
+}
+.subcontent-spacing {
+  padding: 0 16px;
 }
 
 .table-spacing {
   padding: var(--none, 0px) var(--none, 4px);
+  overflow-x: auto;
+  overflow-y: visible;
 }
 
 /* Form Alignment and Position */
 .card-spacing {
-  display: flex; 
+  display: flex;
   flex-direction: column;
   gap: 20px;
   padding: var(--2, 0px) var(--6, 48px);
+  overflow-x: auto;
 }
 
 .form-position {
   display: flex;
   justify-content: center;
   align-items: center;
+  overflow-x: auto;
 }
 
 .form-spacing {
-  width: 100%; 
+  width: 100%;
   gap: 20px;
-
-  @media screen and (max-width: 600px) {
+/* to avoid shrinking too much*/
+min-width:280px;
+@media screen and (max-width: 600px) {
     gap: 10px;
   }
 }
@@ -104,6 +118,7 @@ h4, h5 {
   display: flex;
   flex-direction: column;
   width: 100%;
+  min-width: 200px;
 }
 
 .card-style {
@@ -113,7 +128,8 @@ h4, h5 {
   border-radius: 10px;
   border-top: 3px solid #2E8BEF ;
   background:#FFF;
-
+  min-width: 300px; /* so cards don't become too small*/
+  flex-shrink: 0;
   @media screen and (max-width: 600px) {
     width: 100%;
   }
@@ -124,12 +140,15 @@ h4, h5 {
   justify-content: space-between;
   align-items: center;
   align-self: stretch;
+  min-width:max-content;
 }
 
 .assessment-task-spacing {
   display: flex;
   flex-direction: column;
   gap: 10px;
+  overflow-x: auto;
+
 }
 
 .assessment-card {
@@ -137,11 +156,12 @@ h4, h5 {
   display: flex;
   flex-direction: column;
   padding: var(--2, 4px) ;
-  border-radius: px;
+  border-radius: none;
   border-top: 3px solid #2E8BEF ;
   background:#FFF;
   margin-bottom: 10px;
   font-size: 1.3rem;
+  min-width: 250px;
 }
 
 .checkbox-alignment {
@@ -152,6 +172,8 @@ h4, h5 {
   color: black;
   border-radius: 0.25rem;
   margin: 0.25rem;
+  flex-shrink: 0; /*prevent boxes from wrapping*/
+  min-width: max-content;
 }
 
 .checkbox-spacing {
@@ -160,6 +182,7 @@ h4, h5 {
   flex-direction: column;
   gap: 2px;
   font-size: 1.3rem;
+  overflow-x:auto;
 }
 
 .errorSelect {
@@ -169,6 +192,7 @@ h4, h5 {
 #slider {
     height: 0.75rem;
     width: 100% !important;
+    min-width: 200px;    /*so slider isn't too compressed*/
 }
 
 .MuiSlider-mark {
@@ -178,14 +202,207 @@ h4, h5 {
 
 .MuiSlider-markLabel {
     font-size: 1.3rem !important;
+    /*prevents slider labels from wrapping*/
+    white-space: nowrap;
 }
 
+/* Force horizontal scrolling for MUI-DataTables */
+.MuiPaper-root,
+.MUIDataTable-paper,
+.MUIDataTable-tableRoot,
+.MUIDataTable-responsiveBase{
+  overflow-x: auto !important;
+  overflow-y: auto !important; /* Enable vertical scrolling */
+  max-width: none !important;
+  width: 100% !important;
+  max-height: 60vh !important;/* Set max height when zoomed to force vertical scrolling */
+  position: relative !important;
+}
+
+.MuiTableContainer-root {
+  overflow-x: auto !important;
+  overflow-y: auto !important; /* Enable vertical scrolling */
+  width: 100% !important;
+  max-width: none !important;
+  max-height: 50vh !important;/* Set max height to force vertical scrolling */
+  position: relative !important;
+  scrollbar-width: thin !important; /* Firefox */
+}
+
+/* Scrollbar styling */
+.MuiTableContainer-root::-webkit-scrollbar {
+  height: 16px !important;
+}
+.MuiTableContainer-root::-webkit-scrollbar-track {
+  background: #e0e0e0 !important;
+  border-radius: 8px !important;
+}
+.MuiTableContainer-root::-webkit-scrollbar-thumb {
+  background: #2E8BEF !important;
+  border-radius: 8px !important;
+  border: 2px solid #e0e0e0 !important;
+}
+.MuiTableContainer-root::-webkit-scrollbar-thumb:hover {
+  background: #1976d2 !important;
+}
+
+.MuiTable-root {
+  min-width: 800px !important; /* Increased to force horizontal scroll */
+  width: auto !important;
+  table-layout: auto !important;
+}
+
+/* Keep horizontal scrollbar always visible at bottom */
+.MuiTableContainer-root::after {
+  content: '';
+  position: sticky !important;
+  bottom: 0 !important;
+  left: 0 !important;
+  width: 100% !important;
+  height: 17px !important; /* Height of scrollbar */
+  background: transparent !important;
+  z-index: 10 !important;
+  pointer-events: none !important;
+}
+
+/* Responsive table adjustments - only apply nowrap on larger screens */
+@media screen and (min-width: 960px) {
+  .MuiTableCell-root {
+    white-space: nowrap !important;
+  }
+}
+
+/* For medium screens, allow some wrapping but maintain table structure */
+@media screen and (max-width: 959px) and (min-width: 481px) {
+  .MuiTableRow-root { display: table-row !important; }
+  .MuiTableCell-root {
+    display: table-cell !important;
+    border-bottom: 1px solid rgba(224,224,224,1) !important;
+    white-space: normal !important; /* Allow wrapping to prevent overlap */
+    min-width: 80px !important; /* Smaller min-width */
+    padding: 8px 12px !important;
+  }
+  .MuiTableRow-root .MuiTableCell-root[data-colindex] {
+    display: table-cell !important;
+  }
+}
+
+.MuiTable-root .MuiTableBody-root .MuiTableRow-root {
+  display: table-row !important;
+}
+
+.MuiTable-root .MuiTableBody-root .MuiTableRow-root .MuiTableCell-root,
+.MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root {
+  display: table-cell !important;
+  padding: 8px 16px !important;
+}
+
+/* Only apply nowrap and max-content on larger screens to prevent overlap */
+@media screen and (min-width: 960px) {
+  .MuiTable-root .MuiTableBody-root .MuiTableRow-root .MuiTableCell-root,
+  .MuiTable-root .MuiTableHead-root .MuiTableRow-root .MuiTableCell-root {
+    white-space: nowrap !important;
+    min-width: max-content !important;
+  }
+}
+
+/* Table rows (custom) */
 .table-row {
   display: flex;
   justify-content: space-between;
   align-items: center;
   height: .1rem;
   padding: 0.15rem;
+  flex-wrap: nowrap;
+  min-width: max-content;
+}
+
+/* Mobile styles for regular phones */
+@media only screen and (max-width: 480px) {
+  .MuiTableRow-root {
+    display: flex !important;
+    flex-direction: column !important;
+    border: 1px solid #ddd !important;
+    margin-bottom: 10px !important;
+    background: white !important;
+    border-radius: 8px !important;
+    padding: 10px !important;
+  }
+  .MuiTableCell-root {
+    display: flex !important;
+    justify-content: space-between !important;
+    align-items: center !important;
+    border-bottom: 1px solid #eee !important;
+    padding: 8px 0 !important;
+    white-space: normal !important;
+    min-width: unset !important;
+  }
+  .MuiTableCell-root:last-child { border-bottom: none !important; }
+  .MuiTableCell-root::before {
+    content: attr(data-label) ": " !important;
+    font-weight: bold !important;
+    color: #2E8BEF !important;
+    margin-right: 10px !important;
+  }
+  .MuiTableHead-root { display: none !important; }
+
+  /* remove scrollbars on mobile */
+  .MuiTableContainer-root,
+  .MuiPaper-root,
+  .MUIDataTable-paper,
+  .MUIDataTable-tableRoot,
+  .MUIDataTable-responsiveBase {
+    overflow-x: visible !important;
+    max-height: none !important;
+  }
+  .MuiTable-root {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+}
+
+
+  /* remove scrollbars when zoomed mobile */
+  .MuiTableContainer-root,
+  .MuiPaper-root,
+  .MUIDataTable-paper,
+  .MUIDataTable-tableRoot,
+  .MUIDataTable-responsiveBase {
+    overflow-x: visible !important;
+    max-height: none !important;
+  }
+  .MuiTable-root {
+    min-width: unset !important;
+    width: 100% !important;
+  }
+
+
+/* Tablets/laptops always horizontal */
+@media only screen and (min-width: 841px) {
+  .MuiTableRow-root { display: table-row !important; }
+  .MuiTableCell-root { display: table-cell !important; }
+}
+
+/* Force table layout on all screens wider than phones, regardless of zoom */
+@media only screen and (min-width: 481px) {
+  .MuiTableRow-root { 
+    display: table-row !important; 
+  }
+  
+  .MuiTableCell-root { 
+    display: table-cell !important;
+    border-bottom: 1px solid rgba(224, 224, 224, 1) !important;
+  }
+  
+  .MuiTableHead-root .MuiTableCell-root {
+    border-bottom: 2px solid #D9D9D9 !important;
+    font-weight: 600 !important;
+  }
+  
+  /* Keep the table header visible */
+  .MuiTableHead-root {
+    display: table-header-group !important;
+  }
 }
 
 /* these colors regulate the display for custom data table and the text inside the 'disabled' export button. */
