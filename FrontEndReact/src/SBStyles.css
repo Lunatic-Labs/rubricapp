@@ -203,6 +203,7 @@ h4, h5 {
   --table-text: #000000;
   --table-border: #e0e0e0;
   --primary-disabled-bg: #bcbcbc;
+  --dropdown-bg: #ffffffff;
 }
 
 /* used in line 23 of CustomDataTable.js */
@@ -323,23 +324,20 @@ h4, h5 {
 }
 
 /* MUI DataTable Filter Styling */
-.MUIDataTableFilter-root {
-  background-color: var(--dropdown-bg) !important;
-  color: var(--dropdown-text) !important;
-}
-
+.MUIDataTableFilter-root,
 .MUIDataTableFilter-header {
   background-color: var(--dropdown-bg) !important;
-  color: var(--dropdown-text) !important;
+  color: var(--table-text) !important;
 }
 
 .MUIDataTableFilter-reset,
-.MUIDataTableFilter-filtersSelected {
-  color: var(--dropdown-text) !important;
+.MUIDataTableFilter-filtersSelected,
+.MUIDataTableFilter-gridListTile {
+  color: var(--table-text) !important;
 }
 
-.MUIDataTableFilter-gridListTile {
-  color: var(--dropdown-text) !important;
+.MuiTypography-root[class*="MUIDataTableFilter-title"] {
+  color: var(--table-text) !important;
 }
 
 
@@ -517,7 +515,7 @@ body.mode .collapsible-table-colors {
   --table-head-text: #e0e0e0;
   --table-body-bg: #2a2a2a;
   --table-body-text: #e0e0e0;
-  --table-border: #404040;
+  --table-border: #4a4a4a;
   --table-arrow-color: #FFFFFF8A;
 }
 
@@ -551,27 +549,6 @@ body.mode {
 body.mode .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
   border-color: #ffffff !important;
 }
-
-/* Dark mode overrides */
-body.mode .MUIDataTableFilter-root {
-  background-color: var(--dropdown-bg) !important;
-  color: var(--dropdown-text) !important;
-}
-
-body.mode .MUIDataTableFilter-header {
-  background-color: var(--dropdown-bg) !important;
-  color: var(--dropdown-text) !important;
-}
-
-body.mode .MUIDataTableFilter-reset,
-body.mode .MUIDataTableFilter-filtersSelected {
-  color: var(--dropdown-text) !important;
-}
-
-body.mode .MUIDataTableFilter-gridListTile {
-  color: var(--dropdown-text) !important;
-}
-
 
 /* Dark mode text box colors */
 body.mode .text-box-colors {
@@ -614,6 +591,8 @@ body.mode {
   --table-text: #e0e0e0;
   --table-border: #404040;
   --primary-disabled-bg: #3a3a3a;
+  --dropdown-bg: #262626ff;
+  --dropdown-text: #e0e0e0;
 }
 
 .icon-color {
@@ -639,4 +618,71 @@ body.mode .main-content,
 body.mode .app-container {
     background-color: #1a1a1a;
     border: none !important;
+}
+
+/* ============================================ */
+/* MUI DATA TABLE COMPONENT OVERRIDES */
+/* ============================================ */
+/* These overrides ensure MUI components respect CSS variables from SBStyles.css */
+/* Using !important to override MUI's inline styles with higher specificity */
+
+/* MUI Toolbar - respects table-toolbar and table-text variables */
+.MuiToolbar-root,
+.MUIDataTableToolbar-root,
+.MuiTablePagination-root {
+    background-color: var(--table-toolbar) !important;
+    color: var(--table-text) !important;
+}
+
+/* MUI Buttons and Icons */
+.MuiButton-text,
+.MuiButton-root,
+.MuiIconButton-root,
+.MuiTablePagination-selectIcon,
+.MuiTablePagination-actions,
+.MuiSelect-icon {
+    color: var(--table-text) !important;
+}
+
+/* MUI Input/Select fields */
+.MuiInputBase-root,
+.MuiInputBase-input,
+.MuiSelect-select {
+    color: var(--table-text) !important;
+    background-color: var(--dropdown-bg) !important;
+}
+
+/* MUI Paper components */
+.MuiPaper-root,
+.MuiPaper-outlined {
+    background-color: var(--table-toolbar) !important;
+}
+
+/* MUI Table cells */
+.MuiTableCell-head {
+    background-color: var(--table-header) !important;
+    color: var(--table-text) !important;
+}
+
+.MuiTableCell-body {
+    color: var(--table-text) !important;
+}
+
+/* SVG Icons within the table */
+.MuiSvgIcon-root {
+    color: var(--table-text) !important;
+}
+
+/* Filter dialog components */
+.MuiDialog-paper {
+    background-color: var(--dropdown-bg) !important;
+}
+
+.MuiDialogContentText-root,
+.MuiFormControlLabel-label {
+    color: var(--table-text) !important;
+}
+
+.MuiCheckbox-root {
+    color: var(--table-text) !important;
 }
