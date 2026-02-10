@@ -499,7 +499,35 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                                         helperText={errors.firstName}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 3}}
+                                        className="text-box-colors"
+                                        sx={{
+                                          mb: 3,
+                                          "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "var(--textbox-bg)",
+                                            color: "var(--textbox-text)",
+                                            "& fieldset": {
+                                              borderColor: "var(--textbox-border)",
+                                            },
+                                            "&:hover fieldset": {
+                                              borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                              borderColor: "var(--textbox-border-focused)",
+                                            },
+                                            '&.Mui-error fieldset': {
+                                              borderColor: 'var(--textbox-error)',
+                                            },
+                                          },
+                                          '& .MuiInputLabel-root': {
+                                              color: 'var(--textbox-label)',
+                                              '&.Mui-focused': {
+                                                  color: 'var(--textbox-border-focused)',
+                                              },
+                                              '&.Mui-error': {
+                                                  color: 'var(--textbox-error)',
+                                              },
+                                          },
+                                        }}
                                         aria-label="userFirstNameInput"
                                     />
 
@@ -514,7 +542,35 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                                         helperText={errors.lastName}
                                         onChange={this.handleChange}
                                         required
-                                        sx={{mb: 3}}
+                                        className="text-box-colors"
+                                        sx={{
+                                          mb: 3,
+                                          "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "var(--textbox-bg)",
+                                            color: "var(--textbox-text)",
+                                            "& fieldset": {
+                                              borderColor: "var(--textbox-border)",
+                                            },
+                                            "&:hover fieldset": {
+                                              borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                              borderColor: "var(--textbox-border-focused)",
+                                            },
+                                            '&.Mui-error fieldset': {
+                                              borderColor: 'var(--textbox-error)',
+                                            },
+                                          },
+                                          '& .MuiInputLabel-root': {
+                                              color: 'var(--textbox-label)',
+                                              '&.Mui-focused': {
+                                                  color: 'var(--textbox-border-focused)',
+                                              },
+                                              '&.Mui-error': {
+                                                  color: 'var(--textbox-error)',
+                                              },
+                                          },
+                                        }}
                                         aria-label="userLastNameInput"
                                     />
 
@@ -544,12 +600,18 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         "&.Mui-focused fieldset": {
                           borderColor: "var(--textbox-border-focused)",
                         },
+                        '&.Mui-error fieldset': {
+                          borderColor: 'var(--textbox-error)',
+                        },
                       },
-                      "& .MuiInputLabel-root": {
-                        color: "var(--textbox-label)",
-                      },
-                      "& .MuiFormHelperText-root.Mui-error": {
-                        color: "var(--textbox-error)",
+                      '& .MuiInputLabel-root': {
+                          color: 'var(--textbox-label)',
+                          '&.Mui-focused': {
+                              color: 'var(--textbox-border-focused)',
+                          },
+                          '&.Mui-error': {
+                              color: 'var(--textbox-error)',
+                          },
                       },
                     }}
                     aria-label="userEmailAddressInput"
@@ -662,7 +724,35 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                                             pattern: '[0-9]*',
                                 
                                         }}
-                                        sx={{mb: 3}}
+                                        className="text-box-colors"
+                                        sx={{
+                                          mb: 3,
+                                          "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "var(--textbox-bg)",
+                                            color: "var(--textbox-text)",
+                                            "& fieldset": {
+                                              borderColor: "var(--textbox-border)",
+                                            },
+                                            "&:hover fieldset": {
+                                              borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                              borderColor: "var(--textbox-border-focused)",
+                                            },
+                                            '&.Mui-error fieldset': {
+                                              borderColor: 'var(--textbox-error)',
+                                            },
+                                          },
+                                          '& .MuiInputLabel-root': {
+                                              color: 'var(--textbox-label)',
+                                              '&.Mui-focused': {
+                                                  color: 'var(--textbox-border-focused)',
+                                              },
+                                              '&.Mui-error': {
+                                                  color: 'var(--textbox-error)',
+                                              },
+                                          },
+                                        }}
                                     />
                                     
                                     <Box id="junkReminder" sx={{mb: 3}}>
