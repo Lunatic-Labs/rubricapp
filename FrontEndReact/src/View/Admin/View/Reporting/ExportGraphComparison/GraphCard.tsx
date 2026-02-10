@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef, useState, useEffect } from 'react';
 import { Box, Checkbox, Paper } from '@mui/material';
 import {
   BarChart,
@@ -18,6 +18,26 @@ interface GraphCardProps {
 }
 
 const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }) => {
+  const cardRef = useRef<HTMLDivElement>(null);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    const node = cardRef.current;
+    if (!node) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        if (entries[0] && entries[0].isIntersecting) {
+          setIsVisible(true);
+          observer.disconnect(); // Once visible, stay rendered
+        }
+      },
+      { rootMargin: '200px' } // Pre-render cards 200px before they scroll into view
+    );
+
+    observer.observe(node);
+    return () => observer.disconnect();
+  }, []);
   const formatDate = (dateString: string) => {
     if (!dateString) return 'N/A';
     const date = new Date(dateString);
@@ -76,29 +96,57 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
     return text.length > maxLen ? text.substring(0, maxLen) + '...' : text;
   };
 
+  const getPlaceholderColor = () => {
+    const colors: { [key: string]: string } = {
+      distribution: '#e3f0fc',
+      characteristics: '#e8f5e9',
+      improvements: '#fff3e0',
+    };
+    return colors[graphItem.graph_type] || '#f0f4f8';
+  };
+
   const renderGraph = () => {
+    if (!isVisible) {
+      return (
+        <Box sx={{
+          width: '100%',
+          height: '100%',
+          backgroundColor: getPlaceholderColor(),
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          color: '#aaa',
+          fontSize: '0.8rem',
+        }}>
+          Loading...
+        </Box>
+      );
+    }
+
     const { graph_type, graph_data } = graphItem;
 
     if (graph_type === 'distribution' && graph_data?.ratings) {
       const { ratings, avg, stdev } = graph_data;
       return (
         <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
-          <ResponsiveContainer width="100%" height={160}>
-            <BarChart
-              layout="horizontal"
-              data={ratings}
-              barCategoryGap={0.5}
-              margin={{ top: 5, right: 10, left: -10, bottom: 0 }}
-            >
-              <XAxis dataKey="rating" type="category" style={{ fontSize: '0.65rem' }} />
-              <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.65rem' }} />
-              <CartesianGrid vertical={false} />
-              <Bar dataKey="number" fill="#2e8bef" isAnimationActive={false}>
-                <LabelList dataKey="number" fill="#ffffff" position="inside" style={{ fontSize: '0.6rem' }} />
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-          <Box sx={{ textAlign: 'center', fontSize: '0.7rem', color: '#666', mt: -0.5 }}>
+          <Box sx={{ flex: 1, minHeight: 0 }}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart
+                layout="horizontal"
+                data={ratings}
+                barCategoryGap={0.5}
+                margin={{ top: 5, right: 10, left: -10, bottom: 0 }}
+              >
+                <XAxis dataKey="rating" type="category" style={{ fontSize: '0.65rem' }} />
+                <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.65rem' }} />
+                <CartesianGrid vertical={false} />
+                <Bar dataKey="number" fill="#2e8bef" isAnimationActive={false}>
+                  <LabelList dataKey="number" fill="#ffffff" position="inside" style={{ fontSize: '0.6rem' }} />
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </Box>
+          <Box sx={{ textAlign: 'center', fontSize: '0.7rem', color: '#666', flexShrink: 0 }}>
             Avg: {avg} &nbsp; StdDev: {stdev}
           </Box>
         </Box>
@@ -111,7 +159,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
         label: truncateLabel(item.characteristic),
       }));
       return (
-        <ResponsiveContainer width="100%" height={180}>
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
             data={data}
@@ -139,7 +187,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
         label: truncateLabel(item.improvement),
       }));
       return (
-        <ResponsiveContainer width="100%" height={180}>
+        <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
             data={data}
@@ -171,6 +219,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
 
   return (
     <Paper
+      ref={cardRef}
       className={`graph-card ${isSelected ? 'selected' : ''}`}
       onClick={handleCardClick}
       elevation={isSelected ? 3 : 1}
