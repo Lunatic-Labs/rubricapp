@@ -220,6 +220,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
   return (
     <Paper
       ref={cardRef}
+      data-graph-id={graphItem.id}
       className={`graph-card ${isSelected ? 'selected' : ''}`}
       onClick={handleCardClick}
       elevation={isSelected ? 3 : 1}

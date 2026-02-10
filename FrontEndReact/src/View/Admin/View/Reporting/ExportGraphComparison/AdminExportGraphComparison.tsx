@@ -5,7 +5,9 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import Loading from '../../../../Loading/Loading';
 import { apiUrl } from '../../../../../App';
 import { genericResourceGET } from '../../../../../utility';
-import { Box, Button, Chip, Collapse, Snackbar, Alert } from '@mui/material';
+import { Box, Button, Chip, Collapse, Snackbar, Alert, CircularProgress } from '@mui/material';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
@@ -55,6 +57,7 @@ interface AdminExportGraphComparisonState {
   toastOpen: boolean;
   toastMessage: string;
   toastSeverity: 'success' | 'info' | 'warning' | 'error';
+  exporting: boolean;
 }
 
 class AdminExportGraphComparison extends Component<any, AdminExportGraphComparisonState> {
@@ -85,6 +88,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       toastOpen: false,
       toastMessage: '',
       toastSeverity: 'info',
+      exporting: false,
     };
   }
 
@@ -472,7 +476,8 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
     });
   };
 
-  handleExport = () => {
+  handleExport = async () => {
+    const MAX_EXPORT = 10;
     const { selectedGraphIds } = this.state;
     const count = selectedGraphIds.size;
 
@@ -481,17 +486,88 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       return;
     }
 
+    if (count > MAX_EXPORT) {
+      this.showToast(`Please select no more than ${MAX_EXPORT} graphs at a time`, 'warning');
+      return;
+    }
+
+    this.setState({ exporting: true });
     this.showToast(`Exporting ${count} graph${count !== 1 ? 's' : ''} as PDF...`, 'info');
 
-    // TODO: Implement actual export functionality
-    // This will involve:
-    // 1. Fetching/generating graph data for selected items
-    // 2. Using html2canvas or similar to capture graphs
-    // 3. Using jsPDF to generate PDF
+    // Let the UI update before starting heavy work
+    await new Promise((resolve) => setTimeout(resolve, 50));
 
-    setTimeout(() => {
-      this.showToast('Export complete!', 'success');
-    }, 2000);
+    try {
+      const pdf = new jsPDF({
+        orientation: 'portrait',
+        unit: 'pt',
+        format: 'letter',
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 30;
+
+      const selectedIds = Array.from(selectedGraphIds);
+      let pagesAdded = 0;
+
+      for (let i = 0; i < selectedIds.length; i++) {
+        const graphId = selectedIds[i];
+        const cardElement = document.querySelector(`[data-graph-id="${graphId}"]`) as HTMLElement | null;
+        if (!cardElement) continue;
+
+        // Add a new page for every graph after the first
+        if (pagesAdded > 0) {
+          pdf.addPage();
+        }
+
+        const canvas = await html2canvas(cardElement, {
+          scale: 2,
+          useCORS: true,
+          backgroundColor: '#ffffff',
+          logging: false,
+          imageTimeout: 0,
+          onclone: (clonedDoc) => {
+            // Remove all other graph cards from the clone for speed
+            const allCards = clonedDoc.querySelectorAll('.graph-card');
+            allCards.forEach((card) => {
+              if (card.getAttribute('data-graph-id') !== graphId) {
+                card.remove();
+              }
+            });
+          },
+        });
+
+        const imgData = canvas.toDataURL('image/jpeg', 0.92);
+        const imgWidth = canvas.width;
+        const imgHeight = canvas.height;
+
+        const availableWidth = pageWidth - margin * 2;
+        const availableHeight = pageHeight - margin * 2;
+        const ratio = Math.min(availableWidth / imgWidth, availableHeight / imgHeight);
+        const scaledWidth = imgWidth * ratio;
+        const scaledHeight = imgHeight * ratio;
+
+        // Center horizontally, place near top of page
+        const xOffset = (pageWidth - scaledWidth) / 2;
+        const yOffset = margin;
+
+        pdf.addImage(imgData, 'JPEG', xOffset, yOffset, scaledWidth, scaledHeight);
+        pagesAdded++;
+      }
+
+      if (pagesAdded > 0) {
+        pdf.save('assessment-graphs-export.pdf');
+        this.showToast(`Exported ${pagesAdded} graph${pagesAdded !== 1 ? 's' : ''} successfully!`, 'success');
+      } else {
+        this.showToast('No graph cards found to export. Try scrolling through the graphs first.', 'warning');
+      }
+    } catch (error) {
+      console.error('Error exporting PDFs:', error);
+      this.showToast('Export failed. Please try again.', 'error');
+    } finally {
+      this.setState({ exporting: false });
+    }
   };
 
   showToast = (message: string, severity: 'success' | 'info' | 'warning' | 'error') => {
@@ -575,6 +651,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       toastOpen,
       toastMessage,
       toastSeverity,
+      exporting,
     } = this.state;
 
     if (errorMessage) {
@@ -609,9 +686,10 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
             <Button
               variant="contained"
               onClick={this.handleExport}
-              disabled={selectedGraphIds.size === 0}
+              disabled={selectedGraphIds.size === 0 || exporting}
+              startIcon={exporting ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : undefined}
             >
-              Export Selected as PDF
+              {exporting ? 'Exporting...' : 'Export Selected as PDF'}
             </Button>
           </Box>
         </Box>

@@ -1,9 +1,12 @@
-import React, { useState } from 'react';
-import { Box, Button, Collapse, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Paper } from '@mui/material';
+import React, { useRef, useState } from 'react';
+import { Box, Button, CircularProgress, Collapse, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Paper } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
 import CloseIcon from '@mui/icons-material/Close';
+import DownloadIcon from '@mui/icons-material/Download';
+import html2canvas from 'html2canvas';
+import jsPDF from 'jspdf';
 import {
   BarChart,
   Bar,
@@ -30,6 +33,8 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [exporting, setExporting] = useState(false);
+  const previewGridRef = useRef<HTMLDivElement>(null);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
@@ -171,9 +176,59 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
     setPreviewOpen(false);
   };
 
-  const handleExportFromPreview = () => {
-    setPreviewOpen(false);
-    onExport();
+  const handleExportFromPreview = async () => {
+    if (!previewGridRef.current) return;
+
+    setExporting(true);
+    await new Promise((resolve) => setTimeout(resolve, 50));
+
+    try {
+      const canvas = await html2canvas(previewGridRef.current, {
+        scale: 1.5,
+        useCORS: true,
+        backgroundColor: '#ffffff',
+        logging: false,
+        imageTimeout: 0,
+        onclone: (clonedDoc) => {
+          // Remove heavy background elements (all the graph cards behind the dialog)
+          // so html2canvas only processes the 4 preview graphs
+          const graphGrid = clonedDoc.querySelector('.graph-grid');
+          if (graphGrid) graphGrid.remove();
+          const comparisonDrawer = clonedDoc.querySelector('.comparison-drawer');
+          if (comparisonDrawer) comparisonDrawer.remove();
+        },
+      });
+
+      const imgData = canvas.toDataURL('image/jpeg', 0.92);
+      const imgWidth = canvas.width;
+      const imgHeight = canvas.height;
+
+      const pdf = new jsPDF({
+        orientation: 'landscape',
+        unit: 'pt',
+        format: 'letter',
+      });
+
+      const pageWidth = pdf.internal.pageSize.getWidth();
+      const pageHeight = pdf.internal.pageSize.getHeight();
+      const margin = 30;
+
+      const availableWidth = pageWidth - margin * 2;
+      const availableHeight = pageHeight - margin * 2;
+      const ratio = Math.min(availableWidth / imgWidth, availableHeight / imgHeight);
+      const scaledWidth = imgWidth * ratio;
+      const scaledHeight = imgHeight * ratio;
+
+      const xOffset = (pageWidth - scaledWidth) / 2;
+      const yOffset = (pageHeight - scaledHeight) / 2;
+
+      pdf.addImage(imgData, 'JPEG', xOffset, yOffset, scaledWidth, scaledHeight);
+      pdf.save('assessment-graph-comparison.pdf');
+    } catch (error) {
+      console.error('Error exporting PDF:', error);
+    } finally {
+      setExporting(false);
+    }
   };
 
   const slotsToShow = Math.min(selectedGraphItems.length, MAX_COMPARISON_SLOTS);
@@ -273,7 +328,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         </DialogTitle>
 
         <DialogContent sx={{ p: 3, overflow: 'auto' }}>
-          <Box className="preview-grid">
+          <Box ref={previewGridRef} className="preview-grid">
             {previewItems.map((item) => (
               <Box key={item.id} className="preview-card">
                 <Box className="preview-card-header">
@@ -296,8 +351,13 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
           <Button variant="outlined" onClick={handlePreviewClose}>
             Close
           </Button>
-          <Button variant="contained" onClick={handleExportFromPreview}>
-            Export as PDF
+          <Button
+            variant="contained"
+            startIcon={exporting ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : <DownloadIcon />}
+            onClick={handleExportFromPreview}
+            disabled={exporting}
+          >
+            {exporting ? 'Exporting...' : 'Export as PDF'}
           </Button>
         </DialogActions>
       </Dialog>
