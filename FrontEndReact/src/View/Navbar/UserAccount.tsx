@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton, Dialog, DialogContent, DialogTitle } from '@mui/material';
@@ -207,7 +206,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      *  - Lowercase letters.
      *  - Numbers.
      *  - Special characters.
-     * @param {string} password - The password inputed by the user.
+     * @param {string} password - The password entered by the user.
      * @returns {string} Returns the password strength level: "STRONG", "MEDIUM", "WEAK".
      */
 
@@ -245,7 +244,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      * On successful API submission, transitions the component to show the Login page.
      */
 
-    // 2 new 'validation' / error handling statemetns where added below
+    // 2 new 'validation' / error handling statements were added below
     // both check that character length does not exceed 20
     setPassword() {
         const cookies = new Cookies();
