@@ -24,7 +24,7 @@ redis == 6.4.0
 
 # Security
 pyjwt == 2.10.1
-cryptography == 46.0.2
+cryptography == 46.0.5
 
 # Data processing
 pandas == 2.3.3
