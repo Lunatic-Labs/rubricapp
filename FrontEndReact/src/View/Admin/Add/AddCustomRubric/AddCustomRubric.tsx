@@ -352,6 +352,35 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 style={{ width: "100%" }}
                                 error={!!errors.rubricName}
                                 helperText={errors.rubricName}
+                                className ="text-box-colors"
+                                sx={{ 
+                                    mb: 3,
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: 'var(--textbox-bg)',
+                                        color: 'var(--textbox-text)',
+                                        '& fieldset': {
+                                            borderColor: 'var(--textbox-border)',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--textbox-border-hover)',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--textbox-border-focused)',
+                                        },
+                                        '&.Mui-error fieldset': {
+                                            borderColor: 'var(--textbox-error)',
+                                        },
+                                    },
+                                    '& .MuiInputLabel-root': {
+                                        color: 'var(--textbox-label)',
+                                        '&.Mui-focused': {
+                                            color: 'var(--textbox-border-focused)',
+                                        },
+                                        '&.Mui-error': {
+                                            color: 'var(--textbox-error)',
+                                        },
+                                    },
+                                }}
                                 aria-label="customizeYourRubricRubricName"
                             />
                         </Grid>
@@ -363,10 +392,39 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 id="rubricDescriptionInput"
                                 label="Rubric Description"
                                 multiline
-                                style={{ width: "100%" }}
-                                aria-label="customizeYourRubricRubricDescription"
                                 error={!!errors.rubricDescription}
                                 helperText={errors.rubricDescription}
+                                style={{ width: "100%" }}
+                                className ="text-box-colors"
+                                sx={{ 
+                                    mb: 3,
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: 'var(--textbox-bg)',
+                                        color: 'var(--textbox-text)',
+                                        '& fieldset': {
+                                            borderColor: 'var(--textbox-border)',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--textbox-border-hover)',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--textbox-border-focused)',
+                                        },
+                                        '&.Mui-error fieldset': {
+                                            borderColor: 'var(--textbox-error)',
+                                        },
+                                    },
+                                    '& .MuiInputLabel-root': {
+                                        color: 'var(--textbox-label)',
+                                        '&.Mui-focused': {
+                                            color: 'var(--textbox-border-focused)',
+                                        },
+                                        '&.Mui-error': {
+                                            color: 'var(--textbox-error)',
+                                        },
+                                    },
+                                }}
+                                aria-label="customizeYourRubricRubricDescription"
                             />
                         </Grid>
                     </Grid>

@@ -554,7 +554,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                                 horizontal: 'left',
                                                 }}
                                             >
-                                                <Typography sx={{ p: 2 }}>Active:  Uncheck this box at the end of the term to move it to the Inactive Courses table.<br>
+                                                <Typography sx={{ p: 2, '& .MuiOutlinedInput-root': {color: 'var(--textbox-text)',}}}>Active:  Uncheck this box at the end of the term to move it to the Inactive Courses table.<br>
                                                 </br>Use TA's:  
                                                 Will you use Teaching or Learning Assistants in this course to fill out rubrics?<br>
                                                 </br>Fixed teams:  Do you assign students to teams or do they form teams on their own?</Typography>
