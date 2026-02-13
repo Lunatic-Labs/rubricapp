@@ -188,9 +188,9 @@ async function genericResourceFetch(
 }
 
 
-//function sleep(ms:number){
-//  return new Promise(resolve => setTimeout(resolve, ms));
-//}
+function sleep(ms:number){
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 /**
  * 
@@ -221,8 +221,6 @@ async function tokenServerErrorAndResolver(
   const refreshTokenKey = 'refresh_token';
   const userKey = 'user';  
 
-  //sleep(600000);
-
   if (["BlackListed", "No Authorization"].includes(msg)){
     cookies.remove(accessTokenKey);
     cookies.remove(refreshTokenKey);
@@ -240,11 +238,13 @@ async function tokenServerErrorAndResolver(
       return [true, undefined];
     }
 
-    /**const refreshResponse = */await refreshAccessToken();
+    const refreshResponse = await refreshAccessToken();
 
     //if (refreshResponse === undefined){
     //  window.location.reload();
     //}
+    console.log(refreshResponse);
+    sleep(600000);
 
     return [true ,await genericResourceFetch(fetchURL, resource, component, type, body, {
                         ...options,

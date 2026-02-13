@@ -7,6 +7,10 @@ let refreshPromise: Promise<any> | null = null;
 //  return new Promise(resolve => setTimeout(resolve, ms));
 //}
 
+interface User {
+  user_id?: string;
+  [key: string]: any;
+}
 
 /**
  * This function returns a refresh promise if there is one. The presense of a promise means that
@@ -20,10 +24,14 @@ export function refreshAccessToken(): Promise<any> | null | undefined{
     
     const refreshTokenKey: string = "refresh_token";
     const accessTokenKey: string = "access_token";
-    const userKey = 'user';
+    const userKey: string = "user"
     const cookies = new Cookies();  
-    const userId: string | undefined = cookies.get(userKey);
+    const user: User | undefined = cookies.get(userKey);
+    const userId: string = user?.user_id ?? "";
     const refreshToken: string | undefined = cookies.get(refreshTokenKey);
+
+    console.log("userId:",userId);
+    console.log("refreshToken", refreshToken);
 
     refreshPromise = fetch(
       `${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshToken}`,
@@ -35,6 +43,7 @@ export function refreshAccessToken(): Promise<any> | null | undefined{
       }
     ).then(async res => {
       if (!res.ok){
+        console.log(res);
         return undefined;
       }
 
@@ -44,6 +53,7 @@ export function refreshAccessToken(): Promise<any> | null | undefined{
       cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
     
     }).catch(err => {
+      console.log(err);
       return undefined;
     }).finally(() => {
       refreshPromise = null;
