@@ -188,9 +188,9 @@ async function genericResourceFetch(
 }
 
 
-function sleep(ms:number){
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+//function sleep(ms:number){
+//  return new Promise(resolve => setTimeout(resolve, ms));
+//}
 
 /**
  * 
@@ -221,11 +221,13 @@ async function tokenServerErrorAndResolver(
   const refreshTokenKey = 'refresh_token';
   const userKey = 'user';  
 
+  //sleep(600000);
+
   if (["BlackListed", "No Authorization"].includes(msg)){
     cookies.remove(accessTokenKey);
     cookies.remove(refreshTokenKey);
     cookies.remove(userKey);
-    window.location.reload();
+    //window.location.reload();
     return [true, undefined];
   } else if (["Token has expired", "Not enough segments", "Invalid token"].includes(msg) || 
               status === HTTP_STATUS.UNPROCESSABLE_ENTITY){
@@ -234,15 +236,15 @@ async function tokenServerErrorAndResolver(
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
       cookies.remove(userKey);
-      window.location.reload();
+      //window.location.reload();
       return [true, undefined];
     }
 
-    const refreshResponse = await refreshAccessToken();
+    /**const refreshResponse = */await refreshAccessToken();
 
-    if (refreshResponse === undefined){
-      window.location.reload();
-    }
+    //if (refreshResponse === undefined){
+    //  window.location.reload();
+    //}
 
     return [true ,await genericResourceFetch(fetchURL, resource, component, type, body, {
                         ...options,

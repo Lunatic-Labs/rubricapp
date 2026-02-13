@@ -3,6 +3,11 @@ import Cookies from 'universal-cookie';
 
 let refreshPromise: Promise<any> | null = null;
 
+//function sleep(ms:number){
+//  return new Promise(resolve => setTimeout(resolve, ms));
+//}
+
+
 /**
  * This function returns a refresh promise if there is one. The presense of a promise means that
  * there is an in flight refresh request that is still wrapping up. When undefined is returned,
