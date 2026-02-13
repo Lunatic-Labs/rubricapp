@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie';
 import * as eventsource from "eventsource-client";
 import { Component as ReactComponent } from 'react';
 import { HTTP_STATUS } from './Enums/HttpStatusCodes';
+import { refreshAccessToken } from './refreshLock';
 
 interface FetchOptions {
   dest?: string;
@@ -168,8 +169,7 @@ async function genericResourceFetch(
 
   } else {
     // Catch and report server related errors.
-    //console.log("yes it is a server error; request:", result);
-    //console.log("response:", response);
+
     let issueFound, issue:any|undefined = await tokenServerErrorAndResolver(result, resource, component, 
                                                         cookies, response, isRetry, 
                                                         fetchURL, type, body, options);
@@ -220,75 +220,38 @@ async function tokenServerErrorAndResolver(
   const accessTokenKey = 'access_token';
   const refreshTokenKey = 'refresh_token';
   const userKey = 'user';  
- 
-  console.log("mesgage:", msg);
-  console.log("response:", response);
-  console.log("result", result);
 
   if (["BlackListed", "No Authorization"].includes(msg)){
-    console.log("first situation");
     cookies.remove(accessTokenKey);
     cookies.remove(refreshTokenKey);
     cookies.remove(userKey);
-    await sleep(10*60*1000);
     window.location.reload();
     return [true, undefined];
   } else if (["Token has expired", "Not enough segments", "Invalid token"].includes(msg) || 
               status === HTTP_STATUS.UNPROCESSABLE_ENTITY){
-    console.log("second if");
+
     if (isRetry){
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
       cookies.remove(userKey);
-      //await sleep(10*60*1000);
       window.location.reload();
       return [true, undefined];
     }
 
-    const refreshTokenValue: string = cookies.get(refreshTokenKey);
-    const userId: string = (cookies.get(userKey) as User)?.user_id;
+    const refreshResponse = await refreshAccessToken();
 
-    try {
-      const refreshResponse = await fetch(
-        `${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshTokenValue}`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + refreshTokenValue
-          }
-        }
-      );
-      const refreshResult: ApiResponse = await refreshResponse.json();
-      if (refreshResult.success && refreshResult.headers) {
-        console.log("succeeded once");
-        cookies.set(accessTokenKey, refreshResult.headers.access_token, { sameSite: 'strict' });
-        cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
-        return [true, await genericResourceFetch(fetchURL, resource, component, type, body, {
-          ...options, 
-          isRetry: true
-        })];
-      } else {
-        cookies.remove(accessTokenKey);
-        cookies.remove(refreshTokenKey);
-        cookies.remove(userKey);
-        await sleep(10*60*1000);
-        window.location.reload();
-        return [true, undefined];
-      }
-    } catch (refreshError) {
-      console.log("failed to refresh?");
-      cookies.remove(accessTokenKey);
-      cookies.remove(refreshTokenKey);
-      cookies.remove(userKey);
-      await sleep(10*60*1000);
+    if (refreshResponse === undefined){
       window.location.reload();
-      return [true, undefined];
     }
+
+    return [true ,await genericResourceFetch(fetchURL, resource, component, type, body, {
+                        ...options,
+                        isRetry: true
+                    })];
+
   }
-  await sleep(10*60*1000);
   return [false, null];
 }
-
 
 /** @deprecated The website should not have to use this since backend will not work with it. */
 export function createEventSource(
