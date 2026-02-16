@@ -128,16 +128,10 @@ class ViewCourses extends Component<any> {
         });
       }
 
-    // If the logged in user is an Admin of at least one course then the edit column will show.
-    // Otherwise the edit column will not be shown!
-    if (navbar.props.isAdmin) {
       columns.push(
       {
-        // If the logged in user is an Admin in the course, they can edit the course.
-        // Otherwise the edit button is disabled because they did not make the course
-        // and are either a TA/Instructor or Student in the course!
         name: "course_id",
-        label: "EDIT",
+        label: "VIEW",
         options: {
           filter: false,
           setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
@@ -167,7 +161,6 @@ class ViewCourses extends Component<any> {
       }
     });
 
-
     const options = {
       onRowsDelete: false,
       download: false,
@@ -175,13 +168,12 @@ class ViewCourses extends Component<any> {
       viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "simple",
+      responsive: "vertical",
       tableBodyMaxHeight: "35vh",
     };
 
     const activeCourses = courses ? courses.filter((course: any) => course.active) : [];
     const inactiveCourses = courses ? courses.filter((course: any) => !course.active) : [];
-
 
     return (
       <Box aria-label="viewCourseDiv">
@@ -236,7 +228,5 @@ class ViewCourses extends Component<any> {
     );
   }
 }
-}
-
 
 export default ViewCourses;
