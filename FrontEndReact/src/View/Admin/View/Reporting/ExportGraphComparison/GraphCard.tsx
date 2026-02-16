@@ -100,7 +100,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
     const colors: { [key: string]: string } = {
       distribution: '#e3f0fc',
       characteristics: '#e8f5e9',
-      improvements: '#fff3e0',
+      improvements: '#ffebee',
     };
     return colors[graphItem.graph_type] || '#f0f4f8';
   };
@@ -196,7 +196,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.6rem' }} />
             <YAxis dataKey="label" type="category" width={90} style={{ fontSize: '0.55rem' }} />
             <CartesianGrid horizontal={false} />
-            <Bar dataKey="percentage" fill="#FF9800" isAnimationActive={false}>
+            <Bar dataKey="percentage" fill="#E53935" isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
@@ -251,4 +251,10 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
   );
 };
 
-export default GraphCard;
+export default React.memo(GraphCard, (prevProps, nextProps) => {
+  // Only re-render if the graph data or selection state changed
+  return (
+    prevProps.graphItem.id === nextProps.graphItem.id &&
+    prevProps.isSelected === nextProps.isSelected
+  );
+});

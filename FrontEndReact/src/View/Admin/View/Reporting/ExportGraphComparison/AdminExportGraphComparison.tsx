@@ -413,9 +413,15 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
 
     // Students (multiselect)
     if (filters.studentIds.length > 0) {
-      const names = students
-        .filter((s: any) => filters.studentIds.includes(s.user_id.toString()))
-        .map((s: any) => s.full_name || `${s.first_name} ${s.last_name}`);
+      const specialLabels: { [key: string]: string } = {
+        'all': 'All Students',
+        'class_average': 'Class Average',
+      };
+      const names = filters.studentIds.map((id) => {
+        if (specialLabels[id]) return specialLabels[id];
+        const student = students.find((s: any) => s.user_id?.toString() === id);
+        return student ? (student.full_name || `${student.first_name} ${student.last_name}`) : id;
+      });
       activeFilters.push({ key: 'studentIds', label: `Students: ${names.join(', ')}` });
     }
 
@@ -684,6 +690,13 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
               {allSelected ? 'Deselect All' : 'Select All'}
             </Button>
             <Button
+              variant="outlined"
+              onClick={this.handleClearSelection}
+              disabled={selectedGraphIds.size === 0}
+            >
+              Clear All
+            </Button>
+            <Button
               variant="contained"
               onClick={this.handleExport}
               disabled={selectedGraphIds.size === 0 || exporting}
@@ -756,7 +769,6 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
         <ComparisonDrawer
           selectedGraphItems={filteredGraphItems.filter((g) => selectedGraphIds.has(g.id))}
           onClearSelection={this.handleClearSelection}
-          onExport={this.handleExport}
         />
 
         {/* Toast Notification */}

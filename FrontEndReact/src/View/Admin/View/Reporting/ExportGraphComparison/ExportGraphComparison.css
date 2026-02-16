@@ -333,12 +333,20 @@
   gap: 12px;
 }
 
+/* Preview Export Title (rendered on PDF) */
+.preview-export-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  padding: 12px 16px 8px;
+}
+
 /* Preview Dialog Grid - 2x2 layout */
 .preview-grid {
   display: grid;
   grid-template-columns: repeat(2, 1fr);
   gap: 20px;
-  height: 100%;
 }
 
 .preview-card {
@@ -348,6 +356,22 @@
   display: flex;
   flex-direction: column;
   overflow: hidden;
+  cursor: grab;
+  transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.preview-card:active {
+  cursor: grabbing;
+}
+
+.preview-card.dragging {
+  opacity: 0.4;
+}
+
+.preview-card.drag-over {
+  border-color: #2E8BEF;
+  border-width: 2px;
+  transform: scale(1.02);
 }
 
 .preview-card-header {
@@ -369,8 +393,7 @@
 }
 
 .preview-card-graph {
-  flex: 1;
-  min-height: 0;
+  min-height: 220px;
   padding: 12px;
 }
 

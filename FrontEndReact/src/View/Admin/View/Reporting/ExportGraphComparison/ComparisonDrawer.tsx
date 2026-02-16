@@ -1,5 +1,5 @@
-import React, { useRef, useState } from 'react';
-import { Box, Button, CircularProgress, Collapse, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Paper } from '@mui/material';
+import React, { useEffect, useRef, useState } from 'react';
+import { Box, Button, CircularProgress, Collapse, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Paper, TextField } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 import OpenInFullIcon from '@mui/icons-material/OpenInFull';
@@ -21,7 +21,6 @@ import { GraphItem } from './AdminExportGraphComparison';
 interface ComparisonDrawerProps {
   selectedGraphItems: GraphItem[];
   onClearSelection: () => void;
-  onExport: () => void;
 }
 
 const MAX_COMPARISON_SLOTS = 4;
@@ -29,15 +28,67 @@ const MAX_COMPARISON_SLOTS = 4;
 const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
   selectedGraphItems,
   onClearSelection,
-  onExport,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
+  const [comparisonTitle, setComparisonTitle] = useState('');
+  const [orderedItems, setOrderedItems] = useState<GraphItem[]>([]);
+  const [dragIndex, setDragIndex] = useState<number | null>(null);
+  const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
   const previewGridRef = useRef<HTMLDivElement>(null);
+
+  // Sync orderedItems when selectedGraphItems changes
+  useEffect(() => {
+    setOrderedItems((prev) => {
+      const selectedIds = new Set(selectedGraphItems.map((g) => g.id));
+      // Keep existing items that are still selected, in their current order
+      const kept = prev.filter((item) => selectedIds.has(item.id));
+      const keptIds = new Set(kept.map((g) => g.id));
+      // Append any newly selected items at the end
+      const added = selectedGraphItems.filter((g) => !keptIds.has(g.id));
+      return [...kept, ...added].slice(0, MAX_COMPARISON_SLOTS);
+    });
+  }, [selectedGraphItems]);
 
   const toggleExpanded = () => {
     setIsExpanded(!isExpanded);
+  };
+
+  const handleDragStart = (index: number) => {
+    setDragIndex(index);
+  };
+
+  const handleDragOver = (e: React.DragEvent, index: number) => {
+    e.preventDefault();
+    setDragOverIndex(index);
+  };
+
+  const handleDragLeave = () => {
+    setDragOverIndex(null);
+  };
+
+  const handleDrop = (dropIndex: number) => {
+    if (dragIndex === null || dragIndex === dropIndex) {
+      setDragIndex(null);
+      setDragOverIndex(null);
+      return;
+    }
+    const fromIndex = dragIndex;
+    setOrderedItems((prev) => {
+      const updated = [...prev];
+      const temp = updated[fromIndex];
+      updated[fromIndex] = updated[dropIndex]!;
+      updated[dropIndex] = temp!;
+      return updated;
+    });
+    setDragIndex(null);
+    setDragOverIndex(null);
+  };
+
+  const handleDragEnd = () => {
+    setDragIndex(null);
+    setDragOverIndex(null);
   };
 
   const getSlotLabel = (item: GraphItem) => {
@@ -148,7 +199,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.7rem' }} />
             <YAxis dataKey="label" type="category" width={110} style={{ fontSize: '0.65rem' }} />
             <CartesianGrid horizontal={false} />
-            <Bar dataKey="percentage" fill="#FF9800" isAnimationActive={false}>
+            <Bar dataKey="percentage" fill="#E53935" isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
@@ -223,7 +274,10 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
       const yOffset = (pageHeight - scaledHeight) / 2;
 
       pdf.addImage(imgData, 'JPEG', xOffset, yOffset, scaledWidth, scaledHeight);
-      pdf.save('assessment-graph-comparison.pdf');
+      const filename = comparisonTitle.trim()
+        ? `${comparisonTitle.trim().replace(/[^a-zA-Z0-9 _-]/g, '').replace(/\s+/g, '-')}.pdf`
+        : 'assessment-graph-comparison.pdf';
+      pdf.save(filename);
     } catch (error) {
       console.error('Error exporting PDF:', error);
     } finally {
@@ -231,9 +285,9 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
     }
   };
 
-  const slotsToShow = Math.min(selectedGraphItems.length, MAX_COMPARISON_SLOTS);
+  const slotsToShow = Math.min(orderedItems.length, MAX_COMPARISON_SLOTS);
   const emptySlots = MAX_COMPARISON_SLOTS - slotsToShow;
-  const previewItems = selectedGraphItems.slice(0, MAX_COMPARISON_SLOTS);
+  const previewItems = orderedItems.slice(0, MAX_COMPARISON_SLOTS);
 
   return (
     <>
@@ -267,7 +321,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
             {/* Comparison Grid - 4 slots */}
             <Box className="comparison-grid">
               {/* Filled slots */}
-              {selectedGraphItems.slice(0, MAX_COMPARISON_SLOTS).map((item) => (
+              {orderedItems.slice(0, MAX_COMPARISON_SLOTS).map((item) => (
                 <Box key={item.id} className="comparison-slot filled">
                   <Box className="slot-label">{getSlotLabel(item)}</Box>
                 </Box>
@@ -290,9 +344,9 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
                 variant="contained"
                 startIcon={<OpenInFullIcon />}
                 onClick={handlePreviewOpen}
-                disabled={selectedGraphItems.length === 0}
+                disabled={orderedItems.length === 0}
               >
-                Export Preview
+                Comparison View
               </Button>
             </Box>
           </Box>
@@ -317,7 +371,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
       >
         <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', pb: 1.5 }}>
           <Box>
-            <Box sx={{ fontWeight: 700, fontSize: '1.2rem' }}>Export Preview</Box>
+            <Box sx={{ fontWeight: 700, fontSize: '1.2rem' }}>Comparison View</Box>
             <Box sx={{ fontSize: '0.85rem', color: '#666', mt: 0.5 }}>
               {previewItems.length} graph{previewItems.length !== 1 ? 's' : ''} selected for comparison
             </Box>
@@ -328,9 +382,38 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         </DialogTitle>
 
         <DialogContent sx={{ p: 3, overflow: 'auto' }}>
-          <Box ref={previewGridRef} className="preview-grid">
-            {previewItems.map((item) => (
-              <Box key={item.id} className="preview-card">
+          <TextField
+            fullWidth
+            variant="outlined"
+            size="small"
+            placeholder="Enter a title for this comparison (optional)"
+            value={comparisonTitle}
+            onChange={(e) => setComparisonTitle(e.target.value)}
+            sx={{ mb: 2 }}
+          />
+          {previewItems.length >= 2 && (
+            <Box sx={{ fontSize: '0.8rem', color: '#999', textAlign: 'center', mb: 1 }}>
+              Drag cards to reorder
+            </Box>
+          )}
+          <Box ref={previewGridRef} sx={{ backgroundColor: '#fff' }}>
+            {comparisonTitle && (
+              <Box className="preview-export-title">
+                {comparisonTitle}
+              </Box>
+            )}
+            <Box className="preview-grid">
+            {previewItems.map((item, index) => (
+              <Box
+                key={item.id}
+                className={`preview-card${dragIndex === index ? ' dragging' : ''}${dragOverIndex === index ? ' drag-over' : ''}`}
+                draggable
+                onDragStart={() => handleDragStart(index)}
+                onDragOver={(e) => handleDragOver(e, index)}
+                onDragLeave={handleDragLeave}
+                onDrop={() => handleDrop(index)}
+                onDragEnd={handleDragEnd}
+              >
                 <Box className="preview-card-header">
                   <Box className="preview-card-title">
                     {item.category_name} - {getGraphTypeLabel(item.graph_type)}
@@ -344,6 +427,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
                 </Box>
               </Box>
             ))}
+            </Box>
           </Box>
         </DialogContent>
 
