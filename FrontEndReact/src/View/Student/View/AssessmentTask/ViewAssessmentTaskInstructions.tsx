@@ -181,7 +181,7 @@ class ViewAssessmentTaskInstructions extends Component<
                                             margin: "1rem",
                                             fontWeight: "bold",
                                             width: "80%",
-                                            textAlign: "center",,
+                                            textAlign: "center",
                                             color: 'var(--instructions-text)'
                                         }}
                                     >
@@ -191,7 +191,7 @@ class ViewAssessmentTaskInstructions extends Component<
                                 <h2
                                     style={{
                                         textAlign: "left",
-                                        marginLeft: "8px",,
+                                        marginLeft: "8px",
                                         color: 'var(--instructions-text)'
                                     }}
                                 >
@@ -200,7 +200,9 @@ class ViewAssessmentTaskInstructions extends Component<
                                 <textarea
                                     style={{
                                         width: "98%",
-                                        minHeight: "15rem"
+                                        minHeight: "15rem",
+                                        backgroundColor: 'var(--instructions-textarea-bg)',
+                                        color: 'var(--instructions-textarea-text)'
                                     }}
                                     defaultValue={instructions}
                                     readOnly
