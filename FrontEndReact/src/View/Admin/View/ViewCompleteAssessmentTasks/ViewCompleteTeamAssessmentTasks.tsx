@@ -2,15 +2,18 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
-import IconButton from '@mui/material/IconButton';
-import VisibilityIcon from '@mui/icons-material/Visibility';
-import { Box, Typography } from "@mui/material";
+import IconButton from "@mui/material/IconButton";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import { Box, Typography, Tooltip } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
-import { genericResourcePUT, genericResourcePOST } from "../../../../utility";
+import { genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
-import { getHumanReadableDueDate } from "../../../../utility";
-import { Tooltip } from '@mui/material';
+
+interface ViewCompleteTeamAssessmentTasksProps {
+    navbar: any;
+    completedAssessment: any[];
+}
 
 interface ViewCompleteTeamAssessmentTasksState {
     errorMessage: any;
@@ -22,140 +25,146 @@ interface ViewCompleteTeamAssessmentTasksState {
     compATId: any;
     errors: {
         notes: string;
+        [key: string]: string;
     };
 }
 
-class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAssessmentTasksState> {
-    constructor(props: any) {
+class ViewCompleteTeamAssessmentTasks extends Component<
+    ViewCompleteTeamAssessmentTasksProps,
+    ViewCompleteTeamAssessmentTasksState
+> {
+    constructor(props: ViewCompleteTeamAssessmentTasksProps) {
         super(props);
 
-    this.state = {
-      errorMessage: null,   //Stores API error messages
-      isLoaded: null,       // Loading state indicator
-      showDialog: false,    // Controls notification dialog visibility
-      notes: '',            //Notification message content typed by instructor
-      notificationSent: false,    // Tracks if notification sent
-      isSingleMsg: false,         //True notifies one team if false notifies all teams
-      compATId: null,             // completed assessment ID for individual team notifications
-
+        this.state = {
+            errorMessage: null,
+            isLoaded: null,
+            showDialog: false,
+            notes: "",
+            notificationSent: false,
+            isSingleMsg: false,
+            compATId: null,
             errors: {
-                notes:''      // validation error for notification message
-            }
+                notes: "",
+            },
         };
     }
 
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
-      //Updates state with new value and validation error
-        this.setState({
-            [id]: value,      // Updates the field dynamically
-            errors: {
-                ...this.state.errors,
-                //Validates if empty after trim, set error, otherwise error is cleared
-                [id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
-            },
-        } as any);
+
+        this.setState((prev) => {
+            const next: any = { ...prev };
+
+            if (id) {
+                next[id] = value;
+                next.errors = {
+                    ...prev.errors,
+                    [id]:
+                        value.trim() === ""
+                            ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`
+                            : "",
+                };
+            }
+
+            return next;
+        });
     };
 
-    handleDialog = (isSingleMessage: any, singleCompletedAT: any) => {   // Opens or closes the notification dialog and configure notification mode
-      this.setState({
-          showDialog: this.state.showDialog === false ? true : false,
-          isSingleMsg: isSingleMessage,  // Store whether this is single team or mass notification
-          compATId: singleCompletedAT,  //stores assessment ID for single team notifications
-        });
-    }
+    handleDialog = (isSingleMessage: boolean, singleCompletedAT: any = null) => {
+        this.setState((prev) => ({
+            showDialog: !prev.showDialog,
+            isSingleMsg: isSingleMessage,
+            compATId: singleCompletedAT,
+        }));
+    };
 
-    handleSendNotification = () => {    // Sends notification email to teams that their assessments are available
-        var notes =  this.state.notes;
+    handleSendNotification = () => {
+        const notes = this.state.notes;
 
-        var navbar = this.props.navbar;
-        var state = navbar.state;
-        var chosenAssessmentTask = state.chosenAssessmentTask;
+        const navbar = this.props.navbar;
+        const state = navbar?.state;
 
-        var date = new Date(); // creates timestamp
+        const chosenAssessmentTask = state?.chosenAssessmentTask;
 
-        if (notes.trim() === '') {    //validates if message is empty
+        const date = new Date();
+
+        if (!notes || notes.trim() === "") {
             this.setState({
                 errors: {
-                    notes: 'Notification Message cannot be empty',
+                    ...this.state.errors,
+                    notes: "Notification Message cannot be empty",
                 },
             });
-            //exit early without sending notification
             return;
         }
 
-    if(this.state.isSingleMsg){ // Check notification mode either single team or all
-      // reset single message flag before sending
-      this.setState({isSingleMsg: false}, () => {
-        //API call - sends email to one specific team
-        //POST /send_single_email?team=true&completed_assessment_id={id}
-        //Query param team=true indicates team notification
-        genericResourcePOST(
-          `/send_single_email?team=${true}&completed_assessment_id=${this.state.compATId}`, 
-          this, JSON.stringify({ 
-            "notification_message": notes,
-          }) 
-        ).then((result) => {
-          // Success handling: check result is valid and no errors
-          if(result !== undefined && result.errorMessage === null){
-            this.setState({ 
-              showDialog: false, 
-              notificationSent: date, 
+        // Individual team notification
+        if (this.state.isSingleMsg) {
+            this.setState({ isSingleMsg: false }, () => {
+                genericResourcePOST(
+                    `/send_single_email?team=${true}` +
+                        `&completed_assessment_id=${this.state.compATId}` +
+                        `&assessment_task_id=${chosenAssessmentTask?.["assessment_task_id"]}`,
+                    this,
+                    JSON.stringify({
+                        notification_message: notes,
+                        date: date,
+                    })
+                ).then((result: any) => {
+                    if (result !== undefined && result.errorMessage === null) {
+                        this.setState({
+                            showDialog: false,
+                            notificationSent: date,
+                        });
+                    }
+                });
             });
-          }
-          //If error occurs, dialog stays open for user to retry
-          // notificationSent stays false, button remains enabled
-        });
-      });
-    }else{
-      genericResourcePUT(
-        `/mass_notification?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&team=${true}`,
-        this, JSON.stringify({
-          "date": date,
-          "notification_message": notes
-        })
-      ).then((result) => {
-        if (result !== undefined && result.errorMessage === null) {
-          this.setState({
-            showDialog: false,
-            notificationSent: date,
-          });
+
+            return;
         }
-      });
-    }
 
-  };
+        // Mass notification to all teams
+        genericResourcePUT(
+            `/mass_notification?assessment_task_id=${chosenAssessmentTask?.["assessment_task_id"]}&team=${true}`,
+            this,
+            JSON.stringify({
+                date: date,
+                notification_message: notes,
+            })
+        ).then((result: any) => {
+            if (result !== undefined && result.errorMessage === null) {
+                this.setState({
+                    showDialog: false,
+                    notificationSent: date,
+                });
+            }
+        });
+    };
 
-    render() {    //Renders the component UI with team assessment table and notification buttons
-        var navbar = this.props.navbar;
+    render(): JSX.Element {
+        const navbar = this.props.navbar;
 
-        var completedAssessmentTasks = navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
+        const completedAssessmentTasks = navbar?.adminViewCompleteAssessmentTasks?.completeAssessmentTasks;
+        const userNames = navbar?.adminViewCompleteAssessmentTasks?.userNames;
 
-        var userNames = navbar.adminViewCompleteAssessmentTasks.userNames;  //Maps user ID to name
+        const state = navbar?.state;
 
-        var state = navbar.state;
+        const chosenAssessmentTask = state?.chosenAssessmentTask;
+        const notificationSent = state?.notificationSent;
+        const chosenCourse = state?.chosenCourse;
 
-        var chosenAssessmentTask = state.chosenAssessmentTask;
-
-        var notificationSent = state.notificationSent;    //From navbar state, not component state
-
-        var chosenCourse = state.chosenCourse;
-
-        const columns = [
-          //Column 1 assessment task name
+        const columns: any[] = [
             {
                 name: "assessment_task_id",
                 label: "Assessment Task",
                 options: {
                     filter: true,
-
-                    customBodyRender: () => {
-                        return (
-                            <p>
-                                {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
-                            </p>
-                        );
-                    },
+                    customBodyRender: () => (
+                        <Typography variant="body2" align="left">
+                            {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"] : "N/A"}
+                        </Typography>
+                    ),
                 },
             },
             {
@@ -163,14 +172,11 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
                 label: "Team Name",
                 options: {
                     filter: true,
-
-                    customBodyRender: (team_name: any) => {
-                        return (
-                            <p>
-                                {team_name ? team_name : "N/A"}
-                            </p>
-                        );
-                    },
+                    customBodyRender: (team_name: any) => (
+                        <Typography variant="body2" align="left">
+                            {team_name ? team_name : "N/A"}
+                        </Typography>
+                    ),
                 },
             },
             {
@@ -178,14 +184,11 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
                 label: "Assessor",
                 options: {
                     filter: true,
-
-                    customBodyRender: (completed_by: any) => {
-                        return (
-                            <p>
-                                {userNames && completed_by ? userNames[completed_by] : "N/A"}
-                            </p>
-                        );
-                    },
+                    customBodyRender: (completed_by: any) => (
+                        <Typography variant="body2" align="left">
+                            {userNames && completed_by ? userNames[completed_by] : "N/A"}
+                        </Typography>
+                    ),
                 },
             },
             {
@@ -193,14 +196,12 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
                 label: "Initial Time",
                 options: {
                     filter: true,
-
-                    customBodyRender: (initialTime: any) => { 
+                    customBodyRender: (initialTime: any) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
-                        
                         return (
-                            <p>
-                                {getHumanReadableDueDate(initialTime,timeZone)}
-                            </p>
+                            <Typography variant="body2" align="left">
+                                {getHumanReadableDueDate(initialTime, timeZone)}
+                            </Typography>
                         );
                     },
                 },
@@ -210,17 +211,15 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
                 label: "Last Updated",
                 options: {
                     filter: true,
-
                     customBodyRender: (lastUpdate: any) => {
-                      const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";    
-
-                      return (
-                        <p>
-                          {getHumanReadableDueDate(lastUpdate,timeZone)}
-                        </p>
-                      );
-                    }
-                }
+                        const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
+                        return (
+                            <Typography variant="body2" align="left">
+                                {getHumanReadableDueDate(lastUpdate, timeZone)}
+                            </Typography>
+                        );
+                    },
+                },
             },
             {
                 name: "completed_assessment_id",
@@ -228,81 +227,84 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
-                      const rowIndex = completeAssessmentTasks.rowIndex;
-                      const teamId = this.props.completedAssessment[rowIndex].team_id;
-                      if (completedAssessmentId) {
+                    setCellHeaderProps: () => ({ align: "center", className: "button-column-alignment" }),
+                    setCellProps: () => ({ align: "center", className: "button-column-alignment" }),
+                    customBodyRender: (completedAssessmentId: any, tableMeta: any) => {
+                        const rowIndex = tableMeta?.rowIndex;
+                        const teamId =
+                            this.props.completedAssessment && rowIndex !== undefined
+                                ? this.props.completedAssessment[rowIndex]?.team_id
+                                : null;
+
+                        if (completedAssessmentId) {
                             return (
                                 <IconButton
                                     onClick={() => {
                                         navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                            completedAssessmentTasks,
+                                            tableMeta,
                                             completedAssessmentId,
                                             chosenAssessmentTask,
-                                            teamId,
+                                            teamId
                                         );
                                     }}
                                     aria-label="See more details"
                                 >
-                                    <VisibilityIcon sx={{color:"black"}}/>
+                                    <VisibilityIcon sx={{ color: "black" }} />
                                 </IconButton>
-                            )
+                            );
+                        }
 
-            } else {
-              return(
-                <p> {"N/A"} </p>
-              )
-            }
-          }
-        }
-      },
-      {
-        name: "Student/Team Id",
-        label: "Notify",
-        options: {
-          filter: false,
-          sort: false,
-          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
-            const rowIndex = completeAssessmentTasks.rowIndex;
-            const completedATIndex = 5;
-            completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
-            if (completedAssessmentId !== null) {
-              return (
-                <Tooltip
-                  title={
-                    <>
-                      <p>
-                        Notify individual team.
-                      </p>
-                    </>
-                  }>
-                  <span>
-                    <CustomButton
-                    onClick={() => this.handleDialog(true, completedAssessmentId)}
-                    label="Notify"
-                    align="center"
-                    isOutlined={true}
-                    disabled={notificationSent}
-                    aria-label="Send individual messages"
-                    />
-                  </span>
-                </Tooltip>
-              )
-            }else{
-              return(
-                <p> {''} </p>
-              )
-            }
-          }
-        }
-      },
-    ];
+                        return (
+                            <Typography variant="body2" align="center">
+                                N/A
+                            </Typography>
+                        );
+                    },
+                },
+            },
+            {
+                name: "Student/Team Id",
+                label: "Notify",
+                options: {
+                    filter: false,
+                    sort: false,
+                    setCellHeaderProps: () => ({ align: "center", className: "button-column-alignment" }),
+                    setCellProps: () => ({ align: "center", className: "button-column-alignment" }),
+                    customBodyRender: (_: any, tableMeta: any) => {
+                        const rowIndex = tableMeta?.rowIndex;
+                        const completedATIndex = 5;
+                        const completedAssessmentId = tableMeta?.tableData?.[rowIndex]?.[completedATIndex] ?? null;
 
-        const options = {
+                        if (completedAssessmentId !== null && completedAssessmentId !== undefined) {
+                            return (
+                                <Tooltip
+                                    title={<Typography variant="body2">Notify individual team.</Typography>}
+                                >
+                                    <span>
+                                        <CustomButton
+                                            onClick={() => this.handleDialog(true, completedAssessmentId)}
+                                            label="Notify"
+                                            align="center"
+                                            isOutlined={true}
+                                            disabled={notificationSent}
+                                            aria-label="Send individual messages"
+                                        />
+                                    </span>
+                                </Tooltip>
+                            );
+                        }
+
+                        return (
+                            <Typography variant="body2" align="center">
+                                {" "}
+                            </Typography>
+                        );
+                    },
+                },
+            },
+        ];
+
+        const options: any = {
             onRowsDelete: false,
             download: false,
             print: false,
@@ -314,17 +316,19 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
         };
 
         return (
-            <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
+            <Box sx={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "20px" }}>
                 <Box className="content-spacing">
                     <CourseInfo
-                        courseTitle={chosenCourse["course_name"]} 
-                        courseNumber={chosenCourse["course_number"]}
-                        aria-label={chosenCourse["course_name"]}
+                        courseTitle={chosenCourse?.["course_name"]}
+                        courseNumber={chosenCourse?.["course_number"]}
+                        aria-label={chosenCourse?.["course_name"]}
                     />
                 </Box>
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedTeamRubricsTitle"> Completed Rubrics</Typography>
+                    <Typography sx={{ fontWeight: "700" }} variant="h5" aria-label="viewCompletedTeamRubricsTitle">
+                        Completed Rubrics
+                    </Typography>
 
                     <Box>
                         <ResponsiveNotification
@@ -335,27 +339,20 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
                             notes={this.state.notes}
                             error={this.state.errors}
                         />
-            <Tooltip
-              title={
-                  <>
-                      <p> 
-                        Notifies all teams results are available.
-                      </p>
-                        
-                  </>
-                }>
-              <span>
-                <CustomButton
-                  label="Notify All"
-                  onClick={() => this.handleDialog(false, null)}
-                  isOutlined={false}
-                  disabled={notificationSent}
-                  aria-label="viewCompletedAssessmentTeamSendNotificationButton"
-                />
-              </span>
-            </Tooltip>
-          </Box>
-        </Box>
+
+                        <Tooltip title={<Typography variant="body2">Notifies all teams results are available.</Typography>}>
+                            <span>
+                                <CustomButton
+                                    label="Send Notification"
+                                    onClick={() => this.handleDialog(false, null)}
+                                    isOutlined={false}
+                                    disabled={notificationSent}
+                                    aria-label="viewCompletedAssessmentTeamSendNotificationButton"
+                                />
+                            </span>
+                        </Tooltip>
+                    </Box>
+                </Box>
 
                 <Box className="table-spacing">
                     <CustomDataTable
@@ -364,7 +361,6 @@ class ViewCompleteTeamAssessmentTasks extends Component<any, ViewCompleteTeamAss
                         options={options}
                     />
                 </Box>
-                
             </Box>
         );
     }
