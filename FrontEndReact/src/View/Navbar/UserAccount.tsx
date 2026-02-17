@@ -451,7 +451,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                                         color: 'var(--text-color)',
                                                     },
                                                     '& .MuiInputLabel-root': {
-                                                        color: 'var(--text-color-secondary)',
+                                                        color: errors.password ? 'var(--error-color)' : 'var(--text-color-secondary)',
                                                     },
                                                     '& .MuiInputLabel-root.Mui-focused': {
                                                         color: 'var(--text-color-secondary)',
@@ -528,7 +528,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                                     color: 'var(--text-color)',
                                                 },
                                                 '& .MuiInputLabel-root': {
-                                                    color: 'var(--text-color-secondary)',
+                                                    color: errors.confirmationPassword ? 'var(--error-color)' : 'var(--text-color-secondary)',
                                                 },
                                                 '& .MuiInputLabel-root.Mui-focused': {
                                                     color: 'var(--text-color-secondary)',
