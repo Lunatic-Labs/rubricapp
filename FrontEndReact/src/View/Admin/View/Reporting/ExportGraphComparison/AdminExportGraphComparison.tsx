@@ -14,6 +14,7 @@ import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import GraphCard from './GraphCard';
 import FilterPanel, { FilterState } from './FilterPanel';
 import ComparisonDrawer from './ComparisonDrawer';
+import { GRAPH_TYPE_SHORT_LABELS } from './graphConstants';
 import './ExportGraphComparison.css';
 
 // Interface for a graph item (generated from completed assessment data)
@@ -74,7 +75,6 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
         dateStart: '',
         dateEnd: '',
         assessmentTaskIds: [],
-        categoryIds: [],
         rubricIds: [],
         teamIds: [],
         studentIds: [],
@@ -375,7 +375,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
   };
 
   handleApplyFilters = () => {
-    const { filters, categories, rubrics, teams, students } = this.state;
+    const { filters, rubrics } = this.state;
     const assessmentTasks = this.props.assessmentTasks || [];
     const activeFilters: ActiveFilter[] = [];
 
@@ -387,14 +387,6 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       activeFilters.push({ key: 'assessmentTaskIds', label: `Tasks: ${names.join(', ')}` });
     }
 
-    // Categories (multiselect)
-    if (filters.categoryIds.length > 0) {
-      const names = categories
-        .filter((c: any) => filters.categoryIds.includes(c.category_id.toString()))
-        .map((c: any) => c.category_name);
-      activeFilters.push({ key: 'categoryIds', label: `Skills: ${names.join(', ')}` });
-    }
-
     // Rubrics (multiselect)
     if (filters.rubricIds.length > 0) {
       const names = rubrics
@@ -403,36 +395,31 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       activeFilters.push({ key: 'rubricIds', label: `Rubrics: ${names.join(', ')}` });
     }
 
-    // Teams (multiselect)
-    if (filters.teamIds.length > 0) {
-      const names = teams
-        .filter((t: any) => filters.teamIds.includes(t.team_id.toString()))
-        .map((t: any) => t.team_name);
-      activeFilters.push({ key: 'teamIds', label: `Teams: ${names.join(', ')}` });
-    }
+    // Teams (multiselect) - commented out for now
+    // if (filters.teamIds.length > 0) {
+    //   const names = teams
+    //     .filter((t: any) => filters.teamIds.includes(t.team_id.toString()))
+    //     .map((t: any) => t.team_name);
+    //   activeFilters.push({ key: 'teamIds', label: `Teams: ${names.join(', ')}` });
+    // }
 
-    // Students (multiselect)
-    if (filters.studentIds.length > 0) {
-      const specialLabels: { [key: string]: string } = {
-        'all': 'All Students',
-        'class_average': 'Class Average',
-      };
-      const names = filters.studentIds.map((id) => {
-        if (specialLabels[id]) return specialLabels[id];
-        const student = students.find((s: any) => s.user_id?.toString() === id);
-        return student ? (student.full_name || `${student.first_name} ${student.last_name}`) : id;
-      });
-      activeFilters.push({ key: 'studentIds', label: `Students: ${names.join(', ')}` });
-    }
+    // Students (multiselect) - commented out for now
+    // if (filters.studentIds.length > 0) {
+    //   const specialLabels: { [key: string]: string } = {
+    //     'all': 'All Students',
+    //     'class_average': 'Class Average',
+    //   };
+    //   const names = filters.studentIds.map((id) => {
+    //     if (specialLabels[id]) return specialLabels[id];
+    //     const student = students.find((s: any) => s.user_id?.toString() === id);
+    //     return student ? (student.full_name || `${student.first_name} ${student.last_name}`) : id;
+    //   });
+    //   activeFilters.push({ key: 'studentIds', label: `Students: ${names.join(', ')}` });
+    // }
 
     // Graph Types (multiselect)
     if (filters.graphTypes.length > 0) {
-      const typeLabels: { [key: string]: string } = {
-        distribution: 'Distribution',
-        characteristics: 'Characteristics',
-        improvements: 'Improvements',
-      };
-      const names = filters.graphTypes.map((t) => typeLabels[t] || t);
+      const names = filters.graphTypes.map((t) => GRAPH_TYPE_SHORT_LABELS[t] || t);
       activeFilters.push({ key: 'graphTypes', label: `Types: ${names.join(', ')}` });
     }
 
@@ -472,7 +459,6 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
         dateStart: '',
         dateEnd: '',
         assessmentTaskIds: [],
-        categoryIds: [],
         rubricIds: [],
         teamIds: [],
         studentIds: [],
@@ -563,7 +549,9 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       }
 
       if (pagesAdded > 0) {
-        pdf.save('assessment-graphs-export.pdf');
+        const now = new Date();
+        const timestamp = `${now.getFullYear()}-${String(now.getMonth() + 1).padStart(2, '0')}-${String(now.getDate()).padStart(2, '0')}`;
+        pdf.save(`assessment-graphs-export_${timestamp}.pdf`);
         this.showToast(`Exported ${pagesAdded} graph${pagesAdded !== 1 ? 's' : ''} successfully!`, 'success');
       } else {
         this.showToast('No graph cards found to export. Try scrolling through the graphs first.', 'warning');
@@ -588,58 +576,73 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
     this.setState({ toastOpen: false });
   };
 
+  handleToggleFilterPanel = () => {
+    this.setState((prevState) => ({ filterPanelOpen: !prevState.filterPanelOpen }));
+  };
+
+  // Cache for filtered results - avoids re-filtering on every render
+  private _filteredCache: { key: string; result: GraphItem[] } | null = null;
+
   getFilteredGraphItems = (): GraphItem[] => {
     const { graphItems, filters } = this.state;
 
-    return graphItems.filter((item) => {
-      // Assessment Task filter
-      if (filters.assessmentTaskIds.length > 0 &&
-          !filters.assessmentTaskIds.includes(item.assessment_task_id.toString())) {
-        return false;
-      }
+    // Build a cache key from the current filter state + graphItems length
+    const cacheKey = JSON.stringify(filters) + '|' + graphItems.length;
+    if (this._filteredCache && this._filteredCache.key === cacheKey) {
+      return this._filteredCache.result;
+    }
 
-      // Category filter
-      if (filters.categoryIds.length > 0 &&
-          item.category_id !== null &&
-          !filters.categoryIds.includes(item.category_id.toString())) {
+    // Parse filter dates once before the loop
+    const startDate = filters.dateStart ? new Date(filters.dateStart) : null;
+    const endDate = filters.dateEnd ? new Date(filters.dateEnd) : null;
+
+    // Convert filter arrays to Sets for O(1) lookups
+    const taskIdSet = filters.assessmentTaskIds.length > 0 ? new Set(filters.assessmentTaskIds) : null;
+    const rubricIdSet = filters.rubricIds.length > 0 ? new Set(filters.rubricIds) : null;
+    const graphTypeSet = filters.graphTypes.length > 0 ? new Set(filters.graphTypes) : null;
+
+    const result = graphItems.filter((item) => {
+      // Assessment Task filter
+      if (taskIdSet && !taskIdSet.has(item.assessment_task_id.toString())) {
         return false;
       }
 
       // Rubric filter
-      if (filters.rubricIds.length > 0 &&
-          !filters.rubricIds.includes(item.rubric_id.toString())) {
+      if (rubricIdSet && !rubricIdSet.has(item.rubric_id.toString())) {
         return false;
       }
 
-      // Team filter
-      if (filters.teamIds.length > 0 &&
-          item.team_id !== null &&
-          !filters.teamIds.includes(item.team_id.toString())) {
-        return false;
-      }
+      // Team filter - commented out for now
+      // if (filters.teamIds.length > 0 &&
+      //     item.team_id !== null &&
+      //     !filters.teamIds.includes(item.team_id.toString())) {
+      //   return false;
+      // }
 
-      // Student filter
-      if (filters.studentIds.length > 0 &&
-          item.student_id !== null &&
-          !filters.studentIds.includes(item.student_id.toString())) {
-        return false;
-      }
+      // Student filter - commented out for now
+      // if (filters.studentIds.length > 0 &&
+      //     item.student_id !== null &&
+      //     !filters.studentIds.includes(item.student_id.toString())) {
+      //   return false;
+      // }
 
       // Graph type filter
-      if (filters.graphTypes.length > 0 && !filters.graphTypes.includes(item.graph_type)) {
+      if (graphTypeSet && !graphTypeSet.has(item.graph_type)) {
         return false;
       }
 
       // Date range filter
-      if (filters.dateStart && new Date(item.due_date) < new Date(filters.dateStart)) {
-        return false;
-      }
-      if (filters.dateEnd && new Date(item.due_date) > new Date(filters.dateEnd)) {
-        return false;
+      if (startDate || endDate) {
+        const itemDate = new Date(item.due_date);
+        if (startDate && itemDate < startDate) return false;
+        if (endDate && itemDate > endDate) return false;
       }
 
       return true;
     });
+
+    this._filteredCache = { key: cacheKey, result };
+    return result;
   };
 
   render() {
@@ -650,7 +653,6 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       filterPanelOpen,
       filters,
       activeFilters,
-      categories,
       rubrics,
       teams,
       students,
@@ -674,6 +676,9 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
 
     const filteredGraphItems = this.getFilteredGraphItems();
     const allSelected = selectedGraphIds.size === filteredGraphItems.length && filteredGraphItems.length > 0;
+    const selectedGraphItems = selectedGraphIds.size > 0
+      ? filteredGraphItems.filter((g) => selectedGraphIds.has(g.id))
+      : [];
 
     return (
       <Box className="export-graph-container">
@@ -725,7 +730,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
           </Box>
           <Button
             variant="text"
-            onClick={() => this.setState({ filterPanelOpen: !filterPanelOpen })}
+            onClick={this.handleToggleFilterPanel}
             endIcon={filterPanelOpen ? <ExpandLessIcon /> : <ExpandMoreIcon />}
             startIcon={<FilterListIcon />}
           >
@@ -738,7 +743,6 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
           <FilterPanel
             filters={filters}
             assessmentTasks={this.props.assessmentTasks || []}
-            categories={categories}
             rubrics={rubrics}
             teams={teams}
             students={students}
@@ -755,7 +759,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
               key={item.id}
               graphItem={item}
               isSelected={selectedGraphIds.has(item.id)}
-              onSelect={() => this.handleGraphSelect(item.id)}
+              onSelect={this.handleGraphSelect}
             />
           ))}
           {filteredGraphItems.length === 0 && (
@@ -767,8 +771,9 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
 
         {/* Comparison Drawer */}
         <ComparisonDrawer
-          selectedGraphItems={filteredGraphItems.filter((g) => selectedGraphIds.has(g.id))}
+          selectedGraphItems={selectedGraphItems}
           onClearSelection={this.handleClearSelection}
+          onRemoveGraph={this.handleGraphSelect}
         />
 
         {/* Toast Notification */}

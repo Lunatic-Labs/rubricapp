@@ -1,4 +1,4 @@
-import React, { useRef, useState, useEffect } from 'react';
+import React, { useRef, useState, useEffect, useMemo, useCallback } from 'react';
 import { Box, Checkbox, Paper } from '@mui/material';
 import {
   BarChart,
@@ -10,11 +10,26 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { GraphItem } from './AdminExportGraphComparison';
+import {
+  GRAPH_TYPE_LABELS,
+  GRAPH_PLACEHOLDER_COLORS,
+  GRAPH_BAR_COLORS,
+  truncateLabel,
+  formatDate,
+} from './graphConstants';
+
+// Static style objects - defined once, never recreated
+const checkboxSx = {
+  color: '#2E8BEF',
+  '&.Mui-checked': { color: '#2E8BEF' },
+} as const;
+
+const percentFormatter = (v: any) => `${v}%`;
 
 interface GraphCardProps {
   graphItem: GraphItem;
   isSelected: boolean;
-  onSelect: () => void;
+  onSelect: (graphId: string) => void;
 }
 
 const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }) => {
@@ -29,81 +44,60 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
       (entries) => {
         if (entries[0] && entries[0].isIntersecting) {
           setIsVisible(true);
-          observer.disconnect(); // Once visible, stay rendered
+          observer.disconnect();
         }
       },
-      { rootMargin: '200px' } // Pre-render cards 200px before they scroll into view
+      { rootMargin: '200px' }
     );
 
     observer.observe(node);
     return () => observer.disconnect();
   }, []);
-  const formatDate = (dateString: string) => {
-    if (!dateString) return 'N/A';
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', {
-      month: 'short',
-      day: 'numeric',
-      year: 'numeric',
-    });
-  };
 
-  const getGraphTypeLabel = (type: string) => {
-    const labels: { [key: string]: string } = {
-      distribution: 'Rating Distribution',
-      characteristics: 'Observable Characteristics',
-      improvements: 'Suggestions for Improvement',
-    };
-    return labels[type] || type;
-  };
-
-  const handleCardClick = (e: React.MouseEvent) => {
+  const handleCardClick = useCallback((e: React.MouseEvent) => {
     if ((e.target as HTMLElement).tagName !== 'INPUT') {
-      onSelect();
+      onSelect(graphItem.id);
     }
-  };
+  }, [onSelect, graphItem.id]);
 
-  const handleCheckboxClick = (e: React.MouseEvent) => {
+  const handleCheckboxClick = useCallback((e: React.MouseEvent) => {
     e.stopPropagation();
-    onSelect();
-  };
+    onSelect(graphItem.id);
+  }, [onSelect, graphItem.id]);
 
-  const getTitle = () => {
+  const title = useMemo(() => {
     if (graphItem.graph_type === 'distribution') {
       return `${graphItem.category_name} - Distribution`;
     }
-    return `${graphItem.category_name} - ${getGraphTypeLabel(graphItem.graph_type)}`;
-  };
+    return `${graphItem.category_name} - ${GRAPH_TYPE_LABELS[graphItem.graph_type] || graphItem.graph_type}`;
+  }, [graphItem.category_name, graphItem.graph_type]);
 
-  const getMetaInfo = () => {
+  const metaInfo = useMemo(() => {
     const parts = [graphItem.assessment_task_name];
-
-    if (graphItem.team_name) {
-      parts.push(graphItem.team_name);
-    }
-    if (graphItem.student_name) {
-      parts.push(graphItem.student_name);
-    }
-
+    if (graphItem.team_name) parts.push(graphItem.team_name);
+    if (graphItem.student_name) parts.push(graphItem.student_name);
     parts.push(formatDate(graphItem.due_date));
     parts.push(`${graphItem.total_assessments} responses`);
-
     return parts.join(' \u2022 ');
-  };
+  }, [graphItem.assessment_task_name, graphItem.team_name, graphItem.student_name, graphItem.due_date, graphItem.total_assessments]);
 
-  // Truncate long text for horizontal bar labels
-  const truncateLabel = (text: string, maxLen: number = 18) => {
-    return text.length > maxLen ? text.substring(0, maxLen) + '...' : text;
-  };
-
-  const getPlaceholderColor = () => {
-    const colors: { [key: string]: string } = {
-      distribution: '#e3f0fc',
-      characteristics: '#e8f5e9',
-      improvements: '#ffebee',
-    };
-    return colors[graphItem.graph_type] || '#f0f4f8';
-  };
+  // Memoize data transformations for horizontal bar charts
+  const chartData = useMemo(() => {
+    const { graph_type, graph_data } = graphItem;
+    if (graph_type === 'characteristics' && graph_data?.characteristics) {
+      return graph_data.characteristics.map((item: any) => ({
+        ...item,
+        label: truncateLabel(item.characteristic),
+      }));
+    }
+    if (graph_type === 'improvements' && graph_data?.improvements) {
+      return graph_data.improvements.map((item: any) => ({
+        ...item,
+        label: truncateLabel(item.improvement),
+      }));
+    }
+    return null;
+  }, [graphItem]);
 
   const renderGraph = () => {
     if (!isVisible) {
@@ -111,7 +105,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
         <Box sx={{
           width: '100%',
           height: '100%',
-          backgroundColor: getPlaceholderColor(),
+          backgroundColor: GRAPH_PLACEHOLDER_COLORS[graphItem.graph_type] || '#f0f4f8',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
@@ -140,7 +134,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
                 <XAxis dataKey="rating" type="category" style={{ fontSize: '0.65rem' }} />
                 <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.65rem' }} />
                 <CartesianGrid vertical={false} />
-                <Bar dataKey="number" fill="#2e8bef" isAnimationActive={false}>
+                <Bar dataKey="number" fill={GRAPH_BAR_COLORS.distribution} isAnimationActive={false}>
                   <LabelList dataKey="number" fill="#ffffff" position="inside" style={{ fontSize: '0.6rem' }} />
                 </Bar>
               </BarChart>
@@ -153,27 +147,23 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
       );
     }
 
-    if (graph_type === 'characteristics' && graph_data?.characteristics) {
-      const data = graph_data.characteristics.map((item: any) => ({
-        ...item,
-        label: truncateLabel(item.characteristic),
-      }));
+    if (graph_type === 'characteristics' && chartData) {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
-            data={data}
+            data={chartData}
             margin={{ top: 5, right: 30, left: 5, bottom: 0 }}
           >
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.6rem' }} />
             <YAxis dataKey="label" type="category" width={90} style={{ fontSize: '0.55rem' }} />
             <CartesianGrid horizontal={false} />
-            <Bar dataKey="percentage" fill="#4CAF50" isAnimationActive={false}>
+            <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.characteristics} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
                 style={{ fontSize: '0.55rem' }}
-                formatter={(v: any) => `${v}%`}
+                formatter={percentFormatter}
               />
             </Bar>
           </BarChart>
@@ -181,27 +171,23 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
       );
     }
 
-    if (graph_type === 'improvements' && graph_data?.improvements) {
-      const data = graph_data.improvements.map((item: any) => ({
-        ...item,
-        label: truncateLabel(item.improvement),
-      }));
+    if (graph_type === 'improvements' && chartData) {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
-            data={data}
+            data={chartData}
             margin={{ top: 5, right: 30, left: 5, bottom: 0 }}
           >
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.6rem' }} />
             <YAxis dataKey="label" type="category" width={90} style={{ fontSize: '0.55rem' }} />
             <CartesianGrid horizontal={false} />
-            <Bar dataKey="percentage" fill="#E53935" isAnimationActive={false}>
+            <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.improvements} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
                 style={{ fontSize: '0.55rem' }}
-                formatter={(v: any) => `${v}%`}
+                formatter={percentFormatter}
               />
             </Bar>
           </BarChart>
@@ -209,7 +195,6 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
       );
     }
 
-    // Fallback if no data
     return (
       <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center', height: '100%', color: '#aaa' }}>
         No data available
@@ -225,36 +210,28 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
       onClick={handleCardClick}
       elevation={isSelected ? 3 : 1}
     >
-      {/* Graph Preview Area */}
       <Box className="graph-preview">
         <Box className="graph-card-checkbox">
           <Checkbox
             checked={isSelected}
             onClick={handleCheckboxClick}
-            sx={{
-              color: '#2E8BEF',
-              '&.Mui-checked': {
-                color: '#2E8BEF',
-              },
-            }}
+            sx={checkboxSx}
           />
         </Box>
         {renderGraph()}
       </Box>
 
-      {/* Card Info */}
       <Box className="graph-card-info">
-        <p className="graph-card-title">{getTitle()}</p>
-        <p className="graph-card-meta">{getMetaInfo()}</p>
+        <p className="graph-card-title">{title}</p>
+        <p className="graph-card-meta">{metaInfo}</p>
       </Box>
     </Paper>
   );
 };
 
 export default React.memo(GraphCard, (prevProps, nextProps) => {
-  // Only re-render if the graph data or selection state changed
   return (
-    prevProps.graphItem.id === nextProps.graphItem.id &&
+    prevProps.graphItem === nextProps.graphItem &&
     prevProps.isSelected === nextProps.isSelected
   );
 });

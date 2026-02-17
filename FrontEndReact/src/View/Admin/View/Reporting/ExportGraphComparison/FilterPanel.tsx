@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useCallback } from 'react';
 import {
   Box,
   Button,
@@ -14,25 +14,24 @@ import {
   TextField,
   Link,
 } from '@mui/material';
+import { GRAPH_TYPE_LABELS } from './graphConstants';
 
 export interface FilterState {
   dateStart: string;
   dateEnd: string;
   assessmentTaskIds: string[];
-  categoryIds: string[];
   rubricIds: string[];
-  teamIds: string[];
-  studentIds: string[];
+  teamIds: string[];      // kept for future use
+  studentIds: string[];   // kept for future use
   graphTypes: string[];
 }
 
 interface FilterPanelProps {
   filters: FilterState;
   assessmentTasks: any[];
-  categories: any[];
   rubrics: any[];
-  teams: any[];
-  students: any[];
+  teams: any[];       // kept for future use
+  students: any[];    // kept for future use
   onFilterChange: (key: keyof FilterState, value: string | string[]) => void;
   onApplyFilters: () => void;
   onClearFilters: () => void;
@@ -52,7 +51,6 @@ const MenuProps = {
 const FilterPanel: React.FC<FilterPanelProps> = ({
   filters,
   assessmentTasks,
-  categories,
   rubrics,
   teams,
   students,
@@ -60,12 +58,14 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   onApplyFilters,
   onClearFilters,
 }) => {
-  // Handle multiselect change
-  const handleMultiSelectChange = (key: keyof FilterState) => (event: SelectChangeEvent<string[]>) => {
-    const value = event.target.value;
-    // On autofill we get a stringified value
-    onFilterChange(key, typeof value === 'string' ? value.split(',') : value);
-  };
+  // Handle multiselect change - useCallback since onFilterChange is a stable class method
+  const handleMultiSelectChange = useCallback(
+    (key: keyof FilterState) => (event: SelectChangeEvent<string[]>) => {
+      const value = event.target.value;
+      onFilterChange(key, typeof value === 'string' ? value.split(',') : value);
+    },
+    [onFilterChange]
+  );
 
   // Get display text for multiselect
   const getMultiSelectDisplayText = (selectedIds: string[], items: any[], idKey: string, nameKey: string) => {
@@ -158,14 +158,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               value={filters.graphTypes}
               onChange={handleMultiSelectChange('graphTypes')}
               input={<OutlinedInput label="Graph Type" />}
-              renderValue={(selected) => {
-                const typeLabels: { [key: string]: string } = {
-                  distribution: 'Rating Distribution',
-                  characteristics: 'Observable Characteristics',
-                  improvements: 'Suggestions for Improvement',
-                };
-                return selected.map((v) => typeLabels[v] || v).join(', ');
-              }}
+              renderValue={(selected) =>
+                selected.map((v) => GRAPH_TYPE_LABELS[v] || v).join(', ')
+              }
               MenuProps={MenuProps}
             >
               <MenuItem value="distribution">
@@ -185,33 +180,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
         </Box>
       </Box>
 
-      {/* Row 2: Category, Team, Student, Actions */}
+      {/* Row 2: Actions */}
       <Box className="filter-row">
-        {/* Category/Skill (Multiselect) */}
-        <Box className="filter-item" sx={{ minWidth: 200 }}>
-          <FormControl size="small" fullWidth>
-            <InputLabel>Skill / Category</InputLabel>
-            <Select
-              multiple
-              value={filters.categoryIds}
-              onChange={handleMultiSelectChange('categoryIds')}
-              input={<OutlinedInput label="Skill / Category" />}
-              renderValue={(selected) =>
-                getMultiSelectDisplayText(selected, categories, 'category_id', 'category_name')
-              }
-              MenuProps={MenuProps}
-            >
-              {categories.map((category: any) => (
-                <MenuItem key={category.category_id} value={category.category_id.toString()}>
-                  <Checkbox checked={filters.categoryIds.includes(category.category_id.toString())} />
-                  <ListItemText primary={category.category_name} />
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-        </Box>
-
-        {/* Team (Multiselect) */}
+        {/* Team (Multiselect) - commented out for now
         <Box className="filter-item" sx={{ minWidth: 180 }}>
           <FormControl size="small" fullWidth>
             <InputLabel>Team</InputLabel>
@@ -234,8 +205,9 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             </Select>
           </FormControl>
         </Box>
+        */}
 
-        {/* Student (Multiselect) */}
+        {/* Student (Multiselect) - commented out for now
         <Box className="filter-item" sx={{ minWidth: 200 }}>
           <FormControl size="small" fullWidth>
             <InputLabel>Student</InputLabel>
@@ -276,6 +248,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
             </Select>
           </FormControl>
         </Box>
+        */}
 
         {/* Filter Actions */}
         <Box className="filter-actions">
@@ -296,4 +269,4 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   );
 };
 
-export default FilterPanel;
+export default React.memo(FilterPanel);

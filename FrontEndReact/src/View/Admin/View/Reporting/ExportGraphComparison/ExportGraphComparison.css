@@ -317,6 +317,21 @@
 .comparison-slot.filled {
   background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
   border: 2px solid #2E8BEF;
+  position: relative;
+}
+
+.slot-remove-btn {
+  position: absolute !important;
+  top: 4px;
+  right: 4px;
+  padding: 2px !important;
+  color: #999 !important;
+  transition: color 0.2s ease !important;
+}
+
+.slot-remove-btn:hover {
+  color: #E53935 !important;
+  background-color: rgba(229, 57, 53, 0.08) !important;
 }
 
 .slot-label {

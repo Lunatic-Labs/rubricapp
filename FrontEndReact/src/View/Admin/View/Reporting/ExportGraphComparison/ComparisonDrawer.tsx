@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Box, Button, CircularProgress, Collapse, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Paper, TextField } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -17,17 +17,49 @@ import {
   ResponsiveContainer,
 } from 'recharts';
 import { GraphItem } from './AdminExportGraphComparison';
+import { GRAPH_TYPE_LABELS, GRAPH_BAR_COLORS, truncateLabel } from './graphConstants';
 
 interface ComparisonDrawerProps {
   selectedGraphItems: GraphItem[];
   onClearSelection: () => void;
+  onRemoveGraph: (graphId: string) => void;
 }
 
 const MAX_COMPARISON_SLOTS = 4;
 
+// Static style objects - defined once outside component
+const badgeSx = {
+  backgroundColor: '#2E8BEF',
+  color: '#fff',
+  padding: '2px 10px',
+  borderRadius: '12px',
+  fontSize: '0.8rem',
+  fontWeight: 500,
+  marginLeft: '12px',
+} as const;
+
+const dialogPaperSx = {
+  width: '90vw',
+  maxWidth: '1200px',
+  height: '85vh',
+  maxHeight: '900px',
+  borderRadius: '12px',
+} as const;
+
+const dialogTitleSx = {
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  borderBottom: '1px solid #eee',
+  pb: 1.5,
+} as const;
+
+const percentFormatter = (v: any) => `${v}%`;
+
 const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
   selectedGraphItems,
   onClearSelection,
+  onRemoveGraph,
 }) => {
   const [isExpanded, setIsExpanded] = useState(true);
   const [previewOpen, setPreviewOpen] = useState(false);
@@ -42,54 +74,59 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
   useEffect(() => {
     setOrderedItems((prev) => {
       const selectedIds = new Set(selectedGraphItems.map((g) => g.id));
-      // Keep existing items that are still selected, in their current order
       const kept = prev.filter((item) => selectedIds.has(item.id));
       const keptIds = new Set(kept.map((g) => g.id));
-      // Append any newly selected items at the end
       const added = selectedGraphItems.filter((g) => !keptIds.has(g.id));
       return [...kept, ...added].slice(0, MAX_COMPARISON_SLOTS);
     });
   }, [selectedGraphItems]);
 
-  const toggleExpanded = () => {
-    setIsExpanded(!isExpanded);
-  };
+  const toggleExpanded = useCallback(() => {
+    setIsExpanded((prev) => !prev);
+  }, []);
 
-  const handleDragStart = (index: number) => {
+  const handleDragStart = useCallback((index: number) => {
     setDragIndex(index);
-  };
+  }, []);
 
-  const handleDragOver = (e: React.DragEvent, index: number) => {
+  const handleDragOver = useCallback((e: React.DragEvent, index: number) => {
     e.preventDefault();
-    setDragOverIndex(index);
-  };
+    setDragOverIndex((prev) => prev === index ? prev : index);
+  }, []);
 
-  const handleDragLeave = () => {
+  const handleDragLeave = useCallback(() => {
     setDragOverIndex(null);
-  };
+  }, []);
 
-  const handleDrop = (dropIndex: number) => {
-    if (dragIndex === null || dragIndex === dropIndex) {
-      setDragIndex(null);
+  const handleDrop = useCallback((dropIndex: number) => {
+    setDragIndex((currentDragIndex) => {
+      if (currentDragIndex === null || currentDragIndex === dropIndex) {
+        setDragOverIndex(null);
+        return null;
+      }
+      const fromIndex = currentDragIndex;
+      setOrderedItems((prev) => {
+        const updated = [...prev];
+        const temp = updated[fromIndex];
+        updated[fromIndex] = updated[dropIndex]!;
+        updated[dropIndex] = temp!;
+        return updated;
+      });
       setDragOverIndex(null);
-      return;
-    }
-    const fromIndex = dragIndex;
-    setOrderedItems((prev) => {
-      const updated = [...prev];
-      const temp = updated[fromIndex];
-      updated[fromIndex] = updated[dropIndex]!;
-      updated[dropIndex] = temp!;
-      return updated;
+      return null;
     });
-    setDragIndex(null);
-    setDragOverIndex(null);
-  };
+  }, []);
 
-  const handleDragEnd = () => {
+  const handleDragEnd = useCallback(() => {
     setDragIndex(null);
     setDragOverIndex(null);
-  };
+  }, []);
+
+  const handlePreviewOpen = useCallback(() => setPreviewOpen(true), []);
+  const handlePreviewClose = useCallback(() => setPreviewOpen(false), []);
+  const handleTitleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setComparisonTitle(e.target.value);
+  }, []);
 
   const getSlotLabel = (item: GraphItem) => {
     if (item.graph_type === 'distribution') {
@@ -101,7 +138,6 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         </>
       );
     }
-
     const typeShort = item.graph_type === 'characteristics' ? 'Char.' : 'Impr.';
     return (
       <>
@@ -112,18 +148,25 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
     );
   };
 
-  const truncateLabel = (text: string, maxLen: number = 25) => {
-    return text.length > maxLen ? text.substring(0, maxLen) + '...' : text;
-  };
-
-  const getGraphTypeLabel = (type: string) => {
-    const labels: { [key: string]: string } = {
-      distribution: 'Rating Distribution',
-      characteristics: 'Observable Characteristics',
-      improvements: 'Suggestions for Improvement',
-    };
-    return labels[type] || type;
-  };
+  // Memoize chart data transformations for preview graphs
+  const previewChartData = useMemo(() => {
+    const dataMap = new Map<string, any>();
+    orderedItems.slice(0, MAX_COMPARISON_SLOTS).forEach((item) => {
+      const { graph_type, graph_data } = item;
+      if (graph_type === 'characteristics' && graph_data?.characteristics) {
+        dataMap.set(item.id, graph_data.characteristics.map((c: any) => ({
+          ...c,
+          label: truncateLabel(c.characteristic, 25),
+        })));
+      } else if (graph_type === 'improvements' && graph_data?.improvements) {
+        dataMap.set(item.id, graph_data.improvements.map((imp: any) => ({
+          ...imp,
+          label: truncateLabel(imp.improvement, 25),
+        })));
+      }
+    });
+    return dataMap;
+  }, [orderedItems]);
 
   const renderPreviewGraph = (item: GraphItem) => {
     const { graph_type, graph_data } = item;
@@ -143,7 +186,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
                 <XAxis dataKey="rating" type="category" style={{ fontSize: '0.75rem' }} />
                 <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.75rem' }} />
                 <CartesianGrid vertical={false} />
-                <Bar dataKey="number" fill="#2e8bef" isAnimationActive={false}>
+                <Bar dataKey="number" fill={GRAPH_BAR_COLORS.distribution} isAnimationActive={false}>
                   <LabelList dataKey="number" fill="#ffffff" position="inside" style={{ fontSize: '0.7rem' }} />
                 </Bar>
               </BarChart>
@@ -156,27 +199,25 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
       );
     }
 
-    if (graph_type === 'characteristics' && graph_data?.characteristics) {
-      const data = graph_data.characteristics.map((c: any) => ({
-        ...c,
-        label: truncateLabel(c.characteristic),
-      }));
+    const chartData = previewChartData.get(item.id);
+
+    if (graph_type === 'characteristics' && chartData) {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
-            data={data}
+            data={chartData}
             margin={{ top: 5, right: 35, left: 10, bottom: 0 }}
           >
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.7rem' }} />
             <YAxis dataKey="label" type="category" width={110} style={{ fontSize: '0.65rem' }} />
             <CartesianGrid horizontal={false} />
-            <Bar dataKey="percentage" fill="#4CAF50" isAnimationActive={false}>
+            <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.characteristics} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
                 style={{ fontSize: '0.65rem' }}
-                formatter={(v: any) => `${v}%`}
+                formatter={percentFormatter}
               />
             </Bar>
           </BarChart>
@@ -184,27 +225,23 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
       );
     }
 
-    if (graph_type === 'improvements' && graph_data?.improvements) {
-      const data = graph_data.improvements.map((imp: any) => ({
-        ...imp,
-        label: truncateLabel(imp.improvement),
-      }));
+    if (graph_type === 'improvements' && chartData) {
       return (
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             layout="vertical"
-            data={data}
+            data={chartData}
             margin={{ top: 5, right: 35, left: 10, bottom: 0 }}
           >
             <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.7rem' }} />
             <YAxis dataKey="label" type="category" width={110} style={{ fontSize: '0.65rem' }} />
             <CartesianGrid horizontal={false} />
-            <Bar dataKey="percentage" fill="#E53935" isAnimationActive={false}>
+            <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.improvements} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
                 style={{ fontSize: '0.65rem' }}
-                formatter={(v: any) => `${v}%`}
+                formatter={percentFormatter}
               />
             </Bar>
           </BarChart>
@@ -217,14 +254,6 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         No data available
       </Box>
     );
-  };
-
-  const handlePreviewOpen = () => {
-    setPreviewOpen(true);
-  };
-
-  const handlePreviewClose = () => {
-    setPreviewOpen(false);
   };
 
   const handleExportFromPreview = async () => {
@@ -241,8 +270,6 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         logging: false,
         imageTimeout: 0,
         onclone: (clonedDoc) => {
-          // Remove heavy background elements (all the graph cards behind the dialog)
-          // so html2canvas only processes the 4 preview graphs
           const graphGrid = clonedDoc.querySelector('.graph-grid');
           if (graphGrid) graphGrid.remove();
           const comparisonDrawer = clonedDoc.querySelector('.comparison-drawer');
@@ -296,17 +323,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         <Box className="drawer-header" onClick={toggleExpanded}>
           <Box className="drawer-title">
             <h5>Comparison Preview</h5>
-            <Box
-              sx={{
-                backgroundColor: '#2E8BEF',
-                color: '#fff',
-                padding: '2px 10px',
-                borderRadius: '12px',
-                fontSize: '0.8rem',
-                fontWeight: 500,
-                marginLeft: '12px',
-              }}
-            >
+            <Box sx={badgeSx}>
               {slotsToShow} of {MAX_COMPARISON_SLOTS}
             </Box>
           </Box>
@@ -318,16 +335,22 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         {/* Drawer Content */}
         <Collapse in={isExpanded}>
           <Box className="drawer-content">
-            {/* Comparison Grid - 4 slots */}
             <Box className="comparison-grid">
-              {/* Filled slots */}
               {orderedItems.slice(0, MAX_COMPARISON_SLOTS).map((item) => (
                 <Box key={item.id} className="comparison-slot filled">
+                  <IconButton
+                    className="slot-remove-btn"
+                    size="small"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onRemoveGraph(item.id);
+                    }}
+                  >
+                    <CloseIcon sx={{ fontSize: '0.85rem' }} />
+                  </IconButton>
                   <Box className="slot-label">{getSlotLabel(item)}</Box>
                 </Box>
               ))}
-
-              {/* Empty slots */}
               {Array.from({ length: emptySlots }).map((_, index) => (
                 <Box key={`empty-${index}`} className="comparison-slot">
                   <span>Empty Slot</span>
@@ -335,7 +358,6 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
               ))}
             </Box>
 
-            {/* Drawer Actions */}
             <Box className="drawer-actions">
               <Button variant="outlined" onClick={onClearSelection}>
                 Clear Selection
@@ -359,17 +381,9 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         onClose={handlePreviewClose}
         maxWidth={false}
         fullWidth
-        PaperProps={{
-          sx: {
-            width: '90vw',
-            maxWidth: '1200px',
-            height: '85vh',
-            maxHeight: '900px',
-            borderRadius: '12px',
-          },
-        }}
+        PaperProps={{ sx: dialogPaperSx }}
       >
-        <DialogTitle sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1px solid #eee', pb: 1.5 }}>
+        <DialogTitle sx={dialogTitleSx}>
           <Box>
             <Box sx={{ fontWeight: 700, fontSize: '1.2rem' }}>Comparison View</Box>
             <Box sx={{ fontSize: '0.85rem', color: '#666', mt: 0.5 }}>
@@ -388,7 +402,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
             size="small"
             placeholder="Enter a title for this comparison (optional)"
             value={comparisonTitle}
-            onChange={(e) => setComparisonTitle(e.target.value)}
+            onChange={handleTitleChange}
             sx={{ mb: 2 }}
           />
           {previewItems.length >= 2 && (
@@ -416,7 +430,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
               >
                 <Box className="preview-card-header">
                   <Box className="preview-card-title">
-                    {item.category_name} - {getGraphTypeLabel(item.graph_type)}
+                    {item.category_name} - {GRAPH_TYPE_LABELS[item.graph_type] || item.graph_type}
                   </Box>
                   <Box className="preview-card-meta">
                     {item.assessment_task_name} &bull; {item.rubric_name} &bull; {item.total_assessments} responses
