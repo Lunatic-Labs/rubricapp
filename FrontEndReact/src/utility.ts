@@ -173,24 +173,15 @@ async function genericResourceFetch(
     let issueFound, issue:any|undefined = await tokenServerErrorAndResolver(result, resource, component, 
                                                         cookies, response, isRetry, 
                                                         fetchURL, type, body, options);
-    if (!issueFound){
-      const state = {
-        isLoaded: true,
-        errorMessage: result?.msg ?? "Server error",
-      }
-      component.setState(state);
-
-      return rawResponse ? result : state;
-    }
 
     return issue;
   }
 }
 
 
-function sleep(ms:number){
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+//function sleep(ms:number){
+//  return new Promise(resolve => setTimeout(resolve, ms));
+//}
 
 /**
  * 
@@ -234,7 +225,7 @@ async function tokenServerErrorAndResolver(
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
       cookies.remove(userKey);
-      //window.location.reload();
+      window.location.reload();
       return [true, undefined];
     }
 
@@ -243,10 +234,10 @@ async function tokenServerErrorAndResolver(
     //if (refreshResponse === undefined){
     //  window.location.reload();
     //}
-    console.log(refreshResponse);
-    sleep(600000);
+    console.log("the response of refresh",refreshResponse);
+    //sleep(60);
 
-    return [true ,await genericResourceFetch(fetchURL, resource, component, type, body, {
+    return [false ,await genericResourceFetch(fetchURL, resource, component, type, body, {
                         ...options,
                         isRetry: true
                     })];

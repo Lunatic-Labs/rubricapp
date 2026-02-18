@@ -35,7 +35,7 @@ def refresh_token():
         # Convert user_id to string for JWT identity
         user_id_str = str(user_id)
         
-        access_token, new_refresh_token = create_tokens(user_id_str)
+        access_token, new_refresh_token = create_tokens(user_id_str, True)
         
         return create_good_response(
             user, 

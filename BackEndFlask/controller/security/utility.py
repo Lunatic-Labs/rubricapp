@@ -18,7 +18,7 @@ from flask_jwt_extended import (
 
 # Creates both a jwt and refresh token
 # jwt expires in 15mins; refresh token expires in 30days
-def create_tokens(user_id: any) -> tuple[str, str]:
+def create_tokens(user_id: any, force_fresh_token:bool=False) -> tuple[str, str]:
     with app.app_context():
         # Create access token (short-lived)
         jwt = create_access_token(
@@ -29,7 +29,7 @@ def create_tokens(user_id: any) -> tuple[str, str]:
 
         # Try to get existing refresh token from request args
         refresh = request.args.get('refresh_token')
-        if not refresh:
+        if not refresh or force_fresh_token:
             # Create new refresh token (long-lived)
             refresh = create_refresh_token(
                 identity=str(user_id),
