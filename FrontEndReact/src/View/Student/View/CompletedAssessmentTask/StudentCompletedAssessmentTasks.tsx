@@ -1,19 +1,25 @@
 import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewCompletedAssessmentTasks from './ViewCompletedAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
 
 /**
- * @description Renders the complete assessment section of the website.
- * 
- * @prop {object} navbar - Passed navbar.
- * @prop {object} role - Object with role_id and role_name.
- * @prop {object} assessmentTasks - ATs.
- * @prop {object} filteredCompleteAssessments - Filtered CATs.
- * 
- * @property {object} errorMessage - Any errors encountered.
- * 
+ * @description
+ * Renders the "Completed Assessments" section for a student/TA.
+ * Receives all completed assessments from the parent and filters down
+ * to those that are fully done before passing them to the table view.
+ *
+ * Props:
+ *  @prop {object} navbar                      - Navbar instance.
+ *  @prop {object} role                        - Object with role_id and role_name.
+ *  @prop {Array}  assessmentTasks             - All ATs relevant to this view.
+ *  @prop {Array}  filteredCompleteAssessments - CATs that the parent has already
+ *                                               filtered for this course/user.
+ *
+ * State:
+ *  @property {string|null} errorMessage - Any errors encountered (not currently
+ *                                         set by this component; reserved for
+ *                                         future use or upstream errors).
  */
 
 interface StudentCompletedAssessmentTasksProps {
@@ -35,8 +41,19 @@ class StudentCompletedAssessmentTasks extends Component<StudentCompletedAssessme
         }
     }
 
+    /**
+     * @method render
+     * @description
+     * Filters incoming CATs down to those with done === true and renders
+     * the completed assessments table.
+     *
+     * Networking:
+     *  - This component does not perform any fetch/POST itself.
+     *    All data comes from props; ViewCompletedAssessmentTasks handles
+     *    the POST used when viewing an individual completed assessment.
+     */
     render() {
-        const {errorMessage} = this.state;  
+        const { errorMessage } = this.state;  
 
         const ATs = this.props.assessmentTasks;    
         const filteredCATs = this.props.filteredCompleteAssessments;

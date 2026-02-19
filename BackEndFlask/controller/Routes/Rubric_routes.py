@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request
 from marshmallow import fields, Schema
 from controller import bp 
 from models.rubric_categories import *
@@ -52,15 +52,15 @@ def get_all_rubrics():
                 category_json[category.category_name]["index"] = index
 
                 ratings = get_ratings_by_category(category.category_id)
-
+                
                 category.ratings = ratings
 
                 observable_characteristics = get_observable_characteristic_per_category(category.category_id)
-
+                
                 one_rubric.total_observable_characteristics += ocs_schema.dump(
                     observable_characteristics
                 ).__len__()
-
+                
                 for observable_characteristic in ocs_schema.dump(observable_characteristics):
                     category_json[category.category_name]["observable_characteristics"].append(observable_characteristic['observable_characteristic_text'])
                     current_category_json["observable_characteristics"] += "0"
@@ -68,7 +68,7 @@ def get_all_rubrics():
                 category.observable_characteristics = observable_characteristics
 
                 suggestions = get_suggestions_per_category(category.category_id)
-
+                
                 one_rubric.total_suggestions += sfis_schema.dump(
                     suggestions
                 ).__len__()
@@ -129,12 +129,12 @@ def add_rubric():
 
         rc = {}
         rc["rubric_id"] = rubric.rubric_id
-
+        
         for category in request.json["categories"]:
             rc["category_id"] = category 
 
             create_rubric_category(rc)
-
+        
         return create_good_response(rubric_schema.dump(rubric), 200, "rubrics")
 
     except Exception as e:
@@ -148,7 +148,7 @@ def get_all_categories():
     try:
         if request.args and request.args.get("rubric_id"):
             all_categories_by_rubric_id=get_categories_per_rubric(int(request.args.get("rubric_id")))
-
+            
             return create_good_response(categories_schema.dump(all_categories_by_rubric_id), 200, "categories")
 
         user_id = int(request.args.get("user_id"))
@@ -215,6 +215,7 @@ def delete_rubric():
     except Exception as e:
         db.session.rollback()
         return create_bad_response(f"An error occurred deleting a rubric: {e}", "rubrics", 400)
+
 
 class RatingsSchema(Schema):
     rating_id          = fields.Integer()

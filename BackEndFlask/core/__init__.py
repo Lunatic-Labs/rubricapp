@@ -15,7 +15,7 @@ from flask_marshmallow import Marshmallow
 from flask_sqlalchemy import SQLAlchemy
 from flask_limiter.util import get_remote_address
 
-from models.tests import testing
+#from models.tests import testing
 from models.logger import Logger
 
 from sendgrid import SendGridAPIClient
@@ -79,10 +79,11 @@ SKIP_CRONTAB_SETUP = os.getenv('SKIP_CRONTAB_SETUP', 'false').lower() == 'true'
 
 if not SKIP_CRONTAB_SETUP:
     setup_cron_jobs()
-
+"""
 if len(sys.argv) == 2 and sys.argv[1] == "test":
     testing()
     sys.exit(1)
+"""
 
 # Initialize Flask app.
 app = Flask(__name__)

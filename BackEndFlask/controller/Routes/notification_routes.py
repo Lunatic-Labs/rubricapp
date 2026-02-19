@@ -1,13 +1,13 @@
 #------------------------------------------------------------
-# This is file holds the routes that handle sending
-#   notifications to individuals.
+# This file holds the routes that handle sending
+#   notifications to individuals or teams.
 #
 # Explanation of how Assessment.notification_sent will be
 #   used:
-#       If a completed assessments last update is after
+#       If a completed assessment's last update is after
 #       assessment.notification_sent, then they are 
-#       considered to be new and elligble to send a msg
-#       to agian. Any more complex feture will require
+#       considered to be new and eligible to send a msg
+#       to again. Any more complex feature will require
 #       another table or trigger table to be added.        
 #------------------------------------------------------------
 
@@ -38,18 +38,17 @@ def mass_notify_new_ca_users():
     New/updated completed ATs will be notified upon successive
     use.
 
-    Parameters(from the json):
-    assessment_task_id: <class 'str'>r (AT)
-    team: <class 'bool'> (is the at team based)
-    notification_message: <class 'str'> (message to send over in the email)
-    date: <class 'str'> (date to record things)
-    user_id: <class 'int'> (who is requested the route[The decorators need it])
+    Parameters (from the json / query args):
+        assessment_task_id: <class 'str'> (AT)       [query arg]
+        team: <class 'bool'> (is the AT team based)  [query arg]
+        notification_message: <class 'str'> (message to send)
+        date: <class 'str'> (date to record things)
 
     Returns:
-    Bad or good response.
+        Bad or good response.
 
     Exceptions:
-    None all should be caught and handled
+        None – all should be caught and handled.
     """
     try:
         at_id = int(request.args.get('assessment_task_id'))
@@ -57,15 +56,21 @@ def mass_notify_new_ca_users():
         msg_to_students = request.json["notification_message"]
         date = request.json["date"]
 
-        # Raises InvalidAssessmentTaskID if non-existant AT.
+        # Raises InvalidAssessmentTaskID if non-existent AT.
         at_time = get_assessment_task(at_id).notification_sent
 
         # Lowest possible time for easier comparisons.
-        if at_time == None : at_time = datetime.datetime(1,1,1,0,0,0,0)
+        if at_time is None:
+            at_time = datetime.datetime(1, 1, 1, 0, 0, 0, 0)
 
         collection = get_students_for_emailing(is_teams, at_id=at_id)
 
-        left_to_notifiy = [singular_student for singular_student in collection if singular_student.last_update > at_time]
+        left_to_notifiy = [
+            singular_student
+            for singular_student in collection
+            if singular_student.last_update > at_time
+        ]
+
 
         email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
 
@@ -79,7 +84,9 @@ def mass_notify_new_ca_users():
         )
     except Exception as e:
         return create_bad_response(
-            f"An error occurred emailing users: {e}", "mass_not_notified", 400
+            f"An error occurred emailing users: {e}",
+            "mass_not_notified",
+            400
         )
     
 
@@ -91,20 +98,26 @@ def mass_notify_new_ca_users():
 def send_single_email():
     """
     Description:
-    This function sends emails to select single students or teams based on a completed_assessment_id.
-    The function was teased out from the above function to allow the addition of new features.
+        Sends emails to a single student or team based on a completed_assessment_id.
 
-    Parameters:
-    user_id: <class 'int'> (who requested the route {decorators uses it})
-    is_team: <class 'bool'> (is this a team or individual msg)
-    targeted_id: <class 'int'> (intended student/team for the message)
-    msg: <class 'str'> (The message the team or individual should recive)
+    Parameters (from json / query args):
+        team: <class 'bool'> (is this a team message)                 [query arg]
+        completed_assessment_id: <class 'int'> (targeted CA id)      [query arg]
+        assessment_task_id: <class 'int'> (owning AT)                [query arg, optional]
+        notification_message: <class 'str'> (message to send)        [json]
+        date: <class 'str'> (date to record for notification time)   [json, optional]
+
+    Behavior:
+        - Always sends the email to the given completed_assessment_id.
+        - If both assessment_task_id and date are provided, also updates
+          AssessmentTask.notification_sent so the rating/timelag logic
+          can use this notification time.
 
     Returns:
-    Good or bad Response
+        Good or bad Response.
 
     Exceptions:
-    None
+        None – all should be caught and handled.
     """
 
     try:
@@ -112,12 +125,29 @@ def send_single_email():
         completed_assessment_id = request.args.get('completed_assessment_id')
         msg = request.json['notification_message']
 
-        collection = get_students_for_emailing(is_teams, completed_at_id= completed_assessment_id)
+        # Optional data to sync the notification time with the AT
+        at_id_str = request.args.get('assessment_task_id')
+        date = request.json.get('date')
 
-        # Putting into a list as thats what the function wants.
+        collection = get_students_for_emailing(
+            is_teams,
+            completed_at_id=completed_assessment_id
+        )
+
+        # Putting into a list as that's what email_students_feedback_is_ready_to_view expects.
         left_to_notifiy = [singular_student for singular_student in collection]
 
         email_students_feedback_is_ready_to_view(left_to_notifiy, msg)
+
+        # If we know the owning AT and have a date, update its notification time
+        if at_id_str is not None and date is not None:
+            try:
+                at_id = int(at_id_str)
+                toggle_notification_sent_to_true(at_id, date)
+            except ValueError:
+                # If assessment_task_id can't be parsed, just skip the update;
+                # the email has still been sent at this point.
+                pass
 
         return create_good_response(
             "Message Sent",
@@ -126,5 +156,7 @@ def send_single_email():
         )
     except Exception as e:
         return create_bad_response(
-            f"An error occurred emailing user/s: {e}", "Individual/Team not notified", 400
+            f"An error occurred emailing user/s: {e}",
+            "Individual/Team not notified",
+            400
         )

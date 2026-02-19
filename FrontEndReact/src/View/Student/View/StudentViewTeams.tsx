@@ -1,12 +1,30 @@
 import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import ErrorMessage from '../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames } from '../../../utility';
 import Loading from '../../Loading/Loading';
 
-
+/**
+ * @description
+ * Student-facing view of teams for the current course.
+ *
+ * Responsibilities:
+ *  - Fetches all teams that the current student belongs to in this course.
+ *  - Fetches either TAs (if use_tas is true) or the instructor user for this course.
+ *  - Passes team and user-name data to <ViewTeams />.
+ *
+ * Props:
+ *  @prop {Object} navbar                 - Navbar instance with state.chosenCourse.
+ *  @prop {Function} updateUserTeamsIds   - Callback to update the parent with the
+ *                                          list of team_ids this user is in.
+ *
+ * State:
+ *  @property {string|null} errorMessage  - Error message from fetches, if any.
+ *  @property {boolean}     isLoaded      - True once both teams and users are loaded.
+ *  @property {Array|null}  teams         - Teams returned for this user in this course.
+ *  @property {Array|null}  users         - TA or instructor user records.
+ */
 
 interface StudentViewTeamsProps {
     navbar: any;
@@ -32,6 +50,36 @@ class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeams
         }
     }
 
+    /**
+     * @method componentDidMount
+     * @description
+     * Loads team and instructor/TA data for the current course.
+     *
+     * Fetch 1:
+     *  - GET /team_by_user?course_id={course_id}&adhoc_mode={adhocMode}
+     *    - course_id : navbar.state.chosenCourse.course_id
+     *    - adhoc_mode: boolean; true if course is NOT using fixed teams.
+     *    - Stores result in state.teams via genericResourceGET.
+     *    - Also extracts team_ids from data.teams and calls updateUserTeamsIds(teamIds)
+     *      so the parent (e.g., StudentDashboard) can filter team-based ATs/CATs.
+     *
+     * Fetch 2:
+     *  - If chosenCourse.use_tas is true:
+     *      GET /user?course_id={course_id}&role_id=4
+     *      → list of TAs for the course.
+     *    Else:
+     *      GET /user?uid={admin_id}
+     *      → single instructor user.
+     *    - The result is stored in state.users.
+     *
+     * Sorting:
+     *  - This component does not sort teams or users; they are passed as-is to <ViewTeams />.
+     *    Column-level sorting (if any) is handled by CustomDataTable in ViewTeams.
+     *
+     * Possible JIRA notes:
+     *  - /user?course_id&role_id=4 is also used in other admin/TA views; if the same TA
+     *    list is fetched multiple times in the same flow, that could be consolidated.
+     */
     componentDidMount() {
         const navbar = this.props.navbar;
         const state = navbar.state;
