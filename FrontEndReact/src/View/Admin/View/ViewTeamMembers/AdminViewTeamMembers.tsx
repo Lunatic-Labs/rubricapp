@@ -7,7 +7,7 @@ import { Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 
 /**
- * Creates an instance of the Admin////viewTeamMembers component.
+ * Creates an instance of the AdminViewTeamMembers component.
  * Displays team members for a specific team with the option to add or remove members.
  * 
  * @constructor

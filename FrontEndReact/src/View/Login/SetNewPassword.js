@@ -10,11 +10,11 @@ import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 
 /**
- * Creates an isnteance of the SetNewPassword componenet.
+ * Creates an instance of the SetNewPassword component.
  * 
  * @constructor
  * @param {object} props - The properties passed to the component.
- * @param {string} props.email - - The user's email address (used when submitting the new password).
+ * @param {string} props.email - The user's email address (used when submitting the new password).
  * 
  * @property {string|null} state.errorMessage - Error message displayed when password validation or API submission fails.
  * @property {boolean} state.isPasswordSet - Indicates whether the new password has been successfully set.
@@ -80,7 +80,7 @@ class SetNewPassword extends Component {
             //
             //[id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
             //
-            // part of it was moved to errrorMessage and replaced with [id]: errorMessage,
+            // part of it was moved to errorMessage and replaced with [id]: errorMessage,
             this.setState({
                 [id]: value,
                 errors: {
@@ -154,7 +154,7 @@ class SetNewPassword extends Component {
          *  - Lowercase letters.
          *  - Numbers.
          *  - Special characters.
-         * @param {string} password - The password inputed by the user.
+         * @param {string} password - The password input by the user.
          * @returns {string} Returns the password strength level: "STRONG", "MEDIUM", "WEAK".
          */
         this.testPasswordStrength = (password) => {
@@ -191,7 +191,7 @@ class SetNewPassword extends Component {
          * On successful API submission, transitions the component to show the Login page.
          */
 
-        // 2 new 'validation' / error handling statemetns where added below
+        // 2 new 'validation' / error handling statements were added below
         // both check that character length does not exceed 20
         this.setPassword = () => {
             var pass1 = this.state.password;

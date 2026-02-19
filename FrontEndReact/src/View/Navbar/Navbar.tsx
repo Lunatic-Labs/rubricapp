@@ -1,18 +1,13 @@
 import * as React from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import '@fontsource/roboto/300.css';
-// @ts-ignore: allow importing CSS without type declarations
 import '@fontsource/roboto/400.css';
-// @ts-ignore: allow importing CSS without type declarations
 import '@fontsource/roboto/500.css';
-// @ts-ignore: allow importing CSS without type declarations
 import '@fontsource/roboto/700.css';
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-// @ts-ignore: allow importing images without type declarations
 import ExpandMoreFilled from './NavbarImages/ExpandMoreFilled.png';
 import Avatar from '@mui/material/Avatar';
 import Menu from '@mui/material/Menu';
@@ -20,9 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 // import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Logout from '../Logout/Logout';
-// @ts-ignore: allow importing images without type declarations
-import Logo from "./sbTextFixed.png";
-import SettingsIcon from '@mui/icons-material/Settings';
+import Logo from "./sbText.png";
 
 // For further documentation look inside the README
 
