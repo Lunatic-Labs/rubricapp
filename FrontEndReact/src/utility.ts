@@ -180,7 +180,7 @@ async function genericResourceFetch(
         errorMessage: result?.msg ?? "Server error",
       }
       component.setState(state);
-    
+    }
     return tokenErrorResult;
   }
 }
