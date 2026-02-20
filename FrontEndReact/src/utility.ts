@@ -171,8 +171,8 @@ async function genericResourceFetch(
     // Catch and report server related errors.
 
     let tokenErrorResult: null|undefined|Promise<any> = await handleTokenErrorsAndRetry(result, resource, component, 
-                                                      cookies, response, isRetry, 
-                                                     fetchURL, type, body, options);
+                                                                                        cookies, response, isRetry, 
+                                                                                        fetchURL, type, body, options);
 
     if (tokenErrorResult === null) {
       const state = {
