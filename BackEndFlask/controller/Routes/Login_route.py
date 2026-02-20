@@ -4,7 +4,7 @@ from .User_routes import UserSchema
 from controller.Route_response import *
 from models.user import get_user_by_email, get_user_password
 from werkzeug.security import check_password_hash, generate_password_hash
-from controller.security.utility import create_tokens, revoke_tokens
+from controller.security.utility import create_new_tokens, revoke_tokens
 from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
@@ -34,7 +34,7 @@ def login():
             "user_name": user.first_name + " " + user.last_name
         }
 
-        jwt, refresh = create_tokens(user.user_id)
+        jwt, refresh = create_new_tokens(user.user_id)#Do I need this
 
         return create_good_response(JSON, 200, "login", jwt, refresh)
 

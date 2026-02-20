@@ -16,27 +16,29 @@ from flask_jwt_extended import (
 # useful examples:https://github.com/vimalloc/flask-jwt-extended/tree/master/examples
 #-----------------------------------------------------
 
-# Creates both a jwt and refresh token
-# jwt expires in 15mins; refresh token expires in 30days
-def create_tokens(user_id: any, force_fresh_token:bool=False) -> tuple[str, str]:
+"""
+Returns new access and refresh tokens based on the given user_id.
+
+Args:
+    user_id (str): The target user id.
+
+Returns:
+    tuple[str, str]: First index is the access token and the second index will be a refresh token. 
+"""
+def create_new_tokens(user_id: str)-> tuple[str, str]:
     with app.app_context():
-        # Create access token (short-lived)
-        jwt = create_access_token(
+        access_token = create_access_token(
             identity=str(user_id),
-            fresh=True,  # token is fresh because it comes from login
-            expires_delta=datetime.timedelta(minutes=1)  # adjust as needed
+            fresh=True,
+            expires_delta=datetime.timedelta(minutes=1)
         )
 
-        # Try to get existing refresh token from request args
-        refresh = request.args.get('refresh_token')
-        if not refresh or force_fresh_token:
-            # Create new refresh token (long-lived)
-            refresh = create_refresh_token(
-                identity=str(user_id),
-                expires_delta=datetime.timedelta(minutes=3)
-            )
+        refresh_token = create_refresh_token(
+            identity=str(user_id),
+            expires_delta=datetime.timedelta(minutes=3)
+        )
 
-    return jwt, refresh
+    return access_token, refresh_token
 
 
 # Takes away jwt and refresh tokens from response

@@ -7,7 +7,7 @@ from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 import datetime
 from controller.security.blacklist import is_token_blacklisted, blacklist_token
-from controller.security.utility import create_tokens
+from controller.security.utility import create_new_tokens
 
 def out(text):
     with open("ap.txt", 'a') as dump:
@@ -35,7 +35,7 @@ def refresh_token():
         # Convert user_id to string for JWT identity
         user_id_str = str(user_id)
         
-        access_token, new_refresh_token = create_tokens(user_id_str, True)
+        access_token, new_refresh_token = create_new_tokens(user_id_str, True)
         
         return create_good_response(
             user, 

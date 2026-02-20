@@ -1,6 +1,6 @@
 import pytest
 from unittest.mock import patch, MagicMock
-from controller.security.utility import create_tokens, revoke_tokens, token_expired, token_user_id, to_int
+from controller.security.utility import create_new_tokens, revoke_tokens, token_expired, token_user_id, to_int
 from flask import Flask, request
 from jwt import ExpiredSignatureError
 from flask_jwt_extended.exceptions import InvalidQueryParamError
@@ -17,7 +17,7 @@ def test_create_tokens_new_refresh(mock_refresh, mock_access):
     mock_refresh.return_value = "refresh_token_mock"
 
     with app.test_request_context("/?refresh_token="):  # no refresh_token provided
-        jwt, refresh = create_tokens(123)
+        jwt, refresh = create_new_tokens(123)
     
     assert jwt == "access_token_mock"
     assert refresh == "refresh_token_mock"
@@ -29,7 +29,7 @@ def test_create_tokens_existing_refresh(mock_access):
     mock_access.return_value = "access_token_mock"
 
     with app.test_request_context("/?refresh_token=existing_refresh"):
-        jwt, refresh = create_tokens(123)
+        jwt, refresh = create_new_tokens(123)
     
     assert jwt == "access_token_mock"
     assert refresh == "existing_refresh"
