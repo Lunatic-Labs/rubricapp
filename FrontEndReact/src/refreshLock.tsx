@@ -17,7 +17,7 @@ interface User {
  * there is an in flight refresh request that is still wrapping up. When undefined is returned,
  * there was some error with getting creds. It is recommended to refresh at that point.
  */
-export function refreshAccessToken(): Promise<any> | null | undefined{
+export function refreshAccessTokens(): Promise<any> | null | undefined{
     if (refreshPromise){
         return refreshPromise;
     }
