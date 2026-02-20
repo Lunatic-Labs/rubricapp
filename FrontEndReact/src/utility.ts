@@ -245,7 +245,7 @@ async function handleTokenErrorsAndRetry(
     cookies.remove(accessTokenKey);
     cookies.remove(refreshTokenKey);
     cookies.remove(userKey);
-    //window.location.reload();
+    window.location.reload();
     return undefined;
 
   } else if (refreshableFailure.includes(msg) || status === HTTP_STATUS.UNPROCESSABLE_ENTITY) {
@@ -253,16 +253,17 @@ async function handleTokenErrorsAndRetry(
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
       cookies.remove(userKey);
-      //window.location.reload();
+      window.location.reload();
       return undefined;
     }
 
     // Critical promise lock.
     const refreshResponse = await refreshAccessTokens();
 
-    //if (refreshResponse === undefined){
-    //  window.location.reload();
-    //}
+    if (refreshResponse === undefined){
+      window.location.reload();
+      return undefined;
+    }
 
     return await genericResourceFetch(fetchURL, resource, component, type, body, {...options, isRetry: true});
   }
