@@ -34,7 +34,7 @@ def login():
             "user_name": user.first_name + " " + user.last_name
         }
 
-        jwt, refresh = create_new_tokens(user.user_id)#Do I need this
+        jwt, refresh = create_new_tokens(user.user_id)
 
         return create_good_response(JSON, 200, "login", jwt, refresh)
 

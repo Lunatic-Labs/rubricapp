@@ -20,7 +20,7 @@ interface ApiResponse {
   errorMessage?: string;
 }
 
-interface User {
+export interface User {
   user_id: string;
   [key: string]: any;
 }

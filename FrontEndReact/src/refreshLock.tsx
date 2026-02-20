@@ -1,15 +1,11 @@
 import { apiUrl } from './App';
+import { User } from './utility';
 import Cookies from 'universal-cookie';
 
 let refreshPromise: Promise<any> | null = null;
 
 function sleep(ms:number){
   return new Promise(resolve => setTimeout(resolve, ms));
-}
-
-interface User {
-  user_id?: string;
-  [key: string]: any;
 }
 
 /**
@@ -30,39 +26,29 @@ export function refreshAccessTokens(): Promise<any> | null | undefined{
     const userId: string = user?.user_id ?? "";
     const refreshToken: string | undefined = cookies.get(refreshTokenKey);
 
-    console.log("userId:",userId);
-    console.log("refreshToken", refreshToken);
-
-    refreshPromise = (async() =>{
-      try {
-        const response = await fetch(
-          `${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshToken}`,
-          {
-            method: 'POST',
-            headers: {
-              'Authorization': 'Bearer ' + refreshToken
-            }
-          }
-        );
-        if (!response.ok){
-          console.log("error response",response);
-          return undefined;
+    refreshPromise = fetch(
+      `${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshToken}`,
+      {
+        method: 'POST',
+        headers: {
+          'Authorization': 'Bearer ' + refreshToken
         }
-
-        const refreshResult = await response.json();
-        console.log(refreshResult);
-        sleep(1000000);
-
-        cookies.set(accessTokenKey, refreshResult.headers.access_token, { sameSite: 'strict' });
-        cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
-        return null;
-
-      } catch (err) {
-        return undefined;
-      } finally {
-        refreshPromise = null;
       }
-    })();
+    ).then(async res => {
+      if (!res.ok){
+        return undefined;
+      }
+
+      const refreshResult = await res.json();
+
+      cookies.set(accessTokenKey, refreshResult.headers.access_token, { sameSite: 'strict' });
+      cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
+    
+    }).catch(err => {
+      return undefined;
+    }).finally(() => {
+      refreshPromise = null;
+    });
 
     return refreshPromise;
 }
