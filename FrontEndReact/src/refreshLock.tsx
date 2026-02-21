@@ -4,9 +4,9 @@ import Cookies from 'universal-cookie';
 
 let refreshPromise: Promise<any> | null = null;
 
-function sleep(ms:number){
-  return new Promise(resolve => setTimeout(resolve, ms));
-}
+//function sleep(ms:number){
+//  return new Promise(resolve => setTimeout(resolve, ms));
+//}
 
 /**
  * This function returns a refresh promise if there is one. The presense of a promise means that
@@ -15,6 +15,7 @@ function sleep(ms:number){
  */
 export function refreshAccessTokens(): Promise<any> | null | undefined{
     if (refreshPromise){
+        console.log("in flight", refreshPromise);
         return refreshPromise;
     }
     
@@ -35,16 +36,29 @@ export function refreshAccessTokens(): Promise<any> | null | undefined{
         }
       }
     ).then(async res => {
+      console.log("promise then");
       if (!res.ok){
         return undefined;
       }
 
       const refreshResult = await res.json();
+      console.log("refresh then result", refreshResult);
+
+      console.log("old access", cookies.get(accessTokenKey));
+      console.log("old refresh", cookies.get(refreshTokenKey));
+
+      console.log("headers", refreshResult.headers);
 
       cookies.set(accessTokenKey, refreshResult.headers.access_token, { sameSite: 'strict' });
       cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
+      
+      console.log("new access token", cookies.get(accessTokenKey));
+      console.log("new refresh token", cookies.get(refreshTokenKey));
+      
+      return null;
     
     }).catch(err => {
+      console.log("error here" ,err);
       return undefined;
     }).finally(() => {
       refreshPromise = null;
