@@ -245,7 +245,7 @@ async function handleTokenErrorsAndRetry(
     cookies.remove(accessTokenKey);
     cookies.remove(refreshTokenKey);
     cookies.remove(userKey);
-    //window.location.reload();
+    window.location.reload();
     return undefined;
 
   } else if (refreshableFailure.includes(msg) || status === HTTP_STATUS.UNPROCESSABLE_ENTITY) {
@@ -253,7 +253,7 @@ async function handleTokenErrorsAndRetry(
       cookies.remove(accessTokenKey);
       cookies.remove(refreshTokenKey);
       cookies.remove(userKey);
-      //window.location.reload();
+      window.location.reload();
       return undefined;
     }
 
@@ -263,7 +263,10 @@ async function handleTokenErrorsAndRetry(
     if (refreshResponse === undefined){
       console.log("fetch url:", fetchURL);
       console.log("the refreshresponse:", refreshResponse);
-      //window.location.reload();
+      cookies.remove(accessTokenKey);
+      cookies.remove(refreshTokenKey);
+      cookies.remove(userKey);
+      window.location.reload();
       return undefined;
     }
 
