@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-// @ts-ignore
 import studentImage from '../AddUsers/Images/generic_bulk_upload_example.png';
-// @ts-ignore
 import teamImage1 from '../AddUsers/Images/team_bulk_upload_example1.png';
-// @ts-ignore
 import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
-// @ts-ignore
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST } from '../../../../utility';
@@ -15,7 +11,7 @@ import { Box, Typography, Tooltip, Button } from '@mui/material';
 import IconButton from '@mui/material/IconButton';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import HelpOutlineIcon from '@mui/icons-material/HelpOutline';
-import { RequestStateType, RequestState } from '../../../../Enums/RequestState';
+import { RequestState, REQUEST_STATE } from '../../../../Enums/RequestState';
 import DynamicLoadingSpinner from '../../../Loading/DynamicLoading';
 import debounce from 'debounce';
 
@@ -26,7 +22,7 @@ interface AdminBulkUploadState {
     teamsPics: string[];
     teamsMsgs: string[];
     currentTeamPic: number;
-    uploadRequestStatus: RequestStateType;
+    uploadRequestStatus: RequestState;
 }
 
 class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
@@ -38,7 +34,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
             errorMessage: null,
             selectedFile: null,
             isLoaded: false,
-            uploadRequestStatus: RequestState.IDLE,
+            uploadRequestStatus: REQUEST_STATE.IDLE,
 
             // Used for displaying the appropriate image
             // when clicking the "next example" button.
@@ -80,7 +76,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
      * @param {*} e 
      */
     blockMultipleRequests = (e:any) => {
-        if (this.state.uploadRequestStatus !== RequestState.LOADING){
+        if (this.state.uploadRequestStatus !== REQUEST_STATE.LOADING){
             this.onFormSubmit(e);
         }
     }
@@ -89,7 +85,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
         e.preventDefault();
 
         this.setState({
-            uploadRequestStatus: RequestState.LOADING,
+            uploadRequestStatus: REQUEST_STATE.LOADING,
         });
 
         var fileName;
@@ -105,12 +101,12 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
         if(this.state.selectedFile === null) {
             this.setState({
                 errorMessage: "Please Select a File to Upload!",
-                uploadRequestStatus: RequestState.IDLE,
+                uploadRequestStatus: REQUEST_STATE.IDLE,
             });
         } else if (fileExtension !== "csv" && fileExtension !== "xlsx") {
             this.setState({
                 errorMessage: "Please Select a File using the .csv or .xlsx format!",
-                uploadRequestStatus: RequestState.IDLE,
+                uploadRequestStatus: REQUEST_STATE.IDLE,
             });
         } else {
             var navbar = this.props.navbar;
@@ -140,17 +136,17 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                         confirmCreateResource("TeamBulkUpload");
                     }
                     this.setState({
-                        uploadRequestStatus: RequestState.SUCCESS,
+                        uploadRequestStatus: REQUEST_STATE.SUCCESS,
                     });
                 } else {
                     this.setState({
-                        uploadRequestStatus: RequestState.ERROR,
+                        uploadRequestStatus: REQUEST_STATE.ERROR,
                     });
                 }
             }).catch((error) => { 
                 this.setState({
                     errorMessage: error,
-                    uploadRequestStatus: RequestState.ERROR,
+                    uploadRequestStatus: REQUEST_STATE.ERROR,
                 })
                 
             });
@@ -173,7 +169,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
         var confirmCreateResource = navbar.confirmCreateResource;
 
         const {uploadRequestStatus} = this.state; 
-        const isLoading: boolean = uploadRequestStatus === RequestState.LOADING;
+        const isLoading: boolean = uploadRequestStatus === REQUEST_STATE.LOADING;
 
         console.log(this.state.errorMessage);
 
@@ -291,7 +287,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                                             }}
                                         />
 
-                                        {uploadRequestStatus === RequestState.LOADING ?(
+                                        {uploadRequestStatus === REQUEST_STATE.LOADING ?(
                                             <DynamicLoadingSpinner/>
                                         ):(
                                             <>

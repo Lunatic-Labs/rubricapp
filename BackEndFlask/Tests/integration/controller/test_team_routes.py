@@ -20,6 +20,7 @@ from integration.integration_helpers import *
 from models.course import create_course, delete_course
 from models.user import get_user_first_name
 import jwt
+
 from models.assessment_task import (
     create_assessment_task,
     delete_assessment_task,
@@ -116,7 +117,7 @@ def test_get_all_teams(flask_app_mock, sample_token, auth_header, client):
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-
+# FAILED TEST
 def test_get_all_teams_raises_exception(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -257,7 +258,7 @@ def test_get_all_adhoc_teams_by_user(flask_app_mock, sample_token, auth_header, 
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-
+# FAILED TEST
 def test_get_all_teams_by_user_raises_exception(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -353,7 +354,7 @@ def test_get_all_teams_by_observer_raises_exception(flask_app_mock, sample_token
             except Exception as e:
                 print(f"Cleanup skipped: {e}") 
 
-
+# FAILED TEST
 def test_get_one_team(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -389,7 +390,7 @@ def test_get_one_team(flask_app_mock, sample_token, auth_header, client):
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-
+# FAILED TEST
 def test_get_one_team_raises_exception(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -504,7 +505,7 @@ def test_get_adhoc_team_data_raises_exception(flask_app_mock, sample_token, auth
             except Exception as e:
                 print(f"Cleanup skipped: {e}") 
 
-
+# FAILED TEST
 def test_get_nonfull_adhoc_teams(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -648,7 +649,7 @@ def test_get_how_many_adhoc_teams_exist(flask_app_mock, sample_token, auth_heade
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-
+# FAILED TEST
 def test_get_howmany_adhoc_teams_exist_raises_exception(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -815,7 +816,7 @@ def test_update_team_raises_exception(flask_app_mock, sample_token, auth_header,
             except Exception as e:
                 print(f"Cleanup skipped: {e}") 
 
-
+# FAILED TEST
 def test_update_team_user_by_edit(
         flask_app_mock,
         sample_token,
@@ -919,7 +920,7 @@ def test_update_team_user_by_edit_raises_exception(
             except Exception as e:
                 print(f"Cleanup skipped: {e}") 
 
-
+# FAILED TEST
 def test_delete_selected_teams(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -983,7 +984,7 @@ def test_delete_selected_teams(flask_app_mock, sample_token, auth_header, client
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-
+# FAILED TEST
 def test_cannot_delete_selected_teams_with_completed_assessment(
         flask_app_mock, 
         sample_token, 
@@ -1052,7 +1053,7 @@ def test_cannot_delete_selected_teams_with_completed_assessment(
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
 
-
+# FAILED TEST
 def test_delete_non_existing_selected_teams_raises_exception(
         flask_app_mock, 
         sample_token, 

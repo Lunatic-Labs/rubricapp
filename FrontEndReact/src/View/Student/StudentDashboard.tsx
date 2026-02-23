@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import StudentViewTeams from './View/StudentViewTeams';
 import TAViewTeams from './View/TAViewTeams';
@@ -10,7 +9,7 @@ import { genericResourceGET, parseRubricNames } from '../../utility';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks';
 import Loading from '../Loading/Loading';
 import Cookies from 'universal-cookie';
-import { Role } from '../../Enums/Role';
+import { ROLE } from '../../Enums/Role';
 import { AssessmentTask } from '../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../types/CompleteAssessmentTask';
 const apiUrl = process.env.REACT_APP_API_URL;
@@ -163,11 +162,11 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         // Students need their team info ready to correctly match the student to team CATs.
         const roleId: number = roles.role_id;
-        const isStudent: boolean = roleId === Role.Student;
+        const isStudent: boolean = roleId === ROLE.STUDENT;
         const teamInfoReady: boolean = userTeamIds.length > 0 || this.state.teamsFetched;
         const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
 
-        if (roleId === Role.TA_Instructor || canFilterStudentByTeam) {
+        if (roleId === ROLE.TA_INSTRUCTOR || canFilterStudentByTeam) {
             const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics);
 
             let editableCats: CompleteAssessmentTask[] = [];
@@ -186,7 +185,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             completedAssessments.forEach((cat: CompleteAssessmentTask) => {
                 const team_id: number|null = cat.team_id;
                 
-                if (roleId === Role.TA_Instructor || team_id === null || userTeamIds.includes(team_id)){                    
+                if (roleId === ROLE.TA_INSTRUCTOR || team_id === null || userTeamIds.includes(team_id)){                    
                     const at: AssessmentTask | undefined = assessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
                     const isTeamAssessment: boolean = at?.unit_of_assessment === true;                    
 
@@ -228,13 +227,13 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
                 // Qualities for if an AT is viewable.
                 const done: boolean = isATDone(cat);
-                const correctUser: boolean = roleId === task.role_id || (roleId === Role.Student && task.role_id === Role.TA_Instructor);
+                const correctUser: boolean = roleId === task.role_id || (roleId === ROLE.STUDENT && task.role_id === ROLE.TA_INSTRUCTOR);
                 const locked: boolean = task.locked;
                 const published: boolean = task.published;
                 const pastDue: boolean = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const isStudent: boolean = roles.role_id === Role.Student;
-                const isStudentTask: boolean = task.role_id === Role.Student;
+                const isStudent: boolean = roles.role_id === ROLE.STUDENT;
+                const isStudentTask: boolean = task.role_id === ROLE.STUDENT;
                 const baseConditions: boolean = correctUser && !locked && published && !pastDue;
 
                 let viewable: boolean, CATviewable: boolean;
@@ -243,7 +242,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     viewable = !done && baseConditions;
                     CATviewable = correctUser && done;
                 } else if (isStudent) {
-                    if (task.role_id === Role.TA_Instructor && done){
+                    if (task.role_id === ROLE.TA_INSTRUCTOR && done){
                         viewable = false;
                         CATviewable = true;
                     } else {
