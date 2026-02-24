@@ -8,8 +8,8 @@ import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericRes
 import CustomDataTable from "../../../Components/CustomDataTable";
 import CollapsableRubricCategoryTable from "./CollapsableRubricCategoryTable";
 import ImageModal from "./CustomRubricModal";
-import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
-import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
+import RubricDescriptionsImage from "../../../../RubricDetailedOverview.png";
+import RubricDescriptionsImage2 from "../../../../RubricDetailedOverview2.png";
 import Loading from '../../../Loading/Loading';
 import FormHelperText from '@mui/material/FormHelperText';
 
