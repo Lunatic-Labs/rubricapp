@@ -634,7 +634,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         },
                         "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
                           {
-                            borderColor: "#ffffff",
+                            borderColor: "var(--textbox-border-hover)",
                           },
                         "& .MuiInputLabel-root": {
                           color: "var(--dropdown-label)",
@@ -643,7 +643,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                           color: "var(--dropdown-icon)",
                         },
                       }}
-                    >
+                  >
                       <InputLabel className={errors.role ? "errorSelect" : ""}>
                         Role
                       </InputLabel>
@@ -774,13 +774,26 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         confirmCreateResource("User");
                       }}
                       id=""
-                      className=""
+                      className="button-colors"
                       aria-label="cancelAddUserButton"
+                      sx={{
+                        color: 'var(--button-text)',
+                        '&:hover': {
+                          backgroundColor: 'var(--button-hover)',
+                        },
+                      }}
                     >
                       Cancel
                     </Button>
 
-                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained" aria-label="addOrSaveAddUserButton">
+                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained" aria-label="addOrSaveAddUserButton"
+                                            sx={{
+                                                color: 'var(--button-text)',
+                                                '&:hover': {
+                                                    backgroundColor: 'var(--button-hover)',
+                                                },
+                                            }}
+                                        >
                                             {editUser ? "Update User" : "Add User"}
                                         </Button>
                                     </Box>
