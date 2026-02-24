@@ -16,6 +16,7 @@ import MenuItem from '@mui/material/MenuItem';
 import Divider from '@mui/material/Divider';
 import Logout from '../Logout/Logout';
 import Logo from "./sbText.png";
+import Settings from '@mui/icons-material/Settings';
 
 // For further documentation look inside the README
 
@@ -159,7 +160,7 @@ export default function ButtonAppBar(props: any) {
               <MenuItem  onClick={() => {
                 props.setNewTab("Settings");
               }}>
-                <SettingsIcon sx={{ mr: 1 }} />
+                <Settings sx={{ mr: 1 }} />
                 Settings
               </MenuItem>
 
