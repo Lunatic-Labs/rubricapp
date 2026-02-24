@@ -1,5 +1,5 @@
 #---------------------------------------------------
-# Contains system-wide email bounced enums.
+# Contains system-wide bounced email enums.
 #---------------------------------------------------
 
 from enum import Enum
