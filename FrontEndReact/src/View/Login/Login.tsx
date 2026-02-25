@@ -266,10 +266,11 @@ class Login extends Component<{}, LoginState> {
         }
 
         // Has both tokens - user is logged in
-        if (hasAccessToken && hasRefreshToken) {
+        if (hasAccessToken && hasRefreshToken && hasUser) {
             this.setState({ loggedIn: true });
         }
     }
+
 
     render() {
         const {
