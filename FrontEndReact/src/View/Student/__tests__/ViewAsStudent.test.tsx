@@ -1,6 +1,6 @@
 /// <reference types="@testing-library/jest-dom" />
 import { render, waitFor, screen, fireEvent } from "@testing-library/react";
-import { beforeEach, afterEach, test, describe, jest, expect} from "@jest/globals";
+import { beforeEach, afterEach, test, describe, jest, expect } from "@jest/globals";
 import Login from "../../Login/Login";
 import {
     clickElementWithAriaLabel,

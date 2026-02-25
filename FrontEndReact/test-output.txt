@@ -1,0 +1,35 @@
+[baseline-browser-mapping] The data in this module is over two months old.  To ensure accurate Baseline data, please update: `npm i baseline-browser-mapping@latest -D`
+FAIL src/View/Student/__tests__/ViewAsStudent.test.tsx
+  ● Test suite failed to run
+
+    Cannot find module '../../Login/Login' from 'src/View/Admin/View/ViewCourses/AdminViewCourses.tsx'
+
+    Require stack:
+      src/View/Admin/View/ViewCourses/AdminViewCourses.tsx
+      src/View/Navbar/AppState.tsx
+      src/View/Login/Login.tsx
+      src/View/Student/__tests__/ViewAsStudent.test.tsx
+
+      2 | import { render, waitFor, screen, fireEvent } from "@testing-library/react";
+      3 | import { beforeEach, afterEach, test, describe, jest, expect} from "@jest/globals";
+    > 4 | import Login from "../../Login/Login";
+        | ^
+      5 | import {
+      6 |     clickElementWithAriaLabel,
+      7 |     expectElementWithAriaLabelToBeInDocument,
+
+      at Resolver.resolveModule (node_modules/react-scripts/node_modules/jest-resolve/build/resolver.js:324:11)
+      at Object.require (src/View/Admin/View/ViewCourses/AdminViewCourses.tsx:4:1)
+      at Object.require (src/View/Navbar/AppState.tsx:6:1)
+      at Object.require (src/View/Login/Login.tsx:5:1)
+      at Object.require (src/View/Student/__tests__/ViewAsStudent.test.tsx:4:1)
+      at TestScheduler.scheduleTests (node_modules/react-scripts/node_modules/@jest/core/build/TestScheduler.js:333:13)
+      at runJest (node_modules/react-scripts/node_modules/@jest/core/build/runJest.js:404:19)
+      at _run10000 (node_modules/react-scripts/node_modules/@jest/core/build/cli/index.js:320:7)
+      at runCLI (node_modules/react-scripts/node_modules/@jest/core/build/cli/index.js:173:3)
+
+Test Suites: 1 failed, 1 total
+Tests:       0 total
+Snapshots:   0 total
+Time:        184.042 s, estimated 880 s
+Ran all test suites matching /ViewAsStudent.test.tsx/i.
