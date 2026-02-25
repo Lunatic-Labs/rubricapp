@@ -251,7 +251,7 @@ class Login extends Component<{}, LoginState> {
         }
 
         // Inconsistent state - clear everything
-        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken)) {
+        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken) || !hasUser) {
             this.cookies.remove('access_token');
             this.cookies.remove('refresh_token');
             this.cookies.remove('user');
