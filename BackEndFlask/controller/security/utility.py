@@ -30,12 +30,12 @@ def create_new_tokens(user_id: str)-> tuple[str, str]:
         access_token = create_access_token(
             identity=str(user_id),
             fresh=True,
-            expires_delta=datetime.timedelta(minutes=1)
+            expires_delta=datetime.timedelta(minutes=15)
         )
 
         refresh_token = create_refresh_token(
             identity=str(user_id),
-            expires_delta=datetime.timedelta(minutes=3)
+            expires_delta=datetime.timedelta(days=30)
         )
 
     return access_token, refresh_token

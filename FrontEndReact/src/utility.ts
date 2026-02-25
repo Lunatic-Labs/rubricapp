@@ -15,7 +15,8 @@ interface ApiResponse {
   success: boolean;
   status?: number;
   content?: Record<string, any>;
-  msg?: string;
+  message?: string;
+  msg?: string;//Yes both versions can be sent back from the backend
   headers?: Record<string, string>;
   errorMessage?: string;
 }
@@ -91,6 +92,22 @@ function createApiRequestUrl(fetchURL: string, cookies: Cookies): string {
   const hasQueryParams = fetchURL.indexOf('?') > -1;
   const separator = hasQueryParams ? '&' : '?';
   return apiUrl + fetchURL + `${separator}user_id=${user.user_id}`;
+}
+
+/**
+ * Removes all auth data stored in the cookies.
+ */
+function removeAuthData() {
+  const cookies: Cookies = new Cookies();
+  const authDataToRemove = [
+    'access_token',
+    'refresh_token',
+    'user',
+  ]
+  
+  for (const key of authDataToRemove){
+    cookies.remove(key);
+  }
 }
 
 async function genericResourceFetch(
@@ -171,24 +188,21 @@ async function genericResourceFetch(
     // Catch and report server related errors.
 
     let tokenErrorResult: null|undefined|Promise<any> = await handleTokenErrorsAndRetry(result, resource, component, 
-                                                                                        cookies, response, isRetry, 
-                                                                                        fetchURL, type, body, options);
-
+                                                                                        response, isRetry, fetchURL, 
+                                                                                        type, body, options);
+      
     if (tokenErrorResult === null) {
+      const parse = (msg:string) => {return msg.includes(':') ? msg.split(':').slice(1).join(':').trim() : msg}
       const state = {
         isLoaded: true,
-        errorMessage: result?.msg ?? "Server error",
+        errorMessage: parse(result?.message ?? "Server error"),
       }
       component.setState(state);
+      return rawResponse ? result : state;
     }
     return tokenErrorResult;
   }
 }
-
-
-//function sleep(ms:number){
-//  return new Promise(resolve => setTimeout(resolve, ms));
-//}
 
 /**
  * The function figures out we can retry a request that errored out from a token problem. If it is a hard
@@ -213,17 +227,13 @@ async function genericResourceFetch(
 async function handleTokenErrorsAndRetry(
   result: ApiResponse, resource: string|null, 
   component: ReactComponent<any, any, any>, 
-  cookies: Cookies, response: Response,
-  isRetry: boolean, fetchURL: string,
-  type: string, body: string|null,
-  options: FetchOptions
+  response: Response, isRetry: boolean, 
+  fetchURL: string, type: string, 
+  body: string|null, options: FetchOptions
   ): Promise<any> {
   
   const msg: string = result?.msg ?? "Server Error";
-  const status: number = response.status;
-  const accessTokenKey = 'access_token';
-  const refreshTokenKey = 'refresh_token';
-  const userKey = 'user';  
+  const status: number = response.status; 
     
   // Irrecoverable.
   const hardFailures: string[] = [
@@ -242,17 +252,13 @@ async function handleTokenErrorsAndRetry(
   ];
 
   if (hardFailures.includes(msg)) {
-    cookies.remove(accessTokenKey);
-    cookies.remove(refreshTokenKey);
-    cookies.remove(userKey);
+    removeAuthData();
     window.location.reload();
     return undefined;
 
   } else if (refreshableFailure.includes(msg) || status === HTTP_STATUS.UNPROCESSABLE_ENTITY) {
     if (isRetry) {
-      cookies.remove(accessTokenKey);
-      cookies.remove(refreshTokenKey);
-      cookies.remove(userKey);
+      removeAuthData();
       window.location.reload();
       return undefined;
     }
@@ -261,11 +267,7 @@ async function handleTokenErrorsAndRetry(
     const refreshResponse = await refreshAccessTokens();
 
     if (refreshResponse === undefined){
-      console.log("fetch url:", fetchURL);
-      console.log("the refreshresponse:", refreshResponse);
-      cookies.remove(accessTokenKey);
-      cookies.remove(refreshTokenKey);
-      cookies.remove(userKey);
+      removeAuthData();
       window.location.reload();
       return undefined;
     }

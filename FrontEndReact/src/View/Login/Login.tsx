@@ -250,13 +250,6 @@ class Login extends Component<{}, LoginState> {
             return;
         }
 
-        //// Has refresh token but no access token - try to refresh
-        //if (!hasAccessToken && hasRefreshToken && hasUser && !this.state.isRefreshing) {
-        //    this.setState({ isRefreshing: true });
-        //    this.handleNewAccessToken();
-        //    return;
-        //}
-
         // Inconsistent state - clear everything
         if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken)) {
             this.cookies.remove('access_token');
