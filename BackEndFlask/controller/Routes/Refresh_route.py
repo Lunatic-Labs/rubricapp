@@ -9,10 +9,6 @@ import datetime
 from controller.security.blacklist import is_token_blacklisted, blacklist_token
 from controller.security.utility import create_new_tokens
 
-def out(text):
-    with open("ap.txt", 'a') as dump:
-        print(text, file=dump)
-
 @bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
 @bad_token_check()
