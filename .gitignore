@@ -35,9 +35,9 @@ CVS
 Backup[ ]of[ ]*.pages/
 Backup[ ]of[ ]*.key/
 Backup[ ]of[ ]*.numbers/
-FrontEndReact/package-lock.json
 .vscode/launch.json
-package-lock.json
+**/package-lock.json
+!FrontEndReact/package-lock.json
 BackEndFlask/logs/all.log
 BackEndFlask/models/hidden.py
 BackEndFlask/oauth2_creds.json
