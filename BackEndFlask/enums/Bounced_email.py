@@ -10,4 +10,4 @@ class BouncedEmailFields(Enum):
     TO = 'to'
     MSG = 'msg'
     SENDER = 'sender'
-    MAIN_FAILURE = 'main_failure' 
+    MAIN_FAILURE = 'main_failure'
