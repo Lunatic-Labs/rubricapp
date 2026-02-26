@@ -648,9 +648,12 @@ def get_team_ratings(assessment_task_id):
         5: Feedback.feedback_id (may be NULL)
         6: User.first_name
         7: User.last_name
+        8: CompletedAssessment.completed_by (user_id of the assessor)
+        9: TeamUser.user_id (user_id of this team member)
     Rating_routes.py groups these rows by team_id and builds the per-team
     "students" array, coloring names red/green based on whether lag_time
-    is present.
+    is present. completed_by vs TeamUser.user_id lets the route mark
+    which team member submitted the assessment (is_assessor).
     """
     return (
         db.session.query(
@@ -662,6 +665,8 @@ def get_team_ratings(assessment_task_id):
             Feedback.feedback_id,
             User.first_name,
             User.last_name,
+            CompletedAssessment.completed_by,
+            TeamUser.user_id,
         )
         .select_from(CompletedAssessment)
         # One CompletedAssessment per team for this AT
