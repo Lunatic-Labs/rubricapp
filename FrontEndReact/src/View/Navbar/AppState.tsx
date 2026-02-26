@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
@@ -35,6 +34,49 @@ import UserAccount from './UserAccount';
 import PrivacyPolicy from './PrivacyPolicy';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
 
+/**
+ * Creates an instance of the AppState component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @param {string} props.userName - Displayed in the navigation bar.
+ * @param {function} props.logout - Callback for user logout.
+ * @param {boolean} props.isSuperAdmin - Determines whether the user has Super Admin privileges.
+ * @param {boolean} props.isAdmin - Determines whether the user has Admin privileges.
+ * 
+ * @property {string}   state.activeTab - Controls which view is displayed (e.g., "Users", "Courses", "StudentDashboard").
+ *
+ * @property {Object|null} state.user - Selected user (for editing or viewing).
+ * @property {Object|null} state.addUser - Whether adding a new user.
+ *
+ * @property {Object|null} state.course - Selected course for editing.
+ * @property {Object|null} state.addCourse - Boolean indicating new course creation.
+ * @property {Object|null} state.chosenCourse - Course selected by a student.
+ *
+ * @property {Object|null} state.assessmentTask - Selected assessment task for editing.
+ * @property {boolean} state.addAssessmentTask - Whether adding a new assessment task.
+ * @property {Object|null} state.chosenAssessmentTask - Assessment task selected for viewing/working on.
+ * @property {Object|null} state.chosenCompleteAssessmentTask - Loaded completed assessment.
+ * @property {boolean} state.chosenCompleteAssessmentTaskIsReadOnly - Whether the completed task is read-only.
+ * @property {string|null} state.unitOfAssessment - The associated unit for the selected task.
+ *
+ * @property {Object|null} state.team - Selected team for editing or viewing.
+ * @property {boolean} state.addTeam - Whether adding a new team.
+ * @property {Object|null} state.addTeamAction - Instructions passed to team editing views.
+ *
+ * @property {Object[]|null} state.users - User list used for team and student flows.
+ * @property {Object[]|null} state.teams - Team list used across admin and student screens.
+ *
+ * @property {Object[]|null} state.roleNames - Role names used in assessment tasks.
+ * @property {Object[]|null} state.rubricNames - Rubric names used in assessment tasks.
+ *
+ * @property {string|null} state.userConsent - User object for editing consent settings.
+ *
+ * @property {string|null} state.successMessage - Temporary UI-success message.
+ * @property {number|undefined} state.successMessageTimeout - Timeout ID for clearing messages.
+ *
+ * @property {string|null} state.jumpToSection - Used in Complete Assessment to auto-scroll to a specific section.
+ */
 
 interface AppStateProps {
     isSuperAdmin?: boolean;
@@ -140,12 +182,22 @@ class AppState extends Component<AppStateProps, AppStateState> {
             jumpToSection: null,
         }
 
+        /**
+         * @method setNewTab - Changes the active page/tab displayed within the application.
+         * @param {string} newTab - The name of the tab/view to navigate to. 
+         */
+
         this.setNewTab = (newTab: any) => {
             this.setState({
                 activeTab: newTab
             });
         }
 
+        /**
+         * @method setAddUserTabWithUser - Prepares user editing state and navigates to the AddUser page.
+         * @param {Array<Object>} users - List of user objects.
+         * @param {number|string} userId - The ID of the user being edited.
+         */
 
         this.setAddUserTabWithUser = (users: any, userId: any) => {
             var newUser = null;
@@ -162,6 +214,13 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 addUser: false
             });
         }
+
+        /**
+         * @method setAddCourseTabWithCourse - Prepares course editing or viewing state, depending on user selection.
+         * @param {Array<Object>} courses - List of course objects.
+         * @param {number|string|null} courseId - ID of the course to load, or null when creating a new course.
+         * @param {string} tab - The tab to switch to ("AddCourse", "Users", etc.).
+         */
 
         this.setAddCourseTabWithCourse = (courses: any, courseId: any, tab: any) => {
             if (courses.length === 0 && courseId === null && tab === "AddCourse") {
@@ -195,6 +254,16 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
             }
         }
+
+        /**
+         * @method setAssessmentTaskInstructions - Loads assessment instructions and optionally completed assessments.
+         * @param {Array<Object>} assessmentTasks - List of assessment tasks.
+         * @param {number|string} assessmentTaskId - The assessment task ID.
+         * @param {Array<Object>|Object|null} completedAssessments - Completed assessments or null.
+         * @param {Object} [options={}] - Additional configuration.
+         * @param {boolean} [options.readOnly=false] - Whether the task is read-only.
+         * @param {boolean} [options.skipInstructions=false] - Whether to skip instructions.
+         */
 
         this.setAssessmentTaskInstructions = (assessmentTasks: any, assessmentTaskId: any, completedAssessments: any = null, {
             readOnly = false,
@@ -231,6 +300,13 @@ class AppState extends Component<AppStateProps, AppStateState> {
             });
         }
 
+        /**
+         * @method setConfirmCurrentTeam - Navigates to ConfirmCurrentTeam or CodeRequired.
+         * @param {Array<Object>} assessmentTasks - Assessment tasks.
+         * @param {number|string} assessmentTaskId - The task ID.
+         * @param {boolean} switchTeam - Whether switching teams is required.
+         */
+
         this.setConfirmCurrentTeam = (assessmentTasks: any, assessmentTaskId: any, switchTeam: any) => {
             var assessmentTask = null;
 
@@ -249,6 +325,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
             });
         }
 
+        /**
+         * @method setSelectCurrentTeam - Opens the SelectTeam screen.
+         * @param {Array<Object>} assessmentTasks - Assessment tasks.
+         * @param {number|string} assessmentTaskId - Selected task ID.
+         */
+
         this.setSelectCurrentTeam = (assessmentTasks: any, assessmentTaskId: any) => {
             var assessmentTask = null;
 
@@ -264,6 +346,15 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 unitOfAssessment: assessmentTask["unit_of_assessment"]
             });
         }
+
+        /**
+         * @method setAddAssessmentTaskTabWithAssessmentTask - Opens assessment task editing with selected task details.
+         * @param {Array<Object>} assessmentTasks - Assessment tasks.
+         * @param {number|string} assessmentTaskId - Task ID.
+         * @param {Object} course - The course object.
+         * @param {Array<string>} roleNames - Available role names.
+         * @param {Array<string>} rubricNames - Available rubric names.
+         */
 
         this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks: any, assessmentTaskId: any, course: any, roleNames: any, rubricNames: any) => {
             var newAssessmentTask = null;
@@ -284,6 +375,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
             });
         }
 
+        /**
+         * @method setCompleteAssessmentTaskTabWithID - Opens completed assessment details.
+         * @param {Object|null} assessmentTask - Assessment task or null.
+         */
+
         this.setCompleteAssessmentTaskTabWithID = (assessmentTask: any) => {
             if(assessmentTask && assessmentTask.unit_of_assessment !== undefined){
                 this.setState({
@@ -300,6 +396,16 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 });
             }
         }
+
+        /**
+         * @method setAddTeamTabWithTeam - Opens AddTeam with selected team.
+         * @param {Array<Object>} teams - Team list.
+         * @param {number|string} teamId - Team ID.
+         * @param {Array<Object>} users - Associated user list.
+         * @param {string} tab - Tab to activate.
+         * @param {string|null} addTeamAction - Action descriptor.
+         */
+
         this.setAddTeamTabWithTeam = (teams: any, teamId: any, users: any, tab: any, addTeamAction: any) => {
             var newTeam = null;
 
@@ -318,6 +424,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
             });
         }
 
+        /**
+         * @method setAddTeamTabWithUsers - Opens AddTeam with only users provided.
+         * @param {Array<Object>} users - User list.
+         */
+
         this.setAddTeamTabWithUsers = (users: any) => {
             this.setState({
                 activeTab: "AddTeam",
@@ -325,12 +436,24 @@ class AppState extends Component<AppStateProps, AppStateState> {
             })
         }
 
+        /**
+         * @method resetJump - Clears jumpToSection.
+         */
+
         // Use this as a callback Function to prevent jump data from being sticky.
         this.resetJump = () => {
             this.setState({
                 jumpToSection: null,
             })
         };
+
+        /**
+         * @method setViewCompleteAssessmentTaskTabWithAssessmentTask - Loads a completed assessment view.
+         * @param {Array<Object>|null} completedAssessmentTasks - Completed tasks list.
+         * @param {number|string|null} completedAssessmentId - Completed task ID.
+         * @param {Object|null} chosenAssessmentTask - The assessment task.
+         * @param {string|null} jumpId - Section to auto-scroll to.
+         */
 
         // The ===null section of the next line is not permanent. 
         // The only purpose was to test to see if we could see the "My Assessment Task" 
@@ -378,6 +501,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
             }
         }; 
 
+        /**
+         * @method ViewCTwithAT - Loads completed task view using only assessment task.
+         * @param {Array<Object>} assessmentTasks - Assessment task list.
+         * @param {number|string} atId - Assessment ID.
+         */
+
         this.ViewCTwithAT = (assessmentTasks: any, atId: any) => {
             var selectedAssessment = null;
 
@@ -394,6 +523,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
             });
         };
 
+        /**
+         * @method setEditConsentWithUser - Opens user consent editing.
+         * @param {number|string} userId - User ID.
+         * @param {Array<Object>} users - User list.
+         */
+
         this.setEditConsentWithUser = (userId: any, users: any) => {
             var newUser = null;
 
@@ -408,6 +543,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 userConsent: newUser
             });
         }
+
+        /**
+         * @method setStudentDashboardWithCourse - Navigates student to dashboard with chosen course.
+         * @param {number|string} courseId - Course ID.
+         * @param {Array<Object>} courses - Course list.
+         */
 
         this.setStudentDashboardWithCourse = (courseId: any, courses: any) => {
             var chosenCourse = null;
@@ -424,6 +565,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
             });
         }
 
+        /**
+         * @method setAddCustomRubric - Opens custom rubric creation.
+         * @param {Object} addCustomRubric - Rubric config object.
+         */
+
         this.setAddCustomRubric = (addCustomRubric: any) => {
 
             this.setState({
@@ -431,6 +577,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 addCustomRubric: addCustomRubric
             });
         }
+
+        /**
+         * @method confirmCreateResource - Handles post-save navigation after creating resources.
+         * @param {string} resource - Resource type (User, Course, Task, etc.).
+         * @param {number} [delay=1000] - Navigation delay.
+         */
 
         this.confirmCreateResource = (resource: any, delay = 1000) => {
             setTimeout(() => {
@@ -507,6 +659,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
             }, delay);
         }
 
+        /**
+         * @method Reset - Clears a list of HTML input elements.
+         * @param {Array<string>} listOfElements - Array of element IDs.
+         */
+
         this.Reset = (listOfElements: any) => {
             for (var element = 0; element < listOfElements.length; element++) {
                 const el = document.getElementById(listOfElements[element]) as HTMLInputElement;
@@ -519,6 +676,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
             }
         }
         
+        /**
+         * @method setSuccessMessage - Shows a temporary success message.
+         * @param {string|null} newSuccessMessage - Message to display.
+         */
+
         this.setSuccessMessage = (newSuccessMessage: any) => {
             clearTimeout(this.state.successMessageTimeout);
             

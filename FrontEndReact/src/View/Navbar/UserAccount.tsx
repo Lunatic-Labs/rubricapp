@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton, Dialog, DialogContent, DialogTitle } from '@mui/material';
@@ -10,6 +9,30 @@ import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Email, AccountCircle } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
+
+/**
+ * Creates an instance of the UserAccount component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * 
+ * @property {string|null} state.errorMessage - Error message displayed for password validation or API errors.
+ * @property {boolean} state.isPasswordSet - Indicates whether the user successfully changed their password.
+ * @property {string} state.password - The new password entered by the user.
+ * @property {string} state.confirmationPassword - The confirmation password (must match `password`).
+ * @property {boolean} state.showPassword - Toggles visibility of the password text field.
+ * @property {Object|null} state.user - Logged-in user information loaded from cookies.
+ * @property {boolean} state.resetPasswordDialogOpen - Whether the password reset modal dialog is open.
+ *
+ * @property {Object} state.errors - Input-specific error messages.
+ * @property {string} state.errors.password - Error message for password input.
+ * @property {string} state.errors.confirmationPassword - Error message for confirmation password input.
+ *
+ * @property {Object} state.PasswordStrength - Enum representing password strength.
+ * @property {string} state.PasswordStrength.STRONG - Strong password flag.
+ * @property {string} state.PasswordStrength.MEDIUM - Medium password flag.
+ * @property {string} state.PasswordStrength.WEAK - Weak password flag.
+ */
 
 interface UserAccountProps {
     navbar?: any;
@@ -67,6 +90,13 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
         this.handleDialogClose = this.handleDialogClose.bind(this);
     }
 
+    /**
+     * @method handleChange - Handles updates to password or confirmation password fields while applying validation rules:
+     *  - Required fields.
+     *  - Maximum length not exceeding MAX_PASSWORD_LENGTH.
+     * @param {*} e - the input event.
+     */
+
     // handleChange has been altered to account for the 20 character limit for password
     handleChange(e: any) {
         const { id, value } = e.target;
@@ -96,16 +126,27 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
     }
 
 
+    /**
+     * @method handleResetPasswordClick - Opens the password reset dialog/modal.
+     */
     handleResetPasswordClick() {
         this.setState({ resetPasswordDialogOpen: true });
     }
 
+    /**
+     * @method handleDialogClose - Closes the password reset dialog and clears temporary password input values.
+     */
     handleDialogClose() {
         this.setState({ resetPasswordDialogOpen: false });
     }
 
 
 
+    /**
+     * @method getIcon - Returns the appropriate password strength icon component (CheckIcon or ErrorOutlineIcon).
+     * @param {enum} strength - The strength of the password.
+     * @returns {import} Returns the Material UI icon component.
+     */
 
     getIcon(strength: any) {
         switch (strength) {
@@ -118,6 +159,12 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                 return ErrorOutlineIcon;
         }
     }
+
+    /**
+     * @method generateColors - Returns the appropriate strength bar colors (weak / medium / strong) for UI visualization.
+     * @param {enum} strength - The strength of the password.
+     * @returns {string} Returns the appropriate strength bar colors.
+     */
 
     generateColors(strength: any) {
         const COLORS = {
@@ -139,6 +186,9 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
         }
     }
 
+    /**
+     * @method handleTogglePasswordVisibility - Toggles whether the password field displays plain text or masked characters.
+     */
     handleTogglePasswordVisibility() {
         this.setState({
             showPassword: !this.state.showPassword,
@@ -148,6 +198,17 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
             },
         });
     }
+
+    /**
+     * @method testPasswordStrength - Computes password strength using criteria including:
+     *  - Minimum length.
+     *  - Uppercase letters.
+     *  - Lowercase letters.
+     *  - Numbers.
+     *  - Special characters.
+     * @param {string} password - The password entered by the user.
+     * @returns {string} Returns the password strength level: "STRONG", "MEDIUM", "WEAK".
+     */
 
     testPasswordStrength(password: any) {
         const atLeastMinimumLength = (password: any) => new RegExp(/(?=.{8,})/).test(password);
@@ -172,7 +233,18 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
         return 'WEAK';
     }
 
-    // 2 new 'validation' / error handling statemetns where added below
+     /**
+     * @method setPassword - Validates user input and submits the new password to the backend via a PUT request, performs the following checks:
+     *  - Password cannot be empty.
+     *  - Confirmation password cannot be empty.
+     *  - Password fields cannot exceed MAX_PASSWORD_LENGTH.
+     *  - Passwords must match.
+     *  - Password must be STRONG.
+     * 
+     * On successful API submission, transitions the component to show the Login page.
+     */
+
+    // 2 new 'validation' / error handling statements were added below
     // both check that character length does not exceed 20
     setPassword() {
         const cookies = new Cookies();
@@ -272,6 +344,9 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
             );
     }
 
+    /**
+     * @method componentDidMount - Loads the logged-in user from cookies and populates `state.user`.
+     */
     componentDidMount() {
         const cookies = new Cookies();
         const user = cookies.get('user');

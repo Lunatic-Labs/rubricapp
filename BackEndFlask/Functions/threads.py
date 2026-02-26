@@ -3,6 +3,7 @@ import threading
 from core import app
 from models.email_validation import *
 from models.logger import logger
+from enums.Bounced_email import BouncedEmailFields
 
 
 def spawn_thread(f, *args, **kwargs):
@@ -58,10 +59,13 @@ def validate_pending_emails():
                     return
 
                 for bounce in bounced:
-                    # TODO: Find solution if the student's email in the message is not there.
-                    #       Will this ever happen?
-                    # if bounce["to"]:
-                    send_bounced_email_notification(data[bounce['to']], bounce['msg'], bounce['main_failure'])
+                    send_bounced_email_notification_params = {
+                        'dest_addr': data[bounce[BouncedEmailFields.TO.value]],
+                        'bounced_email': bounce[BouncedEmailFields.TO.value],
+                        'msg': bounce[BouncedEmailFields.MSG.value],
+                        'failure': bounce[BouncedEmailFields.MAIN_FAILURE.value],
+                    }
+                    send_bounced_email_notification(**send_bounced_email_notification_params)
 
         except Exception as e:
             logger.error("Failed to spin up thread: " + str(e))

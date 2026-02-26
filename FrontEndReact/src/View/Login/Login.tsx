@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import ErrorMessage from '../Error/ErrorMessage';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import Cookies from 'universal-cookie';
 import AppState from '../Navbar/AppState';
@@ -11,6 +10,27 @@ import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdorn
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
+
+/**
+ * Creates an instance of the login component.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * 
+ * @property {boolean|null} state.isLoaded - Indicates if the login request or auth refresh has completed.
+ * @property {string|null} state.errorMessage - Error message for failed login or expired session.
+ * @property {boolean|null} state.loggedIn - Whether the user is authenticated.
+ * @property {boolean|null} state.hasSetPassword - Whether the authenticated user has set their password.
+ * @property {boolean|null} state.resettingPassword - Whether the password reset flow should be shown.
+ * @property {boolean} state.isRefreshing - Indicates if the component is refreshing the access token in the background.
+ * @property {string} state.email - The user-entered email.
+ * @property {string} state.password - The user-entered password.
+ * @property {boolean} state.showPassword - Controls the visibility of the password text.
+ * 
+ * @property {Object} state.errors - Input-specific error messages.
+ * @property {string} state.errors.email - Error message for email field.
+ * @property {string} state.errors.password - Error message for password field.
+ */
 
 interface LoginState {
     isLoaded: any;
@@ -31,7 +51,6 @@ interface LoginState {
 class Login extends Component<{}, LoginState> {
     cookies: any;
     handleChange: any;
-    handleNewAccessToken: any;
     handleTogglePasswordVisibility: any;
     keyPress: any;
     login: any;
@@ -56,6 +75,13 @@ class Login extends Component<{}, LoginState> {
                 password: '',
             }
         }
+
+        /**
+         * @method handleChange - Updates email or password fields while applying validation rules such as:
+         *  - Required fields.
+         *  - Maximum password length.
+         * @param {*} e - the input event.
+         */
 
         // handleChange has been altered to account for the 20 character limit for password
         this.handleChange = (e: any) => {
@@ -83,6 +109,9 @@ class Login extends Component<{}, LoginState> {
             } as any);
         };
 
+        /**
+         * @method handleTogglePasswordVisibility - Toggles whether the password input is displayed as text or masked.
+         */
         this.handleTogglePasswordVisibility = () => {
             this.setState({
                 showPassword: !this.state.showPassword,
@@ -93,6 +122,11 @@ class Login extends Component<{}, LoginState> {
             });
         };
 
+        /**
+         * @method login - Attempts to authenticate the user against the backend:
+         *  - Stores access + refresh tokens on success.
+         *  - Displays backend error message on failure.
+         */
         this.login = () => {
             var {
                 email,
@@ -161,80 +195,18 @@ class Login extends Component<{}, LoginState> {
             }
         };
 
-        this.handleNewAccessToken = () => {
-            const refreshToken = this.cookies.get('refresh_token');
-            const user = this.cookies.get('user');
-
-            // Check if we have the necessary data
-            if (!refreshToken || !user || !user["user_id"]) {
-                this.cookies.remove('access_token');
-                this.cookies.remove('refresh_token');
-                this.cookies.remove('user');
-
-                this.setState({
-                    isLoaded: true,
-                    loggedIn: false,
-                    isRefreshing: false,
-                    errorMessage: "Session expired. Please log in again."
-                });
-                return;
-            }
-
-            const userId = user["user_id"];
-
-            fetch(
-                apiUrl + `/refresh?user_id=${userId}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + refreshToken
-                    }
-                }
-            )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if (result["success"]) {
-                            this.cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
-
-                            this.setState({
-                                loggedIn: true,
-                                isRefreshing: false
-                            });
-                        } else {
-                            this.cookies.remove('access_token');
-                            this.cookies.remove('refresh_token');
-                            this.cookies.remove('user');
-
-                            this.setState({
-                                isLoaded: true,
-                                loggedIn: false,
-                                isRefreshing: false,
-                                errorMessage: "Session expired. Please log in again."
-                            });
-                        }
-                    },
-                    (error) => {
-                        this.cookies.remove('user');
-                        this.cookies.remove('access_token');
-                        this.cookies.remove('refresh_token');
-
-                        this.setState({
-                            isLoaded: true,
-                            loggedIn: false,
-                            isRefreshing: false,
-                            errorMessage: "Session expired. Please log in again.",
-                        });
-                    }
-                )
-        }
-
+        /**
+         * @method resetPassword - Activates the password-reset workflow by navigating to <ValidateReset>.
+         */
         this.resetPassword = () => {
             this.setState(() => ({
                 resettingPassword: true
             }));
         }
 
+        /**
+         * @method logout - Clears login-related state and resets UI to pre-authentication mode.
+         */
         this.logout = () => {
             this.setState({
                 isLoaded: null,
@@ -244,6 +216,11 @@ class Login extends Component<{}, LoginState> {
                 resettingPassword: null
             });
         }
+
+        /**
+         * @method keyPress - Listens for the Enter key to submit the login form.
+         * @param {*} e - the keyboard input event.
+         */
 
         this.keyPress = (e: any) => {
             if (e.key === 'Enter') {
@@ -257,6 +234,12 @@ class Login extends Component<{}, LoginState> {
         this.checkAuthStatus();
     }
 
+    /**
+     * @method checkAuthStatus - Determines whether:
+     *  - User has valid tokens → login automatically.
+     *  - User has expired tokens → require login again.
+     *  - User state is inconsistent → clear cookies and force logout.
+     */
     checkAuthStatus = () => {
         const hasAccessToken = !!this.cookies.get('access_token');
         const hasRefreshToken = !!this.cookies.get('refresh_token');
@@ -267,15 +250,8 @@ class Login extends Component<{}, LoginState> {
             return;
         }
 
-        // Has refresh token but no access token - try to refresh
-        if (!hasAccessToken && hasRefreshToken && hasUser && !this.state.isRefreshing) {
-            this.setState({ isRefreshing: true });
-            this.handleNewAccessToken();
-            return;
-        }
-
         // Inconsistent state - clear everything
-        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken)) {
+        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken) || !hasUser) {
             this.cookies.remove('access_token');
             this.cookies.remove('refresh_token');
             this.cookies.remove('user');
@@ -290,10 +266,11 @@ class Login extends Component<{}, LoginState> {
         }
 
         // Has both tokens - user is logged in
-        if (hasAccessToken && hasRefreshToken) {
+        if (hasAccessToken && hasRefreshToken && hasUser) {
             this.setState({ loggedIn: true });
         }
     }
+
 
     render() {
         const {
