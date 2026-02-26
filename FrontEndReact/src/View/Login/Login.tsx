@@ -51,7 +51,6 @@ interface LoginState {
 class Login extends Component<{}, LoginState> {
     cookies: any;
     handleChange: any;
-    handleNewAccessToken: any;
     handleTogglePasswordVisibility: any;
     keyPress: any;
     login: any;
@@ -197,79 +196,6 @@ class Login extends Component<{}, LoginState> {
         };
 
         /**
-         * @method handleNewAccessToken - Attempts to refresh an expired access token using the stored refresh token:
-         *  - Updates tokens on success.
-         *  - Forces logout on failure.
-         */
-        this.handleNewAccessToken = () => {
-            const refreshToken = this.cookies.get('refresh_token');
-            const user = this.cookies.get('user');
-
-            // Check if we have the necessary data
-            if (!refreshToken || !user || !user["user_id"]) {
-                this.cookies.remove('access_token');
-                this.cookies.remove('refresh_token');
-                this.cookies.remove('user');
-
-                this.setState({
-                    isLoaded: true,
-                    loggedIn: false,
-                    isRefreshing: false,
-                    errorMessage: "Session expired. Please log in again."
-                });
-                return;
-            }
-
-            const userId = user["user_id"];
-
-            fetch(
-                apiUrl + `/refresh?user_id=${userId}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': 'Bearer ' + refreshToken
-                    }
-                }
-            )
-                .then(res => res.json())
-                .then(
-                    (result) => {
-                        if (result["success"]) {
-                            this.cookies.set('access_token', result['headers']['access_token'], { 'sameSite': 'strict' });
-
-                            this.setState({
-                                loggedIn: true,
-                                isRefreshing: false
-                            });
-                        } else {
-                            this.cookies.remove('access_token');
-                            this.cookies.remove('refresh_token');
-                            this.cookies.remove('user');
-
-                            this.setState({
-                                isLoaded: true,
-                                loggedIn: false,
-                                isRefreshing: false,
-                                errorMessage: "Session expired. Please log in again."
-                            });
-                        }
-                    },
-                    (error) => {
-                        this.cookies.remove('user');
-                        this.cookies.remove('access_token');
-                        this.cookies.remove('refresh_token');
-
-                        this.setState({
-                            isLoaded: true,
-                            loggedIn: false,
-                            isRefreshing: false,
-                            errorMessage: "Session expired. Please log in again.",
-                        });
-                    }
-                )
-        }
-
-        /**
          * @method resetPassword - Activates the password-reset workflow by navigating to <ValidateReset>.
          */
         this.resetPassword = () => {
@@ -324,15 +250,8 @@ class Login extends Component<{}, LoginState> {
             return;
         }
 
-        // Has refresh token but no access token - try to refresh
-        if (!hasAccessToken && hasRefreshToken && hasUser && !this.state.isRefreshing) {
-            this.setState({ isRefreshing: true });
-            this.handleNewAccessToken();
-            return;
-        }
-
         // Inconsistent state - clear everything
-        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken)) {
+        if ((!hasRefreshToken && hasUser) || (hasAccessToken && !hasRefreshToken) || !hasUser) {
             this.cookies.remove('access_token');
             this.cookies.remove('refresh_token');
             this.cookies.remove('user');
@@ -347,10 +266,11 @@ class Login extends Component<{}, LoginState> {
         }
 
         // Has both tokens - user is logged in
-        if (hasAccessToken && hasRefreshToken) {
+        if (hasAccessToken && hasRefreshToken && hasUser) {
             this.setState({ loggedIn: true });
         }
     }
+
 
     render() {
         const {
