@@ -126,10 +126,10 @@ def start_server():
         if SYSTEM == "Darwin":
             exit_code = cmd("brew services start redis", "start_server()")
         else:
-            is_active = cmd("systemctl is-active redis-service > /dev/null", "start_server()")
+            is_active = cmd("systemctl is-active redis-server.service > /dev/null", "start_server()")
 
             if is_active != 0:  # 0 = active
-                exit_code = cmd("systemctl start redis-service", "start_server()")
+                exit_code = cmd("systemctl start redis-server.service", "start_server()")
 
                 if exit_code != 0:
                     err(f"Failed to start redis server. Exit code: {exit_code}")
