@@ -9,7 +9,7 @@ import {
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
     clickFirstEnabledElementWithAriaLabel
-} from "../../../../../testUtilities.js";
+} from "../../../../../testUtilities";
 
 import {
     demoAdminPassword
