@@ -8,7 +8,8 @@ import Cookies from 'universal-cookie';
 import Loading from '../../../Loading/Loading';
 import { generateUnitList, UnitType } from './unit';
 import { CheckinsTracker } from './cat_utils';
-import { ROLE } from '../../../../Enums/Role';
+import { ROLE, isEqualOrHigherPrivilege } from '../../../../Enums/Role';
+import isFQDN from 'validator/lib/isFQDN';
 
 interface CompleteAssessmentTaskState {
     errorMessage: string | null;
@@ -122,7 +123,7 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
         const isTeams = this.state.usingTeams;
-        if (this.state.currentUserRole.role_id <= ROLE.TA_INSTRUCTOR){
+        if (isEqualOrHigherPrivilege(this.state.currentUserRole.role_id, ROLE.TA_INSTRUCTOR)){
             this.callPollingFunction();
             this.intervalId = setInterval(this.callPollingFunction, 10000);
         }
