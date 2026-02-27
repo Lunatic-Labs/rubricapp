@@ -9,7 +9,6 @@ import Loading from '../../../Loading/Loading';
 import { generateUnitList, UnitType } from './unit';
 import { CheckinsTracker } from './cat_utils';
 import { ROLE, isEqualOrHigherPrivilege } from '../../../../Enums/Role';
-import isFQDN from 'validator/lib/isFQDN';
 
 interface CompleteAssessmentTaskState {
     errorMessage: string | null;
