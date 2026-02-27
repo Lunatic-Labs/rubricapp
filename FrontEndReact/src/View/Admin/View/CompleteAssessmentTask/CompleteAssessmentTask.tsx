@@ -8,7 +8,7 @@ import Cookies from 'universal-cookie';
 import Loading from '../../../Loading/Loading';
 import { generateUnitList, UnitType } from './unit';
 import { CheckinsTracker } from './cat_utils';
-import { ROLE, Role } from '../../../../Enums/Role';
+import { ROLE } from '../../../../Enums/Role';
 
 interface CompleteAssessmentTaskState {
     errorMessage: string | null;
