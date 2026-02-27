@@ -1,0 +1,432 @@
+/* Export Graph Comparison Styles */
+/* Matches the mockup design while using project conventions */
+
+/* Page Container */
+.export-graph-container {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding: 24px 48px;
+  padding-bottom: 240px; /* Space for fixed comparison drawer */
+  background-color: #F8F8F8;
+  min-height: calc(100vh - 200px);
+}
+
+/* Header */
+.export-graph-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-title-area h4 {
+  margin: 0;
+  font-family: 'Roboto', sans-serif;
+  font-weight: 700;
+}
+
+.selection-info {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 4px;
+  margin-bottom: 0;
+}
+
+.selection-info strong {
+  color: #2E8BEF;
+}
+
+.header-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+/* Filter Toggle Bar */
+.filter-toggle-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 20px;
+  background: #fff;
+  border-radius: 8px;
+  border-left: 3px solid #2E8BEF;
+}
+
+.active-filters {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.filter-chip {
+  background: #e8f1fc !important;
+  color: #2E8BEF !important;
+}
+
+.no-filters {
+  color: #999;
+  font-size: 0.9rem;
+}
+
+/* Filter Panel */
+.filter-panel {
+  background: #fff;
+  border-radius: 10px;
+  border-top: 3px solid #2E8BEF;
+  padding: 20px;
+  margin-top: 8px;
+}
+
+.filter-row {
+  display: flex;
+  gap: 16px;
+  flex-wrap: wrap;
+  align-items: flex-end;
+}
+
+.filter-item {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 160px;
+  flex: 1;
+}
+
+.filter-item.date-range {
+  min-width: 280px;
+}
+
+.filter-label {
+  font-size: 0.8rem !important;
+  font-weight: 500 !important;
+  color: #555 !important;
+  margin-bottom: 4px;
+}
+
+.date-inputs {
+  display: flex;
+  gap: 8px;
+}
+
+.date-inputs .MuiTextField-root {
+  flex: 1;
+}
+
+.filter-actions {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  margin-left: auto;
+}
+
+.clear-link {
+  color: #2E8BEF !important;
+  font-size: 0.85rem !important;
+  cursor: pointer;
+}
+
+.clear-link:hover {
+  text-decoration: underline !important;
+}
+
+/* Graph Grid - 3 columns */
+.graph-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+@media (max-width: 1200px) {
+  .graph-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .graph-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .export-graph-container {
+    padding: 16px;
+  }
+
+  .export-graph-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+  }
+}
+
+/* Graph Card */
+.graph-card {
+  background: #fff;
+  border-radius: 10px;
+  overflow: hidden;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  border: 2px solid transparent;
+}
+
+.graph-card:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  transform: translateY(-2px);
+}
+
+.graph-card.selected {
+  border-color: #2E8BEF;
+}
+
+.graph-card.selected::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: #2E8BEF;
+}
+
+/* Graph Preview Area */
+.graph-preview {
+  background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+  height: 220px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #aaa;
+  font-size: 0.85rem;
+  position: relative;
+  padding: 8px;
+}
+
+.graph-card-checkbox {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+}
+
+/* Graph Card Info */
+.graph-card-info {
+  padding: 14px 16px;
+  border-top: 1px solid #eee;
+}
+
+.graph-card-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+  margin: 0 0 6px 0;
+}
+
+.graph-card-meta {
+  font-size: 0.8rem;
+  color: #888;
+  margin: 0;
+}
+
+/* No Graphs Message */
+.no-graphs-message {
+  grid-column: 1 / -1;
+  text-align: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.no-graphs-message p {
+  margin: 0;
+  font-size: 1rem;
+}
+
+/* Comparison Drawer */
+.comparison-drawer {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: #fff;
+  border-top: 3px solid #2E8BEF;
+  z-index: 200;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 48px;
+  border-bottom: 1px solid #eee;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.drawer-header:hover {
+  background: #fafafa;
+}
+
+.drawer-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.drawer-title h5 {
+  margin: 0;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.drawer-content {
+  padding: 16px 48px 20px;
+}
+
+/* Comparison Grid - 4 slots */
+.comparison-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+@media (max-width: 768px) {
+  .comparison-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .drawer-header,
+  .drawer-content {
+    padding-left: 16px;
+    padding-right: 16px;
+  }
+}
+
+.comparison-slot {
+  background: #f5f5f5;
+  border: 2px dashed #ddd;
+  border-radius: 8px;
+  height: 100px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #999;
+  font-size: 0.85rem;
+  transition: all 0.3s ease;
+}
+
+.comparison-slot.filled {
+  background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+  border: 2px solid #2E8BEF;
+  position: relative;
+}
+
+.slot-remove-btn {
+  position: absolute !important;
+  top: 4px;
+  right: 4px;
+  padding: 2px !important;
+  color: #999 !important;
+  transition: color 0.2s ease !important;
+}
+
+.slot-remove-btn:hover {
+  color: #E53935 !important;
+  background-color: rgba(229, 57, 53, 0.08) !important;
+}
+
+.slot-label {
+  font-size: 0.75rem;
+  color: #555;
+  text-align: center;
+  padding: 8px;
+  line-height: 1.4;
+}
+
+.drawer-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+/* Preview Export Title (rendered on PDF) */
+.preview-export-title {
+  font-size: 1.3rem;
+  font-weight: 700;
+  color: #333;
+  text-align: center;
+  padding: 12px 16px 8px;
+}
+
+/* Preview Dialog Grid - 2x2 layout */
+.preview-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.preview-card {
+  background: #fff;
+  border: 1px solid #e0e0e0;
+  border-radius: 10px;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  cursor: grab;
+  transition: opacity 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.preview-card:active {
+  cursor: grabbing;
+}
+
+.preview-card.dragging {
+  opacity: 0.4;
+}
+
+.preview-card.drag-over {
+  border-color: #2E8BEF;
+  border-width: 2px;
+  transform: scale(1.02);
+}
+
+.preview-card-header {
+  padding: 12px 16px;
+  border-bottom: 1px solid #eee;
+  flex-shrink: 0;
+}
+
+.preview-card-title {
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: #333;
+}
+
+.preview-card-meta {
+  font-size: 0.8rem;
+  color: #888;
+  margin-top: 4px;
+}
+
+.preview-card-graph {
+  min-height: 220px;
+  padding: 12px;
+}
+
+@media (max-width: 768px) {
+  .preview-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Primary Color Overrides */
+.MuiButton-contained {
+  background-color: #2E8BEF !important;
+}
+
+.MuiButton-contained:hover {
+  background-color: #2578d4 !important;
+}
+
+.MuiButton-contained:disabled {
+  background-color: #bcbcbc !important;
+}

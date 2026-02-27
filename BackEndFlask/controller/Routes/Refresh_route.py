@@ -3,10 +3,11 @@ from models.user import get_user
 from controller import bp
 from .User_routes import UserSchema
 from controller.Route_response import *
-from flask_jwt_extended import jwt_required, create_access_token, create_refresh_token
+from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import AuthCheck, bad_token_check
 import datetime
 from controller.security.blacklist import is_token_blacklisted, blacklist_token
+from controller.security.utility import create_new_tokens
 
 @bp.route('/refresh', methods=['POST'])
 @jwt_required(refresh=True)
@@ -30,17 +31,7 @@ def refresh_token():
         # Convert user_id to string for JWT identity
         user_id_str = str(user_id)
         
-        # Create new access token (60 minutes)
-        access_token = create_access_token(
-            identity=user_id_str, 
-            expires_delta=datetime.timedelta(minutes=60)
-        )
-        
-        # Create new refresh token (7 days)
-        new_refresh_token = create_refresh_token(
-            identity=user_id_str, 
-            expires_delta=datetime.timedelta(days=7)
-        )
+        access_token, new_refresh_token = create_new_tokens(user_id_str)
         
         return create_good_response(
             user, 

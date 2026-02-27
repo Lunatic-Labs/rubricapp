@@ -9,6 +9,7 @@ from sendgrid.helpers.mail import Mail
 from controller.Routes.RouteExceptions import EmailFailureException
 from constants.Email import DEFAULT_SENDER_EMAIL
 from enums.Email_type import EmailContentType
+from enums.Bounced_email import BouncedEmailFields
 
 
 def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
@@ -59,11 +60,11 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
             email_json = json.loads(decoded_body)
             for entry in email_json:
                 bounced_emails.append({
-                    'id': entry['created'],
-                    'to': entry['email'],
-                    'msg': entry['status'],
-                    'sender': sender,
-                    'main_failure': entry['reason'],
+                    BouncedEmailFields.ID.value: entry['created'],
+                    BouncedEmailFields.TO.value: entry['email'],
+                    BouncedEmailFields.MSG.value: entry['status'],
+                    BouncedEmailFields.SENDER.value: sender,
+                    BouncedEmailFields.MAIN_FAILURE.value: entry['reason'],
                 })
 
             return bounced_emails if len(bounced_emails) != 0 else None
@@ -72,17 +73,18 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
         config.logger.error("Could not check for bounced email: " + str(e))
         raise EmailFailureException()
 
-def send_bounced_email_notification(dest_addr: str, msg: str, failure: str) -> None:
+def send_bounced_email_notification(dest_addr: str, bounced_email: str, msg: str, failure: str) -> None:
     """
     Sends bounced email notification to the user.
 
     Args:
-        dest_addr (str): Recipient of the email.
-        msg (str)      : Human-friendly reason for the failure.
-        failure (str)  : Specific error from the system.
+        dest_addr (str)    : Recipient of the email.
+        bounced_email (str): Address of the email that bounced.
+        msg (str)          : Human-friendly reason for the failure.
+        failure (str)      : Specific error from the system.
     """
     subject = "Student's email failed to send."
-    message = f'''The email could not send due to:
+    message = f'''The email to {bounced_email} could not be sent due to:
 
                 {msg}
 
