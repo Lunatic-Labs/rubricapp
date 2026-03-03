@@ -32,13 +32,13 @@ interface Role {
 }
 
 interface Rubric {
-  rubric_id: string;
+  rubric_id: number;
   rubric_name: string;
 }
 
 interface Category {
-  category_id: string;
-  rubric_id: string;
+  category_id: number;
+  rubric_id: number;
   [key: string]: any;
 }
 
@@ -343,7 +343,7 @@ export function parseCategoriesByRubrics(
     for (let categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
       const category = categories[categoryIndex];
       if (!category || category.rubric_id == null) continue;
-      if (category.rubric_id === rubricId) {
+      if (category.rubric_id === Number(rubricId)) {
         allCategoriesByRubrics[rubricId] = [
           ...(allCategoriesByRubrics[rubricId] || []),
           category
