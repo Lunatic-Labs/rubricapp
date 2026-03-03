@@ -171,8 +171,6 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
         const {uploadRequestStatus} = this.state; 
         const isLoading: boolean = uploadRequestStatus === REQUEST_STATE.LOADING;
 
-        console.log(this.state.errorMessage);
-
         return (
             <Box>
                 {this.state.errorMessage &&
