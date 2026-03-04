@@ -144,6 +144,11 @@ def get_ratings():
                 submission_time = row[4]  # kept for shape consistency, not used here
                 first_name = row[6] if len(row) > 6 else None
                 last_name = row[7] if len(row) > 7 else None
+                completed_by = row[8] if len(row) > 8 else None
+                team_user_id = row[9] if len(row) > 9 else None
+
+                # Mark whether this team member is the one who submitted the assessment
+                is_assessor = (completed_by is not None and completed_by == team_user_id)
 
                 # For teams we care about time from notification_sent -> feedback_time.
                 baseline_time = notification_sent_time
@@ -158,6 +163,7 @@ def get_ratings():
                         "last_name": last_name,
                         "lag_time": lag_time_str,
                         "notification_sent": notification_sent_time is not None,
+                        "is_assessor": is_assessor,
                     }
                 )
 
