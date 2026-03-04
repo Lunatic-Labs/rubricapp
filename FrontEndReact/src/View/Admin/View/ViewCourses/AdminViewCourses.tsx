@@ -1,14 +1,14 @@
 import '@testing-library/jest-dom';
 import { render, waitFor, screen, fireEvent } from "@testing-library/react";
 import { beforeEach, afterEach, test, describe, jest, expect} from "@jest/globals";
-import Login from "../../Login/Login";
+import Login from "../../../Login/Login";
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel
-} from "../../../testUtilities";
-import { demoAdminPassword } from "../../../App";
+} from "../../../../testUtilities"; // Adjusted the path to match the correct location
+import { demoAdminPassword } from "../../../../App"; // Adjusted the path to match the correct location
 
 // Mock universal-cookie
 jest.mock('universal-cookie');
@@ -85,7 +85,7 @@ const createCookieMock = (initialStore: Record<string, any> = {}) => {
 // So the fallback mock extracts the resource name from the URL and wraps it
 const makeGenericSuccessResponse = (url: string) => {
     const urlPath = url.split('?')[0];
-    const resource = urlPath.split('/').filter(Boolean).pop() ?? 'data';
+    const resource = (urlPath ?? '').split('/').filter(Boolean).pop() ?? 'data';
     return {
         success: true,
         content: {

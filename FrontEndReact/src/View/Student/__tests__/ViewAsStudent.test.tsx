@@ -1,6 +1,7 @@
 /// <reference types="@testing-library/jest-dom" />
+import '@testing-library/jest-dom';
 import { render, waitFor, screen, fireEvent } from "@testing-library/react";
-import { beforeEach, afterEach, test, describe, jest, expect } from "@jest/globals";
+import { beforeEach, afterEach, test, describe, jest} from "@jest/globals";
 import Login from "../../Login/Login";
 import {
     clickElementWithAriaLabel,
@@ -9,7 +10,6 @@ import {
     clickFirstElementWithAriaLabel
 } from "../../../testUtilities";
 import { demoAdminPassword } from "../../../App";
-import '@testing-library/jest-dom';
 
 // Mock universal-cookie
 jest.mock('universal-cookie');
@@ -130,7 +130,7 @@ describe("View as Student Feature Tests", () => {
 
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(ct);
-        }, { timeout: 5000 });
+        }, { timeout: 100 });
     });
 
     test("ViewAsStudent.test.js Test 3: Should show 'View as Student' button on course page", async () => {
@@ -154,7 +154,7 @@ describe("View as Student Feature Tests", () => {
 
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(vasb);
-        }, { timeout: 3000 });
+        }, { timeout: 100 });
     });
 
     test("ViewAsStudent.test.js Test 4: Should switch to student view when 'View as Student' is clicked", async () => {
@@ -193,7 +193,7 @@ describe("View as Student Feature Tests", () => {
                     })
                 })
             );
-        }, { timeout: 5000 });
+        }, { timeout: 100 });
 
         await waitFor(() => {
             const savedCreds = sessionStorage.getItem('adminCredentials');
@@ -245,7 +245,7 @@ describe("View as Student Feature Tests", () => {
 
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(mat);
-        }, { timeout: 5000 });
+        }, { timeout: 100 });
 
         await waitFor(() => {
             const switchBackButton = screen.queryByText(/Switch Back to Admin/i);
@@ -358,7 +358,7 @@ describe("View as Student Feature Tests", () => {
             expect(window.alert).toHaveBeenCalledWith(
                 expect.stringContaining("Failed to switch to student view")
             );
-        }, { timeout: 5000 });
+        }, { timeout: 100 });
 
         expect(sessionStorage.getItem('adminCredentials')).toBeNull();
         expect(window.location.reload).not.toHaveBeenCalled();
@@ -397,6 +397,6 @@ describe("View as Student Feature Tests", () => {
                 call[0].includes('/test_student_token')
             );
             expect(fetchCalls.length).toBe(1);
-        }, { timeout: 5000 });
+        }, { timeout: 100 });
     });
 });

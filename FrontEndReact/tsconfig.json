@@ -4,7 +4,7 @@
     "module": "esnext",
     "target": "esnext",
     "lib": ["esnext", "dom", "dom.iterable"],
-    "types": ["jest", "react", "@testing-library/jest-dom"],
+    "types": ["jest", "@testing-library/jest-dom"],  // ← remove /extend-expect
     
     "sourceMap": true,
     "declaration": true,
