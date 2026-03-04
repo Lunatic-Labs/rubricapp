@@ -7,6 +7,10 @@ export interface User {
     first_name: string
     /** Last name of the user. */
     last_name: string
+    /** Email of the user. */
+    email: string
+    /** Name of the team to which the user belongs. */
+    team_name?: string | null
 };
 
 /*
