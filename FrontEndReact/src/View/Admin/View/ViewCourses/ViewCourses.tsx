@@ -141,6 +141,8 @@ class ViewCourses extends Component<any> {
                 <IconButton id={courseId}
                 role = "img" aria-label="viewCourseIconButton"
               onClick={() => {
+                navbar.setState({ user: null, addUser: null });
+                navbar.setAddCourseTabWithCourse(courses, courseId, "Users");
                 // If viewing as student, always go to student dashboard
                 if (isViewingAsStudent) {
                   navbar.setStudentDashboardWithCourse(courseId, courses);
