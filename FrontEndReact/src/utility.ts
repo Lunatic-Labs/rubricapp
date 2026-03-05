@@ -3,6 +3,7 @@ import Cookies from 'universal-cookie';
 import * as eventsource from "eventsource-client";
 import { Component as ReactComponent } from 'react';
 import { HTTP_STATUS } from './Enums/HttpStatusCodes';
+import { refreshAccessTokens } from './refreshLock';
 
 interface FetchOptions {
   dest?: string;
@@ -15,11 +16,12 @@ interface ApiResponse {
   status?: number;
   content?: Record<string, any>;
   message?: string;
+  msg?: string;//Yes both versions can be sent back from the backend
   headers?: Record<string, string>;
   errorMessage?: string;
 }
 
-interface User {
+export interface User {
   user_id: string;
   [key: string]: any;
 }
@@ -90,6 +92,22 @@ function createApiRequestUrl(fetchURL: string, cookies: Cookies): string {
   const hasQueryParams = fetchURL.indexOf('?') > -1;
   const separator = hasQueryParams ? '&' : '?';
   return apiUrl + fetchURL + `${separator}user_id=${user.user_id}`;
+}
+
+/**
+ * Removes all auth data stored in the cookies.
+ */
+function removeAuthData() {
+  const cookies: Cookies = new Cookies();
+  const authDataToRemove = [
+    'access_token',
+    'refresh_token',
+    'user',
+  ]
+  
+  for (const key of authDataToRemove){
+    cookies.remove(key);
+  }
 }
 
 async function genericResourceFetch(
@@ -168,25 +186,28 @@ async function genericResourceFetch(
 
   } else {
     // Catch and report server related errors.
-    let issueFound, issue:any|undefined = await tokenServerErrorAndResolver(result, resource, component, 
-                                                        cookies, response, isRetry, 
-                                                        fetchURL, type, body, options);
-    if (!issueFound){
+
+    let tokenErrorResult: null|undefined|Promise<any> = await handleTokenErrorsAndRetry(result, resource, component, 
+                                                                                        response, isRetry, fetchURL, 
+                                                                                        type, body, options);
+      
+    if (tokenErrorResult === null) {
+      const parse = (msg:string) => {return msg.includes(':') ? msg.split(':').slice(1).join(':').trim() : msg}
       const state = {
         isLoaded: true,
-        errorMessage: result?.message ?? "Server error",
+        errorMessage: parse(result?.message ?? "Server error"),
       }
       component.setState(state);
-
       return rawResponse ? result : state;
     }
-
-    return issue;
+    return tokenErrorResult;
   }
 }
 
-
 /**
+ * The function figures out we can retry a request that errored out from a token problem. If it is a hard
+ * failure, the function will remove the tokens when needed and reaload the window to login view. Note that 
+ * upon reciving a request that already failed once due to token errors the window will reload.
  * 
  * @param result - The result from the server.
  * @param resource - Connection destination.
@@ -198,78 +219,63 @@ async function genericResourceFetch(
  * @param type - Type of connection.
  * @param body - Message contained from the response.
  * @param options - Fetch options.
- * @returns An array where the first element is if it found an issue and the second element is the issue to bubble up.
+ * 
+ * @returns Will return either null, undefined, or a Promise<any>. A undefined return means that a refresh will happen as 
+ * new tokens are needed from login. A return of null means that the problem is not a token error. A return of a promise
+ * means that the failed fetch has been refired and you have been handed that retried fetch.
  */
-async function tokenServerErrorAndResolver(
+async function handleTokenErrorsAndRetry(
   result: ApiResponse, resource: string|null, 
   component: ReactComponent<any, any, any>, 
-  cookies: Cookies, response: Response,
-  isRetry: boolean, fetchURL: string,
-  type: string, body: string|null,
-  options: FetchOptions
-  ): Promise<[boolean, any|undefined]> {
+  response: Response, isRetry: boolean, 
+  fetchURL: string, type: string, 
+  body: string|null, options: FetchOptions
+  ): Promise<any> {
   
-  const msg: string = result?.message ?? "Server Error";
-  const status: number = response.status;
-  const accessTokenKey = 'access_token';
-  const refreshTokenKey = 'refresh_token';
-  const userKey = 'user';  
+  const msg: string = result?.msg ?? "Server Error";
+  const status: number = response.status; 
+    
+  // Irrecoverable.
+  const hardFailures: string[] = [
+    "BlackListed", 
+    "No Authorization", 
+    "Not enough segments", 
+    "Invalid token", 
+    "Token revoked", 
+    "Refresh token has been revoked", 
+    "Missing Authorization Header", 
+    "Token is not a refresh token",
+  ];
 
-  if (["BlackListed", "No Authorization"].includes(msg)){
-    cookies.remove(accessTokenKey);
-    cookies.remove(refreshTokenKey);
-    cookies.remove(userKey);
+  const refreshableFailure: string[] = [
+    "Token has expired",
+  ];
+
+  if (hardFailures.includes(msg)) {
+    removeAuthData();
     window.location.reload();
-    return [true, undefined];
-  } else if (["Token has expired", "Not enough segments", "Invalid token"].includes(msg) || 
-              status === HTTP_STATUS.UNPROCESSABLE_ENTITY){
-    if (isRetry){
-      cookies.remove(accessTokenKey);
-      cookies.remove(refreshTokenKey);
-      cookies.remove(userKey);
+    return undefined;
+
+  } else if (refreshableFailure.includes(msg) || status === HTTP_STATUS.UNPROCESSABLE_ENTITY) {
+    if (isRetry) {
+      removeAuthData();
       window.location.reload();
-      return [true, undefined];
+      return undefined;
     }
 
-    const refreshTokenValue: string = cookies.get(refreshTokenKey);
-    const userId: string = (cookies.get(userKey) as User)?.user_id;
+    // Critical promise lock.
+    const refreshResponse = await refreshAccessTokens();
 
-    try {
-      const refreshResponse = await fetch(
-        `${apiUrl}/refresh?user_id=${userId}&refresh_token=${refreshTokenValue}`,
-        {
-          method: 'POST',
-          headers: {
-            'Authorization': 'Bearer ' + refreshTokenValue
-          }
-        }
-      );
-      const refreshResult: ApiResponse = await refreshResponse.json();
-      if (refreshResult.success && refreshResult.headers) {
-        cookies.set(accessTokenKey, refreshResult.headers.access_token, { sameSite: 'strict' });
-        cookies.set(refreshTokenKey, refreshResult.headers.refresh_token, { sameSite: 'strict' });
-        return [true, await genericResourceFetch(fetchURL, resource, component, type, body, {
-          ...options, 
-          isRetry: true
-        })];
-      } else {
-        cookies.remove(accessTokenKey);
-        cookies.remove(refreshTokenKey);
-        cookies.remove(userKey);
-        window.location.reload();
-        return [true, undefined];
-      }
-    } catch (refreshError) {
-      cookies.remove(accessTokenKey);
-      cookies.remove(refreshTokenKey);
-      cookies.remove(userKey);
+    if (refreshResponse === undefined){
+      removeAuthData();
       window.location.reload();
-      return [true, undefined];
+      return undefined;
     }
+
+    return await genericResourceFetch(fetchURL, resource, component, type, body, {...options, isRetry: true});
   }
-  return [false, null];
+  return null;
 }
-
 
 /** @deprecated The website should not have to use this since backend will not work with it. */
 export function createEventSource(

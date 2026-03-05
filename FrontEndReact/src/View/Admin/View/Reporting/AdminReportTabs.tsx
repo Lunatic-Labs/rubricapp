@@ -2,6 +2,7 @@ import * as React from 'react';
 import { useState } from 'react';
 import AdminViewRatings from './ViewRatings/AdminViewRatings';
 import AdminViewAssessmentStatus from './ViewAssessmentStatus/AdminViewAssessmentStatus';
+import AdminExportGraphComparison from './ExportGraphComparison/AdminExportGraphComparison';
 import ReportingMainHeader from '../../../Components/ReportingHeader';
 
 
@@ -45,6 +46,15 @@ export default function AdminReportTabs(props: any) {
                     setChosenAssessmentId={handleChosenAssessmentIdChange}
                 />
              }
+
+            { tab === 'Export Graph Comparison' &&
+                <AdminExportGraphComparison
+                    navbar={props.navbar}
+                    assessmentTasks={props.assessmentTasks}
+                    chosenAssessmentId={chosenAssessmentId}
+                    setChosenAssessmentId={handleChosenAssessmentIdChange}
+                />
+            }
 
             { tab === 'Improvement' &&
                 <h1 className='mt-3'>Improvement</h1>

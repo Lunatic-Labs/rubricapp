@@ -16,11 +16,11 @@ class Logout extends Component<LogoutProps> {
     }
 
     handleLogout() {
-        const cookies = new Cookies();
+        const cookies: Cookies = new Cookies();
 
-        const accessToken = cookies.get('access_token');
-        const refreshToken = cookies.get('refresh_token');
-        const userId = cookies.get('user')['user_id'];
+        const accessToken : string|undefined = cookies.get('access_token');
+        const refreshToken: string|undefined = cookies.get('refresh_token');
+        const userId: number|undefined = cookies.get('user')?.['user_id'] ?? undefined;
 
         fetch(
             apiUrl + `/logout?user_id=${userId}`,
@@ -34,24 +34,13 @@ class Logout extends Component<LogoutProps> {
                     refresh_token: refreshToken,
                 }),
             }
-        )
-        .then(res => res.json())
-        .then(
-            (result) => {
-                cookies.remove('access_token');
-                cookies.remove('refresh_token');
-                cookies.remove('user');
+        ).finally(() => {
+            cookies.remove('access_token');
+            cookies.remove('refresh_token');
+            cookies.remove('user');
 
-                this.props.logout();
-            },
-            (error) => {
-                cookies.remove('access_token');
-                cookies.remove('refresh_token');
-                cookies.remove('user');
-
-                this.props.logout();
-            }
-        )
+            this.props.logout();
+        });
     }
 
     render() {
