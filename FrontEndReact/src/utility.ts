@@ -427,6 +427,11 @@ export function validPassword(password: string): boolean | string {
 }
 
 export function getDueDateString(dueDate: Date): string {
+  // Debug
+  console.log('INPUT Due Date:', dueDate);
+  console.log('Local Time:', dueDate.toString());
+  // console.log('UTC Time:', dueDate.toISOString());
+
   const year = dueDate.getFullYear();
   const month = dueDate.getMonth() + 1;
   const day = dueDate.getDate();
@@ -435,18 +440,31 @@ export function getDueDateString(dueDate: Date): string {
   const seconds = dueDate.getSeconds();
   const milliseconds = dueDate.getMilliseconds();
 
+  // Debug
+  console.log('OUTPUT Due Date String:');
+  console.log(`${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`);
+
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
 }
 
 export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
-  
+  // Debug
+  console.log('INPUT Due Date:', dueDate, 'time zone:', timeZone);
+
   let dateString: string | Date = dueDate;
   
+
   if (typeof dueDate === 'string' && !dueDate.endsWith('Z')) {
     dateString = `${dueDate}Z`;
   }
   
   const date = new Date(dateString);
+
+  // Debug
+  console.log('Parsed Date Object:', date);
+  console.log('Local Time:', date.toString());
+  // console.log('UTC Time:', date.toISOString());
+
   const month = date.getMonth();
   const day = date.getDate();
   const hour = date.getHours();
@@ -457,6 +475,9 @@ export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: strin
   const displayHour = hour > 12 ? (hour % 12) : (hour === 0 ? 12 : hour);
   const minutesString = minute < 10 ? ("0" + minute) : String(minute);
   const timeString = `${displayHour}:${minutesString}${twelveHourClock}`;
+
+  // Debug
+  console.log('Output: ', `${monthNames[month]} ${day} at ${timeString} ${timeZone || ""}`.trim());
 
   return `${monthNames[month]} ${day} at ${timeString} ${timeZone || ""}`.trim();
 }

@@ -26,20 +26,34 @@ def parse_and_convert_timezone(time_str, assessment_task):
     Timezone-aware datetime in the assessment task's timezone
     """
 
+    # Debug
+    print(f"INPUT: Original time string: {time_str}")
+
     if "." not in time_str:
         time_str = time_str + ".000"
     
     if "Z" not in time_str:
         time_str = time_str + "Z"
 
-    
+    # Debug
+    print(f"After ensuring milliseconds and Z: {time_str}")
+
     # Parse the time string into a UTC datetime object
     utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
     
+    #Debug
+    print(f"UTC: {utc_time} (time zone: {utc_time.tzinfo})")
+
     # Handles the conversion of the chosen assessment task timezone
     if assessment_task and assessment_task.time_zone:
         pytz_timezone = pytz.timezone(timezone_list.get(assessment_task.time_zone, "UTC"))
+
+        #Debug
+        print(f"CONVERTED: {utc_time.astimezone(pytz_timezone)}")
+
         return utc_time.astimezone(pytz_timezone)
+    # Debug
+    print(f"NO CONVERSION: {utc_time} (time zone: {utc_time.tzinfo})")
     
     return utc_time
 def ensure_utc_datetime(dt):
