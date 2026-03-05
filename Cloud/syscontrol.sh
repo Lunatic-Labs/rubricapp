@@ -563,7 +563,7 @@ function setup_proj_root() {
 
     log "The project has been successfully setup.
     The main project has been cloned into: $PROJ_DIR.
-    Next, re-run this script which is located in $PROJ_DIR/cloud with $CONFIGURE"
+    Next, re-run this script which is located in $PROJ_DIR/Cloud with $CONFIGURE"
 }
 
 # ======================
