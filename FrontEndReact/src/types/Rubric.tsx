@@ -7,6 +7,9 @@ export interface Rubric {
     rubric_name: string
     /** Description of the rubric. */
     rubric_description: string
+    /** Map of category name to category data, ordered by index. */
+    category_json: Record<string, { index: number; observable_characteristics: string[]; suggestions: string[] }>
+
 };
 
 /*

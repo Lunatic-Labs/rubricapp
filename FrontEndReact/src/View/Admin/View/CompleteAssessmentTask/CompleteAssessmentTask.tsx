@@ -9,24 +9,32 @@ import Cookies from 'universal-cookie';
 import Loading from '../../../Loading/Loading';
 import { generateUnitList, UnitType } from './unit';
 import { CheckinsTracker } from './cat_utils';
+import { Rubric } from '../../../../types/Rubric';
+import { User } from '../../../../types/User';
+import { CompleteAssessmentTask as CompleteAssessmentTaskType } from '../../../../types/CompleteAssessmentTask';
+import { Team } from '../../../../types/Team';
+
+interface CompleteAssessmentTaskProps {
+    navbar: any;
+}
 
 interface CompleteAssessmentTaskState {
     errorMessage: string | null;
     isLoaded: boolean;
-    assessmentTaskRubric: any;
-    teams: any[] | null;
-    userFixedTeam: any;
-    users: any[] | null;
-    teamsUsers: any;
-    currentUserRole: any;
-    completedAssessments: any[] | null;
-    currentUserId: string | null;
+    assessmentTaskRubric: Rubric | null;
+    teams: Team[] | null;
+    userFixedTeam: Team[] | null;
+    users: User[] | null;
+    teamsUsers: {[key: string]: User[]} | null;
+    currentUserRole: { role_name: string } | null;
+    completedAssessments: CompleteAssessmentTaskType[] | null;
+    currentUserId: number | null;
     usingTeams: boolean;
     usingAdHoc: boolean;
     checkins: CheckinsTracker;
-    checkinEventSource: any;
+    checkinEventSource: EventSource | null;
     unitList: any[] | null;
-    jumpId: any;
+    jumpId: number | null;
 }
 
 /**
@@ -61,9 +69,9 @@ interface CompleteAssessmentTaskState {
  * @property {int|null} state.jumpId - What team or student to open first.
  */ 
 
-class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState> {
-    currentUserId: any;
-    constructor(props: any) {
+class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, CompleteAssessmentTaskState> {
+    currentUserId!: number;
+    constructor(props: CompleteAssessmentTaskProps) {
         super(props);
 
         this.state = {
@@ -128,19 +136,19 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                     ).then((userResponse) => {
                         const users = userResponse.users || [];
                          
-                        const teamsUsersMap: {[key: string]: any[]} = {};
+                        const teamsUsersMap: {[key: string]: User[]} = {};
                         
-                        teamsResult.teams.forEach((team:any) => {
+                        teamsResult.teams.forEach((team:Team) => {
                             teamsUsersMap[team.team_id] = [];
                         });
                         
                         // Add users to teams based on their checkins
-                        checkins.forEach((checkin: any)=> {
+                        checkins.forEach((checkin: { user_id: number; team_number: number })=> {
                             const userId = checkin.user_id;
                             const teamId = checkin.team_number;
-                            const user = users.find((u:any) => u.user_id === userId);
+                            const user = users.find((u:User) => u.user_id === userId);
                             
-                            const teamsUsers: any  = teamsUsersMap[teamId];
+                            const teamsUsers: User[] | undefined = teamsUsersMap[teamId];
 
                             if (user && teamsUsers) {
                                 teamsUsers.push(user);
@@ -148,11 +156,11 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                         });
                         
                         if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
-                            const userCheckin = checkins.find((checkin:any) => checkin.user_id === this.currentUserId);
+                            const userCheckin = checkins.find((checkin: { user_id: number; team_number: number }) => checkin.user_id === this.currentUserId);
                                                         
                             if (userCheckin) {
                                 const userTeamId = userCheckin.team_number;
-                                const userTeam = teamsResult.teams.find((team:any) => team.team_id === userTeamId);
+                                const userTeam = teamsResult.teams.find((team:Team) => team.team_id === userTeamId);
                                 
                                 this.setState({
                                     userFixedTeam: userTeam ? [userTeam] : null,
@@ -355,7 +363,7 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
 
                 <Form
                     navbar={this.props.navbar}
-                    roleName={this.state.currentUserRole["role_name"]}
+                    roleName={roleName}
                     checkins={this.state.checkins}
                     assessmentTaskRubric={assessmentTaskRubric}
                     units={unitList}
