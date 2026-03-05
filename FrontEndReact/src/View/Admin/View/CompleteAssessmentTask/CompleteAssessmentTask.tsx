@@ -230,7 +230,8 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
                 
-                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) {
+                const hasTeamFromChosenCAT = (navbar.state.chosenCompleteAssessmentTask?.team_id ?? -1) > 0;
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam && !hasTeamFromChosenCAT) {
                     return;
                 }
                 
@@ -324,7 +325,8 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
 
         const roleName = currentUserRole["role_name"];
 
-        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam){
+        const hasTeamFromChosenCAT = (navbar.state.chosenCompleteAssessmentTask?.team_id ?? -1) > 0;
+        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam && !hasTeamFromChosenCAT){
             return (
                 <Loading />
             );
