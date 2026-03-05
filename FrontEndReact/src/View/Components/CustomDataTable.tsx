@@ -1,6 +1,6 @@
 import React from 'react';
 import MUIDataTable from 'mui-datatables';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/';
 
 const customTheme = createTheme({
   spacing: 4,
