@@ -1,13 +1,9 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import '../../../../SBStyles.css';
-// @ts-ignore
 import studentImage from '../AddUsers/Images/generic_bulk_upload_example.png';
-// @ts-ignore
 import teamImage1 from '../AddUsers/Images/team_bulk_upload_example1.png';
-// @ts-ignore
 import teamImage2 from '../AddUsers/Images/team_bulk_upload_example2.png';
-// @ts-ignore
 import teamImage3 from '../AddUsers/Images/team_bulk_upload_example3.png';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourcePOST } from '../../../../utility';
@@ -174,8 +170,6 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
 
         const {uploadRequestStatus} = this.state; 
         const isLoading: boolean = uploadRequestStatus === REQUEST_STATE.LOADING;
-
-        console.log(this.state.errorMessage);
 
         return (
             <Box>
