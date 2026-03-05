@@ -15,7 +15,7 @@ import MenuItem from '@mui/material/MenuItem';
 // import ListItemIcon from '@mui/material/ListItemIcon';
 import Divider from '@mui/material/Divider';
 import Logout from '../Logout/Logout';
-import Logo from "./sbText.png";
+import Logo from "./sbTextFixed.png";
 import Settings from '@mui/icons-material/Settings';
 
 // For further documentation look inside the README
