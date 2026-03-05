@@ -1,7 +1,7 @@
 import pytest
 from core import db
 from datetime import datetime, timezone
-from controller.security.utility import create_tokens
+from controller.security.utility import create_new_tokens
 from models.feedback import *
 from Tests.PopulationFunctions import (
     create_one_admin_course,
