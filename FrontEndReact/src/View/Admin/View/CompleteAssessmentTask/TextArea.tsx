@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import Box from '@mui/material/Box';
 import TextareaAutosize from '@mui/material/TextareaAutosize';
 
@@ -11,7 +11,7 @@ interface TextAreaProps {
 
 class TextArea extends Component<TextAreaProps> {
 
-    handleTextareaChange = (event: any) => {
+    handleTextareaChange = (event: React.ChangeEvent<HTMLTextAreaElement>) => {
         if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
 
         const textAreaValue = event.target.value;

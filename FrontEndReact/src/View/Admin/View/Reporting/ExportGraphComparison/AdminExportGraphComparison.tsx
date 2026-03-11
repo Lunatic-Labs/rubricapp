@@ -16,6 +16,17 @@ import FilterPanel, { FilterState } from './FilterPanel';
 import ComparisonDrawer from './ComparisonDrawer';
 import { GRAPH_TYPE_SHORT_LABELS } from './graphConstants';
 import './ExportGraphComparison.css';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
+import { Category } from '../../../../../types/Category';
+import { Rubric } from '../../../../../types/Rubric';
+import { Team } from '../../../../../types/Team';
+import { User } from '../../../../../types/User';
+import { CompleteAssessmentTask as CATType } from '../../../../../types/CompleteAssessmentTask';
+
+// Typed graph data shapes for each graph type
+export type DistributionGraphData = { ratings: { rating: number; number: number }[]; avg: number; stdev: number };
+export type CharacteristicsGraphData = { characteristics: { characteristic: string; number: number; percentage: number }[] };
+export type ImprovementsGraphData = { improvements: { improvement: string; number: number; percentage: number }[] };
 
 // Interface for a graph item (generated from completed assessment data)
 export interface GraphItem {
@@ -33,7 +44,12 @@ export interface GraphItem {
   student_name: string | null;
   due_date: string;
   total_assessments: number;
-  graph_data: any;
+  graph_data: DistributionGraphData | CharacteristicsGraphData | ImprovementsGraphData;
+}
+
+interface AdminExportGraphComparisonProps {
+    navbar: any;
+    assessmentTasks: AssessmentTask[];
 }
 
 // Interface for active filter display
@@ -51,18 +67,18 @@ interface AdminExportGraphComparisonState {
   filterPanelOpen: boolean;
   filters: FilterState;
   activeFilters: ActiveFilter[];
-  categories: any[];
-  rubrics: any[];
-  teams: any[];
-  students: any[];
+  categories: Category[];
+  rubrics: Rubric[];
+  teams: Team[];
+  students: User[];
   toastOpen: boolean;
   toastMessage: string;
   toastSeverity: 'success' | 'info' | 'warning' | 'error';
   exporting: boolean;
 }
 
-class AdminExportGraphComparison extends Component<any, AdminExportGraphComparisonState> {
-  constructor(props: any) {
+class AdminExportGraphComparison extends Component<AdminExportGraphComparisonProps, AdminExportGraphComparisonState> {
+  constructor(props: AdminExportGraphComparisonProps) {
     super(props);
 
     this.state = {
@@ -155,7 +171,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
     const headers = { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' };
 
     // Get unique rubric IDs from assessment tasks
-    const uniqueRubricIds = [...new Set(assessmentTasks.map((t: any) => t.rubric_id))];
+    const uniqueRubricIds = [...new Set(assessmentTasks.map((t: AssessmentTask) => t.rubric_id))];
 
     try {
       // Fetch rubric details (with category_json) and completed assessments in parallel
@@ -164,7 +180,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
           .then((r) => r.json())
       );
 
-      const completedPromises = assessmentTasks.map((task: any) =>
+      const completedPromises = assessmentTasks.map((task: AssessmentTask) =>
         fetch(
           `${apiUrl}/completed_assessment?admin_id=${chosenCourse.admin_id}&assessment_task_id=${task.assessment_task_id}&user_id=${user.user_id}`,
           { headers }
@@ -177,7 +193,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       ]);
 
       // Build rubric map: rubric_id -> rubric data (with category_json)
-      const rubricMap: { [key: number]: any } = {};
+      const rubricMap: Record<number, Rubric> = {};
       rubricResults.forEach((result) => {
         if (result.success && result.content?.rubrics) {
           const rubric = result.content.rubrics[0];
@@ -188,26 +204,26 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
       const graphItems: GraphItem[] = [];
 
       // Process each assessment task
-      assessmentTasks.forEach((task: any, taskIndex: number) => {
+      assessmentTasks.forEach((task: AssessmentTask, taskIndex: number) => {
         const completedResult = completedResults[taskIndex];
         if (!completedResult.success) return;
 
         const completedAssessments = completedResult.content?.completed_assessments?.[0] || [];
-        const rubric = rubricMap[task.rubric_id];
+        const rubric = rubricMap[task.rubric_id]!;
         if (!rubric || !rubric.category_json) return;
 
         const categoryJson = rubric.category_json;
         const categoryNames = Object.keys(categoryJson).sort(
-          (a, b) => categoryJson[a].index - categoryJson[b].index
+          (a, b) => categoryJson[a]!.index - categoryJson[b]!.index
         );
 
         // Only process completed (done) assessments
-        const doneAssessments = completedAssessments.filter((ca: any) => ca.done);
+        const doneAssessments = completedAssessments.filter((ca: CATType) => ca.done);
         const totalDone = doneAssessments.length;
 
         // For each category, build distribution + characteristics + improvements graphs
         categoryNames.forEach((categoryName) => {
-          const catData = categoryJson[categoryName];
+          const catData = categoryJson[categoryName]!;
 
           // Initialize rating distribution
           const ratingsData = [
@@ -232,7 +248,7 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
           const allRatings: number[] = [];
 
           // Aggregate data from completed assessments (same logic as ViewAssessmentStatus)
-          doneAssessments.forEach((ca: any) => {
+          doneAssessments.forEach((ca: CATType) => {
             const rocs = ca.rating_observable_characteristics_suggestions_data;
             if (!rocs || !rocs[categoryName]) return;
 
@@ -248,24 +264,26 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
 
             // Observable characteristics (binary string of 0/1)
             for (let j = 0; j < catRocs.observable_characteristics.length; j++) {
-              if (characteristicsData[j]) {
-                characteristicsData[j].number += parseInt(catRocs.observable_characteristics[j]);
+              const charItem = characteristicsData[j];
+              if (charItem) {
+                charItem.number += parseInt(catRocs.observable_characteristics[j]!);
               }
             }
 
             // Suggestions (binary string of 0/1)
             for (let j = 0; j < catRocs.suggestions.length; j++) {
-              if (improvementsData[j]) {
-                improvementsData[j].number += parseInt(catRocs.suggestions[j]);
+              const imprItem = improvementsData[j];
+              if (imprItem) {
+                imprItem.number += parseInt(catRocs.suggestions[j]!);
               }
             }
           });
 
           // Calculate percentages
-          characteristicsData.forEach((item: any) => {
+          characteristicsData.forEach((item) => {
             item.percentage = totalDone === 0 ? 0 : +((item.number / totalDone) * 100).toFixed(2);
           });
-          improvementsData.forEach((item: any) => {
+          improvementsData.forEach((item) => {
             item.percentage = totalDone === 0 ? 0 : +((item.number / totalDone) * 100).toFixed(2);
           });
 
@@ -382,16 +400,16 @@ class AdminExportGraphComparison extends Component<any, AdminExportGraphComparis
     // Assessment Tasks (multiselect)
     if (filters.assessmentTaskIds.length > 0) {
       const names = assessmentTasks
-        .filter((t: any) => filters.assessmentTaskIds.includes(t.assessment_task_id.toString()))
-        .map((t: any) => t.assessment_task_name);
+        .filter((t: AssessmentTask) => filters.assessmentTaskIds.includes(t.assessment_task_id.toString()))
+        .map((t: AssessmentTask) => t.assessment_task_name);
       activeFilters.push({ key: 'assessmentTaskIds', label: `Tasks: ${names.join(', ')}` });
     }
 
     // Rubrics (multiselect)
     if (filters.rubricIds.length > 0) {
       const names = rubrics
-        .filter((r: any) => filters.rubricIds.includes(r.rubric_id.toString()))
-        .map((r: any) => r.rubric_name);
+        .filter((r: Rubric) => filters.rubricIds.includes(r.rubric_id.toString()))
+        .map((r: Rubric) => r.rubric_name);
       activeFilters.push({ key: 'rubricIds', label: `Rubrics: ${names.join(', ')}` });
     }
 

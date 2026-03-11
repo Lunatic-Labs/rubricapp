@@ -43,8 +43,8 @@ interface Category {
 }
 
 interface AssessmentTask {
-  assessment_task_id: string;
-  unit_of_assessment: string;
+  assessment_task_id: number;
+  unit_of_assessment: boolean;
 }
 
 interface CourseRole {
@@ -393,8 +393,8 @@ export function parseCourseRoles(courses: CourseRole[]): Record<string, string> 
 
 export function parseAssessmentIndividualOrTeam(
   assessmentTasks: AssessmentTask[]
-): Record<string, string> {
-  const allAssessments: Record<string, string> = {};
+): Record<string, boolean> {
+  const allAssessments: Record<string, boolean> = {};
 
   for (let assessmentIndex = 0; assessmentIndex < assessmentTasks.length; assessmentIndex++) {
     const task = assessmentTasks[assessmentIndex];

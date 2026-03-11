@@ -1,4 +1,9 @@
 import { Box } from '@mui/material';
+import { User } from '../../../../types/User';
+import { Team } from '../../../../types/Team';
+import { Rubric } from '../../../../types/Rubric';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { CheckinsTracker } from './cat_utils';
 
 export const UnitType = Object.freeze({
 	INDIVIDUAL: "individual",
@@ -73,73 +78,87 @@ export const UnitType = Object.freeze({
 if(module.hot){
     Debug.data = {}; 
 }  */
-export function generateUnitList(args: any) {
+
+interface GenerateUnitListArgs {
+    roleName: string;
+    currentUserId: number;
+    chosenCompleteAssessmentTask: CompleteAssessmentTask | null;
+    unitType: typeof UnitType[keyof typeof UnitType];
+    assessmentTaskRubric: Rubric;
+    completedAssessments: CompleteAssessmentTask[];
+    users: User[];
+    fixedTeams: Team[] | null;
+    fixedTeamMembers: Record<number, User[]> | null;
+    userFixedTeam: Team | null;
+}
+
+export function generateUnitList(args: GenerateUnitListArgs) {
 	let unitList = [];
 
 	if (args.roleName === "Student") {
 		if (args.unitType === UnitType.INDIVIDUAL) {
 			const userId = args.chosenCompleteAssessmentTask?.["user_id"] ?? args.currentUserId;
-			const user = args.users.find((user: any) => user["user_id"] === userId);
+			const user = args.users.find((user: User) => user["user_id"] === userId);
 			
 			unitList.push(createIndividualUnit(
-				user, args.chosenCompleteAssessmentTask,
+				user!, args.chosenCompleteAssessmentTask,
 				args.assessmentTaskRubric
 			));
 		} else {
 			// Note that when we are here args.ChosenCompleteAssessmentTask is not populated.
-			let team: any;
+			let team: Team | null | undefined;
 			const isFixedTeams = args.unitType === UnitType.FIXED_TEAM;
-			
+
 			if (args.chosenCompleteAssessmentTask && "team_id" in args.chosenCompleteAssessmentTask && isFixedTeams) {
 				const teamId = args.chosenCompleteAssessmentTask["team_id"];
-				team = args.fixedTeams.find((team: any) => team["team_id"] === teamId);
+				team = args.fixedTeams!.find((team: Team) => team["team_id"] === teamId);
 			} else {
  				team = args.userFixedTeam;// Despite the var name this works for adhocs.
 			}
 
 			let chosenCAT = args.chosenCompleteAssessmentTask
-			const exitsAndMeaningful = (i: any) =>{return i && i.length > 0;}
-			
+			const exitsAndMeaningful = (i: unknown[] | null | undefined) =>{return i && i.length > 0;}
+
 			// Next if statement allows for quicksaved data to be reflected in the AT view.
 			if (chosenCAT === null && exitsAndMeaningful(args.completedAssessments)){
-				chosenCAT = args.completedAssessments.find((cat: any) => cat.team_id === team.team_id);
+				chosenCAT = args.completedAssessments.find((cat: CompleteAssessmentTask) => cat.team_id === team!.team_id) ?? null;
 			}
 
-			unitList.push(isFixedTeams ? 
+			unitList.push(isFixedTeams ?
 				createFixedTeamUnit(
-					team, chosenCAT,
-					args.assessmentTaskRubric, args.fixedTeamMembers
+					team!, chosenCAT,
+					args.assessmentTaskRubric, args.fixedTeamMembers!
 			): createAdHocTeamUnit(
-				team, chosenCAT,
-				args.assessmentTaskRubric, args.fixedTeamMembers,
+				team!, chosenCAT,
+				args.assessmentTaskRubric, args.fixedTeamMembers!,
 			));
 		} 
 	} else {
 		// Otherwise we must be an admin or TA
 		
 		if (args.unitType === UnitType.INDIVIDUAL) {
-			unitList = args.users.map((user: any) => {
+			unitList = args.users.map((user: User) => {
 				const userId = user["user_id"];
-				const cat = args.completedAssessments.find((cat: any) => cat["user_id"] === userId);
+				const cat = args.completedAssessments.find((cat: CompleteAssessmentTask) => cat["user_id"] === userId);
 				
 				return createIndividualUnit(user, cat, args.assessmentTaskRubric);
 			});
 
 		} else {
 			const isFixed = args.unitType === UnitType.FIXED_TEAM;
-			unitList = args.fixedTeams.map((team: any) => {
+			unitList = args.fixedTeams!.map((team: Team) => {
 				const teamId = team["team_id"];
-				const cat = args.completedAssessments.find((cat: any) => cat["team_id"] === teamId);
+				const cat = args.completedAssessments.find((cat: CompleteAssessmentTask) => cat["team_id"] === teamId);
 				return isFixed ?
-					createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers):
-					createAdHocTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers);
+					createFixedTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers!):
+					createAdHocTeamUnit(team, cat, args.assessmentTaskRubric, args.fixedTeamMembers!);
 			});
 		} 
 	}
 	
 	return unitList;
 }
-function getOrGenerateUnitData(cat: any, rubric: any) {
+function getOrGenerateUnitData(cat: CompleteAssessmentTask | null | undefined, rubric: Rubric): [Record<string, unknown>, boolean] {
 	let rocsData;
 	let isDone;
 	
@@ -157,27 +176,27 @@ function getOrGenerateUnitData(cat: any, rubric: any) {
 	
 	return [rocsData, isDone];
 }
-function createIndividualUnit(user: any, cat: any, rubric: any) {
+function createIndividualUnit(user: User, cat: CompleteAssessmentTask | null | undefined, rubric: Rubric) {
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
 	
 	return new IndividualUnit(cat ?? null, rocsData, isDone, user);
 }
-function createFixedTeamUnit(team: any, cat: any, rubric: any, fixedTeamMembers: any) {
+function createFixedTeamUnit(team: Team, cat: CompleteAssessmentTask | null | undefined, rubric: Rubric, fixedTeamMembers: Record<number, User[]>) {
 	const teamId = team["team_id"];
-	
+
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
-	const teamMembers = fixedTeamMembers[teamId];
+	const teamMembers = fixedTeamMembers[teamId]!;
 		
 	return new FixedTeamUnit(
 		cat ?? null, rocsData, isDone,
 		team, teamMembers,
 	);
 }
-function createAdHocTeamUnit(team: any, cat: any, rubric: any, fixedTeamMembers: any) {
+function createAdHocTeamUnit(team: Team, cat: CompleteAssessmentTask | null | undefined, rubric: Rubric, fixedTeamMembers: Record<number, User[]>) {
 	const teamId = team["team_id"]; //|| team["team_number"];
-	
+
 	const [rocsData, isDone] = getOrGenerateUnitData(cat, rubric);
-	const teamMembers = fixedTeamMembers[teamId];
+	const teamMembers = fixedTeamMembers[teamId]!;
 
 
 	return new AdHocTeamUnit(
@@ -209,8 +228,8 @@ export class ATUnit {
 	/** 
 	 * @type {UnitType[keyof UnitType]}
 	 */
-	unitType: any;
-	constructor(unitType: any, cat: any, rocsData: any, isDone: boolean) {
+	unitType: typeof UnitType[keyof typeof UnitType];
+	constructor(unitType: typeof UnitType[keyof typeof UnitType], cat: CompleteAssessmentTask | null, rocsData: Record<string, unknown>, isDone: boolean) {
 		this.unitType = unitType;
 		this.completedAssessmentTask = cat;
 		this.rocsData = rocsData;
@@ -239,7 +258,7 @@ export class ATUnit {
 	 * @param {CheckinsTracker} checkinsTracker
 	 * @returns {object[]} The contents of the checked in tooltip.
 	 */
-	getCheckedInTooltip(checkinsTracker: any): any[] {
+	getCheckedInTooltip(checkinsTracker: CheckinsTracker): JSX.Element[] {
 		throw new Error("Not implemented");
 	}
 	
@@ -257,7 +276,7 @@ export class ATUnit {
 	 * @param modifier
 	 * @returns {ATUnit}
 	 */
-	withNewRocsData(modifier: any) {
+	withNewRocsData(modifier: (rocs: Record<string, unknown>) => void) {
 		const newRocs = structuredClone(this.rocsData);
 		modifier(newRocs);
 		
@@ -282,7 +301,7 @@ export class ATUnit {
 	 * @param {object} newCat
 	 * @returns {ATUnit}
 	 */
-	withNewCAT(newCat: any) {
+	withNewCAT(newCat: CompleteAssessmentTask) {
 		const newUnit = this.shallowClone();
 		newUnit.completedAssessmentTask = newCat;
 		return newUnit;
@@ -315,11 +334,11 @@ export class ATUnit {
 	 * @param {Date} completedAt The date and time that this assessment task was completed/updated.
 	 * @returns {object}
 	 */
-	generateNewCAT(assessmentTaskId: any, completedBy: any, completedAt: any) {
+	generateNewCAT(assessmentTaskId: number, completedBy: number, completedAt: string) {
 		if (this.completedAssessmentTask) {
 			const newCAT = structuredClone(this.completedAssessmentTask);
 			
-			newCAT["rating_observable_characteristics_suggestions_data"] = this.rocsData;
+			newCAT["rating_observable_characteristics_suggestions_data"] = this.rocsData as CompleteAssessmentTask["rating_observable_characteristics_suggestions_data"];
 			newCAT["last_update"] = completedAt;
 			newCAT["done"] = this.isDone;
 			
@@ -348,7 +367,7 @@ export class IndividualUnit extends ATUnit {
 	 * @param {object} cat Complete assessment task object.
 	 * @param {object} user User object.
 	 */
-	constructor(cat: any, rocs: any, done: any, user: any) {
+	constructor(cat: CompleteAssessmentTask | null, rocs: Record<string, unknown>, done: boolean, user: User) {
 		super(UnitType.INDIVIDUAL, cat, rocs, done);
 		this.user = user;
 	}
@@ -363,7 +382,7 @@ export class IndividualUnit extends ATUnit {
 	get id() {
 		return this.userId;
 	}
-	getCheckedInTooltip(checkinsTracker: any) {
+	getCheckedInTooltip(checkinsTracker: CheckinsTracker) {
 		if (checkinsTracker.hasCheckInForUser(this.userId)) {
 			return [ <Box key={0}>Checked In</Box> ];
 		} else {
@@ -381,7 +400,7 @@ export class IndividualUnit extends ATUnit {
 	getSubmitQueryParam() {
 		return `uid=${this.userId}`;
 	}
-	generateNewCAT(assessmentTaskId: any, completedBy: any, completedAt: any) {
+	generateNewCAT(assessmentTaskId: number, completedBy: number, completedAt: string) {
 		return {
 			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt),
 			"user_id": this.userId,
@@ -408,7 +427,7 @@ export class FixedTeamUnit extends ATUnit {
 	 * @param {object} team Team object.
 	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
 	 */
-	constructor(cat: any, rocs: any, done: any, team: any, teamMembers: any) {
+	constructor(cat: CompleteAssessmentTask | null, rocs: Record<string, unknown>, done: boolean, team: Team, teamMembers: User[]) {
 		super(UnitType.FIXED_TEAM, cat, rocs, done);
 		this.team = team;
 		this.teamMembers = teamMembers;
@@ -425,8 +444,8 @@ export class FixedTeamUnit extends ATUnit {
 	get id() {
 		return this.teamId;
 	}
-	getCheckedInTooltip(checkinsTracker: any) {
-		const checkedInMembers = this.teamMembers.filter((user: any) => {
+	getCheckedInTooltip(checkinsTracker: CheckinsTracker) {
+		const checkedInMembers = this.teamMembers.filter((user: User) => {
 			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
 			
 			return checkin && checkin["team_number"] === this.teamId;
@@ -449,7 +468,7 @@ export class FixedTeamUnit extends ATUnit {
 	getSubmitQueryParam() {
 		return `team_id=${this.teamId}`;
 	}
-	generateNewCAT(assessmentTaskId: any, completedBy: any, completedAt: any) {
+	generateNewCAT(assessmentTaskId: number, completedBy: number, completedAt: string) {
 		return {
 			...super.generateNewCAT(assessmentTaskId, completedBy, completedAt),
 			"user_id": -1,
@@ -466,7 +485,7 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 	 * @param {object[]} teamMembers List of user objects that are members of this fixed team.
 	 * @param {int} currentUserId - The current user to save data under.
 	 */
-	constructor(cat: any, rocs: any, done: any, team: any, teamMembers: any) {
+	constructor(cat: CompleteAssessmentTask | null, rocs: Record<string, unknown>, done: boolean, team: Team, teamMembers: User[]) {
 		super(cat, rocs, done, team, teamMembers);
 		this.unitType = UnitType.AD_HOC_TEAM;
 		this.team = team;
@@ -479,10 +498,10 @@ export class AdHocTeamUnit extends FixedTeamUnit{
 			this.team, this.teamMembers
 		);
 	}
-	getCheckedInTooltip(checkinsTracker: any) {
+	getCheckedInTooltip(checkinsTracker: CheckinsTracker) {
 		const teamMembersArray = Array.isArray(this.teamMembers) ? this.teamMembers : [this.teamMembers];
 		
-		const checkedInMembers = teamMembersArray.filter((user: any) => {
+		const checkedInMembers = teamMembersArray.filter((user: User) => {
 			const checkin = checkinsTracker.getUserCheckIn(user["user_id"]);
 			
 			return checkin && checkin["team_number"] === this.teamId;
