@@ -82,15 +82,15 @@ interface AppStateProps {
     isSuperAdmin?: boolean;
     isAdmin?: boolean;
     userName?: string;
-    logout?: any;
+    logout?: () => void;
 }
 
 interface AppStateState {
     activeTab: string;
     user: any;
-    addUser: any;
+    addUser: boolean | null;
     course: any;
-    addCourse: any;
+    addCourse: boolean | null;
     assessmentTask: any;
     addAssessmentTask: boolean;
     chosenAssessmentTask: any;
@@ -102,22 +102,22 @@ interface AppStateState {
     teams: any;
     users: any;
     chosenCourse: any;
-    roleNames: any;
-    rubricNames: any;
+    roleNames: string[] | null;
+    rubricNames: string[] | null;
     userConsent: any;
-    addTeamAction: any;
-    successMessage: any;
-    successMessageTimeout: any;
-    addCustomRubric: any;
-    jumpToSection: any;
+    addTeamAction: string | null;
+    successMessage: string | null;
+    successMessageTimeout: ReturnType<typeof setTimeout> | undefined;
+    addCustomRubric: boolean | null;
+    jumpToSection: string | null;
     skipInstructions?: boolean;
 }
 
 class AppState extends Component<AppStateProps, AppStateState> {
-    Reset: any;
+    Reset!: (listOfElements: string[]) => void;
     ViewCTwithAT: any;
-    confirmCreateResource: any;
-    resetJump: any;
+    confirmCreateResource!: (resource: string, delay?: number) => void;
+    resetJump!: () => void;
     setAddAssessmentTaskTabWithAssessmentTask: any;
     setAddCourseTabWithCourse: any;
     setAddCustomRubric: any;
@@ -128,10 +128,10 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setCompleteAssessmentTaskTabWithID: any;
     setConfirmCurrentTeam: any;
     setEditConsentWithUser: any;
-    setNewTab: any;
+    setNewTab!: (newTab: string) => void;
     setSelectCurrentTeam: any;
     setStudentDashboardWithCourse: any;
-    setSuccessMessage: any;
+    setSuccessMessage!: (message: string | null) => void;
     setViewCompleteAssessmentTaskTabWithAssessmentTask: any;
     constructor(props: AppStateProps) {
         super(props);
@@ -187,7 +187,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {string} newTab - The name of the tab/view to navigate to. 
          */
 
-        this.setNewTab = (newTab: any) => {
+        this.setNewTab = (newTab: string) => {
             this.setState({
                 activeTab: newTab
             });
@@ -584,7 +584,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {number} [delay=1000] - Navigation delay.
          */
 
-        this.confirmCreateResource = (resource: any, delay = 1000) => {
+        this.confirmCreateResource = (resource: string, delay = 1000) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
                     if (resource === "User" || resource === "UserBulkUpload") {
@@ -664,9 +664,9 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Array<string>} listOfElements - Array of element IDs.
          */
 
-        this.Reset = (listOfElements: any) => {
+        this.Reset = (listOfElements: string[]) => {
             for (var element = 0; element < listOfElements.length; element++) {
-                const el = document.getElementById(listOfElements[element]) as HTMLInputElement;
+                const el = document.getElementById(listOfElements[element]!) as HTMLInputElement;
                 if (el) {
                     el.value = "";
                     if (el.getAttribute("type") === "checkbox") {
@@ -681,7 +681,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {string|null} newSuccessMessage - Message to display.
          */
 
-        this.setSuccessMessage = (newSuccessMessage: any) => {
+        this.setSuccessMessage = (newSuccessMessage: string | null) => {
             clearTimeout(this.state.successMessageTimeout);
             
             const timeoutId = setTimeout(() => {
@@ -879,7 +879,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminAddTeam
                             navbar={this}
-                            confirmCreateResource={this.confirmCreateResource}
                         />
                     </Box>
                 }
@@ -917,8 +916,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminViewTeamMembers
                             navbar={this}
-                            team={this.state.team}
-                            chosenCourse={this.state.chosenCourse}
                         />
                     </Box>
                 }
@@ -1004,7 +1001,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminEditTeamMembers
                             navbar={this}
-                            addTeamAction={this.state.addTeamAction}
+                            addTeamAction={this.state.addTeamAction!}
                         />
                     </Box>
                 }
