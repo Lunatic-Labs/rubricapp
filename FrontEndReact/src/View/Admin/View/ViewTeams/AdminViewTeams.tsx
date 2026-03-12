@@ -7,6 +7,8 @@ import { genericResourceGET,
 import { Box, Button, Typography } from "@mui/material";
 import Loading from "../../../Loading/Loading";
 import SuccessMessage from "../../../Success/SuccessMessage";
+import { Team } from '../../../../types/Team';
+import { User } from '../../../../types/User';
 
 /**
  * Creates an instance of the AdminViewTeams component.
@@ -36,19 +38,23 @@ import SuccessMessage from "../../../Success/SuccessMessage";
  * @property {number} state.prevTeamsLength - Tracks the number of teams previously loaded. Used to detect when teams have been added/removed so that data can be refetched.
  * @property {boolean} state.filtered - Marks whether system-generated team names have already been removed from the team list. Prevents repeating the filter operation.
  */
-
-interface AdminViewTeamsState {
-  errorMessage: any;
-  isLoaded: boolean;
-  teams: any;
-  users: any;
-  prevTeamsLength: number;
-  successMessage: any;
-  filtered: boolean;
+interface AdminViewTeamsProps {
+    navbar: any;
 }
 
-class AdminViewTeams extends Component<any, AdminViewTeamsState> {
-  constructor(props: any) {
+interface AdminViewTeamsState {
+    errorMessage: string | null;
+    isLoaded: boolean;
+    teams: Team[] | null;
+    users: User[] | null;
+    prevTeamsLength: number;
+    successMessage: string | null;
+    filtered: boolean;
+}
+
+
+class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState> {
+  constructor(props: AdminViewTeamsProps) {
     super(props);
     
     this.state = {
@@ -131,7 +137,7 @@ class AdminViewTeams extends Component<any, AdminViewTeamsState> {
    * @param {string} message - Error message text.
    */
 
-  setErrorMessage = (message: any) => {
+  setErrorMessage = (message: string) => {
     this.setState({ errorMessage: message });
     // Clear error message after 3 seconds
     setTimeout(() => {
@@ -144,7 +150,7 @@ class AdminViewTeams extends Component<any, AdminViewTeamsState> {
    * @param {string} message - Success message text.
    */
 
-  setSuccessMessage = (message: any) => {
+  setSuccessMessage = (message: string) => {
     this.setState({ successMessage: message });
     // Clear success message after 3 seconds
     setTimeout(() => {
@@ -157,7 +163,7 @@ class AdminViewTeams extends Component<any, AdminViewTeamsState> {
     var navbar = this.props.navbar;
 
     navbar.adminViewTeams.teams = teams;
-    navbar.adminViewTeams.users = users ? parseUserNames(users) : [];
+    navbar.adminViewTeams.users = users ? parseUserNames(users as any) : [];
 
     var setNewTab = navbar.setNewTab;
     var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;
@@ -220,7 +226,7 @@ class AdminViewTeams extends Component<any, AdminViewTeamsState> {
             <ViewTeams
               navbar={this.props.navbar}
               teams={teams}
-              users={users ? parseUserNames(users) : []}
+              users={users ? parseUserNames(users as any) : []}
               onError={this.setErrorMessage}
               onSuccess={this.setSuccessMessage}
               refreshData={this.fetchData}
