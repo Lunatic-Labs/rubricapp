@@ -42,30 +42,55 @@ class Settings extends Component<SettingsProps, SettingsState> {
 
   componentDidMount() {
     const cookies = new Cookies();
-    const user = cookies.get("user");
+    //const user = cookies.get("user");
 
-    if (user !== null) {
-      let promise: Promise<any>; // promise is used because we do not yet have the 'data' from the backend
-      let userData: UserData; // promise tells the app that it will recieve data
+    // Check if the "user" cookie exists
+    if (cookies.get("user") !== undefined) {
+      // Cookie exists - proceed with your logic
+      const user = cookies.get("user");
+      
+      if (user !== null) {
+        let promise: Promise<any>; // promise is used because we do not yet have the 'data' from the backend
+        let userData: UserData; // promise tells the app that it will recieve data
 
-      // get all the neccessary resources from the backend, the 'user' from the 'users' array.
-      promise = genericResourceGET(`/user`, "users", this);
+        // get all the neccessary resources from the backend, the 'user' from the 'users' array.
+        promise = genericResourceGET(`/user`, "users", this);
 
-      promise
-        .then((result) => {
-          if (result !== undefined && result["users"] !== null) {
-            userData = result["users"];
+        promise
+          .then((result) => {
+            if (result !== undefined && result["users"] !== null) {
+              userData = result["users"];
 
-            // user data is now set by the result for 'users' and the state is changed
-            // to match the users preferance (false or true).
+              // user data is now set by the result for 'users' and the state is changed
+              // to match the users preferance (false or true).
+              this.setState(
+                {
+                  isLoaded: true,
+                  user: userData["user_id"],
+                  darkMode: userData["user_dark_mode"],
+                },
+                () => {
+                  // This callback runs AFTER state is updated
+                  if (this.state.darkMode) {
+                    document.body.classList.add("mode");
+                  } else {
+                    document.body.classList.remove("mode");
+                  }
+                }
+              );
+            }
+          })
+          .catch((error) => {
+            console.error("Error fetching user data:", error);
+            // Fallback to user object
             this.setState(
               {
-                isLoaded: true,
-                user: userData["user_id"],
-                darkMode: userData["user_dark_mode"],
+                isLoaded: false,
+                user: user,
+                darkMode: user["user_dark_mode"] || false,
               },
               () => {
-                // This callback runs AFTER state is updated
+                // Apply dark mode in callback
                 if (this.state.darkMode) {
                   document.body.classList.add("mode");
                 } else {
@@ -73,28 +98,14 @@ class Settings extends Component<SettingsProps, SettingsState> {
                 }
               }
             );
-          }
-        })
-        .catch((error) => {
-          console.error("Error fetching user data:", error);
-          // Fallback to user object
-          this.setState(
-            {
-              isLoaded: false,
-              user: user,
-              darkMode: user["user_dark_mode"] || false,
-            },
-            () => {
-              // Apply dark mode in callback
-              if (this.state.darkMode) {
-                document.body.classList.add("mode");
-              } else {
-                document.body.classList.remove("mode");
-              }
-            }
-          );
-        });
+          });
+      }
+    } else {
+      // Cookie does not exist - handle accordingly (e.g., redirect to login)
+      console.log("User cookie not found");
     }
+
+    
   }
 
   // will handle any changes within the change, currently only used for detecting if user
