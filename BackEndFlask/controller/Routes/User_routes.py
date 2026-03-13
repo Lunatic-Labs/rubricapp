@@ -137,8 +137,6 @@ def get_all_users():
 
             user = get_user(user_id)  # Trigger an error if not exists.
 
-            print(user_id)
-
             return create_good_response(user_schema.dump(user), 200, "users")
 
         all_users = get_users()
@@ -319,18 +317,20 @@ def update_user():
 
             return create_good_response([], 201, "users")
 
-#        if(request.args and request.args.get("user_id")):
-#            uid = request.args.get("user_id")
+# change was made here...
 
-#            print(uid)
+        if(request.args and request.args.get("user_id")):
+            uid = request.args.get("user_id")
 
-#            user = get_user(uid)  # Trigger an error if not exists.
+            # print(uid)
 
-#            user_dark_mode = request.json["user_dark_mode"]
+            user = get_user(uid)  # Trigger an error if not exists.
 
-#            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
+            user_dark_mode = request.json["user_dark_mode"]
 
-#            return create_good_response([], 201, "users")
+            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
+
+            return create_good_response([], 201, "users")
 
 
         user_id = request.args.get("uid")
@@ -395,8 +395,6 @@ def update_user_settings():
     try:
         if(request.args and request.args.get("user_id")):
             uid = request.args.get("user_id")
-
-            print(uid)
 
             user_dark_mode = request.json["user_dark_mode"]
 
