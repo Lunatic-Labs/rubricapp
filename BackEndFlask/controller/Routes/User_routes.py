@@ -53,7 +53,7 @@ from models.user import(
     unmake_admin,
     delete_user,
     set_user_dark_mode,
-    #get_user_by_email,
+    get_user_by_email,
 )
 
 from models.queries import (
