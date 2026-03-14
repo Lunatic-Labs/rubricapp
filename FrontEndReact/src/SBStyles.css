@@ -5,8 +5,9 @@
 }
 
 /* Primary Color */
-.primary-color {
+.primary-color:not(:disabled) {
   background-color: #2E8BEF !important;
+  color: white !important;
 }
 
 .primary-color-text {
@@ -14,7 +15,7 @@
 }
 
 .primary-color:disabled {
-  background-color: #bcbcbc !important;
+  background-color: var(--primary-disabled-bg) !important;
 }
 
 /* Table aligment */
@@ -129,7 +130,7 @@ h4, h5 {
 .assessment-task-spacing {
   display: flex;
   flex-direction: column;
-  gap: 10px;
+  gap: 40px;
 }
 
 .assessment-card {
@@ -183,16 +184,27 @@ h4, h5 {
 .table-row {
   display: flex;
   justify-content: space-between;
-  align-items: center;
+  align-items: left;
   height: .1rem;
   padding: 0.15rem;
 }
 
 /* these colors regulate the display for custom data table and the text inside the 'disabled' export button. */
+
+
 :root {
-  --light_grey_ADA: #e8e8e8;
+  --light_grey_ADA: #f8f6f6; /* Fix */
   --light_grey_hover: #d0d0d0;
   --export_disabled_text: #4b4b4b;
+  /* Data table light mode colors */
+  --table-odd-row: white;
+  --table-odd-row-hover: #f5f5f5;
+  --table-toolbar: white;
+  --table-header: #A4C4F4;
+  --table-text: #000000;
+  --table-border: #e0e0e0;
+  --primary-disabled-bg: #bcbcbc;
+  --dropdown-bg: #ffffffff;
 }
 
 /* used in line 23 of CustomDataTable.js */
@@ -207,4 +219,473 @@ h4, h5 {
 /* used in line 562 of ViewAssessmentTasks.js */
 .export_disabled_text {
   color: var(--export_disabled_text) !important;
+}
+
+.navbar {
+  --navbar-bg: white;
+  --navbar-text: black;
+  margin-top: -0.45rem;
+  --navbar-dropdown-bg: white;
+  --navbar-dropdown-text: black;
+  --navbar-dropdown-hover: #f5f5f5;
+  --navbar-dropdown-divider: rgba(0, 0, 0, 0.12);
+}
+
+.navbar-arrow {
+  filter: none;
+}
+
+/* Checkbox color variables */
+.checkbox-colors {
+  --checkbox-bg-checked: #ADCBEE;
+  --checkbox-bg-unchecked: #9a9a9add;
+  --checkbox-color-checked: #2E8BEF;
+}
+
+/* Textarea color variables */
+.textarea-colors {
+  --textarea-bg: #ffffff;
+  --textarea-text: #000000;
+  --textarea-border: #c4c4c4;
+  --textarea-placeholder: #757575;
+}
+
+/* Tab color variables */
+.assessment-tab-colors {
+  --tab-selected-bg: #D9D9D9;
+  --tab-text: #000000;
+  --tab-border: #000000;
+}
+
+/* Back button color variables */
+.back-button-colors {
+  --back-button-bg: #e0e0e0;
+  --back-button-bg-hover: #bdbdbd;
+  --back-button-text: #000000;
+}
+
+/* Assessment instructions color variables */
+.assessment-instructions-colors {
+  --instructions-bg: #ffffff;
+  --instructions-text: #000000;
+  --instructions-border: #0000003b;
+  --instructions-textarea-bg: #ffffff;
+  --instructions-textarea-text: #000000;
+}
+
+/* Tab color variables */
+.tab-colors {
+  --tab-text: #646464;
+  --tab-text-selected: #2E8BEF;
+}
+
+/* Collapsible table color variables */
+.collapsible-table-colors {
+  --table-head-bg: #A4C4F4;
+  --table-head-text: #000000;
+  --table-body-bg: #ffffff;
+  --table-body-text: #000000;
+  --table-border: #e0e0e0;
+  --table-arrow-color: #0000008A;
+}
+
+/* Dropdown Menu Colors */
+:root {
+  --dropdown-bg: #ffffffff;
+  --dropdown-text: #000000;
+  --dropdown-border: #0000003b;
+  --dropdown-label: #00000099;
+  --dropdown-hover: #0000000a;
+  --dropdown-selected: #2e8bef14;
+  --dropdown-disabled-bg: #f5f5f5ff;
+  --dropdown-disabled-text: #00000061;
+  --dropdown-icon: #0000008a;  
+}
+
+/* Dropdown menu paper override */
+.dropdown-menu-paper {
+  background-color: var(--dropdown-bg) !important;
+}
+
+/* Text box color variables */
+.text-box-colors {
+  --textbox-bg: #ffffff;
+  --textbox-text: #000000;
+  --textbox-border: #0000003b;
+  --textbox-border-hover: #000000de;
+  --textbox-border-focused: #2E8BEF;
+  --textbox-error: #d32f2f;
+  --textbox-label: rgba(0, 0, 0, 0.6);
+}
+
+/* Button color variables */
+.button-colors {
+  --button-text: #2E8BEF;
+  --button-hover: rgba(46, 139, 239, 0.08);
+}
+
+/* MUI DataTable Filter Styling */
+.MUIDataTableFilter-root,
+.MUIDataTableFilter-header {
+  background-color: var(--dropdown-bg) !important;
+  color: var(--table-text) !important;
+}
+
+.MUIDataTableFilter-reset,
+.MUIDataTableFilter-filtersSelected,
+.MUIDataTableFilter-gridListTile {
+  color: var(--table-text) !important;
+}
+
+.MuiTypography-root[class*="MUIDataTableFilter-title"] {
+  color: var(--table-text) !important;
+}
+
+
+/* Shadow color variable */
+:root {
+  --box-shadow: #6e6e6ecb;
+}
+
+:root {
+  --text-color: #000000;
+  --text-color-secondary: #646464;
+  --error-color: #d32f2f;
+  --border-color: rgba(0, 0, 0, 0.23);
+  --border-hover-color: rgba(0, 0, 0, 0.87);
+  --icon-color: rgba(0, 0, 0, 0.54);
+}
+
+/* Generic text color */
+.generic-text-color {
+  color: black;
+}
+
+/* THIS IS FOR TESTING PURPOSES! */
+/* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
+/* ============================================ */
+/* DARK MODE STYLES */
+/* ============================================ */
+
+body.mode .app-body { 
+  background-color: #1a1a1a;
+  min-height: 100vh;
+  max-height: auto;
+}
+
+body.mode .primary-color:not(:disabled) {
+  background-color: #2E8BEF !important;
+  color: white !important;
+}
+
+body.mode .primary-color-text {
+  color: #2E8BEF !important;
+}
+
+body.mode .primary-color:disabled {
+  background-color: var(--primary-disabled-bg) !important;
+}
+
+body.mode h4, 
+body.mode h5 {
+  color: #e0e0e0;
+}
+
+body.mode .content-spacing {
+  border-bottom: 1px solid #404040;
+}
+
+body.mode .card-style {
+  display: flex;
+  width: 50%;
+  padding: var(--3, 20px);
+  border-radius: 10px;
+  border-top: 3px solid #2E8BEF;
+  background: #2a2a2a;
+  color: #e0e0e0;
+
+  @media screen and (max-width: 600px) {
+    width: 100%;
+  }
+}
+
+body.mode .assessment-card {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: var(--2, 4px);
+  border-radius: px;
+  border-top: 3px solid #2E8BEF;
+  background: #2a2a2a;
+  margin-bottom: 10px;
+  font-size: 1.3rem;
+  color: #e0e0e0;
+}
+
+body.mode .checkbox-alignment {
+  background-color: #3a3a3a;
+  color: #e0e0e0;
+}
+
+body.mode .errorSelect {
+  color: #ff6b6b;
+}
+
+body.mode .table-row {
+  color: #e0e0e0;
+}
+
+/*
+body.mode :root {
+  --light_grey_ADA: #2a2a2a;
+  --light_grey_hover: #3a3a3a;
+  --export_disabled_text: #888888;
+}
+*/
+
+body.mode .light_grey_ADA {
+  background-color: #2a2a2a;
+}
+
+body.mode .light_grey_ADA_hover {
+  background-color: #3a3a3a;
+}
+
+
+body.mode .export_disabled_text {
+  color: #888888 !important;
+}
+
+
+body.mode .navbar {
+  --navbar-bg: #1a1a1a;
+  --navbar-text: #e0e0e0;
+  margin-top: -0.45rem;
+  --navbar-dropdown-bg: #2a2a2a;
+  --navbar-dropdown-text: #e0e0e0;
+  --navbar-dropdown-hover: #3a3a3a;
+  --navbar-dropdown-divider: rgba(255, 255, 255, 0.12);
+}
+
+body.mode .navbar-arrow {
+  filter: invert(1);
+}
+
+body.mode .checkbox-colors {
+  --checkbox-bg-checked: #32485d;
+  --checkbox-bg-unchecked: #7a7a7a91;
+  --checkbox-color-checked: #58a1f0;
+  --checkbox-border-unchecked: #ffffff;
+}
+
+body.mode .assessment-tab-colors {
+  --tab-selected-bg: #3a3a3a;
+  --tab-text: #e0e0e0;
+  --tab-border: #707070;
+}
+
+body.mode .textarea-colors {
+  --textarea-bg: #202020;
+  --textarea-text: #e0e0e0;
+  --textarea-border: #565656;
+  --textarea-placeholder: #888888;
+}
+
+body.mode .tab-colors {
+  --tab-selected-bg: #3a3a3a;
+  --tab-text: #a0a0a0;
+  --tab-text-selected: #3a93f3;
+  --tab-border: #707070;
+}
+
+body.mode .back-button-colors {
+  --back-button-bg: #3a3a3a;
+  --back-button-bg-hover: #4a4a4a;
+  --back-button-text: #e0e0e0;
+  
+}
+
+body.mode .assessment-instructions-colors {
+  --instructions-bg: #2a2a2a;
+  --instructions-text: #e0e0e0;
+  --instructions-border: #404040;
+  --instructions-textarea-bg: #1a1a1a;
+  --instructions-textarea-text: #e0e0e0;
+}
+
+body.mode .collapsible-table-colors {
+  --table-head-bg: #2d4a6b;
+  --table-head-text: #e0e0e0;
+  --table-body-bg: #2a2a2a;
+  --table-body-text: #e0e0e0;
+  --table-border: #4a4a4a;
+  --table-arrow-color: #FFFFFF8A;
+}
+
+body.mode {
+  --text-color: #e0e0e0;
+  --text-color-secondary: #a0a0a0;
+  --error-color: #ff6b6b;
+  --border-color: rgba(255, 255, 255, 0.23);
+  --border-hover-color: rgba(255, 255, 255, 0.87);
+  --icon-color: rgba(255, 255, 255, 0.7);
+}
+
+body.mode .generic-text-color {
+  color: #e0e0e0;
+}
+
+body.mode {
+  --dropdown-bg: #262626ff;
+  --dropdown-text: #e0e0e0;
+  --dropdown-border: #ffffff3b;
+  --dropdown-label: #ffffffb3;
+  --dropdown-hover: #d1d1d12a;
+  --dropdown-selected: #3a93f329;
+  --dropdown-disabled-bg: #1a1a1aff;
+  --dropdown-disabled-text: #ffffff61;
+  --dropdown-icon: #ffffffb3;
+}
+
+ 
+/*Dropdown border for dark mode*/
+body.mode .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline {
+  border-color: #ffffff !important;
+}
+
+/* Dark mode text box colors */
+body.mode .text-box-colors {
+  --textbox-bg: #262626ff;
+  --textbox-text: #e0e0e0;
+  --textbox-border: #ffffff3b;
+  --textbox-border-hover: #ffffff;
+  --textbox-border-focused: #4193eb;
+  --textbox-error: #ff6b6b;
+  --textbox-label: #a0a0a0;
+}
+
+body.mode .button-colors {
+  --button-text: #3a93f3;
+  --button-hover: #3a93f314;
+}
+
+/* Dark mode shadow */
+body.mode {
+  --box-shadow: #848484b8;
+}
+
+/* Dark mode text colors for general content */
+body.mode {
+  color: #e0e0e0;
+}
+
+body.mode .MuiSlider-markLabel {
+  color: #e0e0e0;
+}
+
+body.mode {
+  --light_grey_ADA: #464646;
+  --light_grey_hover: #4c4c4c;
+  --export_disabled_text: #888888;
+  --table-odd-row: #252525;
+  --table-odd-row-hover: #2c2c2c;
+  --table-toolbar: #2a2a2a;
+  --table-header: #2d4a6b;
+  --table-text: #e0e0e0;
+  --table-border: #404040;
+  --primary-disabled-bg: #3a3a3a;
+  --dropdown-bg: #262626ff;
+  --dropdown-text: #e0e0e0;
+}
+
+.icon-color {
+  color: var(--table-text);
+}
+
+
+/* ============================================ */
+/* FIX FOR WHITE LINE AT BOTTOM */
+/* ============================================ */
+
+/* Remove any white borders from html and body */
+body.mode,
+body.mode html,
+body.mode #root {
+    background-color: #1a1a1a !important;
+    border: none !important;
+}
+
+/* Ensure main content area has no white borders */
+body.mode main,
+body.mode .main-content,
+body.mode .app-container {
+    background-color: #1a1a1a;
+    border: none !important;
+}
+
+/* ============================================ */
+/* MUI DATA TABLE COMPONENT OVERRIDES */
+/* ============================================ */
+/* These overrides ensure MUI components respect CSS variables from SBStyles.css */
+/* Using !important to override MUI's inline styles with higher specificity */
+
+/* MUI Toolbar - respects table-toolbar and table-text variables */
+.MuiToolbar-root,
+.MUIDataTableToolbar-root,
+.MuiTablePagination-root {
+    background-color: var(--table-toolbar) !important;
+    color: var(--table-text) !important;
+}
+
+/* MUI Buttons and Icons */
+.MuiButton-text,
+.MuiButton-root:not(.primary-color),
+.MuiIconButton-root,
+.MuiTablePagination-selectIcon,
+.MuiTablePagination-actions,
+.MuiSelect-icon {
+    color: var(--table-text) !important;
+}
+
+/* MUI Input/Select fields */
+.MuiInputBase-root,
+.MuiInputBase-input,
+.MuiSelect-select {
+    color: var(--table-text) !important;
+    background-color: var(--dropdown-bg) !important;
+}
+
+/* MUI Paper components */
+.MuiPaper-root,
+.MuiPaper-outlined {
+    background-color: var(--table-toolbar) !important;
+}
+
+/* MUI Table cells */
+.MuiTableCell-head {
+    background-color: var(--table-header) !important;
+    color: var(--table-text) !important;
+}
+
+.MuiTableCell-body {
+    color: var(--table-text) !important;
+}
+
+/* SVG Icons within the table */
+.MuiSvgIcon-root {
+    color: var(--table-text) !important;
+}
+
+/* Filter dialog components */
+.MuiDialog-paper {
+    background-color: var(--dropdown-bg) !important;
+}
+
+.MuiDialogContentText-root,
+.MuiFormControlLabel-label {
+    color: var(--table-text) !important;
+}
+
+.MuiCheckbox-root {
+    color: var(--table-text) !important;
 }

@@ -13,7 +13,7 @@ const ColorButton = styled(Button)(({
     backgroundColor: grey[300],
     '&:hover': {
       backgroundColor: grey[400],
-      boxShadow: "none"
+      boxShadow: "none",
     },
   }));
 

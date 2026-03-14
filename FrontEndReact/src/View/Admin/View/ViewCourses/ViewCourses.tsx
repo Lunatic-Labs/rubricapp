@@ -120,7 +120,7 @@ class ViewCourses extends Component<any> {
                     }
                 }}
                  >
-                  <EditIcon sx={{color:"black"}}/>
+                  <EditIcon sx={{color:"var(--table-text)"}}/>
                 </IconButton>
               )
             },
@@ -141,6 +141,9 @@ class ViewCourses extends Component<any> {
                 <IconButton id={courseId}
                 role = "img" aria-label="viewCourseIconButton"
               onClick={() => {
+                // the fix is here. TEMP COMMMENT.
+                navbar.setState({ user: null, addUser: null });
+                navbar.setAddCourseTabWithCourse(courses, courseId, "Users");
                 // If viewing as student, always go to student dashboard
                 if (isViewingAsStudent) {
                   navbar.setStudentDashboardWithCourse(courseId, courses);
@@ -182,7 +185,42 @@ class ViewCourses extends Component<any> {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            alignSelf: "stretch"
+            alignSelf: "stretch",
+            
+            setFilterChipProps: () => ({
+              sx: {
+                
+                backgroundColor: 'var(--dropdown-bg)',
+                color: 'var(--dropdown-text)',
+              }
+            }),
+            setTableProps: () => ({
+              sx: {
+                
+                '& .MuiPopover-paper': {
+                  backgroundColor: 'var(--dropdown-bg)',
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiTableCell-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiCheckbox-root': {
+                  color: 'var(--dropdown-icon)',
+                },
+                '& .MuiInput-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiInput-underline:before': {
+                  borderBottomColor: 'var(--dropdown-border)',
+                },
+                '& .MuiTypography-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiButton-root': {
+                  color: 'var(--button-text)',
+                },
+              }
+            }),
           }}>
             <Box sx={{ width: "100%" }} className="content-spacing">
               <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="activeCourses">
