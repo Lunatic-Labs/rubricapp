@@ -5,8 +5,9 @@
 }
 
 /* Primary Color */
-.primary-color {
+.primary-color:not(:disabled) {
   background-color: #2E8BEF !important;
+  color: white !important;
 }
 
 .primary-color-text {
@@ -372,8 +373,9 @@ body.mode .app-body {
   max-height: auto;
 }
 
-body.mode .primary-color {
+body.mode .primary-color:not(:disabled) {
   background-color: #2E8BEF !important;
+  color: white !important;
 }
 
 body.mode .primary-color-text {
@@ -636,7 +638,7 @@ body.mode .app-container {
 
 /* MUI Buttons and Icons */
 .MuiButton-text,
-.MuiButton-root,
+.MuiButton-root:not(.primary-color),
 .MuiIconButton-root,
 .MuiTablePagination-selectIcon,
 .MuiTablePagination-actions,
