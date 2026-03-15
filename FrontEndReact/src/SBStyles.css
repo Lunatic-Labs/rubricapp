@@ -193,8 +193,8 @@ h4, h5 {
 
 
 :root {
-  --light_grey_ADA: #f8f6f6; /* Fix */
-  --light_grey_hover: #d0d0d0;
+  --light_grey_ADA: #e0e0e0; /* Slightly darker grey for table rows */
+  --light_grey_hover: #d6d6d6;
   --export_disabled_text: #4b4b4b;
   /* Data table light mode colors */
   --table-odd-row: white;
@@ -203,7 +203,7 @@ h4, h5 {
   --table-header: #A4C4F4;
   --table-text: #000000;
   --table-border: #e0e0e0;
-  --primary-disabled-bg: #bcbcbc;
+  --primary-disabled-bg: #aaaaaa;
   --dropdown-bg: #ffffffff;
 }
 
@@ -361,8 +361,6 @@ h4, h5 {
   color: black;
 }
 
-/* THIS IS FOR TESTING PURPOSES! */
-/* EVERYTHING BELOW THIS POINT IS ONLY TEMPORARY */
 /* ============================================ */
 /* DARK MODE STYLES */
 /* ============================================ */
@@ -502,7 +500,6 @@ body.mode .back-button-colors {
   --back-button-bg: #3a3a3a;
   --back-button-bg-hover: #4a4a4a;
   --back-button-text: #e0e0e0;
-  
 }
 
 body.mode .assessment-instructions-colors {
@@ -600,6 +597,10 @@ body.mode {
 
 .icon-color {
   color: var(--table-text);
+}
+
+body.mode .cancel-button {
+  color: #000000 !important;
 }
 
 
