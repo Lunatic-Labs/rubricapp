@@ -12,15 +12,23 @@ export default function ViewAssessmentStatus(props: any) {
   var categoryList = (props.rubrics && props.rubrics.category_json) 
     ? Object.keys(props.rubrics.category_json)
         .sort((a,b) => props.rubrics.category_json[a].index - props.rubrics.category_json[b].index)
-    : [];
+    : []; // error value sets at []
+
+    console.log("rubrics",props.rubrics);
+    console.log("json", props.rubrics.category_json);
+
+    console.log("category list:", categoryList);
 
     // Ensure chosenAssessmentId is valid when no assessment tasks are available
-  const validAssessmentId = (props.assessmentTasks && props.assessmentTasks.length > 0) 
+  const validAssessmentId = (props.assessmentTasks && props.assessmentTasks.length > 0) //error value sets to ''
   ? props.chosenAssessmentId 
   : '';
 
+  console.log("assessment Id:", validAssessmentId);
+
   // Set initial category ID, defaulting to empty string if no categories available
-  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] : '');
+  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] : ''); // error value of ''
+  console.log("category id:", chosenCategoryId)
 
   const handleChosenCategoryIdChange = (event: any) => {
     setChosenCategoryId(event.target.value);
@@ -31,6 +39,8 @@ export default function ViewAssessmentStatus(props: any) {
   // This piece of code ensures that the category dropdown always populates with a default value,
   // and that the default value corresponds to the currently chosen rubric.
   var chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
+
+  console.log("id conresponds with",chosenCategoryIdCorrespondsWithRubric);
 
   if (!chosenCategoryIdCorrespondsWithRubric) {
     setChosenCategoryId(categoryList[0]);
@@ -43,6 +53,10 @@ export default function ViewAssessmentStatus(props: any) {
   var improvementsData: any = {
     'improvements': []
   };
+
+  if (!chosenCategoryIdCorrespondsWithRubric){
+    console.warn("chosencategoryIDCorrespondsWithRubricError", chosenCategoryId, props.rubrics.category_json, chosenCategoryIdCorrespondsWithRubric);
+  }
 
   if (chosenCategoryIdCorrespondsWithRubric) {
     for (let i = 0; i < props.rubrics['category_json'][chosenCategoryId as any]['observable_characteristics'].length; i++) {
@@ -59,6 +73,9 @@ export default function ViewAssessmentStatus(props: any) {
       });
     }
   }
+
+  console.log("obv", characteristicsData);
+  console.log("sugs", improvementsData);
 
   var ratingsData: any = {
     'ratings': [
@@ -83,6 +100,8 @@ export default function ViewAssessmentStatus(props: any) {
       }
     }
     progress = +((finished / total) * 100).toFixed(2);
+
+    console.log("progress",progress);
     if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
       // Iterate through each completed assessment for chosen assessment task
       for (var i = 0; i < props.completedAssessments.length; i++) {
