@@ -4,7 +4,7 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../../utility';
 import ViewRatingsHeader from './ViewRatingsHeader';
 import ViewRatingsTable from './ViewRatingsTable';
-import { Box, Button, Tooltip, IconButton } from '@mui/material';
+import { Box, Button, Tooltip } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 
