@@ -311,6 +311,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
 
                                         length={6}
                                         aria-label='sendCodeInput'
+                                        className='text-box-colors'
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
                                                 backgroundColor: 'var(--textbox-bg)',
@@ -318,10 +319,10 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                                     color: 'var(--text-color)',
                                                 },
                                                 '& fieldset': {
-                                                    borderColor: 'var(--textbox-border-focused)',
+                                                    borderColor: 'var(--textbox-border)',
                                                 },
                                                 '&:hover fieldset': {
-                                                    borderColor: 'var(--textbox-border-focused)',
+                                                    borderColor: 'var(--textbox-border-hover)',
                                                 },
                                                 '&.Mui-focused fieldset': {
                                                     borderColor: 'var(--textbox-border-focused) !important', // issue here, is no longer blue.
