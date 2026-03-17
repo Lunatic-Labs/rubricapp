@@ -9,8 +9,8 @@ import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
 import ImageModal from "../AddCustomRubric/CustomRubricModal";
-import RubricDescriptionsImage from "../../../../../src/RubricDetailedOverview.png";
-import RubricDescriptionsImage2 from "../../../../../src/RubricDetailedOverview2.png";
+import RubricDescriptionsImage from "../../../../RubricDetailedOverview.png";
+import RubricDescriptionsImage2 from "../../../../RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
 import { MAX_PASSWORD_LENGTH } from '../../../../Constants/password';
 

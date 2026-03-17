@@ -1,17 +1,4 @@
-import '@mui/material/styles';
-
-// CSS module imports (with named exports)
-declare module '*.css' {
-  const content: { [className: string]: string };
-  export default content;
-}
-
-// Side-effect CSS imports from node_modules
-declare module 'bootstrap/dist/css/bootstrap.css';
-declare module '@fontsource/roboto/300.css';
-declare module '@fontsource/roboto/400.css';
-declare module '@fontsource/roboto/500.css';
-declare module '@fontsource/roboto/700.css';
+/// <reference types="react" />
 
 // Image imports
 declare module '*.png' {
@@ -37,6 +24,12 @@ declare module '*.gif' {
 declare module '*.svg' {
   const value: string;
   export default value;
+}
+
+// CSS module imports (with named exports)
+declare module '*.css' {
+  const content: { [className: string]: string };
+  export default content;
 }
 
 // MUIDataTable module declaration

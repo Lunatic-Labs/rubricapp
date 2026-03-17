@@ -87,6 +87,7 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
             name: fullName,
             lag: lag,
             notification_sent: notificationSent,
+            is_assessor: student.is_assessor ?? false,
           });
         });
       });
@@ -201,44 +202,55 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
               return <span style={{ color: '#d32f2f' }}>No team members</span>;
             }
 
+            const hasAssessor = people.some((p: any) => p.is_assessor);
+
             return (
-              <div
-                style={{
-                  display: 'grid',
-                  gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
-                  gap: '6px 12px',
-                }}
-              >
-                {people.map((p: any, idx: number) => {
-                  const viewed = !!p.lag;
-                  const notified = p.notification_sent;
+              <div>
+                <div
+                  style={{
+                    display: 'grid',
+                    gridTemplateColumns: 'repeat(auto-fit, minmax(140px, 1fr))',
+                    gap: '6px 12px',
+                  }}
+                >
+                  {people.map((p: any, idx: number) => {
+                    const viewed = !!p.lag;
+                    const notified = p.notification_sent;
 
-                  // 3 states: viewed (green), sent but not viewed (orange), not notified (red)
-                  const color = viewed
-                    ? '#2e7d32'   // Green - feedback viewed
-                    : notified
-                    ? '#ed6c02'  // Orange - notification sent, not viewed
-                    : '#d32f2f'; // Red - not notified
+                    // 3 states: viewed (green), sent but not viewed (orange), not notified (red)
+                    const color = viewed
+                      ? '#2e7d32'   // Green - feedback viewed
+                      : notified
+                      ? '#ed6c02'  // Orange - notification sent, not viewed
+                      : '#d32f2f'; // Red - not notified
 
-                  const nameStyle: React.CSSProperties = {
-                    fontWeight: 600,
-                    color: color,
-                    lineHeight: 1.1,
-                  };
+                    const nameStyle: React.CSSProperties = {
+                      fontWeight: 600,
+                      color: color,
+                      lineHeight: 1.1,
+                    };
 
-                  const lagText = viewed
-                    ? (typeof p.lag === 'string' ? p.lag : String(p.lag))
-                    : notified
-                    ? 'Sent, not viewed'
-                    : 'Not notified';
+                    const lagText = viewed
+                      ? (typeof p.lag === 'string' ? p.lag : String(p.lag))
+                      : notified
+                      ? 'Sent, not viewed'
+                      : 'Not notified';
 
-                  return (
-                    <div key={`${p.name || 'member'}-${idx}`} style={{ minWidth: 0 }}>
-                      <div style={nameStyle}>{p.name || 'Unknown'}</div>
-                      <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>{lagText}</div>
-                    </div>
-                  );
-                })}
+                    return (
+                      <div key={`${p.name || 'member'}-${idx}`} style={{ minWidth: 0 }}>
+                        <div style={nameStyle}>
+                          {p.name || 'Unknown'}{p.is_assessor ? '*' : ''}
+                        </div>
+                        <div style={{ fontSize: '0.8rem', opacity: 0.9 }}>{lagText}</div>
+                      </div>
+                    );
+                  })}
+                </div>
+                {hasAssessor && (
+                  <div style={{ fontSize: '0.75rem', color: '#555', marginTop: '6px' }}>
+                    * Submitted the assessment
+                  </div>
+                )}
               </div>
             );
           },
