@@ -1,4 +1,3 @@
-import { ISODateString } from "./StringLabels"
 
 export interface Course {
     /** ID of the course. */

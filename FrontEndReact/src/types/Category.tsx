@@ -1,5 +1,3 @@
-import { ISODateString } from "./StringLabels"
-
 export interface Category {
     /** ID of the category. */
     category_id: number

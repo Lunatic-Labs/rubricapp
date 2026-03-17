@@ -1,4 +1,3 @@
-import { ISODateString } from "./StringLabels"
 
 export interface Rubric {
     /** ID of the rubric. */

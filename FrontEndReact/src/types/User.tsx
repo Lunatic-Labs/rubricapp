@@ -1,4 +1,3 @@
-import { ISODateString } from "./StringLabels"
 
 export interface User {
     /** ID of the user. */

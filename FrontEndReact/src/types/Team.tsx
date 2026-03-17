@@ -1,4 +1,3 @@
-import { ISODateString } from "./StringLabels"
 
 export interface Team {
     /** ID of the team. */
