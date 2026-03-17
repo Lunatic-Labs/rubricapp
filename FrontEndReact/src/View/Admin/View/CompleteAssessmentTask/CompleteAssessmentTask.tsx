@@ -279,7 +279,12 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                
+                const hasTeamFromChosenCAT = (navbar.state.chosenCompleteAssessmentTask?.team_id ?? -1) > 0;
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam && !hasTeamFromChosenCAT) {
+                    return;
+                }
+                
                 if (this.state.usingTeams && !teamsUsers) return;
                 
                 const userSort = [...users].sort((firstUser,secondUser) => {
@@ -370,7 +375,8 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
 
         const roleName = currentUserRole["role_name"];
 
-        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam){
+        const hasTeamFromChosenCAT = (navbar.state.chosenCompleteAssessmentTask?.team_id ?? -1) > 0;
+        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam && !hasTeamFromChosenCAT){
             return (
                 <Loading />
             );
