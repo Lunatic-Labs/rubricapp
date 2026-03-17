@@ -3,21 +3,23 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomButton from '../Components/CustomButton';
 import { FormControl, MenuItem, InputLabel, Select, Alert } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility';
+import { Team } from '../../../../types/Team';
+import { SelectChangeEvent } from '@mui/material/Select';
 
 interface SelectTeamProps {
     navbar: any;
 }
 
 interface SelectTeamState {
-    teams: any[] | null;
+    teams: Team[] | null;
     teamID: string;
     error: boolean;
     errorMessage: string;
 }
 
 class SelectTeam extends Component<SelectTeamProps, SelectTeamState> {
-    checkInUser: any;
-    handleSelect: any;
+    checkInUser: () => void;
+    handleSelect: (event: SelectChangeEvent<string>) => void;
     constructor(props: SelectTeamProps) {
         super(props);
 
@@ -28,7 +30,7 @@ class SelectTeam extends Component<SelectTeamProps, SelectTeamState> {
             errorMessage: ""
         };
 
-        this.handleSelect = (event: any) => {
+        this.handleSelect = (event: SelectChangeEvent<string>) => {
             this.setState({
                 teamID: event.target.value,
                 error: false,
@@ -140,7 +142,7 @@ class SelectTeam extends Component<SelectTeamProps, SelectTeamState> {
                                             sx={{ mb: 3 }}
                                             aria-label="selectTeamDropdown"
                                         >
-                                            {teams.map((x: any) =>
+                                            {teams.map((x) =>
                                                 <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
                                             }
                                         </Select>

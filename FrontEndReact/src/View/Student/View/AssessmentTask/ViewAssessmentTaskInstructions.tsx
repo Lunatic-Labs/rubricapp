@@ -3,10 +3,11 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import Button from "@mui/material/Button";
 import { genericResourcePOST } from "../../../../utility";
+import { Rubric } from '../../../../types/Rubric';
 
 interface ViewAssessmentTaskInstructionsProps {
     navbar: any;
-    rubrics: any;
+    rubrics: Rubric;
 }
 
 /**
@@ -31,7 +32,7 @@ interface ViewAssessmentTaskInstructionsProps {
  */
 
 interface ViewAssessmentTaskInstructionsState {
-    categories: any;
+    categories: Rubric["category_json"];
     instructions: string;
     skipInstructions: boolean;
     errorMessage: string | null;

@@ -511,7 +511,13 @@ export function restoreAdminCredentialsFromSession() {
     window.location.reload();
 }
 
-export function setTestStudentCookies(data: any ) {
+interface TestStudentCredentials {
+    access_token: string;
+    refresh_token: string;
+    user: Record<string, unknown>;
+}
+
+export function setTestStudentCookies(data: TestStudentCredentials) {
     const cookies = new Cookies();
     
     // Clear old cookies
