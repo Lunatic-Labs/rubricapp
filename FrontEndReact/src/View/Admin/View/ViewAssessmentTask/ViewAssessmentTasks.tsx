@@ -122,12 +122,12 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
           }, () => {
               const publishedStatus = this.state.publishedStatus[assessmentTaskId];
 
-              genericResourcePUT(
-                  `/assessment_task_toggle_published?assessmentTaskId=${assessmentTaskId}`,
-                  this,
-                  JSON.stringify({ published: publishedStatus })
-              );
-          });
+                genericResourcePUT(
+                    `/assessment_task_toggle_published?assessmentTaskId=${assessmentTaskId}`,
+                    this,
+                    JSON.stringify({ published: publishedStatus })
+                );
+            });
         };
 
     }
@@ -185,7 +185,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
 
     componentDidMount() {
         //const isViewingAsStudent = user?.viewingAsStudent || false;
-        
+
         const courseId = this.props.navbar.state.chosenCourse.course_id;
 
         //API Call 1: fetch Assessment Tasks
@@ -205,7 +205,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             `/assessment_task?course_id=${courseId}`,
             "assessment_tasks",
             this,
-            {dest: "assessmentTasks"}
+            { dest: "assessmentTasks" }
         );
 
         //API Call 2: Fetch completed Assessment Counts
@@ -260,19 +260,23 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
         var rubricNames = adminViewAssessmentTask.rubricNames;
         var assessmentTasks = adminViewAssessmentTask.assessmentTasks;
 
+        const sortedAssessmentTasks = [...assessmentTasks].sort((a, b) => {
+            return b.assessment_task_id - a.assessment_task_id;
+        });
+
         let assessmentTasksToDueDates: Record<number, { due_date: string; time_zone: string }> = {};
 
-        for(let index = 0; index < assessmentTasks.length; index++) {
-            assessmentTasksToDueDates[assessmentTasks[index]["assessment_task_id"]] = {
-                "due_date": assessmentTasks[index]["due_date"],
-                "time_zone": assessmentTasks[index]["time_zone"]
+        for (let index = 0; index < sortedAssessmentTasks.length; index++) {
+            assessmentTasksToDueDates[sortedAssessmentTasks[index]["assessment_task_id"]] = {
+                "due_date": sortedAssessmentTasks[index]["due_date"],
+                "time_zone": sortedAssessmentTasks[index]["time_zone"]
             };
         }
 
         var assessmentTaskIdToAssessmentTaskName: Record<number, string> = {};
 
-        for(let index = 0; index < assessmentTasks.length; index++) {
-            assessmentTaskIdToAssessmentTaskName[assessmentTasks[index]["assessment_task_id"]] = assessmentTasks[index]["assessment_task_name"];
+        for (let index = 0; index < sortedAssessmentTasks.length; index++) {
+            assessmentTaskIdToAssessmentTaskName[sortedAssessmentTasks[index]["assessment_task_id"]] = sortedAssessmentTasks[index]["assessment_task_name"];
         }
 
         var state = navbar.state;
@@ -286,10 +290,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 label: "Task Name",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"117px"}},
-                    setCellProps: () => { return { width:"117px"} },
+                    setCellHeaderProps: () => { return { width: "117px" } },
+                    setCellProps: () => { return { width: "117px" } },
                     customBodyRender: (assessmentTaskName: string) => {
-                        return(
+                        return (
                             <>
                                 {assessmentTaskName ? assessmentTaskName : "N/A"}
                             </>
@@ -302,15 +306,15 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 label: "Due Date",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"160px"}},
-                    setCellProps: () => { return { width:"160px"} },
+                    setCellHeaderProps: () => { return { width: "160px" } },
+                    setCellProps: () => { return { width: "160px" } },
                     customBodyRender: (assessmentTaskId: number) => {
                         let dueDateString = getHumanReadableDueDate(
                             assessmentTasksToDueDates[assessmentTaskId]!["due_date"],
                             assessmentTasksToDueDates[assessmentTaskId]!["time_zone"]
                         );
 
-                        return(
+                        return (
                             <>
                                 {assessmentTasksToDueDates[assessmentTaskId]!["due_date"] && dueDateString ? dueDateString : "N/A"}
                             </>
@@ -323,8 +327,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 label: "Completed By",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"80px"}},
-                    setCellProps: () => { return { width:"80px"} },
+                    setCellHeaderProps: () => { return { width: "80px" } },
+                    setCellProps: () => { return { width: "80px" } },
                     customBodyRender: (roleId: number) => {
                         return (
                             <>
@@ -339,8 +343,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 label: "Rubric Used",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"117px"}},
-                    setCellProps: () => { return { width:"117px"} },
+                    setCellHeaderProps: () => { return { width: "117px" } },
+                    setCellProps: () => { return { width: "117px" } },
                     customBodyRender: (rubricId: number) => {
                         return (
                             <>
@@ -389,10 +393,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 label: "Team?",
                 options: {
                     filter: true,
-                    setCellHeaderProps: () => { return { width:"80px"}},
-                    setCellProps: () => { return { width:"80px"} },
+                    setCellHeaderProps: () => { return { width: "80px" } },
+                    setCellProps: () => { return { width: "80px" } },
                     customBodyRender: (unitOfAssessment: boolean) => {
-                        return(
+                        return (
                             <>
                                 {unitOfAssessment ? "Yes" : "No"}
                             </>
@@ -406,26 +410,26 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
                     customBodyRender: (atId: number) => {
-                        const task = assessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
+                        const task = sortedAssessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
                         const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
                         return (
-                            <Tooltip 
+                            <Tooltip
                                 title={
                                     <>
-                                        <p> 
-                                            If the icon shows <strong>an upward arrow</strong>, the assessment task is published and visible to students; otherwise, the task is unpublished and hidden from students. 
+                                        <p>
+                                            If the icon shows <strong>an upward arrow</strong>, the assessment task is published and visible to students; otherwise, the task is unpublished and hidden from students.
                                         </p>
-                                         
+
                                     </>
                                 }>
                                 <IconButton
                                     aria-label={isPublished ? "unlock" : "lock"}
                                     onClick={() => this.handlePublishToggle(atId, task)}
                                 >
-                                {isPublished ? <PublishIcon /> : <UnpublishedIcon />}
+                                    {isPublished ? <PublishIcon /> : <UnpublishedIcon />}
                                 </IconButton>
                             </Tooltip>
                         );
@@ -438,10 +442,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
                     customBodyRender: (atId: number) => {
-                        const task = assessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
+                        const task = sortedAssessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
                         const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
 
                         return (
@@ -457,7 +461,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                     aria-label={isLocked ? "unlock" : "lock"}
                                     onClick={() => this.handleLockToggle(atId, task)}
                                 >
-                                {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                                    {isLocked ? <LockIcon /> : <LockOpenIcon />}
                                 </IconButton>
                             </Tooltip>
                         );
@@ -470,10 +474,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
                     customBodyRender: (assessmentTaskId: number) => {
-                        if (assessmentTaskId && assessmentTasks && chosenCourse && rubricNames) {
+                        if (assessmentTaskId && sortedAssessmentTasks && chosenCourse && rubricNames) {
                             return (
                                 <Tooltip
                                     title={
@@ -487,7 +491,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                         id=""
                                         onClick={() => {
                                             setAddAssessmentTaskTabWithAssessmentTask(
-                                                assessmentTasks,
+                                                sortedAssessmentTasks,
                                                 assessmentTaskId,
                                                 chosenCourse,
                                                 roleNames,
@@ -496,13 +500,13 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                         }}
                                         aria-label='editAssessmentIconButton'
                                     >
-                                    <EditIcon sx={{color:"black"}}/>
+                                        <EditIcon sx={{ color: "black" }} />
                                     </IconButton>
                                 </Tooltip>
                             )
 
                         } else {
-                            return(
+                            return (
                                 <>
                                     {"N/A"}
                                 </>
@@ -517,11 +521,11 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"70px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
                     customBodyRender: (assessmentTaskId: number) => {
-                        if (assessmentTaskId && assessmentTasks) {
-                            const selectedTask = assessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === assessmentTaskId);
+                        if (assessmentTaskId && sortedAssessmentTasks) {
+                            const selectedTask = sortedAssessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === assessmentTaskId);
                             const completedAssessments = this.state.completedAssessments!.filter((ca: { assessment_task_id: number; completed_count: number }) => ca.assessment_task_id === assessmentTaskId);
                             const completedCount = completedAssessments.length > 0 ? completedAssessments[0]!.completed_count : 0;
 
@@ -542,7 +546,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                                     disabled
                                                     aria-label='viewCompletedAssessmentIconButton'
                                                 >
-                                                <VisibilityIcon sx={{color: "rgba(0, 0, 0, 0.26)"}} />
+                                                    <VisibilityIcon sx={{ color: "rgba(0, 0, 0, 0.26)" }} />
                                                 </IconButton>
                                             </span>
                                         </Tooltip>
@@ -573,14 +577,14 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                                 }}
                                                 aria-label='viewCompletedAssessmentIconButton'
                                             >
-                                            <VisibilityIcon sx={{color:"black"}} />
+                                                <VisibilityIcon sx={{ color: "black" }} />
                                             </IconButton>
                                         </Tooltip>
                                     </>
                                 );
                             }
                         }
-                        return(
+                        return (
                             <>
                                 {"N/A"}
                             </>
@@ -594,10 +598,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
                     customBodyRender: (atId: number) => {
-                        const assessmentTask = assessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === atId);
+                        const assessmentTask = sortedAssessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === atId);
                         const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
                         const teamsExist = this.props.teams && this.props.teams.length > 0;
 
@@ -631,11 +635,11 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                     className='primary-color'
                                     variant='contained'
                                     onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(assessmentTasks, atId);
+                                        navbar.setAssessmentTaskInstructions(sortedAssessmentTasks, atId);
                                     }}
                                     aria-label='startAssessmentTasksButton'
                                 >
-                                START
+                                    START
                                 </Button>
                             </Tooltip>
                         )
@@ -648,8 +652,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 options: {
                     filter: false,
                     sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"80px", className:"button-column-alignment"} },
+                    setCellHeaderProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
+                    setCellProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
                     customBodyRender: (atId: number) => {
                         const completedAssessments = this.state.completedAssessments!.filter((ca: { assessment_task_id: number; completed_count: number }) => ca.assessment_task_id === atId);
                         const completedCount = completedAssessments.length > 0 ? completedAssessments[0]!.completed_count : 0;
@@ -666,10 +670,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                             aria-label='exportAssessmentTaskButton'
                                             sx={{
                                                 '&.Mui-disabled': {
-                                                color: 'var(--export_disabled_text)',
+                                                    color: 'var(--export_disabled_text)',
                                                 }
                                             }}
-                                            >
+                                        >
                                             EXPORT
                                         </Button>
                                     </span>
@@ -677,19 +681,19 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                             );
                         }
                         return (
-                                <Button
-                                    id={"assessment_export_" + atId}
-                                    className='primary-color'
-                                    variant='contained'
+                            <Button
+                                id={"assessment_export_" + atId}
+                                className='primary-color'
+                                variant='contained'
 
-                                    onClick={() => {
-                                        this.handleDownloadCsv(atId, "assessment_export_" + atId, assessmentTaskIdToAssessmentTaskName);
-                                    }}
+                                onClick={() => {
+                                    this.handleDownloadCsv(atId, "assessment_export_" + atId, assessmentTaskIdToAssessmentTaskName);
+                                }}
 
-                                    aria-label='exportAssessmentTaskButton'
-                                >
-                                    Export
-                                </Button>
+                                aria-label='exportAssessmentTaskButton'
+                            >
+                                Export
+                            </Button>
                         )
                     }
                 }
@@ -707,10 +711,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             tableBodyMaxHeight: "50vh"
         };
 
-        return(
+        return (
             <>
                 <CustomDataTable
-                    data={assessmentTasks}
+                    data={sortedAssessmentTasks}
                     columns={columns}
                     options={options}
                 />

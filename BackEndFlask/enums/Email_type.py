@@ -1,11 +1,15 @@
 #---------------------------------------------------
-# Contains system-wide email enums.
+# Contains system-wide email enums. 
 #---------------------------------------------------
 
 from enum import Enum
 
 class EmailContentType(Enum):
-    """Represents the type of the email content."""
+    """
+    Represents the type of the email content.
+    
+    Value(str)
+    """
 
     PLAIN_TEXT_CONTENT = 'plain_text_content'
     HTML_CONTENT       = 'html_content'

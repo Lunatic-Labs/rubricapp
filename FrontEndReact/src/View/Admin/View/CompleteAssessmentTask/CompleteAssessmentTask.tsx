@@ -1,8 +1,7 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
-//import { genericResourceGET, createEventSource } from '../../../../utility'; Removed to unhook /checkin_events
-import { genericResourceGET} from '../../../../utility';
+import { genericResourceGET, genericResourcePOST} from '../../../../utility';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import Cookies from 'universal-cookie';
@@ -13,6 +12,7 @@ import { Rubric } from '../../../../types/Rubric';
 import { User } from '../../../../types/User';
 import { CompleteAssessmentTask as CompleteAssessmentTaskType } from '../../../../types/CompleteAssessmentTask';
 import { Team } from '../../../../types/Team';
+import { ROLE, Role, isEqualOrHigherPrivilege } from '../../../../Enums/Role';
 
 interface CompleteAssessmentTaskProps {
     navbar: any;
@@ -26,7 +26,7 @@ interface CompleteAssessmentTaskState {
     userFixedTeam: Team[] | null;
     users: User[] | null;
     teamsUsers: {[key: string]: User[]} | null;
-    currentUserRole: { role_name: string } | null;
+    currentUserRole: { role_name: string; role_id: Role } | null;
     completedAssessments: CompleteAssessmentTaskType[] | null;
     currentUserId: number | null;
     usingTeams: boolean;
@@ -35,6 +35,7 @@ interface CompleteAssessmentTaskState {
     checkinEventSource: EventSource | null;
     unitList: any[] | null;
     jumpId: number | null;
+    isPollingSetUp: boolean;
 }
 
 /**
@@ -66,11 +67,15 @@ interface CompleteAssessmentTaskState {
  * @property {Object|null} state.checkins - The CheckinsTracker object.
  * @property {Object|null} state.checkinEventSource - The EventSource for checkin events.
  * @property {Array|null} state.unitList - The list of units for the assessment task.
+ * @property {NodeJS.Timeout} state.intervalId - The id of the polling function if it is set up.
  * @property {int|null} state.jumpId - What team or student to open first.
+ * @property {boolean} state.isPollingSetUp - Indicates if the polling function interval has been setup and called.
  */ 
 
 class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, CompleteAssessmentTaskState> {
     currentUserId!: number;
+    intervalId: NodeJS.Timeout | null = null;
+
     constructor(props: CompleteAssessmentTaskProps) {
         super(props);
 
@@ -94,8 +99,47 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
             checkinEventSource: null,
             unitList: null,
 
-            jumpId: this.props.navbar.state.jumpToSection // The desired jump location student assessment tasks.
+            jumpId: this.props.navbar.state.jumpToSection, // The desired jump location student assessment tasks.
+            isPollingSetUp: false,
         };
+    }
+
+    callPollingFunction = () => {
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        
+        genericResourceGET(
+            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            'checkin', this
+        ).then(data => {
+            let checkinData = new CheckinsTracker(data['checkin']);
+            this.setState({
+                checkins: checkinData,
+            });
+        }).catch(error => {
+            console.warn(error);
+        });
+    }
+
+    /**
+     * This function sets up the polling function if the user is a TA role or above.
+     */
+    figureOutCheckins = () => {
+        const navbar = this.props.navbar;
+        const state = navbar.state;
+        const chosenAssessmentTask = state.chosenAssessmentTask;
+        const isTeams = this.state.usingTeams;
+        if (isEqualOrHigherPrivilege(this.state.currentUserRole!.role_id, ROLE.TA_INSTRUCTOR)){
+            this.callPollingFunction();
+            this.intervalId = setInterval(this.callPollingFunction, 10000);
+        }
+        else {
+            genericResourcePOST(
+                `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&is_team=${isTeams}`,
+                this, "checkin"
+            );
+        }
     }
 
     componentDidMount() {
@@ -193,26 +237,16 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
             "completed_assessments", this, { dest: "completedAssessments" }
         );
 
-        //const checkinEventSource = createEventSource(
-        //    `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
-        //    ({data}) => {
-        //        this.setState({
-        //            checkins: new CheckinsTracker(JSON.parse(data)),
-        //        });
-        //    }
-        //);
-        //
-        //this.setState({
-        //    checkinEventSource: checkinEventSource,
-        //});
-
         this.setState({
             checkinEventSource: null,
         });
     }
-     
+    
     componentWillUnmount() {
-        this.state.checkinEventSource?.close();
+        if (this.intervalId) { 
+            clearInterval(this.intervalId); 
+        } 
+        this.intervalId = null; 
     }
 
     componentDidUpdate() { 
@@ -225,8 +259,16 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
                 teamsUsers,
                 currentUserRole,
                 completedAssessments,
-                checkins
+                checkins,
+                isPollingSetUp,
             } = this.state; 
+
+            if(!isPollingSetUp && currentUserRole && teams){
+                this.figureOutCheckins();
+                this.setState({
+                    isPollingSetUp: true,
+                });
+            }
             
             if (assessmentTaskRubric && completedAssessments && currentUserRole && users && teams && checkins) {
 
@@ -237,11 +279,7 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                
-                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) {
-                    return;
-                }
-                
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
                 if (this.state.usingTeams && !teamsUsers) return;
                 
                 const userSort = [...users].sort((firstUser,secondUser) => {
@@ -275,7 +313,7 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
                     fixedTeamMembers: teamsUsers,
                     // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
-                    userFixedTeam: userFixedTeam?.[0],
+                    userFixedTeam: userFixedTeam?.[0] ?? null,
                 });
 
                 this.setState({
