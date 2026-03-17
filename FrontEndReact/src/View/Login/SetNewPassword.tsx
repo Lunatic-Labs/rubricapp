@@ -316,6 +316,37 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                             onChange={this.handleChange}
                                             inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
                                             aria-label="setNewPasswordInput"
+                                            sx={{
+                                                '& .MuiInputBase-input': {
+                                                    color: errors.password ? 'var(--error-color)' : 'var(--text-color)',
+                                                },
+                                                '& .MuiInputLabel-root': {
+                                                    color: errors.password ? 'var(--error-color)' : 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiInputLabel-root.Mui-focused': {
+                                                    color: 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: 'var(--border-color)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'var(--textbox-border-focused)',
+                                                    },
+                                                },
+                                                '& .MuiFormHelperText-root': {
+                                                    color: 'var(--error-color)',
+                                                },
+                                                '& .MuiIconButton-root': {
+                                                    color: 'var(--icon-color)',
+                                                },
+                                                '& .MuiSvgIcon-root': {
+                                                    color: 'var(--icon-color)',
+                                                },
+                                            }}
                                             InputProps={{
                                                     endAdornment: (
                                                     <InputAdornment position="end">
@@ -360,7 +391,33 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                     </Box>
 
                                     <TextField
-                                        sx={{ mb: 3, mt: 2 }}
+                                        sx={{ 
+                                            mb: 3, 
+                                            mt: 2,
+                                            '& .MuiInputBase-input': {
+                                                color: errors.confirmationPassword ? 'var(--error-color)' : 'var(--text-color)',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: errors.confirmationPassword ? 'var(--error-color)' : 'var(--text-color-secondary)',
+                                            },
+                                            '& .MuiInputLabel-root.Mui-focused': {
+                                                color: 'var(--text-color-secondary)',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'var(--border-color)',
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: 'var(--border-hover-color)',
+                                                },
+                                                '&.Mui-focused fieldset': {
+                                                    borderColor: 'var(--textbox-border-focused)',
+                                                },
+                                            },
+                                            '& .MuiFormHelperText-root': {
+                                                color: 'var(--error-color)',
+                                            },
+                                        }}
                                         margin="normal"
                                         required
                                         fullWidth
