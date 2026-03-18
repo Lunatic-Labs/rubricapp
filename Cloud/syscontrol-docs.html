@@ -218,7 +218,7 @@ through which recipients can access the Corresponding Source.
 @licend  The above is the entire license notice
 for the JavaScript code in this tag.
 */
-<!--/*--><![CDATA[/*><!--*/
+// <![CDATA[
  function CodeHighlightOn(elem, id)
  {
    var target = document.getElementById(id);
@@ -237,7 +237,7 @@ for the JavaScript code in this tag.
    if(elem.cacheClassTarget)
      target.className = elem.cacheClassTarget;
  }
-/*]]>*///-->
+// ]]>
 </script>
 </head>
 <body>
@@ -271,11 +271,11 @@ for the JavaScript code in this tag.
 <div class="outline-text-2" id="text-1">
 <ol class="org-ol">
 <li>Clone the repo</li>
-<li><code>cd</code> into <code>./rubricapp/AWS</code></li>
+<li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
 <li><code>./syscontrol.sh --fresh</code></li>
-<li><code>cd ~/POGIL_PRODUCTION/rubricapp/AWS</code></li>
+<li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
 <li><code>rm -r</code> the original repo directory</li>
-<li><code>./syscontrol.sh --init</code></li>
+<li><code>./syscontrol.sh --init</code> — <b>wipes the database</b>, confirm with <code>Y</code> when prompted</li>
 <li><code>./syscontrol.sh --serve</code></li>
 </ol>
 </div>
@@ -285,17 +285,17 @@ for the JavaScript code in this tag.
 <h2 id="orgfdb582a"><span class="section-number-2">2</span> First Time Setup</h2>
 <div class="outline-text-2" id="text-2">
 <p>
-Clone the repo into the AWS instance and <code>cd</code> into it.
+Clone the repo onto the server and <code>cd</code> into it.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash">git clone https://github.com/Lunatic-Labs/rubricapp.git/
-cd ./rubricapp/AWS/
+<pre class="src src-bash">git clone https://github.com/Lunatic-Labs/rubricapp.git
+cd ./rubricapp/Cloud/
 </pre>
 </div>
 
 <p>
-Then run <code>syscontrol.sh</code> with the <code>--fresh</code> option
+Then run <code>syscontrol.sh</code> with the <code>--fresh</code> option.
 </p>
 
 <div class="org-src-container">
@@ -304,7 +304,7 @@ Then run <code>syscontrol.sh</code> with the <code>--fresh</code> option
 </div>
 
 <p>
-This will create a production directory at <code>/home/$USER/POGIL_PRODUCTION/</code>.
+This will create a production directory at <code>/home/$USER/RUBRICAPP_PRODUCTION/</code>.
 The next step is to remove the old <code>rubricapp</code> repo that was originally
 cloned as it is no longer needed because the entire directory was copied
 into this new production directory.
@@ -315,7 +315,7 @@ Now, <code>cd</code> into it.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash">cd /home/$USER/POGIL_PRODUCTION/rubricapp/AWS/
+<pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Cloud/
 </pre>
 </div>
 
@@ -419,6 +419,7 @@ This is intended to be the option you use after running <code>--fresh</code>. It
 <div class="org-src-container">
 <pre class="src src-bash">./syscontrol.sh --install
 ./syscontrol.sh --configure
+# then runs dbcreate.py to set up the database
 </pre>
 </div>
 
@@ -427,7 +428,8 @@ This is intended to be the option you use after running <code>--fresh</code>. It
 </p>
 
 <p>
-This option completely wipes the database and sets it up.
+This option completely wipes the database and sets it up fresh. You will be prompted to confirm
+with <code>Y</code> before anything is deleted. Type <code>n</code> to abort safely.
 </p>
 </div>
 </div>
@@ -451,6 +453,12 @@ This option completely wipes the database and sets it up.
 <p>
 Installs necessary dependencies for <code>apt</code>, <code>pip</code>, and <code>npm</code>.
 </p>
+
+<ul class="org-ul">
+<li><b>System packages via apt</b> — python3, nginx, redis-server, certbot, ufw, and others</li>
+<li><b>Python packages via pip</b> — installed from <code>BackEndFlask/requirements.txt</code> inside the virtual environment</li>
+<li><b>Node.js via NVM</b> — installs Node v20.11.1 and npm packages from <code>FrontEndReact/</code></li>
+</ul>
 </div>
 </div>
 
@@ -471,17 +479,55 @@ Installs necessary dependencies for <code>apt</code>, <code>pip</code>, and <cod
 </p>
 
 <p>
-This option configures the services for <code>gunicorn</code>, <code>nginx</code>, and the firewall through <code>ufw</code>.
+This option configures all services needed to run the application. Runs the following steps in order:
+</p>
+
+<p>
+<b>SSL Certificate (Certbot)</b><br />
+Obtains a Let's Encrypt SSL certificate for the domain <code>skill-builder-testing.net</code> using Certbot
+in standalone mode. Temporarily stops Nginx and frees ports 80 and 443 so Certbot can complete
+domain verification. If a certificate already exists, this step is skipped.
+</p>
+
+<p>
+<b>Gunicorn Service</b><br />
+Creates the systemd service at <code>/etc/systemd/system/rubricapp.service</code>. Runs the Flask backend
+via Gunicorn with 3 workers, bound to a Unix socket at <code>BackEndFlask/rubricapp.sock</code>.
+</p>
+
+<p>
+<b>Nginx</b><br />
+Writes two config files into <code>/etc/nginx/sites-available/</code> and enables both:
 </p>
 
 <ul class="org-ul">
-<li>The <code>gunicorn</code> service gets instantiated in <code>/etc/systemd/system/rubricapp.service</code>.</li>
-<li>The <code>nginx</code> service gets instantiated in <code>/etc/nginx/sites-available/rubricapp</code>.</li>
-<li>The ports that get open through <code>ufw</code> are:
-<ul class="org-ul">
-<li>80</li>
-</ul></li>
+<li><code>rubricapp</code> — SSL proxy on port 5000, forwards to the Gunicorn socket</li>
+<li><code>rubricapp-frontend</code> — listens on port 80 (redirects to HTTPS) and 443, forwards to the React frontend on port 3000</li>
 </ul>
+
+<p>
+<b>Frontend Service</b><br />
+Creates a systemd service at <code>/etc/systemd/system/rubricapp-frontend.service</code> that serves the
+built React app using <code>serve</code> on port 3000.
+</p>
+
+<p>
+<b>Firewall (UFW)</b><br />
+Opens the following ports:
+</p>
+
+<ul class="org-ul">
+<li>22 (SSH) — remote server access</li>
+<li>80 — HTTP, redirects to HTTPS via Nginx</li>
+<li>443 — HTTPS, main application port</li>
+<li>5000 — backend API, SSL proxy to Gunicorn</li>
+<li>3000 — React frontend, served by the frontend service</li>
+</ul>
+
+<p>
+<b>Note:</b> The domain must be pointing to the server's IP address before running
+<code>--configure</code>, otherwise the Certbot step will fail.
+</p>
 </div>
 </div>
 
@@ -502,7 +548,22 @@ This option configures the services for <code>gunicorn</code>, <code>nginx</code
 </p>
 
 <p>
-Serves the application. This is the option to use to start all services and make <i>rubricapp</i> live.
+Starts all services and makes <i>rubricapp</i> live. Stops any existing processes first for a clean
+start, then brings everything up in this order:
+</p>
+
+<ol class="org-ol">
+<li>Kills any existing processes</li>
+<li>Starts <code>redis-server</code></li>
+<li>Starts the Gunicorn backend (<code>rubricapp.service</code>)</li>
+<li>Starts and reloads Nginx</li>
+<li>Builds the React frontend (<code>npm run build</code>)</li>
+<li>Starts the frontend service (<code>rubricapp-frontend.service</code>)</li>
+</ol>
+
+<p>
+If you deploy new code, run <code>--serve</code> again to rebuild and restart everything. The frontend
+build step can take a minute.
 </p>
 </div>
 </div>
@@ -510,10 +571,6 @@ Serves the application. This is the option to use to start all services and make
 <div id="outline-container-org646cf20" class="outline-3">
 <h3 id="org646cf20"><span class="section-number-3">3.7</span> Update</h3>
 <div class="outline-text-3" id="text-3-7">
-<p>
-<b>[WARNING]</b>: untested
-</p>
-
 <p>
 <i>Usage</i>:
 </p>
@@ -528,9 +585,14 @@ Serves the application. This is the option to use to start all services and make
 </p>
 
 <p>
-Checks for updates on the remote repo. If there is,
-it shuts down all services currently running, pulls the new changes, and restarts the services.
+Stops all services and pulls the latest code from the remote repo. Does <b>not</b> automatically
+restart services — run <code>--serve</code> manually afterward to bring everything back up.
 </p>
+
+<ol class="org-ol">
+<li>Kills all running processes and services</li>
+<li>Fetches from remote and pulls if the local branch is behind <code>origin/master</code></li>
+</ol>
 </div>
 </div>
 
@@ -542,7 +604,7 @@ it shuts down all services currently running, pulls the new changes, and restart
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --update
+<pre class="src src-bash">./syscontrol.sh --status
 </pre>
 </div>
 
@@ -551,8 +613,19 @@ it shuts down all services currently running, pulls the new changes, and restart
 </p>
 
 <p>
-Prints the current status of all services required for <i>rubricapp</i>.
+Prints the current status of all services and shows which processes are listening on each
+relevant port. Useful for a quick health check without restarting anything.
 </p>
+
+<p>Services checked:</p>
+<ul class="org-ul">
+<li><code>nginx.service</code></li>
+<li><code>rubricapp.service</code> (Gunicorn backend)</li>
+<li><code>rubricapp-frontend.service</code> (React frontend)</li>
+<li><code>redis-server.service</code></li>
+</ul>
+
+<p>Ports checked: <code>5001</code>, <code>5000</code>, <code>3000</code>, <code>80</code></p>
 </div>
 </div>
 
@@ -564,7 +637,7 @@ Prints the current status of all services required for <i>rubricapp</i>.
 </p>
 
 <div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --update
+<pre class="src src-bash">./syscontrol.sh --kill
 </pre>
 </div>
 
@@ -573,8 +646,19 @@ Prints the current status of all services required for <i>rubricapp</i>.
 </p>
 
 <p>
-Kills all processes required for running <i>rubricapp</i>.
+Stops all services and cleans up processes. Also clears Python <code>__pycache__</code> directories
+and <code>.pyc</code> files from the project for a clean state before the next deploy.
 </p>
+
+<p>Services stopped in order:</p>
+<ul class="org-ul">
+<li><code>rubricapp-frontend.service</code></li>
+<li><code>redis-server.service</code></li>
+<li><code>rubricapp.service</code></li>
+<li><code>nginx.service</code></li>
+</ul>
+
+<p>Also kills any remaining processes on ports <code>5000</code>, <code>5001</code>, and <code>3000</code>.</p>
 </div>
 </div>
 </div>
@@ -582,6 +666,9 @@ Kills all processes required for running <i>rubricapp</i>.
 <div id="postamble" class="status">
 <p class="author">Author: Zachary Haskins</p>
 <p class="date">Created: 2024-03-05 Tue 13:50</p>
+<br>
+<p class="author">Updated by: Beshoy Iskandar</p>
+<p class="date">Last Updated: 2026-03-04 Wed 11:11</p>
 <p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
 </div>
 </body>

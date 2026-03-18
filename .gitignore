@@ -50,7 +50,7 @@ FrontEndReact/.env.production
 
 # Nginx configuration files
 /etc/nginx/sites-available/*
-/AWS/syscontrol.sh
+/cloud/syscontrol.sh
 
 # SSL/TLS certificate files
 /etc/letsencrypt/live/*
