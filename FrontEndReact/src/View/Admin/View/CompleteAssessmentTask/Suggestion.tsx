@@ -2,12 +2,21 @@ import React, { Component } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 
+interface SuggestionProps {
+    navbar: any;
+    id: number;
+    suggestions: string[];
+    suggestion: string;
+    setSuggestions: (newData: string) => void;
+    autosave: () => void;
+}
+
 interface SuggestionState {
     checked: boolean;
 }
 
-class Suggestion extends Component<any, SuggestionState> {
-    constructor(props: any) {
+class Suggestion extends Component<SuggestionProps, SuggestionState> {
+    constructor(props: SuggestionProps) {
         super(props);
 
         this.state = {
@@ -27,7 +36,7 @@ class Suggestion extends Component<any, SuggestionState> {
         const handleChange = () => {
             if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
             
-            this.setState((prevState: any) => ({
+            this.setState((prevState: SuggestionState) => ({
                 checked: !prevState.checked
             }));
 

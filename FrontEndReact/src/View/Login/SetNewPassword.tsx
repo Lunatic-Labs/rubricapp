@@ -14,11 +14,11 @@ interface SetNewPasswordProps {
 }
 
 interface SetNewPasswordState {
-    errorMessage: any;
+    errorMessage: string | null;
     isPasswordSet: boolean;
     password: string;
     confirmationPassword: string;
-    showPassword: any;
+    showPassword: boolean;
     errors: {
         password: string;
         confirmationPassword: string;
@@ -31,12 +31,13 @@ interface SetNewPasswordState {
 }
 
 class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState> {
-    generateColors: any;
-    getIcon: any;
-    handleChange: any;
-    handleTogglePasswordVisibility: any;
-    setPassword: any;
-    testPasswordStrength: any;
+    generateColors: (strength: string) => string[];
+    getIcon: (strength: string) => React.ElementType;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleTogglePasswordVisibility: () => void;
+    setPassword: () => void;
+    testPasswordStrength: (password: string) => string;
+
     constructor(props: SetNewPasswordProps) {
         super(props);
 
@@ -45,7 +46,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             isPasswordSet: false,
             password: '',
             confirmationPassword: '',
-            showPassword:'',
+            showPassword:false,
 
             errors : {
                 password: '',
@@ -60,7 +61,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
         }
 
         // handleChange has been altered to account for the 20 character limit for password
-        this.handleChange = (e: any) => {
+        this.handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const { id, value } = e.target;
 
             // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -87,7 +88,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             } as any);
         };
 
-        this.getIcon = (strength: any) => {
+        this.getIcon = (strength: string) => {
             switch(strength) {
                 case 'STRONG':
                     return CheckIcon;
@@ -101,7 +102,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             }
         };
 
-        this.generateColors = (strength: any) => {
+        this.generateColors = (strength: string) => {
             const COLORS = {
                 NEUTRAL: '#E2E2E2',
                 WEAK: '#B40314',
@@ -131,12 +132,12 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             });
         };
 
-        this.testPasswordStrength = (password: any) => {
-            const atLeastMinimumLength = (password: any) => new RegExp(/(?=.{8,})/).test(password);
-            const atLeastOneUppercaseLetter = (password: any) => new RegExp(/(?=.*?[A-Z])/).test(password);
-            const atLeastOneLowercaseLetter = (password: any) => new RegExp(/(?=.*?[a-z])/).test(password);
-            const atLeastOneNumber = (password: any) => new RegExp(/(?=.*?[0-9])/).test(password);
-            const atLeastOneSpecialChar = (password: any) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
+        this.testPasswordStrength = (password: string) => {
+            const atLeastMinimumLength = (password: string) => new RegExp(/(?=.{8,})/).test(password);
+            const atLeastOneUppercaseLetter = (password: string) => new RegExp(/(?=.*?[A-Z])/).test(password);
+            const atLeastOneLowercaseLetter = (password: string) => new RegExp(/(?=.*?[a-z])/).test(password);
+            const atLeastOneNumber = (password: string) => new RegExp(/(?=.*?[0-9])/).test(password);
+            const atLeastOneSpecialChar = (password: string) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
 
             if (!password) return 'WEAK';
 
@@ -250,7 +251,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             .catch(
                 (error) => {
                     this.setState({
-                        errorMessage: error
+                        errorMessage: String(error)
                     });
                 }
             );
@@ -332,7 +333,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                             />
                                         
                                         <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
-                                            {colors.map((color: any,index: any) => (
+                                            {colors.map((color: string,index: number) => (
                                                 <Box key={index} bgcolor={color} sx={{ flex: 1, height:"5px", borderRadius:"5px"}}></Box>
                                             ))}
                                         </Box>

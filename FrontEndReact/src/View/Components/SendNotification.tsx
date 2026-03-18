@@ -7,7 +7,16 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function ResponsiveNotification ( props: any ) {
+interface ResponsiveNotificationProps {
+    show: boolean;
+    notes: string;
+    error: { notes: string };
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleDialog: () => void;
+    sendNotification: () => void;
+}
+
+export default function ResponsiveNotification ( props: ResponsiveNotificationProps ) {
     return (
         <React.Fragment>
                 <Dialog

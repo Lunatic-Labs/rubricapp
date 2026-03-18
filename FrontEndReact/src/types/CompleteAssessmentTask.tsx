@@ -21,7 +21,11 @@ export interface CompleteAssessmentTask{
     /** Is the completed assessment locked and preventing edits. */
     locked: boolean
     /** All the OC and SFI data for this completed assessment. */
-    rating_observable_characteristics_suggestions_data: any
+    rating_observable_characteristics_suggestions_data: Record<string, {
+        rating: number;
+        observable_characteristics: string[];
+        suggestions: string[];
+    }>
     /** ID of related rubric. */
     rubric_id: number
     /** ID of the team that this completed assessment belongs to. */

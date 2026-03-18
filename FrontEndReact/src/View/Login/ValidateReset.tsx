@@ -15,9 +15,9 @@ interface ValidateResetState {
 }
 
 class ValidateReset extends Component<{}, ValidateResetState> {
-    sendEmail: any;
-    validateCode: any;
-    constructor(props: any) {
+    sendEmail: () => void;
+    validateCode: () => void;
+    constructor(props: {}) {
         super(props);
 
         this.state = {
@@ -56,7 +56,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 .catch(
                     (error) => {
                         this.setState({
-                            errorMessage: error
+                            errorMessage: String(error)
                         });
                     }
                 );
@@ -97,7 +97,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 .catch(
                     (error) => {
                         this.setState({
-                            errorMessage: error
+                            errorMessage: String(error)
                         });
                     }
                 );
@@ -164,7 +164,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                             value={email}
 
                                             onChange={
-                                                (e: any) => {
+                                                (e: React.ChangeEvent<HTMLInputElement>) => {
                                                     this.setState({
                                                         email: e.target.value
                                                     });
@@ -263,7 +263,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                         value={code}
 
                                         onChange={
-                                            (newCode: any) => {
+                                            (newCode: string) => {
                                                 this.setState({
                                                     code: newCode
                                                 });

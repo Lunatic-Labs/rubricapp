@@ -5,6 +5,7 @@ import ErrorMessage from "../../../Error/ErrorMessage";
 import ViewAssessmentTaskInstructions from "./ViewAssessmentTaskInstructions";
 import { genericResourceGET } from "../../../../utility";
 import Loading from "../../../Loading/Loading";
+import { Rubric } from '../../../../types/Rubric';
 
 /**
  * @description
@@ -28,10 +29,10 @@ interface StudentViewAssessmentTaskInstructionsProps {
 }
 
 interface StudentViewAssessmentTaskInstructionsState {
-  error: any;
+  error: string | null;
   errorMessage: string | null;
   isLoaded: boolean;
-  rubrics: any | null;
+  rubrics: Rubric | null;
 }
 
 class StudentViewAssessmentTaskInstructions extends Component<

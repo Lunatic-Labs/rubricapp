@@ -9,20 +9,21 @@ import CustomButton from "../../../Student/View/Components/CustomButton";
 import { genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
 
 interface ViewCompleteTeamAssessmentTasksProps {
     navbar: any;
-    completedAssessment: any[];
+    completedAssessment: CompleteAssessmentTask[];
 }
 
 interface ViewCompleteTeamAssessmentTasksState {
-    errorMessage: any;
-    isLoaded: any;
+    errorMessage: string | null;
+    isLoaded: boolean | null;
     showDialog: boolean;
     notes: string;
-    notificationSent: any;
+    notificationSent: Date | false;
     isSingleMsg: boolean;
-    compATId: any;
+    compATId: number | null;
     errors: {
         notes: string;
         [key: string]: string;
@@ -71,7 +72,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
         });
     };
 
-    handleDialog = (isSingleMessage: boolean, singleCompletedAT: any = null) => {
+    handleDialog = (isSingleMessage: boolean, singleCompletedAT: number | null = null) => {
         this.setState((prev) => ({
             showDialog: !prev.showDialog,
             isSingleMsg: isSingleMessage,
@@ -172,7 +173,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                 label: "Team Name",
                 options: {
                     filter: true,
-                    customBodyRender: (team_name: any) => (
+                    customBodyRender: (team_name: string) => (
                         <Typography variant="body2" align="left">
                             {team_name ? team_name : "N/A"}
                         </Typography>
@@ -184,7 +185,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                 label: "Assessor",
                 options: {
                     filter: true,
-                    customBodyRender: (completed_by: any) => (
+                    customBodyRender: (completed_by: number) => (
                         <Typography variant="body2" align="left">
                             {userNames && completed_by ? userNames[completed_by] : "N/A"}
                         </Typography>
@@ -196,7 +197,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                 label: "Initial Time",
                 options: {
                     filter: true,
-                    customBodyRender: (initialTime: any) => {
+                    customBodyRender: (initialTime: string) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                         return (
                             <Typography variant="body2" align="left">
@@ -211,7 +212,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                 label: "Last Updated",
                 options: {
                     filter: true,
-                    customBodyRender: (lastUpdate: any) => {
+                    customBodyRender: (lastUpdate: string) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                         return (
                             <Typography variant="body2" align="left">
@@ -229,7 +230,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                     sort: false,
                     setCellHeaderProps: () => ({ align: "center", className: "button-column-alignment" }),
                     setCellProps: () => ({ align: "center", className: "button-column-alignment" }),
-                    customBodyRender: (completedAssessmentId: any, tableMeta: any) => {
+                    customBodyRender: (completedAssessmentId: number, tableMeta: any) => {
                         const rowIndex = tableMeta?.rowIndex;
                         const teamId =
                             this.props.completedAssessment && rowIndex !== undefined

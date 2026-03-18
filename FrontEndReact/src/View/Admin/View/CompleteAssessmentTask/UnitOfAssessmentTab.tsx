@@ -9,10 +9,12 @@ import StatusIndicator from './StatusIndicator';
 import {StatusIndicatorState} from './StatusIndicator';
 import {getUnitCategoryStatus} from './cat_utils';
 import Cookies from 'universal-cookie';
+import { ATUnit } from './unit';
+import { CheckinsTracker } from './cat_utils';
 
 interface UnitOfAssessmentTabProps {
-    units: any[];
-    checkins: any;
+    units: ATUnit[];
+    checkins: CheckinsTracker;
     navbar: any;
     currentUnitTabIndex: number;
     handleUnitTabChange: (index: number) => void;
@@ -48,9 +50,9 @@ class UnitOfAssessmentTab extends Component<UnitOfAssessmentTabProps> {
         const currentUserId = cookies.get("user")["user_id"];
 
         for (let index = 0; index < units.length; index++){
-            let currentUnit = units[index];
+            let currentUnit = units[index]!;
             
-            if (hideUnits && currentUnit["team"]["observer_id"] !== currentUserId){continue;}
+            if (hideUnits && (currentUnit as any)["team"]["observer_id"] !== currentUserId){continue;}
 
             const unitName = currentUnit.displayName;
             const unitId = currentUnit.id;
@@ -61,8 +63,8 @@ class UnitOfAssessmentTab extends Component<UnitOfAssessmentTabProps> {
             if (currentUnit.isDone === true) {
                 unitStatus = StatusIndicatorState.COMPLETED;
             } else {
-                const isNotStarted = currentUnit.categoryNames().every((categoryName: any) => {
-                    return getUnitCategoryStatus(currentUnit, this.props.navbar.state.chosenAssessmentTask, categoryName) === StatusIndicatorState.NOT_STARTED;
+                const isNotStarted = currentUnit.categoryNames().every((categoryName: string) => {
+                    return getUnitCategoryStatus(currentUnit as { rocsData: { [key: string]: { observable_characteristics: string[]; suggestions: string[] } } }, this.props.navbar.state.chosenAssessmentTask, categoryName) === StatusIndicatorState.NOT_STARTED;
                 });
 
                 if (isNotStarted) {
@@ -113,7 +115,7 @@ class UnitOfAssessmentTab extends Component<UnitOfAssessmentTabProps> {
             <Tabs
                 value={this.props.currentUnitTabIndex}
 
-                onChange={(event: any, newUnitTabIndex: any) => {
+                onChange={(_event: React.SyntheticEvent, newUnitTabIndex: number) => {
                     this.props.handleUnitTabChange(newUnitTabIndex);
                 }}
 

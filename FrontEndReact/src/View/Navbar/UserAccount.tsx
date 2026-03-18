@@ -34,6 +34,11 @@ import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
  * @property {string} state.PasswordStrength.WEAK - Weak password flag.
  */
 
+interface CookieUser {
+    user_name: string;
+    email: string;
+}
+
 interface UserAccountProps {
     navbar?: any;
 }
@@ -44,7 +49,7 @@ interface UserAccountState {
     password: string;
     confirmationPassword: string;
     showPassword: boolean;
-    user: any;
+    user: CookieUser | null;
     resetPasswordDialogOpen: boolean;
     isLoaded?: boolean;
     errors: {
@@ -98,7 +103,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      */
 
     // handleChange has been altered to account for the 20 character limit for password
-    handleChange(e: any) {
+    handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { id, value } = e.target;
 
         // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -148,7 +153,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      * @returns {import} Returns the Material UI icon component.
      */
 
-    getIcon(strength: any) {
+    getIcon(strength: string) {
         switch (strength) {
             case 'STRONG':
                 return CheckIcon;
@@ -166,7 +171,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      * @returns {string} Returns the appropriate strength bar colors.
      */
 
-    generateColors(strength: any) {
+    generateColors(strength: string) {
         const COLORS = {
             NEUTRAL: '#E2E2E2',
             WEAK: '#B40314',
@@ -210,12 +215,12 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      * @returns {string} Returns the password strength level: "STRONG", "MEDIUM", "WEAK".
      */
 
-    testPasswordStrength(password: any) {
-        const atLeastMinimumLength = (password: any) => new RegExp(/(?=.{8,})/).test(password);
-        const atLeastOneUppercaseLetter = (password: any) => new RegExp(/(?=.*?[A-Z])/).test(password);
-        const atLeastOneLowercaseLetter = (password: any) => new RegExp(/(?=.*?[a-z])/).test(password);
-        const atLeastOneNumber = (password: any) => new RegExp(/(?=.*?[0-9])/).test(password);
-        const atLeastOneSpecialChar = (password: any) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
+    testPasswordStrength(password: string) {
+        const atLeastMinimumLength = (password: string) => new RegExp(/(?=.{8,})/).test(password);
+        const atLeastOneUppercaseLetter = (password: string) => new RegExp(/(?=.*?[A-Z])/).test(password);
+        const atLeastOneLowercaseLetter = (password: string) => new RegExp(/(?=.*?[a-z])/).test(password);
+        const atLeastOneNumber = (password: string) => new RegExp(/(?=.*?[0-9])/).test(password);
+        const atLeastOneSpecialChar = (password: string) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
 
         if (!password) return 'WEAK';
 

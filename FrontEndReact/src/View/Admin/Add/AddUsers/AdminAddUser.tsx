@@ -5,11 +5,16 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import DropConfirmation from '../../../Components/DropConfirmation';
 import DeleteConfirmation from '../../../Components/DeleteConfirmation';
 import { genericResourceDELETE, genericResourcePOST, genericResourcePUT } from '../../../../utility';
-import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select, SelectChangeEvent} from '@mui/material';
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 
 const MAX_LMS_ID_LENGTH = 10;
+
+interface AdminAddUserProps {
+    navbar: any;
+}
+
 
 interface AdminAddUserState {
     errorMessage: string | null;
@@ -32,10 +37,10 @@ interface AdminAddUserState {
     };
 }
 
-class AdminAddUser extends Component<any, AdminAddUserState> {
-    deleteUser: any;
-    unenrollUser: any;
-    constructor(props: any) {
+class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
+    deleteUser: () => void;
+    unenrollUser: () => void;
+    constructor(props: AdminAddUserProps) {
         super(props);
 
         this.state = {
@@ -131,12 +136,12 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
     }
 
     // handleChange has been altered to account for the 50 character limit for first / last names
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
       
         // Special case: email with inline validation
         if (id === 'email') {
-          this.setState((prev: any) => ({
+          this.setState((prev: AdminAddUserState) => ({
               email: value,
 
               errors: {
@@ -200,7 +205,7 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
 
 
 
-    handleSelect = (event: any) => {
+    handleSelect = (event: SelectChangeEvent<string>) => {
         this.setState({
             role: event.target.value
         });
@@ -312,7 +317,7 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
   .then((result) => {
     if (result && result.errorMessage == null) {
       // success: ensure any old email error is cleared
-      this.setState((prev: any) => ({
+      this.setState((prev: AdminAddUserState) => ({
           errors: { ...prev.errors, email: '' }
       }));
       confirmCreateResource("User");
@@ -330,7 +335,7 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
       const isDup = isMysqlDup || isPgDup || isSqliteDup;
 
       if (isDup) {
-        this.setState((prev: any) => ({
+        this.setState((prev: AdminAddUserState) => ({
             errors: { ...prev.errors, email: 'Email is already in use.' },
 
             // suppress big red toast
@@ -510,7 +515,7 @@ class AdminAddUser extends Component<any, AdminAddUserState> {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
-                                       onPaste={(e: any) => {
+                                       onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
                                             const text = (e.clipboardData || (window as any).clipboardData).getData('text') || '';
                                             if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
                                                 e.preventDefault();

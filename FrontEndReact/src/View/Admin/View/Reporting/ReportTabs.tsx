@@ -2,14 +2,17 @@ import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
 
-
-
-export default function TabManager (props: any) {
+interface TabManagerProps {
+    navbar: any;
+    activeTab: string;
+    setTab: (tab: string) => void;
+}
+export default function TabManager(props: TabManagerProps) {
   var idTab = props.activeTab==="Users"? 0 : (props.activeTab==="Teams" ? 1 : (props.activeTab==="AssessmentTasks") ? 2 : 0);
 
   const [value, setValue] = React.useState(idTab);
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (_event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 

@@ -5,18 +5,25 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
 import { genericResourceGET } from '../../../../utility';
-import { Box } from '@mui/material';
+import { Box, SelectChangeEvent } from '@mui/material';
 import Loading from '../../../Loading/Loading';
+import { Course } from '../../../../types/Course';
+
+interface CourseDropdownProps {
+    setSelectedCourse: (newSelectedCourse: string) => void;
+    id?: string;
+}
+
 
 interface CourseDropdownState {
   selectedOption: string;
   selectedCourse: string;
-  courses: any[] | null;
+  courses: Course[] | null;
 }
 
-class CourseDropdown extends Component<any, CourseDropdownState> {
-  handleCourseChange: any;
-  constructor(props: any) {
+class CourseDropdown extends Component<CourseDropdownProps, CourseDropdownState> {
+  handleCourseChange: (event: SelectChangeEvent<string>) => void;
+  constructor(props: CourseDropdownProps) {
     super(props);
 
     this.state = {
@@ -25,7 +32,7 @@ class CourseDropdown extends Component<any, CourseDropdownState> {
       courses: []
     };
 
-    this.handleCourseChange = (newSelectedCourse: any) => {
+    this.handleCourseChange = (newSelectedCourse: SelectChangeEvent<string>) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
 
       this.setState({
@@ -44,7 +51,7 @@ class CourseDropdown extends Component<any, CourseDropdownState> {
         <em>None</em>
       </MenuItem>
     ];
-    this.state.courses && this.state.courses.map((course: any, index: any) => {
+    this.state.courses && this.state.courses.map((course: Course, index: number) => {
       return(
         courseChoices = [...courseChoices,
           <MenuItem key={index} value={course["course_id"]} aria-label="adminImportAssessmentCourseChoice">

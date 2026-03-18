@@ -2,12 +2,21 @@ import React, { Component } from 'react';
 import Checkbox from '@mui/material/Checkbox';
 import Box from '@mui/material/Box';
 
+interface ObservableCharacteristicProps {
+    navbar: any;
+    id: number;
+    observableCharacteristics: string[];
+    observableCharacteristic: string;
+    setObservableCharacteristics: (newData: string) => void;
+    autosave: () => void;
+}
+
 interface ObservableCharacteristicState {
   checked: boolean;
 }
 
-class ObservableCharacteristic extends Component<any, ObservableCharacteristicState> {
-  constructor(props: any) {
+class ObservableCharacteristic extends Component<ObservableCharacteristicProps, ObservableCharacteristicState> {
+  constructor(props: ObservableCharacteristicProps) {
     super(props);
 
     this.state = {
@@ -27,7 +36,7 @@ class ObservableCharacteristic extends Component<any, ObservableCharacteristicSt
     const handleChange = () => {
       if (this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
       
-      this.setState((prevState: any) => ({
+      this.setState((prevState: ObservableCharacteristicState) => ({
         checked: !prevState.checked
       }));
 

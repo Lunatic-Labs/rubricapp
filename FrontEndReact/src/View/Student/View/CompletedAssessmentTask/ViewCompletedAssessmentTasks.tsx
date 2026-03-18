@@ -4,11 +4,13 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
+import { AssessmentTask } from '../../../../types/AssessmentTask';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
 
 interface ViewCompletedAssessmentTasksProps {
     navbar: any;
-    assessmentTasks: any[];
-    completedAssessments: any[];
+    assessmentTasks: AssessmentTask[];
+    completedAssessments: CompleteAssessmentTask[];
 }
 
 /**
@@ -26,12 +28,6 @@ interface ViewCompletedAssessmentTasksProps {
  *                                       (unit_of_assessment, role_id, etc.).
  *  @prop {Array}  completedAssessments - Completed CATs to display as rows.
  */
-
-interface ViewCompletedAssessmentTasksProps {
-    navbar: any;
-    assessmentTasks: any[];
-    completedAssessments: any[];
-}
 
 class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTasksProps> {
     render() {
@@ -55,7 +51,7 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (initial_time: any) => {
+                    customBodyRender: (initial_time: string) => {
                         return(
                             <>
                                 {initial_time ? getHumanReadableDueDate(initial_time) : "N/A"}
@@ -71,7 +67,7 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (last_update: any) => {
+                    customBodyRender: (last_update: string) => {
                         return(
                             <>
                                 {last_update ? getHumanReadableDueDate(last_update) : "N/A"}
@@ -87,8 +83,8 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"170px" } },
                     setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId: any) => {
-                        const chosenAT = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
+                    customBodyRender: (atId: number) => {
+                        const chosenAT = assessmentTasks.find((at) => at.assessment_task_id === atId);
                         if (!chosenAT) {
                             return <>UNDEFINED</>
                         }
@@ -103,9 +99,9 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"140px" } },
                     setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId: any) => {
-                        const at = assessmentTasks.find((at: any) => at.assessment_task_id === atId);
-                        const completer = at.role_id;
+                    customBodyRender: (atId: number) => {
+                        const at = assessmentTasks.find((at) => at.assessment_task_id === atId);
+                        const completer = at?.role_id;
                         return <>{completer === 5 ? "Student" : "TA/Instructor"}</>;
                     }
                 }
@@ -118,7 +114,7 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
                     setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
-                    customBodyRender: (atId: any) => {
+                    customBodyRender: (atId: number) => {
                         return (
                             <div>
                                 <IconButton
@@ -127,7 +123,7 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                               if (completedAssessments) {
                                   singularCompletedAssessment
                                       = completedAssessments.find(
-                                          (completedAssessment: any) => completedAssessment.assessment_task_id === atId
+                                          (completedAssessment) => completedAssessment.assessment_task_id === atId
                                       ) ?? null;
                               }
                                 /**
@@ -155,8 +151,8 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                                 `/rating`,
                                 this,
                                 JSON.stringify({
-                                    "user_id" : singularCompletedAssessment.user_id,
-                                    "completed_assessment_id": singularCompletedAssessment.completed_assessment_id,
+                                    "user_id" : singularCompletedAssessment!.user_id,
+                                    "completed_assessment_id": singularCompletedAssessment!.completed_assessment_id,
                                 }),
                               );
                               this.props.navbar.setAssessmentTaskInstructions(

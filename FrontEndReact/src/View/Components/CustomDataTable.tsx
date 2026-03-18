@@ -1,6 +1,12 @@
 import React from 'react';
+import { createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable from 'mui-datatables';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+
+interface CustomDataTableProps {
+    data: object[];
+    columns: any[];
+    options?: Record<string, unknown>;
+}
 
 const customTheme = createTheme({
   spacing: 4,
@@ -84,11 +90,7 @@ const customTheme = createTheme({
   },
 });
 
-const CustomDataTable = ({
-  data,
-  columns,
-  options
-}: any) => {
+const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
   const defaultOptions = {
     rowStyle: { height: 4 },
   };

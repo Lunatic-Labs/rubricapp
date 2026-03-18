@@ -33,6 +33,11 @@ import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCus
 import UserAccount from './UserAccount';
 import PrivacyPolicy from './PrivacyPolicy';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
+import { AssessmentTask as AssessmentTaskType } from '../../types/AssessmentTask';
+import { CompleteAssessmentTask as CompleteAssessmentTaskType } from '../../types/CompleteAssessmentTask';
+import { Course as CourseType } from '../../types/Course';
+import { User as UserType } from '../../types/User';
+import { Team as TeamType } from '../../types/Team';
 
 /**
  * Creates an instance of the AppState component.
@@ -82,57 +87,57 @@ interface AppStateProps {
     isSuperAdmin?: boolean;
     isAdmin?: boolean;
     userName?: string;
-    logout?: any;
+    logout?: () => void;
 }
 
 interface AppStateState {
     activeTab: string;
-    user: any;
-    addUser: any;
-    course: any;
-    addCourse: any;
-    assessmentTask: any;
+    user: UserType | null;
+    addUser: boolean | null;
+    course: CourseType | null;
+    addCourse: boolean | null;
+    assessmentTask: AssessmentTaskType | null;
     addAssessmentTask: boolean;
-    chosenAssessmentTask: any;
-    chosenCompleteAssessmentTask: any;
-    unitOfAssessment: any;
+    chosenAssessmentTask: AssessmentTaskType | null;
+    chosenCompleteAssessmentTask: CompleteAssessmentTaskType | null;
+    unitOfAssessment: boolean | null;
     chosenCompleteAssessmentTaskIsReadOnly: boolean;
-    team: any;
+    team: TeamType | null;
     addTeam: boolean;
-    teams: any;
-    users: any;
-    chosenCourse: any;
-    roleNames: any;
-    rubricNames: any;
-    userConsent: any;
-    addTeamAction: any;
-    successMessage: any;
-    successMessageTimeout: any;
-    addCustomRubric: any;
-    jumpToSection: any;
+    teams: TeamType[] | null;
+    users: UserType[] | null;
+    chosenCourse: CourseType | null;
+    roleNames: string[] | null;
+    rubricNames: string[] | null;
+    userConsent: UserType | null;
+    addTeamAction: string | null;
+    successMessage: string | null;
+    successMessageTimeout: ReturnType<typeof setTimeout> | undefined;
+    addCustomRubric: boolean | null;
+    jumpToSection: string | null;
     skipInstructions?: boolean;
 }
 
 class AppState extends Component<AppStateProps, AppStateState> {
-    Reset: any;
-    ViewCTwithAT: any;
-    confirmCreateResource: any;
-    resetJump: any;
-    setAddAssessmentTaskTabWithAssessmentTask: any;
-    setAddCourseTabWithCourse: any;
-    setAddCustomRubric: any;
-    setAddTeamTabWithTeam: any;
-    setAddTeamTabWithUsers: any;
-    setAddUserTabWithUser: any;
-    setAssessmentTaskInstructions: any;
-    setCompleteAssessmentTaskTabWithID: any;
-    setConfirmCurrentTeam: any;
-    setEditConsentWithUser: any;
-    setNewTab: any;
-    setSelectCurrentTeam: any;
-    setStudentDashboardWithCourse: any;
-    setSuccessMessage: any;
-    setViewCompleteAssessmentTaskTabWithAssessmentTask: any;
+    Reset!: (listOfElements: string[]) => void;
+    ViewCTwithAT!: (assessmentTasks: AssessmentTaskType[], atId: number) => void;
+    confirmCreateResource!: (resource: string, delay?: number) => void;
+    resetJump!: () => void;
+    setAddAssessmentTaskTabWithAssessmentTask!: (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, course: CourseType, roleNames: string[], rubricNames: string[]) => void;
+    setAddCourseTabWithCourse!: (courses: CourseType[], courseId: number | null, tab: string) => void;
+    setAddCustomRubric!: (addCustomRubric: boolean | null) => void;
+    setAddTeamTabWithTeam!: (teams: TeamType[], teamId: number, users: UserType[], tab: string, addTeamAction: string | null) => void;
+    setAddTeamTabWithUsers!: (users: UserType[]) => void;
+    setAddUserTabWithUser!: (users: UserType[], userId: number) => void;
+    setAssessmentTaskInstructions!: (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, completedAssessments?: CompleteAssessmentTaskType[] | CompleteAssessmentTaskType | null, options?: { readOnly?: boolean; skipInstructions?: boolean }) => void;
+    setCompleteAssessmentTaskTabWithID!: (assessmentTask: AssessmentTaskType | null) => void;
+    setConfirmCurrentTeam!: (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, switchTeam: boolean) => void;
+    setEditConsentWithUser!: (userId: number, users: UserType[]) => void;
+    setNewTab!: (newTab: string) => void;
+    setSelectCurrentTeam!: (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number) => void;
+    setStudentDashboardWithCourse!: (courseId: number, courses: CourseType[]) => void;
+    setSuccessMessage!: (message: string | null) => void;
+    setViewCompleteAssessmentTaskTabWithAssessmentTask!: (completedAssessmentTasks: CompleteAssessmentTaskType[] | null, completedAssessmentId: number | null, chosenAssessmentTask: AssessmentTaskType | null, jumpId?: string | null) => void;
     constructor(props: AppStateProps) {
         super(props);
         
@@ -187,7 +192,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {string} newTab - The name of the tab/view to navigate to. 
          */
 
-        this.setNewTab = (newTab: any) => {
+        this.setNewTab = (newTab: string) => {
             this.setState({
                 activeTab: newTab
             });
@@ -199,14 +204,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {number|string} userId - The ID of the user being edited.
          */
 
-        this.setAddUserTabWithUser = (users: any, userId: any) => {
-            var newUser = null;
-
-            for (var u = 0; u < users.length; u++) {
-                if (users[u]["user_id"] === userId) {
-                    newUser = users[u];
-                }
-            }
+        this.setAddUserTabWithUser = (users: UserType[], userId: number) => {
+            const newUser = users.find(u => u.user_id === userId) ?? null;
 
             this.setState({
                 activeTab: "AddUser",
@@ -222,7 +221,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {string} tab - The tab to switch to ("AddCourse", "Users", etc.).
          */
 
-        this.setAddCourseTabWithCourse = (courses: any, courseId: any, tab: any) => {
+        this.setAddCourseTabWithCourse = (courses: CourseType[], courseId: number | null, tab: string) => {
             if (courses.length === 0 && courseId === null && tab === "AddCourse") {
                 this.setState({
                     activeTab: tab,
@@ -231,13 +230,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 });
 
             } else {
-                var newCourse = null;
-
-                for (var c = 0; c < courses.length; c++) {
-                    if (courses[c]["course_id"] === courseId) {
-                        newCourse = courses[c];
-                    }
-                }
+                const newCourse = courses.find(c => c.course_id === courseId) ?? null;
 
                 if (tab === "Users") {
                     this.setState({
@@ -265,36 +258,36 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {boolean} [options.skipInstructions=false] - Whether to skip instructions.
          */
 
-        this.setAssessmentTaskInstructions = (assessmentTasks: any, assessmentTaskId: any, completedAssessments: any = null, {
+        this.setAssessmentTaskInstructions = (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, completedAssessments: CompleteAssessmentTaskType[] | CompleteAssessmentTaskType | null = null, {
             readOnly = false,
             skipInstructions = false
         }={}) => {
-            
-            var completedAssessment = null;
+
+            var completedAssessment: CompleteAssessmentTaskType | null = null;
 
             if (completedAssessments) {
-                if (!Array.isArray(completedAssessments) && 
+                if (!Array.isArray(completedAssessments) &&
                     completedAssessments.assessment_task_id === assessmentTaskId) {
                     // Single CAT object passed - use it directly
                     completedAssessment = completedAssessments;
-                } 
+                }
                 // If it's an array, search for matching assessment_task_id
                 else if (Array.isArray(completedAssessments)) {
                     completedAssessment = completedAssessments.find(
-                        (cat: any) => cat.assessment_task_id === assessmentTaskId
+                        (cat: CompleteAssessmentTaskType) => cat.assessment_task_id === assessmentTaskId
                     ) ?? null;
                 }
             }
-            
+
             const assessmentTask = assessmentTasks.find(
-                (assessmentTask: any) => assessmentTask["assessment_task_id"] === assessmentTaskId
-            );
+                (at: AssessmentTaskType) => at.assessment_task_id === assessmentTaskId
+            ) ?? null;
 
             this.setState({
                 activeTab: "AssessmentTaskInstructions",
                 chosenCompleteAssessmentTask: completedAssessments ? completedAssessment : null,
                 chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"],
+                unitOfAssessment: assessmentTask?.unit_of_assessment ?? null,
                 chosenCompleteAssessmentTaskIsReadOnly: readOnly,
                 skipInstructions: skipInstructions
             });
@@ -307,21 +300,15 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {boolean} switchTeam - Whether switching teams is required.
          */
 
-        this.setConfirmCurrentTeam = (assessmentTasks: any, assessmentTaskId: any, switchTeam: any) => {
-            var assessmentTask = null;
-
-            for (var index = 0; index < assessmentTasks.length; index++) {
-                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
-                    assessmentTask = assessmentTasks[index];
-                }
-            }
+        this.setConfirmCurrentTeam = (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, switchTeam: boolean) => {
+            const assessmentTask = assessmentTasks.find(at => at.assessment_task_id === assessmentTaskId) ?? null;
 
             const tab = switchTeam ? "CodeRequired" : "ConfirmCurrentTeam"
 
             this.setState({
                 activeTab: tab,
                 chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
+                unitOfAssessment: assessmentTask?.unit_of_assessment ?? null
             });
         }
 
@@ -331,19 +318,13 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {number|string} assessmentTaskId - Selected task ID.
          */
 
-        this.setSelectCurrentTeam = (assessmentTasks: any, assessmentTaskId: any) => {
-            var assessmentTask = null;
-
-            for (var index = 0; index < assessmentTasks.length; index++) {
-                if (assessmentTasks[index]["assessment_task_id"] === assessmentTaskId) {
-                    assessmentTask = assessmentTasks[index];
-                }
-            }
+        this.setSelectCurrentTeam = (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number) => {
+            const assessmentTask = assessmentTasks.find(at => at.assessment_task_id === assessmentTaskId) ?? null;
 
             this.setState({
                 activeTab: "SelectTeam",
                 chosenAssessmentTask: assessmentTask,
-                unitOfAssessment: assessmentTask["unit_of_assessment"]
+                unitOfAssessment: assessmentTask?.unit_of_assessment ?? null
             });
         }
 
@@ -356,14 +337,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Array<string>} rubricNames - Available rubric names.
          */
 
-        this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks: any, assessmentTaskId: any, course: any, roleNames: any, rubricNames: any) => {
-            var newAssessmentTask = null;
-
-            for (var a = 0; a < assessmentTasks.length; a++) {
-                if (assessmentTasks[a]["assessment_task_id"] === assessmentTaskId) {
-                    newAssessmentTask = assessmentTasks[a];
-                }
-            }
+        this.setAddAssessmentTaskTabWithAssessmentTask = (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, course: CourseType, roleNames: string[], rubricNames: string[]) => {
+            const newAssessmentTask = assessmentTasks.find(at => at.assessment_task_id === assessmentTaskId) ?? null;
 
             this.setState({
                 activeTab: "AddTask",
@@ -380,7 +355,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Object|null} assessmentTask - Assessment task or null.
          */
 
-        this.setCompleteAssessmentTaskTabWithID = (assessmentTask: any) => {
+        this.setCompleteAssessmentTaskTabWithID = (assessmentTask: AssessmentTaskType | null) => {
             if(assessmentTask && assessmentTask.unit_of_assessment !== undefined){
                 this.setState({
                     activeTab: "ViewComplete",
@@ -406,14 +381,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {string|null} addTeamAction - Action descriptor.
          */
 
-        this.setAddTeamTabWithTeam = (teams: any, teamId: any, users: any, tab: any, addTeamAction: any) => {
-            var newTeam = null;
-
-            for (var t = 0; t < teams.length; t++) {
-                if (teams[t]["team_id"] === teamId) {
-                    newTeam = teams[t];
-                }
-            }
+        this.setAddTeamTabWithTeam = (teams: TeamType[], teamId: number, users: UserType[], tab: string, addTeamAction: string | null) => {
+            const newTeam = teams.find(t => t.team_id === teamId) ?? null;
 
             this.setState({
                 activeTab: tab,
@@ -429,7 +398,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Array<Object>} users - User list.
          */
 
-        this.setAddTeamTabWithUsers = (users: any) => {
+        this.setAddTeamTabWithUsers = (users: UserType[]) => {
             this.setState({
                 activeTab: "AddTeam",
                 users: users
@@ -461,7 +430,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
         // When you click "complete" on the "TO DO" column the completed fields were null 
         // thus it would not display anything
         // By adding === null as a test case, we were able to have it populate.
-        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks: any, completedAssessmentId: any, chosenAssessmentTask: any, jumpId=null) => {
+        this.setViewCompleteAssessmentTaskTabWithAssessmentTask = (completedAssessmentTasks: CompleteAssessmentTaskType[] | null, completedAssessmentId: number | null, chosenAssessmentTask: AssessmentTaskType | null, jumpId: string | null = null) => {
             if (completedAssessmentTasks === null && completedAssessmentId === null && chosenAssessmentTask === null) {
                 this.setState({
                     activeTab: "CompleteAssessment",
@@ -478,19 +447,16 @@ class AppState extends Component<AppStateProps, AppStateState> {
             );
 
             } else {
-                var newCompletedAssessmentTask = null;
+                const newCompletedAssessmentTask = completedAssessmentTasks?.find(
+                    cat => cat.completed_assessment_id === completedAssessmentId
+                ) ?? null;
 
-                for (var c = 0; c < completedAssessmentTasks.length; c++) {
-                    if (completedAssessmentTasks[c]["completed_assessment_id"] === completedAssessmentId) {
-                        newCompletedAssessmentTask = completedAssessmentTasks[c];
-                    }
-                }
                 this.setState({
                     activeTab: "CompleteAssessment",
                     chosenCompleteAssessmentTask: newCompletedAssessmentTask,
                     chosenCompleteAssessmentTaskIsReadOnly: false,
                     chosenAssessmentTask: chosenAssessmentTask,
-                    unitOfAssessment: chosenAssessmentTask["unit_of_assessment"],
+                    unitOfAssessment: chosenAssessmentTask?.unit_of_assessment ?? null,
                     jumpToSection: jumpId,
                 }, () => {
                     if(jumpId !== null){
@@ -507,19 +473,13 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {number|string} atId - Assessment ID.
          */
 
-        this.ViewCTwithAT = (assessmentTasks: any, atId: any) => {
-            var selectedAssessment = null;
-
-            for(var index = 0; index < assessmentTasks.length; index++) {
-                if(assessmentTasks[index]["assessment_task_id"] === atId) {
-                    selectedAssessment = assessmentTasks[index];
-                }
-            }
+        this.ViewCTwithAT = (assessmentTasks: AssessmentTaskType[], atId: number) => {
+            const selectedAssessment = assessmentTasks.find(at => at.assessment_task_id === atId) ?? null;
 
             this.setState({
                 activeTab: "CompleteAssessment",
                 chosenAssessmentTask: selectedAssessment,
-                unitOfAssessment: selectedAssessment["unit_of_assessment"]
+                unitOfAssessment: selectedAssessment?.unit_of_assessment ?? null
             });
         };
 
@@ -529,14 +489,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Array<Object>} users - User list.
          */
 
-        this.setEditConsentWithUser = (userId: any, users: any) => {
-            var newUser = null;
-
-            for (var i = 0; i < users.length; i++) {
-                if (users[i]["user_id"] === userId) {
-                    newUser = users[i];
-                }
-            }
+        this.setEditConsentWithUser = (userId: number, users: UserType[]) => {
+            const newUser = users.find(u => u.user_id === userId) ?? null;
 
             this.setState({
                 activeTab: "EditConsent",
@@ -550,14 +504,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Array<Object>} courses - Course list.
          */
 
-        this.setStudentDashboardWithCourse = (courseId: any, courses: any) => {
-            var chosenCourse = null;
-
-            for (var i = 0; i < courses.length; i++) {
-                if (courses[i]["course_id"] === courseId) {
-                    chosenCourse = courses[i];
-                }
-            }
+        this.setStudentDashboardWithCourse = (courseId: number, courses: CourseType[]) => {
+            const chosenCourse = courses.find(c => c.course_id === courseId) ?? null;
 
             this.setState({
                 activeTab: "StudentDashboard",
@@ -570,7 +518,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Object} addCustomRubric - Rubric config object.
          */
 
-        this.setAddCustomRubric = (addCustomRubric: any) => {
+        this.setAddCustomRubric = (addCustomRubric: boolean | null) => {
 
             this.setState({
                 activeTab: "AddCustomRubric",
@@ -584,7 +532,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {number} [delay=1000] - Navigation delay.
          */
 
-        this.confirmCreateResource = (resource: any, delay = 1000) => {
+        this.confirmCreateResource = (resource: string, delay = 1000) => {
             setTimeout(() => {
                 if (document.getElementsByClassName("alert-danger")[0] === undefined) {
                     if (resource === "User" || resource === "UserBulkUpload") {
@@ -664,9 +612,9 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {Array<string>} listOfElements - Array of element IDs.
          */
 
-        this.Reset = (listOfElements: any) => {
+        this.Reset = (listOfElements: string[]) => {
             for (var element = 0; element < listOfElements.length; element++) {
-                const el = document.getElementById(listOfElements[element]) as HTMLInputElement;
+                const el = document.getElementById(listOfElements[element]!) as HTMLInputElement;
                 if (el) {
                     el.value = "";
                     if (el.getAttribute("type") === "checkbox") {
@@ -681,7 +629,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
          * @param {string|null} newSuccessMessage - Message to display.
          */
 
-        this.setSuccessMessage = (newSuccessMessage: any) => {
+        this.setSuccessMessage = (newSuccessMessage: string | null) => {
             clearTimeout(this.state.successMessageTimeout);
             
             const timeoutId = setTimeout(() => {
@@ -879,7 +827,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminAddTeam
                             navbar={this}
-                            confirmCreateResource={this.confirmCreateResource}
                         />
                     </Box>
                 }
@@ -917,8 +864,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminViewTeamMembers
                             navbar={this}
-                            team={this.state.team}
-                            chosenCourse={this.state.chosenCourse}
                         />
                     </Box>
                 }
@@ -1004,7 +949,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminEditTeamMembers
                             navbar={this}
-                            addTeamAction={this.state.addTeamAction}
+                            addTeamAction={this.state.addTeamAction!}
                         />
                     </Box>
                 }

@@ -1,12 +1,10 @@
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { grey } from '@mui/material/colors';
-import { styled } from '@mui/material/styles';
+import { styled, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 
-const ColorButton = styled(Button)(({
-  theme
-}: any) => ({
+const ColorButton = styled(Button)(({ theme }: { theme: Theme }) => ({
     borderRadius:"100px",
     boxShadow: "none",
     color: theme.palette.getContrastText(grey[300]),
@@ -17,9 +15,14 @@ const ColorButton = styled(Button)(({
     },
   }));
 
+interface BackButtonResourceProps {
+    navbar: any;
+    tabSelected: string;
+}
+
 // This button calls the confirmCreateResource function 
 // to validate the https requests before setting the corresponding tab
-export default function BackButtonResource (props: any){
+export default function BackButtonResource (props: BackButtonResourceProps){
     var navbar = props.navbar;
     var confirmResource = navbar.confirmCreateResource;
 

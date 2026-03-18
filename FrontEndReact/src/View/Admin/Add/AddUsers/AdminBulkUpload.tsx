@@ -15,9 +15,15 @@ import { RequestState, REQUEST_STATE } from '../../../../Enums/RequestState';
 import DynamicLoadingSpinner from '../../../Loading/DynamicLoading';
 import debounce from 'debounce';
 
+interface AdminBulkUploadProps {
+    navbar: any;
+    tab: string;
+}
+
+
 interface AdminBulkUploadState {
     errorMessage: string | null;
-    selectedFile: any;
+    selectedFile: File | null;
     isLoaded: boolean;
     teamsPics: string[];
     teamsMsgs: string[];
@@ -25,9 +31,9 @@ interface AdminBulkUploadState {
     uploadRequestStatus: RequestState;
 }
 
-class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
-    debouncedSubmit: any;
-    constructor(props: any) {
+class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadState> {
+    debouncedSubmit: (e: React.FormEvent<HTMLFormElement>) => void;
+    constructor(props: AdminBulkUploadProps) {
         super(props);
 
         this.state = {
@@ -75,13 +81,13 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
      * This function makes sure one request is sent and we have awaited for a failure or success.
      * @param {*} e 
      */
-    blockMultipleRequests = (e:any) => {
+    blockMultipleRequests = (e: React.FormEvent<HTMLFormElement>) => {
         if (this.state.uploadRequestStatus !== REQUEST_STATE.LOADING){
             this.onFormSubmit(e);
         }
     }
 
-    onFormSubmit = (e: any) => {
+    onFormSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
 
         this.setState({
@@ -266,7 +272,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                                         }
                                     </Box>
                                     <form
-                                        onSubmit={ (e: any) => {
+                                        onSubmit={ (e: React.FormEvent<HTMLFormElement>) => {
                                             e.preventDefault();
                                             this.debouncedSubmit(e);
                                         }
@@ -278,9 +284,9 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                                             type="file"
                                             name="file"
                                             aria-label="adminBulkUploadChooseFileButton"
-                                            onChange={(e: any) => {
+                                            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 this.setState({
-                                                    selectedFile: e.target.files[0]
+                                                    selectedFile: e.target.files?.[0] ?? null
                                                 })
                                             }}
                                         />
