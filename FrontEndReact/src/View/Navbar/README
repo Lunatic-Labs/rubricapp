@@ -9,7 +9,7 @@ This component renders the top-level tab navigation used within instructor and a
  - Assessment Tasks
  - Reporting
 
-The available tabs and the selected tab are synchronized with state tored in the parent `AppState` component.
+The available tabs and the selected tab are synchronized with state stored in the parent `AppState` component.
 
 Component behavior:
  - Computes which tab index should be active based on `activeTab`

@@ -1,12 +1,10 @@
 import React from 'react';
-// @ts-ignore: allow importing mui-datatables without type declarations
 import MUIDataTable from 'mui-datatables';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 
 const customTheme = createTheme({
   spacing: 4,
   components: {
-    // @ts-ignore: MUIDataTable custom component
     MUIDataTableBodyCell: {
       styleOverrides: {
         root: {

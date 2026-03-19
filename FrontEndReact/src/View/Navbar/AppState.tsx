@@ -1,6 +1,5 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
@@ -39,7 +38,7 @@ import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
  * Creates an instance of the AppState component.
  * 
  * @constructor
- * @param {Object} props - The properties passed to the component..
+ * @param {Object} props - The properties passed to the component.
  * @param {string} props.userName - Displayed in the navigation bar.
  * @param {function} props.logout - Callback for user logout.
  * @param {boolean} props.isSuperAdmin - Determines whether the user has Super Admin privileges.

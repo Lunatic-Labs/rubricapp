@@ -35,9 +35,9 @@ CVS
 Backup[ ]of[ ]*.pages/
 Backup[ ]of[ ]*.key/
 Backup[ ]of[ ]*.numbers/
-FrontEndReact/package-lock.json
 .vscode/launch.json
-package-lock.json
+**/package-lock.json
+!FrontEndReact/package-lock.json
 BackEndFlask/logs/all.log
 BackEndFlask/models/hidden.py
 BackEndFlask/oauth2_creds.json
@@ -50,7 +50,7 @@ FrontEndReact/.env.production
 
 # Nginx configuration files
 /etc/nginx/sites-available/*
-/AWS/syscontrol.sh
+/cloud/syscontrol.sh
 
 # SSL/TLS certificate files
 /etc/letsencrypt/live/*

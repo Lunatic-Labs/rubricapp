@@ -14,7 +14,9 @@ export default function TabManager (props: any) {
   };
 
   return (
+
     <Tabs value={value} onChange={handleChange} centered>
+
       <Tab
         label="Assessment Status"
 
@@ -33,6 +35,15 @@ export default function TabManager (props: any) {
         }}
 
         aria-label='ratingAndFeedbackTab'
+      />
+      <Tab
+        label="Export Graph Comparison"
+
+        onClick={() => {
+          props.setTab("Export Graph Comparison");
+        }}
+
+        aria-label='GraphExportTab'
       />
 
       {/* wip */}

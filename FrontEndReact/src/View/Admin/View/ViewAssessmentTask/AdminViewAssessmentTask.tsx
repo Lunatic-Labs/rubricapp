@@ -22,13 +22,13 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
     constructor(props: any) {
         super(props);
 
-        //Intialize component state
+        //Initialize component state
         this.state = {
             errorMessage: null,         //Stores API error messages
             isLoaded: false,            // Loading state true when all API calls complete
-            assessmentTasks: null,      //Array of assessment taks for the course
+            assessmentTasks: null,      //Array of assessment tasks for the course
             roles: null,                //Array of system role definitions
-            rubrics: null,               // Array fo all available rubrics
+            rubrics: null,               // Array of all available rubrics
             isViewingAsStudent: false  // Add this state
         }
     }
@@ -52,7 +52,7 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
             `/team?course_id=${chosenCourse["course_id"]}`,
             "teams", this
         );
-        //API2 call: fetch assessment taks for the course
+        //API Call 2: fetch assessment tasks for the course
         //GET /assessment_task
         genericResourceGET(
             `/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 
@@ -74,7 +74,7 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
 
     //Renders appropriate view based on state and props
     // Extracts data from state, Parses roles and rubric into name mapping object
-    // Attaches processed data ti navbar for child components
+    // Attaches processed data to navbar for child components
     render() {
         //Extract all state variables using destructuring
         const {
@@ -94,7 +94,7 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
         navbar.adminViewAssessmentTask.assessmentTasks = assessmentTasks;
         //Parse roles: [{role_id: 1, role_name: "Instructor"}] -> {1: "Instructor"}
         navbar.adminViewAssessmentTask.roleNames = roles ? parseRoleNames(roles) : [];
-        //Parse roles: [{rubric_id: 1, rubric_name: "Project Rubric"}] -> {1: "Project Rubric"}
+        //Parse rubrics: [{rubric_id: 1, rubric_name: "Project Rubric"}] -> {1: "Project Rubric"}
         navbar.adminViewAssessmentTask.rubricNames = rubrics ? parseRubricNames(rubrics) : [];
 
         //Render PATH 1: error state
@@ -109,8 +109,8 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
                 </div>
             )
 
-            //Shows while waiting for all PAI calls to complete
-            //Checks ALL required data exists befor proceeding
+            //Shows while waiting for all API calls to complete
+            //Checks ALL required data exists before proceeding
 
         } else if (!isLoaded || !assessmentTasks || !roles || !rubrics || !teams) {
             return(
@@ -126,7 +126,7 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
             )
 
             //RENDER PATH 4: View assessment Tasks Mode 
-            //Shows table of existing assessemtn tasks
+            //Shows table of existing assessment tasks
 
         } else {
             // Pass the viewing mode to ViewAssessmentTasks
