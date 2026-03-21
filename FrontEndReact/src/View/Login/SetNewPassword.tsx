@@ -8,9 +8,16 @@ import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
+import {
+    validatePasswordField,
+    submitPasswordChange,
+    testPasswordStrength,
+    getPasswordStrengthIcon,
+    generatePasswordStrengthColors
+} from '../../utils/passwordUtils';
 
 interface SetNewPasswordProps {
-    email: string;
+    readonly email: string;
 }
 
 interface SetNewPasswordState {
@@ -37,6 +44,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
     handleTogglePasswordVisibility: any;
     setPassword: any;
     testPasswordStrength: any;
+    validatePasswordLength: any;
     constructor(props: SetNewPasswordProps) {
         super(props);
 
@@ -59,25 +67,11 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             }
         }
 
-        // handleChange has been altered to account for the 20 character limit for password
+        // handleChange uses shared validation utility
         this.handleChange = (e: any) => {
             const { id, value } = e.target;
+            const errorMessage = validatePasswordField(id, value);
 
-            // This will create an error message if password is empty and/or exceeding the 20 character limit
-            let errorMessage = '';
-            if(value.trim() === '') {
-                errorMessage = `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty`;   // the old code from this.setState() has been re-used here
-            } else if(id === 'password' && value.length > MAX_PASSWORD_LENGTH) {
-                errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;                          // checks if password is not exceeding 20 characters
-            } else if(id === 'confirmationPassword' && value.length > MAX_PASSWORD_LENGTH) {
-                errorMessage = `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`;                          // checks if confirmationPassword is not exceeding 20 characters
-            }
-
-            // this.setState() used to contain the code below.
-            //
-            //[id]: value.trim() === '' ? `${id.charAt(0).toUpperCase() + id.slice(1)} cannot be empty` : '',
-            //
-            // part of it was moved to errrorMessage and replaced with [id]: errorMessage,
             this.setState({
                 [id]: value,
                 errors: {
@@ -87,38 +81,15 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             } as any);
         };
 
+        // getIcon uses shared utility
         this.getIcon = (strength: any) => {
-            switch(strength) {
-                case 'STRONG':
-                    return CheckIcon;
-                case 'WEAK':
-                case 'MEDIUM':
-                    return ErrorOutlineIcon;
-                default:
-                // Unreachable case. Maybe add some logging or
-                // something here.
-                    return ErrorOutlineIcon;
-            }
+            const iconName = getPasswordStrengthIcon(strength);
+            return iconName === 'CheckIcon' ? CheckIcon : ErrorOutlineIcon;
         };
 
+        // generateColors uses shared utility
         this.generateColors = (strength: any) => {
-            const COLORS = {
-                NEUTRAL: '#E2E2E2',
-                WEAK: '#B40314',
-                MEDIUM: '#D39323',
-                STRONG: '#7B927F',
-            };
-
-            switch(strength) {
-                case 'STRONG':
-                    return [COLORS.STRONG, COLORS.STRONG, COLORS.STRONG, COLORS.STRONG];
-                case 'WEAK':
-                    return [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
-                case 'MEDIUM':
-                    return [COLORS.MEDIUM, COLORS.MEDIUM, COLORS.NEUTRAL, COLORS.NEUTRAL];
-                default:
-                    return [COLORS.WEAK, COLORS.NEUTRAL, COLORS.NEUTRAL, COLORS.NEUTRAL];
-            }
+            return generatePasswordStrengthColors(strength);
         };
 
         this.handleTogglePasswordVisibility = () => {
@@ -131,32 +102,24 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             });
         };
 
+        // Reusable validation method to check password length
+        this.validatePasswordLength = (password: string, fieldName: string) => {
+            if (password.length > MAX_PASSWORD_LENGTH) {
+                this.setState({
+                    errorMessage: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`
+                });
+                return false;
+            }
+            return true;
+        };
+
+        // testPasswordStrength uses shared utility
         this.testPasswordStrength = (password: any) => {
-            const atLeastMinimumLength = (password: any) => new RegExp(/(?=.{8,})/).test(password);
-            const atLeastOneUppercaseLetter = (password: any) => new RegExp(/(?=.*?[A-Z])/).test(password);
-            const atLeastOneLowercaseLetter = (password: any) => new RegExp(/(?=.*?[a-z])/).test(password);
-            const atLeastOneNumber = (password: any) => new RegExp(/(?=.*?[0-9])/).test(password);
-            const atLeastOneSpecialChar = (password: any) => new RegExp(/(?=.*?[#?!@$%^&*-])/).test(password);
+            return testPasswordStrength(password);
+        };
 
-            if (!password) return 'WEAK';
-
-            let points = 0;
-
-            if (atLeastMinimumLength(password)) points += 1;
-            if (atLeastOneUppercaseLetter(password)) points += 1;
-            if (atLeastOneLowercaseLetter(password)) points += 1;
-            if (atLeastOneNumber(password)) points += 1;
-            if (atLeastOneSpecialChar(password)) points += 1;
-        
-            if (points >= 5) return 'STRONG';
-            if (points >= 3) return 'MEDIUM';
-
-            return 'WEAK';
-        }
-        
-
-        // 2 new 'validation' / error handling statemetns where added below
-        // both check that character length does not exceed 20
+        // 2 new 'validation' / error handling statements were added below
+        // both check that character length does not exceed MAX_PASSWORD_LENGTH
         this.setPassword = () => {
             var pass1 = this.state.password;
 
@@ -179,20 +142,12 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             }
 
             // this is an error check to see if password is not exceeding 20 characters
-            if (pass1.length > MAX_PASSWORD_LENGTH) {
-                this.setState({
-                    errorMessage: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`
-                });
-
+            if (!this.validatePasswordLength(pass1, 'password')) {
                 return;
             }
 
             // this is an error check to see if confirmationPassword is not exceeding 20 characters
-            if (pass2.length > MAX_PASSWORD_LENGTH) {
-                this.setState({
-                    errorMessage: `Password cannot exceed ${MAX_PASSWORD_LENGTH} characters`
-                });
-
+            if (!this.validatePasswordLength(pass2, 'confirmationPassword')) {
                 return;
             }
 
@@ -217,24 +172,9 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                 return;
             }
 
-            fetch(
-                apiUrl + "/password",
-                {
-                    method: "PUT",
-                    headers: {
-                        "Content-Type": "application/json",
-                    },
-                    body: JSON.stringify({
-                        email: this.props.email,
-                        password: pass1,
-                    }),
-                }
-            )
-
-            .then(res => res.json())
-
-            .then(
-                (result) => {
+            // Use shared password submission utility
+            (submitPasswordChange as any)(apiUrl, this.props.email, pass1)
+                .then((result: any) => {
                     if(result['success']) {
                         this.setState({
                             isPasswordSet: true
@@ -244,16 +184,12 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                             errorMessage: result['message']
                         });
                     }
-                }
-            )
-
-            .catch(
-                (error) => {
+                })
+                .catch((error: any) => {
                     this.setState({
                         errorMessage: error
                     });
-                }
-            );
+                });
         }
     }
 
