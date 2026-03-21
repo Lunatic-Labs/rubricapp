@@ -56,6 +56,16 @@ export default function TabManager (props: any) {
           aria-label='ratingAndFeedbackTab'
         />
 
+        <Tab
+          label="Export Graph Comparison"
+
+          onClick={() => {
+            props.setTab("Export Graph Comparison");
+          }}
+
+          aria-label='exportGraphComparisonTab'
+        />
+
         {/* wip */}
         {/* <Tab
           label="Improvement"
