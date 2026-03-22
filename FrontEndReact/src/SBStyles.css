@@ -690,3 +690,21 @@ body.mode .app-container {
 .MuiCheckbox-root {
     color: var(--table-text) !important;
 }
+
+/* ============================================ */
+/* AUTOFILL LABEL SHRINK FIX */
+/* Prevents MUI label from overlapping browser-autofilled values */
+/* ============================================ */
+
+/* When an input is autofilled, force the MUI label to shrink into its
+   "filled" position. The :has() selector watches the input inside the
+   MuiOutlinedInput wrapper and notifies the FormLabel above it. */
+.MuiFormControl-root:has(input:-webkit-autofill) .MuiInputLabel-root,
+.MuiFormControl-root:has(input:-webkit-autofill) .MuiInputLabel-outlined {
+  transform: translate(14px, -9px) scale(0.75) !important;
+}
+
+/* Keep the notch (legend gap) open so the border doesn't cut through the label */
+.MuiFormControl-root:has(input:-webkit-autofill) .MuiOutlinedInput-notchedOutline legend {
+  max-width: 100% !important;
+}
