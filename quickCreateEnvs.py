@@ -44,7 +44,19 @@ def main():
             "REACT_APP_DEMO_STUDENT_PASSWORD=demo_student\n"
         )
 
-
+    if not backend_env.exists():
+        backend_env.write_text(
+            "FRONT_END_URL=http://127.0.0.1:3000\n"
+            "SUPER_ADMIN_PASSWORD=@super_admin_password123\n"
+            "DEMO_ADMIN_PASSWORD=demo_admin\n"
+            "DEMO_TA_INSTRUCTOR_PASSWORD=demo_ta\n"
+            "DEMO_STUDENT_PASSWORD=demo_student\n"
+            "SECRET_KEY=Thisissupposedtobesecret!\n"
+            "MYSQL_HOST=localhost:3306\n"
+            "MYSQL_USER=rubricapp_admin\n"
+            "MYSQL_PASSWORD=ThisReallyNeedsToBeASecret1!\n"
+            "MYSQL_DATABASE=rubricapp\n"
+        )
 
 
 
