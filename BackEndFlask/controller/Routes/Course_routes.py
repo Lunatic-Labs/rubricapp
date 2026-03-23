@@ -350,6 +350,7 @@ class CourseSchema(ma.Schema):
     admin_id          = fields.Integer()
     use_tas           = fields.Boolean()
     use_fixed_teams   = fields.Boolean()
+    time_zone         = fields.String()
     role_id           = fields.Integer()
 
 

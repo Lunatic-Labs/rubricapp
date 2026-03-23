@@ -96,6 +96,7 @@ class Course(db.Model):
     admin_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
     use_fixed_teams = db.Column(db.Boolean, nullable=False)
+    time_zone = db.Column(db.String(50), nullable=True)
 
 class UserCourse(db.Model):
     __tablename__ = "UserCourse"
