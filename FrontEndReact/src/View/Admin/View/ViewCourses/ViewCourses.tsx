@@ -7,6 +7,7 @@ import { Typography, Box} from "@mui/material";
 import Cookies from 'universal-cookie';
 
 class ViewCourses extends Component<any> {
+
   render() {
     var navbar = this.props.navbar;
     var adminViewCourses = navbar.adminViewCourses;
@@ -168,7 +169,7 @@ class ViewCourses extends Component<any> {
       viewColumns: false,
       selectableRows: "none",
       selectableRowsHeader: false,
-      responsive: "vertical",
+      responsive: "standard",
       tableBodyMaxHeight: "35vh",
     };
 
