@@ -26,6 +26,8 @@ Returns:
     tuple[str, str]: First index is the access token and the second index will be a refresh token. 
 """
 def create_new_tokens(user_id: str)-> tuple[str, str]:
+    existing_refresh = request.args.get('refresh_token')
+
     with app.app_context():
         access_token = create_access_token(
             identity=str(user_id),
@@ -33,10 +35,13 @@ def create_new_tokens(user_id: str)-> tuple[str, str]:
             expires_delta=datetime.timedelta(minutes=15)
         )
 
-        refresh_token = create_refresh_token(
-            identity=str(user_id),
-            expires_delta=datetime.timedelta(days=30)
-        )
+        if existing_refresh:
+            refresh_token = existing_refresh
+        else:
+            refresh_token = create_refresh_token(
+                identity=str(user_id),
+                expires_delta=datetime.timedelta(days=30)
+            )
 
     return access_token, refresh_token
 

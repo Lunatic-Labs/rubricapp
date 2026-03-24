@@ -57,9 +57,10 @@ class TestRoundedHoursDifferenceUnit:
 class TestRatingsCsvUnit:
     """Unit tests for Ratings_Csv class"""
     
+    @patch('Functions.exportCsv.get_assessment_task_name_by_at_id')
     @patch('Functions.exportCsv.get_csv_data_by_at_id')
     @patch('Functions.exportCsv.get_course_name_by_at_id')
-    def test_creates_csv_with_headers(self, mock_get_course, mock_get_data):
+    def test_creates_csv_with_headers(self, mock_get_course, mock_get_data, mock_get_task_name):
         """UNIT: Test CSV creation includes proper headers"""
         # Arrange
         mock_get_course.return_value = "Test Course"
@@ -92,9 +93,10 @@ class TestRatingsCsvUnit:
         assert "Doe" in result
     
     
+    @patch('Functions.exportCsv.get_assessment_task_name_by_at_id')
     @patch('Functions.exportCsv.get_csv_data_by_at_id')
     @patch('Functions.exportCsv.get_course_name_by_at_id')
-    def test_creates_csv_for_team_assessment(self, mock_get_course, mock_get_data):
+    def test_creates_csv_for_team_assessment(self, mock_get_course, mock_get_data, mock_get_task_name):
         """UNIT: Test CSV creation for team-based assessments"""
         # Arrange
         mock_get_course.return_value = "Team Course"
@@ -123,9 +125,10 @@ class TestRatingsCsvUnit:
         assert result.count("First Name") == 0  # Not in headers
     
     
+    @patch('Functions.exportCsv.get_assessment_task_name_by_at_id')
     @patch('Functions.exportCsv.get_csv_data_by_at_id')
     @patch('Functions.exportCsv.get_course_name_by_at_id')
-    def test_handles_empty_data(self, mock_get_course, mock_get_data):
+    def test_handles_empty_data(self, mock_get_course, mock_get_data, mock_get_task_name):
         """UNIT: Test CSV creation with no assessment data"""
         # Arrange
         mock_get_course.return_value = "Empty Course"
@@ -140,9 +143,10 @@ class TestRatingsCsvUnit:
         assert len(result) < 100  # Should be minimal
     
     
+    @patch('Functions.exportCsv.get_assessment_task_name_by_at_id')
     @patch('Functions.exportCsv.get_csv_data_by_at_id')
     @patch('Functions.exportCsv.get_course_name_by_at_id')
-    def test_handles_null_lag_time(self, mock_get_course, mock_get_data):
+    def test_handles_null_lag_time(self, mock_get_course, mock_get_data, mock_get_task_name):
         """UNIT: Test CSV handles None lag_time (student hasn't seen assessment)"""
         # Arrange
         mock_get_course.return_value = "Test Course"
@@ -224,9 +228,10 @@ class TestOcs_Sfis_CsvUnit:
     class TestCommentsCsvUnit:
         """Unit tests for Comments_Csv class"""
         
+        @patch('Functions.exportCsv.get_assessment_task_name_by_at_id')
         @patch('Functions.exportCsv.get_csv_data_by_at_id')
         @patch('Functions.exportCsv.get_course_name_by_at_id')
-        def test_extracts_comments_from_json(self, mock_get_course, mock_get_data):
+        def test_extracts_comments_from_json(self, mock_get_course, mock_get_data, mock_get_task_name):
             """UNIT: Test that comments are extracted correctly"""
             # Arrange
             mock_get_course.return_value = "Test Course"

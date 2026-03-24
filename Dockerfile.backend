@@ -43,4 +43,4 @@ EXPOSE 5000
 # -s or --start for starting the server
 # Always use "-ds" to start the server
 # Or "-tds" for testing & starting the server
-CMD ["python", "setupEnv.py", "-ds"] 
+CMD ["python", "setupEnv.py", "-t"] 
