@@ -97,7 +97,7 @@ const CustomDataTable = ({
     responsive: isMobile ? "vertical" : "standard",
   };
 
-  const tableOptions = { ...defaultOptions, ...options };
+  const tableOptions = { ...defaultOptions, ...options,};
 
   return (
     <ThemeProvider theme={customTheme}>
