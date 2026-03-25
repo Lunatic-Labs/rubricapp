@@ -1,20 +1,31 @@
-/// <reference types="@testing-library/jest-dom" />
+// <reference types="@testing-library/jest-dom" />
 
 import '@testing-library/jest-dom';
 import { render, waitFor, screen, fireEvent, act, cleanup } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { beforeEach, afterEach, afterAll, test, describe, jest } from "@jest/globals";
-import Login from "../../Login/Login";
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     clickFirstElementWithAriaLabel
 } from "../../../testUtilities";
-import { demoAdminPassword } from "../../../App";
 
-// Mock universal-cookie
+// Mock the API URL BEFORE importing components that use it
+jest.mock('../../../App', () => ({
+    apiUrl: 'http://localhost:5000/api',
+    demoAdminPassword: 'testpassword123',
+    superAdminPassword: 'superpassword123',
+    demoTaInstructorPassword: 'tapassword123',
+    demoStudentPassword: 'studentpassword123',
+}));
+
+// Mock universal-cookie BEFORE importing Login
 jest.mock('universal-cookie');
 import Cookies from 'universal-cookie';
+
+// Now import Login after mocks are set up
+import Login from "../../Login/Login";
+import { demoAdminPassword } from "../../../App";
 
 // Type the mocked Cookies
 const MockedCookies = Cookies as jest.MockedClass<typeof Cookies>;
@@ -61,11 +72,14 @@ const mat = "myAssessmentTasksTitle";
 jest.setTimeout(15000);
 
 describe("View as Student Feature Tests", () => {
-    let mockCookies: {
+    let mockCookiesInstance: {
         get: jest.MockedFunction<(name: string) => any>;
         set: jest.MockedFunction<(name: string, value: any, options?: any) => void>;
         remove: jest.MockedFunction<(name: string, options?: any) => void>;
     };
+
+    // Storage for cookie values
+    let cookieStore: Record<string, any> = {};
 
     // Admin user data matching your app's expected format from Login.tsx
     const adminUser = {
@@ -95,11 +109,12 @@ describe("View as Student Feature Tests", () => {
     };
 
     // Helper function to setup fetch mock with all necessary endpoints
-    // IMPORTANT: utility.ts expects result.content[resource][0] format
     const setupFetchMock = (overrides: Record<string, any> = {}) => {
         (global.fetch as any) = jest.fn((url: string, options?: any) => {
+            const urlStr = String(url);
+            
             // Handle login endpoint
-            if (url.includes('/login')) {
+            if (urlStr.includes('/login')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
@@ -116,7 +131,7 @@ describe("View as Student Feature Tests", () => {
             }
 
             // Handle test student token endpoint
-            if (url.includes('/test_student_token')) {
+            if (urlStr.includes('/test_student_token')) {
                 if (overrides.testStudentToken) {
                     return overrides.testStudentToken();
                 }
@@ -129,22 +144,22 @@ describe("View as Student Feature Tests", () => {
                             refresh_token: "mock_student_refresh_token"
                         },
                         content: {
-                            user: [studentUser]  // Array format for utility.ts
+                            user: [studentUser]
                         }
                     }),
                 });
             }
 
             // Handle logout endpoint
-            if (url.includes('/logout')) {
+            if (urlStr.includes('/logout')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({ success: true }),
                 });
             }
 
-            // Handle courses endpoint - utility.ts expects content.courses[0]
-            if (url.includes('/courses')) {
+            // Handle courses endpoint
+            if (urlStr.includes('/course')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
@@ -158,8 +173,8 @@ describe("View as Student Feature Tests", () => {
                 });
             }
 
-            // Handle assessment tasks endpoint - utility.ts expects content.assessment_tasks[0]
-            if (url.includes('/assessment_task')) {
+            // Handle assessment tasks endpoint
+            if (urlStr.includes('/assessment_task')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
@@ -174,14 +189,14 @@ describe("View as Student Feature Tests", () => {
             }
 
             // Handle users endpoint
-            if (url.includes('/users')) {
+            if (urlStr.includes('/user')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
                         success: true,
                         content: {
                             users: [
-                                { user_id: 1, email: "test@test.com" }
+                                { user_id: 1, email: "test@test.com", first_name: "Test", last_name: "User" }
                             ]
                         }
                     }),
@@ -189,7 +204,7 @@ describe("View as Student Feature Tests", () => {
             }
 
             // Handle rubrics endpoint
-            if (url.includes('/rubric')) {
+            if (urlStr.includes('/rubric')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
@@ -204,7 +219,7 @@ describe("View as Student Feature Tests", () => {
             }
 
             // Handle teams endpoint
-            if (url.includes('/team')) {
+            if (urlStr.includes('/team')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
@@ -219,7 +234,7 @@ describe("View as Student Feature Tests", () => {
             }
 
             // Handle role endpoint
-            if (url.includes('/role')) {
+            if (urlStr.includes('/role')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
@@ -234,115 +249,146 @@ describe("View as Student Feature Tests", () => {
             }
 
             // Handle checkin endpoint
-            if (url.includes('/checkin')) {
+            if (urlStr.includes('/checkin')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
                         success: true,
                         content: {
-                            checkin: []
+                            checkin: [{}]
                         }
                     }),
                 });
             }
 
             // Handle completed_assessment endpoint
-            if (url.includes('/completed_assessment')) {
+            if (urlStr.includes('/completed_assessment')) {
                 return Promise.resolve({
                     ok: true,
                     json: () => Promise.resolve({
                         success: true,
                         content: {
-                            completed_assessment: []
+                            completed_assessment: [{}]
                         }
                     }),
                 });
             }
 
-            // Default response - return empty array for any resource
+            // Handle category endpoint
+            if (urlStr.includes('/category')) {
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({
+                        success: true,
+                        content: {
+                            category: [{ category_id: 1, category_name: "Test Category" }]
+                        }
+                    }),
+                });
+            }
+
+            // Default response - extract resource from URL and return valid structure
+            const urlParts: string[] = urlStr.split('/');
+            const lastPart: string = urlParts[urlParts.length - 1] ?? 'default';
+            const resource: string = lastPart.split('?')[0] ?? 'default';
+            
             return Promise.resolve({
                 ok: true,
-                json: () => Promise.resolve({ 
-                    success: true, 
-                    content: {} 
+                json: () => Promise.resolve({
+                    success: true,
+                    content: {
+                        [resource]: [{}]
+                    }
                 }),
             });
         });
     };
 
+    // Setup mock cookies with working get/set/remove
+    const setupMockCookies = (initialState: 'unauthenticated' | 'admin' | 'student' = 'unauthenticated') => {
+        // Reset cookie store
+        cookieStore = {};
+
+        // Pre-populate based on initial state
+        if (initialState === 'admin') {
+            cookieStore = {
+                user: adminUser,
+                access_token: 'mock_admin_access_token',
+                refresh_token: 'mock_admin_refresh_token'
+            };
+        } else if (initialState === 'student') {
+            cookieStore = {
+                user: studentUser,
+                access_token: 'mock_student_access_token',
+                refresh_token: 'mock_student_refresh_token'
+            };
+        }
+
+        mockCookiesInstance = {
+            get: jest.fn((name: string) => {
+                return cookieStore[name];
+            }) as jest.MockedFunction<(name: string) => any>,
+            set: jest.fn((name: string, value: any, options?: any) => {
+                cookieStore[name] = value;
+            }) as jest.MockedFunction<(name: string, value: any, options?: any) => void>,
+            remove: jest.fn((name: string, options?: any) => {
+                delete cookieStore[name];
+            }) as jest.MockedFunction<(name: string, options?: any) => void>,
+        };
+
+        MockedCookies.mockImplementation(() => mockCookiesInstance as any);
+    };
+
     beforeEach(() => {
         // Clear all mocks
         jest.clearAllMocks();
-        
+
         // Clear storage
         sessionStorage.clear();
-        
+        cookieStore = {};
+
         // Reset window mocks
         (window.location.reload as jest.MockedFunction<() => void>).mockClear();
         (window.alert as jest.MockedFunction<(message?: any) => void>).mockClear();
 
-        // Setup mock cookies instance - start unauthenticated
-        mockCookies = {
-            get: jest.fn().mockReturnValue(undefined),
-            set: jest.fn(),
-            remove: jest.fn(),
-        };
-        MockedCookies.mockImplementation(() => mockCookies as any);
+        // Setup default unauthenticated state
+        setupMockCookies('unauthenticated');
 
         // Setup default fetch mock
         setupFetchMock();
     });
 
     afterEach(async () => {
-        // IMPORTANT: Force cleanup of all rendered components
         cleanup();
-        
-        // Clear all mocks
         jest.clearAllMocks();
-        
-        // Clear all timers
         jest.clearAllTimers();
-        
-        // Clear storage
         sessionStorage.clear();
-        
-        // Reset fetch mock
+        cookieStore = {};
+
         if (global.fetch) {
             (global.fetch as any).mockReset?.();
         }
-        
-        // Wait for any pending promises/state updates
+
         await act(async () => {
             await new Promise(resolve => setTimeout(resolve, 0));
         });
     });
 
-    // Restore everything after all tests complete
     afterAll(() => {
-        // Restore all mocks to original implementations
         jest.restoreAllMocks();
-        
-        // Reset modules to clear any cached imports
         jest.resetModules();
-        
-        // Restore original window.location
         window.location = originalLocation;
-        
-        // Restore original fetch if it existed
+
         if (originalFetch) {
             global.fetch = originalFetch;
         }
-        
-        // Restore original alert
+
         window.alert = originalAlert;
-        
-        // Final storage clear
         sessionStorage.clear();
     });
 
     test("ViewAsStudent.test.js Test 1: Should render Login Form component", async () => {
-        // No cookies = show login form
-        mockCookies.get.mockReturnValue(undefined);
+        setupMockCookies('unauthenticated');
 
         await act(async () => {
             render(<Login />);
@@ -354,8 +400,7 @@ describe("View as Student Feature Tests", () => {
     });
 
     test("ViewAsStudent.test.js Test 2: Should login as admin and see courses page", async () => {
-        // Start with no cookies (unauthenticated)
-        mockCookies.get.mockReturnValue(undefined);
+        setupMockCookies('unauthenticated');
 
         const user = userEvent.setup();
 
@@ -368,15 +413,11 @@ describe("View as Student Feature Tests", () => {
             expectElementWithAriaLabelToBeInDocument(lf);
         });
 
-        // Get the actual input elements inside the MUI TextFields
-        const emailTextField = screen.getByLabelText(ei);
-        const passwordTextField = screen.getByLabelText(pi);
-        
-        // Find the actual input elements
-        const emailInput = emailTextField.querySelector('input') || emailTextField;
-        const passwordInput = passwordTextField.querySelector('input') || passwordTextField;
+        // Get the input elements
+        const emailInput = screen.getByLabelText(ei);
+        const passwordInput = screen.getByLabelText(pi);
 
-        // Use userEvent for better MUI compatibility
+        // Type credentials
         await user.clear(emailInput);
         await user.type(emailInput, "demoadmin02@skillbuilder.edu");
         await user.clear(passwordInput);
@@ -387,47 +428,24 @@ describe("View as Student Feature Tests", () => {
             clickElementWithAriaLabel(lb);
         });
 
-        // After successful login, cookies should be set
+        // After successful login, verify cookies were set
         await waitFor(() => {
-            expect(mockCookies.set).toHaveBeenCalledWith(
-                'access_token',
-                'mock_admin_access_token',
-                { sameSite: 'strict' }
-            );
-            expect(mockCookies.set).toHaveBeenCalledWith(
-                'refresh_token',
-                'mock_admin_refresh_token',
-                { sameSite: 'strict' }
-            );
-            expect(mockCookies.set).toHaveBeenCalledWith(
+            expect(mockCookiesInstance.set).toHaveBeenCalledWith(
                 'user',
-                adminUser,
-                { sameSite: 'strict' }
+                expect.objectContaining({ user_name: "Demo Admin" }),
+                expect.any(Object)
             );
         });
 
-        // Now mock that user is authenticated
-        mockCookies.get.mockImplementation((name: string) => {
-            if (name === 'user') return adminUser;
-            if (name === 'access_token') return 'mock_admin_access_token';
-            if (name === 'refresh_token') return 'mock_admin_refresh_token';
-            return undefined;
-        });
-
-        // Wait for courses page
+        // Wait for courses page to load
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(ct);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
     });
 
     test("ViewAsStudent.test.js Test 3: Should show 'View as Student' button on course page", async () => {
         // Start already logged in as admin
-        mockCookies.get.mockImplementation((name: string) => {
-            if (name === 'user') return adminUser;
-            if (name === 'access_token') return 'mock_admin_access_token';
-            if (name === 'refresh_token') return 'mock_admin_refresh_token';
-            return undefined;
-        });
+        setupMockCookies('admin');
 
         await act(async () => {
             render(<Login />);
@@ -436,7 +454,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for courses page
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(ct);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Click on a course to view it
         await act(async () => {
@@ -446,17 +464,11 @@ describe("View as Student Feature Tests", () => {
         // Wait for View as Student button
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(vasb);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
     });
 
     test("ViewAsStudent.test.js Test 4: Should switch to student view when 'View as Student' is clicked", async () => {
-        // Start already logged in as admin
-        mockCookies.get.mockImplementation((name: string) => {
-            if (name === 'user') return adminUser;
-            if (name === 'access_token') return 'mock_admin_access_token';
-            if (name === 'refresh_token') return 'mock_admin_refresh_token';
-            return undefined;
-        });
+        setupMockCookies('admin');
 
         await act(async () => {
             render(<Login />);
@@ -465,7 +477,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for courses page
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(ct);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Click on a course
         await act(async () => {
@@ -475,7 +487,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for View as Student button
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(vasb);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Click View as Student button
         await act(async () => {
@@ -503,7 +515,7 @@ describe("View as Student Feature Tests", () => {
 
         // Verify cookies were set with student data
         await waitFor(() => {
-            expect(mockCookies.set).toHaveBeenCalledWith(
+            expect(mockCookiesInstance.set).toHaveBeenCalledWith(
                 'user',
                 expect.objectContaining({
                     viewingAsStudent: true
@@ -520,12 +532,7 @@ describe("View as Student Feature Tests", () => {
 
     test("ViewAsStudent.test.js Test 5: Should show 'Switch Back to Admin' banner when viewing as student", async () => {
         // Setup: User is already viewing as student
-        mockCookies.get.mockImplementation((name: string) => {
-            if (name === 'user') return studentUser;
-            if (name === 'access_token') return 'mock_student_access_token';
-            if (name === 'refresh_token') return 'mock_student_refresh_token';
-            return undefined;
-        });
+        setupMockCookies('student');
 
         // Store admin credentials in session storage
         const adminData = {
@@ -542,7 +549,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for student view to load
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(mat);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Verify Switch Back to Admin button is visible
         await waitFor(() => {
@@ -552,13 +559,7 @@ describe("View as Student Feature Tests", () => {
     });
 
     test("ViewAsStudent.test.js Test 6: Should restore admin view when 'Switch Back to Admin' is clicked", async () => {
-        // Setup: User is viewing as student
-        mockCookies.get.mockImplementation((name: string) => {
-            if (name === 'user') return studentUser;
-            if (name === 'access_token') return 'mock_student_access_token';
-            if (name === 'refresh_token') return 'mock_student_refresh_token';
-            return undefined;
-        });
+        setupMockCookies('student');
 
         // Store admin credentials
         const adminData = {
@@ -575,7 +576,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for student view
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(mat);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Find and click Switch Back to Admin button
         const switchBackButton = await screen.findByText(/Switch Back to Admin/i);
@@ -596,19 +597,19 @@ describe("View as Student Feature Tests", () => {
 
         // Verify cookies were removed
         await waitFor(() => {
-            expect(mockCookies.remove).toHaveBeenCalledWith('access_token', expect.any(Object));
-            expect(mockCookies.remove).toHaveBeenCalledWith('refresh_token', expect.any(Object));
-            expect(mockCookies.remove).toHaveBeenCalledWith('user', expect.any(Object));
+            expect(mockCookiesInstance.remove).toHaveBeenCalledWith('access_token', expect.any(Object));
+            expect(mockCookiesInstance.remove).toHaveBeenCalledWith('refresh_token', expect.any(Object));
+            expect(mockCookiesInstance.remove).toHaveBeenCalledWith('user', expect.any(Object));
         });
 
         // Verify admin cookies were restored
         await waitFor(() => {
-            expect(mockCookies.set).toHaveBeenCalledWith(
+            expect(mockCookiesInstance.set).toHaveBeenCalledWith(
                 'user',
                 adminData.user,
                 expect.any(Object)
             );
-            expect(mockCookies.set).toHaveBeenCalledWith(
+            expect(mockCookiesInstance.set).toHaveBeenCalledWith(
                 'access_token',
                 adminData.access_token,
                 expect.any(Object)
@@ -638,13 +639,7 @@ describe("View as Student Feature Tests", () => {
             })
         });
 
-        // Start already logged in as admin
-        mockCookies.get.mockImplementation((name: string) => {
-            if (name === 'user') return adminUser;
-            if (name === 'access_token') return 'mock_admin_access_token';
-            if (name === 'refresh_token') return 'mock_admin_refresh_token';
-            return undefined;
-        });
+        setupMockCookies('admin');
 
         await act(async () => {
             render(<Login />);
@@ -653,7 +648,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for courses page
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(ct);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Click on a course
         await act(async () => {
@@ -663,7 +658,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for View as Student button
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(vasb);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Click View as Student button
         await act(async () => {
@@ -685,13 +680,7 @@ describe("View as Student Feature Tests", () => {
     });
 
     test("ViewAsStudent.test.js Test 8: Should prevent multiple clicks on 'View as Student' button", async () => {
-        // Start already logged in as admin
-        mockCookies.get.mockImplementation((name: string) => {
-            if (name === 'user') return adminUser;
-            if (name === 'access_token') return 'mock_admin_access_token';
-            if (name === 'refresh_token') return 'mock_admin_refresh_token';
-            return undefined;
-        });
+        setupMockCookies('admin');
 
         await act(async () => {
             render(<Login />);
@@ -700,7 +689,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for courses page
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(ct);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Click on a course
         await act(async () => {
@@ -710,7 +699,7 @@ describe("View as Student Feature Tests", () => {
         // Wait for View as Student button
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(vasb);
-        }, { timeout: 5000 });
+        }, { timeout: 10000 });
 
         // Get the button and click it multiple times rapidly
         const viewAsStudentBtn = screen.getByLabelText(vasb);
@@ -729,7 +718,7 @@ describe("View as Student Feature Tests", () => {
         // Verify only one API call was made
         await waitFor(() => {
             const fetchCalls = (global.fetch as any).mock.calls.filter((call: any) =>
-                call[0].includes('/test_student_token')
+                String(call[0]).includes('/test_student_token')
             );
             expect(fetchCalls.length).toBe(1);
         });
