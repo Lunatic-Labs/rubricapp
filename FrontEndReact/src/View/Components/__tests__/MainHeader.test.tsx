@@ -11,9 +11,6 @@ import {
     clickFirstElementWithAriaLabel
 } from "../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../App";
 global.ResizeObserver = ResizeObserver;
 
 var lb = "loginButton";
@@ -39,7 +36,7 @@ test("Header.test.tsx Test 1: Should render the MainHeader component given the V
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 

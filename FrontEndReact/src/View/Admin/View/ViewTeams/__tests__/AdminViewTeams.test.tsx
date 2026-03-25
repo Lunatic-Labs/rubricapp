@@ -10,12 +10,6 @@ import {
     clickFirstElementWithAriaLabel
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
-
-
 var lf = "loginForm";
 var ei = "emailInput";
 var pi = "passwordInput";
@@ -46,7 +40,7 @@ test("AdminViewTeams.test.tsx Test 2: Should render the Team Dashboard in Admin 
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 

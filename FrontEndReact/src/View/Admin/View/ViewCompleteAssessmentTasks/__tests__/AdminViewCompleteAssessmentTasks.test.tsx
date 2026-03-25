@@ -12,11 +12,6 @@ import {
 
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
-
 
 var lb = "loginButton";
 var ei = "emailInput";
@@ -42,7 +37,7 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 1: Should render the AdminV
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 

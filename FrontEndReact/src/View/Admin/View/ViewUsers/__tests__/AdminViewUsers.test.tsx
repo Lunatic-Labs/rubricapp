@@ -10,11 +10,6 @@ import {
     clickFirstElementWithAriaLabel
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
-
 
 var lf = "loginForm";
 var lb = "loginButton";
@@ -42,7 +37,7 @@ test("AdminViewUsers.test.tsx Test 2: Should show roster page of the users for a
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
