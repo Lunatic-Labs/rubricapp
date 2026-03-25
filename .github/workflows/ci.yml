@@ -30,6 +30,10 @@ jobs:
           echo "Disk usage:"
           df -h
 
+      - name: Create envs
+        run: |
+          python3 quickCreateEnvs.py
+
       # Loads files for the runner.
       - name: Checkout code
         uses: actions/checkout@v4
@@ -75,6 +79,10 @@ jobs:
           free -h
           echo "Disk usage:"
           df -h
+
+      - name: Create envs
+        run: |
+          python3 quickCreateEnvs.py
 
       # Loads files for runner.
       - name: Checkout
@@ -185,6 +193,11 @@ jobs:
 #          echo "Disk usage:"
 #          df -h
 #
+#      - name: Create envs
+#        run: |
+#          python3 quickCreateEnvs.py
+#
+#
 #      # Same docker build and start up code as above.
 #      - name: Checkout code
 #        uses: actions/checkout@v4
@@ -254,6 +267,11 @@ jobs:
           free -h
           echo "Disk usage:"
           df -h
+
+      - name: Create envs
+        run: |
+          python3 quickCreateEnvs.py
+
 
       # Same docker build and start up code as above.
       - name: Checkout code
