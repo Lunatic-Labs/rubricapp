@@ -22,6 +22,10 @@ def main():
     root_env = root_dir / ".env"
     backend_env = root_dir / "BackEndFlask" / ".env"
     frontend_env = root_dir / "FrontEndReact" / ".env"
+    
+    mysqlHost = "skillbuilder"
+    mysqlPassword = gen_password()
+    mysqlRootPassword = gen_password()
 
     if not root_env.exists():
         root_env.write_text(
@@ -29,10 +33,10 @@ def main():
             "REDIS_LIMITER=redis-limiter\n"
             "FLASK_DEBUG=1\n"
             "MYSQL_HOST=mysql\n"
-            "MYSQL_USER=skillbuilder\n"
+            f"MYSQL_USER={mysqlHost}\n"
             "MYSQL_DATABASE=local\n"
-            f"MYSQL_PASSWORD={gen_password()}\n"
-            f"MYSQL_ROOT_PASSWORD={gen_password()}\n"
+            f"MYSQL_PASSWORD={mysqlPassword}\n"
+            f"MYSQL_ROOT_PASSWORD={mysqlRootPassword}\n"
         )
     
     if not frontend_env.exists():
@@ -51,11 +55,11 @@ def main():
             "DEMO_ADMIN_PASSWORD=demo_admin\n"
             "DEMO_TA_INSTRUCTOR_PASSWORD=demo_ta\n"
             "DEMO_STUDENT_PASSWORD=demo_student\n"
-            "SECRET_KEY=Thisissupposedtobesecret!\n"
+            f"SECRET_KEY={gen_password()}\n"
             "MYSQL_HOST=localhost:3306\n"
-            "MYSQL_USER=rubricapp_admin\n"
-            "MYSQL_PASSWORD=ThisReallyNeedsToBeASecret1!\n"
-            "MYSQL_DATABASE=rubricapp\n"
+            f"MYSQL_USER={mysqlHost}\n"
+            f"MYSQL_PASSWORD={mysqlPassword}\n"
+            f"MYSQL_DATABASE=rubricapp\n"
         )
 
 
