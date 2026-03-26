@@ -64,7 +64,7 @@ numpy == 2.1.3
 ordered-set == 4.1.0
 packaging == 25.0
 pluggy == 1.6.0
-pyasn1 == 0.6.2
+pyasn1 == 0.6.3
 pyasn1_modules == 0.4.2
 pycparser == 2.23
 Pygments == 2.19.2
