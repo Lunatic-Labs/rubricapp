@@ -454,7 +454,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                     id="addCourseTitle"
                     variant="h5"
                     aria-label={
-                      this.state.editUser ? "editUserTitle" : "addUserTitle"
+                      editUser ? "editUserTitle" : "addUserTitle"
                     }
                   >
                     {editUser ? "Edit User" : "Add User"}{" "}
