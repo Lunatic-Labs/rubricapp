@@ -180,3 +180,75 @@ jobs:
       - backend
     steps:
       # Fetchs runner info
+      - name: Display system info
+        run:  |
+          echo "CPU info:"
+          lscpu
+          echo "Memory usage:"
+          free -h
+          echo "Disk usage:"
+          df -h
+
+      # Same docker build and start up code as above.
+      - name: Checkout code
+        uses: actions/checkout@v4.2.2
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Restore Docker Cache
+        uses: actions/cache@v4.0.2
+        with:
+          path: /tmp/.buildx-cache
+          key: ${{ runner.os }}-docker-${{ github.ref_name }}
+          restore-keys: |
+            ${{ runner.os }}-docker-
+
+      - name: Build Docker Image with Cache
+        uses: docker/build-push-action@v5
+        with:
+          context: .
+          file: Dockerfile.backend
+          push: false
+          cache-from: type=local,src=/tmp/.buildx-cache
+          cache-to: type=local,dest=/tmp/.buildx-cache
+
+      - name: Build backend
+        run: docker compose build backend      
+
+      - name: Start backend
+        run: docker compose up --no-build --detach backend      
+
+      # Gives the backend time to get fully set up.
+      - name: Pause
+        run: sleep 7
+
+      # Same frontend build/startup code as above.
+      - name: Cache npm dependencies directly
+        uses: actions/cache@v4.0.2
+        with:
+          path: FrontEndReact/node_modules
+          key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      - name: Install Node dependencies
+        run: |
+          cd FrontEndReact
+          npm install
+
+      - name: Verify React Scripts
+        run: |
+          cd FrontEndReact
+          npm list react-scripts || npm install react-scripts --save-dev
+
+      - name: Verify Node.js instalation
+        run: node -v
+  
+      # Main section where more testing can be added that requires the frontend and backend running.\
+      - name: Run Jest tests
+        run:  |
+          cd FrontEndReact
+          npm test -- --all --cacheDirectory /tmp/jest-cache
+        env:
+          REACT_APP_API_URL: "http://127.0.0.1:5050/api"
