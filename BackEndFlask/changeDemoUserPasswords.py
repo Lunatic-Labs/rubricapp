@@ -13,7 +13,7 @@ def rand_password() -> string:
 
 def save_demo_user_email_password(email: string, password:string) -> None:
     with open("NewDemoUserPasswords.txt", 'a') as out:
-        print(f"{email} = {password}")
+        print(f"{email} = {password}", file=out)
     
 
 def change_demo_passwords() -> None:
@@ -39,7 +39,7 @@ def change_demo_passwords() -> None:
     for email in demo_user_emails:
         stmt = select(User.user_id).where(User.email == email)
         result = db.session.execute(stmt)
-        user_id = result[0]
+        user_id = result.one()
         new_password = rand_password()
         update_password(user_id, new_password)
         save_demo_user_email_password(email, new_password)
