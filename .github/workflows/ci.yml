@@ -2,7 +2,7 @@
 # This is a file that is run by Github actions to test certain aspects
 # of our code before we merge into master.
 #
-# Date last modified: Tue Jun  3 12:30:35 PM CDT 2025
+# Date last modified: Fri Mar 27 02:55:08 PM CDT 2026
 #-----------------------------------------------------------------------
 name: Rubric App Continuous Integration
 
@@ -38,13 +38,13 @@ jobs:
       - name: Set up Node.js
         uses: actions/setup-node@v4
         with: 
-          node-version: 20
+          node-version: 24
           cache: "npm"
           cache-dependency-path: FrontEndReact/package.json
 
       # Retrives/Setup frontend cache.
       - name: Cache npm dependencies directly
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: FrontEndReact/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
@@ -86,7 +86,7 @@ jobs:
 
       # Retrives/Setup backend docker cache.
       - name: Restore Docker Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-docker-${{ github.ref_name }}
@@ -193,7 +193,7 @@ jobs:
 #        uses: docker/setup-buildx-action@v3
 #
 #      - name: Restore Docker Cache
-#        uses: actions/cache@v3
+#        uses: actions/cache@v4
 #        with:
 #          path: /tmp/.buildx-cache
 #          key: ${{ runner.os }}-docker-${{ github.ref_name }}
@@ -263,7 +263,7 @@ jobs:
         uses: docker/setup-buildx-action@v3
 
       - name: Restore Docker Cache
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: /tmp/.buildx-cache
           key: ${{ runner.os }}-docker-${{ github.ref_name }}
@@ -291,7 +291,7 @@ jobs:
 
       # Same frontend build/startup code as above.
       - name: Cache npm dependencies directly
-        uses: actions/cache@v3
+        uses: actions/cache@v4
         with:
           path: FrontEndReact/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
