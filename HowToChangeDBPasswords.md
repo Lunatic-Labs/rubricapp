@@ -1,5 +1,7 @@
 # Updating Passwords for prod
 
+## WARNING DO NOT GIT PULL OR UPDATE THE SERVER CODE YET UNTILL THESES STEPS ARE DONE
+
 ## Prerequisit
 - Application should be running or at the bare minimum the db should be accessible.
 
@@ -44,7 +46,10 @@ flush privileges;
 Query OK, 0 rows affected (0.00 sec)
 ```
 
-### 5. Change the backend env with the updated passwords.
+### 5. Do a git pull or update the code.
+- This may remove all the env files and BackEndFlask/env. That is expected since the files are no longer tracked.
+
+### 6. Change/create the backend env with the updated passwords.
 ```md
 ### Example env:
 FRONT_END_URL=http://127.0.0.1:3000
@@ -58,4 +63,38 @@ MYSQL_USER=skillbuilder
 MYSQL_PASSWORD=[NEW_PASSWORD]
 MYSQL_DATABASE=rubricapp
 ```
-### 6. Restart the application.
+### 7. Create/Change the following directory and files in the BackEndFlask directory.
+```bash
+#------------------------------------------------------------
+# Skip this block if the files and directories already exist.
+mdkir env
+touch env/.env.development
+touch env/.env.production
+touch env/.flaskenv
+#------------------------------------------------------------
+cd env/
+```
+
+### 8. Populate the files as shown below:
+```bash
+# Put this in file .env.development
+DONT_LOOK = {YOUR_NEW_SECRET}
+#-----------------------------------------------
+# Put this in file .env.production
+
+MYSQL_HOST = 'rubricapp-db.c1db7ief4oer.us-east-2.rds.amazonaws.com:3306'
+MYSQL_PASSWORD = {YOUR_NEW_LOGIN_PASSWORD}
+MYSQL_USER = 'rubricapp_admin'
+MYSQL_DATABASE = 'rubricapp'
+WIN_LIN = 'mysql+pymysql://rubricapp_admin:{MYSQL_PASSWORD}@rubricapp-db.c1db7ief4oer.us-east-2.rds.amazonaws.com:3306/rubricapp'
+MAC = 'mysql+pymysql://rubricapp_admin:{MYSQL_PASSWORD}@rubricapp-db.c1db7ief4oer.us-east-2.rds.amazonaws.com:3306/rubricapp'
+
+#-----------------------------------------------
+# Put this in file .flaskenv
+# Key gets overriden
+SQLALCHEMY_TRACK_MODIFICATIONS = False
+SECRET_KEY = 'NOTHING_HERE'
+JSON_SORT_KEYS = False
+```
+
+### 9. Restart the application.
