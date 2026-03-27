@@ -5,10 +5,10 @@ from sqlalchemy  import select
 import secrets
 import string
 
-def rand_password() -> string:
-    PASSWORD_LENGTH = 35
+def rand_password() -> str:
+    PASSWORD_LENGTH = 30
     choices = string.ascii_letters + string.digits
-    password = "".join(secrets.choice(choices) for i in range(PASSWORD_LENGTH))
+    password = "".join(secrets.choice(choices) for _ in range(PASSWORD_LENGTH))
     return password
 
 def save_demo_user_email_password(email: string, password:string) -> None:
@@ -39,7 +39,7 @@ def change_demo_passwords() -> None:
     for email in demo_user_emails:
         stmt = select(User.user_id).where(User.email == email)
         result = db.session.execute(stmt)
-        user_id = result.one()
+        user_id = result.scalar_one()
         new_password = rand_password()
         update_password(user_id, new_password)
         save_demo_user_email_password(email, new_password)
