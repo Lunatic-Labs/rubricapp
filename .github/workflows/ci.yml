@@ -6,6 +6,11 @@
 #-----------------------------------------------------------------------
 name: Rubric App Continuous Integration
 
+# Temporary till September of this year.
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+
 # Specifies to run on PRs set to merge into master
 on:
   pull_request:
