@@ -11,9 +11,6 @@ import ResizeObserver from "resize-observer-polyfill";
 //     clickFirstElementWithAriaLabel
 // } from "../../../../../testUtilities";
 
-// import {
-//     demoAdminPassword,
-// } from "../../../../../App";
 global.ResizeObserver = ResizeObserver;
 
 // var lf = "loginForm";
@@ -45,7 +42,7 @@ test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
 
 //     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-//     changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+//     changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
 //     clickElementWithAriaLabel(lb);
 

@@ -10,11 +10,6 @@ import {
     clickFirstElementWithAriaLabel,
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
-
 
 var lb = "loginButton";
 var ei = "emailInput";
@@ -39,7 +34,7 @@ test("AdminBulkUpload.test.tsx Test 1: Should render the AdminBulkUpload compone
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 

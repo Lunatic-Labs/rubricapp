@@ -10,15 +10,6 @@ import {
     changeElementWithAriaLabelWithInput
 } from "../../../testUtilities";
 
-import {
-    superAdminPassword,
-    demoAdminPassword,
-    demoTaInstructorPassword,
-    demoStudentPassword
-} from "../../../App";
-
-
-
 var lf = "loginForm";
 var lb = "loginButton";
 var ei = "emailInput";
@@ -30,6 +21,8 @@ var lob = "logoutButton";
 var ct = "coursesTitle";
 var fpb = "resetPasswordButton";
 var vrt = "validateResetTitle";
+
+
 test("NOTE: Tests 7-10 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
@@ -114,7 +107,7 @@ test("Login.test.tsx Test 7: Should show users page for super admin view using s
 
     changeElementWithAriaLabelWithInput(ei, "superadminuser01@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, superAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.SUPER_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
@@ -135,7 +128,7 @@ test("Login.test.tsx Test 8: Should show courses page for admin view using demo 
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
@@ -156,7 +149,7 @@ test("Login.test.tsx Test 9: Should show courses page for ta/instructor view usi
 
     changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoTaInstructorPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_TA_INSTRUCTOR_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
@@ -177,7 +170,7 @@ test("Login.test.tsx Test 10: Should show courses page for student view using de
 
     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoStudentPassword + "4");
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_STUDENT_PASSWORD + "4");
 
     clickElementWithAriaLabel(lb);
 
