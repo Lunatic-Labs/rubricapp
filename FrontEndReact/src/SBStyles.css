@@ -708,3 +708,13 @@ body.mode .app-container {
 .MuiFormControl-root:has(input:-webkit-autofill) .MuiOutlinedInput-notchedOutline legend {
   max-width: 100% !important;
 }
+
+
+/* Prevent table from stacking at high browser zoom levels */
+.MuiTable-root {
+  min-width: 600px !important;
+}
+
+.MuiTableContainer-root {
+  overflow-x: auto !important;
+}

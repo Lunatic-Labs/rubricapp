@@ -48,3 +48,41 @@ declare module 'mui-datatables' {
 }
 
 // Extend MUI theme to include MUIDataTable components
+declare module '@mui/material/styles' {
+  interface Components {
+    MUIDataTableBodyCell?: {
+      styleOverrides?: {
+        root?: React.CSSProperties;
+      };
+    };
+    MUIDataTableBodyRow?: {
+      styleOverrides?: {
+        root?: React.CSSProperties | Record<string, any>;
+      };
+    };
+    MUIDataTableToolbar?: {
+      styleOverrides?: {
+        root?: React.CSSProperties;
+      };
+    };
+    MUIDataTableFooter?: {
+      styleOverrides?: {
+        root?: React.CSSProperties;
+      };
+    };
+    MUIDataTableHeadCell?: {
+      styleOverrides?: {
+        root?: React.CSSProperties;
+      };
+    };
+  }
+}
+
+export {};
+
+declare global {
+  var SUPER_ADMIN_PASSWORD: string;
+  var DEMO_ADMIN_PASSWORD : string;
+  var DEMO_TA_INSTRUCTOR_PASSWORD: string;
+  var DEMO_STUDENT_PASSWORD: string;
+}

@@ -122,6 +122,15 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
         const isTeams = this.state.usingTeams;
+        
+        // Skip checkin tracking when viewing a completed assessment in read-only mode.
+        // The GET /checkin_events endpoint requires system-admin privileges, and calling
+        // it as a course-level TA/Instructor would return "No Authorization", which the
+        // frontend treats as a hard auth failure and redirects to the login screen.
+        if (state.chosenCompleteAssessmentTaskIsReadOnly) {
+            return;
+        }
+
         if (isEqualOrHigherPrivilege(this.state.currentUserRole.role_id, ROLE.TA_INSTRUCTOR)){
             this.callPollingFunction();
             this.intervalId = setInterval(this.callPollingFunction, 10000);
