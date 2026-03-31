@@ -176,6 +176,15 @@ h4, h5 {
     width: 0.2rem !important;
 }
 
+.narrow-select-table td:first-child,
+.narrow-select-table th:first-child {
+    width: 40px !important;
+    min-width: 40px !important;
+    max-width: 48px !important;
+    padding: 4px !important;
+    text-align: center !important;
+}
+
 .MuiSlider-markLabel {
     font-size: 1.3rem !important;
 }

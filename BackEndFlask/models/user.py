@@ -1,7 +1,7 @@
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from models.schemas import User, UserCourse, CompletedAssessment
+from models.schemas import User, UserCourse, CompletedAssessment, Course
 from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
@@ -89,6 +89,26 @@ def get_user_admins():
    db.session.query()
 
    return all_user_admins
+
+
+@error_log
+def get_admins_with_active_courses():
+   """
+   Returns all admin users who own at least one active course.
+   """
+   admins_with_active_courses = db.session.query(
+       User.user_id,
+       User.first_name,
+       User.last_name,
+       User.email
+   ).join(
+       Course, Course.admin_id == User.user_id
+   ).filter(
+       User.is_admin == True,
+       Course.active == True
+   ).distinct().all()
+
+   return admins_with_active_courses
 
 
 @error_log
