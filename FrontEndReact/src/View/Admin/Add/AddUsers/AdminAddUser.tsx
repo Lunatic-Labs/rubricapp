@@ -653,7 +653,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         id="role"
                         value={role}
                         label="Role"
-                        defaultValue="test"
+                        defaultValue={3}
                         error={!!errors.role}
                         onChange={this.handleSelect}
                         required
