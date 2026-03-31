@@ -34,6 +34,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
 
+      - name: Create envs
+        run: |
+          python3 quickCreateEnvs.py
+
       # Sets up node and runner cache.
       - name: Set up Node.js
         uses: actions/setup-node@v4
@@ -80,6 +84,10 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       
+      - name: Create envs
+        run: |
+          python3 quickCreateEnvs.py
+
       # Sets up the docker builder.
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -189,6 +197,10 @@ jobs:
 #      - name: Checkout code
 #        uses: actions/checkout@v4
 #
+#      - name: Create envs
+#        run: |
+#          python3 quickCreateEnvs.py
+#
 #      - name: Set up Docker Buildx
 #        uses: docker/setup-buildx-action@v3
 #
@@ -258,6 +270,10 @@ jobs:
       # Same docker build and start up code as above.
       - name: Checkout code
         uses: actions/checkout@v4
+
+      - name: Create envs
+        run: |
+          python3 quickCreateEnvs.py
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3

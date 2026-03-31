@@ -217,3 +217,12 @@ h4, h5 {
 .export_disabled_text {
   color: var(--export_disabled_text) !important;
 }
+
+/* Prevent table from stacking at high browser zoom levels */
+.MuiTable-root {
+  min-width: 600px !important;
+}
+
+.MuiTableContainer-root {
+  overflow-x: auto !important;
+}

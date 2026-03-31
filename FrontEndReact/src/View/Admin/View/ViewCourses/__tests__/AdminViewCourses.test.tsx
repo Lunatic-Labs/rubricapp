@@ -10,14 +10,6 @@ import {
     clickFirstElementWithAriaLabel
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword,
-    demoTaInstructorPassword,
-    demoStudentPassword
-} from "../../../../../App";
-
-
-
 var lf = "loginForm";
 var lb = "loginButton";
 var ei = "emailInput";
@@ -43,7 +35,7 @@ test("AdminViewCourses.test.tsx Test 2: Should show courses page for admin view 
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
@@ -64,7 +56,7 @@ test("AdminViewCourses.test.tsx Test 3: Should show courses page for ta/instruct
 
     changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoTaInstructorPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_TA_INSTRUCTOR_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
@@ -85,7 +77,7 @@ test("AdminViewCourses.test.tsx Test 4: Should show courses page for student vie
 
     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoStudentPassword + "4");
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_STUDENT_PASSWORD + "4");
 
     clickElementWithAriaLabel(lb);
 
@@ -106,7 +98,7 @@ test("AdminViewCourses.test.tsx Test 5: Should show add course page for admin vi
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
