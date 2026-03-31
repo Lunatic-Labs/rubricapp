@@ -11,11 +11,6 @@ import {
     clickFirstEnabledElementWithAriaLabel
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
-
 
 var lf = "loginForm";
 var lb = "loginButton";
@@ -52,7 +47,7 @@ test("AssessmentDashboard.test.tsx Test 2: Should show Admin View Courses when l
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 

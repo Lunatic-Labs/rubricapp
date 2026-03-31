@@ -63,3 +63,5 @@ My_README.md
 node_modules
 
 Trash.txt
+/.vscode
+.env

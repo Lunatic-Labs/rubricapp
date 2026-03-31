@@ -20,3 +20,4 @@ BackEndFlaskVenv
 Test
 .env
 Tests/*.md
+/env

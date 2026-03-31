@@ -11,11 +11,6 @@ import {
     clickFirstEnabledElementWithAriaLabel
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
-
 
 var lf = "loginForm";
 var ei = "emailInput";
@@ -51,7 +46,7 @@ test("AdminViewAssessmentTask.test.tsx Test 2: Should render the Assessment Task
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 

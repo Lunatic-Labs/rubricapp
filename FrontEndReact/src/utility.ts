@@ -87,6 +87,7 @@ export async function genericResourceDELETE(
   return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options);
 }
 
+
 function createApiRequestUrl(fetchURL: string, cookies: Cookies): string {
   const user = cookies.get('user') as User;
   const hasQueryParams = fetchURL.indexOf('?') > -1;
@@ -487,6 +488,7 @@ export function debounce<T extends (...args: any[]) => void>(
   };
 }
 
+
 const modules = {
   genericResourceFetch
 };
@@ -536,3 +538,7 @@ export function setTestStudentCookies(data: any ) {
 }
 
 export default modules;
+
+
+
+

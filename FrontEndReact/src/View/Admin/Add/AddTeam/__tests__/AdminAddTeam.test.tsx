@@ -11,11 +11,6 @@ import {
     expectElementWithAriaLabelToHaveErrorMessage
 } from "../../../../../testUtilities";
 
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
-
 
 var lb = "loginButton";
 var ei = "emailInput";
@@ -40,7 +35,7 @@ test("AdminAddTeam.test.tsx Test 1: Should render the TeamDashboard", async () =
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
