@@ -693,7 +693,12 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                           TA/Instructor
                         </MenuItem>
 
-                        {<MenuItem value={3}>Admin</MenuItem>}
+                        <MenuItem 
+                        value={3}
+                        aria-label="addUserRoleDropDownAdminOption"
+                        >
+                          Admin
+                        </MenuItem>
                       </Select>
                       <FormHelperText>{errors.role}</FormHelperText>
                     </FormControl>
