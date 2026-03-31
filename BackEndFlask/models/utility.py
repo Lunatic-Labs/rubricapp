@@ -1,7 +1,7 @@
 import json
 import string
 import secrets
-from time import time
+import time
 from typing import Any
 from models.logger import logger
 from core import sendgrid_client, config
@@ -39,7 +39,7 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
     DEFAULT_LOOKBACK_DAYS  = 30
 
     if from_timestamp is None:
-        from_timestamp = int(time.time()) - DEFAULT_LOOKBACK_DAYS * 86400 
+        from_timestamp = int(time.time()) - DEFAULT_LOOKBACK_DAYS * 86400
 
     try:
         bounced_emails = []
@@ -73,18 +73,19 @@ def check_bounced_emails(from_timestamp:int|None=None) -> dict|None:
         config.logger.error("Could not check for bounced email: " + str(e))
         raise EmailFailureException()
 
-def send_bounced_email_notification(dest_addr: str, bounced_email: str, msg: str, failure: str) -> None:
+def send_bounced_email_notification(dest_addr: str, msg: str, failure: str, bounced_email: str = None) -> None:
     """
     Sends bounced email notification to the user.
 
     Args:
-        dest_addr (str)    : Recipient of the email.
-        bounced_email (str): Address of the email that bounced.
-        msg (str)          : Human-friendly reason for the failure.
-        failure (str)      : Specific error from the system.
+        dest_addr (str)         : Recipient of the email.
+        msg (str)               : Human-friendly reason for the failure.
+        failure (str)           : Specific error from the system.
+        bounced_email (str|None): Address of the email that bounced.
     """
     subject = "Student's email failed to send."
-    message = f'''The email to {bounced_email} could not be sent due to:
+    recipient = f"to {bounced_email} " if bounced_email else ""
+    message = f'''The email {recipient}could not be sent due to:
 
                 {msg}
 
@@ -229,7 +230,7 @@ def error_log(f:Any) -> Any:
     '''
     def wrapper(*args, **kwargs):
         try:
-            return f(*args, *kwargs)
+            return f(*args, **kwargs)
 
         except BaseException as e:
             logger.error(f"{e.__traceback__.tb_frame.f_code.co_filename} { e.__traceback__.tb_lineno} Error Type: {type(e).__name__} Message: {e}")

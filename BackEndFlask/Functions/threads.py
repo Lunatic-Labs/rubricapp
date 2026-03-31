@@ -6,6 +6,32 @@ from models.logger import logger
 from enums.Bounced_email import BouncedEmailFields
 
 
+class EmailValidationProcessor:
+    def __init__(self, app):
+        self._app = app
+
+    def _get_pending_emails_data(self, emails_to_check):
+        from models.user import get_user
+
+        oldest_time = emails_to_check[0].user.last_update
+        all_pending_emails = []
+        data = {}
+
+        for email_obj in emails_to_check:
+            if email_obj.user.last_update < oldest_time:
+                oldest_time = email_obj.user.last_update
+
+            owner = get_user(email_obj.user.owner_id)
+            if owner is None:
+                continue
+
+            user_email = email_obj.user.email
+            data[user_email] = owner.email
+            all_pending_emails.append(user_email)
+
+        return oldest_time, all_pending_emails, data
+
+
 def spawn_thread(f, *args, **kwargs):
     threading.Thread(
         target=f,

@@ -132,6 +132,7 @@ class TestRatingsCsvUnit:
         """UNIT: Test CSV creation with no assessment data"""
         # Arrange
         mock_get_course.return_value = "Empty Course"
+        mock_get_task_name.return_value = ""
         mock_get_data.return_value = []  # No data
         
         # Act
