@@ -31,11 +31,24 @@ export function expectElementWithAriaLabelToHaveErrorMessage(ariaLabel: any, mes
 }
 
 export function changeElementWithAriaLabelWithInput(ariaLabel: any, input: any) { // to put text into a label
-    const el = screen.getByLabelText(ariaLabel) as Element;
-    const inputEl = el.querySelector('input, textarea') as HTMLInputElement | HTMLTextAreaElement | null;
-    if (!inputEl) {
-        throw new Error(`No input or textarea found for aria-label: ${ariaLabel}`);
+    const el = screen.getByLabelText(ariaLabel) as HTMLElement;
+
+    // If getByLabelText returns the actual input/textarea, use it directly.
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+    fireEvent.change(el, { target: { value: input } });
+    return;
     }
+
+    // Otherwise assume it's a container and find the nested input.
+    const inputEl = el.querySelector('input, textarea') as
+    | HTMLInputElement
+    | HTMLTextAreaElement
+    | null;
+
+    if (!inputEl) {
+    throw new Error(`No input or textarea found for aria-label: ${ariaLabel}`);
+    }
+
     fireEvent.change(inputEl, { target: { value: input } });
 }
 
