@@ -218,8 +218,8 @@ class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatings
                 assessmentTasks={this.props.assessmentTasks}
                 chosenAssessmentId={this.props.chosenAssessmentId}
                 setChosenAssessmentId={this.props.setChosenAssessmentId}
-                csvCreation={csvCreation}     
-                userData = {this}    
+                csvCreation={csvCreation}
+                userData = {this}
               />
               <Box display="flex" justifyContent="flex-end" gap="10px">
                 <Tooltip

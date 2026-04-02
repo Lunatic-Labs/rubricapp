@@ -163,7 +163,7 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
     var navbar = this.props.navbar;
 
     navbar.adminViewTeams.teams = teams;
-    navbar.adminViewTeams.users = users ? parseUserNames(users as any) : [];
+    navbar.adminViewTeams.users = users ? parseUserNames(users as any) : {};
 
     var setNewTab = navbar.setNewTab;
     var setAddTeamTabWithUsers = navbar.setAddTeamTabWithUsers;
@@ -226,7 +226,7 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
             <ViewTeams
               navbar={this.props.navbar}
               teams={teams}
-              users={users ? parseUserNames(users as any) : []}
+              users={users ? parseUserNames(users as any) : {}}
               onError={this.setErrorMessage}
               onSuccess={this.setSuccessMessage}
               refreshData={this.fetchData}

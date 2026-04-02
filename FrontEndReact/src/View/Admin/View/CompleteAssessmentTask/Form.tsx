@@ -140,8 +140,8 @@ class Form extends Component<FormProps, FormState> {
                 (prevState: FormState) => {
                     const updatedUnits = [...prevState.units];
                     
-                    updatedUnits[unitIndex] = updatedUnits[unitIndex]!.withNewRocsData((rocs: Record<string, Record<string, unknown>>) => {
-                        rocs[categoryName]![propertyName] = propertyValue;
+                    updatedUnits[unitIndex] = updatedUnits[unitIndex]!.withNewRocsData((rocs: Record<string, unknown>) => {
+                        (rocs[categoryName] as Record<string, unknown>)[propertyName] = propertyValue;
                     });
                     
                     return { units: updatedUnits };
@@ -162,7 +162,7 @@ class Form extends Component<FormProps, FormState> {
             const unit = this.state.units[unitId]!;
             const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
             
-            return getUnitCategoryStatus(unit, assessmentTask, categoryName);
+            return getUnitCategoryStatus(unit as { rocsData: { [key: string]: { observable_characteristics: string[]; suggestions: string[] } } }, assessmentTask, categoryName);
         }
 
         /**
@@ -208,7 +208,7 @@ class Form extends Component<FormProps, FormState> {
                             category={category}
                             assessmentTaskRubric={this.props.assessmentTaskRubric}
                             currentUnitTabIndex={this.state.currentUnitTabIndex}
-                            currentRocsData={this.state.units[this.state.currentUnitTabIndex]!.rocsData}
+                            currentRocsData={this.state.units[this.state.currentUnitTabIndex]!.rocsData as Record<string, { rating_json: Record<string, string>; observable_characteristics: string[]; suggestions: string[]; rating: number; comments: string; description: string; }>}
                             key={index}
                             handleUnitTabChange={this.handleUnitTabChange}
                             modifyUnitCategoryProperty={this.modifyUnitCategoryProperty}
@@ -253,7 +253,7 @@ class Form extends Component<FormProps, FormState> {
             const newIsDone = markDone ? true : unit.isDone;
             
             const newUnit = unit.withNewIsDone(newIsDone);
-            const newCAT = newUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate);
+            const newCAT = newUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate.toISOString());
             
             let promise;
             

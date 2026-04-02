@@ -73,7 +73,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
 
         this.handleCreateRubric = (pickedCategories: Category[]) => {
             var navbar = this.props.navbar;
-            var rubricId = navbar.rubricId;
+            var rubricId: number = navbar.rubricId;
             var categoryIds: number[] = [];
             var rubricName = (document.getElementById("rubricNameInput") as HTMLInputElement)?.value || ""
             var rubricDescription = (document.getElementById("rubricDescriptionInput") as HTMLTextAreaElement)?.value || ""
