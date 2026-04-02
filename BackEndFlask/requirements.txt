@@ -23,8 +23,8 @@ pymysql == 1.1.2
 redis == 6.4.0
 
 # Security
-pyjwt == 2.10.1
-cryptography == 46.0.5
+pyjwt == 2.12.0
+cryptography == 46.0.6
 
 # Data processing
 pandas == 2.3.3
@@ -67,11 +67,11 @@ pluggy == 1.6.0
 pyasn1 == 0.6.3
 pyasn1_modules == 0.4.2
 pycparser == 2.23
-Pygments == 2.19.2
+Pygments == 2.20.0
 pyparsing == 3.2.5
 python-dateutil == 2.9.0.post0
 pytz == 2025.2
-requests == 2.32.5
+requests == 2.33.0
 rich == 14.1.0
 rsa == 4.9.1
 setuptools == 80.9.0
