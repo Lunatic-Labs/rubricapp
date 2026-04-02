@@ -7,13 +7,9 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickFirstElementWithAriaLabel,
+    clickFirstEnabledElementWithAriaLabel
 } from "../../../../../testUtilities";
-
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
 
 
 var lf = "loginForm";
@@ -51,7 +47,7 @@ test("AssessmentDashboard.test.tsx Test 2: Should show Admin View Courses when l
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
@@ -60,7 +56,7 @@ test("AssessmentDashboard.test.tsx Test 2: Should show Admin View Courses when l
     });
 });
 test("AssessmentDashboard.test.tsx Test 3: Should show Roster Dashboard when clicking the view course button icon", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -73,7 +69,7 @@ test("AssessmentDashboard.test.tsx Test 3: Should show Roster Dashboard when cli
     });
 });
 test("AssessmentDashboard.test.tsx Test 4: Should show Assessment Dashboard when clicking the Assessment tab", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -82,7 +78,7 @@ test("AssessmentDashboard.test.tsx Test 4: Should show Assessment Dashboard when
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -92,7 +88,7 @@ test("AssessmentDashboard.test.tsx Test 4: Should show Assessment Dashboard when
     });
 });
 test("AssessmentDashboard.test.tsx Test 5: Should show View Courses page when clicking the back button", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -101,7 +97,7 @@ test("AssessmentDashboard.test.tsx Test 5: Should show View Courses page when cl
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -117,7 +113,7 @@ test("AssessmentDashboard.test.tsx Test 5: Should show View Courses page when cl
     });
 });
 test("AssessmentDashboard.test.tsx Test 6: Should show My Custom Rubrics page when clicking the My Custom Rubrics button", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -126,7 +122,7 @@ test("AssessmentDashboard.test.tsx Test 6: Should show My Custom Rubrics page wh
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -142,7 +138,7 @@ test("AssessmentDashboard.test.tsx Test 6: Should show My Custom Rubrics page wh
     });
 });
 test("AssessmentDashboard.test.tsx Test 7: Should show Import Assessment page when clicking the import assessment button", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -151,7 +147,7 @@ test("AssessmentDashboard.test.tsx Test 7: Should show Import Assessment page wh
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -167,7 +163,7 @@ test("AssessmentDashboard.test.tsx Test 7: Should show Import Assessment page wh
     });
 });
 test("AssessmentDashboard.test.tsx Test 8: Should show Add Assessment page when clicking the add assessment button", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -176,7 +172,7 @@ test("AssessmentDashboard.test.tsx Test 8: Should show Add Assessment page when 
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -192,7 +188,7 @@ test("AssessmentDashboard.test.tsx Test 8: Should show Add Assessment page when 
     });
 });
 test("AssessmentDashboard.test.tsx Test 9: Should show Edit Assessment page when clicking the edit assessment button", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -201,7 +197,7 @@ test("AssessmentDashboard.test.tsx Test 9: Should show Edit Assessment page when
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -212,14 +208,14 @@ test("AssessmentDashboard.test.tsx Test 9: Should show Edit Assessment page when
 
     await waitFor(() => {
         clickFirstElementWithAriaLabel(eaib);
-    },{ timeout: 3000 });
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(aeatt);
     });
 });
 test("AssessmentDashboard.test.tsx Test 10: Should show View Completed Assessments page when clicking the view completed assessment button", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -228,7 +224,7 @@ test("AssessmentDashboard.test.tsx Test 10: Should show View Completed Assessmen
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -238,15 +234,15 @@ test("AssessmentDashboard.test.tsx Test 10: Should show View Completed Assessmen
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
 });
 test("AssessmentDashboard.test.tsx Test 11: Should show Instructions for Assessment page when clicking the complete assessment button", async () => {
-    render(<Login/>);
+    render(<Login />);
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(ct);
@@ -255,7 +251,7 @@ test("AssessmentDashboard.test.tsx Test 11: Should show Instructions for Assessm
     clickFirstElementWithAriaLabel(vcib);
 
     await waitFor(() => {
-       expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithAriaLabelToBeInDocument(rt);
     });
 
     clickElementWithAriaLabel(at);
@@ -265,8 +261,8 @@ test("AssessmentDashboard.test.tsx Test 11: Should show Instructions for Assessm
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(satb);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(satb);
+    }, { timeout: 3000 });
 
 
     await waitFor(() => {

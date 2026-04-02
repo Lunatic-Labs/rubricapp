@@ -23,8 +23,8 @@ def logout():
                 blacklist_token(refresh)
 
         revoke_tokens()
-        return create_good_response([], 200, "user")
+        return create_good_response([], 204, "user")
 
     except Exception as e:
         revoke_tokens()
-        return create_bad_response(f"An error occurred logging out: {e}", "logout", 400)
+        return create_good_response([], 204, "user")

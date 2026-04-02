@@ -8,12 +8,9 @@ import {
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     clickFirstElementWithAriaLabel,
+    clickFirstEnabledElementWithAriaLabel
+
 } from "../../../../../testUtilities";
-
-import {
-    demoAdminPassword
-} from "../../../../../App";
-
 
 
 var lb = "loginButton";
@@ -40,7 +37,7 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 1: Should render the AdminV
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
     clickElementWithAriaLabel(lb);
 
@@ -59,10 +56,10 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 1: Should render the AdminV
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(adt);
     });
-    
+
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
@@ -88,8 +85,8 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 2: Should render the Assess
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
@@ -121,8 +118,8 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 3: Should render the Add Me
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
@@ -154,9 +151,9 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 4: Should render the Indivi
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
-    
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
+
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
@@ -183,13 +180,13 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 5: Should render the Indivi
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
-    
+
     clickElementWithAriaLabel(vcaisnb);
 
     await waitFor(() => {
@@ -222,13 +219,13 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 6: Should render the Indivi
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
-    
+
     clickElementWithAriaLabel(vcaisnb);
 
     await waitFor(() => {
@@ -236,7 +233,7 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 6: Should render the Indivi
     });
 
     clickElementWithAriaLabel(ampsnb);
-    
+
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);
     });
@@ -261,8 +258,8 @@ test("AdminViewCompleteAssessmentTasks.test.tsx Test 7: Should render the Indivi
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vcaib);
-    },{ timeout: 3000 });
+        clickFirstEnabledElementWithAriaLabel(vcaib);
+    }, { timeout: 3000 });
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vcirt);

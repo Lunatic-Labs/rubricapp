@@ -11,11 +11,6 @@ import "@testing-library/jest-dom";
 //     clickFirstElementWithAriaLabel
 // } from "../../../../../testUtilities";
 
-// import {
-//     demoAdminPassword
-// } from "../../../../../App";
-
-
 
 // var lb = "loginButton";
 // var ei = "emailInput";
@@ -50,7 +45,7 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 
 //     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-//     changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+//     changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
 //     clickElementWithAriaLabel(lb);
 

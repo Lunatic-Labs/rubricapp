@@ -1,10 +1,9 @@
 import React, { Component } from 'react';
-// @ts-ignore: allow importing CSS without type declarations
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
+import {formatTime, genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 
 interface ViewCompletedAssessmentTasksProps {
     navbar: any;
@@ -63,7 +62,7 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                         
                         return(
                             <>
-                                {initial_time ? getHumanReadableDueDate(initial_time, timeZone) : "N/A"}
+                                {initial_time ? formatTime(initial_time, timeZone) : "N/A"}
                             </>
                         );
                     }
@@ -83,7 +82,7 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
 
                         return(
                             <>
-                                {last_update ? getHumanReadableDueDate(last_update, timeZone) : "N/A"}
+                                {last_update ? formatTime(last_update, timeZone) : "N/A"}
                             </>
                         );
                     }

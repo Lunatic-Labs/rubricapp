@@ -1,12 +1,11 @@
 import React from 'react';
-// @ts-ignore: allow importing mui-datatables without type declarations
 import MUIDataTable from 'mui-datatables';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material/';
+import { useMediaQuery } from '@mui/material';
 
 const customTheme = createTheme({
   spacing: 4,
   components: {
-    // @ts-ignore: MUIDataTable custom component
     MUIDataTableBodyCell: {
       styleOverrides: {
         root: {
@@ -91,11 +90,14 @@ const CustomDataTable = ({
   columns,
   options
 }: any) => {
-  const defaultOptions = {
+    const isMobile = useMediaQuery('(max-width:600px)');
+  
+    const defaultOptions = {
     rowStyle: { height: 4 },
+    responsive: isMobile ? "vertical" : "standard",
   };
 
-  const tableOptions = { ...defaultOptions, ...options };
+  const tableOptions = { ...defaultOptions, ...options,};
 
   return (
     <ThemeProvider theme={customTheme}>
