@@ -130,6 +130,14 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
         const isTeams = this.state.usingTeams;
+        // Skip checkin tracking when viewing a completed assessment in read-only mode.
+        // The GET /checkin_events endpoint requires system-admin privileges, and calling
+        // it as a course-level TA/Instructor would return "No Authorization", which the
+        // frontend treats as a hard auth failure and redirects to the login screen.
+        if (state.chosenCompleteAssessmentTaskIsReadOnly) {
+            return;
+        }
+
         if (isEqualOrHigherPrivilege(this.state.currentUserRole!.role_id, ROLE.TA_INSTRUCTOR)){
             this.callPollingFunction();
             this.intervalId = setInterval(this.callPollingFunction, 10000);
@@ -279,7 +287,12 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
 
                 if (chosenAssessmentTask["unit_of_assessment"] && (fixedTeams && teams.length === 0)) return;
                 if (!chosenAssessmentTask["unit_of_assessment"] && users.length === 0) return;
-                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam) return;
+                
+                const hasTeamFromChosenCAT = (navbar.state.chosenCompleteAssessmentTask?.team_id ?? -1) > 0;
+                if (roleName === "Student" && this.state.usingTeams && !userFixedTeam && !hasTeamFromChosenCAT) {
+                    return;
+                }
+                
                 if (this.state.usingTeams && !teamsUsers) return;
                 
                 const userSort = [...users].sort((firstUser,secondUser) => {
@@ -370,7 +383,8 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
 
         const roleName = currentUserRole["role_name"];
 
-        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam){
+        const hasTeamFromChosenCAT = (navbar.state.chosenCompleteAssessmentTask?.team_id ?? -1) > 0;
+        if (roleName === "Student" && this.state.usingTeams && !this.state.usingAdHoc && !userFixedTeam && !hasTeamFromChosenCAT){
             return (
                 <Loading />
             );

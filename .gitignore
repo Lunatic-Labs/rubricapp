@@ -50,7 +50,7 @@ FrontEndReact/.env.production
 
 # Nginx configuration files
 /etc/nginx/sites-available/*
-/AWS/syscontrol.sh
+/cloud/syscontrol.sh
 
 # SSL/TLS certificate files
 /etc/letsencrypt/live/*
@@ -61,3 +61,6 @@ BackEndFlask/token.json
 
 My_README.md
 node_modules
+
+/.vscode
+.env

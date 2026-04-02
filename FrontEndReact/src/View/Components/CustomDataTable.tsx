@@ -1,6 +1,7 @@
 import React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable from 'mui-datatables';
+import { useMediaQuery } from '@mui/material';
 
 interface CustomDataTableProps {
     data: object[];
@@ -91,11 +92,13 @@ const customTheme = createTheme({
 });
 
 const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
+  const isMobile = useMediaQuery('(max-width:600px)');
   const defaultOptions = {
     rowStyle: { height: 4 },
+    responsive: isMobile ? "vertical" : "standard",
   };
 
-  const tableOptions = { ...defaultOptions, ...options };
+  const tableOptions = { ...defaultOptions, ...options,};
 
   return (
     <ThemeProvider theme={customTheme}>

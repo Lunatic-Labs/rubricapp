@@ -1,9 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import Cookies from 'universal-cookie';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import Loading from '../../../../Loading/Loading';
-import { apiUrl } from '../../../../../App';
 import { genericResourceGET } from '../../../../../utility';
 import { Box, Button, Chip, Collapse, Snackbar, Alert, CircularProgress } from '@mui/material';
 import html2canvas from 'html2canvas';
@@ -165,26 +163,22 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
       return;
     }
 
-    const cookies = new Cookies();
-    const accessToken = cookies.get('access_token');
-    const user = cookies.get('user');
-    const headers = { 'Authorization': 'Bearer ' + accessToken, 'Content-Type': 'application/json' };
-
     // Get unique rubric IDs from assessment tasks
     const uniqueRubricIds = [...new Set(assessmentTasks.map((t: AssessmentTask) => t.rubric_id))];
 
     try {
       // Fetch rubric details (with category_json) and completed assessments in parallel
       const rubricPromises = uniqueRubricIds.map((rubricId) =>
-        fetch(`${apiUrl}/rubric?rubric_id=${rubricId}&user_id=${user.user_id}`, { headers })
-          .then((r) => r.json())
+        genericResourceGET(`/rubric?rubric_id=${rubricId}`, '', this, { rawResponse: true })
       );
 
       const completedPromises = assessmentTasks.map((task: AssessmentTask) =>
-        fetch(
-          `${apiUrl}/completed_assessment?admin_id=${chosenCourse.admin_id}&assessment_task_id=${task.assessment_task_id}&user_id=${user.user_id}`,
-          { headers }
-        ).then((r) => r.json())
+        genericResourceGET(
+          `/completed_assessment?admin_id=${chosenCourse.admin_id}&assessment_task_id=${task.assessment_task_id}`,
+          '',
+          this,
+          { rawResponse: true }
+        )
       );
 
       const [rubricResults, completedResults] = await Promise.all([

@@ -61,20 +61,18 @@ class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatings
     this.fetchData = () => {
       var chosenCourse = this.props.navbar.state.chosenCourse;
 
+      // Reset so componentDidUpdate doesn't block re-fetching the same assessment
+      this.setState({ loadedAssessmentId: this.props.chosenAssessmentId, isLoaded: false, ratings: null });
+
       if(this.props.chosenAssessmentId !== "") {
         // Fetch student ratings for the chosen assessment task
-        
+
         var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
         const url = `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`;
         const urlFinal = assessmentIsTeam[String(this.props.chosenAssessmentId)] ? `${url}&team_id=true` : url;
-        
+
+
         genericResourceGET(urlFinal, "ratings", this);
-        
-        // plan to check for team: set up another genericResoruceGet() to retrieve the team_id for the chosenAssessment maybe?
-        // genericResourceGET(
-        //   `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`, // does not assign a value to team_id for Rating_routes. this results in lines 35-54 being ignored
-        //   "ratings", this
-        // ); 
       }
 
       // Iterate through the already-existing list of all ATs to find the rubric_id of the chosen AT
@@ -88,15 +86,11 @@ class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatings
         }
       }
 
-      // Fetch the category names of the appropriate rubric 
+      // Fetch the category names of the appropriate rubric
       genericResourceGET(
         `/category?admin_id=${chosenCourse["admin_id"]}&rubric_id=${rubricId}`,
         "categories", this
       );
-
-      this.setState({
-        loadedAssessmentId: this.props.chosenAssessmentId,
-    });
     }
   }
 
