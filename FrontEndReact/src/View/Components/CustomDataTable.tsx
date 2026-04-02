@@ -82,8 +82,48 @@ const customTheme = createTheme({
         },
       },
     },
+    MUIDataTablePagination: {
+    styleOverrides: {
+    root: {
+      '@media (max-width: 600px)': {
+        width: '100%',
+        padding: '0px',
+        overflowX: 'hidden',
+      }
+    }
+    }
+   },
+    MuiTablePagination: {
+    styleOverrides: {
+    root: {
+      '@media (max-width: 600px)': {
+        width: '100%',
+        overflowX: 'hidden',
+        flexWrap: 'wrap',
+      }
+    },
+    toolbar: {
+      '@media (max-width: 600px)': {
+        flexWrap: 'wrap',
+        padding: '0px',
+        justifyContent: 'center',
+      }
+    },
+    spacer: {
+      '@media (max-width: 600px)': {
+        display: 'none', // removes the spacer that pushes pagination off screen
+      }
+    },
+    displayedRows: {
+      '@media (max-width: 600px)': {
+        fontSize: '0.85rem',
+      }
+    },
+  }
+},
   },
-});
+}
+);
 
 const CustomDataTable = ({
   data,
