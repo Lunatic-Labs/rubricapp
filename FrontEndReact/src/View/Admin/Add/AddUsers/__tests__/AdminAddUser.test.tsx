@@ -28,11 +28,24 @@ var ufni = "userFirstNameInput";
 var ulni = "userLastNameInput";
 var ueai = "userEmailAddressInput";
 // var aurdd= "addUserRoleDropDown";
+
+async function loginAsDemoAdmin() {
+    render(<Login />);
+
+    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    clickElementWithAriaLabel(lb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(ct);
+    });
+}
+
 test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminAddUser.test.tsx Test 1: Should render the AdminAddUser component given the Add User button is clicked.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
 
@@ -40,9 +53,11 @@ test("AdminAddUser.test.tsx Test 1: Should render the AdminAddUser component giv
 
     clickElementWithAriaLabel(lb);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 
@@ -57,11 +72,13 @@ test("AdminAddUser.test.tsx Test 1: Should render the AdminAddUser component giv
     });
 });
 test("AdminAddUser.test.tsx Test 2: Should render the roster dashboard if the back button on the Add User page is clicked.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 
@@ -82,11 +99,13 @@ test("AdminAddUser.test.tsx Test 2: Should render the roster dashboard if the ba
     });
 });
 test("AdminAddUser.test.tsx Test 3: Should render the roster dashboard if the cancel button on the Add User page is clicked.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 
@@ -107,11 +126,13 @@ test("AdminAddUser.test.tsx Test 3: Should render the roster dashboard if the ca
     },{ timeout: 3000 });
 });
 test("AdminAddUser.test.tsx Test 4: HelperText errors should show for each text field when no information is filled.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 
@@ -138,11 +159,13 @@ test("AdminAddUser.test.tsx Test 4: HelperText errors should show for each text 
     });
 });
 test("AdminAddUser.test.tsx Test 5: HelperText error should show for the firstName text field when it is left blank while all other information is filled.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 
@@ -171,11 +194,13 @@ test("AdminAddUser.test.tsx Test 5: HelperText error should show for the firstNa
     });
 });
 test("AdminAddUser.test.tsx Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 
@@ -204,11 +229,13 @@ test("AdminAddUser.test.tsx Test 6: HelperText error should show for the LastNam
     });
 });
 test("AdminAddUser.test.tsx Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 
@@ -237,11 +264,13 @@ test("AdminAddUser.test.tsx Test 7: HelperText error should show for the Email A
     });
 });
 test("AdminAddUser.test.tsx Test 8: HelperText error should show for the Email Address text field when the input is invalid.", async () => {
-    render(<Login />);
+    //render(<Login />);
 
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
+    //await waitFor(() => {
+    //    expectElementWithAriaLabelToBeInDocument(ct);
+    //});
+
+    await loginAsDemoAdmin();
 
     clickFirstElementWithAriaLabel(vcib);
 

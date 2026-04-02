@@ -759,8 +759,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     // to match the users preferance (false or true).
                     this.setState({
                         isLoaded: true,
-                        user: userData["user_id"],
-                        darkMode: userData["user_dark_mode"]
+                        user: userData, //["user_id"],
+                        darkMode: userData["user_dark_mode"] ?? false
                     }, () => {
                         // This callback runs AFTER state is updated
                         if (this.state.darkMode) {
