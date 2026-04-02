@@ -614,7 +614,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                           },
                       },
                     }}
-                    aria-label="EmailInput"
+                    aria-label="emailInput"
                   />
 
                   {!navbar.props.isSuperAdmin && (
