@@ -35,8 +35,8 @@ export function changeElementWithAriaLabelWithInput(ariaLabel: any, input: any) 
 
     // If getByLabelText returns the actual input/textarea, use it directly.
     if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
-    fireEvent.change(el, { target: { value: input } });
-    return;
+        fireEvent.change(el, { target: { value: input } });
+        return;
     }
 
     // Otherwise assume it's a container and find the nested input.
@@ -46,7 +46,7 @@ export function changeElementWithAriaLabelWithInput(ariaLabel: any, input: any) 
     | null;
 
     if (!inputEl) {
-    throw new Error(`No input or textarea found for aria-label: ${ariaLabel}`);
+        throw new Error(`No input or textarea found for aria-label: ${ariaLabel}`);
     }
 
     fireEvent.change(inputEl, { target: { value: input } });
