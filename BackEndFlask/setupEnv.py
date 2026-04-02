@@ -135,7 +135,14 @@ def start_server():
 
         if SYSTEM == "Darwin":
             exit_code = cmd("brew services start redis", "start_server()")
-        elif init == "systemd":
+        elif init in ("openrc", "init"):
+            is_active = cmd("rc-service redis status > /dev/null 2>&1", "start_server()")
+            if is_active:
+                exit_code = cmd("rc-service redis start", "start_server()")
+                if exit_code != 0:
+                    err(f"Failed to start redis server. Exit code: {exit_code}")
+                    sys.exit(1)
+        else: # Something else, attempting systemd
             is_active = cmd("systemctl is-active redis-server.service > /dev/null", "start_server()")
 
             if is_active != 0:  # 0 = active
@@ -144,16 +151,6 @@ def start_server():
                 if exit_code != 0:
                     err(f"Failed to start redis server. Exit code: {exit_code}")
                     sys.exit(1)
-        elif init in ("openrc", "init"):
-            is_active = cmd("rc-service redis status > /dev/null 2>&1", "start_server()")
-            if is_active:
-                exit_code = cmd("rc-service redis start", "start_server()")
-                if exit_code != 0:
-                    err(f"Failed to start redis server. Exit code: {exit_code}")
-                    sys.exit(1)
-        else:
-            err(f"unknown init system or OS, init={init}, OS={SYSTEM}")
-            sys.exit(1)
 
     exit_code = os.system(f"{python_cmd} run.py")
 
