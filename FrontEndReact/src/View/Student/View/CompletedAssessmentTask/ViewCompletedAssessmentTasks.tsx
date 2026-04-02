@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import {formatTime, genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
+import {formatTime, genericResourcePOST} from "../../../../utility";
 
 interface ViewCompletedAssessmentTasksProps {
     navbar: any;
