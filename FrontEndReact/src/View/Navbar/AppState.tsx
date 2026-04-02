@@ -760,7 +760,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     this.setState({
                         isLoaded: true,
                         user: userData, //["user_id"],
-                        darkMode: userData["user_dark_mode"] ?? false
+                        darkMode: userData["user_dark_mode"] ?? false // added ?? false
                     }, () => {
                         // This callback runs AFTER state is updated
                         if (this.state.darkMode) {
