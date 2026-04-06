@@ -115,6 +115,14 @@ def load_demo():
     log("Demo data loaded.")
 
 
+def get_init_sys():
+    try:
+        with open("/proc/1/comm") as f:
+            name = f.read().strip()
+        return name
+    except Exception:
+        return None
+
 def start_server():
     global SYSTEM
 
@@ -123,9 +131,18 @@ def start_server():
     if is_docker:
         log("Running inside Docker. Skipping Redis server start.")
     else:
+        init = get_init_sys()
+
         if SYSTEM == "Darwin":
             exit_code = cmd("brew services start redis", "start_server()")
-        else:
+        elif init in ("openrc", "init"):
+            is_active = cmd("rc-service redis status > /dev/null 2>&1", "start_server()")
+            if is_active:
+                exit_code = cmd("rc-service redis start", "start_server()")
+                if exit_code != 0:
+                    err(f"Failed to start redis server. Exit code: {exit_code}")
+                    sys.exit(1)
+        else: # Something else, attempting systemd
             is_active = cmd("systemctl is-active redis-server.service > /dev/null", "start_server()")
 
             if is_active != 0:  # 0 = active
