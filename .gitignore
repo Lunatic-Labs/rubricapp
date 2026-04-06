@@ -61,3 +61,6 @@ BackEndFlask/token.json
 
 My_README.md
 node_modules
+
+/.vscode
+.env
