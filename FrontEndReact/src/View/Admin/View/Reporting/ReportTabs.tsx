@@ -1,6 +1,7 @@
 import * as React from 'react';
 import Tabs from '@mui/material/Tabs';
 import Tab from '@mui/material/Tab';
+import Box from '@mui/material/Box';
 
 
 
@@ -14,55 +15,75 @@ export default function TabManager (props: any) {
   };
 
   return (
+    <Box className="tab-colors">
+      <Tabs 
+        value={value} 
+        onChange={handleChange} 
+        centered
+        sx={{
+            '& .MuiTab-root': {
+              color: 'var(--tab-text)',
+              textTransform: 'uppercase',
+              fontWeight: 450,
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: 'var(--tab-text-selected)',
+              fontWeight: 550,
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'var(--tab-text-selected)',
+              height: '2px',
+            },
+          }}
+      >
+        <Tab
+          label="Assessment Status"
 
-    <Tabs value={value} onChange={handleChange} centered>
+          onClick={() => {
+            props.setTab("Assessment Status");
+          }}
 
-      <Tab
-        label="Assessment Status"
+          aria-label='assessmentStatusTab'
+        />
 
-        onClick={() => {
-          props.setTab("Assessment Status");
-        }}
+        <Tab
+          label="Ratings and Feedback"
 
-        aria-label='assessmentStatusTab'
-      />
+          onClick={() => {
+            props.setTab("Ratings and Feedback");
+          }}
 
-      <Tab
-        label="Ratings and Feedback"
+          aria-label='ratingAndFeedbackTab'
+        />
 
-        onClick={() => {
-          props.setTab("Ratings and Feedback");
-        }}
+        <Tab
+          label="Export Graph Comparison"
 
-        aria-label='ratingAndFeedbackTab'
-      />
-      <Tab
-        label="Export Graph Comparison"
+          onClick={() => {
+            props.setTab("Export Graph Comparison");
+          }}
 
-        onClick={() => {
-          props.setTab("Export Graph Comparison");
-        }}
+          aria-label='exportGraphComparisonTab'
+        />
 
-        aria-label='GraphExportTab'
-      />
+        {/* wip */}
+        {/* <Tab
+          label="Improvement"
 
-      {/* wip */}
-      {/* <Tab
-        label="Improvement"
+          onClick={() => {
+            props.setTab("Improvement");
+          }}
+        /> */}
 
-        onClick={() => {
-          props.setTab("Improvement");
-        }}
-      /> */}
+        {/* wip */}
+        {/* <Tab
+          label="Calibrations"
 
-      {/* wip */}
-      {/* <Tab
-        label="Calibrations"
-
-        onClick={() => {
-          props.setTab("Calibrations");
-        }}
-      /> */}
-    </Tabs>
+          onClick={() => {
+            props.setTab("Calibrations");
+          }}
+        /> */}
+      </Tabs>
+    </Box>
   );
 }

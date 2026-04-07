@@ -157,9 +157,9 @@ class AdminViewUsers extends Component<any, AdminViewUsersState> {
         var user = state.user;
         var addUser = state.addUser;
 
-        navbar.adminViewUsers = {};
-        navbar.adminViewUsers.users = users ? users : [];
-        navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
+    navbar.adminViewUsers = {};
+    navbar.adminViewUsers.users = users ? users : [];
+    navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
 
         if (errorMessage) {
             return(
