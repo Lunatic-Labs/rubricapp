@@ -209,6 +209,7 @@ class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatings
           <Box aria-label="adminViewRatingsBox">
             <Box display="flex" alignItems="center" justifyContent="space-between">
               <ViewRatingsHeader
+                navbar={this.props.navbar}
                 assessmentTasks={this.props.assessmentTasks}
                 chosenAssessmentId={this.props.chosenAssessmentId}
                 setChosenAssessmentId={this.props.setChosenAssessmentId}
@@ -258,6 +259,7 @@ class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatings
           
           <Box>
             <ViewRatingsTable
+              navbar={this.props.navbar}
               assessmentTasks={this.props.assessmentTasks}
               chosenAssessmentId={this.props.chosenAssessmentId}
               ratings={ratings ? ratings : []}

@@ -13,7 +13,8 @@ import {
     submitPasswordChange,
     testPasswordStrength,
     getPasswordStrengthIcon,
-    generatePasswordStrengthColors
+    generatePasswordStrengthColors,
+    PasswordStrength
 } from '../../utils/passwordUtils';
 
 interface SetNewPasswordProps {
@@ -38,12 +39,12 @@ interface SetNewPasswordState {
 }
 
 class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState> {
-    generateColors: (strength: string) => string[];
-    getIcon: (strength: string) => React.ElementType;
+    generateColors: (strength: PasswordStrength) => string[];
+    getIcon: (strength: PasswordStrength) => React.ElementType;
     handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     handleTogglePasswordVisibility: () => void;
     setPassword: () => void;
-    testPasswordStrength: (password: string) => string;
+    testPasswordStrength: (password: string) => PasswordStrength;
     validatePasswordLength: (password: string, fieldName: string) => boolean;
 
     constructor(props: SetNewPasswordProps) {
@@ -83,13 +84,13 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
         };
 
         // getIcon uses shared utility
-        this.getIcon = (strength: string) => {
+        this.getIcon = (strength: PasswordStrength) => {
             const iconName = getPasswordStrengthIcon(strength);
             return iconName === 'CheckIcon' ? CheckIcon : ErrorOutlineIcon;
         };
 
         // generateColors uses shared utility
-        this.generateColors = (strength: string) => {
+        this.generateColors = (strength: PasswordStrength) => {
             return generatePasswordStrengthColors(strength);
         };
 

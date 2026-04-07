@@ -13,7 +13,8 @@ import {
     validatePasswordField,
     testPasswordStrength,
     getPasswordStrengthIcon,
-    generatePasswordStrengthColors
+    generatePasswordStrengthColors,
+    PasswordStrength
 } from '../../utils/passwordUtils';
 
 /**
@@ -156,7 +157,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      */
 
     // getIcon uses shared utility
-    getIcon(strength: string) {
+    getIcon(strength: PasswordStrength) {
         const iconName = getPasswordStrengthIcon(strength);
         return iconName === 'CheckIcon' ? CheckIcon : ErrorOutlineIcon;
     }
@@ -168,7 +169,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      */
 
     // generateColors uses shared utility
-    generateColors(strength: string) {
+    generateColors(strength: PasswordStrength) {
         return generatePasswordStrengthColors(strength);
     }
 

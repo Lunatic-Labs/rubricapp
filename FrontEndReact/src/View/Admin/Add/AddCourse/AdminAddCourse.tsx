@@ -1,6 +1,6 @@
 import React, { Component } from "react";
-// import "bootstrap/dist/css/bootstrap.css";
-// import "../../../../SBStyles.css";
+import "bootstrap/dist/css/bootstrap.css";
+import "../../../../SBStyles.css";
 import validator from "validator";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourcePOST, genericResourcePUT } from "../../../../utility";

@@ -4,7 +4,7 @@ import "../../../../SBStyles.css";
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import SendMessageModal from '../../../Components/SendMessageModal';
-import CustomDataTable from "../../../Components/CustomDataTable";
+// import CustomDataTable from "../../../Components/CustomDataTable";
 
 /**
  * Creates an instance of the ViewNotification component.
@@ -180,8 +180,8 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
           </Box>
         </Box>
         <Box className="table-spacing">
-          <CustomDataTable
-          />
+          {/* <CustomDataTable
+          /> */}
         </Box>
       </Box>
     );

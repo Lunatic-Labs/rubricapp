@@ -419,7 +419,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
                         <CustomButton
                         onClick={() => this.handleDialog(true, completedAssessmentId)}
                         label="Notify"
-                        align="center"
+                        // align="center"
                         isOutlined={true}
                         disabled={notificationSent}
                         aria-label="Send individual messages"
@@ -465,7 +465,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
           <Box>
             <ResponsiveNotification
               show={this.state.showDialog}
-              handleDialog={this.handleDialog}
+              handleDialog={() => this.handleDialog(false, null)}
               sendNotification={this.handleSendNotification}
               handleChange={this.handleChange}
               notes={this.state.notes}

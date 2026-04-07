@@ -409,8 +409,8 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                         <ImageModal
                             isOpen={isHelpOpen}
                             handleClose={this.toggleHelp}
-                            // imageUrl={RubricDescriptionsImage}
-                            // imageUrl2={RubricDescriptionsImage2}
+                            imageUrl={RubricDescriptionsImage}
+                            imageUrl2={RubricDescriptionsImage2}
                         />
                     </Grid>
                 </div>

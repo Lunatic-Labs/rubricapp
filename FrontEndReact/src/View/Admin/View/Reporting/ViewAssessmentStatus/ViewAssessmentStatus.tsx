@@ -38,8 +38,8 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
   // Set initial category ID, defaulting to empty string if no categories available
   var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] ?? '' : '');
 
-  const handleChosenCategoryIdChange = (event: { target: { value: string } }) => {
-    setChosenCategoryId(event.target.value);
+  const handleChosenCategoryIdChange = (id: string) => {
+    setChosenCategoryId(id);
   };
 
   // When the user changes the assessment task, the chosenCategoryId may not correspond to any selectable

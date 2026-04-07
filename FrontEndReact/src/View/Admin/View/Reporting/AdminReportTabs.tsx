@@ -31,6 +31,7 @@ export default function AdminReportTabs(props: AdminReportTabsProps) {
             <ReportingMainHeader
                 navbar={props.navbar}
                 setTab={setTab}
+                activeTab={tab}
             />
 
             { tab === 'Assessment Status' &&
