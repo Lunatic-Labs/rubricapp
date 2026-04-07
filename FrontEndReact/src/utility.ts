@@ -445,6 +445,7 @@ export function getDueDateString(dueDate: Date): string {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
 }
 
+// formating
 function formatDateTime(date: Date, timeZone?: string): string {
   const month = date.getMonth();
   const day = date.getDate();
@@ -460,6 +461,7 @@ function formatDateTime(date: Date, timeZone?: string): string {
   return `${monthNames[month]} ${day} at ${timeString} ${timeZone || ""}`.trim();
 }
 
+// Normal times
 export function formatTime(time: string | Date, timeZone?: string): string {
   let dateString: string | Date = time;
 
@@ -472,6 +474,7 @@ export function formatTime(time: string | Date, timeZone?: string): string {
   return formatDateTime(date, timeZone);
 }
 
+// specifically for due dates
 export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
 
   let dateString: string | Date = dueDate;
