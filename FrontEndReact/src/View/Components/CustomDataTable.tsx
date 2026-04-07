@@ -95,7 +95,7 @@ const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
   const isMobile = useMediaQuery('(max-width:600px)');
   const defaultOptions = {
     rowStyle: { height: 4 },
-    responsive: isMobile ? "vertical" : "standard",
+    responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard",
   };
 
   const tableOptions = { ...defaultOptions, ...options,};

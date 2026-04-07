@@ -105,7 +105,7 @@ class Section extends Component<SectionProps> {
                     navbar={this.props.navbar}
                     suggestion={suggestion}
                     suggestions={categoryRocsData["suggestions"]}
-                    setCategoryProperty={this.setCategoryProperty}
+                    //setCategoryProperty={this.setCategoryProperty}
                     setSuggestions={(newValue: string) => this.setCategoryProperty("suggestions", newValue)}
                     id={index}
                     key={index}

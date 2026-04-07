@@ -78,11 +78,7 @@ declare module '@mui/material/styles' {
   }
 }
 
-export {};
-
-declare global {
-  var SUPER_ADMIN_PASSWORD: string;
-  var DEMO_ADMIN_PASSWORD : string;
-  var DEMO_TA_INSTRUCTOR_PASSWORD: string;
-  var DEMO_STUDENT_PASSWORD: string;
-}
+declare var SUPER_ADMIN_PASSWORD: string;
+declare var DEMO_ADMIN_PASSWORD: string;
+declare var DEMO_TA_INSTRUCTOR_PASSWORD: string;
+declare var DEMO_STUDENT_PASSWORD: string;
