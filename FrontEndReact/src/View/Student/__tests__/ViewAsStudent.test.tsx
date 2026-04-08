@@ -1,13 +1,15 @@
 // <reference types="@testing-library/jest-dom" />
 
 import '@testing-library/jest-dom';
-import { render, waitFor, screen, fireEvent, act, cleanup } from "@testing-library/react";
+import { render, waitFor, screen, fireEvent, cleanup } from "@testing-library/react";
 import { beforeEach, afterEach, afterAll, test, describe, jest } from "@jest/globals";
+import Cookies from 'universal-cookie';
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     clickFirstElementWithAriaLabel
 } from "../../../testUtilities";
+import Login from "../../Login/Login";
 
 // 1. DEFINE MOCKS - Values must be inline (jest.mock is hoisted)
 jest.mock('../../../App', () => ({
@@ -21,16 +23,12 @@ jest.mock('../../../refreshLock', () => ({
     refreshAccessTokens: () => Promise.resolve({ success: true })
 }));
 
-// 2. IMPORTS AFTER MOCKS
-import Cookies from 'universal-cookie';
-import Login from "../../Login/Login";
-
 const MockedCookies = Cookies as jest.MockedClass<typeof Cookies>;
 
-// 3. Constants
+// Constants
 const mockDemoAdminPassword = 'testpassword123';
 
-// 4. GLOBAL MOCKS & STATE
+// GLOBAL MOCKS & STATE
 const originalLocation = window.location;
 const originalFetch = global.fetch;
 
@@ -122,34 +120,9 @@ describe("View as Student Feature Tests", () => {
         }
     ];
 
-    /**
-     * MOCK RESPONSE FORMAT:
-     * utility.ts: state[dest || resource] = result.content[resource][0]
-     *
-     * The resource parameter (2nd arg to genericResourceGET) is used as the key
-     * to look up in result.content. We provide BOTH singular and plural keys.
-     *
-     * IMPORTANT for StudentDashboard:
-     * - genericResourceGET('/role?...', 'roles', this) -> content.roles[0]
-     *   StudentDashboard checks: if (!roles) return <Loading/>
-     *   Then uses: roles.role_id and roles["role_id"]
-     *   So roles must be a SINGLE OBJECT like { role_id: 5, role_name: "Student" }
-     *   Therefore: content.roles = [{ role_id: 5, role_name: "Student" }]
-     *
-     * - genericResourceGET('/assessment_task?...', 'assessment_tasks', this, {dest: 'assessmentTasks'})
-     *   -> content.assessment_tasks[0] -> stored as state.assessmentTasks
-     *   Used with .filter() so must be an ARRAY
-     *   Therefore: content.assessment_tasks = [[]]
-     *
-     * - genericResourceGET('/completed_assessment?...', 'completed_assessments', this, {dest: 'completedAssessments'})
-     *   -> content.completed_assessments[0] -> stored as state.completedAssessments
-     *   Used with .forEach() so must be an ARRAY
-     *   Therefore: content.completed_assessments = [[]]
-     */
     const setupFetchMock = (overrides: any = {}) => {
-        global.fetch = jest.fn((url: string, options?: any) => {
+        global.fetch = jest.fn((url: string) => {
             const urlStr = String(url);
-            console.log('FETCH URL:', urlStr);
 
             // Handle login endpoint
             if (urlStr.includes('/login')) {
@@ -241,6 +214,20 @@ describe("View as Student Feature Tests", () => {
                 });
             }
 
+            // Handle team_by_user endpoint (must be before /team)
+            if (urlStr.includes('/team_by_user')) {
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({
+                        success: true,
+                        content: {
+                            team_by_user: [[]],
+                            teams: [[]]
+                        }
+                    })
+                });
+            }
+
             // Handle checkin endpoint
             if (urlStr.includes('/checkin')) {
                 return Promise.resolve({
@@ -297,30 +284,24 @@ describe("View as Student Feature Tests", () => {
                 });
             }
 
-            // Handle course endpoint - provide both singular and plural keys
+            // Handle course endpoint
             if (urlStr.includes('/course')) {
-				const isStudentRequest = urlStr.includes('user_id=999');
-				const coursesToReturn = isStudentRequest ? studentCoursesArray : testCoursesArray;
-				return Promise.resolve({
-					ok: true,
-					json: () => Promise.resolve({
-						success: true,
-						content: {
-							course: [coursesToReturn],
-							courses: [coursesToReturn],
-							course_count: [{ count: 1 }]
-						}
-					})
-				});
-			}
+                const isStudentRequest = urlStr.includes('user_id=999');
+                const coursesToReturn = isStudentRequest ? studentCoursesArray : testCoursesArray;
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({
+                        success: true,
+                        content: {
+                            course: [coursesToReturn],
+                            courses: [coursesToReturn],
+                            course_count: [{ count: 1 }]
+                        }
+                    })
+                });
+            }
 
             // Handle role endpoint
-            // For StudentDashboard: genericResourceGET('/role?course_id=...', 'roles', this)
-            // utility: state.roles = result.content['roles'][0]
-            // StudentDashboard checks: if (!roles) return <Loading/>
-            // Then uses: roles.role_id (expects a single object, NOT an array)
-            // So content.roles[0] must be { role_id: 5, role_name: "Student" }
-            // For admin pages: they might use 'role' singular
             if (urlStr.includes('/role')) {
                 return Promise.resolve({
                     ok: true,
@@ -383,8 +364,8 @@ describe("View as Student Feature Tests", () => {
 
         const mockInstance = {
             get: jest.fn((key: string) => cookieStore[key]),
-            set: jest.fn((key: string, val: any, opts?: any) => { cookieStore[key] = val; }),
-            remove: jest.fn((key: string, opts?: any) => { delete cookieStore[key]; }),
+            set: jest.fn((key: string, val: any) => { cookieStore[key] = val; }),
+            remove: jest.fn((key: string) => { delete cookieStore[key]; }),
         };
         MockedCookies.mockImplementation(() => mockInstance as any);
         return mockInstance;
@@ -404,9 +385,6 @@ describe("View as Student Feature Tests", () => {
         jest.clearAllMocks();
         sessionStorage.clear();
         cookieStore = {};
-        await act(async () => {
-            await new Promise(resolve => setTimeout(resolve, 0));
-        });
     });
 
     afterAll(() => {
@@ -421,7 +399,7 @@ describe("View as Student Feature Tests", () => {
     // =========================================================================
     test("ViewAsStudent.test.js Test 1: Should render Login Form component", async () => {
         setupMockCookies('unauth');
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
         await waitFor(() => {
             expectElementWithAriaLabelToBeInDocument(lf);
@@ -433,21 +411,17 @@ describe("View as Student Feature Tests", () => {
     // =========================================================================
     test("ViewAsStudent.test.js Test 2: Should login as admin and see courses page", async () => {
         const cookies = setupMockCookies('unauth');
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(lf); });
 
-        const emailEl = screen.getByLabelText(ei).querySelector('input') || screen.getByLabelText(ei);
-        const passEl = screen.getByLabelText(pi).querySelector('input') || screen.getByLabelText(pi);
+        const emailField = screen.getByLabelText(ei);
+        const passwordField = screen.getByLabelText(pi);
 
-        if (!emailEl || !passEl) { throw new Error('Could not find input elements'); }
+        fireEvent.change(emailField, { target: { value: 'demoadmin02@skillbuilder.edu' } });
+        fireEvent.change(passwordField, { target: { value: mockDemoAdminPassword } });
 
-        await act(async () => {
-            fireEvent.change(emailEl, { target: { value: 'demoadmin02@skillbuilder.edu' } });
-            fireEvent.change(passEl, { target: { value: mockDemoAdminPassword } });
-        });
-
-        await act(async () => { clickElementWithAriaLabel(lb); });
+        clickElementWithAriaLabel(lb);
 
         await waitFor(() => {
             expect(cookies.set).toHaveBeenCalledWith(
@@ -467,11 +441,11 @@ describe("View as Student Feature Tests", () => {
     // =========================================================================
     test("ViewAsStudent.test.js Test 3: Should show 'View as Student' button on course page", async () => {
         setupMockCookies('admin');
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
 
-        await act(async () => { clickFirstElementWithAriaLabel(vcib); });
+        clickFirstElementWithAriaLabel(vcib);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
     });
@@ -481,15 +455,15 @@ describe("View as Student Feature Tests", () => {
     // =========================================================================
     test("ViewAsStudent.test.js Test 4: Should switch to student view when 'View as Student' is clicked", async () => {
         setupMockCookies('admin');
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
 
-        await act(async () => { clickFirstElementWithAriaLabel(vcib); });
+        clickFirstElementWithAriaLabel(vcib);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
 
-        await act(async () => { clickElementWithAriaLabel(vasb); });
+        clickElementWithAriaLabel(vasb);
 
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith(
@@ -511,12 +485,6 @@ describe("View as Student Feature Tests", () => {
 
     // =========================================================================
     // Test 5: Student view shows "Switch Back to Admin" banner
-    // Flow: Student logs in -> courses page -> click course ->
-    //       ViewCourses detects isViewingAsStudent -> setStudentDashboardWithCourse ->
-    //       StudentDashboard renders -> checks user?.viewingAsStudent -> shows banner
-    //
-    // StudentDashboard needs roles loaded (single object with role_id) to render
-    // past <Loading/>. Then it checks cookies.get('user').viewingAsStudent.
     // =========================================================================
     test("ViewAsStudent.test.js Test 5: Should show 'Switch Back to Admin' banner when viewing as student", async () => {
         setupMockCookies('student');
@@ -527,15 +495,12 @@ describe("View as Student Feature Tests", () => {
         };
         sessionStorage.setItem('adminCredentials', JSON.stringify(adminData));
 
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
-        // Student lands on courses page first
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
 
-        // Click course - isViewingAsStudent triggers setStudentDashboardWithCourse
-        await act(async () => { clickFirstElementWithAriaLabel(vcib); });
+        clickFirstElementWithAriaLabel(vcib);
 
-        // StudentDashboard renders with "Switch Back to Admin" banner
         await waitFor(() => {
             const switchBackButton = screen.queryByText(/Switch Back to Admin/i);
             expect(switchBackButton).toBeInTheDocument();
@@ -554,24 +519,32 @@ describe("View as Student Feature Tests", () => {
         };
         sessionStorage.setItem('adminCredentials', JSON.stringify(adminData));
 
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
-        // Navigate to StudentDashboard
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
-        await act(async () => { clickFirstElementWithAriaLabel(vcib); });
 
-        // Find and click "Switch Back to Admin"
+        clickFirstElementWithAriaLabel(vcib);
+
         const restoreBtn = await screen.findByText(/Switch Back to Admin/i, {}, { timeout: 10000 });
-        await act(async () => { fireEvent.click(restoreBtn); });
+        fireEvent.click(restoreBtn);
 
         await waitFor(() => {
             expect(cookies.remove).toHaveBeenCalledWith('access_token', expect.any(Object));
+        });
+
+        await waitFor(() => {
             expect(cookies.remove).toHaveBeenCalledWith('refresh_token', expect.any(Object));
+        });
+
+        await waitFor(() => {
             expect(cookies.remove).toHaveBeenCalledWith('user', expect.any(Object));
         });
 
         await waitFor(() => {
             expect(cookies.set).toHaveBeenCalledWith('user', adminData.user, expect.any(Object));
+        });
+
+        await waitFor(() => {
             expect(cookies.set).toHaveBeenCalledWith('access_token', adminData.access_token, expect.any(Object));
         });
 
@@ -586,15 +559,15 @@ describe("View as Student Feature Tests", () => {
         setupFetchMock({ failStudent: true });
         setupMockCookies('admin');
 
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
 
-        await act(async () => { clickFirstElementWithAriaLabel(vcib); });
+        clickFirstElementWithAriaLabel(vcib);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
 
-        await act(async () => { clickElementWithAriaLabel(vasb); });
+        clickElementWithAriaLabel(vasb);
 
         await waitFor(() => {
             expect(window.alert).toHaveBeenCalledWith(expect.stringContaining("Failed"));
@@ -608,18 +581,18 @@ describe("View as Student Feature Tests", () => {
     // =========================================================================
     test("ViewAsStudent.test.js Test 8: Should disable 'View as Student' button after click to prevent spam", async () => {
         setupMockCookies('admin');
-        await act(async () => { render(<Login />); });
+        render(<Login />);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
 
-        await act(async () => { clickFirstElementWithAriaLabel(vcib); });
+        clickFirstElementWithAriaLabel(vcib);
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
 
         const viewAsStudentBtn = screen.getByLabelText(vasb);
         expect(viewAsStudentBtn).not.toBeDisabled();
 
-        await act(async () => { fireEvent.click(viewAsStudentBtn); });
+        fireEvent.click(viewAsStudentBtn);
 
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith(
