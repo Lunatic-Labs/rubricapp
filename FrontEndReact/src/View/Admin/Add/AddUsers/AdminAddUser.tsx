@@ -17,8 +17,8 @@ interface NavbarState {
         first_name: string;
         last_name: string;
         email: string;
-        role_id: string;
-        lms_id: string;
+        role_id: number;
+        lms_id: number | null;
     } | null;
     chosenCourse: {
         course_id: number;
@@ -134,8 +134,8 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
         lastName: user["last_name"],
         email: user["email"],
         originalEmail: user["email"],
-        role: user["role_id"],
-        lmsId: user["lms_id"],
+        role: user["role_id"] != null ? String(user["role_id"]) : "",
+        lmsId: user["lms_id"] != null ? String(user["lms_id"]) : "",
         editUser: true,
       });
     }
@@ -656,7 +656,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         id="role"
                         value={role}
                         label="Role"
-                        defaultValue={3}
+                        defaultValue={"3"}
                         error={!!errors.role}
                         onChange={this.handleSelect}
                         required
