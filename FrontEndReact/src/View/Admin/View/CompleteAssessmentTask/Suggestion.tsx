@@ -44,9 +44,9 @@ class Suggestion extends Component<any, SuggestionState> {
 
         return (
             <Box
-                className="checkbox-alignment"
+                className="checkbox-alignment checkbox-colors"
 
-                style={{ backgroundColor: this.state.checked ? "#ADCBEE" : "#D9D9D9" }}
+                style={{ backgroundColor: this.state.checked ? "var(--checkbox-bg-checked)" : "var(--checkbox-bg-unchecked)" }}
 
                 onClick={handleChange}
             >
@@ -55,7 +55,7 @@ class Suggestion extends Component<any, SuggestionState> {
                         p: 2,
                         width: "1.25rem",
                         height: "1.25rem",
-                        color: this.state.checked ? "#2E8BEF !important" : "none",
+                        color: this.state.checked ? "var(--checkbox-color-checked) !important" : "var(--checkbox-border-unchecked) !important",
                     }}
 
                     name={this.props.suggestion}

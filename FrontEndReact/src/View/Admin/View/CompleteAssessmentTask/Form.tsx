@@ -476,6 +476,7 @@ class Form extends Component<any, FormState> {
 
                     <Box sx={{mt: 1}}>
                         <Tabs
+                            className="assessment-tab-colors"
                             value={this.state.currentCategoryTabIndex} 
                         
                             onChange={(event: any, newCategoryTabIndex: any) => {
@@ -498,10 +499,11 @@ class Form extends Component<any, FormState> {
                                 },
 
                                 '& .MuiTab-root': {
-                                    border: '2px solid',
+                                    border: '2px solid var(--tab-border)',
+                                    color: 'var(--tab-text)',
                                     '&.Mui-selected': {
-                                        backgroundColor: '#D9D9D9',
-                                        color: 'inherit',
+                                        backgroundColor: 'var(--tab-selected-bg)',
+                                        color: 'var(--tab-text)',
                                     }
                                 },
                             }}
