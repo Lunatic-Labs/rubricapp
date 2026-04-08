@@ -7,7 +7,8 @@ import Cookies from 'universal-cookie';
 import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
-    clickFirstElementWithAriaLabel
+    clickFirstElementWithAriaLabel,
+    changeElementWithAriaLabelWithInput
 } from "../../../testUtilities";
 import Login from "../../Login/Login";
 
@@ -408,6 +409,8 @@ describe("View as Student Feature Tests", () => {
 
     // =========================================================================
     // Test 2: Admin login -> courses page
+    // Uses changeElementWithAriaLabelWithInput to properly target the <input>
+    // inside MUI TextField wrappers (avoids "no value setter" error)
     // =========================================================================
     test("ViewAsStudent.test.js Test 2: Should login as admin and see courses page", async () => {
         const cookies = setupMockCookies('unauth');
@@ -415,11 +418,8 @@ describe("View as Student Feature Tests", () => {
 
         await waitFor(() => { expectElementWithAriaLabelToBeInDocument(lf); });
 
-        const emailField = screen.getByLabelText(ei);
-        const passwordField = screen.getByLabelText(pi);
-
-        fireEvent.change(emailField, { target: { value: 'demoadmin02@skillbuilder.edu' } });
-        fireEvent.change(passwordField, { target: { value: mockDemoAdminPassword } });
+        changeElementWithAriaLabelWithInput(ei, 'demoadmin02@skillbuilder.edu');
+        changeElementWithAriaLabelWithInput(pi, mockDemoAdminPassword);
 
         clickElementWithAriaLabel(lb);
 
