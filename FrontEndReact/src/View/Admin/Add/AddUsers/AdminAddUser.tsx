@@ -309,7 +309,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
       lms_id: lmsId !== "" ? lmsId : null,
       consent: null,
       owner_id: cookies.get("user")["user_id"],
-      role_id: navbar.props.isSuperAdmin ? 3 : role,
+      role_id: navbar.props.isSuperAdmin ? 3 : Number(role),
     });
 
     let promise: Promise<any> | undefined;
@@ -656,7 +656,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         id="role"
                         value={role}
                         label="Role"
-                        defaultValue={"3"}
+                        // defaultValue={"3"}
                         error={!!errors.role}
                         onChange={this.handleSelect}
                         required
@@ -683,21 +683,21 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         }}
                       >
                         <MenuItem
-                          value={5}
+                          value={"5"}
                           aria-label="addUserRoleDropDownStudentOption"
                         >
                           Student
                         </MenuItem>
 
                         <MenuItem
-                          value={4}
+                          value={"4"}
                           aria-label="addUserRoleDropDownTAOrInstructorOption"
                         >
                           TA/Instructor
                         </MenuItem>
 
-                        <MenuItem 
-                        value={3}
+                        <MenuItem
+                        value={"3"}
                         aria-label="addUserRoleDropDownAdminOption"
                         >
                           Admin
