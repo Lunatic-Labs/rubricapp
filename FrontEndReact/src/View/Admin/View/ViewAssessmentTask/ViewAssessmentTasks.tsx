@@ -670,7 +670,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                             aria-label='exportAssessmentTaskButton'
                                             sx={{
                                                 '&.Mui-disabled': {
-                                                    color: 'var(--export_disabled_text)',
+                                                color: 'var(--export_disabled_text) !important',
+                                                backgroundColor: 'var(--primary-disabled-bg)',
                                                 }
                                             }}
                                         >

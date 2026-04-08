@@ -429,12 +429,58 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     helperText={errors.taskName}
                                     onChange={this.handleChange}
                                     required
-                                    sx={{ mb: 2 }}
+                                    className="text-box-colors"
+                                    sx={{
+                                        mb: 2,
+                                        "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "var(--textbox-bg)",
+                                            color: "var(--textbox-text)",
+                                            "& fieldset": {
+                                            borderColor: "var(--textbox-border)",
+                                            },
+                                            "&:hover fieldset": {
+                                            borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                            borderColor: "var(--textbox-border-focused)",
+                                            },
+                                            '&.Mui-error fieldset': {
+                                            borderColor: 'var(--textbox-error)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: 'var(--textbox-label)',
+                                            '&.Mui-focused': {
+                                                color: 'var(--textbox-border-focused)',
+                                            },
+                                            '&.Mui-error': {
+                                                color: 'var(--textbox-error)',
+                                            },
+                                        },
+                                    }}
                                     inputProps={{ maxLength: 50 }}
                                     aria-label="addAssessmentTaskName"
                                 />
                                 <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
-                                    <FormControl id="formSelectRubric" sx={{width: '38%', height: '100%' }} error={!!errors.rubricId} required>
+                                    <FormControl id="formSelectRubric"
+                                        sx={{width: '38%', height: '100%', "& .MuiInputBase-root": {
+                                            backgroundColor: "var(--dropdown-bg)",
+                                            color: "var(--dropdown-text)",
+                                            },
+                                            "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "var(--dropdown-border)",
+                                            },
+                                            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                                            {
+                                                borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "& .MuiInputLabel-root": {
+                                            color: "var(--dropdown-label)",
+                                            },
+                                            "& .MuiSelect-icon": {
+                                            color: "var(--dropdown-icon)",
+                                            },
+                                        }} error={!!errors.rubricId} required>
                                         <InputLabel required id="rubricId">Rubric</InputLabel>
                                         <Select
                                             id="rubricId"
@@ -444,6 +490,26 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                             error={!!errors.rubricId}
                                             onChange={(event: SelectChangeEvent<string>) => this.handleSelect("rubricId", event)}
                                             required
+                                            MenuProps={{
+                                                PaperProps: {
+                                                    
+                                                    sx: {
+                                                    backgroundColor: "var(--dropdown-bg)",
+                                                    color: "var(--dropdown-text)",
+                                                    "& .MuiMenuItem-root": {
+                                                        "&:hover": {
+                                                        backgroundColor: "var(--dropdown-hover)",
+                                                        },
+                                                        "&.Mui-selected": {
+                                                        backgroundColor: "var(--dropdown-selected)",
+                                                        "&:hover": {
+                                                            backgroundColor: "var(--dropdown-selected)",
+                                                        },
+                                                        },
+                                                    },
+                                                    },
+                                                },
+                                            }}
                                             aria-label="addAssessmentRubricDropdown"
                                         >
                                             {rubricOptions}
@@ -452,7 +518,16 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     </FormControl>
                                     <div style={{padding: '3px'}}>
                                         <Tooltip title="Help">
-                                            <IconButton aria-label="help" onClick={this.toggleHelp}>
+                                            <IconButton 
+                                                aria-label="help" 
+                                                onClick={this.toggleHelp}
+                                                sx={{
+                                                    color: 'var(--icon-color)',
+                                                    '&:hover': {
+                                                        backgroundColor: 'var(--button-hover)',
+                                                    },
+                                                }}
+                                            >
                                                 <HelpOutlineIcon />
                                             </IconButton>
                                         </Tooltip>
@@ -465,7 +540,11 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     />
                                 </div>
                                 <FormControl>
-                                    <FormLabel id="demo-row-radio-buttons-group-label">Unit of Assessment</FormLabel>
+                                    <FormLabel id="demo-row-radio-buttons-group-label"
+                                        sx={{
+                                            color: 'var(--text-color)',
+                                        }}
+                                    >Unit of Assessment</FormLabel>
 
                                     <RadioGroup
                                         row
@@ -473,7 +552,18 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         value={usingTeams}
                                         id="usingTeams"
                                         name="usingTeams"
-                                        sx={{ mb: 2 }}
+                                        sx={{
+                                            mb: 2,
+                                            '& .MuiFormControlLabel-label': {
+                                                color: 'var(--text-color)',
+                                            },
+                                            '& .MuiRadio-root': {
+                                                color: 'var(--text-color-secondary)',
+                                                '&.Mui-checked': {
+                                                    color: '#2E8BEF',
+                                                },
+                                            },
+                                        }}
                                         onChange={this.handleTeams}
                                     >
                                         <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
@@ -498,7 +588,35 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                             pattern: "[1-9][0-9]*", 
                                             inputMode: "numeric"
                                         }}
-                                        sx={{ mb: 2 }}
+                                        className="text-box-colors"
+                                        sx={{
+                                            mb: 2,
+                                            "& .MuiOutlinedInput-root": {
+                                                backgroundColor: "var(--textbox-bg)",
+                                                color: "var(--textbox-text)",
+                                                "& fieldset": {
+                                                borderColor: "var(--textbox-border)",
+                                                },
+                                                "&:hover fieldset": {
+                                                borderColor: "var(--textbox-border-hover)",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                borderColor: "var(--textbox-border-focused)",
+                                                },
+                                                '&.Mui-error fieldset': {
+                                                borderColor: 'var(--textbox-error)',
+                                                },
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'var(--textbox-label)',
+                                                '&.Mui-focused': {
+                                                    color: 'var(--textbox-border-focused)',
+                                                },
+                                                '&.Mui-error': {
+                                                    color: 'var(--textbox-error)',
+                                                },
+                                            },
+                                        }}
                                     />
                                 }
 
@@ -518,12 +636,44 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                             pattern: "[1-9][0-9]*",
                                             inputMode: "numeric"
                                         }}
-                                        sx={{ mb: 2 }}
+                                        className="text-box-colors"
+                                        sx={{
+                                            mb: 2,
+                                            "& .MuiOutlinedInput-root": {
+                                                backgroundColor: "var(--textbox-bg)",
+                                                color: "var(--textbox-text)",
+                                                "& fieldset": {
+                                                borderColor: "var(--textbox-border)",
+                                                },
+                                                "&:hover fieldset": {
+                                                borderColor: "var(--textbox-border-hover)",
+                                                },
+                                                "&.Mui-focused fieldset": {
+                                                borderColor: "var(--textbox-border-focused)",
+                                                },
+                                                '&.Mui-error fieldset': {
+                                                borderColor: 'var(--textbox-error)',
+                                                },
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'var(--textbox-label)',
+                                                '&.Mui-focused': {
+                                                    color: 'var(--textbox-border-focused)',
+                                                },
+                                                '&.Mui-error': {
+                                                    color: 'var(--textbox-error)',
+                                                },
+                                            },
+                                        }}
                                     />
                                 }
 
                                 <FormControl>
-                                    <FormLabel id="demo-row-radio-buttons-group-label">Completed By</FormLabel>
+                                    <FormLabel id="demo-row-radio-buttons-group-label"
+                                        sx={{
+                                            color: 'var(--text-color)',
+                                        }}
+                                    >Completed By</FormLabel>
 
                                     <RadioGroup
                                         row
@@ -531,14 +681,38 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         value={roleId}
                                         id="roleId"
                                         name="roleID"
-                                        sx={{ mb: 2 }}
+                                        sx={{
+                                            mb: 2,
+                                            '& .MuiFormControlLabel-label': {
+                                                color: 'var(--text-color)',
+                                            },
+                                            '& .MuiRadio-root': {
+                                                color: 'var(--text-color-secondary)',
+                                                '&.Mui-checked': {
+                                                    color: '#2E8BEF',
+                                                },
+                                            },
+                                        }}
                                         onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.handleSelect("roleId", event)}
                                     >
                                         {roleOptions}
                                     </RadioGroup>
                                 </FormControl>
 
-                                <FormGroup sx={{ mb: 2 }}>
+                                <FormGroup
+                                    sx={{
+                                        mb: 2,
+                                        '& .MuiFormControlLabel-label': {
+                                            color: 'var(--text-color)',
+                                        },
+                                        '& .MuiCheckbox-root': {
+                                            color: 'var(--checkbox-color-checked)',
+                                            '&.Mui-checked': {
+                                                color: 'var(--checkbox-color-checked)',
+                                            },
+                                        },
+                                    }}
+                                >
                                     <FormControlLabel
                                         control={
                                             <Checkbox
@@ -582,12 +756,97 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                     if (date) this.setState({ dueDate: date });
                                                 }}
 
-                                                sx={{ mb: errors.timeZone ? 2 : 0 }}
+                                                sx={{
+                                                    mb: errors.timeZone ? 2 : 0,
+                                                    '& .MuiInputBase-root': {
+                                                        backgroundColor: 'var(--textbox-bg)',
+                                                        color: 'var(--textbox-text)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root fieldset': {
+                                                        borderColor: 'var(--textbox-border)',
+                                                    },
+                                                    '& .MuiInputLabel-root': {
+                                                        color: 'var(--textbox-label)',
+                                                    },
+                                                    '& .MuiIconButton-root': {
+                                                        color: 'var(--icon-color)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root:hover fieldset': {
+                                                        borderColor: 'var(--textbox-border-hover)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root.Mui-focused fieldset': {
+                                                        borderColor: 'var(--textbox-border-focused)',
+                                                    },
+                                                    '& .MuiMultiSectionDigitalClock-root': {
+                                                        backgroundColor: 'var(--dropdown-bg)',
+                                                        color: 'var(--dropdown-text)',
+                                                        border: '1px solid var(--dropdown-border)',
+                                                        '&:hover': {
+                                                            borderColor: 'var(--textbox-border-hover)',
+                                                        },
+                                                    },
+                                                    '& .MuiPickersCalendarHeader-root': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiPickersCalendarHeader-label': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiDayCalendar-weekDayLabel': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiPickersDay-root': {
+                                                        color: 'var(--text-color)',
+                                                        '&.Mui-selected': {
+                                                            backgroundColor: '#2E8BEF',
+                                                            color: '#fff',
+                                                        },
+                                                    },
+                                                    '& .MuiPaper-root': {
+                                                        backgroundColor: 'var(--dropdown-bg)',
+                                                        border: '1px solid var(--dropdown-border)',
+                                                        '&:hover': {
+                                                            borderColor: 'var(--textbox-border-hover)',
+                                                        },
+                                                    },
+                                                    '& .MuiList-root': {
+                                                        backgroundColor: 'var(--dropdown-bg)',
+                                                        color: 'var(--dropdown-text)',
+                                                    },
+                                                    '& .MenuItem-root': {
+                                                        color: 'var(--dropdown-text)',
+                                                    },
+                                                    '& .MuiButtonBase-root': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiTypography-root': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiButton-text': {
+                                                        color: 'var(--button-text)',
+                                                    },
+                                                }}
                                             />
                                         </LocalizationProvider>
                                     </div>
                                     <div style={{ position: "relative", marginTop: '16px'}}>
-                                        <FormControl error={!!errors.timeZone} required fullWidth sx={{ mb: 2 }}> 
+                                        <FormControl error={!!errors.timeZone} required fullWidth sx={{ mb: 2, "& .MuiInputBase-root": {
+                                            backgroundColor: "var(--dropdown-bg)",
+                                            color: "var(--dropdown-text)",
+                                            },
+                                            "& .MuiOutlinedInput-notchedOutline": {
+                                            borderColor: "var(--dropdown-border)",
+                                            },
+                                            "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                                            {
+                                                borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "& .MuiInputLabel-root": {
+                                            color: "var(--dropdown-label)",
+                                            },
+                                            "& .MuiSelect-icon": {
+                                            color: "var(--dropdown-icon)",
+                                            },
+                                        }}> 
                                             <InputLabel className={errors.timeZone ? "errorSelect" : ""} required id="timeone">Time Zone</InputLabel>
 
                                             <Select
@@ -596,6 +855,26 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                 value={timeZone}
                                                 label="Time Zone"
                                                 error={!!errors.timeZone}
+                                                MenuProps={{
+                                                    PaperProps: {
+                                                        
+                                                        sx: {
+                                                        backgroundColor: "var(--dropdown-bg)",
+                                                        color: "var(--dropdown-text)",
+                                                        "& .MuiMenuItem-root": {
+                                                            "&:hover": {
+                                                            backgroundColor: "var(--dropdown-hover)",
+                                                            },
+                                                            "&.Mui-selected": {
+                                                            backgroundColor: "var(--dropdown-selected)",
+                                                            "&:hover": {
+                                                                backgroundColor: "var(--dropdown-selected)",
+                                                            },
+                                                            },
+                                                        },
+                                                        },
+                                                    },
+                                                }}
 
                                                 onChange={(event: SelectChangeEvent<string>) => {
                                                     this.handleSelect("timeZone", event);
@@ -639,7 +918,35 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     error={!!errors.password}
                                     helperText={errors.password}
                                     onChange={this.handleChange}
-                                    sx={{ mb: 2 }}
+                                    className="text-box-colors"
+                                    sx={{
+                                        mb: 2,
+                                        "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "var(--textbox-bg)",
+                                            color: "var(--textbox-text)",
+                                            "& fieldset": {
+                                            borderColor: "var(--textbox-border)",
+                                            },
+                                            "&:hover fieldset": {
+                                            borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                            borderColor: "var(--textbox-border-focused)",
+                                            },
+                                            '&.Mui-error fieldset': {
+                                            borderColor: 'var(--textbox-error)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: 'var(--textbox-label)',
+                                            '&.Mui-focused': {
+                                                color: 'var(--textbox-border-focused)',
+                                            },
+                                            '&.Mui-error': {
+                                                color: 'var(--textbox-error)',
+                                            },
+                                        },
+                                    }}
                                     inputProps={{ maxLength: 20 }}
                                     aria-label="addAssessmentTeamPassword"
                                 />
@@ -659,12 +966,50 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     multiline
                                     minRows={2}
                                     maxRows={8}
-                                    sx={{ mb: 2 }}
+                                    className="text-box-colors"
+                                    sx={{
+                                        mb: 2,
+                                        "& .MuiOutlinedInput-root": {
+                                            backgroundColor: "var(--textbox-bg)",
+                                            color: "var(--textbox-text)",
+                                            "& fieldset": {
+                                            borderColor: "var(--textbox-border)",
+                                            },
+                                            "&:hover fieldset": {
+                                            borderColor: "var(--textbox-border-hover)",
+                                            },
+                                            "&.Mui-focused fieldset": {
+                                            borderColor: "var(--textbox-border-focused)",
+                                            },
+                                            '&.Mui-error fieldset': {
+                                            borderColor: 'var(--textbox-error)',
+                                            },
+                                        },
+                                        '& .MuiInputLabel-root': {
+                                            color: 'var(--textbox-label)',
+                                            '&.Mui-focused': {
+                                                color: 'var(--textbox-border-focused)',
+                                            },
+                                            '&.Mui-error': {
+                                                color: 'var(--textbox-error)',
+                                            },
+                                        },
+                                    }}
                                     aria-label="addAssessmentNotes"
                                 />
 
                                 <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
-                                    <Button onClick={() => { confirmCreateResource("AssessmentTask"); }} aria-label="adminAddAssessmentCancelButton">
+                                    <Button
+                                        onClick={() => { confirmCreateResource("AssessmentTask"); }}
+                                        aria-label="adminAddAssessmentCancelButton"
+                                        className="button-colors"
+                                        sx={{
+                                            color: 'var(--button-text)',
+                                            '&:hover': {
+                                                backgroundColor: 'var(--button-hover)',
+                                            },
+                                        }}
+                                    >
                                         Cancel
                                     </Button>
 
@@ -674,6 +1019,12 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         variant="contained"
                                         onClick={this.handleSubmit}
                                         aria-label="addAssessmentCreateOrUpdateButton"
+                                        sx={{
+                                            color: 'var(--button-text)',
+                                            '&:hover': {
+                                                backgroundColor: 'var(--button-hover)',
+                                            },
+                                        }}
                                     >
                                         {editAssessmentTask ? "Update Task" : "Create Task"}
                                     </Button>

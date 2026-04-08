@@ -12,11 +12,25 @@ interface ValidateResetState {
     errorMessage: string | null;
     email: string;
     code: string;
+    errors: {
+        email: string;
+    };
 }
 
 class ValidateReset extends Component<{}, ValidateResetState> {
     sendEmail: () => void;
     validateCode: () => void;
+
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const { value } = e.target;
+        this.setState({
+            email: value,
+            errors: {
+                email: value.trim() === '' ? 'Email cannot be empty.' : '',
+            },
+        });
+    };
+
     constructor(props: {}) {
         super(props);
 
@@ -25,6 +39,9 @@ class ValidateReset extends Component<{}, ValidateResetState> {
             errorMessage: null,
             email: '',
             code: '',
+            errors: {
+                email: '',
+            }
         };
 
         this.sendEmail = () => {
@@ -32,8 +49,11 @@ class ValidateReset extends Component<{}, ValidateResetState> {
 
             if (email.trim() === '') {
                 this.setState({
-                    errorMessage: 'Email cannot be empty.'
+                    errors: {
+                        email: 'Email cannot be empty.'
+                    }
                 });
+                return;  // Add return to prevent API call
 
             } else {
                 fetch(apiUrl + `/reset_code?email=${email}`)
@@ -162,16 +182,35 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                             type="text"
                                             name="email"
                                             value={email}
-
-                                            onChange={
-                                                (e: React.ChangeEvent<HTMLInputElement>) => {
-                                                    this.setState({
-                                                        email: e.target.value
-                                                    });
-                                                }
-                                            }
-
+                                            error={!!this.state.errors.email}
+                                            helperText={this.state.errors.email}
+                                            onChange={this.handleChange}
                                             aria-label='validateResetEmailInput'
+                                            sx={{
+                                                '& .MuiInputBase-input': {
+                                                    color: this.state.errors.email ? 'var(--error-color)' : 'var(--text-color)',
+                                                },
+                                                '& .MuiInputLabel-root': {
+                                                    color: this.state.errors.email ? 'var(--error-color)' : 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiInputLabel-root.Mui-focused': {
+                                                    color: 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: 'var(--border-color)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'var(--textbox-border-focused)',
+                                                    },
+                                                },
+                                                '& .MuiFormHelperText-root': {
+                                                    color: 'var(--error-color)',
+                                                },
+                                            }}
                                         />
                                     </form>
                                 </Box>
@@ -272,6 +311,24 @@ class ValidateReset extends Component<{}, ValidateResetState> {
 
                                         length={6}
                                         aria-label='sendCodeInput'
+                                        className='text-box-colors'
+                                        sx={{
+                                            '& .MuiOutlinedInput-root': {
+                                                backgroundColor: 'var(--textbox-bg)',
+                                                '& input': {
+                                                    color: 'var(--text-color)',
+                                                },
+                                                '& fieldset': {
+                                                    borderColor: 'var(--textbox-border)',
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: 'var(--textbox-border-hover)',
+                                                },
+                                                '&.Mui-focused fieldset': {
+                                                    borderColor: 'var(--textbox-border-focused) !important', // issue here, is no longer blue.
+                                                },
+                                            },
+                                        }}
                                     />
                                 </Box>
 

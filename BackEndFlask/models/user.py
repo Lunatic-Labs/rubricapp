@@ -51,6 +51,19 @@ def get_users_by_email(email):
 def get_user_consent(user_id):
     return User.query.filter_by(user_id=user_id).first().consent
 
+# added get_user_darkmode
+@error_log
+def get_user_dark_mode(user_id):
+    return User.query.filter_by(user_id=user_id).first().user_dark_mode
+
+@error_log
+def set_user_dark_mode(user_id, user_dark_mode):
+    user = User.query.filter_by(user_id=user_id).first()
+
+    setattr(user, 'user_dark_mode', user_dark_mode)
+
+    db.session.commit()
+
 
 @error_log
 def get_user(user_id):
@@ -186,6 +199,7 @@ def create_user(user_data, validate_emails=True):
         has_set_password=has_set_password,
         reset_code=None,
         last_update=last_update,
+        user_dark_mode=user_data.get("user_dark_mode", False)       # possible error here, added line to fix
     )
 
     db.session.add(user_data)
@@ -368,6 +382,8 @@ def replace_user(user_data, user_id):
     one_user.consent = user_data["consent"]
 
     one_user.owner_id = user_data["owner_id"]
+
+    one_user.user_dark_mode = user_data["user_dark_mode"]
 
     db.session.commit()
 

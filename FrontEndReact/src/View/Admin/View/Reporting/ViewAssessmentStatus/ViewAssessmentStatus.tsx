@@ -162,12 +162,12 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
   }
   
   const innerGridStyle = {
-    borderRadius: '1px',
+    borderRadius: '6px',
     height: '100%',
-    border: "#7F7F7F", 
+    border: "#7f7f7fff", 
     padding: 0,
     margin: 0,
-    boxShadow: "0.3em 0.3em 1em #d6d6d6"
+    boxShadow: "0.3em 0.3em 1em var(--box-shadow)"
   };
 
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';

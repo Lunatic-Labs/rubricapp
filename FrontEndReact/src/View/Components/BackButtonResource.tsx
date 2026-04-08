@@ -1,17 +1,20 @@
 import Button from '@mui/material/Button';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
-import { grey } from '@mui/material/colors';
+// import { grey } from '@mui/material/colors';
 import { styled, Theme } from '@mui/material';
 import { Box } from '@mui/material';
 
 const ColorButton = styled(Button)(({ theme }: { theme: Theme }) => ({
     borderRadius:"100px",
     boxShadow: "none",
-    color: theme.palette.getContrastText(grey[300]),
-    backgroundColor: grey[300],
+    // Old: color: theme.palette.getContrastText(grey[300]),
+    // Old: backgroundColor: grey[300],
+    color: 'var(--back-button-text)',
+    backgroundColor: 'var(--back-button-bg) !important',
     '&:hover': {
-      backgroundColor: grey[400],
-      boxShadow: "none"
+      // Old: backgroundColor: grey[400],
+      backgroundColor: 'var(--back-button-bg-hover) !important',
+      boxShadow: "none",
     },
   }));
 
@@ -27,7 +30,8 @@ export default function BackButtonResource (props: BackButtonResourceProps){
     var confirmResource = navbar.confirmCreateResource;
 
     return (
-      <Box>
+      // Old: <Box>
+      <Box className="back-button-colors">
         <ColorButton
           onClick={() => {
             confirmResource(props.tabSelected, 0);

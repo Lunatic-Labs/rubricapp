@@ -368,7 +368,18 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                         </Box>
                     )}
                     <Box>
-                        <Dialog maxWidth="sm" fullWidth  open={resetPasswordDialogOpen} onClose={this.handleDialogClose}>
+                        <Dialog maxWidth="sm" 
+                            fullWidth
+                            open={resetPasswordDialogOpen}
+                            onClose={this.handleDialogClose}
+                            PaperProps={{
+                                className: 'textarea-colors',
+                                sx: {
+                                    backgroundColor: 'var(--dropdown-bg)',
+                                    color: 'var(--textarea-color)',
+                                }
+                            }}
+                        >
                         {errorMessage &&
                       
                             <ErrorMessage errorMessage={errorMessage} />
@@ -395,6 +406,37 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                                 onChange={this.handleChange}
                                                 inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
                                                 aria-label="setNewPasswordInput"
+                                                sx={{
+                                                    '& .MuiInputBase-input': {
+                                                        color: 'var(--text-color)',
+                                                    },
+                                                    '& .MuiInputLabel-root': {
+                                                        color: errors.password ? 'var(--error-color)' : 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiInputLabel-root.Mui-focused': {
+                                                        color: 'var(--text-color-secondary)',
+                                                    },
+                                                    '& .MuiOutlinedInput-root': {
+                                                        '& fieldset': {
+                                                            borderColor: 'var(--border-color)',
+                                                        },
+                                                        '&:hover fieldset': {
+                                                            borderColor: 'var(--border-hover-color)',
+                                                        },
+                                                        '&.Mui-focused fieldset': {
+                                                            borderColor: '#2E8BEF',
+                                                        },
+                                                    },
+                                                    '& .MuiFormHelperText-root': {
+                                                        color: 'var(--error-color)',
+                                                    },
+                                                    '& .MuiIconButton-root': {
+                                                        color: 'var(--icon-color)',
+                                                    },
+                                                    '& .MuiSvgIcon-root': {
+                                                        color: 'var(--icon-color)',
+                                                    },
+                                                }}
                                                 InputProps={{
                                                     endAdornment: (
                                                         <InputAdornment position="end">
@@ -439,7 +481,33 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                         </Box>
 
                                         <TextField
-                                            sx={{ mb: 3, mt: 2 }}
+                                            sx={{ 
+                                                mb: 3, 
+                                                mt: 2,
+                                                '& .MuiInputBase-input': {
+                                                    color: 'var(--text-color)',
+                                                },
+                                                '& .MuiInputLabel-root': {
+                                                    color: errors.confirmationPassword ? 'var(--error-color)' : 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiInputLabel-root.Mui-focused': {
+                                                    color: 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: 'var(--border-color)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: '#2E8BEF',
+                                                    },
+                                                },
+                                                '& .MuiFormHelperText-root': {
+                                                    color: 'var(--error-color)',
+                                                },
+                                            }}
                                             margin="normal"
                                             required
                                             fullWidth
