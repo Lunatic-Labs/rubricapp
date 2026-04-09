@@ -32,6 +32,8 @@ interface AddCustomRubricState {
     defaultRubrics: any;
     allCategories: any;
     rubrics: any;
+    rubricName: string;  // Added
+    rubricDescription: string;  // Added
     errors: {
         rubricName: string;
         rubricDescription: string;
@@ -43,6 +45,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
     handleCreateRubric: any;
     handleDeleteRubric: any;
     toggleHelp: any;
+    handleChange: any;  // Added
     constructor(props: AddCustomRubricProps) {
         super(props);
 
@@ -55,7 +58,8 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             defaultRubrics: this.props.rubrics,
             allCategories: this.props.categories,
             rubrics: null,
-
+            rubricName: this.props.navbar?.state?.addCustomRubric ? "" : this.props.rubrics?.rubric_name || "",  // Added
+            rubricDescription: this.props.navbar?.state?.addCustomRubric ? "" : this.props.rubrics?.rubric_description || "",  // Added
             errors: {
                 rubricName: '',
                 rubricDescription: '',
@@ -73,46 +77,38 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             var navbar = this.props.navbar;
             var rubricId = navbar.rubricId;
             var categoryIds = [];
-            var rubricName = (document.getElementById("rubricNameInput") as HTMLInputElement)?.value || ""
-            var rubricDescription = (document.getElementById("rubricDescriptionInput") as HTMLTextAreaElement)?.value || ""
+            var rubricName = this.state.rubricName.trim();  // Use state instead of DOM
+            var rubricDescription = this.state.rubricDescription.trim();  // Use state instead of DOM
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
                 categoryIds.push(pickedCategories[categoryIndex]["category_id"]);
             }
 
-            if (rubricName === "") {
-                this.setState({
-                    errors: {
-                        rubricName: "Missing New Rubric Name.",
-                        rubricDescription: "",
-                        rubricCategories: ""
-                    }
-                });
-                return;
-            } 
+            // Check both fields and set errors for both if invalid
+            const nameError = rubricName === "" ? "Missing New Rubric Name." : "";
+            const descError = rubricDescription === "" ? "Missing New Rubric Description." : "";
+            const categoryError = categoryIds.length === 0 ? "Missing categories, at least one category must be selected." : "";
 
-            if (rubricDescription === "") {
+            if (nameError || descError || categoryError) {
                 this.setState({
                     errors: {
-                        rubricName: "",
-                        rubricDescription: "Missing New Rubric Description.",
-                        rubricCategories: ""
+                        rubricName: nameError,
+                        rubricDescription: descError,
+                        rubricCategories: categoryError,
                     }
                 });
                 return;
-            } 
+            }
 
-            if (categoryIds.length === 0) {
-                this.setState({
-                    isLoaded: true,
-                    errors: {
-                        rubricName: "",
-                        rubricDescription: "",
-                        rubricCategories: "Missing categories, at least one category must be selected.",
-                    }
-                });
-                return;
-            } 
+            // Clear errors if valid
+            this.setState({
+                errors: {
+                    rubricName: "",
+                    rubricDescription: "",
+                    rubricCategories: "",
+                }
+            });
+
             var cookies = new Cookies();
             let promise;
             if (this.state.addCustomRubric === false) {
@@ -148,6 +144,22 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                     this.props.navbar.confirmCreateResource("MyCustomRubrics");
                 }
             });
+        };
+
+        // Added handleChange
+        this.handleChange = (e: any) => {
+            const { id, value } = e.target;
+            let errorMessage = '';
+            if (value.trim() === '') {
+                errorMessage = `${id === 'rubricNameInput' ? 'Rubric Name' : 'Rubric Description'} cannot be empty`;
+            }
+            this.setState({
+                [id.replace('Input', '')]: value,  // Maps 'rubricNameInput' to 'rubricName', etc.
+                errors: {
+                    ...this.state.errors,
+                    [id.replace('Input', '')]: errorMessage,
+                },
+            } as any);
         };
 
         this.handleDeleteRubric = async (rubricId: any) => {
@@ -201,7 +213,9 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
         var addCustomRubric = navbar.state.addCustomRubric;
         
         this.setState({
-            addCustomRubric: addCustomRubric
+            addCustomRubric: addCustomRubric,
+            rubricName: addCustomRubric ? "" : navbar.rubric?.rubric_name || "", // Added
+            rubricDescription: addCustomRubric ? "" : navbar.rubric?.rubric_description || "", // Added
         });
 
         var rubricId = navbar.rubricId;
@@ -344,13 +358,14 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                         <Grid style={{ width: "48.25%" }}>
                             <TextField
                                 required
-                                defaultValue={this.state.addCustomRubric ? "" : rubrics.rubric_name}
+                                value={this.state.rubricName}  // Change from defaultValue
                                 id="rubricNameInput"
                                 label="Rubric Name"
                                 style={{ width: "100%" }}
                                 error={!!errors.rubricName}
                                 helperText={errors.rubricName}
-                                className ="text-box-colors"
+                                onChange={this.handleChange}  // Add this
+                                className="text-box-colors"
                                 sx={{ 
                                     mb: 3,
                                     '& .MuiOutlinedInput-root': {
@@ -386,14 +401,15 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                         <Grid style={{ width: "48.5%" }}>
                             <TextField
                                 required
-                                defaultValue={this.state.addCustomRubric ? "" : rubrics.rubric_description}
+                                value={this.state.rubricDescription}  // Change from defaultValue
                                 id="rubricDescriptionInput"
                                 label="Rubric Description"
                                 multiline
                                 error={!!errors.rubricDescription}
                                 helperText={errors.rubricDescription}
+                                onChange={this.handleChange}  // Add this
                                 style={{ width: "100%" }}
-                                className ="text-box-colors"
+                                className="text-box-colors"
                                 sx={{ 
                                     mb: 3,
                                     '& .MuiOutlinedInput-root': {
