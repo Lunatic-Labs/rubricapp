@@ -54,7 +54,7 @@ class ViewTeams extends Component<ViewTeamsProps> {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"230px" } },
                     setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (observerId: any) => {
+                    customBodyRender: (observerId: number) => {
                         return(
                             <p className="pt-3">{users[observerId]}</p>
                         )
@@ -68,7 +68,7 @@ class ViewTeams extends Component<ViewTeamsProps> {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"230px" } },
                     setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (user: any) => {
+                    customBodyRender: (user: string) => {
                         return(
                             <>{user + " "}</>
                         );
@@ -82,7 +82,7 @@ class ViewTeams extends Component<ViewTeamsProps> {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"160px" } },
                     setCellProps: () => { return { width:"160px" } },
-                    customBodyRender: (date_created: any) => {
+                    customBodyRender: (date_created: string) => {
                         let dateCreatedString = getHumanReadableDueDate(date_created);
 
                         return(

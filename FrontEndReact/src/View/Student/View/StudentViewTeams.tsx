@@ -4,6 +4,8 @@ import ViewTeams from './ViewTeams';
 import ErrorMessage from '../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames } from '../../../utility';
 import Loading from '../../Loading/Loading';
+import { Team } from '../../../types/Team';
+import { User } from '../../../types/User';
 
 /**
  * @description
@@ -28,14 +30,14 @@ import Loading from '../../Loading/Loading';
 
 interface StudentViewTeamsProps {
     navbar: any;
-    updateUserTeamsIds: (teamIds: any[]) => void;
+    updateUserTeamsIds: (teamIds: number[]) => void;
 }
 
 interface StudentViewTeamsState {
     errorMessage: string | null;
     isLoaded: boolean;
-    teams: any;
-    users: any;
+    teams: Team[] | null;
+    users: User[] | null;
 }
 
 class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeamsState> {
@@ -90,8 +92,8 @@ class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeams
         genericResourceGET(
             `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${adhocMode}`, "teams", this
         ).then(data =>{
-            let newTeams: any = [];
-            data.teams.forEach((team: any) => {
+            let newTeams: number[] = [];
+            data.teams.forEach((team: Team) => {
                 newTeams.push(team.team_id);
             });
             this.props.updateUserTeamsIds(newTeams);
@@ -136,7 +138,7 @@ class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeams
                     <ViewTeams
                         navbar={this.props.navbar}
                         teams={teams}
-                        users={users ? parseUserNames(users) : {}}
+                        users={users ? parseUserNames(users as any) : {}}
                     />
                 </div>
             )

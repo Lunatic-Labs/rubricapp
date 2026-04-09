@@ -4,16 +4,18 @@ import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories, } from "../../../../utility";
 import AddCustomRubric from "./AddCustomRubric";
 import Loading from "../../../Loading/Loading";
+import { Category } from "../../../../types/Category";
+import { Rubric } from "../../../../types/Rubric";
 
 interface AdminAddCustomRubricProps {
     navbar: any;
 }
 
 interface AdminAddCustomRubricState {
-    isLoaded: any;
-    errorMessage: any;
-    rubrics: any;
-    categories: any;
+    isLoaded: boolean | null;
+    errorMessage: string | null;
+    rubrics: Rubric[] | null;
+    categories: Category[] | null;
 }
 
 class AdminAddCustomRubric extends Component<AdminAddCustomRubricProps, AdminAddCustomRubricState> {
@@ -33,7 +35,7 @@ class AdminAddCustomRubric extends Component<AdminAddCustomRubricProps, AdminAdd
         genericResourceGET(`/category`, "categories", this);
         };
 
-    setErrorMessage = (errorMessage: any) => {
+    setErrorMessage = (errorMessage: string) => {
     this.setState({ errorMessage });
     // Clear the banner after 3s, same feel as AdminViewUsers
     setTimeout(() => {

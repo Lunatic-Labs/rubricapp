@@ -4,6 +4,7 @@ import BuildTeamTable from './BuildTeam'
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
+import { User } from '../../../../types/User';
 
 /**
  * @description
@@ -29,7 +30,7 @@ interface StudentManageCurrentTeamProps {
 interface StudentManageCurrentTeamState {
     isLoaded: boolean | null;
     errorMessage: string | null;
-    users: any[] | null;
+    users: User[] | null;
 }
 
 class StudentManageCurrentTeam extends Component<StudentManageCurrentTeamProps, StudentManageCurrentTeamState> {

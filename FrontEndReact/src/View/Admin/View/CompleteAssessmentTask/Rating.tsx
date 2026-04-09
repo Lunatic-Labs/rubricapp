@@ -4,12 +4,20 @@ import Slider from '@mui/material/Slider';
 import Box from '@mui/material/Box';
 import './../../../../SBStyles.css';
 
+interface RatingProps {
+    navbar: any;
+    currentRating: number;
+    sliderValues: { label: string }[];
+    setRating: (rating: number) => void;
+    autosave: () => void;
+}
+
 interface RatingState {
     sliderValue: number;
 }
 
-class Rating extends Component<any, RatingState> {
-    constructor(props: any) {
+class Rating extends Component<RatingProps, RatingState> {
+    constructor(props: RatingProps) {
         super(props);
 
         this.state = {
@@ -28,25 +36,25 @@ class Rating extends Component<any, RatingState> {
     render() {
         var sliderValues = this.props.sliderValues;
 
-        const marks: any = [];
+        const marks: { value: number; label: string; valueText: number }[] = [];
         let valueIndicator = 0;
 
         for(let i = 0; i < sliderValues.length; i++){
             marks.push({
                 value: valueIndicator,
-                label: sliderValues[i].label,
+                label: sliderValues[i]!.label,
                 valueText: i
             })
 
             valueIndicator = valueIndicator + 20;
         }
 
-        function valuetext(valueText: any) {
-            return valueText;
+        function valuetext(valueText: number): string {
+            return String(valueText);
         }
 
-        function valueLabelFormat(value: any) {
-            return marks.findIndex((mark: any) => mark.value === value);
+        function valueLabelFormat(value: number) {
+            return marks.findIndex((mark: { value: number }) => mark.value === value);
         }
 
         const showRatings = this.props.navbar.state.chosenAssessmentTask["show_ratings"];
@@ -93,17 +101,14 @@ class Rating extends Component<any, RatingState> {
                         },
                     }}
 
-                    onChange={(event: any) => {
+                    onChange={(_event: Event, value: number | number[]) => {
                         if(this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly) return;
-
-                        this.props.setRating(Math.floor(event.target.value / 20));
-
-                        this.setState({
-                            sliderValue: event.target.value
-                        });
-                        
+                        const numValue = value as number;
+                        this.props.setRating(Math.floor(numValue / 20));
+                        this.setState({ sliderValue: numValue });
                         this.props.autosave();
                     }}
+
 
                     disabled={this.props.navbar.state.chosenCompleteAssessmentTaskIsReadOnly}
                 />

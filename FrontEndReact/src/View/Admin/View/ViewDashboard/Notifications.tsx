@@ -4,7 +4,7 @@ import "../../../../SBStyles.css";
 import { Box, Typography } from "@mui/material";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import SendMessageModal from '../../../Components/SendMessageModal';
-import CustomDataTable from "../../../Components/CustomDataTable";
+// import CustomDataTable from "../../../Components/CustomDataTable";
 
 /**
  * Creates an instance of the ViewNotification component.
@@ -29,10 +29,13 @@ import CustomDataTable from "../../../Components/CustomDataTable";
  * Use of componentDidMount if needed for fetching existing notifications.
  * 
  */
+interface ViewNotificationProps {
+    navbar: any;
+}
 
 interface ViewNotificationState {
-  errorMessage: any;
-  isLoaded: any;
+  errorMessage: string | null;
+  isLoaded: boolean | null;
   showDialog: boolean;
   emailSubject: string;
   emailMessage: string;
@@ -43,8 +46,8 @@ interface ViewNotificationState {
   };
 }
 
-class ViewNotification extends Component<any, ViewNotificationState> {
-  constructor(props: any) {
+class ViewNotification extends Component<ViewNotificationProps, ViewNotificationState> {
+  constructor(props: ViewNotificationProps) {
     super(props);
 
     this.state = {
@@ -69,7 +72,7 @@ class ViewNotification extends Component<any, ViewNotificationState> {
  * 
  */
 
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
 
     this.setState({
@@ -177,8 +180,8 @@ class ViewNotification extends Component<any, ViewNotificationState> {
           </Box>
         </Box>
         <Box className="table-spacing">
-          <CustomDataTable
-          />
+          {/* <CustomDataTable
+          /> */}
         </Box>
       </Box>
     );
