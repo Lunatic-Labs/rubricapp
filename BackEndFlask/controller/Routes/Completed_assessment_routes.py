@@ -11,10 +11,12 @@ from controller.security.CustomDecorators import (
 
 from models.completed_assessment import (
     get_completed_assessments,
+    get_completed_assessment,
     get_completed_assessment_by_course_id,
     create_completed_assessment,
     replace_completed_assessment,
     completed_assessment_exists,
+    completed_assessment_team_or_user_exists,
     get_completed_assessment_count,
     fetch_average,
     toggle_individual_lock_status,
@@ -206,7 +208,7 @@ def get_all_completed_assessments():
 
         if request.args and request.args.get("completed_assessment_task_id"):
             completed_assessment_task_id = int(request.args.get("completed_assessment_task_id"))
-            one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_task_id)
+            one_completed_assessment = get_completed_assessment(completed_assessment_task_id)
             return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
 
         all_completed_assessments = get_completed_assessments()
@@ -215,24 +217,24 @@ def get_all_completed_assessments():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
 
-@bp.route('/completed_assessment', methods = ['GET'])
+@bp.route('/completed_assessment_by_team_or_user', methods = ['GET'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
 def get_completed_assessment_by_team_or_user_id():
     try:
-        completed_assessment_id = request.args.get("completed_assessment_id")
         unit = request.args.get("unit")
-        if not completed_assessment_id:
-            return create_bad_response("No completed_assessment_id provided", "completed_assessments", 400)
 
         if unit == "team":
-            one_completed_assessment = get_completed_assessment_with_team_name(completed_assessment_id)
+            team_id = int(request.args.get("team_id"))
+            assessments = completed_assessment_team_or_user_exists(team_id=team_id)
         elif unit == "user":
-            one_completed_assessment = get_completed_assessment_with_user_name(completed_assessment_id)
+            user_id = int(request.args.get("user_id"))
+            assessments = completed_assessment_team_or_user_exists(user_id=user_id)
         else:
-            create_bad_response("Invalid unit provided", "completed_assessments", 400)
-        return create_good_response(completed_assessment_schema.dump(one_completed_assessment), 200, "completed_assessments")
+            return create_bad_response("Invalid unit provided", "completed_assessments", 400)
+
+        return create_good_response(completed_assessment_schemas.dump(assessments), 200, "completed_assessments")
     except Exception as e:
         return create_bad_response(f"An error occurred fetching a completed assessment: {e}", "completed_assessments", 400)
 
@@ -328,7 +330,7 @@ class CompletedAssessmentSchema(ma.Schema):
     done                    = fields.Boolean()
     locked                  = fields.Boolean()
     last_update             = fields.DateTime()
-    rating_observable_characteristics_suggestions_data = fields.Dict()
+    rating_observable_characteristics_suggestions_data = fields.Raw()
     course_id               = fields.Integer()
     rubric_id               = fields.Integer()
     completed_count         = fields.Integer()

@@ -65,7 +65,7 @@ def delete_rubric_by_id(rubric_id):
     """
     try:
         # Ensure rubric exists
-        rubric = Rubric.query.get(rubric_id)
+        rubric = db.session.get(Rubric, rubric_id)
         if rubric is None:
             raise InvalidRubricID(rubric_id)
 

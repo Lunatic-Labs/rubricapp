@@ -26,7 +26,8 @@ def checkin_user():
         user_id = request.args.get("user_id")
         assessment_task_id = request.args.get("assessment_task_id")
         team_id = request.args.get("team_id")
-        provided_password = request.json.get("password", "") if request.json else ""
+        json_body = request.get_json(silent=True)
+        provided_password = json_body.get("password", "") if json_body else ""
 
         is_switching_teams = already_checked_in(user_id, assessment_task_id)
         if is_switching_teams:
