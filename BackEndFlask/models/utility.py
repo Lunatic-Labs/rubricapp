@@ -208,7 +208,10 @@ def send_email(address: str, subject: str, content: str, type: EmailContentType)
         Email errors from connecting and sending via SendGrid.
     """
     if config.rubricapp_running_locally:
+        logger.info(f"Skipping email to {address} — running locally")
         return
+
+    logger.info(f"Attempting to send email to {address} with subject '{subject}'")
 
     kwargs = {
         'from_email' : DEFAULT_SENDER_EMAIL,
@@ -220,6 +223,7 @@ def send_email(address: str, subject: str, content: str, type: EmailContentType)
     try:
         message = Mail(**kwargs)
         sendgrid_client.send(message)
+        logger.info(f"Email sent successfully to {address}")
     except Exception as e:
         config.logger.error("Could not send email: " + str(e))
         raise EmailFailureException()

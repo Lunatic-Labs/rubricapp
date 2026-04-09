@@ -178,9 +178,9 @@ h4, h5 {
 
 .narrow-select-table td:first-child,
 .narrow-select-table th:first-child {
-    width: 40px !important;
-    min-width: 40px !important;
-    max-width: 48px !important;
+    width: calc(32px + 2%) !important;
+    min-width: calc(32px + 2%) !important;
+    max-width: calc(32px + 2%) !important;
     padding: 4px !important;
     text-align: center !important;
 }

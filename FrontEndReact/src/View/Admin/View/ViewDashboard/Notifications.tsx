@@ -3,14 +3,10 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import { Box, Typography, Alert, IconButton, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import EditIcon from "@mui/icons-material/Edit";
-import ReplyIcon from "@mui/icons-material/Reply";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import SendMessageModal from '../../../Components/SendMessageModal';
 import CustomDataTable from "../../../Components/CustomDataTable";
-import { genericResourcePOST, genericResourceGET } from '../../../../utility';
-import { apiUrl } from '../../../../App';
-import Cookies from 'universal-cookie';
+import { genericResourcePOST, genericResourceGET, genericResourceDELETE } from '../../../../utility';
 
 /**
  * Creates an instance of the ViewNotification component.
@@ -44,10 +40,10 @@ interface ViewNotificationState {
   emailMessage: string;
   notificationSent: boolean;
   sendSuccess: boolean;
+  successMessage: string;
   sendError: string;
   admin_notifications: any[];
   selectedRows: number[];
-  editingNotificationId: number | null;
   errors: {
     emailSubject: string;
     emailMessage: string;
@@ -66,11 +62,10 @@ class ViewNotification extends Component<any, ViewNotificationState> {
       emailMessage: '',
       notificationSent: false,
       sendSuccess: false,
+      successMessage: '',
       sendError: '',
       admin_notifications: [],
       selectedRows: [],
-      editingNotificationId: null,
-
       errors: {
         emailSubject: '',
         emailMessage: '',
@@ -89,17 +84,9 @@ class ViewNotification extends Component<any, ViewNotificationState> {
   fetchNotifications = () => {
     genericResourceGET('/admin_notifications', 'admin_notifications', this);
   };
-  
-/**
- * @method handleChange - Handles changes to the email subject and message input fields.
- * @param {Event} e - The event object from the input field change.
- * Updates the corresponding state properties and validation error messages.
- * 
- */
 
   handleChange = (e: any) => {
     const { id, value } = e.target;
-
     this.setState({
         [id]: value,
         errors: {
@@ -108,28 +95,28 @@ class ViewNotification extends Component<any, ViewNotificationState> {
         },
     } as any);
   };
-  /**
-   * @method handleDialog - Toggles the visibility of the send message dialog.
-   * Opens or closes the dialog based on its current state.
-   * 
-   */
+
   handleDialog = () => {
-    this.setState({
-        showDialog: this.state.showDialog === false ? true : false,
+    if (this.state.showDialog === false) {
+      this.setState({
+        showDialog: true,
         sendSuccess: false,
         sendError: '',
-        editingNotificationId: this.state.showDialog === false ? this.state.editingNotificationId : null,
-    })
+        emailSubject: '',
+        emailMessage: '',
+        errors: { emailSubject: '', emailMessage: '' },
+      });
+    } else {
+      this.setState({
+        showDialog: false,
+        sendSuccess: false,
+        sendError: '',
+      });
+    }
   }
-  /**
-   * @method handleSendNotification - Handles the sending of a notification.
-   * Validates the email subject and message before sending.
-   * Updates the state with validation error messages if fields are empty.
-  
-   */
+
   handleSendNotification = () => {
     var emailSubject = this.state.emailSubject;
-
     var emailMessage = this.state.emailMessage;
 
     if (emailSubject.trim() === '' && emailMessage.trim() === '') {
@@ -139,7 +126,6 @@ class ViewNotification extends Component<any, ViewNotificationState> {
               emailMessage: 'Message cannot be empty',
           },
       });
-
       return;
     }
 
@@ -150,10 +136,8 @@ class ViewNotification extends Component<any, ViewNotificationState> {
               emailMessage: 'Message cannot be empty',
           },
       } as any);
-
       return;
     }
-
 
     if (emailSubject.trim() === '') {
       this.setState({
@@ -162,131 +146,66 @@ class ViewNotification extends Component<any, ViewNotificationState> {
               emailMessage: this.state.errors.emailMessage,
           },
       } as any);
-
       return;
     }
 
-    if (this.state.editingNotificationId) {
-      // Sending an update to an existing notification thread
-      const cookies = new Cookies();
-      const accessToken = cookies.get('access_token');
-      const user = cookies.get('user');
-      const url = `${apiUrl}/admin_notifications/${this.state.editingNotificationId}?user_id=${user.user_id}`;
-
-      fetch(url, {
-        method: 'PUT',
-        headers: {
-          'Authorization': 'Bearer ' + accessToken,
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ subject: emailSubject, message: emailMessage }),
-      })
-      .then(res => res.json())
-      .then(result => {
-        if (result.success) {
-          this.setState({
-            showDialog: false,
-            emailSubject: '',
-            emailMessage: '',
-            editingNotificationId: null,
-            sendSuccess: true,
-            sendError: '',
-          });
-          this.fetchNotifications();
-        } else {
-          this.setState({
-            sendError: 'Failed to send update. Please try again.',
-          });
-        }
-      })
-      .catch(() => {
+    genericResourcePOST(
+      '/send_admin_notification',
+      this,
+      JSON.stringify({ subject: emailSubject, message: emailMessage })
+    ).then((result) => {
+      if (result !== undefined && result.errorMessage === null) {
         this.setState({
-          sendError: 'Failed to send update. Please try again.',
+          showDialog: false,
+          emailSubject: '',
+          emailMessage: '',
         });
-      });
-    } else {
-      // Sending a new notification
-      genericResourcePOST(
-        '/send_admin_notification',
-        this,
-        JSON.stringify({ subject: emailSubject, message: emailMessage })
-      ).then((result) => {
-        if (result !== undefined && result.errorMessage === null) {
+        setTimeout(() => {
           this.setState({
-            showDialog: false,
-            emailSubject: '',
-            emailMessage: '',
             sendSuccess: true,
+            successMessage: 'Message sent to all admins successfully.',
             sendError: '',
           });
-          this.fetchNotifications();
-        } else {
-          this.setState({
-            sendError: 'Failed to send notification. Please try again.',
-          });
-        }
-      });
-    }
-
-  };
-  /**
-   * @method handleEditNotification - Opens the send message dialog pre-filled for sending an update.
-   * @param {number} notificationId - The ID of the original notification to update.
-   * @param {string} subject - The subject of the original notification.
-   */
-  handleEditNotification = (notificationId: number, subject: string) => {
-    this.setState({
-      editingNotificationId: notificationId,
-      emailSubject: 'UPDATE: ' + subject,
-      emailMessage: '',
-      showDialog: true,
-      sendSuccess: false,
-      sendError: '',
-      errors: { emailSubject: '', emailMessage: '' },
-    });
-  };
-  /**
-   * @method handleDeleteSelected - Deletes the selected notifications after confirmation.
-   */
-  handleDeleteSelected = (selectedRows: number[]) => {
-    if (selectedRows.length === 0) return;
-    const confirmed = window.confirm(`Delete ${selectedRows.length} selected notification${selectedRows.length > 1 ? 's' : ''}?`);
-    if (!confirmed) return;
-
-    const cookies = new Cookies();
-    const accessToken = cookies.get('access_token');
-    const user = cookies.get('user');
-    const url = `${apiUrl}/admin_notifications?user_id=${user.user_id}`;
-
-    fetch(url, {
-      method: 'DELETE',
-      headers: {
-        'Authorization': 'Bearer ' + accessToken,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ notification_ids: selectedRows }),
-    })
-    .then(res => res.json())
-    .then(result => {
-      if (result.success) {
-        this.setState({ selectedRows: [] });
+        }, 0);
         this.fetchNotifications();
       } else {
-        this.setState({ sendError: 'Failed to delete notifications.' });
+        this.setState({
+          sendError: 'Failed to send notification. Please try again.',
+        });
       }
-    })
-    .catch(() => {
+    });
+  };
+
+  handleDeleteSelected = (selectedRows: number[]) => {
+    if (selectedRows.length === 0) return;
+    const confirmed = window.confirm(`Delete ${selectedRows.length === 1 ? 'this notification' : selectedRows.length + ' selected notifications'}?`);
+    if (!confirmed) return;
+
+    genericResourceDELETE('/admin_notifications', this, {
+      body: JSON.stringify({ notification_ids: selectedRows }),
+    }).then(() => {
+      this.setState({
+        selectedRows: [],
+        sendSuccess: false,
+      });
+      setTimeout(() => {
+        this.setState({
+          sendSuccess: true,
+          successMessage: selectedRows.length === 1
+            ? 'Notification deleted successfully.'
+            : `${selectedRows.length} notifications deleted successfully.`,
+          sendError: '',
+        });
+      }, 0);
+      this.fetchNotifications();
+    }).catch(() => {
       this.setState({ sendError: 'Failed to delete notifications.' });
     });
   };
-  /**
-   * @returns {JSX.Element} The rendered ViewNotification component.
-   */
+
   render() {
     var navbar = this.props.navbar;
-
     var state = navbar.state;
-
     var notificationSent = state.notificationSent;
 
    return (
@@ -294,10 +213,6 @@ class ViewNotification extends Component<any, ViewNotificationState> {
         <Box className="subcontent-spacing">
           <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewNotificationsTitle"> View Notifications</Typography>
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-            {/**
-             * SendMessageModal Component - Modal dialog for sending messages.
-             */
-            }
             <SendMessageModal
               show={this.state.showDialog}
               handleDialog={this.handleDialog}
@@ -309,7 +224,7 @@ class ViewNotification extends Component<any, ViewNotificationState> {
             />
             {this.state.sendSuccess && (
               <Alert severity="success" sx={{ mb: 1 }}>
-                Message sent to all admins successfully.
+                {this.state.successMessage}
               </Alert>
             )}
             {this.state.sendError && (
@@ -317,11 +232,8 @@ class ViewNotification extends Component<any, ViewNotificationState> {
                 {this.state.sendError}
               </Alert>
             )}
-            {/**
-             * Send Message Button - Button to open the send message dialog.
-             */}
             <CustomButton
-              label="Send Message"
+              label="Send New Message"
               onClick={this.handleDialog}
               isOutlined={false}
               disabled={notificationSent}
@@ -342,44 +254,23 @@ class ViewNotification extends Component<any, ViewNotificationState> {
                 }
               },
               {
-                name: "thread_id",
-                label: "Thread ID",
-                options: {
-                  display: "excluded",
-                  filter: false,
-                }
-              },
-              {
                 name: "subject",
                 label: "Subject",
                 options: {
-                  setCellHeaderProps: () => ({ width: "25%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }),
-                  setCellProps: () => ({ width: "25%", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }),
-                  customBodyRender: (value: string, tableMeta: any) => {
-                    if (!value) return '';
-                    const threadId = tableMeta.rowData?.[1];
-                    const isUpdate = threadId !== null && threadId !== undefined;
-                    return (
-                      <div style={{ display: "flex", alignItems: "center", gap: "8px", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", width: "100%", paddingLeft: isUpdate ? "24px" : undefined }} title={value}>
-                        {isUpdate && <ReplyIcon sx={{ fontSize: 16, color: "text.secondary", flexShrink: 0 }} />}
-                        {value}
-                      </div>
-                    );
-                  }
+                  setCellHeaderProps: () => ({ width: "29%" }),
+                  setCellProps: () => ({ width: "29%" }),
                 }
               },
               {
                 name: "message",
                 label: "Message",
                 options: {
-                  setCellHeaderProps: () => ({ width: "40%" }),
-                  setCellProps: () => ({ width: "40%" }),
-                  customBodyRender: (value: string, tableMeta: any) => {
+                  setCellHeaderProps: () => ({ width: "44%" }),
+                  setCellProps: () => ({ width: "44%" }),
+                  customBodyRender: (value: string) => {
                     if (!value) return '';
-                    const threadId = tableMeta.rowData?.[1];
-                    const isUpdate = threadId !== null && threadId !== undefined;
                     return (
-                      <div style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word", width: "100%", paddingLeft: isUpdate ? "24px" : undefined }} title={value}>
+                      <div style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word" }} title={value}>
                         {value}
                       </div>
                     );
@@ -390,8 +281,8 @@ class ViewNotification extends Component<any, ViewNotificationState> {
                 name: "sent_at",
                 label: "Sent At",
                 options: {
-                  setCellHeaderProps: () => ({ width: "15%" }),
-                  setCellProps: () => ({ width: "15%" }),
+                  setCellHeaderProps: () => ({ width: "20%" }),
+                  setCellProps: () => ({ width: "20%" }),
                   customBodyRender: (value: string) => {
                     if (!value) return '';
                     return new Date(value).toLocaleString();
@@ -399,28 +290,18 @@ class ViewNotification extends Component<any, ViewNotificationState> {
                 }
               },
               {
-                name: "actions",
-                label: "Actions",
+                name: "delete",
+                label: "Delete",
                 options: {
-                  setCellHeaderProps: () => ({ width: "10%", align: "center" as const }),
-                  setCellProps: () => ({ width: "10%", align: "center" as const }),
+                  setCellHeaderProps: () => ({ width: "5%", align: "center" as const }),
+                  setCellProps: () => ({ width: "5%", align: "center" as const }),
                   customBodyRender: (value: any, tableMeta: any) => {
-                    const notificationId = tableMeta.rowData[0];
-                    const threadId = tableMeta.rowData[1];
-                    const subject = tableMeta.rowData[2];
-                    const isOriginal = threadId === null || threadId === undefined;
+                    const rowIndex = tableMeta.rowIndex;
+                    const notification = this.state.admin_notifications[rowIndex];
+                    if (!notification) return null;
+                    const notificationId = notification.admin_notification_id;
                     return (
                       <Box sx={{ display: "flex", gap: "4px", justifyContent: "center" }}>
-                        {isOriginal && (
-                          <Tooltip title="Send Update">
-                            <IconButton
-                              onClick={() => this.handleEditNotification(notificationId, subject)}
-                              aria-label="SendUpdate"
-                            >
-                              <EditIcon sx={{ color: "black" }} />
-                            </IconButton>
-                          </Tooltip>
-                        )}
                         <Tooltip title="Delete">
                           <IconButton
                             onClick={() => this.handleDeleteSelected([notificationId])}
