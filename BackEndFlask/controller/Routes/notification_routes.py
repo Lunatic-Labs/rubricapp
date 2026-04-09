@@ -215,8 +215,6 @@ def send_admin_notification():
             "admins_notified"
         )
     except Exception as e:
-        from models.logger import logger
-        logger.error(f"Error sending admin notification: {e}")
         return create_bad_response(
             f"An error occurred sending admin notification: {e}",
             "admins_not_notified",
