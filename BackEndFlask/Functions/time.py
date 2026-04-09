@@ -13,7 +13,7 @@ timezone_list = {
     "EDT": "America/New_York",
 }
 
-def parse_and_convert_timezone(time_str, assessment_task):
+def parse_and_convert_timezone(time_str, assessment_task, timezone = None):
     """
     Description:
     Parse and convert a time string to the chosen assessment task's timezone.
@@ -32,16 +32,24 @@ def parse_and_convert_timezone(time_str, assessment_task):
     if "Z" not in time_str:
         time_str = time_str + "Z"
 
-    
     # Parse the time string into a UTC datetime object
-    utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
-    
+    # utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
+
     # Handles the conversion of the chosen assessment task timezone
-    if assessment_task and assessment_task.time_zone:
-        pytz_timezone = pytz.timezone(timezone_list.get(assessment_task.time_zone, "UTC"))
-        return utc_time.astimezone(pytz_timezone)
+    #if assessment_task and assessment_task.time_zone:
+        # pytz_timezone = pytz.timezone(timezone_list.get(assessment_task.time_zone, "UTC"))
+        # return utc_time.astimezone(pytz_timezone)
+    # return utc_time
+
+    if timezone:
+        tz = pytz.timezone(timezone)
+        time_obj = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
+        time_obj = tz.localize(time_obj)
+    else:
+        time_obj = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
     
-    return utc_time
+    return time_obj.astimezone(pytz.UTC)
+
 def ensure_utc_datetime(dt):
     """
     Ensure a datetime object is timezone-aware and in UTC.
