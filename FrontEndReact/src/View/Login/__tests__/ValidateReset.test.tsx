@@ -68,7 +68,8 @@ test("ValidateReset.test.tsx Test 4: Should show email cannot be empty when emai
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(vrf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Email cannot be empty.");
+        expectElementWithAriaLabelToHaveErrorMessage(vrei, "Email cannot be empty.");
+        //expectElementWithAriaLabelToHaveErrorMessage(ema, "Email cannot be empty.");
     });
 });
 test("ValidateReset.test.tsx Test 5: Should show SetNewPassword page when email is invalid.", async () => {

@@ -46,6 +46,7 @@ class User(db.Model):
     reset_code = db.Column(db.String(256), nullable=True)          # reset_code has been changed from 'text to 'string', and now has a 256 character limit.
     is_admin = db.Column(db.Boolean, nullable=False)
     last_update = db.Column(DateTime(timezone=True), nullable=True)
+    user_dark_mode = db.Column(db.Boolean, nullable=False, default=False)
     team = db.relationship('TeamUser', backref='user', cascade='all, delete')
 
 class Rubric(db.Model):

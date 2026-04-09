@@ -13,6 +13,7 @@ from models.team import *
 from models.team_user import *
 from models.assessment_task import *
 from models.completed_assessment import * 
+from loadTestAdminsOnetime import *
 from controller.security.blacklist import start_redis
 from sqlalchemy import create_engine, text
 from models.feedback import *
@@ -138,6 +139,11 @@ with app.app_context():
             time.sleep(sleep_time)
             load_demo_student()
             print("[dbcreate] successfully loaded demo Student")
+            time.sleep(sleep_time)
+            print("[dbcreate] attempting to load test Admins...")
+            time.sleep(sleep_time)
+            load_test_admins()
+            print("[dbcreate] successfully loaded test Admins")
             time.sleep(sleep_time)
         if(get_courses().__len__()==0):
             print("[dbcreate] attempting to load demo Course...")
