@@ -13,7 +13,7 @@ ma = Marshmallow()
 def __init_response() -> dict:
     response = {
         "Access-Control-Allow-Origin": f"http://127.0.0.1:5500, {os.environ.get('FRONT_END_URL')}, *",
-        "Access-Control-Allow-Methods": ['GET', 'POST'],
+        "Access-Control-Allow-Methods": ['GET', 'POST', 'PUT', 'DELETE'],
         "Access-Control-Allow-Headers": "Content-Type",
         "headers": {
             "Content-Type": "application/json",
