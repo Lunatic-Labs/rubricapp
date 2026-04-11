@@ -23,7 +23,7 @@ const CustomTooltip = ({
     const fullText = payload[0].payload[payload[0].payload.characteristic ? 'characteristic' : 'improvement'];
     return (
       <div className="card position-fixed bottom-0 start-50 translate-middle-x mb-3 shadow-none border-0" style={{ maxWidth: '90vw', zIndex: 1000 }}>
-        <div className="card-body p-2" style={{ backgroundColor: '#E4EDF7'}}>
+        <div className="card-body p-2" style={{ backgroundColor: 'var(--dropdown-bg)', color: 'var(--text-color)' }}>
           <div className="row">
             <div className="col-12">
               <p className="card-text mb-1">{fullText}</p>
@@ -78,7 +78,7 @@ export default function CharacteristicsAndImprovements({
         <div className="col-12">
           <div 
             className="card border-0 shadow-none" 
-            style={{height: '100%', backgroundColor: '#f8f8f8'}}
+            style={{ height: '100%', backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}
           >
             <div className="card-body">
               <h6 className="text-center">
@@ -151,7 +151,8 @@ export default function CharacteristicsAndImprovements({
                       xmlns="http://www.w3.org/2000/svg" 
                       width="190" 
                       height="190" 
-                      fill="grey" 
+                      fill="currentColor" 
+                      style={{ color: 'var(--text-color-secondary)' }}
                       className="bi bi-chart" 
                       viewBox="0 0 16 16"
                     >
@@ -176,7 +177,7 @@ export default function CharacteristicsAndImprovements({
         role="dialog"
         style={{ display: isModalOpen ? 'block' : 'none', justifyContent: 'center', alignItems: 'center' }}>
       <div className="modal-dialog modal-lg" style={{ maxWidth: '80%' }}>
-          <div className="modal-content" style={{ width: '100%' }}>
+          <div className="modal-content" style={{ width: '100%', backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>
             <div className="modal-header position-relative">
               <div className="w-100">
                 <h4 className="modal-title text-center m-0 fw-normal">

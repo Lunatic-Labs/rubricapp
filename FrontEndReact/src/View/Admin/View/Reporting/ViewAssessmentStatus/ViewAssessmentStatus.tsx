@@ -136,10 +136,12 @@ export default function ViewAssessmentStatus(props: any) {
   const innerGridStyle = {
     borderRadius: '6px',
     height: '100%',
-    border: "#7f7f7fff", 
+    border: '1px solid var(--border-color)',
     padding: 0,
     margin: 0,
-    boxShadow: "0.3em 0.3em 1em var(--box-shadow)"
+    boxShadow: '0.3em 0.3em 1em var(--box-shadow)',
+    backgroundColor: 'var(--card-bg)',
+    color: 'var(--text-color)',
   };
 
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
@@ -176,7 +178,7 @@ export default function ViewAssessmentStatus(props: any) {
                     </ResponsiveContainer>
                   ) : (
                     <div style={{textAlign: "center"}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="grey" className="bi bi-bar-chart" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="currentColor" style={{ color: 'var(--text-color-secondary)' }} className="bi bi-bar-chart" viewBox="0 0 16 16">
                       <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
                     </svg>
                     </div>
@@ -236,7 +238,7 @@ export default function ViewAssessmentStatus(props: any) {
                   <h3 style={{ fontWeight: 'normal', textAlign: 'center'}}>
                     <u>Assessment Tasks Completed:</u>
                   </h3>
-                  <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px' }}>
+                  <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px', backgroundColor: 'var(--progress-track-bg)' }}>
                     <div
                       className="progress-bar"
                       role="progressbar"

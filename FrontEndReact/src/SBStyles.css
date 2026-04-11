@@ -345,6 +345,11 @@ h4, h5 {
 /* Shadow color variable */
 :root {
   --box-shadow: #6e6e6ecb;
+  --card-bg: #ffffff;
+  --card-text: #000000;
+  --card-border: rgba(0, 0, 0, 0.12);
+  --modal-bg: #ffffff;
+  --progress-track-bg: #e0e0e0;
 }
 
 :root {
@@ -526,6 +531,11 @@ body.mode {
   --border-color: rgba(255, 255, 255, 0.23);
   --border-hover-color: rgba(255, 255, 255, 0.87);
   --icon-color: rgba(255, 255, 255, 0.7);
+  --card-bg: #2a2a2a;
+  --card-text: #e0e0e0;
+  --card-border: rgba(255, 255, 255, 0.12);
+  --modal-bg: #1a1a1a;
+  --progress-track-bg: #3a3a3a;
 }
 
 body.mode .generic-text-color {
