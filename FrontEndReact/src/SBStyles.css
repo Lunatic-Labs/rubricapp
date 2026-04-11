@@ -352,6 +352,25 @@ h4, h5 {
   --progress-track-bg: #e0e0e0;
 }
 
+.reporting-card {
+  background-color: var(--card-bg);
+  color: var(--card-text);
+  border: 1px solid var(--card-border);
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.18);
+}
+
+body.mode .reporting-card {
+  box-shadow: 0 0 1em rgba(0, 0, 0, 0.35);
+}
+
+body.mode .modal-content .btn-close {
+  filter: invert(1) brightness(0.9);
+}
+
+body.mode .modal-content .btn-close:hover {
+  filter: invert(1) brightness(1.1);
+}
+
 :root {
   --text-color: #000000;
   --text-color-secondary: #646464;

@@ -203,17 +203,21 @@ export default function CharacteristicsAndImprovements({
                     domain={[0, 100]}
                     ticks={[0, 25, 50, 75, 100]}
                     tickFormatter={(tick: any) => `${tick}`}
-                    style={{ fontSize: '15px' }}
-                    scale="linear" 
+                    tick={{ fill: 'var(--text-color)', fontSize: '15px' }}
+                    axisLine={{ stroke: 'var(--border-color)' }}
+                    tickLine={false}
+                    scale="linear"
                   />
                   {/* In the expanded view we show the full, un-truncated labels */}
                   <YAxis
-                    style={{ fontSize: '15px' }}
                     type="category"
                     dataKey="fullLabel"
                     width={300}
+                    tick={{ fill: 'var(--text-color)', fontSize: '15px' }}
+                    axisLine={{ stroke: 'var(--border-color)' }}
+                    tickLine={false}
                   />
-                  <CartesianGrid horizontal={false} />
+                  <CartesianGrid horizontal={false} stroke="var(--border-color)" />
                   <Bar 
                     dataKey="percentage" 
                     fill="#2e8bef"
