@@ -293,7 +293,7 @@ class AdminBulkUpload extends Component<any, AdminBulkUploadState> {
                                                 onClick={() => {
                                                     confirmCreateResource("User")
                                                 }}
-                                                id="" className="" aria-label="cancelAdminBulkUploadButton">   
+                                                id="" className="cancel-button" aria-label="cancelAdminBulkUploadButton">   
                                                     Cancel
                                                 </Button>
 

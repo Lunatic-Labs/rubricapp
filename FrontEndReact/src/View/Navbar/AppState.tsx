@@ -33,6 +33,8 @@ import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCus
 import UserAccount from './UserAccount';
 import PrivacyPolicy from './PrivacyPolicy';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
+import Settings from './Settings';
+import { genericResourceGET } from "../../utility";
 
 /**
  * Creates an instance of the AppState component.
@@ -111,6 +113,8 @@ interface AppStateState {
     addCustomRubric: any;
     jumpToSection: any;
     skipInstructions?: boolean;
+    isLoaded?: boolean | null;
+    darkMode?: boolean;
 }
 
 class AppState extends Component<AppStateProps, AppStateState> {
@@ -180,6 +184,9 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
             addCustomRubric: null,
             jumpToSection: null,
+
+            isLoaded: null,
+            darkMode: false,
         }
 
         /**
@@ -712,6 +719,78 @@ class AppState extends Component<AppStateProps, AppStateState> {
     //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
     // }
 
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
+    // THE COMMENTED OUT CODE ABOVE DOES NOT RELATE TO THE CODE BELOW //
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
+
+    // This code here was added for rendering darkmode if the user has set
+    // it as thier preferance.
+    // componentDidMount can be modified to accomodate more functions as the
+    // app is updated.
+    componentDidMount() {
+        const cookies = new Cookies();
+        const user = cookies.get('user');
+        
+        // if users darkmode preferance is saved in cookies it will be loaded.
+        if (user && user.user_dark_mode) {
+            document.body.classList.add('mode');
+        } else {
+            document.body.classList.remove('mode');
+        }
+        
+        // if darkmode is not saved in cookies, the API will be called to check
+        // the backend if the user has darkmode preferance set to 'true'
+        if (user !== null) {
+            let promise: Promise<any>;            // promise is used because we do not yet have the 'data' from the backend
+            let userData: any;           // promise tells the app that it will recieve data
+
+            // get all the neccessary resources from the backend, the 'user' from the 'users' array.
+            promise = genericResourceGET(
+                `/user`,
+                "users",
+                this
+            );
+
+            promise.then(result => {
+                if (result !== undefined && result["users"] !== null) {
+                    userData = result["users"];
+                    
+                    // user data is now set by the result for 'users' and the state is changed
+                    // to match the users preferance (false or true).
+                    this.setState({
+                        isLoaded: true,
+                        user: userData, //["user_id"],
+                        darkMode: userData["user_dark_mode"] ?? false // added ?? false
+                    }, () => {
+                        // This callback runs AFTER state is updated
+                        if (this.state.darkMode) {
+                            document.body.classList.add('mode');
+                        } else {
+                            document.body.classList.remove('mode');
+                        }
+                    });
+
+                    
+                }
+            }).catch(error => {
+                console.error("Error fetching user data:", error);
+                // Fallback to user object
+                this.setState({
+                    isLoaded: false,
+                    user: user,
+                    darkMode: user["user_dark_mode"] || false,
+                }, () => {
+                    // Apply dark mode in callback
+                    if (this.state.darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
+                });
+            });
+        }
+    }
+
     render() {
         return (
             <Box className="app-body">
@@ -1122,6 +1201,19 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         />
 
                         <PrivacyPolicy
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="Settings" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                            aria-label="UserAccountBackButton"
+                        />
+
+                        <Settings
                             navbar={this}
                         />
                     </Box>
