@@ -3,8 +3,8 @@ from functools import wraps
 from .utility  import to_int
 from .blacklist import is_token_blacklisted
 from typing     import Callable 
-from models.queries import is_admin_by_user_id
-from flask_jwt_extended import decode_token
+from models.queries import is_admin_by_user_id, is_super_admin_by_user_id
+from flask_jwt_extended import decode_token, get_jwt_identity
 from flask_jwt_extended.exceptions import (
     NoAuthorizationError,
     InvalidQueryParamError
@@ -122,5 +122,47 @@ def verify_admin(refresh: bool) -> None:
         course_redis_out(e)
         course_redis_out("\nI am: verify_admin")
         course_redis_out("\nIf the other inner function is not present then i failed to decode.")
+        course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        raise NoAuthorizationError("No Authorization")
+
+def super_admin_check(refresh: bool = False) -> Callable:
+    """
+    Description:
+    This is a decorator that checks to make sure that the route was called by the super admin.
+    Use this decorator as the last decorator since it hits the db.
+    """
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            verify_super_admin(refresh)
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
+
+def verify_super_admin(refresh: bool) -> None:
+    """
+    Description:
+    Uses token user_id to check if the caller is the super admin (user_id == 1).
+
+    Exceptions: 
+    Raises NoAuthorizationError if the caller is not the super admin.
+    """
+    try:
+        # Use get_jwt_identity() provided by @jwt_required() instead of
+        # manually decoding the token. This avoids double-decoding issues
+        # that can cause exceptions to bypass the route handler and trigger
+        # the JWT error handler (which logs the user out on the frontend).
+        decoded_id = int(get_jwt_identity())
+        if is_super_admin_by_user_id(decoded_id) == False:
+            course_redis_out("\nI am: is_super_admin_by_user_id in verify_super_admin")
+            course_redis_out("\nI saw the user was not the super admin\n")
+            course_redis_out(decoded_id)
+            raise NoAuthorizationError("No Authorization")
+    except NoAuthorizationError:
+        raise
+    except Exception as e:
+        course_redis_out(e)
+        course_redis_out("\nI am: verify_super_admin")
+        course_redis_out("\nI failed to get the JWT identity.\n")
         course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
         raise NoAuthorizationError("No Authorization")
