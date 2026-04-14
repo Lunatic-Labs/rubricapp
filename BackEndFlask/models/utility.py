@@ -174,6 +174,26 @@ def email_students_feedback_is_ready_to_view(students: list, notification_messag
 
         send_email(student.email, subject, message, EmailContentType.PLAIN_TEXT_CONTENT)
 
+def email_admins_notification(subject: str, message: str) -> None:
+    """
+    Emails all admin users who have at least one active course.
+
+    Args:
+        subject (str): Subject line for the email.
+        message (str): Message body to include in the email.
+    """
+    from models.user import get_admins_with_active_courses
+
+    admins = get_admins_with_active_courses()
+    for admin in admins:
+        email_body = f'''Hello {admin.first_name},
+
+                    {message}
+
+                    Cheers,
+                    The Skillbuilder Team'''
+        send_email(admin.email, subject, email_body, EmailContentType.PLAIN_TEXT_CONTENT)
+
 def send_email(address: str, subject: str, content: str, type: EmailContentType) -> None:
     """
     Sends an email.
