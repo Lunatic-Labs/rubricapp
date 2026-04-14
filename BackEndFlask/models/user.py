@@ -1,7 +1,7 @@
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-from models.schemas import User, UserCourse, CompletedAssessment
+from models.schemas import User, UserCourse, CompletedAssessment, Course
 from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
@@ -51,6 +51,19 @@ def get_users_by_email(email):
 def get_user_consent(user_id):
     return User.query.filter_by(user_id=user_id).first().consent
 
+# added get_user_darkmode
+@error_log
+def get_user_dark_mode(user_id):
+    return User.query.filter_by(user_id=user_id).first().user_dark_mode
+
+@error_log
+def set_user_dark_mode(user_id, user_dark_mode):
+    user = User.query.filter_by(user_id=user_id).first()
+
+    setattr(user, 'user_dark_mode', user_dark_mode)
+
+    db.session.commit()
+
 
 @error_log
 def get_user(user_id):
@@ -89,6 +102,26 @@ def get_user_admins():
    db.session.query()
 
    return all_user_admins
+
+
+@error_log
+def get_admins_with_active_courses():
+   """
+   Returns all admin users who own at least one active course.
+   """
+   admins_with_active_courses = db.session.query(
+       User.user_id,
+       User.first_name,
+       User.last_name,
+       User.email
+   ).join(
+       Course, Course.admin_id == User.user_id
+   ).filter(
+       User.is_admin == True,
+       Course.active == True
+   ).distinct().all()
+
+   return admins_with_active_courses
 
 
 @error_log
@@ -186,6 +219,7 @@ def create_user(user_data, validate_emails=True):
         has_set_password=has_set_password,
         reset_code=None,
         last_update=last_update,
+        user_dark_mode=user_data.get("user_dark_mode", False)       # possible error here, added line to fix
     )
 
     db.session.add(user_data)
@@ -368,6 +402,8 @@ def replace_user(user_data, user_id):
     one_user.consent = user_data["consent"]
 
     one_user.owner_id = user_data["owner_id"]
+
+    one_user.user_dark_mode = user_data["user_dark_mode"]
 
     db.session.commit()
 

@@ -33,6 +33,8 @@ import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCus
 import UserAccount from './UserAccount';
 import PrivacyPolicy from './PrivacyPolicy';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
+import Settings from './Settings';
+import { genericResourceGET } from "../../utility";
 
 /**
  * Creates an instance of the AppState component.
@@ -111,6 +113,8 @@ interface AppStateState {
     addCustomRubric: any;
     jumpToSection: any;
     skipInstructions?: boolean;
+    isLoaded?: boolean | null;
+    darkMode?: boolean;
 }
 
 class AppState extends Component<AppStateProps, AppStateState> {
@@ -180,6 +184,9 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
             addCustomRubric: null,
             jumpToSection: null,
+
+            isLoaded: null,
+            darkMode: false,
         }
 
         /**
@@ -712,6 +719,68 @@ class AppState extends Component<AppStateProps, AppStateState> {
     //     window.localStorage.setItem('SKILBUILDER_STATE_NAVBAR_DATA', JSON.stringify(this.state));
     // }
 
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
+    // THE COMMENTED OUT CODE ABOVE DOES NOT RELATE TO THE CODE BELOW //
+    // !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!! //
+
+    // This code here was added for rendering darkmode if the user has set
+    // it as thier preferance.
+    // componentDidMount can be modified to accomodate more functions as the
+    // app is updated.
+    componentDidMount() {
+        const cookies = new Cookies();
+        const user = cookies.get('user');
+        
+        // if users darkmode preferance is saved in cookies it will be loaded.
+        if (user && user.user_dark_mode) {
+            document.body.classList.add('mode');
+        } else {
+            document.body.classList.remove('mode');
+        }
+        
+        // if darkmode is not saved in cookies, the API will be called to check
+        // the backend if the user has darkmode preferance set to 'true'
+        if (user !== null) {
+            // Fetch all users to find the current user's dark mode preference.
+            // IMPORTANT: We must NOT set this.state.user here — that state is reserved
+            // for the edit-user flow (setAddUserTabWithUser). Setting it here causes a
+            // race condition that breaks AdminAddUser (shows "Edit User" instead of "Add User").
+            genericResourceGET(
+                `/user?user_id=${user["user_id"]}`,
+                "users",
+                this
+            ).then(result => {
+                if (result !== undefined && result["users"] != null) {
+                    const currentUser = Array.isArray(result["users"])
+                        ? result["users"].find((u: any) => u["user_id"] === user["user_id"])
+                        : result["users"];
+
+                    if (currentUser) {
+                        const darkMode = currentUser["user_dark_mode"] ?? false;
+                        this.setState({ darkMode }, () => {
+                            if (darkMode) {
+                                document.body.classList.add('mode');
+                            } else {
+                                document.body.classList.remove('mode');
+                            }
+                        });
+                    }
+                }
+            }).catch(error => {
+                console.error("Error fetching user data:", error);
+                // Fallback: use dark mode from cookie user object
+                const darkMode = user["user_dark_mode"] || false;
+                this.setState({ darkMode }, () => {
+                    if (darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
+                });
+            });
+        }
+    }
+
     render() {
         return (
             <Box className="app-body">
@@ -1122,6 +1191,19 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         />
 
                         <PrivacyPolicy
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="Settings" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                            aria-label="UserAccountBackButton"
+                        />
+
+                        <Settings
                             navbar={this}
                         />
                     </Box>
