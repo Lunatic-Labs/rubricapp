@@ -36,7 +36,7 @@ gunicorn == 23.0.0
 gevent == 25.9.1
 
 # Testing tools
-pytest == 8.4.2
+pytest == 9.0.3
 postman_api == 3.0.0
 
 # ==Transitive Dependencies== #
