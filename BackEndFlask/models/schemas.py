@@ -203,3 +203,16 @@ class EmailValidation(db.Model):
 
     def __repr__(self):
         return f"<EmailValidation {self.email} - {self.status}>"
+
+class AdminNotification(db.Model):
+    __tablename__ = "AdminNotification"
+
+    admin_notification_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    sender_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    thread_id = db.Column(db.Integer, ForeignKey('AdminNotification.admin_notification_id'), nullable=True)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    sent_at = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<AdminNotification {self.subject} - {self.sent_at}>"

@@ -82,9 +82,10 @@ export async function genericResourcePUT(
 export async function genericResourceDELETE(
   fetchURL: string,
   component: ReactComponent<any, any>,
-  options: FetchOptions = {}
+  options: FetchOptions & { body?: string } = {}
 ): Promise<any> {
-  return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options);
+  const { body, ...restOptions } = options;
+  return await genericResourceFetch(fetchURL, null, component, "DELETE", body ?? null, restOptions);
 }
 
 
