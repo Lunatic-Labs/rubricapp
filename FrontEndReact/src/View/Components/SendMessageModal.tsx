@@ -83,7 +83,6 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                         variant="contained" 
                         onClick={() => {
                             props.sendNotification(); 
-                            props.handleDialog();    
                         }} 
                         aria-label="addMessagePromptSendNotificationButton"
                     >

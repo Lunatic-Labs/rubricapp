@@ -689,47 +689,37 @@ class AppState extends Component<AppStateProps, AppStateState> {
         // if darkmode is not saved in cookies, the API will be called to check
         // the backend if the user has darkmode preferance set to 'true'
         if (user !== null) {
-            let promise: Promise<any>;            // promise is used because we do not yet have the 'data' from the backend
-            let userData: any;           // promise tells the app that it will recieve data
-
-            // get all the neccessary resources from the backend, the 'user' from the 'users' array.
-            promise = genericResourceGET(
-                `/user`,
+            // Fetch all users to find the current user's dark mode preference.
+            // IMPORTANT: We must NOT set this.state.user here — that state is reserved
+            // for the edit-user flow (setAddUserTabWithUser). Setting it here causes a
+            // race condition that breaks AdminAddUser (shows "Edit User" instead of "Add User").
+            genericResourceGET(
+                `/user?user_id=${user["user_id"]}`,
                 "users",
                 this
-            );
+            ).then(result => {
+                if (result !== undefined && result["users"] != null) {
+                    const currentUser = Array.isArray(result["users"])
+                        ? result["users"].find((u: any) => u["user_id"] === user["user_id"])
+                        : result["users"];
 
-            promise.then(result => {
-                if (result !== undefined && result["users"] !== null) {
-                    userData = result["users"];
-                    
-                    // user data is now set by the result for 'users' and the state is changed
-                    // to match the users preferance (false or true).
-                    this.setState({
-                        isLoaded: true,
-                        user: userData, //["user_id"],
-                        darkMode: userData["user_dark_mode"] ?? false // added ?? false
-                    }, () => {
-                        // This callback runs AFTER state is updated
-                        if (this.state.darkMode) {
-                            document.body.classList.add('mode');
-                        } else {
-                            document.body.classList.remove('mode');
-                        }
-                    });
-
-                    
+                    if (currentUser) {
+                        const darkMode = currentUser["user_dark_mode"] ?? false;
+                        this.setState({ darkMode }, () => {
+                            if (darkMode) {
+                                document.body.classList.add('mode');
+                            } else {
+                                document.body.classList.remove('mode');
+                            }
+                        });
+                    }
                 }
             }).catch(error => {
                 console.error("Error fetching user data:", error);
-                // Fallback to user object
-                this.setState({
-                    isLoaded: false,
-                    user: user,
-                    darkMode: user["user_dark_mode"] || false,
-                }, () => {
-                    // Apply dark mode in callback
-                    if (this.state.darkMode) {
+                // Fallback: use dark mode from cookie user object
+                const darkMode = user["user_dark_mode"] || false;
+                this.setState({ darkMode }, () => {
+                    if (darkMode) {
                         document.body.classList.add('mode');
                     } else {
                         document.body.classList.remove('mode');
