@@ -5,12 +5,8 @@ import { Box, Typography, Alert, IconButton, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import SendMessageModal from '../../../Components/SendMessageModal';
-<<<<<<< HEAD
-// import CustomDataTable from "../../../Components/CustomDataTable";
-=======
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { genericResourcePOST, genericResourceGET, genericResourceDELETE } from '../../../../utility';
->>>>>>> origin/master
 
 /**
  * Creates an instance of the ViewNotification component.
@@ -248,11 +244,6 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
             />
           </Box>
         </Box>
-<<<<<<< HEAD
-        <Box className="table-spacing">
-          {/* <CustomDataTable
-          /> */}
-=======
         <Box className="table-spacing narrow-select-table">
           <CustomDataTable
             data={this.state.admin_notifications}
@@ -362,7 +353,6 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
               ),
             }}
           />
->>>>>>> origin/master
         </Box>
       </Box>
     );
