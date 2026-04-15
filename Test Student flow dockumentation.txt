@@ -397,3 +397,281 @@ Switching BACK to Admin:
 3. Frontend swaps cookies (test student → admin)
 4. Page reloads with admin logged in again
 The key is that it's a complete credential swap - the app genuinely logs in as the test student with real JWT tokens, not a fake/bypass mechanism.
+
+NEW view as student test documantation 
+View as Student Feature — Technical Documentation
+Last Updated: April 6, 2026
+
+
+1. Feature Overview
+The View as Student feature allows administrators to switch their view to a test student perspective within a specific course. This enables admins to verify the student experience — including assessment tasks, completed assessments, teams, and skill development charts — without needing a separate student account or browser session.
+Key Capabilities
+• Admin can switch to a test student view from any course's Roster Dashboard
+• A dedicated test student account is created per course in the backend (e.g., teststudent1@skillbuilder.edu for course 1)
+• Admin credentials are preserved in sessionStorage for seamless switching back
+• The student view displays a prominent "Switch Back to Admin" banner
+• Spam protection prevents multiple rapid clicks during the switching process
+
+
+2. Architecture & Data Flow
+2.1 Switching to Student View (Admin → Student)
+Trigger: Admin clicks the "View as Student" button on the RosterDashboard page.
+Flow:
+1. Save Admin Credentials — Admin's user, access_token, and refresh_token cookies are saved to sessionStorage under the key adminCredentials.
+2. Fetch Test Student Token — A GET request is made to /api/courses/{course_id}/test_student_token. The backend either finds or creates a test student for that course and returns a JWT token pair and user object.
+3. Set Student Cookies — The admin's cookies are cleared and replaced with the test student's access_token, refresh_token, and user object. The user object includes additional flags:
+• viewingAsStudent: true
+• originalCourseId: {course_id}
+• viewingCourseName: {course_name}
+4. Store Course Info — Course data is saved to sessionStorage under chosenCourse with role_id: 6 (TestStudent role).
+5. Reload Page — window.location.reload() is called to re-initialize the app with the new credentials.
+2.2 Switching Back to Admin (Student → Admin)
+Trigger: Student clicks the "Switch Back to Admin" button in the StudentDashboard alert banner.
+Flow:
+1. Retrieve Admin Credentials — The saved admin credentials are read from sessionStorage key adminCredentials.
+2. Blacklist Test Student Tokens — A POST request is made to /api/logout to invalidate the test student's tokens.
+3. Restore Admin Cookies — The test student cookies are cleared and replaced with the original admin cookies.
+4. Clean Up Session Storage — adminCredentials, chosenCourse, and testStudentCourse are removed from sessionStorage.
+5. Reload Page — window.location.reload() re-initializes the app as the admin.
+
+
+3. Backend Endpoint
+GET /api/courses/{course_id}/test_student_token
+Authentication: Requires a valid JWT (@jwt_required()). Only admins should access this endpoint.
+Behavior:
+• Looks up the test student by email pattern: teststudent{course_id}@skillbuilder.edu
+• If the test student does not exist, creates one with:
+• first_name: "Test"
+• last_name: "Student"
+• email: teststudent{course_id}@skillbuilder.edu
+• owner_id: The admin's user ID
+• Enrolls the test student in the course with role_id: 6 (TestStudent) in the UserCourse table
+• Returns a JSON response containing access_token, refresh_token, and user object
+Response Format:
+{
+  "access_token": "jwt_token_string",
+  "refresh_token": "jwt_refresh_string",
+  "user": {
+    "user_id": 999,
+    "user_name": "Test Student",
+    "email": "teststudent1@skillbuilder.edu",
+    "first_name": "Test",
+    "last_name": "Student",
+    "role_id": 6,
+    "has_set_password": true
+  }
+}
+Database Requirement: TestStudent Role
+The role table must contain an entry for role_id: 6 with role_name: "TestStudent". Without this, the UserCourse insert will fail with a foreign key constraint error:
+(pymysql.err.IntegrityError) (1452, 'Cannot add or update a child row:
+a foreign key constraint fails (`rubricapp`.`usercourse`,
+CONSTRAINT `usercourse_ibfk_3` FOREIGN KEY (`role_id`) REFERENCES `role` (`role_id`))')
+Migration to add the role:
+INSERT INTO role (role_id, role_name) VALUES (6, 'TestStudent');
+
+
+4. Frontend Components
+4.1 RosterDashboard.tsx
+Location: src/View/Admin/View/ViewDashboard/RosterDashboard.tsx
+Responsibilities:
+• Renders the "View as Student" button with aria-label="viewAsStudentButton"
+• Manages isSwitchingToStudent state for spam protection (button is disabled during the switch)
+• Handles the full switch-to-student flow including error recovery
+• On error: restores admin credentials from sessionStorage, shows an alert, and resets the switching flag
+Key State:
+• isSwitchingToStudent: boolean — Prevents multiple clicks; disables the button during the async operation
+4.2 StudentDashboard.tsx
+Location: src/View/Student/StudentDashboard.tsx
+Responsibilities:
+• Detects user?.viewingAsStudent from cookies to show the "Switch Back to Admin" alert banner
+• Displays test student info (ID, email, course name) in the banner
+• Manages isSwitchingBack state for spam protection on the switch-back button
+• Handles the full switch-back flow via handleSwitchBack() method
+• Renders <Loading /> until roles state is loaded from the API
+Key State:
+• isSwitchingBack: boolean — Prevents multiple clicks on the "Switch Back to Admin" button
+API Calls on Mount (`componentDidMount`):
+• GET /role?course_id={id} → resource: roles (single object with role_id)
+• GET /assessment_task?course_id={id} → resource: assessment_tasks, dest: assessmentTasks
+• GET /completed_assessment?course_id={id} → resource: completed_assessments, dest: completedAssessments
+• GET /average?course_id={id} → resource: average, dest: averageData
+• GET /rubric?all=true → resource: rubrics, dest: rubrics
+Child Component API Calls:
+• StudentViewAssessmentTask: GET /checkin?course_id={id} (resource: checkin), GET /course?course_id={id} (resource: course_count, dest: counts)
+• StudentViewTeams: GET /team_by_user?course_id={id}&adhoc_mode=true (resource: teams)
+4.3 ViewCourses.tsx
+Location: src/View/Admin/View/ViewCourses/ViewCourses.tsx
+Relevant Behavior:
+• Checks user?.viewingAsStudent to determine navigation behavior when a course icon is clicked
+• If isViewingAsStudent is true: calls navbar.setStudentDashboardWithCourse(courseId, courses) — navigates to StudentDashboard
+• If isViewingAsStudent is false and courseRoles[courseId] === 3 (admin): calls setAddCourseTabWithCourse(courses, courseId, "Users") — navigates to RosterDashboard
+• The viewCourseIconButton has role="img" and aria-label="viewCourseIconButton"
+4.4 AppState.tsx
+Location: src/View/Navbar/AppState.tsx
+Relevant Behavior:
+• setStudentDashboardWithCourse(courseId, courses) sets activeTab: "StudentDashboard" and chosenCourse in state
+• StudentDashboard only renders when this.state.activeTab === "StudentDashboard"
+• chosenCourse is passed as a prop to StudentDashboard
+
+
+5. Navigation Flow Summary
+Admin to Student View
+Login (admin) → AdminViewCourses (coursesTitle)
+  → Click viewCourseIconButton (role_id === 3)
+  → RosterDashboard (rosterTitle, viewAsStudentButton)
+  → Click viewAsStudentButton
+  → Fetch /courses/{id}/test_student_token
+  → Save admin creds to sessionStorage
+  → Set student cookies (viewingAsStudent: true)
+  → window.location.reload()
+  → App re-renders with student cookies
+  → AdminViewCourses (student sees courses with role_id 5)
+  → Click viewCourseIconButton (isViewingAsStudent → setStudentDashboardWithCourse)
+  → StudentDashboard (shows "Switch Back to Admin" banner)
+Student Back to Admin
+StudentDashboard (viewing as student)
+  → Click "Switch Back to Admin"
+  → POST /api/logout (blacklist student tokens)
+  → Restore admin cookies from sessionStorage
+  → Clear sessionStorage
+  → window.location.reload()
+  → App re-renders as admin
+
+
+6. Role System Reference
+role_id
+role_name
+Description
+3
+Admin
+Course administrator with full access
+4
+TA/Instructor
+Teaching assistant or instructor
+5
+Student
+Regular enrolled student
+6
+TestStudent
+Auto-created test student for admin preview
+
+Important: The role table in the database must contain role_id: 6 for the feature to work. The UserCourse table has a foreign key constraint on role_id referencing the role table.
+
+
+7. Session Storage Keys
+Key
+Purpose
+Set By
+Cleared By
+adminCredentials
+Stores admin user, access_token, refresh_token as JSON
+RosterDashboard (on switch to student)
+StudentDashboard (on switch back or error)
+chosenCourse
+Stores course_id, course_name, role_id as JSON
+RosterDashboard (on switch to student)
+StudentDashboard (on switch back)
+testStudentCourse
+Additional course tracking
+RosterDashboard
+StudentDashboard (on switch back)
+viewingAsStudent
+Flag cleared during utility logout
+utility.ts
+utility.ts
+
+
+
+8. Cookie Flags on Test Student User Object
+When switching to student view, the user cookie object includes these additional properties:
+Property
+Type
+Purpose
+viewingAsStudent
+boolean
+Triggers the "Switch Back" banner in StudentDashboard and routes course clicks to StudentDashboard
+originalCourseId
+number
+The course_id the admin was viewing when they switched
+viewingCourseName
+string
+Display name shown in the student banner
+
+
+
+9. Error Handling
+Switch to Student Fails
+• Admin credentials are restored from sessionStorage
+• Partial test student cookies are cleared
+• sessionStorage is cleaned up
+• An alert is shown: "Failed to switch to student view: {error.message}"
+• The isSwitchingToStudent flag is reset so the button becomes clickable again
+Switch Back to Admin Fails
+• An alert is shown: "Error switching back to admin view"
+• The isSwitchingBack flag is reset
+• If adminCredentials are not found in sessionStorage, the user is redirected to /login
+Common Error: Foreign Key Constraint on role_id 6
+If the role table does not contain role_id: 6, the backend will fail when trying to insert the test student into UserCourse. The error message will reference usercourse_ibfk_3 foreign key constraint. Solution: Run the migration to add the TestStudent role.
+
+
+10. Frontend Test Coverage
+Test File: src/View/Student/__tests__/ViewAsStudent.test.tsx
+Test #
+Name
+What It Validates
+1
+Should render Login Form component
+Basic component mounting when unauthenticated
+2
+Should login as admin and see courses page
+Login flow, cookie setting, navigation to courses
+3
+Should show 'View as Student' button on course page
+Admin course click → RosterDashboard → button visible
+4
+Should switch to student view
+Token fetch, sessionStorage save, cookie swap, reload
+5
+Should show 'Switch Back to Admin' banner
+Student course click → StudentDashboard → banner visible
+6
+Should restore admin view
+Cookie restore, sessionStorage cleanup, reload
+7
+Should handle error when test student creation fails
+Error alert shown, no reload, admin creds restored
+8
+Should disable button after click to prevent spam
+Button disabled or flow completes after single click
+
+Test Mock Requirements
+The test file mocks global.fetch to handle all API endpoints. Key considerations for the mock:
+utility.ts Resource Lookup Pattern:
+state[dest || resource] = result.content[resource][0];
+• The resource parameter (2nd argument to genericResourceGET) is used as the key to look up in result.content
+• The value at that key must be an array, and [0] is extracted
+• For array data (courses, users): content: { courses: [theArray] }
+• For single objects (roles): content: { roles: [theObject] }
+Endpoints requiring both singular and plural keys:
+• /course → content.course and content.courses and content.course_count
+• /role → content.role and content.roles
+• /team_by_user → content.teams (resource name differs from URL path)
+• /checkin → content.checkin (singular)
+URL matching order matters — more specific patterns must come before general ones:
+1. /courses/{id}/test_student_token (before /course)
+2. /completed_assessment (before /assessment_task)
+3. /team_by_user (before /team)
+4. /course (general, last)
+
+
+11. Known Issues & Considerations
+Double API Path in Logout URL
+The StudentDashboard.handleSwitchBack method constructs the logout URL as:
+`${apiUrl}/api/logout?user_id=${adminCredentials.user.user_id}`
+Where apiUrl = process.env.REACT_APP_API_URL which already contains /api. This results in a double path: http://127.0.0.1:5000/api/api/logout. The logout still works because the mock catches any URL containing /logout, but this should be fixed in production code.
+Test Student Cleanup
+Each course creates a persistent test student in the database. Consider implementing a periodic cleanup job to remove old test student accounts, or adding a cleanup endpoint that admins can trigger.
+Test Student Isolation
+Test students are isolated per course (e.g., teststudent1@skillbuilder.edu for course 1, teststudent2@skillbuilder.edu for course 2). This ensures that viewing as a student in one course does not affect another course's test data.
+Password Security
+The test student password is set during creation in the backend. It does not need to be known by users since authentication is handled via the token endpoint, not direct login.
