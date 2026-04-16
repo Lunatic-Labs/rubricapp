@@ -4,15 +4,20 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
+import { User } from '../../../../types/User';
 
-interface AdminViewConsentState {
-    errorMessage: any;
-    isLoaded: boolean;
-    users: any;
+interface AdminViewConsentProps {
+    navbar: any;
 }
 
-class AdminViewConsent extends Component<any, AdminViewConsentState> {
-    constructor(props: any) {
+interface AdminViewConsentState {
+    errorMessage: string | null;
+    isLoaded: boolean;
+    users: User[] | null;
+}
+
+class AdminViewConsent extends Component<AdminViewConsentProps, AdminViewConsentState> {
+    constructor(props: AdminViewConsentProps) {
         super(props);
 
         this.state = {

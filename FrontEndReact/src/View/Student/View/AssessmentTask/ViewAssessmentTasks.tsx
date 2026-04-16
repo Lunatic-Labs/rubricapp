@@ -3,6 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import { Box, Button } from '@mui/material';
 import { getHumanReadableDueDate } from '../../../../utility';
+import { AssessmentTask } from '../../../../types/AssessmentTask';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
 
 /**
  * @description
@@ -30,18 +32,19 @@ import { getHumanReadableDueDate } from '../../../../utility';
 
 interface ViewAssessmentTasksProps {
     navbar: any;
-    role: any;
-    assessmentTasks: any[];
-    completedAssessments: any[];
-    checkin: any[];
-    rubricNames: any[];
-    counts: any;
-    userTeamIds: any[];
+    role: { role_id: number; role_name?: string };
+    assessmentTasks: AssessmentTask[];
+    completedAssessments: CompleteAssessmentTask[];
+    checkin: number[];
+    rubricNames: Record<number, string>;
+    counts: number[];
+    userTeamIds: number[];
 }
 
 class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
-    areAllATsComplete: any;
-    isObjectFound: any;
+    areAllATsComplete: (atId: number) => boolean;
+    isObjectFound: (atId: number) => boolean;
+
     constructor(props: ViewAssessmentTasksProps) {
         super(props);
 
@@ -58,13 +61,13 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
          * @returns {boolean} True if a matching completed assessment is found and done.
          */
 
-        this.isObjectFound = (atId: any) => {
+        this.isObjectFound = (atId: number) => {
             var completedAssessments = this.props.completedAssessments;
 
             if(completedAssessments) {
-                const catsForThisTask = completedAssessments.filter((cat: any) => cat.assessment_task_id === atId);
+                const catsForThisTask = completedAssessments.filter((cat) => cat.assessment_task_id === atId);
         
-                const userCatForThisTask = catsForThisTask.find((cat: any) => // For individual assessments, team_id will be null
+                const userCatForThisTask = catsForThisTask.find((cat) => // For individual assessments, team_id will be null
                 // For team assessments, find one that matches user's general teams
                 cat.team_id === null || 
                 (this.props.userTeamIds && this.props.userTeamIds.includes(cat.team_id))
@@ -74,7 +77,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     const userTeamId = userCatForThisTask.team_id;
             
                     // Now check if ANY completed assessment for this task with the same team is done
-                    const teamIsDone = catsForThisTask.some((cat: any) => cat.done === true && 
+                    const teamIsDone = catsForThisTask.some((cat) => cat.done === true && 
                     (cat.team_id === userTeamId || (cat.team_id === null && userTeamId === null))
                     );
             
@@ -109,11 +112,11 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
          * @returns {boolean} True if all expected CATs for this AT are completed.
          */
         
-        this.areAllATsComplete = (atId: any) => {
+        this.areAllATsComplete = (atId: number) => {
             // Contains all Assessments completed by the TA
-            var completedAssessments = this.props.completedAssessments.filter((at: any) => at.assessment_task_id === atId);
+            var completedAssessments = this.props.completedAssessments.filter((at) => at.assessment_task_id === atId);
 
-            var assessmentTasks = this.props.assessmentTasks.filter((at: any) => at.assessment_task_id === atId);
+            var assessmentTasks = this.props.assessmentTasks.filter((at) => at.assessment_task_id === atId);
 
             var count = 0;
             const firstTask = assessmentTasks[0];
@@ -122,10 +125,10 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                 {
                     count = firstTask["number_of_teams"]
                 } else {                                          // Otherwise, use the number of fixed teams
-                    count = this.props.counts[1];
+                    count = this.props.counts[1]!;
                 }
             } else {
-                count = this.props.counts[0];
+                count = this.props.counts[0]!;
             }
 
             if (completedAssessments.length === 0) {
@@ -136,7 +139,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     return false;
                 }
                 for (let i = 0; i < completedAssessments.length; i++) {
-                    if (completedAssessments[i].assessment_task_id === atId && completedAssessments[i].done === false) {
+                    if (completedAssessments[i]!.assessment_task_id === atId && completedAssessments[i]!.done === false) {
                         return false;
                     }
                 }
@@ -150,7 +153,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
 
         const role = this.props.role;
 
-        var chosenCAT: any = null;
+        var chosenCAT: CompleteAssessmentTask[] | null = null;
 
         if (role["role_id"] === 5) {
             chosenCAT = this.props.completedAssessments;
@@ -175,7 +178,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"270px"}},
                     setCellProps: () => { return { width:"270px"} },
-                    customBodyRender: (isTeam: any) => {
+                    customBodyRender: (isTeam: boolean) => {
                         return (
                             <p className='mt-3'>
                                 {isTeam ? "Team" : "Individual"}
@@ -191,7 +194,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"170px"}},
                     setCellProps: () => { return { width:"170px"} },
-                    customBodyRender: (dueDate: any) => {
+                    customBodyRender: (dueDate: string) => {
                         let dueDateString = getHumanReadableDueDate(dueDate);
 
                         return(
@@ -209,7 +212,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     filter: true,
                     setCellHeaderProps: () => { return { width:"270px"}},
                     setCellProps: () => { return { width:"270px"} },
-                    customBodyRender: (rubricId: any) => {
+                    customBodyRender: (rubricId: number) => {
                         return (
                             <p className='mt-3'>
                                 {this.props.rubricNames ? this.props.rubricNames[rubricId]:""}
@@ -226,9 +229,9 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
-                    customBodyRender: (atId: any) => {
-                        let at = assessmentTasks.find((at: any) => at["assessment_task_id"] === atId);
-                        let filledByStudent = at.role_id === 5;
+                    customBodyRender: (atId: number) => {
+                        let at = assessmentTasks.find((at: AssessmentTask) => at["assessment_task_id"] === atId)!;
+                        let filledByStudent = at!.role_id === 5;
                         
                         // Check if user is switching teams (already checked in)
                         const isSwitchingTeams = this.props.checkin.indexOf(atId) !== -1;
@@ -240,7 +243,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                                     flexFlow: "row wrap",
                                 }}
                             >
-                                {assessmentTasks.find((at: any) => at["assessment_task_id"] === atId)["unit_of_assessment"] &&
+                                {assessmentTasks.find((at: AssessmentTask) => at["assessment_task_id"] === atId)!["unit_of_assessment"] &&
                                     <Button
                                         className='primary-color'
 
@@ -300,7 +303,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
 
                                     disabled={role["role_id"] === 5 ?
                                         ((this.props.checkin.indexOf(atId) === -1 &&
-                                        (assessmentTasks.find((at: any) => at["assessment_task_id"] === atId)["unit_of_assessment"])) ||
+                                        (assessmentTasks.find((at) => at["assessment_task_id"] === atId)?.unit_of_assessment)) ||
                                         this.isObjectFound(atId) === true || !filledByStudent)
                                     :
                                         this.areAllATsComplete(atId) === true
@@ -311,12 +314,12 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                                         if (role["role_id"] === 5 && at.unit_of_assessment) {
                                             // For students on team assessments, find THEIR team's CAT
                                             
-                                            relevantCAT = this.props.completedAssessments.find((cat: any) => cat.assessment_task_id === atId && 
-                                            this.props.userTeamIds.includes(cat.team_id)
+                                            relevantCAT = this.props.completedAssessments.find((cat) => cat.assessment_task_id === atId &&
+                                            cat.team_id !== null && this.props.userTeamIds.includes(cat.team_id)
                                             );
                                         } else if (role["role_id"] === 5) {
                                             // For individual assessments, find their personal CAT
-                                            relevantCAT = this.props.completedAssessments.find((cat: any) => cat.assessment_task_id === atId && 
+                                            relevantCAT = this.props.completedAssessments.find((cat) => cat.assessment_task_id === atId && 
                                             cat.team_id === null
                                             );
                                         } else {

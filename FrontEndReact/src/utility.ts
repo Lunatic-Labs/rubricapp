@@ -32,19 +32,19 @@ interface Role {
 }
 
 interface Rubric {
-  rubric_id: string;
+  rubric_id: number;
   rubric_name: string;
 }
 
 interface Category {
-  category_id: string;
-  rubric_id: string;
+  category_id: number;
+  rubric_id: number;
   [key: string]: any;
 }
 
 interface AssessmentTask {
-  assessment_task_id: string;
-  unit_of_assessment: string;
+  assessment_task_id: number;
+  unit_of_assessment: boolean;
 }
 
 interface CourseRole {
@@ -345,7 +345,7 @@ export function parseCategoriesByRubrics(
     for (let categoryIndex = 0; categoryIndex < categories.length; categoryIndex++) {
       const category = categories[categoryIndex];
       if (!category || category.rubric_id == null) continue;
-      if (category.rubric_id === rubricId) {
+      if (category.rubric_id === Number(rubricId)) {
         allCategoriesByRubrics[rubricId] = [
           ...(allCategoriesByRubrics[rubricId] || []),
           category
@@ -395,8 +395,8 @@ export function parseCourseRoles(courses: CourseRole[]): Record<string, string> 
 
 export function parseAssessmentIndividualOrTeam(
   assessmentTasks: AssessmentTask[]
-): Record<string, string> {
-  const allAssessments: Record<string, string> = {};
+): Record<string, boolean> {
+  const allAssessments: Record<string, boolean> = {};
 
   for (let assessmentIndex = 0; assessmentIndex < assessmentTasks.length; assessmentIndex++) {
     const task = assessmentTasks[assessmentIndex];
@@ -537,7 +537,13 @@ export function restoreAdminCredentialsFromSession() {
     window.location.reload();
 }
 
-export function setTestStudentCookies(data: any ) {
+interface TestStudentCredentials {
+    access_token: string;
+    refresh_token: string;
+    user: Record<string, unknown>;
+}
+
+export function setTestStudentCookies(data: TestStudentCredentials) {
     const cookies = new Cookies();
     
     // Clear old cookies

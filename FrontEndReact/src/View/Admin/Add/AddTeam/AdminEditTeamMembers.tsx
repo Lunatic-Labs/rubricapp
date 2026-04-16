@@ -4,6 +4,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import { Checkbox, Typography } from "@mui/material";
+import { User } from "../../../../types/User";
 
 interface AdminEditTeamMembersProps {
     navbar: any;
@@ -11,15 +12,15 @@ interface AdminEditTeamMembersProps {
 }
 
 interface AdminEditTeamMembersState {
-    errorMessage: any;
+    errorMessage: string | null;
     isLoaded: boolean;
-    users: any[];
-    userEdits: { [key: string]: any };
+    users: User[];
+    userEdits: { [key: string]: User };
 }
 
 class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEditTeamMembersState> {
-    saveUser: any;
-    sendUsers: any;
+    saveUser: (userId: number) => void;
+    sendUsers: () => void;
     constructor(props: AdminEditTeamMembersProps) {
         super(props);
 
@@ -30,13 +31,13 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
             userEdits: {},
         };
 
-        this.saveUser = (userId: any) => {
+        this.saveUser = (userId: number) => {
             var userEdits = this.state.userEdits;
 
             for (var user = 0; user < this.state.users.length; user++) {
-                if (this.state.users[user]["user_id"] === userId) {
+                if (this.state.users[user]!["user_id"] === userId) {
                     if (userEdits[userId] === undefined) {
-                        userEdits[userId] = this.state.users[user];
+                        userEdits[userId] = this.state.users[user]!;
                     } else {
                         delete userEdits[userId];
                     }
@@ -137,7 +138,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
                   setCellProps: () => {
                       return { width: "300px" };
                   },
-                  customBodyRender: (teamName: any) => {
+                  customBodyRender: (teamName: string | null) => {
                     return teamName ? teamName : "No team assigned";
                   }
               },
@@ -175,7 +176,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
                             className: "button-column-alignment",
                         };
                     },
-                    customBodyRender: (userId: any) => {
+                    customBodyRender: (userId: number) => {
                         return (
                             <Checkbox
                                 checked={this.state.userEdits[userId] !== undefined}

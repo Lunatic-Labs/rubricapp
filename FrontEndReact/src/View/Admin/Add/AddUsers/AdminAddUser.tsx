@@ -5,7 +5,7 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import DropConfirmation from '../../../Components/DropConfirmation';
 import DeleteConfirmation from '../../../Components/DeleteConfirmation';
 import { genericResourceDELETE, genericResourcePOST, genericResourcePUT } from '../../../../utility';
-import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select} from '@mui/material';
+import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select, SelectChangeEvent} from '@mui/material';
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 
@@ -17,8 +17,8 @@ interface NavbarState {
         first_name: string;
         last_name: string;
         email: string;
-        role_id: string;
-        lms_id: string;
+        role_id: number;
+        lms_id: number | null;
     } | null;
     chosenCourse: {
         course_id: number;
@@ -64,6 +64,7 @@ interface AdminAddUserState {
 class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
     unenrollUser: () => void;
     deleteUser: () => void;
+
 
     constructor(props: AdminAddUserProps) {
         super(props);
@@ -133,8 +134,8 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
         lastName: user["last_name"],
         email: user["email"],
         originalEmail: user["email"],
-        role: user["role_id"],
-        lmsId: user["lms_id"],
+        role: user["role_id"] != null ? String(user["role_id"]) : "",
+        lmsId: user["lms_id"] != null ? String(user["lms_id"]) : "",
         editUser: true,
       });
     }
@@ -161,21 +162,21 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
         })
     }
 
-   
+    // handleChange has been altered to account for the 50 character limit for first / last names
     handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
       
         // Special case: email with inline validation
         if (id === 'email') {
-          this.setState(prev => ({
-            email: value,
-            errors: {
-              ...prev.errors,
-              email:
-                value.trim() === '' ? 'Email cannot be empty'
-                : validator.isEmail(value) ? ''
-                : 'Please enter a valid email address',
-            },
+          this.setState((prev: AdminAddUserState) => ({
+              email: value,
+              errors: {
+                ...prev.errors,
+                email:
+                  value.trim() === '' ? 'Email cannot be empty'
+                  : validator.isEmail(value) ? ''
+                  : 'Please enter a valid email address',
+              },
           }));
           return;
         }
@@ -229,7 +230,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
     
 
 
-    handleSelect = (event: { target: { value: unknown; }; }) => {
+    handleSelect = (event: SelectChangeEvent<string>) => {
         this.setState({
             role: event.target.value as string
         });
@@ -308,7 +309,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
       lms_id: lmsId !== "" ? lmsId : null,
       consent: null,
       owner_id: cookies.get("user")["user_id"],
-      role_id: navbar.props.isSuperAdmin ? 3 : role,
+      role_id: navbar.props.isSuperAdmin ? 3 : Number(role),
     });
 
     let promise: Promise<any> | undefined;
@@ -351,7 +352,9 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
   .then((result) => {
     if (result && result.errorMessage == null) {
       // success: ensure any old email error is cleared
-      this.setState((prev) => ({ errors: { ...prev.errors, email: '' } }));
+      this.setState((prev: AdminAddUserState) => ({
+          errors: { ...prev.errors, email: '' }
+      }));
       confirmCreateResource("User");
       return;
     }
@@ -372,9 +375,9 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
           const isDup = isMysqlDup || isPgDup || isSqliteDup;
 
       if (isDup) {
-        this.setState((prev) => ({
-          errors: { ...prev.errors, email: 'Email is already in use.' },
-          errorMessage: null, // suppress big red toast
+        this.setState((prev: AdminAddUserState) => ({
+            errors: { ...prev.errors, email: 'Email is already in use.' },
+            errorMessage: null, // suppress big red toast
         }));
         return;
       }
@@ -680,21 +683,21 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         }}
                       >
                         <MenuItem
-                          value={5}
+                          value={"5"}
                           aria-label="addUserRoleDropDownStudentOption"
                         >
                           Student
                         </MenuItem>
 
                         <MenuItem
-                          value={4}
+                          value={"4"}
                           aria-label="addUserRoleDropDownTAOrInstructorOption"
                         >
                           TA/Instructor
                         </MenuItem>
 
-                        <MenuItem 
-                        value={3}
+                        <MenuItem
+                        value={"3"}
                         aria-label="addUserRoleDropDownAdminOption"
                         >
                           Admin
@@ -714,9 +717,8 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                                         error={!!errors.lmsId}
                                         helperText={errors.lmsId}
                                         onChange={this.handleChange}
-                                       onPaste={(e) => {
-                                            const clipboardData = e.clipboardData;
-                                            const text = clipboardData ? clipboardData.getData('text') : '';
+                                       onPaste={(e: React.ClipboardEvent<HTMLInputElement>) => {
+                                            const text = e.clipboardData ? e.clipboardData.getData('text') : '';
                                             if (!/^\d*$/.test(text) || text.length > MAX_LMS_ID_LENGTH) {
                                                 e.preventDefault();
                                                 this.setState({
