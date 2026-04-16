@@ -28,9 +28,9 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 		};
 	}
 
-	submitPasscode = () => {
+	submitPasscode = async () => {
 		const enteredPassword = this.state.password;
-		const correctPassword = this.state.assessmentTasks["create_team_password"];
+
 		this.setState({
 			validationError: null
 		});
@@ -42,16 +42,42 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 			return;
 		}
 
-		if (enteredPassword !== correctPassword) {
-			this.setState({
-				validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
+		const body = {
+			password: enteredPassword,
+			assessment_task_id: this.props.navbar.state.chosenAssessmentTask["assessment_task_id"]
+
+		};
+
+		try {
+			const response = await fetch('/assessment_task/verify_team_password', {
+				method: 'POST',
+				headers: {
+					'Content-Type': 'application/json'
+				},
+				body: JSON.stringify(body)
 			});
-			return;
+
+			const data = await response.json();
+
+			if (response.ok) {
+				// correct
+				this.props.navbar.setState({
+					teamSwitchPassword: enteredPassword
+
+				});
+				this.props.navbar.setNewTab("SelectTeam");
+			} else {
+				// incorrect
+				this.setState({
+					validationError: data.message || "Incorrect password. Please contact your instructor if you need to switch teams."
+				});
+			}
+		} catch (error) {
+			this.setState({
+				validationError: "An error occurred. Please try again."
+			});
 		}
-		this.props.navbar.setState({
-			teamSwitchPassword: enteredPassword
-		});
-		this.props.navbar.setNewTab("SelectTeam");
+
 	}
 
 	handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

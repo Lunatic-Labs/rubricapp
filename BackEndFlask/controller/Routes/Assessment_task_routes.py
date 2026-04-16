@@ -340,6 +340,33 @@ def copy_course_assessments():
         )
 
 
+@bp.route('/verify_team_password', methods = ['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def verify_team_password():
+    try:
+        data = request.get_json()
+
+        if not data or 'password' not in data or 'assessment_task_id' not in data:
+            return create_bad_response ("Missing Information: password or assessment_task_id", "assesment_tasks", 400)
+        
+        assessment_task_id = data.get('assessment_task_id')
+        entered_password = data.get('password')
+        assessment_task_instance = get_assessment_task(assessment_task_id)
+        correct_password = assessment_task_instance.create_team_password
+
+        if entered_password == correct_password:
+            return create_good_response({"message": "Password is correct."}, 200, "assessment_tasks")
+        else:
+            return create_bad_response("Incorrect password.", "assessment_tasks", 401)
+    except Exception as e:
+        return create_bad_response(
+            f"An error occured verifying the team password: {e}",
+            "assessment_tasks",
+            400
+        )
+
 
 class AssessmentTaskSchema(ma.Schema):
     assessment_task_id   = fields.Integer()
