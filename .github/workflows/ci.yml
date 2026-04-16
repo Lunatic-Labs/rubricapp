@@ -58,7 +58,7 @@ jobs:
       - name: Install Node dependencies
         run:  |
           cd FrontEndReact
-          npm install
+          npm ci
       
       # Main part where frontend independent tests should be added.
       - name: Run ESLint
@@ -317,7 +317,7 @@ jobs:
       - name: Install Node dependencies
         run: |
           cd FrontEndReact
-          npm install
+          npm ci
 
       - name: Verify React Scripts
         run: |
