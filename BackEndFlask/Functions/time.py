@@ -13,7 +13,7 @@ timezone_list = {
     "EDT": "America/New_York",
 }
 
-def parse_and_convert_timezone(time_str, assessment_task):
+def parse_and_convert_timezone(time_str, assessment_task, timezone = None):
     """
     Description:
     Parse and convert a time string to the chosen assessment task's timezone.
@@ -32,10 +32,9 @@ def parse_and_convert_timezone(time_str, assessment_task):
     if "Z" not in time_str:
         time_str = time_str + "Z"
 
-    
     # Parse the time string into a UTC datetime object
     utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
-    
+
     # Handles the conversion of the chosen assessment task timezone.
     # Supports both IANA format (e.g. "America/New_York") and legacy abbreviations (e.g. "EST").
     if assessment_task and assessment_task.time_zone:
@@ -46,8 +45,9 @@ def parse_and_convert_timezone(time_str, assessment_task):
             iana_tz = timezone_list.get(tz_str, "UTC")
         pytz_timezone = pytz.timezone(iana_tz)
         return utc_time.astimezone(pytz_timezone)
-    
-    return utc_time
+
+    return utc_time.astimezone(pytz.UTC)
+
 def ensure_utc_datetime(dt):
     """
     Ensure a datetime object is timezone-aware and in UTC.

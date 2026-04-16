@@ -438,15 +438,8 @@ export function getDueDateString(dueDate: Date): string {
   return dueDate.toISOString();
 }
 
-export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
-  // Backend stores all datetimes in UTC but returns them without a timezone suffix.
-  // Appending Z ensures JavaScript parses them as UTC rather than local time.
-  let date: Date;
-  if (typeof dueDate === 'string' && !dueDate.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(dueDate)) {
-    date = new Date(dueDate + 'Z');
-  } else {
-    date = new Date(dueDate);
-  }
+// formating
+function formatDateTime(date: Date, timeZone?: string): string {
   const month = date.getMonth();
   const day = date.getDate();
   const hour = date.getHours();
@@ -459,6 +452,33 @@ export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: strin
   const timeString = `${displayHour}:${minutesString}${twelveHourClock}`;
 
   return `${monthNames[month]} ${day} at ${timeString} ${timeZone || ""}`.trim();
+}
+
+// Normal times
+export function formatTime(time: string | Date, timeZone?: string): string {
+  let dateString: string | Date = time;
+
+  if (typeof time === 'string' && !time.endsWith('Z') && !time.includes('GMT')) {
+    dateString = `${time}Z`;
+  }
+  
+  const date = new Date(dateString);
+
+  return formatDateTime(date, timeZone);
+}
+
+// specifically for due dates
+export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
+  // Backend stores datetimes in UTC but returns them without a timezone suffix.
+  // Appending Z ensures JavaScript parses them as UTC rather than local time.
+  let date: Date;
+  if (typeof dueDate === 'string' && !dueDate.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(dueDate)) {
+    date = new Date(dueDate + 'Z');
+  } else {
+    date = new Date(dueDate);
+  }
+
+  return formatDateTime(date, timeZone);
 }
 
 /**
