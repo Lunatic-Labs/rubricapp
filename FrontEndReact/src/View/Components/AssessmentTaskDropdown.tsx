@@ -3,14 +3,21 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { AssessmentTask } from '../../types/AssessmentTask';
+import { SelectChangeEvent } from '@mui/material/Select';
 
+interface AssessmentTaskDropdownProps {
+    assessmentTasks: AssessmentTask[];
+    chosenAssessmentId: string | number;
+    setChosenAssessmentId: (id: string | number) => void;
+}
 
-export default function AssessmentTaskDropdown(props: any) {
+export default function AssessmentTaskDropdown(props: AssessmentTaskDropdownProps) {
   var assessmentTaskList = [];
 
   // Check if assessmentTasks exists and is not empty to prevent null reference errors
   if (props.assessmentTasks && props.assessmentTasks.length > 0) {
-    props.assessmentTasks.map((assessmentTask: any) => {
+    props.assessmentTasks.map((assessmentTask: AssessmentTask) => {
 
     const taskName = assessmentTask["assessment_task_name"];
 
@@ -81,7 +88,7 @@ export default function AssessmentTaskDropdown(props: any) {
         labelId="demo-simple-select-autowidth-label"
         id="demo-simple-select-autowidth"
         value={props.chosenAssessmentId || ""}
-        onChange={props.setChosenAssessmentId}
+        onChange={(event: SelectChangeEvent<string | number>) => props.setChosenAssessmentId(event.target.value)}
         disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
         autoWidth={false}
         label={(!props.assessmentTasks || props.assessmentTasks.length === 0) 

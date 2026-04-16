@@ -12,25 +12,28 @@ import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
 
 // Shows a table of completed individual student rubrics with notifications and has privileges to who can edit submissions//
-
-interface ViewCompleteIndividualAssessmentTasksState {
-    errorMessage: any;
-    isLoaded: any;
-    showDialog: boolean;
-    notes: string;
-    notificationSent: any;
-    isSingleMsg: boolean;
-    compATId: any;
-    lockStatus: any;
-    errors: {
-        notes: string;
-    };
+interface ViewCompleteIndividualAssessmentTasksProps {
+    navbar: any;
+    completedAssessment: CompleteAssessmentTask[];
 }
 
-class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteIndividualAssessmentTasksState> {
-    constructor(props: any) {
+interface ViewCompleteIndividualAssessmentTasksState {
+    errorMessage: string | null;
+    isLoaded: boolean | null;
+    showDialog: boolean;
+    notes: string;
+    notificationSent: Date | false;
+    isSingleMsg: boolean;
+    compATId: number | null;
+    lockStatus: Record<number, boolean>;
+    errors: { notes: string };
+}
+
+class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndividualAssessmentTasksProps, ViewCompleteIndividualAssessmentTasksState> {
+    constructor(props: ViewCompleteIndividualAssessmentTasksProps) {
         super(props);
     // Initialize component state
     this.state = {
@@ -53,18 +56,18 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
         // extract assessment data from props
         const completedAssessmentTasks = this.props.navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks;
         // Create empty object to store lock status
-        const initialLockStatus: any = {};
+        const initialLockStatus: Record<number, boolean> = {};
         // Preload lock status from server data to avoid UI flicker //
-        completedAssessmentTasks.forEach((task: any) => {
+        completedAssessmentTasks.forEach((task: CompleteAssessmentTask) => {
             initialLockStatus[task.completed_assessment_id] = task.locked;
         });
         // Update component state with lock status
         this.setState({ lockStatus: initialLockStatus });
     }
 
-    handleLockToggle = (completedAssessmentId: any, task: any) => { //Toggles lock state for a single student assessment
+    handleLockToggle = (completedAssessmentId: number, task: CompleteAssessmentTask | undefined) => { //Toggles lock state for a single student assessment
         // Update local lock status state
-        this.setState((prevState: any) => {
+        this.setState((prevState: ViewCompleteIndividualAssessmentTasksState) => {
             //create copy of lock status object
             const newLockStatus = { ...prevState.lockStatus };
             //Flip the boolean value for this assessment
@@ -84,11 +87,11 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
         });
     };
 
-    handleUnlockAllCats = (assessmentTaskIds: any) => { // unlocks all student assessments in bulk (allows all students to edit submissions)
+    handleUnlockAllCats = (assessmentTaskIds: number[]) => { // unlocks all student assessments in bulk (allows all students to edit submissions)
         // Loop through each assessment ID
-        assessmentTaskIds.forEach((completedAssessmentId: any) => {
+        assessmentTaskIds.forEach((completedAssessmentId: number) => {
             // Update local state to unlocked for this assessment
-            this.setState((prevState: any) => {
+            this.setState((prevState: ViewCompleteIndividualAssessmentTasksState) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = false;
                 return { lockStatus: newLockStatus };
@@ -105,11 +108,11 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
         });
     };
 
-    handleLockAllCats = (assessmentTaskIds: any) => { // Locks all student assessment in bulk (prevents all student from editing)
+    handleLockAllCats = (assessmentTaskIds: number[]) => { // Locks all student assessment in bulk (prevents all student from editing)
         // Loop through each assessment ID
-        assessmentTaskIds.forEach((completedAssessmentId: any) => {
+        assessmentTaskIds.forEach((completedAssessmentId: number) => {
             // Update local state to locked for this assessment
-            this.setState((prevState: any) => {
+            this.setState((prevState: ViewCompleteIndividualAssessmentTasksState) => {
                 const newLockStatus = { ...prevState.lockStatus };
                 newLockStatus[completedAssessmentId] = true;
                 return { lockStatus: newLockStatus };
@@ -126,7 +129,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
         });
     };
 
-    handleChange = (e: any) => { // Updates notification message as instructor types and validates input
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => { // Updates notification message as instructor types and validates input
         // Extract field ID and value from input event
         const { id, value } = e.target;
         // Update state with new value and validation error
@@ -140,7 +143,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
         } as any);
     };
 
-    handleDialog = (isSingleMessage: any, singleCompletedAT: any) => { // Opens or closes the notification dialog and sets notification mode
+    handleDialog = (isSingleMessage: boolean, singleCompletedAT: number | null) => { // Opens or closes the notification dialog and sets notification mode
       this.setState({
         // toggle dialog visibility
           showDialog: this.state.showDialog === false ? true : false,
@@ -253,7 +256,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
                 options: {
                     filter: true,
                     // custom rendering shows last name or N/A if missing
-                    customBodyRender: (last_name: any) => {
+                    customBodyRender: (last_name: string) => {
                         return (
                             <p>
                                 {last_name ? last_name : "N/A"}
@@ -269,7 +272,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
                 options: {
                     filter: true,
                     // Custom rendering Maps user ID to readable name
-                    customBodyRender: (completed_by: any) => {
+                    customBodyRender: (completed_by: number) => {
                         return (
                             <p>
                                 {userNames && completed_by ? userNames[completed_by] : "N/A"}
@@ -285,7 +288,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
                 options: {
                     filter: true,
                     // custom rendering converts timestamp to human-readable format in course timezone
-                    customBodyRender: (initialTime: any) => {
+                    customBodyRender: (initialTime: string) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
 
                         return (
@@ -303,7 +306,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
                 options: {
                     filter: true,
                     // custom rendering: converts timezone to human readable
-                    customBodyRender: (lastUpdate: any) => {
+                    customBodyRender: (lastUpdate: string) => {
                         const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                       
                         return(
@@ -320,7 +323,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
                 label: "Lock",
                 options: {
                     filter: true,
-                    customBodyRender: (completedAssessmentId: any) => {
+                    customBodyRender: (completedAssessmentId: number) => {
                         const task = completedAssessmentTasks.find((task: any) => task["completed_assessment_id"] === completedAssessmentId);
                         // determine lock status by first checking local state (recent) and fallback to server data if state not set yet
                         const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
@@ -354,11 +357,11 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
                     sort: false,
                     setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
                     setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
+                    customBodyRender: (completedAssessmentId: number, completeAssessmentTasks: any) => {
                         // Get row index to access user_id from props array
                         const rowIndex = completeAssessmentTasks.rowIndex;
                         // Extract user_id from completedAssessment prop 
-                        const userId = this.props.completedAssessment[rowIndex].user_id;
+                        const userId = this.props.completedAssessment[rowIndex]!.user_id;
                         if (completedAssessmentId) {
                             return (
                                 <IconButton
@@ -395,7 +398,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
           sort: false,
           setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
           setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId: any, completeAssessmentTasks: any) => {
+          customBodyRender: (completedAssessmentId: number, completeAssessmentTasks: any) => {
             const rowIndex = completeAssessmentTasks.rowIndex;
             //Hardcoded in
             // Assumes completed_assessment_id is always at index 5 in tableData array
@@ -416,7 +419,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
                         <CustomButton
                         onClick={() => this.handleDialog(true, completedAssessmentId)}
                         label="Notify"
-                        align="center"
+                        // align="center"
                         isOutlined={true}
                         disabled={notificationSent}
                         aria-label="Send individual messages"
@@ -462,7 +465,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<any, ViewCompleteI
           <Box>
             <ResponsiveNotification
               show={this.state.showDialog}
-              handleDialog={this.handleDialog}
+              handleDialog={() => this.handleDialog(false, null)}
               sendNotification={this.handleSendNotification}
               handleChange={this.handleChange}
               notes={this.state.notes}

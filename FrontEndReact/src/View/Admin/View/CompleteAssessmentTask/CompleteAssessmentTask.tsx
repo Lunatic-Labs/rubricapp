@@ -8,26 +8,34 @@ import Cookies from 'universal-cookie';
 import Loading from '../../../Loading/Loading';
 import { generateUnitList, UnitType } from './unit';
 import { CheckinsTracker } from './cat_utils';
-import { ROLE, isEqualOrHigherPrivilege } from '../../../../Enums/Role';
+import { Rubric } from '../../../../types/Rubric';
+import { User } from '../../../../types/User';
+import { CompleteAssessmentTask as CompleteAssessmentTaskType } from '../../../../types/CompleteAssessmentTask';
+import { Team } from '../../../../types/Team';
+import { ROLE, Role, isEqualOrHigherPrivilege } from '../../../../Enums/Role';
+
+interface CompleteAssessmentTaskProps {
+    navbar: any;
+}
 
 interface CompleteAssessmentTaskState {
     errorMessage: string | null;
     isLoaded: boolean;
-    assessmentTaskRubric: any;
-    teams: any[] | null;
-    userFixedTeam: any;
-    users: any[] | null;
-    teamsUsers: any;
-    currentUserRole: any;
-    completedAssessments: any[] | null;
-    currentUserId: string | null;
+    assessmentTaskRubric: Rubric | null;
+    teams: Team[] | null;
+    userFixedTeam: Team[] | null;
+    users: User[] | null;
+    teamsUsers: {[key: string]: User[]} | null;
+    currentUserRole: { role_name: string; role_id: Role } | null;
+    completedAssessments: CompleteAssessmentTaskType[] | null;
+    currentUserId: number | null;
     usingTeams: boolean;
     usingAdHoc: boolean;
     checkins: CheckinsTracker;
-    checkinEventSource: any;
+    checkinEventSource: EventSource | null;
     unitList: any[] | null;
-    jumpId: any;
-    isPollingSetUp: boolean,
+    jumpId: number | null;
+    isPollingSetUp: boolean;
 }
 
 /**
@@ -64,11 +72,11 @@ interface CompleteAssessmentTaskState {
  * @property {boolean} state.isPollingSetUp - Indicates if the polling function interval has been setup and called.
  */ 
 
-class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState> {
-    currentUserId: any;
+class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, CompleteAssessmentTaskState> {
+    currentUserId!: number;
     intervalId: NodeJS.Timeout | null = null;
 
-    constructor(props: any) {
+    constructor(props: CompleteAssessmentTaskProps) {
         super(props);
 
         this.state = {
@@ -122,7 +130,6 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
         const isTeams = this.state.usingTeams;
-        
         // Skip checkin tracking when viewing a completed assessment in read-only mode.
         // The GET /checkin_events endpoint requires system-admin privileges, and calling
         // it as a course-level TA/Instructor would return "No Authorization", which the
@@ -131,7 +138,7 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
             return;
         }
 
-        if (isEqualOrHigherPrivilege(this.state.currentUserRole.role_id, ROLE.TA_INSTRUCTOR)){
+        if (isEqualOrHigherPrivilege(this.state.currentUserRole!.role_id, ROLE.TA_INSTRUCTOR)){
             this.callPollingFunction();
             this.intervalId = setInterval(this.callPollingFunction, 10000);
         }
@@ -181,19 +188,19 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                     ).then((userResponse) => {
                         const users = userResponse.users || [];
                          
-                        const teamsUsersMap: {[key: string]: any[]} = {};
+                        const teamsUsersMap: {[key: string]: User[]} = {};
                         
-                        teamsResult.teams.forEach((team:any) => {
+                        teamsResult.teams.forEach((team:Team) => {
                             teamsUsersMap[team.team_id] = [];
                         });
                         
                         // Add users to teams based on their checkins
-                        checkins.forEach((checkin: any)=> {
+                        checkins.forEach((checkin: { user_id: number; team_number: number })=> {
                             const userId = checkin.user_id;
                             const teamId = checkin.team_number;
-                            const user = users.find((u:any) => u.user_id === userId);
+                            const user = users.find((u:User) => u.user_id === userId);
                             
-                            const teamsUsers: any  = teamsUsersMap[teamId];
+                            const teamsUsers: User[] | undefined = teamsUsersMap[teamId];
 
                             if (user && teamsUsers) {
                                 teamsUsers.push(user);
@@ -201,11 +208,11 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                         });
                         
                         if (!cookies.get("user")["isAdmin"] && !cookies.get("user")["isSuperAdmin"]) {
-                            const userCheckin = checkins.find((checkin:any) => checkin.user_id === this.currentUserId);
+                            const userCheckin = checkins.find((checkin: { user_id: number; team_number: number }) => checkin.user_id === this.currentUserId);
                                                         
                             if (userCheckin) {
                                 const userTeamId = userCheckin.team_number;
-                                const userTeam = teamsResult.teams.find((team:any) => team.team_id === userTeamId);
+                                const userTeam = teamsResult.teams.find((team:Team) => team.team_id === userTeamId);
                                 
                                 this.setState({
                                     userFixedTeam: userTeam ? [userTeam] : null,
@@ -319,7 +326,7 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
                     fixedTeamMembers: teamsUsers,
                     // userFixedTeam is actually a list of a single team,
                     //   so index to get the first entry of the list.
-                    userFixedTeam: userFixedTeam?.[0],
+                    userFixedTeam: userFixedTeam?.[0] ?? null,
                 });
 
                 this.setState({
@@ -408,7 +415,7 @@ class CompleteAssessmentTask extends Component<any, CompleteAssessmentTaskState>
 
                 <Form
                     navbar={this.props.navbar}
-                    roleName={this.state.currentUserRole["role_name"]}
+                    roleName={roleName}
                     checkins={this.state.checkins}
                     assessmentTaskRubric={assessmentTaskRubric}
                     units={unitList}

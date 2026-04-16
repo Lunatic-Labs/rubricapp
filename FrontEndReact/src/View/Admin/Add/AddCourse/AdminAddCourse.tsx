@@ -13,10 +13,10 @@ interface AdminAddCourseProps {
 }
 
 interface AdminAddCourseState {
-    errorMessage: any;
+    errorMessage: string | null;
     validMessage: string;
     editCourse: boolean;
-    courseID: any;
+    courseID: number | null;
     courseName: string;
     courseNumber: string;
     term: string;
@@ -25,7 +25,7 @@ interface AdminAddCourseState {
     useTas: boolean;
     useFixedTeams: boolean;
     timeZone: string;
-    anchorEl: any;
+    anchorEl: HTMLElement | null;
     errors: {
         courseName: string;
         courseNumber: string;
@@ -66,7 +66,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
         
     }
 
-    setAnchorEl = (element: any) => {
+    setAnchorEl = (element: HTMLElement | null) => {
         this.setState({ anchorEl: element });
     };
 
@@ -91,7 +91,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             });
         }
     }
-    handleClick = (event: any) => {
+    handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
         this.setAnchorEl(event.currentTarget);
       };
 
@@ -99,7 +99,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
         this.setAnchorEl(null);
       };
 
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
 
         var formatString = "";
@@ -143,17 +143,18 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
     };
 
 
-    handleSelect = (event: any) => {
+    handleSelect = (event: React.ChangeEvent<HTMLInputElement>) => {
         this.setState({
             term: event.target.value,
         });
     };
 
-    handleCheckboxChange = (e: any) => {
-        const { id } = e.target;
+    handleCheckboxChange = (e: React.MouseEvent<HTMLButtonElement>) => {
+        const target = e.target as HTMLInputElement;
+        const { id } = target;
 
         this.setState({
-            [id]: e.target.checked,
+            [id]: target.checked,
         } as any);
     };
 

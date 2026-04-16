@@ -3,9 +3,13 @@ import { Box } from "@mui/material";
 import BackButtonResource from "./BackButtonResource";
 import TabManager from "../Admin/View/Reporting/ReportTabs";
 
+interface ReportingMainHeaderProps {
+    navbar: any;
+    setTab: (tab: string) => void;
+    activeTab: string;
+}
 
-
-export default function ReportingMainHeader (props: any) {
+export default function ReportingMainHeader (props: ReportingMainHeaderProps) {
     var navbar = props.navbar;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;
@@ -25,6 +29,7 @@ export default function ReportingMainHeader (props: any) {
                 />
                 <TabManager
                     setTab={props.setTab}
+                    activeTab={props.activeTab}
                     navbar={navbar}
                 />
             </Box>

@@ -4,6 +4,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable'
 import { genericResourceGET } from '../../../../utility';
+import { User } from '../../../../types/User';
 
 /**
  * @description
@@ -33,7 +34,7 @@ interface ShowTeamMembersState {
     errorMessage: string | null;
     isLoaded: boolean;
     selectedTeam: string | number | null;
-    users: any[] | null;
+    users: User[] | null;
 }
 
 class ShowTeamMembers extends Component<ShowTeamMembersProps, ShowTeamMembersState> {
@@ -58,14 +59,14 @@ class ShowTeamMembers extends Component<ShowTeamMembersProps, ShowTeamMembersSta
          * @param {number} userId - ID of the user to remove from the table.
          */
         
-        this.removeUser = (userId: any) => {
+        this.removeUser = (userId: number) => {
             var students = this.state.users;
-            var studentsRemaining: any = [];
+            var studentsRemaining: User[] = [];
 
             if (students) {
                 for(var student = 0; student < students.length; student++) {
-                    if(students[student]["user_id"]!==userId) {
-                    studentsRemaining = [...studentsRemaining, students[student]];
+                    if(students[student]!["user_id"]!==userId) {
+                    studentsRemaining = [...studentsRemaining, students[student]!];
                     }
                 }
             }
@@ -137,7 +138,7 @@ class ShowTeamMembers extends Component<ShowTeamMembersProps, ShowTeamMembersSta
                 options: {
                     filter: false,
                     sort: false,
-                    customBodyRender: (userId: any) => {
+                    customBodyRender: (userId: number) => {
                         return (
                             <IconButton aria-label='controlled'
                                 onClick={() => {

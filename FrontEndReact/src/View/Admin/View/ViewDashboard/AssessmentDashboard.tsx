@@ -27,7 +27,11 @@ import { Box, Typography, Button } from '@mui/material';
  * 
  */
 
-class AssessmentDashboard extends Component<any> {
+interface AssessmentDashboardProps {
+    navbar: any;
+}
+
+class AssessmentDashboard extends Component<AssessmentDashboardProps> {
     render() {
         var navbar = this.props.navbar;
         var setNewTab = navbar.setNewTab;

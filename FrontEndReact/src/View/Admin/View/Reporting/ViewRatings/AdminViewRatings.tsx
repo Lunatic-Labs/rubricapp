@@ -7,22 +7,31 @@ import ViewRatingsTable from './ViewRatingsTable';
 import { Box, Button, Tooltip } from '@mui/material';
 import Loading from '../../../../Loading/Loading';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
+import { Category } from '../../../../../types/Category';
 
-interface AdminViewRatingsState {
-  errorMessage: any;
-  isLoaded: any;
-  loadedAssessmentId: any;
-  ratings: any;
-  categories: any;
-  csvCreation: any;
-  exportButtonId: any;
-  downloadedAssessment: any;
-  lastSeenCsvType: any;
+interface AdminViewRatingsProps {
+    navbar: any;
+    chosenAssessmentId: string | number;
+    assessmentTasks: AssessmentTask[];
+    setChosenAssessmentId: (id: string | number) => void;
 }
 
-class AdminViewRatings extends Component<any, AdminViewRatingsState> {
-  fetchData: any;
-  constructor(props: any) {
+interface AdminViewRatingsState {
+  errorMessage: string | null;
+  isLoaded: boolean | null;
+  loadedAssessmentId: string | number;
+  ratings: unknown[] | null;
+  categories: Category[] | null;
+  csvCreation: {csv_data: string} | null;
+  exportButtonId: Record<string, string>;
+  downloadedAssessment: string | null;
+  lastSeenCsvType: number | null;
+}
+
+class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatingsState> {
+  fetchData: () => void;
+  constructor(props: AdminViewRatingsProps) {
     super(props);
 
     /**
@@ -60,7 +69,8 @@ class AdminViewRatings extends Component<any, AdminViewRatingsState> {
 
         var assessmentIsTeam = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
         const url = `/rating?admin_id=${chosenCourse["admin_id"]}&assessment_task_id=${this.props.chosenAssessmentId}`;
-        const urlFinal = assessmentIsTeam[this.props.chosenAssessmentId] ? `${url}&team_id=true` : url;
+        const urlFinal = assessmentIsTeam[String(this.props.chosenAssessmentId)] ? `${url}&team_id=true` : url;
+
 
         genericResourceGET(urlFinal, "ratings", this);
       }
@@ -69,8 +79,9 @@ class AdminViewRatings extends Component<any, AdminViewRatingsState> {
       var rubricId = 1;
 
       for (var i = 0; i < this.props.assessmentTasks.length; i++) {
-        if (this.props.assessmentTasks[i]['assessment_task_id'] === this.props.chosenAssessmentId) {
-            rubricId = this.props.assessmentTasks[i]['rubric_id'];
+        const task = this.props.assessmentTasks[i]!;
+        if (task['assessment_task_id'] === this.props.chosenAssessmentId) {
+            rubricId = task['rubric_id'];
             break;
         }
       }
@@ -99,12 +110,12 @@ class AdminViewRatings extends Component<any, AdminViewRatingsState> {
       const suffix = ["-sfis_ocs", "-ratings", "-comments"];
       let fileName = this.props.navbar.state.chosenCourse['course_name'];
 
-      let assessment = this.props.assessmentTasks.find((obj: any) => obj["assessment_task_id"] === this.props.chosenAssessmentId);
-      const atName = assessment["assessment_task_name"].split(' ');
-      const abreviationLetters = atName.map((word: any) => word.charAt(0).toUpperCase());
+      let assessment = this.props.assessmentTasks.find((obj: AssessmentTask) => obj["assessment_task_id"] === this.props.chosenAssessmentId);
+      const atName = assessment!["assessment_task_name"].split(' ');
+      const abreviationLetters = atName.map((word: string) => word.charAt(0).toUpperCase());
       fileName += '-' + abreviationLetters.join('');
 
-      fileName += suffix[this.state.lastSeenCsvType];
+      fileName += suffix[this.state.lastSeenCsvType!];
       fileName += '.csv';
 
       const fileData = this.state.csvCreation["csv_data"];
@@ -120,7 +131,7 @@ class AdminViewRatings extends Component<any, AdminViewRatingsState> {
 
       var assessmentName = this.state.downloadedAssessment;
       
-      const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName])
+      const exportAssessmentTask = document.getElementById(this.state.exportButtonId[assessmentName!]!)
       
       setTimeout(() => {
           if(exportAssessmentTask) {
@@ -138,7 +149,7 @@ class AdminViewRatings extends Component<any, AdminViewRatingsState> {
    * Calls api to recive csv data and stores it.
    * @param {int} type: INT that informs what csv is to be retived; sif/ocs,ratings,comments are respecitvley 1,2,3.
    */
-  handleCsvDownloads(type: any) {
+  handleCsvDownloads(type: number) {
     let promise = genericResourceGET(
       `/csv_assessment_export?assessment_task_id=${this.state.loadedAssessmentId}&format=${type}`,
       "csv_creation",
@@ -198,11 +209,12 @@ class AdminViewRatings extends Component<any, AdminViewRatingsState> {
           <Box aria-label="adminViewRatingsBox">
             <Box display="flex" alignItems="center" justifyContent="space-between">
               <ViewRatingsHeader
+                navbar={this.props.navbar}
                 assessmentTasks={this.props.assessmentTasks}
                 chosenAssessmentId={this.props.chosenAssessmentId}
                 setChosenAssessmentId={this.props.setChosenAssessmentId}
-                csvCreation={csvCreation}     
-                userData = {this}    
+                csvCreation={csvCreation}
+                userData = {this}
               />
               <Box display="flex" justifyContent="flex-end" gap="10px">
                 <Tooltip
@@ -247,6 +259,7 @@ class AdminViewRatings extends Component<any, AdminViewRatingsState> {
           
           <Box>
             <ViewRatingsTable
+              navbar={this.props.navbar}
               assessmentTasks={this.props.assessmentTasks}
               chosenAssessmentId={this.props.chosenAssessmentId}
               ratings={ratings ? ratings : []}
