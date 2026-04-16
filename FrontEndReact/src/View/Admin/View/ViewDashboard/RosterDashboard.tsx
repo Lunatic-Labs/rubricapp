@@ -6,9 +6,34 @@ import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import Cookies from 'universal-cookie';
 import { apiUrl } from '../../../../App';
 
+<<<<<<< HEAD
 interface RosterDashboardProps {
     navbar: any;
 }
+=======
+
+/**
+ * Creates an instance of the RosterDashboard component.
+ * Main dashboard for managing course roster.
+ * 
+ * @constructor
+ * @param {Object} props - The properties passed to the component.
+ * @property {Object} props.navbar - The navbar object containing state and methods for navigation.
+ * 
+ * Components:
+ * @see MainHeader.js
+ * @see AdminViewUsers.js
+ * 
+ * Actions:
+ * - Student Bulk Upload: Opens the bulk upload interface for adding multiple students.
+ * - Add User: Opens the interface to add a single user to the course.
+ * 
+ * Data:
+ * No direct data fetching or management in this component.
+ * - Handled by AdminViewUsers component.
+ * 
+ */
+>>>>>>> origin/master
 
 interface RosterDashboardState { isSwitchingToStudent: boolean;}
 
@@ -49,7 +74,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                             onClick={async () => { // STUDENT VIEW BUTTON
                                 // Prevent multiple clicks
                                 if (this.state.isSwitchingToStudent) {
-                                    console.log('Already switching to student view, ignoring click');
+                                    //console.log('Already switching to student view, ignoring click');
                                     return;
                                 }
 
@@ -182,7 +207,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                     alert(`Failed to switch to student view: ${error.message}`);
                                 }
                             }}
-                            aria-label='view as student'
+                            aria-label='viewAsStudentButton'
                             startIcon={isSwitchingToStudent ? <CircularProgress size={20} color="inherit" /> : null}
                         >
                             {isSwitchingToStudent ? 'Switching...' : 'View as Student'}
