@@ -7,19 +7,27 @@ import AdminAddAssessmentTask from '../../Add/AddTask/AdminAddAssessmentTask';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 import Cookies from 'universal-cookie';
+import { AssessmentTask } from '../../../../types/AssessmentTask';
+import { Rubric } from '../../../../types/Rubric';
+import { Team } from '../../../../types/Team';
+
+interface AdminViewAssessmentTaskProps {
+    navbar: any;
+    show?: string;
+}
 
 interface AdminViewAssessmentTaskState {
-    errorMessage: any;
+    errorMessage: string | null;
     isLoaded: boolean;
-    assessmentTasks: any;
-    roles: any;
-    rubrics: any;
-    teams?: any;
+    assessmentTasks: AssessmentTask[] | null;
+    roles: { role_id: string; role_name: string }[] | null;
+    rubrics: Rubric[] | null;
+    teams?: Team[] | null;
     isViewingAsStudent: boolean;
 }
 
-class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskState> {
-    constructor(props: any) {
+class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, AdminViewAssessmentTaskState> {
+    constructor(props: AdminViewAssessmentTaskProps) {
         super(props);
 
         //Initialize component state

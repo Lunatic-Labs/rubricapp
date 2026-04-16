@@ -26,8 +26,14 @@ import { genericResourceDELETE } from "../../../../utility";
  * 
  */
 
+interface ViewUsersProps {
+    navbar: any;
+    onError: (message: string) => void;
+    onSuccess: (message: string) => void;
+    refreshData: () => void;
+}
 
-class ViewUsers extends Component<any> {
+class ViewUsers extends Component<ViewUsersProps> {
   /**
    * @method deleteUser - Deletes a user by their user ID.
    * 
@@ -50,7 +56,7 @@ class ViewUsers extends Component<any> {
    * Error Handling:
    * - displays error message via window.alert
    */
-  async deleteUser(userId: any) {
+  async deleteUser(userId: number) {
     try {
       const result = await genericResourceDELETE(`/user?uid=${userId}`, this, {
         dest: "users",
@@ -118,7 +124,7 @@ class ViewUsers extends Component<any> {
             filter: true,
             setCellHeaderProps: () => { return { width: "10%" } },
             setCellProps: () => { return { width: "10%" } },
-            customBodyRender: (roleId: any) => {
+            customBodyRender: (roleId: number) => {
               return (
                 <p>{roleNames[roleId]}</p>
               )
@@ -160,7 +166,7 @@ class ViewUsers extends Component<any> {
         filter: false,
         setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: any) => {
+        customBodyRender: (userId: number) => {
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersEditButton" + userId}
@@ -184,7 +190,7 @@ class ViewUsers extends Component<any> {
         filter: false,
         setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
         setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: any) => {
+        customBodyRender: (userId: number) => {
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersDeleteButton" + userId}
