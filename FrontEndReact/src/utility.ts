@@ -82,9 +82,10 @@ export async function genericResourcePUT(
 export async function genericResourceDELETE(
   fetchURL: string,
   component: ReactComponent<any, any>,
-  options: FetchOptions = {}
+  options: FetchOptions & { body?: string } = {}
 ): Promise<any> {
-  return await genericResourceFetch(fetchURL, null, component, "DELETE", null, options);
+  const { body, ...restOptions } = options;
+  return await genericResourceFetch(fetchURL, null, component, "DELETE", body ?? null, restOptions);
 }
 
 
@@ -445,8 +446,8 @@ export function getDueDateString(dueDate: Date): string {
   return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
 }
 
-export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
-  const date = new Date(dueDate);
+// formating
+function formatDateTime(date: Date, timeZone?: string): string {
   const month = date.getMonth();
   const day = date.getDate();
   const hour = date.getHours();
@@ -459,6 +460,29 @@ export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: strin
   const timeString = `${displayHour}:${minutesString}${twelveHourClock}`;
 
   return `${monthNames[month]} ${day} at ${timeString} ${timeZone || ""}`.trim();
+}
+
+// Normal times
+export function formatTime(time: string | Date, timeZone?: string): string {
+  let dateString: string | Date = time;
+
+  if (typeof time === 'string' && !time.endsWith('Z') && !time.includes('GMT')) {
+    dateString = `${time}Z`;
+  }
+  
+  const date = new Date(dateString);
+
+  return formatDateTime(date, timeZone);
+}
+
+// specifically for due dates
+export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
+
+  let dateString: string | Date = dueDate;
+  const date = new Date(dateString);
+
+
+  return formatDateTime(date, timeZone);
 }
 
 /**
