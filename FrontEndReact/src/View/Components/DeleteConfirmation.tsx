@@ -6,7 +6,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function DeleteConfirmation( props: any ) {
+interface DeleteConfirmationProps {
+    userFirstName: string;
+    userLastName: string;
+    show: boolean;
+    handleDialog: () => void;
+    deleteUser: () => void;
+}
+
+export default function DeleteConfirmation( props: DeleteConfirmationProps ) {
     var userInformation = `${props.userFirstName} ${props.userLastName}`;
 
     return (

@@ -3,16 +3,22 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import Loading from '../../../../Loading/Loading';
 import { genericResourceGET } from '../../../../../utility';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
 
-interface AdminViewTeamRatingsState {
-  error: any;
-  errorMessage: any;
-  isLoaded: boolean;
-  assessmentTasks: any;
+interface AdminViewTeamRatingsProps {
+    navbar: any;
+    chosenCourse: { admin_id: number | string };
 }
 
-class AdminViewTeamRatings extends Component<any, AdminViewTeamRatingsState> {
-    constructor(props: any) {
+interface AdminViewTeamRatingsState {
+  error: {message: string} | null;
+  errorMessage: string | null;
+  isLoaded: boolean;
+  assessmentTasks: AssessmentTask[] | null;
+}
+
+class AdminViewTeamRatings extends Component<AdminViewTeamRatingsProps, AdminViewTeamRatingsState> {
+    constructor(props: AdminViewTeamRatingsProps) {
       super(props);
 
       this.state = {

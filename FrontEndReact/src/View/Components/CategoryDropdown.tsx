@@ -3,15 +3,21 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { SelectChangeEvent } from '@mui/material/Select';
 
+interface CategoryDropdownProps {
+    categories: string[];
+    chosenCategoryId: string;
+    setChosenCategoryId: (id: string) => void;
+    disabled?: boolean;
+}
 
-
-export default function CategoryDropdown(props: any) {
+export default function CategoryDropdown(props: CategoryDropdownProps) {
   var categoryList = [];
 
   // Check if categories exists and is not empty to prevent null reference errors
   if (props.categories && props.categories.length > 0) {
-    props.categories.map((category: any) => {
+    props.categories.map((category: string) => {
 
     return categoryList.push(
       <MenuItem 
@@ -75,8 +81,8 @@ export default function CategoryDropdown(props: any) {
           labelId="demo-simple-select-autowidth-label"
           id="demo-simple-select-autowidth"
           value={props.chosenCategoryId}
-          onChange={props.setChosenCategoryId}
-          disabled={props.disabled}
+          onChange={(event: SelectChangeEvent<string>) => props.setChosenCategoryId(event.target.value)}
+          disabled={props.disabled ?? false}
           autoWidth={false}
           label="Category"
           sx={{

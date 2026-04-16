@@ -19,8 +19,11 @@ import { Box } from '@mui/material';
  * No direct data fetching or management in this component.
  * - Handled by AdminViewTeams component.
  */
+interface TeamDashboardProps {
+    navbar: any;
+}
 
-class TeamDashboard extends Component<any> {
+class TeamDashboard extends Component<TeamDashboardProps> {
     render() {
         var navbar = this.props.navbar;
         navbar.adminViewTeams = {};

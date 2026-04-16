@@ -15,6 +15,10 @@ import {
   Link,
 } from '@mui/material';
 import { GRAPH_TYPE_LABELS } from './graphConstants';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
+import { Rubric } from '../../../../../types/Rubric';
+import { Team } from '../../../../../types/Team';
+import { User } from '../../../../../types/User';
 
 export interface FilterState {
   dateStart: string;
@@ -28,10 +32,10 @@ export interface FilterState {
 
 interface FilterPanelProps {
   filters: FilterState;
-  assessmentTasks: any[];
-  rubrics: any[];
-  teams: any[];       // kept for future use
-  students: any[];    // kept for future use
+  assessmentTasks: AssessmentTask[];
+  rubrics: Rubric[];
+  teams: Team[];       // kept for future use
+  students: User[];    // kept for future use
   onFilterChange: (key: keyof FilterState, value: string | string[]) => void;
   onApplyFilters: () => void;
   onClearFilters: () => void;
@@ -68,6 +72,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   );
 
   // Get display text for multiselect
+  // items uses any[] because this helper accesses arbitrary string keys dynamically
   const getMultiSelectDisplayText = (selectedIds: string[], items: any[], idKey: string, nameKey: string) => {
     if (selectedIds.length === 0) return '';
     const selectedItems = items.filter((item) => selectedIds.includes(item[idKey]?.toString()));
@@ -115,7 +120,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               }
               MenuProps={MenuProps}
             >
-              {assessmentTasks.map((task: any) => (
+              {assessmentTasks.map((task) => (
                 <MenuItem key={task.assessment_task_id} value={task.assessment_task_id.toString()}>
                   <Checkbox checked={filters.assessmentTaskIds.includes(task.assessment_task_id.toString())} />
                   <ListItemText primary={task.assessment_task_name} />
@@ -139,7 +144,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               }
               MenuProps={MenuProps}
             >
-              {rubrics.map((rubric: any) => (
+              {rubrics.map((rubric) => (
                 <MenuItem key={rubric.rubric_id} value={rubric.rubric_id.toString()}>
                   <Checkbox checked={filters.rubricIds.includes(rubric.rubric_id.toString())} />
                   <ListItemText primary={rubric.rubric_name} />

@@ -24,7 +24,7 @@ const checkboxSx = {
   '&.Mui-checked': { color: '#2E8BEF' },
 } as const;
 
-const percentFormatter = (v: any) => `${v}%`;
+const percentFormatter = (v: unknown) => `${v}%`;
 
 interface GraphCardProps {
   graphItem: GraphItem;
@@ -84,14 +84,14 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
   // Memoize data transformations for horizontal bar charts
   const chartData = useMemo(() => {
     const { graph_type, graph_data } = graphItem;
-    if (graph_type === 'characteristics' && graph_data?.characteristics) {
-      return graph_data.characteristics.map((item: any) => ({
+    if (graph_type === 'characteristics' && 'characteristics' in graph_data) {
+      return graph_data.characteristics.map((item) => ({
         ...item,
         label: truncateLabel(item.characteristic),
       }));
     }
-    if (graph_type === 'improvements' && graph_data?.improvements) {
-      return graph_data.improvements.map((item: any) => ({
+    if (graph_type === 'improvements' && 'improvements' in graph_data) {
+      return graph_data.improvements.map((item) => ({
         ...item,
         label: truncateLabel(item.improvement),
       }));
@@ -119,7 +119,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
 
     const { graph_type, graph_data } = graphItem;
 
-    if (graph_type === 'distribution' && graph_data?.ratings) {
+    if (graph_type === 'distribution' && 'ratings' in graph_data) {
       const { ratings, avg, stdev } = graph_data;
       return (
         <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
