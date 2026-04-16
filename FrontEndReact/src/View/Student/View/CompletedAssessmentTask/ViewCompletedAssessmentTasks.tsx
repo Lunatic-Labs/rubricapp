@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { IconButton } from "@mui/material";
 import VisibilityIcon from '@mui/icons-material/Visibility';
-import { genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
+import { genericResourcePOST, formatTime } from "../../../../utility";
 import { AssessmentTask } from '../../../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
 
@@ -51,10 +51,13 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (initial_time: string) => {
+                    customBodyRender: (initial_time: string, tableMeta: { rowData: unknown[] }) => {
+                        const atId = tableMeta.rowData[3] as number;
+                        const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
+                        const timeZone = chosenAT?.time_zone || '';
                         return(
                             <>
-                                {initial_time ? getHumanReadableDueDate(initial_time) : "N/A"}
+                                {initial_time ? formatTime(initial_time, timeZone) : "N/A"}
                             </>
                         );
                     }
@@ -67,10 +70,13 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                     filter: true,
                     setCellHeaderProps: () => { return { width:"150px" } },
                     setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (last_update: string) => {
+                    customBodyRender: (last_update: string, tableMeta: { rowData: unknown[] }) => {
+                        const atId = tableMeta.rowData[3] as number;
+                        const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
+                        const timeZone = chosenAT?.time_zone || '';
                         return(
                             <>
-                                {last_update ? getHumanReadableDueDate(last_update) : "N/A"}
+                                {last_update ? formatTime(last_update, timeZone) : "N/A"}
                             </>
                         );
                     }
