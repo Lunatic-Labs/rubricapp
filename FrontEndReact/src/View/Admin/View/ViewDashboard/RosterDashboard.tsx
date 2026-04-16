@@ -6,11 +6,9 @@ import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import Cookies from 'universal-cookie';
 import { apiUrl } from '../../../../App';
 
-<<<<<<< HEAD
 interface RosterDashboardProps {
     navbar: any;
 }
-=======
 
 /**
  * Creates an instance of the RosterDashboard component.
@@ -33,7 +31,6 @@ interface RosterDashboardProps {
  * - Handled by AdminViewUsers component.
  * 
  */
->>>>>>> origin/master
 
 interface RosterDashboardState { isSwitchingToStudent: boolean;}
 
