@@ -39,6 +39,16 @@ const customTheme = createTheme({
         },
       },
     },
+    MuiPaper: {
+  styleOverrides: {
+    root: {
+      width: '100%',    
+      maxWidth: '100%',
+      overflowX: 'hidden',
+      boxSizing: 'border-box'
+        }
+      }
+     },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -48,77 +58,77 @@ const customTheme = createTheme({
         },
       },
     },
-    MUIDataTableFooter: {
-      styleOverrides: {
-        root: {
-          padding: ".01rem .5rem",
-          fontSize: "1rem",
-        },
-      },
-    },
-    MuiToolbar: {
-      styleOverrides: {
-        root: {
-          padding: ".01rem .5rem",
-          margin: ".01rem",
-          fontSize: "1rem",
-        },
-      },
-    },
-    MuiInputBase: {
-      styleOverrides: {
-        root: {
-          fontSize: "1rem",
-          padding: ".01rem .5rem",
-        },
-      },
-    },
-    MUIDataTableHeadCell: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "#A4C4F4",
-          padding: ".01rem .5rem", 
-          fontSize: "1.4rem",
-        },
-      },
-    },
-    MUIDataTablePagination: {
-    styleOverrides: {
+  MUIDataTableFooter: {
+  styleOverrides: {
     root: {
+        padding: ".01rem .5rem",
+      fontSize: "1rem",
+      width: '100%',
+      boxSizing: 'border-box',
       '@media (max-width: 600px)': {
-        width: '100%',
         padding: '0px',
+        width: '100%',
         overflowX: 'hidden',
+        display: 'flex',
+        justifyContent: 'flex-end'
       }
-    }
-    }
-   },
-    MuiTablePagination: {
-    styleOverrides: {
+    },
+    
+  },
+},
+MuiToolbar: {
+  styleOverrides: {
+    root: {
+      padding: ".01rem .5rem",
+      margin: ".01rem",
+      fontSize: "1rem",
+      '@media (max-width: 600px)': {
+        flexWrap: 'wrap',
+        padding: '0px',
+        width: '100%',
+      }
+    },
+  },
+},
+MuiTablePagination: {
+  styleOverrides: {
     root: {
       '@media (max-width: 600px)': {
         width: '100%',
         overflowX: 'hidden',
-        flexWrap: 'wrap',
       }
     },
     toolbar: {
       '@media (max-width: 600px)': {
         flexWrap: 'wrap',
-        padding: '0px',
-        justifyContent: 'center',
+        padding: '4px 0px',
+        justifyContent: 'flex-end',
+        width: '100%',
+        gap: '4px',
       }
     },
     spacer: {
       '@media (max-width: 600px)': {
-        display: 'none', // removes the spacer that pushes pagination off screen
+        display: 'none',
+      }
+    },
+    selectLabel: {
+      '@media (max-width: 600px)': {
+        fontSize: '0.75rem',
+        margin: '0px',
       }
     },
     displayedRows: {
       '@media (max-width: 600px)': {
-        fontSize: '0.85rem',
+        fontSize: '0.75rem',
+        margin: '0px',
       }
     },
+    actions: {
+      '@media (max-width: 600px)': {
+        marginLeft: '0px',
+      }
+    }
   }
 },
   },
@@ -137,7 +147,7 @@ const CustomDataTable = ({
     responsive: isMobile ? "vertical" : "standard",
   };
 
-  const tableOptions = { ...defaultOptions, ...options,};
+  const tableOptions = { ...defaultOptions, ...options,}
 
   return (
     <ThemeProvider theme={customTheme}>
