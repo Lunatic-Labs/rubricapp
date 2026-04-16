@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Container, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, Cell, LabelList, ResponsiveContainer } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
 import CategoryDropdown from '../../../../Components/CategoryDropdown';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements';
@@ -168,11 +168,27 @@ export default function ViewAssessmentStatus(props: any) {
                         barCategoryGap={0.5}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="rating" type="category" style={{ fontSize: '0.75rem' }} />
-                        <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.75rem' }} />
-                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="rating"
+                          type="category"
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }}
+                        />
+                        <YAxis
+                          type="number"
+                          domain={[0, 'auto']}
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }}
+                        />
+                        <CartesianGrid vertical={false} stroke="var(--chart-grid-color)" />
                         <Bar dataKey="number" fill="#2e8bef">
-                          <LabelList dataKey="number" fill="#ffffff" position="inside" />
+                          {ratingsData.ratings.map((entry: any, index: number) => (
+                            <Cell
+                              key={`rating-bar-cell-${index}`}
+                              fill={entry.number === 0 ? 'transparent' : '#2e8bef'}
+                            />
+                          ))}
+                          <LabelList dataKey="number" fill="var(--text-white)" position="inside" formatter={(value: any) => value === 0 ? '' : value} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
@@ -221,6 +237,7 @@ export default function ViewAssessmentStatus(props: any) {
                             size="small"
                             disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
                             onClick={() => props.onExportAggregates && props.onExportAggregates(chosenCategoryId)}
+                            className="export-aggregates-button"
                             sx={{ mt: 1 }}
                           >
                             Export Aggregates

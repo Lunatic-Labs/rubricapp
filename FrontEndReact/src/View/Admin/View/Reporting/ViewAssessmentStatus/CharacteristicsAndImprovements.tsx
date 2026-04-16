@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip, Cell } from 'recharts';
 
 // CharacteristicsAndImprovements
 // Small reusable component that renders either a "Characteristics" or
@@ -22,8 +22,8 @@ const CustomTooltip = ({
   if (active && payload && payload.length) {
     const fullText = payload[0].payload[payload[0].payload.characteristic ? 'characteristic' : 'improvement'];
     return (
-      <div className="card position-fixed bottom-0 start-50 translate-middle-x mb-3 shadow-none border-0" style={{ maxWidth: '90vw', zIndex: 1000 }}>
-        <div className="card-body p-2" style={{ backgroundColor: 'var(--dropdown-bg)', color: 'var(--text-color)' }}>
+      <div className="card position-fixed bottom-0 start-50 translate-middle-x mb-3 shadow-none border-0" style={{ maxWidth: '90vw', zIndex: 1000, backgroundColor: 'var(--modal-bg)', color: 'var(--text-color)' }}>
+        <div className="card-body p-2" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-color)', border: '1px solid var(--border-color)' }}>
           <div className="row">
             <div className="col-12">
               <p className="card-text mb-1">{fullText}</p>
@@ -99,7 +99,7 @@ export default function CharacteristicsAndImprovements({
                         opacity: 0, 
                         transition: 'opacity 0.3s ease',
                         backgroundColor: 'rgba(46, 139, 239,0.4)',
-                        color: 'rgb(255, 255, 255)',
+                        color: 'var(--text-white)',
                         textShadow: '2px 2px 5px rgb(0, 37, 79)',
                         fontWeight: 'bold',
                         fontSize: '16px',
@@ -121,7 +121,10 @@ export default function CharacteristicsAndImprovements({
                           domain={[0, 100]} 
                           ticks={[0, 25, 50, 75, 100]} 
                           tickFormatter={(tick: any) => `${tick}`} 
-                          style={{ fontSize: '12px' }} 
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '12px' }} 
+                          axisLine={{ stroke: 'var(--border-color)' }}
+                          tickLine={false}
                         />
                         {/* Y axis displays truncated labels in the compact view */}
                         <YAxis 
@@ -129,17 +132,27 @@ export default function CharacteristicsAndImprovements({
                           type="category" 
                           dataKey="truncatedLabel" 
                           width={100} 
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '12px' }} 
+                          axisLine={{ stroke: 'var(--border-color)' }}
+                          tickLine={false}
                         />
-                        <CartesianGrid horizontal={false} />
+                        <CartesianGrid horizontal={false} stroke="var(--chart-grid-color)" />
                         {/* Use custom tooltip to show full text when hovering a bar */}
-                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'rgba(46, 139, 239, 0.1)' }} />
+                        <Tooltip content={<CustomTooltip />} cursor={{ fill: 'var(--chart-tooltip-cursor)' }} />
                         <Bar dataKey="percentage" fill="#2e8bef" className="cursor-pointer">
+                          {processedData.map((entry: any, index: number) => (
+                            <Cell
+                              key={`bar-cell-${index}`}
+                              fill={entry.percentage === 0 ? 'transparent' : '#2e8bef'}
+                            />
+                          ))}
                           {/* Show percentage label inside each bar */}
                           <LabelList 
                             dataKey="percentage" 
-                            fill="#ffffff" 
+                            fill="var(--text-white)" 
                             position="inside" 
-                            formatter={(value: any) => `${value}%`} 
+                            formatter={(value: any) => value === 0 ? '' : `${value}%`} 
                           />
                         </Bar>
                       </BarChart>
@@ -177,10 +190,10 @@ export default function CharacteristicsAndImprovements({
         role="dialog"
         style={{ display: isModalOpen ? 'block' : 'none', justifyContent: 'center', alignItems: 'center' }}>
       <div className="modal-dialog modal-lg" style={{ maxWidth: '80%' }}>
-          <div className="modal-content" style={{ width: '100%', backgroundColor: 'var(--card-bg)', color: 'var(--text-color)' }}>
-            <div className="modal-header position-relative">
+          <div className="modal-content" style={{ width: '100%', backgroundColor: 'var(--modal-bg)', color: 'var(--text-color)', border: '1px solid var(--border-color)' }}>
+            <div className="modal-header position-relative" style={{ borderBottom: '1px solid var(--border-color)' }}>
               <div className="w-100">
-                <h4 className="modal-title text-center m-0 fw-normal">
+                <h4 className="modal-title text-center m-0 fw-normal" style={{ color: 'var(--text-color)' }}>
                   {dataType === 'characteristics' ? 'Characteristics' : 'Improvements'}
                 </h4>
               </div>
@@ -222,11 +235,17 @@ export default function CharacteristicsAndImprovements({
                     dataKey="percentage" 
                     fill="#2e8bef"
                   >
+                    {processedData.map((entry: any, index: number) => (
+                      <Cell
+                        key={`modal-bar-cell-${index}`}
+                        fill={entry.percentage === 0 ? 'transparent' : '#2e8bef'}
+                      />
+                    ))}
                     <LabelList 
                       dataKey="percentage" 
-                      fill="#ffffff" 
+                      fill="var(--text-white)" 
                       position="inside"
-                      formatter={(value: any) => `${value}%`}
+                      formatter={(value: any) => value === 0 ? '' : `${value}%`}
                     />
                   </Bar>
                 </BarChart>

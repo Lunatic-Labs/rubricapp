@@ -205,6 +205,12 @@ h4, h5 {
   --table-border: #e0e0e0;
   --primary-disabled-bg: #aaaaaa;
   --dropdown-bg: #ffffffff;
+  /* Chart colors */
+  --chart-bar-color: #000000;
+  --chart-axis-color: #000000;
+  --chart-label-color: #ffffff;
+  --chart-grid-color: rgba(0, 0, 0, 0.12);
+  --chart-tooltip-cursor: rgba(46, 139, 239, 0.1);
 }
 
 /* used in line 23 of CustomDataTable.js */
@@ -324,6 +330,15 @@ h4, h5 {
   --button-hover: rgba(46, 139, 239, 0.08);
 }
 
+.export-aggregates-button,
+.export-aggregates-button.MuiButton-root {
+  color: var(--text-white) !important;
+}
+
+.export-aggregates-button.Mui-disabled {
+  color: var(--text-white) !important;
+}
+
 /* MUI DataTable Filter Styling */
 .MUIDataTableFilter-root,
 .MUIDataTableFilter-header {
@@ -359,6 +374,30 @@ h4, h5 {
   box-shadow: 0 0 1em rgba(0, 0, 0, 0.18);
 }
 
+.modal-content {
+  background-color: var(--modal-bg) !important;
+  color: var(--text-color) !important;
+  border: 1px solid var(--border-color) !important;
+}
+
+.modal-header,
+.modal-body {
+  background-color: var(--modal-bg) !important;
+  color: var(--text-color) !important;
+}
+
+.modal-header .modal-title {
+  color: var(--text-color) !important;
+}
+
+.modal-backdrop.show {
+  background-color: rgba(0, 0, 0, 0.5) !important;
+}
+
+.chart-container .hover-overlay {
+  background-color: rgba(46, 139, 239, 0.28);
+}
+
 body.mode .reporting-card {
   box-shadow: 0 0 1em rgba(0, 0, 0, 0.35);
 }
@@ -374,6 +413,7 @@ body.mode .modal-content .btn-close:hover {
 :root {
   --text-color: #000000;
   --text-color-secondary: #646464;
+  --text-white: #ffffff;
   --error-color: #d32f2f;
   --border-color: rgba(0, 0, 0, 0.23);
   --border-hover-color: rgba(0, 0, 0, 0.87);
@@ -546,6 +586,7 @@ body.mode .collapsible-table-colors {
 body.mode {
   --text-color: #e0e0e0;
   --text-color-secondary: #a0a0a0;
+  --text-white: #ffffff;
   --error-color: #ff6b6b;
   --border-color: rgba(255, 255, 255, 0.23);
   --border-hover-color: rgba(255, 255, 255, 0.87);
@@ -622,6 +663,12 @@ body.mode {
   --primary-disabled-bg: #3a3a3a;
   --dropdown-bg: #262626ff;
   --dropdown-text: #e0e0e0;
+  /* Chart colors */
+  --chart-bar-color: #ffffff;
+  --chart-axis-color: #ffffff;
+  --chart-label-color: #000000;
+  --chart-grid-color: rgba(255, 255, 255, 0.24);
+  --chart-tooltip-cursor: rgba(255, 255, 255, 0.14);
 }
 
 .icon-color {
@@ -675,6 +722,15 @@ body.mode .app-container {
 .MuiTablePagination-actions,
 .MuiSelect-icon {
     color: var(--table-text) !important;
+}
+
+.MuiButton-root.export-aggregates-button,
+.MuiButton-root.export-aggregates-button.MuiButton-contained,
+.MuiButton-root.export-aggregates-button.MuiButton-contained.Mui-disabled,
+.MuiButton-root.export-aggregates-button.MuiButton-disabled,
+.MuiButton-root.export-aggregates-button.Mui-disabled,
+.MuiButton-root.export-aggregates-button * {
+    color: var(--text-white) !important;
 }
 
 /* MUI Input/Select fields */
