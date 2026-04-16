@@ -1,0 +1,4 @@
+
+> front-end-react@0.1.0 test
+> react-scripts test --watchAll=false --forceExit --testNamePattern=Test 1 ViewAsStudent.test.tsx
+

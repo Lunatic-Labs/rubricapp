@@ -5,38 +5,43 @@ import Select from '@mui/material/Select';
 import MenuItem from '@mui/material/MenuItem';
 import 'bootstrap/dist/css/bootstrap.css';
 import { genericResourceGET } from '../../../../utility';
-import { Box } from '@mui/material';
+import { Box, SelectChangeEvent } from '@mui/material';
 import Loading from '../../../Loading/Loading';
+import { Course } from '../../../../types/Course';
+
+interface CourseDropdownProps {
+    setSelectedCourse: (newSelectedCourse: string) => void;
+    id?: string;
+}
+
 
 interface CourseDropdownState {
   selectedOption: string;
   selectedCourse: string;
-  courses: any[] | null;
+  courses: Course[] | null;
 }
 
-class CourseDropdown extends Component<any, CourseDropdownState> {
-  handleCourseChange: any;
-  constructor(props: any) {
+class CourseDropdown extends Component<CourseDropdownProps, CourseDropdownState> {
+  handleCourseChange: (event: SelectChangeEvent<string>) => void;
+  constructor(props: CourseDropdownProps) {
     super(props);
-
     this.state = {
       selectedOption: 'option1',
       selectedCourse: '',
       courses: []
     };
 
-    this.handleCourseChange = (newSelectedCourse: any) => {
+    this.handleCourseChange = (newSelectedCourse: SelectChangeEvent<string>) => {
       this.props.setSelectedCourse(newSelectedCourse.target.value);
-
       this.setState({
         selectedCourse: newSelectedCourse.target.value
       });
     }
   }
 
-  componentDidMount() {
-    genericResourceGET(`/course`, 'courses', this);
-  }
+componentDidMount() {
+  genericResourceGET(`/course`, 'courses', this);
+}
 
   render() {
     var courseChoices = [
@@ -44,7 +49,7 @@ class CourseDropdown extends Component<any, CourseDropdownState> {
         <em>None</em>
       </MenuItem>
     ];
-    this.state.courses && this.state.courses.map((course: any, index: any) => {
+    this.state.courses && this.state.courses.map((course: Course, index: number) => {
       return(
         courseChoices = [...courseChoices,
           <MenuItem key={index} value={course["course_id"]} aria-label="adminImportAssessmentCourseChoice">
@@ -53,10 +58,28 @@ class CourseDropdown extends Component<any, CourseDropdownState> {
         ]
       )
     })
+
     if(this.state.courses) {
       return (
         <Box>
-          <FormControl fullWidth>
+          <FormControl 
+            fullWidth
+            sx={{ 
+              '& .MuiInputBase-root': {
+                backgroundColor: 'var(--dropdown-bg)',
+                color: 'var(--dropdown-text)',
+              },
+              '& .MuiOutlinedInput-notchedOutline': {
+                borderColor: 'var(--dropdown-border)',
+              },
+              '& .MuiInputLabel-root': {
+                color: 'var(--dropdown-label)',
+              },
+              '& .MuiSelect-icon': {
+                color: 'var(--dropdown-icon)',
+              }
+            }}
+          >
             <InputLabel id="courseLabel">Select a Course</InputLabel>
             <Select
               required
@@ -65,13 +88,32 @@ class CourseDropdown extends Component<any, CourseDropdownState> {
               value={this.state.selectedCourse}
               onChange={this.handleCourseChange}
               aria-label="adminImportAssessmentCourseDropdown"
+              MenuProps={{
+                PaperProps: {
+                  
+                  sx: {
+                    backgroundColor: 'var(--dropdown-bg)',
+                    color: 'var(--dropdown-text)',
+                    '& .MuiMenuItem-root': {
+                      '&:hover': {
+                        backgroundColor: 'var(--dropdown-hover)',
+                      },
+                      '&.Mui-selected': {
+                        backgroundColor: 'var(--dropdown-selected)',
+                        '&:hover': {
+                          backgroundColor: 'var(--dropdown-selected)',
+                        },
+                      },
+                    },
+                  },
+                },
+              }}
             >
               {courseChoices}
             </Select>
           </FormControl>
         </Box>
-        );
-
+      );
     } else {
       return(
         <Loading />

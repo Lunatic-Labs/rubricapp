@@ -46,6 +46,7 @@ class User(db.Model):
     reset_code = db.Column(db.String(256), nullable=True)          # reset_code has been changed from 'text to 'string', and now has a 256 character limit.
     is_admin = db.Column(db.Boolean, nullable=False)
     last_update = db.Column(DateTime(timezone=True), nullable=True)
+    user_dark_mode = db.Column(db.Boolean, nullable=False, default=False)
     team = db.relationship('TeamUser', backref='user', cascade='all, delete')
 
 class Rubric(db.Model):
@@ -201,3 +202,16 @@ class EmailValidation(db.Model):
 
     def __repr__(self):
         return f"<EmailValidation {self.email} - {self.status}>"
+
+class AdminNotification(db.Model):
+    __tablename__ = "AdminNotification"
+
+    admin_notification_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    sender_id = db.Column(db.Integer, ForeignKey(User.user_id), nullable=False)
+    thread_id = db.Column(db.Integer, ForeignKey('AdminNotification.admin_notification_id'), nullable=True)
+    subject = db.Column(db.String(200), nullable=False)
+    message = db.Column(db.Text, nullable=False)
+    sent_at = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+
+    def __repr__(self):
+        return f"<AdminNotification {self.subject} - {self.sent_at}>"

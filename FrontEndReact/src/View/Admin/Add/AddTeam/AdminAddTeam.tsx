@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import { Box, Button, Typography, TextField } from "@mui/material";
+import { Box, Button, Typography, TextField, SelectChangeEvent } from "@mui/material";
 import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility";
 import { FormControl, MenuItem, InputLabel, Select } from "@mui/material";
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 import Loading from "../../../Loading/Loading";
+import { User } from "../../../../types/User";
+
+interface AdminAddTeamProps {
+    navbar: any;
+}
 
 interface AdminAddTeamState {
     isLoaded: boolean | null;
@@ -16,15 +21,15 @@ interface AdminAddTeamState {
     editTeam: boolean;
     observerId: string;
     teamName: string;
-    users: any[] | null;
+    users: User[] | null;
     errors: {
         teamName: string;
         observerId: string;
     };
 }
 
-class AdminAddTeam extends Component<any, AdminAddTeamState> {
-    constructor(props: any) {
+class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
+    constructor(props: AdminAddTeamProps) {
         super(props);
 
         this.state = {
@@ -74,7 +79,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
         }
     }
 
-    handleSelect = (event: any) => {
+    handleSelect = (event: SelectChangeEvent<string>) => {
         this.setState({
             observerId: event.target.value,
         });
@@ -139,7 +144,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
         }
     };
 
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
 
         //Define max length for teamName
@@ -171,7 +176,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
 
         const userName = cookies.get('user')["user_name"]
 
-        var instructors: any[] = []; 
+        var instructors: { id: number; firstName: string; lastName: string }[] = []; 
 
         if (this.state.isLoaded){
             if (this.state.users === null) {
@@ -179,7 +184,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
                     <Loading />
                 );
             }
-            instructors = this.state.users.map((item: any) => { 
+            instructors = this.state.users.map((item: User) => { 
                 return {
                     id: item["user_id"],
                     firstName: item["first_name"],
@@ -231,12 +236,61 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
                                     helperText={errors.teamName}
                                     onChange={this.handleChange}
                                     required
-                                    sx={{ mb: 3 }}
+                                    className="text-box-colors"
+                                    sx={{
+                                    mb: 3,
+                                    "& .MuiOutlinedInput-root": {
+                                        backgroundColor: "var(--textbox-bg)",
+                                        color: "var(--textbox-text)",
+                                        "& fieldset": {
+                                        borderColor: "var(--textbox-border)",
+                                        },
+                                        "&:hover fieldset": {
+                                        borderColor: "var(--textbox-border-hover)",
+                                        },
+                                        "&.Mui-focused fieldset": {
+                                        borderColor: "var(--textbox-border-focused)",
+                                        },
+                                        '&.Mui-error fieldset': {
+                                        borderColor: 'var(--textbox-error)',
+                                        },
+                                    },
+                                    '& .MuiInputLabel-root': {
+                                        color: 'var(--textbox-label)',
+                                        '&.Mui-focused': {
+                                            color: 'var(--textbox-border-focused)',
+                                        },
+                                        '&.Mui-error': {
+                                            color: 'var(--textbox-error)',
+                                        },
+                                    },
+                                    }}
                                     inputProps={{ maxLength: 50 }}
                                     aria-label="userTeamNameInput"
                                 />
 
-                                <FormControl error={!!errors.observerId} required fullWidth sx={{mb: 3}}>
+                                <FormControl error={!!errors.observerId} required fullWidth 
+                                    sx={{
+                                        mb: 3,
+                                        "& .MuiInputBase-root": {
+                                        backgroundColor: "var(--dropdown-bg)",
+                                        color: "var(--dropdown-text)",
+                                        },
+                                        "& .MuiOutlinedInput-notchedOutline": {
+                                        borderColor: "var(--dropdown-border)",
+                                        },
+                                        "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
+                                        {
+                                            borderColor: "#ffffff",
+                                        },
+                                        "& .MuiInputLabel-root": {
+                                        color: "var(--dropdown-label)",
+                                        },
+                                        "& .MuiSelect-icon": {
+                                        color: "var(--dropdown-icon)",
+                                        },
+                                    }}
+                                >
                                     <InputLabel className={errors.observerId ? "errorSelect" : ""} id="Observer">Observer</InputLabel>
 
                                     <Select
@@ -244,16 +298,37 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
                                         labelId="Observer"
                                         value={observerId}
                                         label="Observer"
-                                        onChange={(event: any) => this.handleSelect(event)}
+                                        onChange={(event: SelectChangeEvent<string>) => this.handleSelect(event)}
                                         required
                                         error={!!errors.observerId}
                                         aria-label="userObserverDropDown"
+
+                                        MenuProps={{
+                                            PaperProps: {
+                                                
+                                                sx: {
+                                                backgroundColor: "var(--dropdown-bg)",
+                                                color: "var(--dropdown-text)",
+                                                "& .MuiMenuItem-root": {
+                                                    "&:hover": {
+                                                    backgroundColor: "var(--dropdown-hover)",
+                                                    },
+                                                    "&.Mui-selected": {
+                                                    backgroundColor: "var(--dropdown-selected)",
+                                                    "&:hover": {
+                                                        backgroundColor: "var(--dropdown-selected)",
+                                                    },
+                                                    },
+                                                },
+                                                },
+                                            },
+                                        }}
                                     >
                                         {navbar.props.isAdmin &&
                                             <MenuItem value={userId} key={userId}>{userName}</MenuItem>
                                         }
 
-                                        {instructors.map((x: any) => <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
+                                        {instructors.map((x: { id: number; firstName: string; lastName: string }) => <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
                                         )}
                                     </Select>
                                     <FormHelperText>{errors.observerId}</FormHelperText>

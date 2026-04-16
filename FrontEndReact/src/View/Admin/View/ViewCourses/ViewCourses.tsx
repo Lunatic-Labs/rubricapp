@@ -6,8 +6,11 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 import { Typography, Box} from "@mui/material";
 import Cookies from 'universal-cookie';
 
-class ViewCourses extends Component<any> {
+interface ViewCoursesProps {
+    navbar: any;
+}
 
+class ViewCourses extends Component<ViewCoursesProps> {
   render() {
     var navbar = this.props.navbar;
     var adminViewCourses = navbar.adminViewCourses;
@@ -28,7 +31,7 @@ class ViewCourses extends Component<any> {
           filter: true,
           setCellHeaderProps: () => { return { width:"25%" } },
           setCellProps: () => { return { width:"25%" } },
-          customBodyRender: (courseName: any) => {
+          customBodyRender: (courseName: string) => {
             return(
               <Typography
                 sx={{fontSize: "1.6rem"}}
@@ -74,7 +77,7 @@ class ViewCourses extends Component<any> {
           filter: true,
           setCellHeaderProps: () => { return { width:"6%" } },
           setCellProps: () => { return { width:"6%" } },
-          customBodyRender: (value: any) => {
+          customBodyRender: (value: boolean | null) => {
             return(
               <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
             )
@@ -88,7 +91,7 @@ class ViewCourses extends Component<any> {
           filter: true,
           setCellHeaderProps: () => { return { width:"7%" } },
           setCellProps: () => { return { width:"7%" } },
-          customBodyRender: (value: any) => {
+          customBodyRender: (value: boolean | null) => {
             return(
               <>{value===null ? "N/A": (value ? "Yes":"No")}</>
             )
@@ -110,7 +113,7 @@ class ViewCourses extends Component<any> {
             filter: false,
             setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
             setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-            customBodyRender: (courseId) => {
+            customBodyRender: (courseId: any) => {
               return (
                 <IconButton id={courseId}
                 role = "img" aria-label='editCourseIconButton'
@@ -121,7 +124,7 @@ class ViewCourses extends Component<any> {
                     }
                 }}
                  >
-                  <EditIcon sx={{color:"black"}}/>
+                  <EditIcon sx={{color:"var(--table-text)"}}/>
                 </IconButton>
               )
             },
@@ -137,11 +140,14 @@ class ViewCourses extends Component<any> {
           filter: false,
           setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
           setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-          customBodyRender: (courseId) => {
+          customBodyRender: (courseId: any) => {
             return (
                 <IconButton id={courseId}
                 role = "img" aria-label="viewCourseIconButton"
               onClick={() => {
+                // the fix is here. TEMP COMMMENT.
+                navbar.setState({ user: null, addUser: null });
+                navbar.setAddCourseTabWithCourse(courses, courseId, "Users");
                 // If viewing as student, always go to student dashboard
                 if (isViewingAsStudent) {
                   navbar.setStudentDashboardWithCourse(courseId, courses);
@@ -183,7 +189,42 @@ class ViewCourses extends Component<any> {
             display: "flex",
             justifyContent: "space-between",
             alignItems: "center",
-            alignSelf: "stretch"
+            alignSelf: "stretch",
+            
+            setFilterChipProps: () => ({
+              sx: {
+                
+                backgroundColor: 'var(--dropdown-bg)',
+                color: 'var(--dropdown-text)',
+              }
+            }),
+            setTableProps: () => ({
+              sx: {
+                
+                '& .MuiPopover-paper': {
+                  backgroundColor: 'var(--dropdown-bg)',
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiTableCell-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiCheckbox-root': {
+                  color: 'var(--dropdown-icon)',
+                },
+                '& .MuiInput-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiInput-underline:before': {
+                  borderBottomColor: 'var(--dropdown-border)',
+                },
+                '& .MuiTypography-root': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& .MuiButton-root': {
+                  color: 'var(--button-text)',
+                },
+              }
+            }),
           }}>
             <Box sx={{ width: "100%" }} className="content-spacing">
               <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="activeCourses">

@@ -7,13 +7,19 @@ export const StatusIndicatorState = Object.freeze({
   COMPLETED: "COMPLETED"
 });
 
+interface StatusIndicatorProps {
+    navbar?: any;
+    status: string;
+}
+
+
 interface StatusIndicatorComponentState {
   status: string;
 }
 
-class StatusIndicator extends Component<any, StatusIndicatorComponentState> {
-  getStatusIcon: any;
-  constructor(props: any) {
+class StatusIndicator extends Component<StatusIndicatorProps, StatusIndicatorComponentState> {
+  getStatusIcon: () => JSX.Element | null;
+  constructor(props: StatusIndicatorProps) {
     super(props);
 
     this.state = {

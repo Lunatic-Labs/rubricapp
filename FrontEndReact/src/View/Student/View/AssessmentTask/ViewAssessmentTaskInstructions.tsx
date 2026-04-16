@@ -3,10 +3,11 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import Button from "@mui/material/Button";
 import { genericResourcePOST } from "../../../../utility";
+import { Rubric } from '../../../../types/Rubric';
 
 interface ViewAssessmentTaskInstructionsProps {
     navbar: any;
-    rubrics: any;
+    rubrics: Rubric;
 }
 
 /**
@@ -31,7 +32,7 @@ interface ViewAssessmentTaskInstructionsProps {
  */
 
 interface ViewAssessmentTaskInstructionsState {
-    categories: any;
+    categories: Rubric["category_json"];
     instructions: string;
     skipInstructions: boolean;
     errorMessage: string | null;
@@ -134,7 +135,7 @@ class ViewAssessmentTaskInstructions extends Component<
                         justifyContent: "center",
                     }}
                 >
-                    <div
+                    <div className="assessment-instructions-colors"
                         style={{
                             borderTop: "3px solid #4A89E8",
                             border: "3px, 0px, 0px, 0px",
@@ -182,6 +183,7 @@ class ViewAssessmentTaskInstructions extends Component<
                                             fontWeight: "bold",
                                             width: "80%",
                                             textAlign: "center",
+                                            color: 'var(--instructions-text)'
                                         }}
                                     >
                                         Assessment Categories: {categoryList}
@@ -191,6 +193,7 @@ class ViewAssessmentTaskInstructions extends Component<
                                     style={{
                                         textAlign: "left",
                                         marginLeft: "8px",
+                                        color: 'var(--instructions-text)'
                                     }}
                                 >
                                     Instructions
@@ -199,6 +202,8 @@ class ViewAssessmentTaskInstructions extends Component<
                                     style={{
                                         width: "98%",
                                         minHeight: "15rem",
+                                        backgroundColor: 'var(--instructions-textarea-bg)',
+                                        color: 'var(--instructions-textarea-text)'
                                     }}
                                     defaultValue={instructions}
                                     readOnly

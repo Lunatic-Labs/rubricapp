@@ -1,0 +1,650 @@
+@startuml Frontend Flow
+title Frontend Flow
+
+component "App" as App
+component "Login" as Login
+component "AppState" as AppState
+component "SetNewPassword" as SetNewPassword
+component "ValidateReset" as ValidateReset
+component "PrivacyPolicy" as PrivacyPolicy
+component "Settings" as Settings
+component "UserAccount" as UserAccount
+component "Logout" as Logout
+component "AdminAddUser" as AdminAddUser
+component "ViewNotificationState" as ViewNotificationState
+component "AdminViewUsers" as AdminViewUsers
+component "ViewUsers" as ViewUsers
+component "RosterDashboard" as RosterDashboard
+component "AdminBulkUpload" as AdminBulkUpload 
+component "AdminAddCustomRubric" as AdminAddCustomRubric
+component "AddCustomRubric" as AddCustomRubric
+component "AdminViewCourses" as AdminViewCourses
+component "AdminAddCourse" as AdminAddCourse
+component "ViewCourses" as ViewCourses
+component "StudentBuildTeam" as StudentBuildTeam
+component "BuildTeamTable" as BuildTeamTable
+component "StudentManageCurrentTeam" as StudentManageCurrentTeam
+component "AdminAddAssessmentTask" as AdminAddAssessmentTask
+component "AdminAddTeam" as AdminAddTeam
+component "TeamDashboard" as TeamDashboard
+component "AdminViewTeams" as AdminViewTeams
+component "ViewTeams" as ViewTeams
+component "StudentNavigation" as StudentNavigation
+component "StudentDashboard" as StudentDashboard
+component "StudentViewAssessmentTask" as StudentViewAssessmentTask
+component "ViewAssessmentTasks" as ViewAssessmentTasks
+component "AdminViewTeamMembers" as AdminViewTeamMembers
+component "ViewTeamMembers" as ViewTeamMembers
+component "StudentTeamMembers" as StudentTeamMembers
+component "AssessmentDashboard" as AssessmentDashboard
+component "AdminViewAssessmentTask" as AdminViewAssessmentTask
+component "AdminImportAssessmentTasks" as AdminImportAssessmentTasks
+component "AdminViewCompleteAssessmentTasks" as AdminViewCompleteAssessmentTasks
+component "ViewCompleteTeamAssessmentTasks" as ViewCompleteTeamAssessmentTasks
+component "ViewCompleteIndividualAssessmentTasks" as ViewCompleteIndividualAssessmentTasks
+component "CompleteAssessmentTask" as CompleteAssessmentTask
+component "AdminEditTeamMembers" as AdminEditTeamMembers
+component "StudentViewAssessmentTaskInstructions" as StudentViewAssessmentTaskInstructions
+component "ViewAssessmentTaskInstructions" as ViewAssessmentTaskInstructions
+component "SelectTeam" as SelectTeam
+component "StudentConfirmCurrentTeam" as StudentConfirmCurrentTeam
+component "ConfirmCurrentTeamTable" as ConfirmCurrentTeamTable
+component "CodeRequirement" as CodeRequirement
+component "ReportingDashboard" as ReportingDashboard
+component "AdminReportTabs" as AdminReportTabs
+component "ReportingMainHeader" as ReportingMainHeader
+component "AdminViewAssessmentStatus" as AdminViewAssessmentStatus
+component "AdminViewRatings" as AdminViewRatings
+component "AdminExportGraphComparison" as AdminExportGraphComparison
+component "AdminViewCustomRubrics" as AdminViewCustomRubrics
+component "ViewNotification" as ViewNotification
+component "ViewAssessmentStatus" as ViewAssessmentStatus
+component "Form" as Form
+
+note right of App
+  Work:
+    + Sets up the basics of the app such as routing
+end note
+
+note left of Login
+  Work:
+    + Checks to see if user has login info in cookies
+    + If needed, validates user email and password
+    + Checks if user needs to create a new password
+    + Renders Login screen
+  Calls:
+    - GET/login : To check user email and password
+end note
+
+note right of SetNewPassword
+  Work:
+    + Checks entered password strength
+    + Submits new password to backend
+    + Renders resetpassword screen
+  Calls:
+    - PUT/password : To change stored password for user
+end note
+
+note right of ValidateReset
+  Work:
+    + Sends a code to the email that wants to change passwords
+    + Verifies the code.
+    + Renders screen to send a reset password
+  Calls:
+    - POST/reset_code : To send a reset password to the specified email
+end note
+
+note right of AppState
+  Work:
+    + Checks to see if user has login info in cookies
+    + Sets a lot of functions into a large scope for children components to use
+      ~ setAddCourseTabWithCourse to setSuccessfulMessage
+    + Figures out what component to call based on the user info or tab value
+    + Partially Renders what each user type should be seeing
+    + Turns on darkmode if needed
+  Calls:
+    - GET/user: Gets all info of current user
+end note
+
+note right of PrivacyPolicy
+  Work:
+    + Renders privacy policy
+end note
+
+note right of Settings
+  Work:
+    + Pulls User data from backend
+    + Updates backend on if the user wants to be in darkmode
+    + Renders user app settings
+  Calls:
+    - GET/user : Calls all user info for current user
+    - PUT/user_setting: Tells backend to update the mode preference of the user
+end note  
+
+note right of UserAccount
+  Work:
+    + Renders current user info and button to change password
+    + Submits new password to backend
+    + Renders user details
+  Calls:
+    - PUT/password : Called to store a new password
+end note
+
+note right of Logout
+  Work:
+    + Calls backend to logout the user
+    + Removes cookies
+  Calls:
+    - POST/logout : Called to blacklist the JWT tokens
+end note
+
+note right of AdminAddUser
+  Work:
+    + Parses input for proper formats.
+    + Deletes a user or adds a User.
+    + Renders the edit/create/delete (depends on current user) screen for users.
+  Calls:
+    - PUT/user : Calls to unenroll selected user from course
+    - DELETE/user: Called to delete selected user
+    - POST/user: If superadmin, called to create new admin
+    - PUT/user: If superadmin, called to edit user info
+    - POST/user: if not superadmin, called to create a user
+    - PUT/user: if not superadmin, to edit user info 
+    - PUT/user: if not superadmin and modified email, to edit user info
+end note
+
+note left of ViewNotificationState
+  Work:
+    + Allows user to send emails (called by a function not a compoenent)
+    + Renders showing notifications
+end note
+
+note left of AdminViewUsers
+  Work:
+    + Fetches all admin users or course users
+    + Fetches all role info
+  Calls
+    - GET/user : Calls for all admin users and all their info (if super admin)
+    - GET/user : Calls for all users from a specific course (if normal admin)
+    - GET/role : Calls for all role table info.
+end note 
+
+note right of ViewUsers
+  Work:
+    + Renders the passed user list as a table
+      * Table rendered has different columns based on what type view
+  Calls:
+    - DELETE/user : calls on a user to be deleted 
+end note
+
+note left of RosterDashboard
+  Work: 
+    + Figures out if it is a normal admin or studentDemo view
+    + If demo view then does all the work of setting cookies etc
+    + Calls function with how to render course header and basic tabs
+    + Renders roster dashboard
+  Calls:
+    - GET/course : Gets student test token
+end note
+
+note left of AdminBulkUpload
+  Work:
+    + Submits the appropriate files to the backend
+    + Renders the bulkupload or teambulkupload view
+  Calls:
+    - POST/bulk_upload: Uploads users in bulk
+    - POST/team_bulk_upload: Uploads teams in bulk
+end note
+
+note right of AdminAddCustomRubric
+  Work: 
+    + Pulls category and rubric data
+    + Parses category data
+  Calls:
+    - GET/rubric: Calls for all rubric data (Does it twice)
+    - GET/category: Calls for all Category data with rubric association (done twice)
+end note
+
+note right of AddCustomRubric
+  Work:
+    + Pulls category and rubric data
+    + Figures out if a delete/add/editing of a rubric is needed
+    + Renders view to customize rubrics
+  Calls:
+    - GET/rubric: Calls for a specific rubric data (specific rubric id undefined)
+    - GET/category: Calls for sepcific category (using an undefined value)
+    - DELETE/rubric: Calls to delete specific rubric
+    - PUT/rubric: Call to modify rubric
+    - POST/rubric: Call to create rubric
+end note
+
+note right of AdminViewCourses
+  Work:
+    + Parses course roles
+    + Call to add a course on second pass
+  Calls:
+    - GET/course: Calls for all courses info
+end note
+
+note right of AdminAddCourse
+  Work:
+    + Renders view for user to edit or create a new course
+    + Submits the changes to the database
+  Calls:
+    - POST/course: Calls for a new course to be created
+    - PUT/course: Calls for a course to be modified
+end note
+
+note right of ViewCourses
+  Work:
+    + Renders courses as a table
+  Calls:
+end note
+
+note right of StudentBuildTeam
+  Work:
+    + Fetches info then calls another component
+  Calls:
+    - GET/user : Calls to get every user for course
+end note
+
+note right of BuildTeamTable
+  Work:
+    + Renders team-building table
+  Calls:
+end note
+
+note right of StudentManageCurrentTeam
+  Work:
+    + Fetches user info then calls another component
+  Calls:
+    - GET/user : Calls for all users related to the course
+end note
+
+note right of AdminAddAssessmentTask
+  Work:
+    + Renders a view to modify or create an assessment task.
+  Calls:
+    - GET/completed_assessment: Calls for all of a specific CAT data
+    - POST/assessment_task: Call to create an AT
+    - PUT/assessment_task: Call to modifiy an AT
+    - GET/adhoc_amount: Call to get AT adhoc data
+    - POST/team: Call to bind a team to a new AT if needed
+end note
+
+note right of AdminAddTeam
+  Work:
+    + Renders view to modify or create a new team
+  Calls:
+    + GET/user: Calls for all users for the selected course
+    + POST/team: Call to create a team
+    + PUT/team: Call to modify a team
+end note
+
+note right of TeamDashboard
+  Work:
+  Calls:
+end note
+
+note left of AdminViewTeams
+  Work:
+    + Fetches team and filters them
+    + Fetches users
+    + Renders outer details of team table
+  Calls:
+    - GET/team: Calls for all the teams for a particular course
+    - GET/users: Calls for all users
+end note
+
+note left of ViewTeams
+  Work:
+    + Can target a team for deletion
+    + Renders teams as a table
+  Calls:
+    - DELETE/team: Call to delete a team
+end note
+
+note right of StudentNavigation
+  Work:
+    + Sets up info chip
+  Calls:
+end note
+
+note right of StudentDashboard
+  Work:
+    + Filters which ATs are expired etc.
+    + Binds ATs to CATs
+    + Filters ATs with no CATs
+    + Binds users to their respective Teams
+    + Binds users to their CATs
+    + Binds Teams to their CATs
+    + A LOT MORE FILTERING
+    + Handles switching back to admin mode
+    + Figures out who is viewing info to call the next components
+    + Renders avgs at the bottom
+  Calls:
+    - GET/roles: Call for all roles
+    - GET/assessment_task: Calls for all ATs in course
+    - GET/completed_assessment: Calls for all CATS in course
+    - GET/average: Calls for course averages
+    - GET/rubric: Calls for rubrics
+    - POST/logout: Blacklist tokens
+end note
+
+note left of StudentViewAssessmentTask
+  Work:
+    + Parses rubrics
+  Calls:
+  - GET/checkin : Checkins user
+  - GET/rubric: Calls for all rubrics
+  - GET/course: Calls for the course data
+end note
+
+note left of ViewAssessmentTasks
+  Work:
+    + Filters ATs and CATs for a particular AT
+    + Checkes for completion of ATs
+    + Renders table for ATs
+  Calls:
+end note
+
+note right of AdminViewTeamMembers
+  Work:
+    + Fetches user info
+    + Renders buttons
+  Calls:
+    - GET/user: calls for user info for an assigned team and course
+end note
+
+note left of ViewTeamMembers
+  Work:
+    + Renders the team table
+  Calls:
+end note
+
+note right of StudentTeamMembers
+  Work:
+    + Fetchs the teams users
+  Calls:
+    - GET/user: Get user data from a particular team
+end note
+
+note right of AssessmentDashboard
+  Work:
+    + Renders assessment dashboard
+  Calls:
+end note
+
+note left of AdminViewAssessmentTask
+  Work:
+    + Parses rolse and rubrics
+  Calls:
+    - GET/team: Calls for teams for a course
+    - GET/assessment_task: calls for all assessment tasks of a course
+    - GET/roles: fetches all roles
+    - GET/rubric: fetches all rubrics
+end note
+
+note right of AdminImportAssessmentTasks
+  Work:
+    + Sends import task data to the backend
+    + Renders import task view
+  Calls:
+    + POST/assessment_task_copy : Calls for an AT to be copied into a certain course
+end note
+
+note right of AdminViewCompleteAssessmentTasks
+  Work:
+    + Fetchs CAT and user data to pass to a child component
+    + Figures out if in Team course or Student course to render appropriate view
+  Calls:
+    - GET/completed_assessment: Calls for all course team ATs
+    - GET/completed_assessment: Calls for all course indvidual ATs
+    - GET/role: Calls for all role data
+    - GET/user: Calls for all users for a specific course
+end note
+
+note left of ViewCompleteTeamAssessmentTasks
+  Work:
+    + Renders the admin view of team CATs for a AT
+    + Handles the user sending emails to notify other users.
+  Calls:
+    - POST/send_single_email: Sends an email to one user by calling the backend
+    - PUT/mass_notification: Sends an email to multiple users
+end note
+
+note left of ViewCompleteIndividualAssessmentTasks
+  Work:
+    + Renders the view for looking at individual CATs of AT
+    + Handles locking and unlocking CATs
+    + Handles sending emails to notify other users
+  Calls:
+    - PUT/completed_assessment_toggle_lock: Calls for a CAT to have its locked state flipped
+    - PUT/completed_assessment)unlock: Calls for a CAT to be unlocked
+    - PUT/completed_assessment_lock: Calls for a CAT to be locked
+    - POST/send_single_email: Sends an email to one user by calling the backend
+    - PUT/mass_notification: Sends an email to multiple users
+end note
+
+note right of CompleteAssessmentTask
+  Work:
+    + Renders CAT view table
+    + Sets up polling for admins
+    + Checks in users
+    + Sorts and orders CATs
+  Calls:
+    - GET/checkin_events: Notifies backend that user has accessed the CAT
+    - GET/checkin_events: Notifies backend that user has accessed the CAT
+    - GET/rubric: Calls for all rubrics for the AT
+    - GET/role: Calls for role data
+    - GET/team: Pulls all course team data or adhoc team data
+    - GET/checkin: Pulls all checkin info for CAT
+    - GET/user: Pulls all user info for course
+    - GET/user: Pulls all user info for course
+    - GET/completed_assessment: Pulls all CATs for AT 
+end note
+
+note right of AdminEditTeamMembers
+  Work:
+    + Renders view to edit team members
+    + Figures out if its creating a new team or modifying one
+  Calls:
+    - GET/user: Calls for all users from a course
+    - POST/user: Called to move users into a team
+    - PUT/user: Called to move users into a team
+end note
+
+note right of StudentViewAssessmentTaskInstructions
+  Work:
+    + Fetches info to pass to child
+  Calls:
+    - GET/rubric: Fetches one rubric
+end note
+
+note left of ViewAssessmentTaskInstructions
+  Work:
+    + Renders assesment task and rubric summary
+  Calls:
+    + POST/rating: Called to track when user viewed feedback
+end note
+
+note right of SelectTeam
+  Work:
+    + Renders the simple selection of teams for a student
+    + Notifies backend of any changes
+  Calls:
+    - GET/team: Calls for all teams in the course
+    - GET/nonfull-adhoc: Calls for all non filled adhoc teams
+    - POST/checkin: Binds the user to a particular adhoc team using the checkin table
+end note
+
+note right of StudentConfirmCurrentTeam
+  Work:
+    + Fetches team member data for a team and calls child
+  Calls:
+    - GET/team_members: Calls for all team members for a course
+end note
+
+note left of ConfirmCurrentTeamTable
+  Work:
+    + Renders view for user to check into a different team or the current team
+  Calls:
+    - POST/checkin: Checks in the current user
+end note
+
+note right of CodeRequirement
+  Work:
+    + Renders the entering of a code to switch teams and verifies it locally?
+  Calls:
+    - GET/assessment_task: pulls all the assessment task data
+end note
+
+note right of ReportingDashboard
+  Work:
+    + Fetches ATs
+  Calls:
+    - GET/assessment_task: Calls for all ATs of a course
+end note
+
+note left of AdminReportTabs
+  Work:
+    + Calls other children
+  Calls:
+end note
+
+note left of ReportingMainHeader
+  Work:
+    + Renders reporting headerd
+end note
+
+note left of AdminViewAssessmentStatus
+  Work:
+    + Renders assessment status view
+    + Scans array for current AT
+    + Exports csv files
+  Calls:
+    - GET/compeleted_assessment: Fetches all CATs for the course
+    - GET/rubric: Fetches all rubrics for the course
+    - GET/category: Fetches all categories for course
+    - GET/compeleted_assessment: Fetches all CATs ratios
+    - GET/csv_assessment_export: Fetch csv data
+end note
+
+note left of ViewAssessmentStatus
+  Work:
+    + Renders the AT data in the client desired view
+end note
+
+note left of AdminViewRatings
+  Work:
+    + Renders view of ratings
+  Calls:
+    - GET/rating: Calls for all ratings of an AT
+    - GET/category: Calls for all categories of a rubric
+    - GET/csv_assessment_export: Fetches rating csv data
+end note
+
+note left of AdminExportGraphComparison
+  Work:
+    + Renders all the graphs and manages moving them for exports
+  Calls:
+    - GET/category: Fetches all categories
+    - GET/rubric: Fetches all rubrics
+    - GET/team: Fetches all teams
+    - GET/user: Fetches all students
+    - GET/rubric: Fetches rubric details
+    - GET/completed_assessment: Fetches the particular CAT from AT id
+end note
+
+note right of AdminViewCustomRubrics
+  Work:
+    + Organizes data for child table renderer component
+  Calls:
+    - GET/rubric: returns all the custom rubrics
+    - GET/category: returns all the custom categories
+end note
+
+note right of ViewNotification
+  Work:
+    + Renders user input for email notification message view
+  Calls:
+end note
+
+note left of Form
+  Work:
+    + Handles rendering and editing the form
+    + Handles auto saving
+    + Handles swapping between tabs
+    + Handles every element of the form view
+  Calls:
+    - PUT/completed_assessment: Saves the changes to an existing CAT
+    - POST/completed_assessment: Saves the changes to a new CAT
+end note
+
+App --> Login
+Login --> AppState: User is authenticated
+Login -> SetNewPassword: First time password change
+Login -> ValidateReset: If user wants to change password
+ValidateReset --> SetNewPassword: Correct reset code entered
+AppState --> Login: Default if no tab match
+AppState --> PrivacyPolicy: If user clicks on 'privacy policy' button
+AppState --> Settings: If user clicks on 'settings' button
+AppState --> UserAccount: If user clicks on 'account' button
+AppState --> Logout: If the user clicks on 'logout' button
+AppState --> AdminAddUser: If user clicks on 'Add user' button
+AppState --> ViewNotificationState: Super admin clicks on 'view notifications' button
+AppState --> AdminViewUsers: User is a superadmin or admin and this tab is set
+AdminViewUsers --> ViewUsers
+AppState --> RosterDashboard: If course tab is set if 'users' tab is set
+RosterDashboard --> AdminViewUsers
+AppState --> AdminBulkUpload: If 'bulkupload' or 'adminteambulkupload' tab is set
+AppState --> AdminAddCustomRubric: If 'AddCustomRubrics' is the active tab
+AdminAddCustomRubric --> AddCustomRubric
+AppState --> AdminViewCourses: If 'Courses' or 'AddCourse' is active tab
+AdminViewCourses --> AdminAddCourse: If user clicks 'add course' button
+AdminViewCourses --> ViewCourses
+AppState --> StudentBuildTeam: If 'BuildNewTeam' is active tab
+StudentBuildTeam --> BuildTeamTable
+AppState --> StudentManageCurrentTeam: If 'MangageCurrentTeam' tab
+StudentManageCurrentTeam --> BuildTeamTable
+AppState --> AdminAddAssessmentTask: If 'AddTask' tab
+AppState --> AdminAddTeam: If "AddTeam" tab
+AppState --> TeamDashboard: If 'Teams' tab
+TeamDashboard --> AdminViewTeams
+AdminViewTeams --> ViewTeams
+AppState --> StudentNavigation: If 'StudentDashboard' tab
+AppState --> StudentDashboard: If 'StudentDashboard' tab
+StudentDashboard --> StudentViewAssessmentTask
+StudentViewAssessmentTask --> ViewAssessmentTasks
+AppState --> AdminViewTeamMembers: If 'TeamMembers' tab
+AdminViewTeamMembers --> ViewTeamMembers
+AppState --> StudentTeamMembers: If 'StudentTeamMembers' tab
+StudentTeamMembers --> ViewTeamMembers
+AppState --> AssessmentDashboard: If 'AssessmentTasks' tab
+AssessmentDashboard --> AdminViewAssessmentTask
+AdminViewAssessmentTask --> AdminAddAssessmentTask
+AdminViewAssessmentTask --> ViewAssessmentTasks
+AppState --> AdminImportAssessmentTasks: If 'ImportAssessmentTasks' tab
+AppState --> AdminViewCompleteAssessmentTasks: If 'ViewComplete' tab
+AdminViewCompleteAssessmentTasks --> ViewCompleteTeamAssessmentTasks: If this is a team course
+AdminViewCompleteAssessmentTasks --> ViewCompleteIndividualAssessmentTasks: If this is a individual course
+AppState --> CompleteAssessmentTask: If 'CompleteAssessment' tab
+AppState --> AdminEditTeamMembers: If 'AdminEditTeamMembers' tab
+AppState --> StudentViewAssessmentTaskInstructions: If 'AssessmentTaskInstructor' tab
+StudentViewAssessmentTaskInstructions --> ViewAssessmentTaskInstructions
+AppState --> SelectTeam: If 'SelectTeam' tab
+AppState --> StudentConfirmCurrentTeam: If 'ConfirmCurrentTeam' tab
+StudentConfirmCurrentTeam --> ConfirmCurrentTeamTable
+AppState --> CodeRequirement: If 'CodeRequired' tab
+AppState --> ReportingDashboard: If 'Reporting' tab
+ReportingDashboard --> AdminReportTabs
+AdminReportTabs --> ReportingMainHeader
+AdminReportTabs --> AdminViewAssessmentStatus
+AdminReportTabs --> AdminViewRatings
+AdminReportTabs --> AdminExportGraphComparison
+AdminViewAssessmentStatus --> ViewAssessmentStatus
+AppState --> AdminViewCustomRubrics: If 'MyCustomRubrics' tab
+AppState --> ViewNotification: If 'ViewNotification' tab
+CompleteAssessmentTask --> Form
+
+@enduml

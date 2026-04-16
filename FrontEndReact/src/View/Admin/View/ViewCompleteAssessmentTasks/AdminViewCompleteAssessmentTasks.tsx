@@ -5,17 +5,19 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { User } from '../../../../types/User';
 
 interface AdminViewCompleteAssessmentTasksProps {
     navbar: any;
 }
 
 interface AdminViewCompleteAssessmentTasksState {
-    errorMessage: any;
+    errorMessage: string | null;
     isLoaded: boolean;
-    completedAssessments: any | null;
-    roles: any | null;
-    users: any | null;
+    completedAssessments: CompleteAssessmentTask[] | null;
+    roles: { role_id: string; role_name: string }[] | null;
+    users: User[] | null;
 }
 
 class AdminViewCompleteAssessmentTasks extends Component<
@@ -79,7 +81,7 @@ class AdminViewCompleteAssessmentTasks extends Component<
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;
         navbar.adminViewCompleteAssessmentTasks.roleNames = roles ? parseRoleNames(roles) : [];
-        navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users) : [];
+        navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users as any) : [];
 
         if (errorMessage) {
             return (

@@ -7,7 +7,17 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function SendMessageModal ( props: any ) {
+interface SendMessageModalProps {
+    show: boolean;
+    emailSubject: string;
+    emailMessage: string;
+    error: { emailSubject: string; emailMessage: string };
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleDialog: () => void;
+    sendNotification: () => void;
+}
+
+export default function SendMessageModal ( props: SendMessageModalProps ) {
     return (
         <React.Fragment>
             <Dialog
@@ -73,7 +83,6 @@ export default function SendMessageModal ( props: any ) {
                         variant="contained" 
                         onClick={() => {
                             props.sendNotification(); 
-                            props.handleDialog();    
                         }} 
                         aria-label="addMessagePromptSendNotificationButton"
                     >
