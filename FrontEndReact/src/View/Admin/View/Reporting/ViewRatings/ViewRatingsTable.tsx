@@ -1,12 +1,19 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
+import { Category } from '../../../../../types/Category';
 
-interface ViewRatingsTableStateprops {
-  
+interface ViewRatingsTableProps {
+    navbar: any;
+    assessmentTasks: AssessmentTask[];
+    chosenAssessmentId: string | number;
+    ratings: unknown[];
+    categories: Category[];
 }
 
-class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
+
+class ViewRatingsTable extends Component<ViewRatingsTableProps> {
   getStudentName = (ratingRow: any) => {
     // Backend may send a single "student" string, or first_name / last_name
     if (ratingRow.student) {
@@ -33,14 +40,14 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
   };
 
   render() {
-    const isTeamMap: any = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
+    const isTeamMap = parseAssessmentIndividualOrTeam(this.props.assessmentTasks);
     const isTeam = isTeamMap[this.props.chosenAssessmentId] === true;
 
-    const allRatings: any[] = [];
+    const allRatings: Record<string, unknown>[] = [];
     const nameLabel = isTeam ? 'Team Name' : 'Student Name';
 
     if (isTeam) {
-      const teamMap: Map<any, any> = new Map();
+      const teamMap: Map<Record<string, unknown>, any> = new Map();
 
       this.props.ratings.forEach((ratingRow: any) => {
         const ratingData = ratingRow['rating_observable_characteristics_suggestions_data'];
@@ -143,7 +150,7 @@ class ViewRatingsTable extends Component<any, ViewRatingsTableStateprops> {
     ];
 
     // Category columns
-    this.props.categories.map((cat: any) => {
+    this.props.categories.map((cat: Category) => {
       columns.push({
         name: cat['category_name'],
         label: cat['category_name'],

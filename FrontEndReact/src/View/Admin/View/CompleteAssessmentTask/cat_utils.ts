@@ -8,9 +8,9 @@ import { StatusIndicatorState } from "./StatusIndicator";
  * @param {string} categoryName - The name of the category to check the status for.
  * @returns {StatusIndicatorState} - The status of the unit category (COMPLETED, IN_PROGRESS, or NOT_STARTED).
  */
-export function getUnitCategoryStatus(unit: any, assessmentTask: any, categoryName: any) {
+export function getUnitCategoryStatus(unit: { rocsData: { [key: string]: { observable_characteristics: string[]; suggestions: string[] } } } , assessmentTask: { show_suggestions: boolean }, categoryName: string) {
 	const showSuggestions = assessmentTask["show_suggestions"];
-	const categoryData = unit.rocsData[categoryName];
+	const categoryData = unit.rocsData[categoryName]!;
 	
 	const obsCharHasChecked = categoryData["observable_characteristics"].includes("1");
 	const suggestionsHasChecked = showSuggestions ? categoryData["suggestions"].includes("1") : false;
@@ -41,11 +41,11 @@ export class CheckinsTracker {
 	 * @type {Map<number, number>}
 	 */
 	checkinsByUserId;
-	constructor(checkins: any[]) {
+	constructor(checkins: { user_id?: number; [key: string]: unknown }[]) {
 		this.checkinsList = checkins;
 		
 		const checkinsByUserId = new Map();
-		checkins.forEach((checkin: any, index: number) => {
+		checkins.forEach((checkin, index) => {
 			if ("user_id" in checkin) {
 				checkinsByUserId.set(checkin["user_id"], index);
 			}
