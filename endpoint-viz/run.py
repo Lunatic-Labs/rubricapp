@@ -17,8 +17,10 @@ def install():
     os.system('python3 -m venv .env')
     os.system(f'. .env/bin/activate && pip3 install {req}')
 
+
 def run():
     return os.system('.env/bin/python3 ./main.py')
+
 
 if __name__ == '__main__':
     if len(sys.argv) <= 1:
