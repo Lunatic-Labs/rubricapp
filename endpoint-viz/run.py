@@ -24,7 +24,6 @@ def usage():
 
 
 def install():
-    """Install dependencies in a virtual environment."""
     req = 'tree-sitter tree-sitter-python tree-sitter-typescript'
     print("Creating virtual environment and installing dependencies...")
 

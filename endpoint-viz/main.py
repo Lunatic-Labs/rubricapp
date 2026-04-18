@@ -87,10 +87,25 @@ def parse_args():
 
 def link_calls(endpoints:      List[endpoint.Endpoint],
                endpoint_calls: List[endpointcall.EndpointCall]):
-    for e in endpoints:
-        print(e)
-    for c in endpoint_calls:
-        print(c)
+
+    unlinked = []
+    linked   = []
+
+    for call in endpoint_calls:
+        found = False
+        for point in endpoints:
+            if point.endpoint_str == call.dst:
+                found = True
+                break
+        if found:
+            linked.append((call, point))
+        else:
+            unlinked.append(call)
+
+    for l in linked:
+        print(f'Linked: {l}')
+    for u in unlinked:
+        print(f'Unlinked: {u}')
 
 
 def main():

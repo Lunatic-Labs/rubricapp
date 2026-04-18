@@ -24,8 +24,13 @@ def find(node, src, path):
                     name_node = next((c for c in func_node.children if c.type == 'identifier'), None)
                     func_name = src[name_node.start_byte:name_node.end_byte].decode('utf8') if name_node else '<unknown>'
                     start     = text.find('(')
-                    end       = text.rfind(')')
+                    #end       = text.rfind(')')
+                    end       = text.rfind(',')
                     route_str = text[start+1:end].strip() if start != -1 and end != -1 else ''
+                    if route_str[0] == '\'' or route_str[0] == '"':
+                        route_str = route_str[1:]
+                    if route_str[-1] == '\'' or route_str[-1] == '"':
+                        route_str = route_str[0:-1]
                     loc       = Location(func_node.start_point[0]+1, func_node.start_point[1]+1, path)
                     yield Endpoint(func_name, route_str, loc)
                 # already found @bp.route

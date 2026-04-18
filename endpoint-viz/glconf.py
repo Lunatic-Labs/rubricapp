@@ -1,6 +1,5 @@
 from enum import Enum
 
-
 class Flag(Enum):
     NOCOLOR   = 1 << 0
     NOGUI     = 1 << 1

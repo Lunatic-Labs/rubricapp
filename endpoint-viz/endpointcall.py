@@ -20,6 +20,17 @@ class EndpointCall:
         return f'{self.kind.name} -> {self.dst}, args = {self.args} @ {self.location}'
 
 
+def trimdst(s):
+    s = s.strip()
+    if s[0] == '`' or s[0] == '\'' or s[0] == '"':
+        s = s[1:]
+        end   = s.find('?')
+        s = s[0:end if end != -1 else len(s)]
+    if s[-1] == '`' or s[-1] == '\'' or s[-1] == '"':
+        s = s[0:-1]
+    return s
+
+
 def find(node, src, path):
     if node.type == 'call_expression':
         func_node = next((c for c in node.children if c.type == 'identifier'), None)
@@ -48,7 +59,7 @@ def find(node, src, path):
                             dst = arg_text
 
                 loc = Location(node.start_point[0]+1, node.start_point[1]+1, path)
-                yield EndpointCall(kind, dst, args, loc)
+                yield EndpointCall(kind, trimdst(dst), args, loc)
 
     for child in node.children:
         yield from find(child, src, path)
