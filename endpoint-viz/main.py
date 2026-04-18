@@ -2,6 +2,7 @@ import sys
 import os
 import argparse
 from pathlib import Path
+from typing import List
 
 try:
     import tree_sitter_python as tspython
@@ -83,9 +84,27 @@ def parse_args():
 
     return args
 
+
+def link_calls(endpoints:      List[endpoint.Endpoint],
+               endpoint_calls: List[endpointcall.EndpointCall]):
+    for e in endpoints:
+        print(e)
+    for c in endpoint_calls:
+        print(c)
+
+
 def main():
     try:
-        pass
+        pyfiles        = inout.collect_files_by_extension(glconf.state.pypath, 'py')
+        tsxfiles       = inout.collect_files_by_extension(glconf.state.tsxpath, 'tsx')
+        endpoints      = []
+        endpoint_calls = []
+
+        for f in pyfiles:  endpoints      += parse_python(f)
+        for f in tsxfiles: endpoint_calls += parse_tsx(f)
+
+        link_calls(endpoints, endpoint_calls)
+
     except Exception as e:
         print(f'error: {e}', file=sys.stderr)
 

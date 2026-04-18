@@ -36,16 +36,19 @@ def find(node, src, path):
 
             if kind is not None:
                 args_node = next((c for c in node.children if c.type == 'arguments'), None)
-                args = []
+                args      = []
+                dst       = None
                 if args_node:
-                    for arg in args_node.children:
-                        # filtering punctuation
-                        if arg.type != ',':
-                            arg_text = src[arg.start_byte:arg.end_byte].decode('utf8')
-                            args.append(arg_text)
+                    real_args = [c for c in args_node.children if c.type not in (',', '(', ')')]
+
+                    for i, arg in enumerate(real_args):
+                        arg_text = src[arg.start_byte:arg.end_byte].decode('utf8')
+                        args.append(arg_text)
+                        if i == 0:
+                            dst = arg_text
 
                 loc = Location(node.start_point[0]+1, node.start_point[1]+1, path)
-                yield EndpointCall(kind, func_name, args, loc)
+                yield EndpointCall(kind, dst, args, loc)
 
     for child in node.children:
         yield from find(child, src, path)
