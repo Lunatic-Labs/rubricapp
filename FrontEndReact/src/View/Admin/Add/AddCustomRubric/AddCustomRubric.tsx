@@ -164,6 +164,22 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             } as any);
         };
 
+        // Added handleChange
+        this.handleChange = (e: any) => {
+            const { id, value } = e.target;
+            let errorMessage = '';
+            if (value.trim() === '') {
+                errorMessage = `${id === 'rubricNameInput' ? 'Rubric Name' : 'Rubric Description'} cannot be empty`;
+            }
+            this.setState({
+                [id.replace('Input', '')]: value,  // Maps 'rubricNameInput' to 'rubricName', etc.
+                errors: {
+                    ...this.state.errors,
+                    [id.replace('Input', '')]: errorMessage,
+                },
+            } as any);
+        };
+
         this.handleDeleteRubric = async (rubricId: number) => {
             try {
                 const result = await genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
