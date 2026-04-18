@@ -17,7 +17,7 @@ class EndpointCall:
         self.location = location
 
     def __str__(self):
-        return f'{self.kind.name} -> {self.dst}, args = {self.args} @ line {self.location.r}, column {self.location.c}'
+        return f'{self.kind.name} -> {self.dst}, args = {self.args} @ {self.location}'
 
 
 def find(node, src, path):
@@ -48,5 +48,5 @@ def find(node, src, path):
                 yield EndpointCall(kind, func_name, args, loc)
 
     for child in node.children:
-        yield from find_endpoint_calls(child, src, path)
+        yield from find(child, src, path)
 

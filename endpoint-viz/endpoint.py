@@ -9,7 +9,7 @@ class Endpoint:
         self.location     = location
 
     def __str__(self):
-        return f'{self.func_name} -> {self.endpoint_str} @ line {self.location.r}, column {self.location.c}'
+        return f'{self.func_name} -> {self.endpoint_str} @ {self.location}'
 
 
 def find(node, src, path):
@@ -32,4 +32,4 @@ def find(node, src, path):
                 break
 
     for child in node.children:
-        yield from find_api_endpoints(child, src, path)
+        yield from find(child, src, path)

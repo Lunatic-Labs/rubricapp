@@ -1,5 +1,7 @@
 import sys
 import os
+import argparse
+from pathlib import Path
 
 try:
     import tree_sitter_python as tspython
@@ -11,55 +13,85 @@ except Exception as e:
 
 import endpoint
 import endpointcall
+import inout
+import utils
+import glconf
 
 
 PY_LANGUAGE  = Language(tspython.language())
 TSX_LANGUAGE = Language(tstypescript.language_tsx())
 
 
-def load_file(path):
-    try:
-        src = None
-        with open(path, 'r', encoding='utf8') as f:
-            src = f.read()
-            assert src is not None
-            return bytes(src, encoding='utf8')
-    except Exception as e:
-        print(f'error: {e}', file=sys.stderr)
-        return None
-
-
-def parse_python():
-    path      = '1.in.py'
-    src       = load_file(path)
+def parse_python(path):
+    src       = inout.load_file(path)
     parser    = Parser(PY_LANGUAGE)
     tree      = parser.parse(src)
-    root_node = tree.root_node
-    endpoints = list(endpoint.find(root_node, src, path))
-
-    for ep in endpoints:
-        print(ep)
+    endpoints = list(endpoint.find(tree.root_node, src, path))
+    return endpoints
 
 
-def parse_tsx():
-    path      = '2.in.tsx'
-    src       = load_file(path)
+def parse_tsx(path):
+    src       = inout.load_file(path)
     parser    = Parser(TSX_LANGUAGE)
     tree      = parser.parse(src)
-    root_node = tree.root_node
-    calls     = list(endpointcall.find(root_node, src, path))
+    calls     = list(endpointcall.find(tree.root_node, src, path))
+    return calls
 
-    for call in calls:
-        print(call)
 
+def parse_args():
+    parser = argparse.ArgumentParser(
+        prog='endpoint-viz',
+        description='Visualize endpoints called throughout Rubricapp',
+    )
+
+    parser.add_argument(
+        '--nocolor',
+        action='store_true',
+        help='Disable colored output'
+    )
+
+    parser.add_argument(
+        '--nogui',
+        action='store_true',
+        help='Disable GUI (run in headless mode)'
+    )
+
+    parser.add_argument(
+        '-e',
+        '--exportmap',
+        action='store_true',
+        help='Export map/data'
+    )
+
+    parser.add_argument(
+        '--py',
+        required=True,
+        type=Path,
+        metavar='PATH',
+        help='Path to Python files directory'
+    )
+
+    parser.add_argument(
+        '--tsx',
+        required=True,
+        type=Path,
+        metavar='PATH',
+        help='Path to TypeScript/React (.tsx) files directory'
+    )
+
+    args = parser.parse_args()
+
+    return args
 
 def main():
     try:
-        parse_python()
-        parse_tsx()
+        pass
     except Exception as e:
         print(f'error: {e}', file=sys.stderr)
 
 
 if __name__ == '__main__':
+    args                 = parse_args()
+    glconf.state.pypath  = args.py
+    glconf.state.tsxpath = args.tsx
     main()
