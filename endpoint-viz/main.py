@@ -1,15 +1,17 @@
 import sys
 import os
 import argparse
+
 from pathlib import Path
 from typing import List
 
 try:
-    import tree_sitter_python as tspython
+    import tree_sitter_python     as tspython
     import tree_sitter_typescript as tstypescript
     from tree_sitter import Language, Parser
 except Exception as e:
-    print('Could not import dependencies, call `python3 run.py install` then `python3 run.py`', file=sys.stderr)
+    print('Could not import dependencies, either call `python3 run.py install` then `python3 run.py -- <ARGS...>`', file=sys.stderr)
+    print('or manage the virtual environment manually.', file=sys.stderr)
     sys.exit(1)
 
 import endpoint
@@ -88,8 +90,7 @@ def parse_args():
 def link_calls(endpoints:      List[endpoint.Endpoint],
                endpoint_calls: List[endpointcall.EndpointCall]):
 
-    unlinked = []
-    linked   = []
+    linked, unlinked = ([], [])
 
     for call in endpoint_calls:
         found = False
@@ -102,10 +103,7 @@ def link_calls(endpoints:      List[endpoint.Endpoint],
         else:
             unlinked.append(call)
 
-    for l in linked:
-        print(f'Linked: {l}')
-    for u in unlinked:
-        print(f'Unlinked: {u}')
+    return linked, unlinked
 
 
 def main():
@@ -118,7 +116,12 @@ def main():
         for f in pyfiles:  endpoints      += parse_python(f)
         for f in tsxfiles: endpoint_calls += parse_tsx(f)
 
-        link_calls(endpoints, endpoint_calls)
+        linked, unlinked = link_calls(endpoints, endpoint_calls)
+
+        for l in linked:
+            print(f'Linked: {l}')
+        for u in unlinked:
+            print(f'Unlinked: {u}')
 
     except Exception as e:
         print(f'error: {e}', file=sys.stderr)

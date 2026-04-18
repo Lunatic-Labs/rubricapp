@@ -4,6 +4,14 @@ import os
 import sys
 from pathlib import Path
 
+
+DEPS = [
+    'tree-sitter',
+    'tree-sitter-python',
+    'tree-sitter-typescript',
+]
+
+
 def cmd(c: str) -> int:
     print(f'>>> {c}')
     return os.system(c)
@@ -24,12 +32,12 @@ def usage():
 
 
 def install():
-    req = 'tree-sitter tree-sitter-python tree-sitter-typescript'
-    print("Creating virtual environment and installing dependencies...")
+    global DEPS
+    req = ' '.join(DEPS)
 
     cmd('python3 -m venv .env')
     activate_cmd = '. .env/bin/activate && pip install --upgrade pip'
-    install_cmd = f'. .env/bin/activate && pip install {req}'
+    install_cmd  = f'. .env/bin/activate && pip install {req}'
 
     if cmd(activate_cmd) != 0 or cmd(install_cmd) != 0:
         print("Installation failed")

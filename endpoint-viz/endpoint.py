@@ -11,6 +11,16 @@ class Endpoint:
     def __str__(self):
         return f'{self.func_name} -> {self.endpoint_str} @ {self.location}'
 
+    def to_dict(self):
+        return {
+            "id": self.endpoint_str,
+            "label": self.endpoint_str,
+            "data": {
+                "func_name": self.func_name,
+                "location": str(self.location)
+            }
+        }
+
 
 def find(node, src, path):
     if node.type == 'decorated_definition':
