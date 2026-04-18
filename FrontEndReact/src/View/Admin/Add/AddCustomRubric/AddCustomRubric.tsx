@@ -12,11 +12,13 @@ import RubricDescriptionsImage from "../../../../RubricDetailedOverview.png";
 import RubricDescriptionsImage2 from "../../../../RubricDetailedOverview2.png";
 import Loading from '../../../Loading/Loading';
 import FormHelperText from '@mui/material/FormHelperText';
+import { Rubric } from "../../../../types/Rubric";
+import { Category } from "../../../../types/Category";
 
 interface AddCustomRubricProps {
     navbar: any;
-    rubrics: any;
-    categories: any;
+    rubrics: Rubric[];
+    categories: Category[];
     chosenCategoryJson: any;
     categoryMap: any;
     onError?: (error: string) => void;
@@ -24,9 +26,9 @@ interface AddCustomRubricProps {
 }
 
 interface AddCustomRubricState {
-    categories: any[];
-    errorMessage: any;
-    isLoaded: any;
+    categories: Category[];
+    errorMessage: string | null;
+    isLoaded: boolean | null;
     isHelpOpen: boolean;
     addCustomRubric: boolean;
     defaultRubrics: any;
@@ -73,7 +75,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             });
         };
 
-        this.handleCreateRubric = (pickedCategories: any) => {
+        this.handleCreateRubric = (pickedCategories: Category[]) => {
             var navbar = this.props.navbar;
             var rubricId = navbar.rubricId;
             var categoryIds = [];
@@ -81,7 +83,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             var rubricDescription = this.state.rubricDescription.trim();  // Use state instead of DOM
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
-                categoryIds.push(pickedCategories[categoryIndex]["category_id"]);
+                categoryIds.push(pickedCategories[categoryIndex]!["category_id"]);
             }
 
             // Check both fields and set errors for both if invalid
@@ -162,7 +164,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             } as any);
         };
 
-        this.handleDeleteRubric = async (rubricId: any) => {
+        this.handleDeleteRubric = async (rubricId: number) => {
             try {
                 const result = await genericResourceDELETE(`/rubric?rubric_id=${rubricId}`, this);
                 if (result && result.errorMessage) {
@@ -193,15 +195,15 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
 
     }
 
-    handleCategorySelect = (categoryId: any, isSelected: any) => {
+    handleCategorySelect = (categoryId: number, isSelected: boolean) => {
         var allCategories = this.state.allCategories;
         var selectedCategories = this.state.categories;
 
         if (isSelected) {
-            const correctCategory = allCategories.find((category: any) => category.category_id === categoryId)
-            selectedCategories.push(correctCategory);
+            const correctCategory = allCategories.find((category: Category) => category.category_id === categoryId)
+            if (correctCategory) selectedCategories.push(correctCategory);
         } else {
-            selectedCategories = selectedCategories.filter((category: any) => category.category_id !== categoryId);
+            selectedCategories = selectedCategories.filter((category: Category) => category.category_id !== categoryId);
         }
         this.setState({
             categories: selectedCategories
@@ -236,7 +238,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                 options: {
                     filter: true,
                     align: "center",
-                    customBodyRender: (categoryName: any) => {
+                    customBodyRender: (categoryName: string) => {
                         return <p>{categoryName}</p>;
                     },
                 },
@@ -246,7 +248,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                 label: "Rubric",
                 options: {
                     align: "center",
-                    customBodyRender: (rubricName: any) => {
+                    customBodyRender: (rubricName: string) => {
                         return <p>{rubricName}</p>;
                     },
                 },
@@ -284,12 +286,12 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             }
         }
 
-        var pickedCategories: any = [];
-        categories.forEach((category: any) => {
+        var pickedCategories: Category[] = [];
+        categories.forEach((category: Category) => {
             if (category) {
                 for (let i = 0; i < allCategories.length; i++) {
-                    if (allCategories[i]["category_id"] === category["category_id"]) {                        
-                        pickedCategories.push(allCategories[i]);
+                    if (allCategories[i]!["category_id"] === category["category_id"]) {
+                        pickedCategories.push(allCategories[i]!);
                     }
                 }
             }
@@ -324,7 +326,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                         isOutlined={false}
                                         aria-label="customizeYourRubricDeleteRubricButton"
                                         onClick={() => {
-                                            this.handleDeleteRubric(rubrics.rubric_id);
+                                            this.handleDeleteRubric(rubrics!.rubric_id);
                                         }}
                                         style={{ marginRight: "16px" }}
                                     />

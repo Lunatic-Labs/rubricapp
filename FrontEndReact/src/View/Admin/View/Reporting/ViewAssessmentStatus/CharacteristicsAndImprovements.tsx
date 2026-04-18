@@ -1,13 +1,34 @@
 import React, { useState } from 'react';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip, Cell } from 'recharts';
 
+
+type ChartDataItem = {
+    characteristic?: string;
+    improvement?: string;
+    number: number;
+    percentage: number;
+};
+
+interface CustomTooltipProps {
+    active?: boolean;
+    payload?: { payload: ChartDataItem }[];
+}
+
+interface CharacteristicsAndImprovementsProps {
+    dataType: 'characteristics' | 'improvements';
+    characteristicsData: { characteristics: ChartDataItem[] };
+    improvementsData: { improvements: ChartDataItem[] };
+    showSuggestions: boolean;
+}
+
+
 // CharacteristicsAndImprovements
 // Small reusable component that renders either a "Characteristics" or
 // "Improvements" horizontal bar chart. Used in the Admin reporting view
 // to summarize observable characteristics or suggestions with percentages.
 
 // Helper to shorten long labels for the compact chart view (keeps UI tidy)
-const truncateText = (text: any, limit = 15) => {
+const truncateText = (text: string, limit = 15) => {
   if (text.length <= limit) return text;
   return `${text.substring(0, limit)}...`;
 };
@@ -18,9 +39,10 @@ const truncateText = (text: any, limit = 15) => {
 const CustomTooltip = ({
   active,
   payload
-}: any) => {
+}: CustomTooltipProps) => {
   if (active && payload && payload.length) {
-    const fullText = payload[0].payload[payload[0].payload.characteristic ? 'characteristic' : 'improvement'];
+    const entry = payload[0]!;
+    const fullText = entry.payload[entry.payload.characteristic ? 'characteristic' : 'improvement'];
     return (
       <div className="card position-fixed bottom-0 start-50 translate-middle-x mb-3 shadow-none border-0" style={{ maxWidth: '90vw', zIndex: 1000, backgroundColor: 'var(--modal-bg)', color: 'var(--text-color)' }}>
         <div className="card-body p-2" style={{ backgroundColor: 'var(--modal-bg)', color: 'var(--text-color)', border: '1px solid var(--border-color)' }}>
@@ -47,7 +69,7 @@ export default function CharacteristicsAndImprovements({
   characteristicsData,
   improvementsData,
   showSuggestions
-}: any) {
+}: CharacteristicsAndImprovementsProps) {
   const [isModalOpen, setModalOpen] = useState(false);
 
   const openModal = () => setModalOpen(true);
@@ -62,10 +84,10 @@ export default function CharacteristicsAndImprovements({
 
   // Prepare chart-friendly data: add a truncated label for compact view and
   // keep a full label used in the expanded modal chart.
-  const processedData = data.map((item: any) => ({
+  const processedData = data.map((item) => ({
     ...item,
-    truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement']),
-    fullLabel: item[dataType === 'characteristics' ? 'characteristic' : 'improvement']
+    truncatedLabel: truncateText(item[dataType === 'characteristics' ? 'characteristic' : 'improvement'] ?? ''),
+    fullLabel: item[dataType === 'characteristics' ? 'characteristic' : 'improvement'] ?? ''
   }));
   
   const shouldShowGraph = dataType === 'characteristics' || showSuggestions;
@@ -120,7 +142,7 @@ export default function CharacteristicsAndImprovements({
                           type="number" 
                           domain={[0, 100]} 
                           ticks={[0, 25, 50, 75, 100]} 
-                          tickFormatter={(tick: any) => `${tick}`} 
+                          tickFormatter={(tick: number) => `${tick}`} 
                           stroke="var(--chart-axis-color)"
                           tick={{ fill: 'var(--chart-axis-color)', fontSize: '12px' }} 
                           axisLine={{ stroke: 'var(--border-color)' }}
@@ -152,7 +174,7 @@ export default function CharacteristicsAndImprovements({
                             dataKey="percentage" 
                             fill="var(--text-white)" 
                             position="inside" 
-                            formatter={(value: any) => value === 0 ? '' : `${value}%`} 
+                            formatter={(value: unknown) => value === 0 ? '' : `${value}%`} 
                           />
                         </Bar>
                       </BarChart>
@@ -215,7 +237,7 @@ export default function CharacteristicsAndImprovements({
                     type="number"
                     domain={[0, 100]}
                     ticks={[0, 25, 50, 75, 100]}
-                    tickFormatter={(tick: any) => `${tick}`}
+                    tickFormatter={(tick: number) => `${tick}`}
                     tick={{ fill: 'var(--text-color)', fontSize: '15px' }}
                     axisLine={{ stroke: 'var(--border-color)' }}
                     tickLine={false}
@@ -245,7 +267,7 @@ export default function CharacteristicsAndImprovements({
                       dataKey="percentage" 
                       fill="var(--text-white)" 
                       position="inside"
-                      formatter={(value: any) => value === 0 ? '' : `${value}%`}
+                      formatter={(value: unknown) => value === 0 ? '' : `${value}%`}
                     />
                   </Bar>
                 </BarChart>

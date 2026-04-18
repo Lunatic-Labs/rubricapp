@@ -3,9 +3,11 @@ import BasicTabs from "../Navbar/BasicTabs";
 import { Box } from "@mui/material";
 import BackButtonResource from "./BackButtonResource";
 
+interface MainHeaderProps {
+    navbar: any;
+}
 
-
-export default function MainHeader (props: any) {
+export default function MainHeader (props: MainHeaderProps) {
     var navbar = props.navbar;
     var state = navbar.state;
     var chosenCourse = state.chosenCourse;

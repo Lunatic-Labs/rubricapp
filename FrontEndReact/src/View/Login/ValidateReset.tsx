@@ -18,10 +18,10 @@ interface ValidateResetState {
 }
 
 class ValidateReset extends Component<{}, ValidateResetState> {
-    sendEmail: any;
-    validateCode: any;
+    sendEmail: () => void;
+    validateCode: () => void;
 
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { value } = e.target;
         this.setState({
             email: value,
@@ -31,7 +31,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
         });
     };
 
-    constructor(props: any) {
+    constructor(props: {}) {
         super(props);
 
         this.state = {
@@ -76,7 +76,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 .catch(
                     (error) => {
                         this.setState({
-                            errorMessage: error
+                            errorMessage: String(error)
                         });
                     }
                 );
@@ -117,7 +117,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 .catch(
                     (error) => {
                         this.setState({
-                            errorMessage: error
+                            errorMessage: String(error)
                         });
                     }
                 );
@@ -302,7 +302,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                         value={code}
 
                                         onChange={
-                                            (newCode: any) => {
+                                            (newCode: string) => {
                                                 this.setState({
                                                     code: newCode
                                                 });

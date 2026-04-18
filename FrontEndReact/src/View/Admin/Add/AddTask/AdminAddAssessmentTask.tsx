@@ -4,7 +4,7 @@ import '../../../../SBStyles.css';
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, genericResourcePOST, genericResourcePUT, getDueDateString } from '../../../../utility';
-import { Box, Button, FormControl, Typography, IconButton, TextField, Tooltip, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup } from '@mui/material';
+import { Box, Button, FormControl, Typography, IconButton, TextField, Tooltip, FormControlLabel, Checkbox, MenuItem, Select, InputLabel, Radio, RadioGroup, FormLabel, FormGroup, SelectChangeEvent } from '@mui/material';
 import { DateTimePicker } from '@mui/x-date-pickers/DateTimePicker';
 import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
 import { AdapterDateFns } from '@mui/x-date-pickers/AdapterDateFnsV3';
@@ -13,13 +13,15 @@ import RubricDescriptionsImage from "../../../../RubricDetailedOverview.png";
 import RubricDescriptionsImage2 from "../../../../RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
 import { MAX_PASSWORD_LENGTH } from '../../../../Constants/password';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+
 
 interface AdminAddAssessmentTaskProps {
     navbar: any;
 }
 
 interface AdminAddAssessmentTaskState {
-    errorMessage: any;
+    errorMessage: string | null;
     validMessage: string;
     editAssessmentTask: boolean;
     dueDate: Date;
@@ -34,7 +36,7 @@ interface AdminAddAssessmentTaskState {
     suggestions: boolean;
     ratings: boolean;
     usingTeams: boolean;
-    completedAssessments: any;
+    completedAssessments: CompleteAssessmentTask[] | null;
     isHelpOpen: boolean;
     errors: {
         taskName: string;
@@ -50,7 +52,7 @@ interface AdminAddAssessmentTaskState {
 }
 
 class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, AdminAddAssessmentTaskState> {
-    toggleHelp: any;
+    toggleHelp: () => void;
     constructor(props: AdminAddAssessmentTaskProps) {
         super(props);
 
@@ -139,7 +141,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
         }
     }
 
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { id, value } = e.target;
         const regex = /^[1-9]\d*$/; // Positive digits
         const {usingTeams} = this.state;
@@ -192,13 +194,13 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
         } as any);
     };
 
-    handleSelect = (key: any, event: any) => {
+    handleSelect = (key: string, event: {target: {value: string}}) => {
         this.setState({
             [key]: event.target.value
         } as any);
     };
 
-    handleTeams = (event: any) => {
+    handleTeams = (event: React.ChangeEvent<HTMLInputElement>) => {
         const unitOfAssessment = event.target.value === 'true' ? true : false;
 
         this.setState({
@@ -278,7 +280,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
             }
 
             const adhoc = this.props.navbar.state.chosenCourse.use_fixed_teams;
-            const fixTeamData = (i: any) => this.state.usingTeams && !adhoc ? i : null;
+            const fixTeamData = (i: string) => this.state.usingTeams && !adhoc ? i : null;
             var body = JSON.stringify({
                 "assessment_task_name": taskName,
                 "course_id": chosenCourse["course_id"],
@@ -361,7 +363,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
         var rubricNames = adminViewAssessmentTask.rubricNames;
         const { isHelpOpen } = this.state;
 
-        var roleOptions: any = [];
+        var roleOptions: JSX.Element[] = [];
 
         Object.keys(roleNames).map((role) => {
             if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
@@ -373,7 +375,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
         var confirmCreateResource = navbar.confirmCreateResource;
 
-        var rubricOptions: any = [];
+        var rubricOptions: JSX.Element[] = [];
 
         Object.keys(rubricNames).map((rubric) => {
             rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric} aria-label="addAssessmentRubricOption">{rubricNames[rubric]}</MenuItem>];
@@ -486,7 +488,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                             value={rubricId}
                                             label="Rubric"
                                             error={!!errors.rubricId}
-                                            onChange={(event: any) => this.handleSelect("rubricId", event)}
+                                            onChange={(event: SelectChangeEvent<string>) => this.handleSelect("rubricId", event)}
                                             required
                                             MenuProps={{
                                                 PaperProps: {
@@ -691,7 +693,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                 },
                                             },
                                         }}
-                                        onChange={(event: any) => this.handleSelect("roleId", event)}
+                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.handleSelect("roleId", event)}
                                     >
                                         {roleOptions}
                                     </RadioGroup>
@@ -714,7 +716,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                onChange={(event: any) => {
+                                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                                     this.setState({ suggestions: event.target.checked });
                                                 }}
                                                 id="suggestions"
@@ -728,7 +730,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     <FormControlLabel
                                         control={
                                             <Checkbox
-                                                onChange={(event: any) => {
+                                                onChange={(event: React.ChangeEvent<HTMLInputElement>) => {
                                                     this.setState({ ratings: event.target.checked });
                                                 }}
                                                 id="ratings"
@@ -750,8 +752,8 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
                                                 ampm={true}
 
-                                                onChange={(date: any) => {
-                                                    this.setState({ dueDate: date });
+                                                onChange={(date: Date | null) => {
+                                                    if (date) this.setState({ dueDate: date });
                                                 }}
 
                                                 sx={{
@@ -874,7 +876,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                     },
                                                 }}
 
-                                                onChange={(event: any) => {
+                                                onChange={(event: SelectChangeEvent<string>) => {
                                                     this.handleSelect("timeZone", event);
                                                 }}
 

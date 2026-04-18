@@ -6,24 +6,40 @@ import { BarChart, CartesianGrid, XAxis, YAxis, Bar, Cell, LabelList, Responsive
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
 import CategoryDropdown from '../../../../Components/CategoryDropdown';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
+import { Rubric } from '../../../../../types/Rubric';
+import { CompleteAssessmentTask } from '../../../../../types/CompleteAssessmentTask';
 
-export default function ViewAssessmentStatus(props: any) {
+interface ViewAssessmentStatusProps {
+    navbar: any;
+    completedAssessments: CompleteAssessmentTask[] | null;
+    rubrics: Rubric;
+    assessmentTasks: AssessmentTask[];
+    chosenAssessmentId: string | number;
+    setChosenAssessmentId: (id: string | number) => void;
+    showRatings: boolean;
+    showSuggestions: boolean;
+    completedByTAs: boolean;
+    courseTotalStudents: number | null;
+    onExportAggregates?: (categoryId: string) => void;
+}
+export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
   // Check if rubrics and category_json exist to prevent null reference errors when no tasks are available
-  var categoryList = (props.rubrics && props.rubrics.category_json) 
+  var categoryList = (props.rubrics && props.rubrics.category_json)
     ? Object.keys(props.rubrics.category_json)
-        .sort((a,b) => props.rubrics.category_json[a].index - props.rubrics.category_json[b].index)
+        .sort((a,b) => props.rubrics.category_json[a]!.index - props.rubrics.category_json[b]!.index)
     : [];
 
     // Ensure chosenAssessmentId is valid when no assessment tasks are available
-  const validAssessmentId = (props.assessmentTasks && props.assessmentTasks.length > 0) 
-  ? props.chosenAssessmentId 
+  const validAssessmentId = (props.assessmentTasks && props.assessmentTasks.length > 0)
+  ? props.chosenAssessmentId
   : '';
 
   // Set initial category ID, defaulting to empty string if no categories available
-  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] : '');
+  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] ?? '' : '');
 
-  const handleChosenCategoryIdChange = (event: any) => {
-    setChosenCategoryId(event.target.value);
+  const handleChosenCategoryIdChange = (id: string) => {
+    setChosenCategoryId(id);
   };
 
   // When the user changes the assessment task, the chosenCategoryId may not correspond to any selectable
@@ -33,34 +49,37 @@ export default function ViewAssessmentStatus(props: any) {
   var chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
 
   if (!chosenCategoryIdCorrespondsWithRubric) {
-    setChosenCategoryId(categoryList[0]);
+    setChosenCategoryId(categoryList[0] ?? '');
   }
 
-  var characteristicsData: any = {
+  var characteristicsData: { characteristics: { characteristic: string; number: number; percentage: number }[] } = {
     'characteristics': []
   };
 
-  var improvementsData: any = {
+  var improvementsData: { improvements: { improvement: string; number: number; percentage: number }[] } = {
     'improvements': []
   };
 
   if (chosenCategoryIdCorrespondsWithRubric) {
-    for (let i = 0; i < props.rubrics['category_json'][chosenCategoryId as any]['observable_characteristics'].length; i++) {
+    const categoryData = props.rubrics['category_json'][chosenCategoryId]!;
+    for (let i = 0; i < categoryData['observable_characteristics'].length; i++) {
       characteristicsData['characteristics'].push({
-        'characteristic' : props.rubrics['category_json'][chosenCategoryId as any]['observable_characteristics'][i],
+        'characteristic' : categoryData['observable_characteristics'][i]!,
         'number': 0,
+        'percentage': 0,
       });
     }
 
-    for (let i = 0; i < props.rubrics['category_json'][chosenCategoryId as any]['suggestions'].length; i++) {
+    for (let i = 0; i < categoryData['suggestions'].length; i++) {
       improvementsData['improvements'].push({
-        'improvement' : props.rubrics['category_json'][chosenCategoryId as any]['suggestions'][i],
+        'improvement' : categoryData['suggestions'][i]!,
         'number': 0,
+        'percentage': 0,
       });
     }
   }
 
-  var ratingsData: any = {
+  var ratingsData: { ratings: { rating: number; number: number }[] } = {
     'ratings': [
       {'rating': 0, 'number': 0},
       {'rating': 1, 'number': 0},
@@ -70,66 +89,75 @@ export default function ViewAssessmentStatus(props: any) {
       {'rating': 5, 'number': 0},
     ]
   };
-  var allRatings: any = [];
-  var avg: any = 0;
-  var stdev: any = 0;
+  var allRatings: number[] = [];
+  var avg: string | number = 0;
+  var stdev: string | number = 0;
   var finished = 0;
   var total = props.courseTotalStudents;  //total teams or students
   var progress = 0;
   if (props.completedAssessments && props.completedAssessments.length > 0) {
-      for (let i = 0; i < props.completedAssessments.length; i++) {
-      if (props.completedAssessments[i].done) {
+    for (let i = 0; i < props.completedAssessments.length; i++) {
+      const ca = props.completedAssessments[i]!;
+      if (ca.done) {
         finished++;
       }
     }
-    progress = +((finished / total) * 100).toFixed(2);
+    progress = +((finished / (total ?? 1)) * 100).toFixed(2);
     if (props.completedAssessments !== null && props.completedAssessments.length > 0) {
       // Iterate through each completed assessment for chosen assessment task
       for (var i = 0; i < props.completedAssessments.length; i++) {
+        const ca = props.completedAssessments[i]!;
         // Only collect data from completed assessment tasks
-        if (!props.completedAssessments[i]['done']) 
+        if (!ca['done'])
           continue;
 
-        if (props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'].hasOwnProperty(chosenCategoryId)) {
+        if (ca['rating_observable_characteristics_suggestions_data'].hasOwnProperty(chosenCategoryId)) {
+          const catRocs = ca['rating_observable_characteristics_suggestions_data'][chosenCategoryId]!;
           // Collect the ratings data
-          var oneRating = props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId as any]['rating'];
+          var oneRating = catRocs['rating'];
 
           allRatings.push(oneRating);
-          ratingsData['ratings'][oneRating]['number'] += 1; 
+          const ratingEntry = ratingsData['ratings'][oneRating];
+          if (ratingEntry) ratingEntry['number'] += 1;
 
           // Iterate through each observable characteristic within the category and see whether the user checked the box
-          for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId as any]['observable_characteristics'].length; j++) {
-            let oc_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId as any]['observable_characteristics'][j]);
-            characteristicsData['characteristics'][j]['number'] += oc_data;
+          for (let j = 0; j < catRocs['observable_characteristics'].length; j++) {
+            let oc_data = parseInt(catRocs['observable_characteristics'][j]!);
+            const charEntry = characteristicsData['characteristics'][j];
+            if (charEntry) charEntry['number'] += oc_data;
           }
 
           // Iterate through each suggestion for improvement within the category and see whether the user checked the box
-          for (let j = 0; j < props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId as any]['suggestions'].length; j++) {
-            let sugg_data = parseInt(props.completedAssessments[i]['rating_observable_characteristics_suggestions_data'][chosenCategoryId as any]['suggestions'][j]);
-            improvementsData['improvements'][j]['number'] += sugg_data;
+          for (let j = 0; j < catRocs['suggestions'].length; j++) {
+            let sugg_data = parseInt(catRocs['suggestions'][j]!);
+            const imprEntry = improvementsData['improvements'][j];
+            if (imprEntry) imprEntry['number'] += sugg_data;
           }
-        } 
+        }
       }
     } // End of completedAssessments processing
 
-    
+
       // calc avg/stdev using allRatings
       if (allRatings.length > 0) {
-        avg = (allRatings.reduce((a: any, b: any) => a + b) / allRatings.length).toFixed(2);
-        stdev = (Math.sqrt(allRatings.map((x: any) => (x - avg) ** 2).reduce((a: any, b: any) => a + b) / allRatings.length)).toFixed(2);
+        const avgNum = allRatings.reduce((a: number, b: number) => a + b, 0) / allRatings.length;
+        avg = avgNum.toFixed(2);
+        stdev = (Math.sqrt(allRatings.map((x: number) => (x - avgNum) ** 2).reduce((a: number, b: number) => a + b, 0) / allRatings.length)).toFixed(2);
       }
 
       // add percentage to each JSON object in improvement/characteristics
       for (let i = 0; i < characteristicsData['characteristics'].length; i++) {
-        let percent = total === 0 ? 0 : 
-          (characteristicsData['characteristics'][i]['number'] / total * 100);
-        characteristicsData['characteristics'][i]['percentage'] = +percent.toFixed(2);
+        const charEntry = characteristicsData['characteristics'][i]!;
+        let percent = total === 0 ? 0 :
+          (charEntry['number'] / (total ?? 1) * 100);
+        charEntry['percentage'] = +percent.toFixed(2);
       }
-  
+
       for (let i = 0; i < improvementsData['improvements'].length; i++) {
-        let percent = total === 0 ? 0 : 
-          (improvementsData['improvements'][i]['number'] / total * 100);
-        improvementsData['improvements'][i]['percentage'] = +percent.toFixed(2);
+        const imprEntry = improvementsData['improvements'][i]!;
+        let percent = total === 0 ? 0 :
+          (imprEntry['number'] / (total ?? 1) * 100);
+        imprEntry['percentage'] = +percent.toFixed(2);
       }
   }
   

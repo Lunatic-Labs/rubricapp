@@ -6,6 +6,7 @@ import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Grid, IconButton, Button } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import TextField from '@mui/material/TextField';
+import { User } from '../../../../types/User';
 
 /**
  * @description
@@ -27,7 +28,7 @@ import TextField from '@mui/material/TextField';
 
 interface BuildTeamTableProps {
   navbar: any;
-  users: any[];
+  users: User[];
 }
 
 interface BuildTeamTableState {
@@ -67,7 +68,7 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
    * @returns {function(Event):void} React handler used by the IconButton.
    */
   
-  handleChange = (userId: any) => (event: any) => {
+  handleChange = (userId: number) => (event: React.ChangeEvent<HTMLInputElement>) => {
     const { selected, unselected } = this.state;
     const targetTable = selected[userId] ? 'unselected' : 'selected';
 
@@ -112,7 +113,7 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
         options: {
           filter: false,
           align: "center",
-          customBodyRender: (userId: any) => {
+          customBodyRender: (userId: number) => {
             return (
               <IconButton 
                 aria-label='controlled' 
@@ -149,7 +150,7 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
         options: {
           filter: false,
           sort: false,
-          customBodyRender: (userId: any) => {
+          customBodyRender: (userId: number) => {
             return (
               <IconButton 
                 aria-label='controlled' 
@@ -174,8 +175,8 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
       tableBodyMaxHeight: "21rem",
     };
 
-    const selectedStudents = students.filter((student: any) => this.state.selected[student["user_id"]]);
-    const unselectedStudents = students.filter((student: any) => !this.state.selected[student["user_id"]]);
+    const selectedStudents = students.filter((student) => this.state.selected[student["user_id"]]);
+    const unselectedStudents = students.filter((student) => !this.state.selected[student["user_id"]]);
 
     return (
       <>

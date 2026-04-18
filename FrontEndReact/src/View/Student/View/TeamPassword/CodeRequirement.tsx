@@ -5,6 +5,7 @@ import CustomButton from '../Components/CustomButton';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
+import { AssessmentTask } from '../../../../types/AssessmentTask';
 
 interface CodeRequirementProps {
 	navbar: any;
@@ -13,7 +14,7 @@ interface CodeRequirementProps {
 interface CodeRequirementState {
 	password: string;
 	errorMessage: string | null;
-	assessmentTasks: any | null;
+	assessmentTasks: AssessmentTask | null;
 	validationError: string | null;
 }
 
@@ -30,7 +31,7 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 
 	submitPasscode = () => {
 		const enteredPassword = this.state.password;
-		const correctPassword = this.state.assessmentTasks["create_team_password"];
+		const correctPassword = this.state.assessmentTasks!["create_team_password"];
 		this.setState({
 			validationError: null
 		});

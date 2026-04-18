@@ -4,16 +4,21 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import AdminReportTabs from './AdminReportTabs';
 import Loading from '../../../Loading/Loading';
+import { AssessmentTask } from '../../../../types/AssessmentTask';
 
-interface ReportingDashboardState {
-    error: any;
-    errorMessage: any;
-    isLoaded: boolean;
-    assessmentTasks: any;
+interface ReportingDashboardProps {
+    navbar: any;
 }
 
-class ReportingDashboard extends Component<any, ReportingDashboardState> {
-    constructor(props: any) {
+interface ReportingDashboardState {
+    error: { message: string } | null;
+    errorMessage: string | null;
+    isLoaded: boolean;
+    assessmentTasks: AssessmentTask[] | null;
+}
+
+class ReportingDashboard extends Component<ReportingDashboardProps, ReportingDashboardState> {
+    constructor(props: ReportingDashboardProps) {
       super(props);
   
       this.state = {

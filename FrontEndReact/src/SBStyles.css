@@ -177,6 +177,15 @@ h4, h5 {
     width: 0.2rem !important;
 }
 
+.narrow-select-table td:first-child,
+.narrow-select-table th:first-child {
+    width: calc(32px + 2%) !important;
+    min-width: calc(32px + 2%) !important;
+    max-width: calc(32px + 2%) !important;
+    padding: 4px !important;
+    text-align: center !important;
+}
+
 .MuiSlider-markLabel {
     font-size: 1.3rem !important;
 }
@@ -741,9 +750,9 @@ body.mode .app-container {
     background-color: var(--dropdown-bg) !important;
 }
 
-/* MUI Paper components */
-.MuiPaper-root,
-.MuiPaper-outlined {
+/* MUI Paper components (exclude Alert so its filled colors are not overridden) */
+.MuiPaper-root:not(.MuiAlert-root),
+.MuiPaper-outlined:not(.MuiAlert-root) {
     background-color: var(--table-toolbar) !important;
 }
 
