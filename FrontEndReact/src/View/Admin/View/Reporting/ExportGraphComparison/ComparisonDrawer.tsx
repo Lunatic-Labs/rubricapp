@@ -450,10 +450,17 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
             Close
           </Button>
           <Button
+            className='primary-color'
             variant="contained"
             startIcon={exporting ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : <DownloadIcon />}
             onClick={handleExportFromPreview}
             disabled={exporting}
+            sx={{
+              '&.Mui-disabled': {
+                color: 'var(--export_disabled_text) !important',
+                backgroundColor: 'var(--primary-disabled-bg)',
+              }
+            }}
           >
             {exporting ? 'Exporting...' : 'Export as PDF'}
           </Button>
