@@ -45,10 +45,50 @@ const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
+    sx: {
+      backgroundColor: 'var(--dropdown-bg)',
+      color: 'var(--dropdown-text)',
+    },
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
+  },
+  MenuListProps: {
+    sx: {
+      '& .MuiMenuItem-root': {
+        color: 'var(--dropdown-text)',
+        '&:hover': {
+          backgroundColor: 'var(--dropdown-hover)',
+        },
+        '&.Mui-selected': {
+          backgroundColor: 'var(--dropdown-selected)',
+          '&:hover': {
+            backgroundColor: 'var(--dropdown-selected)',
+          },
+        },
+      },
+    },
+  },
+};
+
+const dropdownFieldSx = {
+  '& .MuiInputBase-root': {
+    backgroundColor: 'var(--dropdown-bg)',
+    color: 'var(--dropdown-text)',
+  },
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: 'var(--dropdown-border)',
+  },
+  '& .MuiInputLabel-root': {
+    color: 'var(--dropdown-label)',
+  },
+  '& .MuiSelect-icon': {
+    color: 'var(--dropdown-icon)',
+  },
+  '& .Mui-disabled': {
+    backgroundColor: 'var(--dropdown-disabled-bg)',
+    color: 'var(--dropdown-disabled-text)',
   },
 };
 
@@ -85,7 +125,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       <Box className="filter-row" sx={{ marginBottom: 2 }}>
         {/* Date Range */}
         <Box className="filter-item date-range">
-          <InputLabel shrink className="filter-label">
+          <InputLabel shrink className="filter-label" sx={{ color: 'var(--dropdown-label)' }}>
             Date Range
           </InputLabel>
           <Box className="date-inputs">
@@ -94,21 +134,59 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               size="small"
               value={filters.dateStart}
               onChange={(e) => onFilterChange('dateStart', e.target.value)}
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{ shrink: true, sx: { color: 'var(--dropdown-label)' } }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  backgroundColor: 'var(--dropdown-bg)',
+                  color: 'var(--dropdown-text)',
+                },
+                '& input': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                  filter: 'invert(0.9) brightness(1.2)',
+                  opacity: 0.9,
+                },
+                '& .MuiSvgIcon-root': {
+                  color: 'var(--dropdown-icon)',
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--dropdown-border)',
+                },
+              }}
             />
             <TextField
               type="date"
               size="small"
               value={filters.dateEnd}
               onChange={(e) => onFilterChange('dateEnd', e.target.value)}
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{ shrink: true, sx: { color: 'var(--dropdown-label)' } }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  backgroundColor: 'var(--dropdown-bg)',
+                  color: 'var(--dropdown-text)',
+                },
+                '& input': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                  filter: 'invert(0.9) brightness(1.2)',
+                  opacity: 0.9,
+                },
+                '& .MuiSvgIcon-root': {
+                  color: 'var(--dropdown-icon)',
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--dropdown-border)',
+                },
+              }}
             />
           </Box>
         </Box>
 
         {/* Assessment Tasks (Multiselect) */}
         <Box className="filter-item" sx={{ minWidth: 200 }}>
-          <FormControl size="small" fullWidth>
+          <FormControl size="small" fullWidth sx={dropdownFieldSx}>
             <InputLabel>Assessment Tasks</InputLabel>
             <Select
               multiple
@@ -132,7 +210,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Rubric (Multiselect) */}
         <Box className="filter-item" sx={{ minWidth: 180 }}>
-          <FormControl size="small" fullWidth>
+          <FormControl size="small" fullWidth sx={dropdownFieldSx}>
             <InputLabel>Rubric</InputLabel>
             <Select
               multiple
@@ -156,7 +234,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Graph Type (Multiselect) */}
         <Box className="filter-item" sx={{ minWidth: 200 }}>
-          <FormControl size="small" fullWidth>
+          <FormControl size="small" fullWidth sx={dropdownFieldSx}>
             <InputLabel>Graph Type</InputLabel>
             <Select
               multiple
