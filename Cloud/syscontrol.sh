@@ -14,7 +14,7 @@ set -e
 FRESH="--fresh"
 INIT="--init"
 CONFIGURE="--configure"
-CONFUGRE_NO_SSL="--configure-no-ssl"
+CONFIGRE_NO_SSL="--configure-no-ssl"
 INSTALL="--install"
 HELP="--help"
 UPDATE="--update"
@@ -410,7 +410,7 @@ function install_npm_deps() {
     rm -rf node_modules
 
     if [ -f package-lock.json ]; then
-        npm ci --legacy-peer-deps
+        npm install --legacy-peer-deps
     else
         npm install --legacy-peer-deps
     fi
@@ -638,6 +638,12 @@ function serve_rubricapp() {
 
     exit_venv
 
+    # Loading NVM
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+    nvm use 20.11.1
+
     # Frontend build
     log "building front-end"
     cd "$PROJ_DIR/FrontEndReact"
@@ -733,13 +739,17 @@ case "$1" in
         echo -e "${red}WARNING: Running $INIT will RESET THE DATABASE COMPLETELY.${nc}"
         echo -e "${red}Do you want to continue? (Y/n)${nc}"
         read ans
-        
+
         if [ "$ans" == "Y" ] || [ "$ans" == "y" ]; then
-            install
+            echo -e "Is your domain already pointing to this server? (Y/n)"
+            read domain_ans
+            install < /dev/null
+        if [ "$domain_ans" == "Y" ] || [ "$domain_ans" == "y" ]; then
             configure
-            configure_db  # Resets database!
         else
-            panic "Initialization aborted by user"
+            configure_no_ssl
+        fi
+            configure_db < /dev/null
         fi
         ;;
     "$INSTALL")
