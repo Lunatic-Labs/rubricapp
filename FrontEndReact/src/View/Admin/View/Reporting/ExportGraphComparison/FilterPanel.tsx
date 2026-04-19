@@ -144,7 +144,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   color: 'var(--dropdown-text)',
                 },
                 '& input[type="date"]::-webkit-calendar-picker-indicator': {
-                  filter: 'invert(0.9) brightness(1.2)',
+                  filter: 'var(--calendar-icon-filter)',
                   opacity: 0.9,
                 },
                 '& .MuiSvgIcon-root': {
@@ -170,7 +170,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
                   color: 'var(--dropdown-text)',
                 },
                 '& input[type="date"]::-webkit-calendar-picker-indicator': {
-                  filter: 'invert(0.9) brightness(1.2)',
+                  filter: 'var(--calendar-icon-filter)',
                   opacity: 0.9,
                 },
                 '& .MuiSvgIcon-root': {

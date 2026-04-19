@@ -315,6 +315,7 @@ h4, h5 {
   --dropdown-disabled-bg: #f5f5f5ff;
   --dropdown-disabled-text: #00000061;
   --dropdown-icon: #0000008a;  
+  --calendar-icon-filter: none;
 }
 
 /* Dropdown menu paper override */
@@ -621,6 +622,7 @@ body.mode {
   --dropdown-disabled-bg: #1a1a1aff;
   --dropdown-disabled-text: #ffffff61;
   --dropdown-icon: #ffffffb3;
+  --calendar-icon-filter: invert(1) brightness(1.2);
 }
 
  
