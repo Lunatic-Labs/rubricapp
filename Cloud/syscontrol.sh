@@ -14,7 +14,7 @@ set -e
 FRESH="--fresh"
 INIT="--init"
 CONFIGURE="--configure"
-CONFIGRE_NO_SSL="--configure-no-ssl"
+CONFIGURE_NO_SSL="--configure-no-ssl"
 INSTALL="--install"
 HELP="--help"
 UPDATE="--update"
@@ -42,7 +42,8 @@ KILL="--kill"
       nginx
       certbot
       python3-certbot-nginx
-      lsof'
+      lsof
+      mysql-server'
 
 # =====================================================
 # DIRECTORY STRUCTURE
@@ -601,8 +602,7 @@ function setup_proj_root() {
 
     log "The project has been successfully setup.
     The main project has been cloned into: $PROJ_DIR.
-    Next, re-run this script which is located in $PROJ_DIR/Cloud with $CONFIGURE"
-}
+    Next, re-run this script which is located in $PROJ_DIR/Cloud with $INIT"}
 
 # ======================
 # APPLICATION SERVING
@@ -723,8 +723,6 @@ then
     usage
 fi
 
-prompt_domain
-build_configs
 
 # Process the command-line argument
 # Add new options here.
@@ -736,6 +734,8 @@ case "$1" in
         # Full initialization with warning
         red="\033[0;31m"
         nc="\033[0m"
+        prompt_domain
+        build_configs
         echo -e "${red}WARNING: Running $INIT will RESET THE DATABASE COMPLETELY.${nc}"
         echo -e "${red}Do you want to continue? (Y/n)${nc}"
         read ans
@@ -744,24 +744,32 @@ case "$1" in
             echo -e "Is your domain already pointing to this server? (Y/n)"
             read domain_ans
             install < /dev/null
-        if [ "$domain_ans" == "Y" ] || [ "$domain_ans" == "y" ]; then
-            configure
+            if [ "$domain_ans" == "Y" ] || [ "$domain_ans" == "y" ]; then
+                configure
         else
             configure_no_ssl
         fi
-            configure_db < /dev/null
+                configure_db < /dev/null
+        else
+            panic "Initialization aborted by user"
         fi
         ;;
     "$INSTALL")
         install
         ;;
     "$CONFIGURE")
+        prompt_domain
+        build_configs
         configure
         ;;
     "$CONFIGURE_NO_SSL")
+        prompt_domain
+        build_configs
         configure_no_ssl
         ;;
     "$SERVE")
+        prompt_domain
+        build_configs
         serve_rubricapp
         ;;
     "$UPDATE")

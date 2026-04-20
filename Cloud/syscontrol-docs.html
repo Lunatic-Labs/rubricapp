@@ -3,33 +3,19 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
 <head>
-<!-- 2024-03-05 Tue 13:50 -->
 <meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title><code>syscontrol.sh</code> Docs</title>
-<meta name="generator" content="Org mode" />
 <meta name="author" content="Zachary Haskins" />
 <style type="text/css">
- <!--/*--><![CDATA[/*><!--*/
-  .title  { text-align: center;
-             margin-bottom: .2em; }
-  .subtitle { text-align: center;
-              font-size: medium;
-              font-weight: bold;
-              margin-top:0; }
+  .title  { text-align: center; margin-bottom: .2em; }
+  .subtitle { text-align: center; font-size: medium; font-weight: bold; margin-top:0; }
   .todo   { font-family: monospace; color: red; }
   .done   { font-family: monospace; color: green; }
-  .priority { font-family: monospace; color: orange; }
-  .tag    { background-color: #eee; font-family: monospace;
-            padding: 2px; font-size: 80%; font-weight: normal; }
-  .timestamp { color: #bebebe; }
-  .timestamp-kwd { color: #5f9ea0; }
-  .org-right  { margin-left: auto; margin-right: 0px;  text-align: right; }
-  .org-left   { margin-left: 0px;  margin-right: auto; text-align: left; }
-  .org-center { margin-left: auto; margin-right: auto; text-align: center; }
-  .underline { text-decoration: underline; }
+  .warning { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 1em 0; }
+  .note { background-color: #d1ecf1; border-left: 4px solid #17a2b8; padding: 8px 12px; margin: 1em 0; }
+  .tag    { background-color: #eee; font-family: monospace; padding: 2px; font-size: 80%; font-weight: normal; }
   #postamble p, #preamble p { font-size: 90%; margin: .2em; }
-  p.verse { margin-left: 3%; }
   pre {
     border: 1px solid #ccc;
     box-shadow: 3px 3px 3px #eee;
@@ -38,638 +24,407 @@
     overflow: auto;
     margin: 1.2em;
   }
-  pre.src {
-    position: relative;
-    overflow: visible;
-    padding-top: 1.2em;
-  }
-  pre.src:before {
-    display: none;
-    position: absolute;
-    background-color: white;
-    top: -10px;
-    right: 10px;
-    padding: 3px;
-    border: 1px solid black;
-  }
-  pre.src:hover:before { display: inline;}
-  /* Languages per Org manual */
-  pre.src-asymptote:before { content: 'Asymptote'; }
-  pre.src-awk:before { content: 'Awk'; }
-  pre.src-C:before { content: 'C'; }
-  /* pre.src-C++ doesn't work in CSS */
-  pre.src-clojure:before { content: 'Clojure'; }
-  pre.src-css:before { content: 'CSS'; }
-  pre.src-D:before { content: 'D'; }
-  pre.src-ditaa:before { content: 'ditaa'; }
-  pre.src-dot:before { content: 'Graphviz'; }
-  pre.src-calc:before { content: 'Emacs Calc'; }
-  pre.src-emacs-lisp:before { content: 'Emacs Lisp'; }
-  pre.src-fortran:before { content: 'Fortran'; }
-  pre.src-gnuplot:before { content: 'gnuplot'; }
-  pre.src-haskell:before { content: 'Haskell'; }
-  pre.src-hledger:before { content: 'hledger'; }
-  pre.src-java:before { content: 'Java'; }
-  pre.src-js:before { content: 'Javascript'; }
-  pre.src-latex:before { content: 'LaTeX'; }
-  pre.src-ledger:before { content: 'Ledger'; }
-  pre.src-lisp:before { content: 'Lisp'; }
-  pre.src-lilypond:before { content: 'Lilypond'; }
-  pre.src-lua:before { content: 'Lua'; }
-  pre.src-matlab:before { content: 'MATLAB'; }
-  pre.src-mscgen:before { content: 'Mscgen'; }
-  pre.src-ocaml:before { content: 'Objective Caml'; }
-  pre.src-octave:before { content: 'Octave'; }
-  pre.src-org:before { content: 'Org mode'; }
-  pre.src-oz:before { content: 'OZ'; }
-  pre.src-plantuml:before { content: 'Plantuml'; }
-  pre.src-processing:before { content: 'Processing.js'; }
-  pre.src-python:before { content: 'Python'; }
-  pre.src-R:before { content: 'R'; }
-  pre.src-ruby:before { content: 'Ruby'; }
-  pre.src-sass:before { content: 'Sass'; }
-  pre.src-scheme:before { content: 'Scheme'; }
-  pre.src-screen:before { content: 'Gnu Screen'; }
-  pre.src-sed:before { content: 'Sed'; }
-  pre.src-sh:before { content: 'shell'; }
-  pre.src-sql:before { content: 'SQL'; }
-  pre.src-sqlite:before { content: 'SQLite'; }
-  /* additional languages in org.el's org-babel-load-languages alist */
-  pre.src-forth:before { content: 'Forth'; }
-  pre.src-io:before { content: 'IO'; }
-  pre.src-J:before { content: 'J'; }
-  pre.src-makefile:before { content: 'Makefile'; }
-  pre.src-maxima:before { content: 'Maxima'; }
-  pre.src-perl:before { content: 'Perl'; }
-  pre.src-picolisp:before { content: 'Pico Lisp'; }
-  pre.src-scala:before { content: 'Scala'; }
-  pre.src-shell:before { content: 'Shell Script'; }
-  pre.src-ebnf2ps:before { content: 'ebfn2ps'; }
-  /* additional language identifiers per "defun org-babel-execute"
-       in ob-*.el */
-  pre.src-cpp:before  { content: 'C++'; }
-  pre.src-abc:before  { content: 'ABC'; }
-  pre.src-coq:before  { content: 'Coq'; }
-  pre.src-groovy:before  { content: 'Groovy'; }
-  /* additional language identifiers from org-babel-shell-names in
-     ob-shell.el: ob-shell is the only babel language using a lambda to put
-     the execution function name together. */
-  pre.src-bash:before  { content: 'bash'; }
-  pre.src-csh:before  { content: 'csh'; }
-  pre.src-ash:before  { content: 'ash'; }
-  pre.src-dash:before  { content: 'dash'; }
-  pre.src-ksh:before  { content: 'ksh'; }
-  pre.src-mksh:before  { content: 'mksh'; }
-  pre.src-posh:before  { content: 'posh'; }
-  /* Additional Emacs modes also supported by the LaTeX listings package */
-  pre.src-ada:before { content: 'Ada'; }
-  pre.src-asm:before { content: 'Assembler'; }
-  pre.src-caml:before { content: 'Caml'; }
-  pre.src-delphi:before { content: 'Delphi'; }
-  pre.src-html:before { content: 'HTML'; }
-  pre.src-idl:before { content: 'IDL'; }
-  pre.src-mercury:before { content: 'Mercury'; }
-  pre.src-metapost:before { content: 'MetaPost'; }
-  pre.src-modula-2:before { content: 'Modula-2'; }
-  pre.src-pascal:before { content: 'Pascal'; }
-  pre.src-ps:before { content: 'PostScript'; }
-  pre.src-prolog:before { content: 'Prolog'; }
-  pre.src-simula:before { content: 'Simula'; }
-  pre.src-tcl:before { content: 'tcl'; }
-  pre.src-tex:before { content: 'TeX'; }
-  pre.src-plain-tex:before { content: 'Plain TeX'; }
-  pre.src-verilog:before { content: 'Verilog'; }
-  pre.src-vhdl:before { content: 'VHDL'; }
-  pre.src-xml:before { content: 'XML'; }
-  pre.src-nxml:before { content: 'XML'; }
-  /* add a generic configuration mode; LaTeX export needs an additional
-     (add-to-list 'org-latex-listings-langs '(conf " ")) in .emacs */
-  pre.src-conf:before { content: 'Configuration File'; }
-
   table { border-collapse:collapse; }
-  caption.t-above { caption-side: top; }
-  caption.t-bottom { caption-side: bottom; }
-  td, th { vertical-align:top;  }
-  th.org-right  { text-align: center;  }
-  th.org-left   { text-align: center;   }
-  th.org-center { text-align: center; }
-  td.org-right  { text-align: right;  }
-  td.org-left   { text-align: left;   }
-  td.org-center { text-align: center; }
+  td, th { vertical-align:top; padding: 6px 12px; border: 1px solid #ccc; }
+  th { background-color: #f5f5f5; font-weight: bold; }
   dt { font-weight: bold; }
-  .footpara { display: inline; }
-  .footdef  { margin-bottom: 1em; }
   .figure { padding: 1em; }
   .figure p { text-align: center; }
-  .equation-container {
-    display: table;
-    text-align: center;
-    width: 100%;
-  }
-  .equation {
-    vertical-align: middle;
-  }
-  .equation-label {
-    display: table-cell;
-    text-align: right;
-    vertical-align: middle;
-  }
-  .inlinetask {
-    padding: 10px;
-    border: 2px solid gray;
-    margin: 10px;
-    background: #ffffcc;
-  }
-  #org-div-home-and-up
-   { text-align: right; font-size: 70%; white-space: nowrap; }
   textarea { overflow-x: auto; }
-  .linenr { font-size: smaller }
-  .code-highlighted { background-color: #ffff00; }
-  .org-info-js_info-navigation { border-style: none; }
-  #org-info-js_console-label
-    { font-size: 10px; font-weight: bold; white-space: nowrap; }
-  .org-info-js_search-highlight
-    { background-color: #ffff00; color: #000000; font-weight: bold; }
-  .org-svg { width: 90%; }
-  /*]]>*/-->
+  body { font-family: sans-serif; max-width: 900px; margin: 0 auto; padding: 1em 2em; line-height: 1.6; }
+  h1, h2, h3 { color: #333; }
+  code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
+  a { color: #0066cc; }
 </style>
-<script type="text/javascript">
-/*
-@licstart  The following is the entire license notice for the
-JavaScript code in this tag.
-
-Copyright (C) 2012-2020 Free Software Foundation, Inc.
-
-The JavaScript code in this tag is free software: you can
-redistribute it and/or modify it under the terms of the GNU
-General Public License (GNU GPL) as published by the Free Software
-Foundation, either version 3 of the License, or (at your option)
-any later version.  The code is distributed WITHOUT ANY WARRANTY;
-without even the implied warranty of MERCHANTABILITY or FITNESS
-FOR A PARTICULAR PURPOSE.  See the GNU GPL for more details.
-
-As additional permission under GNU GPL version 3 section 7, you
-may distribute non-source (e.g., minimized or compacted) forms of
-that code without the copy of the GNU GPL normally required by
-section 4, provided you include this license notice and a URL
-through which recipients can access the Corresponding Source.
-
-
-@licend  The above is the entire license notice
-for the JavaScript code in this tag.
-*/
-// <![CDATA[
- function CodeHighlightOn(elem, id)
- {
-   var target = document.getElementById(id);
-   if(null != target) {
-     elem.cacheClassElem = elem.className;
-     elem.cacheClassTarget = target.className;
-     target.className = "code-highlighted";
-     elem.className   = "code-highlighted";
-   }
- }
- function CodeHighlightOff(elem, id)
- {
-   var target = document.getElementById(id);
-   if(elem.cacheClassElem)
-     elem.className = elem.cacheClassElem;
-   if(elem.cacheClassTarget)
-     target.className = elem.cacheClassTarget;
- }
-// ]]>
-</script>
 </head>
 <body>
 <div id="content">
 <h1 class="title"><code>syscontrol.sh</code> Docs</h1>
+
 <div id="table-of-contents">
 <h2>Table of Contents</h2>
-<div id="text-table-of-contents">
 <ul>
-<li><a href="#org3e5e912">1. TL;DR</a></li>
-<li><a href="#orgfdb582a">2. First Time Setup</a></li>
-<li><a href="#orga9b8f64">3. Available Options</a>
-<ul>
-<li><a href="#org9038c1c">3.1. Help</a></li>
-<li><a href="#org3ebe96b">3.2. Fresh</a></li>
-<li><a href="#orgdbc1cab">3.3. Init</a></li>
-<li><a href="#org048c9ec">3.4. Install</a></li>
-<li><a href="#org77e4a58">3.5. Configure</a></li>
-<li><a href="#org2cc0191">3.6. Serve</a></li>
-<li><a href="#org646cf20">3.7. Update</a></li>
-<li><a href="#orgf31073b">3.8. Status</a></li>
-<li><a href="#org3a22403">3.9. Kill</a></li>
+  <li><a href="#tldr">1. TL;DR</a></li>
+  <li><a href="#env-setup">2. Environment Setup (.env)</a></li>
+  <li><a href="#first-time">3. First Time Setup</a></li>
+  <li><a href="#options">4. Available Options</a>
+    <ul>
+      <li><a href="#help">4.1. Help</a></li>
+      <li><a href="#fresh">4.2. Fresh</a></li>
+      <li><a href="#init">4.3. Init</a></li>
+      <li><a href="#install">4.4. Install</a></li>
+      <li><a href="#configure">4.5. Configure (SSL)</a></li>
+      <li><a href="#configure-no-ssl">4.6. Configure No SSL</a></li>
+      <li><a href="#serve">4.7. Serve</a></li>
+      <li><a href="#update">4.8. Update</a></li>
+      <li><a href="#status">4.9. Status</a></li>
+      <li><a href="#kill">4.10. Kill</a></li>
+    </ul>
+  </li>
+  <li><a href="#domain-prompt">5. Domain Prompt</a></li>
+  <li><a href="#switching-ssl">6. Switching from No-SSL to SSL</a></li>
 </ul>
-</li>
-</ul>
-</div>
 </div>
 
-<div id="outline-container-org3e5e912" class="outline-2">
-<h2 id="org3e5e912"><span class="section-number-2">1</span> TL;DR</h2>
-<div class="outline-text-2" id="text-1">
-<ol class="org-ol">
-<li>Clone the repo</li>
-<li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
-<li><code>./syscontrol.sh --fresh</code></li>
-<li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
-<li><code>rm -r</code> the original repo directory</li>
-<li><code>./syscontrol.sh --init</code> — <b>wipes the database</b>, confirm with <code>Y</code> when prompted</li>
-<li><code>./syscontrol.sh --serve</code></li>
+<!-- ============================================================ -->
+<div id="outline-container-tldr">
+<h2 id="tldr"><span class="section-number-2">1</span> TL;DR</h2>
+
+<p><strong>For a server without a domain pointed yet (test server):</strong></p>
+<ol>
+  <li>Clone the repo</li>
+  <li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
+  <li><code>./syscontrol.sh --fresh</code></li>
+  <li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
+  <li>Set up your <code>BackEndFlask/.env</code> file — see <a href="#env-setup">Section 2</a></li>
+  <li><code>./syscontrol.sh --init</code> — enter your domain, answer <code>Y</code> to continue, answer <code>N</code> to the SSL question</li>
+  <li><code>./syscontrol.sh --serve</code> — enter your domain when prompted</li>
 </ol>
+
+<p><strong>For a server with a domain already pointed:</strong></p>
+<ol>
+  <li>Clone the repo</li>
+  <li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
+  <li><code>./syscontrol.sh --fresh</code></li>
+  <li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
+  <li>Set up your <code>BackEndFlask/.env</code> file — see <a href="#env-setup">Section 2</a></li>
+  <li><code>./syscontrol.sh --init</code> — enter your domain, answer <code>Y</code> to continue, answer <code>Y</code> to the SSL question</li>
+  <li><code>./syscontrol.sh --serve</code> — enter your domain when prompted</li>
+</ol>
+
+<div class="warning">
+  <strong>WARNING:</strong> <code>--init</code> completely wipes the database. Do not run it on a server with live data unless you intend to reset it.
 </div>
 </div>
 
-<div id="outline-container-orgfdb582a" class="outline-2">
-<h2 id="orgfdb582a"><span class="section-number-2">2</span> First Time Setup</h2>
-<div class="outline-text-2" id="text-2">
+<!-- ============================================================ -->
+<div id="outline-container-env-setup">
+<h2 id="env-setup"><span class="section-number-2">2</span> Environment Setup (.env)</h2>
+
 <p>
-Clone the repo onto the server and <code>cd</code> into it.
+  Before running <code>--init</code>, the backend <code>.env</code> file must exist at:
+</p>
+<pre>~/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/.env</pre>
+
+<p>
+  The script will fail during <code>configure_db</code> if this file is missing or has no database credentials.
+  The <code>.env</code> file is not stored in the repo for security reasons. Contact the server admin or
+  refer to the server guide for the correct values for each environment.
 </p>
 
-<div class="org-src-container">
+<p><strong>Required variables:</strong></p>
+<table>
+  <tr><th>Variable</th><th>Description</th></tr>
+  <tr><td><code>FRONT_END_URL</code></td><td>URL of the frontend (e.g. https://skill-builder.net)</td></tr>
+  <tr><td><code>SUPER_ADMIN_PASSWORD</code></td><td>Password for the super admin account</td></tr>
+  <tr><td><code>DEMO_ADMIN_PASSWORD</code></td><td>Password for demo admin account</td></tr>
+  <tr><td><code>DEMO_TA_INSTRUCTOR_PASSWORD</code></td><td>Password for demo TA account</td></tr>
+  <tr><td><code>DEMO_STUDENT_PASSWORD</code></td><td>Password for demo student account</td></tr>
+  <tr><td><code>SECRET_KEY</code></td><td>Flask secret key for session signing</td></tr>
+  <tr><td><code>MYSQL_HOST</code></td><td>Database host (use <code>localhost</code> for local MySQL, or the managed DB host)</td></tr>
+  <tr><td><code>MYSQL_PORT</code></td><td>Database port (3306 for local, 25060 for DO managed DB)</td></tr>
+  <tr><td><code>MYSQL_USER</code></td><td>Database username</td></tr>
+  <tr><td><code>MYSQL_PASSWORD</code></td><td>Database password</td></tr>
+  <tr><td><code>MYSQL_DATABASE</code></td><td>Database name (typically <code>rubricapp</code>)</td></tr>
+  <tr><td><code>MYSQL_SSLMODE</code></td><td>Set to <code>REQUIRED</code> for managed DB, omit for local MySQL</td></tr>
+</table>
+
+<p><strong>Local MySQL example (test server):</strong></p>
+<pre>
+FRONT_END_URL=http://localhost:3000
+SUPER_ADMIN_PASSWORD=@super_admin_password123
+DEMO_ADMIN_PASSWORD=demo_admin
+DEMO_TA_INSTRUCTOR_PASSWORD=demo_ta
+DEMO_STUDENT_PASSWORD=demo_student
+SECRET_KEY=yoursecretkeyhere
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=rubricapp_admin
+MYSQL_PASSWORD=yourpassword
+MYSQL_DATABASE=rubricapp
+</pre>
+
+<div class="note">
+  <strong>Note:</strong> For the DO managed database or AWS RDS credentials, refer to the server guide.
+  Do not commit <code>.env</code> files to the repo.
+</div>
+</div>
+
+<!-- ============================================================ -->
+<div id="outline-container-first-time">
+<h2 id="first-time"><span class="section-number-2">3</span> First Time Setup</h2>
+
+<p>Clone the repo onto the server and <code>cd</code> into it.</p>
+
 <pre class="src src-bash">git clone https://github.com/Lunatic-Labs/rubricapp.git
-cd ./rubricapp/Cloud/
-</pre>
+cd ./rubricapp/Cloud/</pre>
+
+<p>Run <code>syscontrol.sh</code> with the <code>--fresh</code> option.</p>
+
+<pre class="src src-bash">./syscontrol.sh --fresh</pre>
+
+<p>
+  This creates a production directory at <code>/home/$USER/RUBRICAPP_PRODUCTION/</code> and copies
+  the repo into it. The original cloned directory is no longer needed after this step.
+</p>
+
+<p>Navigate to the production directory:</p>
+
+<pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Cloud/</pre>
+
+<p>Set up your <code>.env</code> file before continuing — see <a href="#env-setup">Section 2</a>.</p>
+
+<p>Then run:</p>
+
+<pre class="src src-bash">./syscontrol.sh --init</pre>
+
+<p>
+  You will be prompted for a domain name and asked whether the domain is already pointing
+  to this server. See <a href="#init">Section 4.3</a> and <a href="#domain-prompt">Section 5</a> for details.
+</p>
+
+<p>Finally, start the application:</p>
+
+<pre class="src src-bash">./syscontrol.sh --serve</pre>
 </div>
 
-<p>
-Then run <code>syscontrol.sh</code> with the <code>--fresh</code> option.
-</p>
+<!-- ============================================================ -->
+<div id="outline-container-options">
+<h2 id="options"><span class="section-number-2">4</span> Available Options</h2>
 
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --fresh
-</pre>
+<!-- HELP -->
+<h3 id="help"><span class="section-number-3">4.1</span> Help</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --help</pre>
+<p>Displays all available options with short descriptions. Options are listed in logical order for setting up a new server.</p>
+
+<!-- FRESH -->
+<h3 id="fresh"><span class="section-number-3">4.2</span> Fresh</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --fresh</pre>
+<p>
+  Sets up the production directory structure at <code>/home/$USER/RUBRICAPP_PRODUCTION/</code>.
+  Copies the repo from the current directory into the production folder.
+  This is always the first command to run on a brand new server.
+</p>
+<div class="note">
+  <strong>Note:</strong> After running <code>--fresh</code>, always re-run the script from the new location:
+  <code>/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Cloud/syscontrol.sh</code>
 </div>
 
+<!-- INIT -->
+<h3 id="init"><span class="section-number-3">4.3</span> Init</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --init</pre>
 <p>
-This will create a production directory at <code>/home/$USER/RUBRICAPP_PRODUCTION/</code>.
-The next step is to remove the old <code>rubricapp</code> repo that was originally
-cloned as it is no longer needed because the entire directory was copied
-into this new production directory.
+  Intended to be run once after <code>--fresh</code>. Runs the full setup in this order:
 </p>
-
-<p>
-Now, <code>cd</code> into it.
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Cloud/
-</pre>
-</div>
-
-<p>
-Then run the following to set everything up:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --init
-</pre>
-</div>
-
-<p>
-See <i>section 3.3</i>: <b>Init</b> for more information on this option.
-</p>
-
-<p>
-Everything should be installed, up-to-date, and configured to run <i>rubricapp</i>. Finally, run the following
-to launch <i>rubricapp</i>:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --serve
-</pre>
-</div>
-</div>
-</div>
-
-<div id="outline-container-orga9b8f64" class="outline-2">
-<h2 id="orga9b8f64"><span class="section-number-2">3</span> Available Options</h2>
-<div class="outline-text-2" id="text-3">
-</div>
-<div id="outline-container-org9038c1c" class="outline-3">
-<h3 id="org9038c1c"><span class="section-number-3">3.1</span> Help</h3>
-<div class="outline-text-3" id="text-3-1">
-<p>
-<i>Usage</i>:
-</p>
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --help
-</pre>
-</div>
-
-<p>
-<i>Description</i>:
-</p>
-
-<p>
-Displays all of the different options that can be passed to <code>syscontrol.sh</code>.
-</p>
-
-<p>
-The order of the options displayed in the help message are in logical order
-to cloning the project.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org3ebe96b" class="outline-3">
-<h3 id="org3ebe96b"><span class="section-number-3">3.2</span> Fresh</h3>
-<div class="outline-text-3" id="text-3-2">
-<p>
-<i>Usage</i>:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --fresh
-</pre>
-</div>
-
-<p>
-<i>Description</i>:
-</p>
-
-<p>
-See <i>section 2</i>: <b>First Time Setup</b>
-</p>
-</div>
-</div>
-
-<div id="outline-container-orgdbc1cab" class="outline-3">
-<h3 id="orgdbc1cab"><span class="section-number-3">3.3</span> Init</h3>
-<div class="outline-text-3" id="text-3-3">
-<p>
-<i>Usage</i>:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --init
-</pre>
-</div>
-
-<p>
-<i>Description</i>:
-</p>
-
-<p>
-This is intended to be the option you use after running <code>--fresh</code>. It should only be used once. It runs the following:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --install
-./syscontrol.sh --configure
-# then runs dbcreate.py to set up the database
-</pre>
-</div>
-
-<p>
-<b>[WARNING]</b>
-</p>
-
-<p>
-This option completely wipes the database and sets it up fresh. You will be prompted to confirm
-with <code>Y</code> before anything is deleted. Type <code>n</code> to abort safely.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org048c9ec" class="outline-3">
-<h3 id="org048c9ec"><span class="section-number-3">3.4</span> Install</h3>
-<div class="outline-text-3" id="text-3-4">
-<p>
-<i>Usage</i>:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --install
-</pre>
-</div>
-
-<p>
-<i>Description</i>:
-</p>
-
-<p>
-Installs necessary dependencies for <code>apt</code>, <code>pip</code>, and <code>npm</code>.
-</p>
-
-<ul class="org-ul">
-<li><b>System packages via apt</b> — python3, nginx, redis-server, certbot, ufw, and others</li>
-<li><b>Python packages via pip</b> — installed from <code>BackEndFlask/requirements.txt</code> inside the virtual environment</li>
-<li><b>Node.js via NVM</b> — installs Node v20.11.1 and npm packages from <code>FrontEndReact/</code></li>
-</ul>
-</div>
-</div>
-
-<div id="outline-container-org77e4a58" class="outline-3">
-<h3 id="org77e4a58"><span class="section-number-3">3.5</span> Configure</h3>
-<div class="outline-text-3" id="text-3-5">
-<p>
-<i>Usage</i>:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --configure
-</pre>
-</div>
-
-<p>
-<i>Description</i>:
-</p>
-
-<p>
-This option configures all services needed to run the application. Runs the following steps in order:
-</p>
-
-<p>
-<b>SSL Certificate (Certbot)</b><br />
-Obtains a Let's Encrypt SSL certificate for the domain <code>skill-builder-testing.net</code> using Certbot
-in standalone mode. Temporarily stops Nginx and frees ports 80 and 443 so Certbot can complete
-domain verification. If a certificate already exists, this step is skipped.
-</p>
-
-<p>
-<b>Gunicorn Service</b><br />
-Creates the systemd service at <code>/etc/systemd/system/rubricapp.service</code>. Runs the Flask backend
-via Gunicorn with 3 workers, bound to a Unix socket at <code>BackEndFlask/rubricapp.sock</code>.
-</p>
-
-<p>
-<b>Nginx</b><br />
-Writes two config files into <code>/etc/nginx/sites-available/</code> and enables both:
-</p>
-
-<ul class="org-ul">
-<li><code>rubricapp</code> — SSL proxy on port 5000, forwards to the Gunicorn socket</li>
-<li><code>rubricapp-frontend</code> — listens on port 80 (redirects to HTTPS) and 443, forwards to the React frontend on port 3000</li>
-</ul>
-
-<p>
-<b>Frontend Service</b><br />
-Creates a systemd service at <code>/etc/systemd/system/rubricapp-frontend.service</code> that serves the
-built React app using <code>serve</code> on port 3000.
-</p>
-
-<p>
-<b>Firewall (UFW)</b><br />
-Opens the following ports:
-</p>
-
-<ul class="org-ul">
-<li>22 (SSH) — remote server access</li>
-<li>80 — HTTP, redirects to HTTPS via Nginx</li>
-<li>443 — HTTPS, main application port</li>
-<li>5000 — backend API, SSL proxy to Gunicorn</li>
-<li>3000 — React frontend, served by the frontend service</li>
-</ul>
-
-<p>
-<b>Note:</b> The domain must be pointing to the server's IP address before running
-<code>--configure</code>, otherwise the Certbot step will fail.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org2cc0191" class="outline-3">
-<h3 id="org2cc0191"><span class="section-number-3">3.6</span> Serve</h3>
-<div class="outline-text-3" id="text-3-6">
-<p>
-<i>Usage</i>:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --serve
-</pre>
-</div>
-
-<p>
-<i>Description</i>:
-</p>
-
-<p>
-Starts all services and makes <i>rubricapp</i> live. Stops any existing processes first for a clean
-start, then brings everything up in this order:
-</p>
-
-<ol class="org-ol">
-<li>Kills any existing processes</li>
-<li>Starts <code>redis-server</code></li>
-<li>Starts the Gunicorn backend (<code>rubricapp.service</code>)</li>
-<li>Starts and reloads Nginx</li>
-<li>Builds the React frontend (<code>npm run build</code>)</li>
-<li>Starts the frontend service (<code>rubricapp-frontend.service</code>)</li>
+<ol>
+  <li>Prompts for the domain name</li>
+  <li>Asks if the domain is already pointing to this server</li>
+  <li>Runs <code>--install</code> (all dependencies)</li>
+  <li>Runs <code>--configure</code> if domain is ready, or <code>--configure-no-ssl</code> if not</li>
+  <li>Runs <code>dbcreate.py</code> to initialize the database</li>
 </ol>
 
-<p>
-If you deploy new code, run <code>--serve</code> again to rebuild and restart everything. The frontend
-build step can take a minute.
-</p>
-</div>
-</div>
-
-<div id="outline-container-org646cf20" class="outline-3">
-<h3 id="org646cf20"><span class="section-number-3">3.7</span> Update</h3>
-<div class="outline-text-3" id="text-3-7">
-<p>
-<i>Usage</i>:
-</p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --update
-</pre>
+<div class="warning">
+  <strong>WARNING:</strong> This option completely wipes the database and sets it up fresh.
+  You will be prompted to confirm with <code>Y</code> before anything is deleted.
+  Type <code>n</code> to abort safely. Never run this on a server with live production data.
 </div>
 
+<!-- INSTALL -->
+<h3 id="install"><span class="section-number-3">4.4</span> Install</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --install</pre>
+<p>Installs all dependencies needed to run the application:</p>
+<ul>
+  <li><strong>System packages via apt</strong> — python3, nginx, redis-server, certbot, ufw, and others (see DEPS block in script for full list with explanations)</li>
+  <li><strong>Python packages via pip</strong> — installed from <code>BackEndFlask/requirements.txt</code> inside the virtual environment at <code>~/RUBRICAPP_PRODUCTION/rubricapp-env/</code></li>
+  <li><strong>Node.js via NVM</strong> — installs Node v20.11.1 and npm packages from <code>FrontEndReact/package.json</code></li>
+</ul>
+
+<!-- CONFIGURE SSL -->
+<h3 id="configure"><span class="section-number-3">4.5</span> Configure (SSL)</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --configure</pre>
+<p>Configures all services with SSL. Runs the following steps in order:</p>
+
+<p><strong>SSL Certificate (Certbot)</strong><br />
+Obtains a Let's Encrypt SSL certificate for the domain using Certbot in standalone mode.
+Temporarily stops Nginx and frees ports 80 and 443 for domain verification.
+If a certificate already exists it is skipped.</p>
+
+<p><strong>Gunicorn Service</strong><br />
+Creates the systemd service at <code>/etc/systemd/system/rubricapp.service</code>.
+Runs the Flask backend via Gunicorn with 3 workers bound to a Unix socket at
+<code>BackEndFlask/rubricapp.sock</code>.</p>
+
+<p><strong>Nginx</strong><br />
+Writes a single combined config to <code>/etc/nginx/sites-available/rubricapp</code> with:</p>
+<ul>
+  <li>Port 5000 SSL — proxies to the Gunicorn socket</li>
+  <li>Port 80 — redirects all HTTP traffic to HTTPS</li>
+  <li>Port 443 SSL — proxies to the React frontend on port 3000</li>
+</ul>
+
+<p><strong>Firewall (UFW)</strong><br />
+Opens ports: 22 (SSH), 80 (HTTP), 443 (HTTPS), 5000 (backend API), 3000 (frontend)</p>
+
+<div class="warning">
+  <strong>Note:</strong> The domain must be pointing to this server's IP before running <code>--configure</code>,
+  otherwise Certbot will fail. If the domain is not ready yet, use <code>--configure-no-ssl</code> instead.
+</div>
+
+<!-- CONFIGURE NO SSL -->
+<h3 id="configure-no-ssl"><span class="section-number-3">4.6</span> Configure No SSL</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --configure-no-ssl</pre>
 <p>
-<i>Description</i>:
+  Configures all services without SSL. Use this for test servers or any server where the
+  domain is not yet pointing to the server's IP. Skips the Certbot step entirely.
+  Runs the following steps:
 </p>
 
-<p>
-Stops all services and pulls the latest code from the remote repo. Does <b>not</b> automatically
-restart services — run <code>--serve</code> manually afterward to bring everything back up.
-</p>
+<p><strong>Gunicorn Service</strong><br />
+Same as <code>--configure</code> — creates <code>/etc/systemd/system/rubricapp.service</code>.</p>
 
-<ol class="org-ol">
-<li>Kills all running processes and services</li>
-<li>Fetches from remote and pulls if the local branch is behind <code>origin/master</code></li>
+<p><strong>Nginx (HTTP only)</strong><br />
+Writes a single config to <code>/etc/nginx/sites-available/rubricapp</code> with:</p>
+<ul>
+  <li>Port 80 — proxies to the React frontend on port 3000</li>
+  <li>Port 5000 — proxies to the Gunicorn socket (no SSL)</li>
+</ul>
+
+<p><strong>Firewall (UFW)</strong><br />
+Same as <code>--configure</code>.</p>
+
+<div class="note">
+  <strong>Note:</strong> To upgrade to SSL later, point the domain to the server then run
+  <code>--configure</code>. It will overwrite the no-SSL Nginx config with the SSL version
+  and obtain the certificate automatically. See <a href="#switching-ssl">Section 6</a>.
+</div>
+
+<!-- SERVE -->
+<h3 id="serve"><span class="section-number-3">4.7</span> Serve</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --serve</pre>
+<p>Starts all services and makes rubricapp live. Stops any existing processes first for a clean start, then brings everything up in this order:</p>
+<ol>
+  <li>Kills any existing processes</li>
+  <li>Starts <code>redis-server</code></li>
+  <li>Starts the Gunicorn backend (<code>rubricapp.service</code>)</li>
+  <li>Starts and reloads Nginx</li>
+  <li>Builds the React frontend (<code>npm run build</code>)</li>
+  <li>Starts the frontend as a background process on port 3000 (logs to <code>FrontEndReact/frontend.log</code>)</li>
 </ol>
-</div>
-</div>
-
-<div id="outline-container-orgf31073b" class="outline-3">
-<h3 id="orgf31073b"><span class="section-number-3">3.8</span> Status</h3>
-<div class="outline-text-3" id="text-3-8">
 <p>
-<i>Usage</i>:
+  If you deploy new code, run <code>--serve</code> again to rebuild and restart everything.
+  The frontend build step can take a minute.
 </p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --status
-</pre>
+<div class="note">
+  <strong>Note:</strong> The frontend runs as a background process via <code>nohup npm start</code>.
+  To check frontend logs: <code>cat ~/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/frontend.log</code>
 </div>
 
+<!-- UPDATE -->
+<h3 id="update"><span class="section-number-3">4.8</span> Update</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --update</pre>
 <p>
-<i>Description</i>:
+  Stops all services and pulls the latest code from the remote repo. Does <strong>not</strong>
+  automatically restart services — run <code>--serve</code> manually afterward to bring everything back up.
 </p>
+<ol>
+  <li>Kills all running processes and services</li>
+  <li>Fetches from remote and pulls if the local branch is behind <code>origin/master</code></li>
+</ol>
 
+<!-- STATUS -->
+<h3 id="status"><span class="section-number-3">4.9</span> Status</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --status</pre>
 <p>
-Prints the current status of all services and shows which processes are listening on each
-relevant port. Useful for a quick health check without restarting anything.
+  Prints the current status of all services and shows which processes are listening on
+  each relevant port. Useful for a quick health check without restarting anything.
+  Does not require a domain prompt.
 </p>
-
 <p>Services checked:</p>
-<ul class="org-ul">
-<li><code>nginx.service</code></li>
-<li><code>rubricapp.service</code> (Gunicorn backend)</li>
-<li><code>rubricapp-frontend.service</code> (React frontend)</li>
-<li><code>redis-server.service</code></li>
+<ul>
+  <li><code>nginx.service</code></li>
+  <li><code>rubricapp.service</code> (Gunicorn backend)</li>
+  <li><code>redis-server.service</code></li>
 </ul>
-
 <p>Ports checked: <code>5001</code>, <code>5000</code>, <code>3000</code>, <code>80</code></p>
-</div>
-</div>
 
-<div id="outline-container-org3a22403" class="outline-3">
-<h3 id="org3a22403"><span class="section-number-3">3.9</span> Kill</h3>
-<div class="outline-text-3" id="text-3-9">
+<!-- KILL -->
+<h3 id="kill"><span class="section-number-3">4.10</span> Kill</h3>
+<p><em>Usage:</em></p>
+<pre class="src src-bash">./syscontrol.sh --kill</pre>
 <p>
-<i>Usage</i>:
+  Stops all services and cleans up processes. Also clears Python <code>__pycache__</code>
+  directories and <code>.pyc</code> files from the project for a clean state before the next deploy.
+  Does not require a domain prompt.
 </p>
-
-<div class="org-src-container">
-<pre class="src src-bash">./syscontrol.sh --kill
-</pre>
-</div>
-
-<p>
-<i>Description</i>:
-</p>
-
-<p>
-Stops all services and cleans up processes. Also clears Python <code>__pycache__</code> directories
-and <code>.pyc</code> files from the project for a clean state before the next deploy.
-</p>
-
 <p>Services stopped in order:</p>
-<ul class="org-ul">
-<li><code>rubricapp-frontend.service</code></li>
-<li><code>redis-server.service</code></li>
-<li><code>rubricapp.service</code></li>
-<li><code>nginx.service</code></li>
+<ul>
+  <li><code>redis-server.service</code></li>
+  <li><code>rubricapp.service</code></li>
+  <li><code>nginx.service</code></li>
 </ul>
-
 <p>Also kills any remaining processes on ports <code>5000</code>, <code>5001</code>, and <code>3000</code>.</p>
 </div>
+
+<!-- ============================================================ -->
+<div id="outline-container-domain-prompt">
+<h2 id="domain-prompt"><span class="section-number-2">5</span> Domain Prompt</h2>
+<p>
+  The script prompts for a domain name at startup for commands that need it
+  (<code>--init</code>, <code>--configure</code>, <code>--configure-no-ssl</code>, <code>--serve</code>).
+  Nothing is hardcoded — enter the correct domain for the server you are setting up.
+</p>
+<table>
+  <tr><th>Server</th><th>Domain</th></tr>
+  <tr><td>DO Production</td><td>skill-builder.net</td></tr>
+  <tr><td>DO Test</td><td>skill-builder-testing.net</td></tr>
+  <tr><td>AWS Production</td><td>skill-builder.net</td></tr>
+  <tr><td>AWS Test</td><td>(see server guide)</td></tr>
+</table>
+<div class="note">
+  <strong>Note:</strong> Commands like <code>--status</code> and <code>--kill</code> do not prompt for a domain
+  since they only manage running services.
 </div>
 </div>
+
+<!-- ============================================================ -->
+<div id="outline-container-switching-ssl">
+<h2 id="switching-ssl"><span class="section-number-2">6</span> Switching from No-SSL to SSL</h2>
+<p>
+  If a server was set up with <code>--configure-no-ssl</code> and the domain is now pointing
+  to the server, upgrading to SSL is a single command:
+</p>
+<ol>
+  <li>Make sure the domain A record is pointing to this server's IP and has propagated</li>
+  <li>Verify propagation: <code>dig your-domain.com</code> — the IP in the output should match the server</li>
+  <li>Run:
+    <pre class="src src-bash">./syscontrol.sh --configure</pre>
+  </li>
+  <li>This will obtain the SSL cert, overwrite the no-SSL Nginx config with the SSL version, and reload Nginx</li>
+  <li>Run <code>--serve</code> to restart everything cleanly</li>
+</ol>
+<div class="warning">
+  <strong>Note:</strong> Port 80 and 443 must be free when Certbot runs. The script handles this
+  automatically by stopping Nginx before attempting certificate generation.
+</div>
+</div>
+
 </div>
 <div id="postamble" class="status">
-<p class="author">Author: Zachary Haskins</p>
-<p class="date">Created: 2024-03-05 Tue 13:50</p>
-<br>
-<p class="author">Updated by: Beshoy Iskandar</p>
-<p class="date">Last Updated: 2026-03-04 Wed 11:11</p>
-<p class="validation"><a href="http://validator.w3.org/check?uri=referer">Validate</a></p>
+  <p class="author">Author: Zachary Haskins</p>
+  <p class="date">Created: 2024-03-05 Tue 13:50</p>
+  <br>
+  <p class="author">Updated by: Beshoy Iskandar</p>
+  <p class="date">Last Updated: 2026-04-19</p>
 </div>
 </body>
 </html>
