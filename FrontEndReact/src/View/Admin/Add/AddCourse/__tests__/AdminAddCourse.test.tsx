@@ -7,7 +7,8 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    expectElementWithAriaLabelToHaveErrorMessage
+    expectElementWithAriaLabelToHaveErrorMessage,
+    selectDropdownOptionWithAriaLabel
 } from "../../../../../testUtilities";
 
 
@@ -25,6 +26,7 @@ var cnumi = "courseNumberInput";
 var cti = "courseTermInput";
 var cyi = "courseYearInput";
 var vcd = "viewCourseDiv";
+var ctzd = "courseTimeZoneDropdown";
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
@@ -281,6 +283,8 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
     changeElementWithAriaLabelWithInput(cti, "Fall");
 
     changeElementWithAriaLabelWithInput(cyi, "2024");
+
+    await selectDropdownOptionWithAriaLabel(ctzd, "Central Time");
 
     clickElementWithAriaLabel(aosacb);
 
