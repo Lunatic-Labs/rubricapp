@@ -7,7 +7,8 @@ import {
     clickElementWithAriaLabel,
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
-    expectElementWithAriaLabelToHaveErrorMessage
+    expectElementWithAriaLabelToHaveErrorMessage,
+    selectDropdownOptionWithAriaLabel
 } from "../../../../../testUtilities";
 
 
@@ -281,6 +282,8 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
     changeElementWithAriaLabelWithInput(cti, "Fall");
 
     changeElementWithAriaLabelWithInput(cyi, "2024");
+
+    selectDropdownOptionWithAriaLabel("courseTimeZoneDropdown", "Central Time");
 
     clickElementWithAriaLabel(aosacb);
 

@@ -79,6 +79,11 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
     enabledElement.click();
 };
 
+export function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string) {
+    fireEvent.mouseDown(screen.getByLabelText(ariaLabel));
+    fireEvent.click(screen.getByText(optionText));
+}
+
 export const expectEnabledElementWithAriaLabelToExist = (ariaLabel: any) => {
     const elements = screen.queryAllByLabelText(ariaLabel);
     const hasEnabledElement = elements.some(el => !(el as HTMLButtonElement).disabled);
