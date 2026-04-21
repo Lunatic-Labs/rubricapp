@@ -79,10 +79,12 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
     enabledElement.click();
 };
 
-export function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string) {
-    fireEvent.mouseDown(screen.getByLabelText(ariaLabel));
-    fireEvent.click(screen.getByText(optionText));
-}
+export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string) {
+    const dropdown = screen.getByLabelText(ariaLabel);
+    fireEvent.mouseDown(dropdown);
+    const option = await screen.findByText(optionText);
+    fireEvent.click(option);
+};
 
 export const expectEnabledElementWithAriaLabelToExist = (ariaLabel: any) => {
     const elements = screen.queryAllByLabelText(ariaLabel);
