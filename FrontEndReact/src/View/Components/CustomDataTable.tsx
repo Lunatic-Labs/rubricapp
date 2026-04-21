@@ -88,30 +88,96 @@ const customTheme = createTheme({
         },
       },
     },
-  MUIDataTableFooter: {
-  styleOverrides: {
-    root: {
-        padding: ".01rem .5rem",
-      fontSize: "1rem",
-      width: '100%',
-      boxSizing: 'border-box',
-      '@media (max-width: 600px)': {
-        padding: '0px',
-        width: '100%',
-        overflowX: 'hidden',
-        display: 'flex',
-        justifyContent: 'flex-end'
-      }
+    // @ts-ignore: MUIDataTable custom component
+    MUIDataTableFooter: {
+      styleOverrides: {
+        root: {
+          padding: ".01rem .5rem",
+          fontSize: "1rem",
+          backgroundColor: "var(--table-toolbar)",
+          color: "var(--table-text)",
+        },
+      },
     },
-    
-  },
-},
-MuiToolbar: {
-  styleOverrides: {
+    MuiToolbar: {
+      styleOverrides: {
+        root: {
+          padding: ".01rem .5rem",
+          margin: ".01rem",
+          fontSize: "1rem",
+          backgroundColor: "var(--table-toolbar)",
+          color: "var(--table-text)",
+        },
+      },
+    },
+    MuiTypography: {
+      defaultProps: {
+        color: "inherit",
+      },
+      styleOverrides: {
+        root: {
+          color: "var(--table-text)",
+        },
+        body2: {
+          color: "var(--table-text)",
+        },
+      },
+    },
+    MuiInputBase: {
+      styleOverrides: {
+        root: {
+          fontSize: "1rem",
+          padding: ".01rem .5rem",
+          color: "var(--table-text)",
+          backgroundColor: "var(--dropdown-bg)",
+        },
+        input: {
+          color: "var(--table-text)",
+        },
+      },
+    },
+    MuiInput: {
+      styleOverrides: {
+        root: {
+          color: "var(--table-text)",
+        },
+        input: {
+          color: "var(--table-text)",
+        },
+        underline: {
+          '&:before': {
+            borderBottomColor: "var(--table-border)",
+          },
+          '&:hover:not(.Mui-disabled):before': {
+            borderBottomColor: "var(--table-border)",
+          },
+          '&:after': {
+            borderBottomColor: "var(--table-border)",
+          },
+        },
+      },
+    },
+    MuiFormLabel: {
+      styleOverrides: {
+        root: {
+          color: "var(--table-text)",
+        },
+      },
+    },
+    // @ts-ignore: MUIDataTable custom component
+    MUIDataTableHeadCell: {
+      styleOverrides: {
+        root: {
+          backgroundColor: "var(--table-header)",
+          color: "var(--table-text)",
+          padding: ".01rem .5rem", 
+          fontSize: "1.4rem",
+        },
+      },
+    },
+    MUIDataTablePagination: {
+    styleOverrides: {
     root: {
-      padding: ".01rem .5rem",
-      margin: ".01rem",
-      fontSize: "1rem",
       '@media (max-width: 600px)': {
         flexWrap: 'wrap',
         padding: '0px',
@@ -150,15 +216,9 @@ MuiTablePagination: {
     },
     displayedRows: {
       '@media (max-width: 600px)': {
-        fontSize: '0.75rem',
-        margin: '0px',
+        fontSize: '0.85rem',
       }
     },
-    actions: {
-      '@media (max-width: 600px)': {
-        marginLeft: '0px',
-      }
-    }
   }
 },
   },
