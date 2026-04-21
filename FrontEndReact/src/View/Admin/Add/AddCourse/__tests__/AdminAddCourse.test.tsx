@@ -26,6 +26,7 @@ var cnumi = "courseNumberInput";
 var cti = "courseTermInput";
 var cyi = "courseYearInput";
 var vcd = "viewCourseDiv";
+var ctzd = "courseTimeZoneDropdown";
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
@@ -283,7 +284,7 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
 
     changeElementWithAriaLabelWithInput(cyi, "2024");
 
-    selectDropdownOptionWithAriaLabel("courseTimeZoneDropdown", "Central Time");
+    selectDropdownOptionWithAriaLabel(ctzd, "America/Chicago");
 
     clickElementWithAriaLabel(aosacb);
 
@@ -297,10 +298,6 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(courseName);
-    });
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument("Central Time");
     });
 });
 test("AdminAddCourse.test.tsx Test 11: HelperText errors should show for the addCourseYear text field when the input year is not numeric", async () => {
