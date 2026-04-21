@@ -19,14 +19,6 @@ class EndpointCall:
     def __str__(self):
         return f'{self.kind.name} -> {self.dst}, args = {self.args} @ {self.location}'
 
-    def to_dict(self):
-        return {
-            "from": self.location.path,  # Origin location path
-            "to": self.dst,  # Destination endpoint string
-            "kind": self.kind.name,
-            "args": self.args
-        }
-
 
 def trimdst(s):
     s = s.strip()

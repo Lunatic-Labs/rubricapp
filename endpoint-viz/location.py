@@ -6,3 +6,6 @@ class Location:
 
     def __str__(self):
         return f'{self.path}:{self.r}:{self.c}'
+
+    def to_dict(self):
+        return {"r": self.r, "c": self.c, "path": self.path}

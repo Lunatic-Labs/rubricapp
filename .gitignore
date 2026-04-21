@@ -64,3 +64,5 @@ node_modules
 
 /.vscode
 .env
+
+endpoint-viz/*.html
