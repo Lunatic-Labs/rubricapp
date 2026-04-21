@@ -1,4 +1,5 @@
 import { screen, fireEvent } from '@testing-library/react';
+import userEvent from '@testing-library/user-event';
 import '@testing-library/jest-dom';
 
 // Declare expect as global for Jest environment
@@ -80,10 +81,9 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
 };
 
 export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string) {
-    const dropdown = screen.getByLabelText(ariaLabel);
-    fireEvent.mouseDown(dropdown);
-    await screen.findByRole('listbox');
-    fireEvent.click(screen.getByRole('option', { name: optionText }));
+    const user = userEvent.setup();
+    await user.click(screen.getByLabelText(ariaLabel));
+    await user.click(screen.getByRole('option', { name: optionText }));
 };
 
 export const expectEnabledElementWithAriaLabelToExist = (ariaLabel: any) => {
