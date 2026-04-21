@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Box, TextField, Alert } from '@mui/material';
 import CustomButton from '../Components/CustomButton';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, genericResourcePOST } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
 import { AssessmentTask } from '../../../../types/AssessmentTask';
 
@@ -43,7 +43,34 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 			return;
 		}
 
-		if (enteredPassword !== correctPassword) {
+		const body = {
+			password: enteredPassword,
+			assessment_task_id: this.props.navbar.state.chosenAssessmentTask["assessment_task_id"]
+
+		};
+
+		try {
+			
+			let promise;
+
+			promise = genericResourcePOST(
+				'/verify_team_password',
+				this,
+				JSON.stringify(body)
+			);
+
+			promise.then(result => {
+				if (result !== undefined && result.errorMessage === null) {
+					this.props.navbar.setState({ teamSwitchPassword: enteredPassword });
+					this.props.navbar.setNewTab("SelectTeam");
+				} else {
+					this.setState({
+						validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
+					})
+				}
+			});
+
+		} catch (error) {
 			this.setState({
 				validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
 			});
