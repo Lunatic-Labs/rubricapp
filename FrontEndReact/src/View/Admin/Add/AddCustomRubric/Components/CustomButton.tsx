@@ -34,6 +34,7 @@ const CustomButton = ({
       <Button
         onClick={onClick}
         style={buttonStyle}
+        className={isOutlined ? '' : 'white-text-button'}
       >
         {label}
       </Button>

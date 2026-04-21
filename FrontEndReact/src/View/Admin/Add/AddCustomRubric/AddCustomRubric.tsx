@@ -82,39 +82,25 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                 categoryIds.push(pickedCategories[categoryIndex]!["category_id"]);
             }
 
-            if (rubricName === "") {
-                this.setState({
-                    errors: {
-                        rubricName: "Missing New Rubric Name.",
-                        rubricDescription: "",
-                        rubricCategories: ""
-                    }
-                });
-                return;
-            } 
+            const nameError = rubricName === "" ? "Missing New Rubric Name." : "";
+            const descError = rubricDescription === "" ? "Missing New Rubric Description." : "";
+            const categoryError = categoryIds.length === 0 ? "Missing categories, at least one category must be selected." : "";
 
-            if (rubricDescription === "") {
+            if (nameError || descError || categoryError) {
                 this.setState({
                     errors: {
-                        rubricName: "",
-                        rubricDescription: "Missing New Rubric Description.",
-                        rubricCategories: ""
+                        rubricName: nameError,
+                        rubricDescription: descError,
+                        rubricCategories: categoryError,
                     }
                 });
                 return;
-            } 
+            }
 
-            if (categoryIds.length === 0) {
-                this.setState({
-                    isLoaded: true,
-                    errors: {
-                        rubricName: "",
-                        rubricDescription: "",
-                        rubricCategories: "Missing categories, at least one category must be selected.",
-                    }
-                });
-                return;
-            } 
+            this.setState({
+                errors: { rubricName: "", rubricDescription: "", rubricCategories: "" }
+            });
+
             var cookies = new Cookies();
             let promise;
             if (this.state.addCustomRubric === false) {
@@ -182,6 +168,19 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             };
 
     }
+
+    handleFieldChange = (field: "rubricName" | "rubricDescription", value: string) => {
+        const errorMap = {
+            rubricName: "Missing New Rubric Name.",
+            rubricDescription: "Missing New Rubric Description.",
+        };
+        this.setState(prevState => ({
+            errors: {
+                ...prevState.errors,
+                [field]: value.trim() === "" ? errorMap[field] : "",
+            }
+        }));
+    };
 
     handleCategorySelect = (categoryId: number, isSelected: boolean) => {
         var allCategories = this.state.allCategories;
@@ -352,6 +351,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 style={{ width: "100%" }}
                                 error={!!errors.rubricName}
                                 helperText={errors.rubricName}
+                                onChange={(e) => this.handleFieldChange("rubricName", e.target.value)}
                                 className ="text-box-colors"
                                 sx={{ 
                                     mb: 3,
@@ -394,6 +394,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 multiline
                                 error={!!errors.rubricDescription}
                                 helperText={errors.rubricDescription}
+                                onChange={(e) => this.handleFieldChange("rubricDescription", e.target.value)}
                                 style={{ width: "100%" }}
                                 className ="text-box-colors"
                                 sx={{ 

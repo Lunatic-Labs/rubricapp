@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Container, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, Cell, LabelList, ResponsiveContainer } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
 import CategoryDropdown from '../../../../Components/CategoryDropdown';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements';
@@ -164,10 +164,12 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
   const innerGridStyle = {
     borderRadius: '6px',
     height: '100%',
-    border: "#7f7f7fff", 
+    border: '1px solid var(--border-color)',
     padding: 0,
     margin: 0,
-    boxShadow: "0.3em 0.3em 1em var(--box-shadow)"
+    boxShadow: '0 0 1em rgba(0, 0, 0, 0.18)',
+    backgroundColor: 'var(--card-bg)',
+    color: 'var(--text-color)',
   };
 
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
@@ -178,7 +180,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
         <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw",  }}>
         <Grid container item xs={12} spacing={2}>
             <Grid item xs={12} md={6}>
-              <div className={innerDivClassName} style={{
+              <div className={`reporting-card ${innerDivClassName}`} style={{
                 ...innerGridStyle,
                 minHeight: '250px'
               }}>
@@ -194,17 +196,33 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                         barCategoryGap={0.5}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="rating" type="category" style={{ fontSize: '0.75rem' }} />
-                        <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.75rem' }} />
-                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="rating"
+                          type="category"
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }}
+                        />
+                        <YAxis
+                          type="number"
+                          domain={[0, 'auto']}
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }}
+                        />
+                        <CartesianGrid vertical={false} stroke="var(--chart-grid-color)" />
                         <Bar dataKey="number" fill="#2e8bef">
-                          <LabelList dataKey="number" fill="#ffffff" position="inside" />
+                          {ratingsData.ratings.map((entry: any, index: number) => (
+                            <Cell
+                              key={`rating-bar-cell-${index}`}
+                              fill={entry.number === 0 ? 'transparent' : '#2e8bef'}
+                            />
+                          ))}
+                          <LabelList dataKey="number" fill="var(--text-white)" position="inside" formatter={(value: any) => value === 0 ? '' : value} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
                     <div style={{textAlign: "center"}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="grey" className="bi bi-bar-chart" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="currentColor" style={{ color: 'var(--text-color)' }} className="bi bi-bar-chart" viewBox="0 0 16 16">
                       <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
                     </svg>
                     </div>
@@ -220,7 +238,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
 
             <Grid item xs={12} md={6}>
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <div style={{
+                <div className="reporting-card" style={{
                   ...innerGridStyle,
                   padding: '16px'
                 }}>
@@ -247,6 +265,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                             size="small"
                             disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
                             onClick={() => props.onExportAggregates && props.onExportAggregates(chosenCategoryId)}
+                            className="export-aggregates-button"
                             sx={{ mt: 1 }}
                           >
                             Export Aggregates
@@ -256,7 +275,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                     </Grid>
                   </Grid>
                 </div>
-                <div style={{
+                <div className="reporting-card" style={{
                   ...innerGridStyle,
                   padding: '20px',
                   marginTop: '16px',  
@@ -264,7 +283,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                   <h3 style={{ fontWeight: 'normal', textAlign: 'center'}}>
                     <u>Assessment Tasks Completed:</u>
                   </h3>
-                  <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px' }}>
+                  <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px', backgroundColor: 'var(--progress-track-bg)' }}>
                     <div
                       className="progress-bar"
                       role="progressbar"
