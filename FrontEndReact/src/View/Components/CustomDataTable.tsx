@@ -226,13 +226,13 @@ MuiTablePagination: {
 );
 
 const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
-  const isMobile = useMediaQuery('(max-width:600px)');
+  const isMobile = useMediaQuery('(max-width:100%)');
   const defaultOptions = {
     rowStyle: { height: 4 },
     responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard",
   };
 
-  const tableOptions = { ...defaultOptions, ...options,}
+  const tableOptions = { ...defaultOptions, ...options, responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard" };
 
   return (
     <ThemeProvider theme={customTheme}>
