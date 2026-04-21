@@ -758,10 +758,22 @@ case "$1" in
         install
         ;;
     "$CONFIGURE")
-        prompt_domain
-        build_configs
+    prompt_domain
+    build_configs
+    echo "--------------------------------------------"
+    echo "This will obtain an SSL certificate for $DOMAIN"
+    echo "and overwrite the current Nginx configuration."
+    echo "Make sure $DOMAIN is pointing to this server"
+    echo "before continuing, otherwise certbot will fail."
+    echo "--------------------------------------------"
+    echo "Do you want to continue? (Y/n)"
+    read confirm
+    if [ "$confirm" == "Y" ] || [ "$confirm" == "y" ]; then
         configure
-        ;;
+    else
+        panic "Configure aborted by user"
+    fi
+    ;;
     "$CONFIGURE_NO_SSL")
         prompt_domain
         build_configs
