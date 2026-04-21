@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Box, TextField, Alert } from '@mui/material';
 import CustomButton from '../Components/CustomButton';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, genericResourcePOST } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
 
 interface CodeRequirementProps {
@@ -49,29 +49,26 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 		};
 
 		try {
-			const response = await fetch('/assessment_task/verify_team_password', {
-				method: 'POST',
-				headers: {
-					'Content-Type': 'application/json'
-				},
-				body: JSON.stringify(body)
+			
+			let promise;
+
+			promise = genericResourcePOST(
+				'/verify_team_password',
+				this,
+				JSON.stringify(body)
+			);
+
+			promise.then(result => {
+				if (result !== undefined && result.errorMessage === null) {
+					this.props.navbar.setState({ teamSwitchPassword: enteredPassword });
+					this.props.navbar.setNewTab("SelectTeam");
+				} else {
+					this.setState({
+						validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
+					})
+				}
 			});
 
-			const data = await response.json();
-
-			if (response.ok) {
-				// correct
-				this.props.navbar.setState({
-					teamSwitchPassword: enteredPassword
-
-				});
-				this.props.navbar.setNewTab("SelectTeam");
-			} else {
-				// incorrect
-				this.setState({
-					validationError: data.message || "Incorrect password. Please contact your instructor if you need to switch teams."
-				});
-			}
 		} catch (error) {
 			this.setState({
 				validationError: "An error occurred. Please try again."
