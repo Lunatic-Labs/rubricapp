@@ -283,9 +283,7 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
 
     changeElementWithAriaLabelWithInput(cyi, "2024");
 
-    await waitFor(() => {
-        selectDropdownOptionWithAriaLabel("courseTimeZoneDropdown", "Central Time");
-    });
+    selectDropdownOptionWithAriaLabel("courseTimeZoneDropdown", "Central Time");
 
     clickElementWithAriaLabel(aosacb);
 
@@ -299,6 +297,10 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(courseName);
+    });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument("Central Time");
     });
 });
 test("AdminAddCourse.test.tsx Test 11: HelperText errors should show for the addCourseYear text field when the input year is not numeric", async () => {
