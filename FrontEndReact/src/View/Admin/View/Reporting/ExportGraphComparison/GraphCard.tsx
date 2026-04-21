@@ -131,11 +131,11 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
                 barCategoryGap={0.5}
                 margin={{ top: 5, right: 10, left: -10, bottom: 0 }}
               >
-                <XAxis dataKey="rating" type="category" style={{ fontSize: '0.65rem' }} />
-                <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.65rem' }} />
-                <CartesianGrid vertical={false} />
+                <XAxis dataKey="rating" type="category" tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.65rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+                <YAxis type="number" domain={[0, 'auto']} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.65rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+                <CartesianGrid vertical={false} stroke="var(--chart-grid-color)" />
                 <Bar dataKey="number" fill={GRAPH_BAR_COLORS.distribution} isAnimationActive={false}>
-                  <LabelList dataKey="number" fill="#ffffff" position="inside" style={{ fontSize: '0.6rem' }} />
+                  <LabelList dataKey="number" fill="var(--text-white)" position="inside" style={{ fontSize: '0.6rem' }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
@@ -155,13 +155,14 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
             data={chartData}
             margin={{ top: 5, right: 30, left: 5, bottom: 0 }}
           >
-            <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.6rem' }} />
-            <YAxis dataKey="label" type="category" width={90} style={{ fontSize: '0.55rem' }} />
-            <CartesianGrid horizontal={false} />
+            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.6rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <YAxis dataKey="label" type="category" width={90} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.55rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <CartesianGrid horizontal={false} stroke="var(--chart-grid-color)" />
             <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.characteristics} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
+                fill="var(--chart-axis-color)"
                 style={{ fontSize: '0.55rem' }}
                 formatter={percentFormatter}
               />
@@ -179,13 +180,14 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
             data={chartData}
             margin={{ top: 5, right: 30, left: 5, bottom: 0 }}
           >
-            <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.6rem' }} />
-            <YAxis dataKey="label" type="category" width={90} style={{ fontSize: '0.55rem' }} />
-            <CartesianGrid horizontal={false} />
+            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.6rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <YAxis dataKey="label" type="category" width={90} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.55rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <CartesianGrid horizontal={false} stroke="var(--chart-grid-color)" />
             <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.improvements} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
+                fill="var(--chart-axis-color)"
                 style={{ fontSize: '0.55rem' }}
                 formatter={percentFormatter}
               />

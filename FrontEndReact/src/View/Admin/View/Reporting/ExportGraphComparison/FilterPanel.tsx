@@ -343,7 +343,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           >
             Clear All
           </Link>
-          <Button variant="contained" onClick={onApplyFilters}>
+          <Button variant="contained" onClick={onApplyFilters} sx={{ color: 'white' }} className="white-text-button">
             Apply
           </Button>
         </Box>

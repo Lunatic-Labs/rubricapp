@@ -10,6 +10,22 @@
   color: white !important;
 }
 
+.white-text-button {
+  color: white !important;
+}
+
+.MuiButton-root.white-text-button {
+  color: white !important;
+}
+
+.white-text-button .MuiSvgIcon-root {
+  color: white !important;
+}
+
+.white-text-button.Mui-disabled .MuiSvgIcon-root {
+  color: var(--export_disabled_text) !important;
+}
+
 .primary-color-text {
   color: #2E8BEF !important;
 }
@@ -374,7 +390,7 @@ h4, h5 {
   --card-text: #000000;
   --card-border: rgba(0, 0, 0, 0.12);
   --modal-bg: #ffffff;
-  --progress-track-bg: #e0e0e0;
+  --progress-track-bg: #f0f0f0;
 }
 
 .reporting-card {
@@ -727,7 +743,7 @@ body.mode .app-container {
 
 /* MUI Buttons and Icons */
 .MuiButton-text,
-.MuiButton-root:not(.primary-color),
+.MuiButton-root:not(.primary-color):not(.white-text-button),
 .MuiIconButton-root,
 .MuiTablePagination-selectIcon,
 .MuiTablePagination-actions,
