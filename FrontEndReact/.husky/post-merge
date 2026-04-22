@@ -1,11 +1,11 @@
 #!/bin/sh
 . "$(dirname "$0")"
 
-# Check to see if there were changes to either package.json or package-lock.json
-if git diff --name-only HEAD@{1} HEAD | grep -qE 'FrontEndReact/(package.json|package-lock.json)$'; then
-    echo "Changes to package.json or package-lock.json found"
+# Check to see if there were changes to the drivers and udpate them.
+if git diff --name-only HEAD@{1} HEAD | grep -qE 'Scripts/(setupMergeDriver.sh)$'; then
+    echo "Changes to setupMergeDriver.sh found"
     sh ./Scripts/setupMergeDriver.sh
-    echo "package.json and package-lock.json in sync"
+    echo "merge drivers updated"
 else 
-    echo "No dependency changes to the frontend. Skipping npm install --package-lock-only"
+    echo "No changes to the merge drivers."
 fi
