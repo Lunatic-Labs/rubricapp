@@ -7,6 +7,7 @@ if git diff --cached --name-only | grep -qE 'FrontEndReact/(package.json|package
     cd FrontEndReact
     npm install --package-lock-only
     git add -f package-lock.json
+    echo "package.json and package-lock.json in sync"
 else 
     echo "No dependency changes to the frontend. Skipping npm install --package-lock-only"
 fi
