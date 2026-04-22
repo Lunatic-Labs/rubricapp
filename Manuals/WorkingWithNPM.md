@@ -13,7 +13,7 @@ npm install
 ```
 That will install husky so that the git-hooks and merge drivers can be installed. 
 
-#### 2. How do I add or remove a libary to the front end if I can not manually edit it?
+#### 2. How do I add or remove a library to the front end if I can not manually edit it?
 The best way is to do the following:
 ```bash
 # To install a package
