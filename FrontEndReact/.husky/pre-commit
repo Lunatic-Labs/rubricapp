@@ -1,5 +1,7 @@
 #!/bin/sh
-. "$(dirname "$0")/_/husky.sh"
+. "$(dirname "$0")"
+
+cd FrontEndReact
 
 npm install --package-lock-only
 git add package-lock.json
