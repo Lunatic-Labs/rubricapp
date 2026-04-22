@@ -8,7 +8,7 @@ WORKDIR /app
 COPY FrontEndReact/package*.json ./
 
 # Install dependencies (faster & deterministic)
-RUN npm ci --legacy-peer-deps
+RUN npm ci
 
 # Copy the rest of the frontend code
 COPY FrontEndReact/ ./
