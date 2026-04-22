@@ -4,6 +4,7 @@ import ConfirmCurrentTeamTable from './ConfirmCurrentTeam';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
+import { User } from '../../../../types/User';
 
 /**
  * @description
@@ -26,14 +27,12 @@ import Loading from '../../../Loading/Loading';
  */
 interface StudentConfirmCurrentTeamProps {
     navbar: any;
-    students?: any;
-    chosenCourse?: any;
 }
 
 interface StudentConfirmCurrentTeamState {
     isLoaded: boolean | null;
     errorMessage: string | null;
-    teamMembers: any | null;
+    teamMembers: { users: User[]; team_id: number; team_name: string; } | null;
 }
 
 class StudentConfirmCurrentTeam extends Component<StudentConfirmCurrentTeamProps, StudentConfirmCurrentTeamState> {

@@ -6,6 +6,9 @@ import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import Cookies from 'universal-cookie';
 import { apiUrl } from '../../../../App';
 
+interface RosterDashboardProps {
+    navbar: any;
+}
 
 /**
  * Creates an instance of the RosterDashboard component.
@@ -31,8 +34,8 @@ import { apiUrl } from '../../../../App';
 
 interface RosterDashboardState { isSwitchingToStudent: boolean;}
 
-class RosterDashboard extends Component<any, RosterDashboardState> {
-    constructor(props: any) {
+class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardState> {
+    constructor(props: RosterDashboardProps) {
         super(props);
         this.state = {
             isSwitchingToStudent: false,  // Add spam protection flag

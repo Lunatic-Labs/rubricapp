@@ -7,16 +7,24 @@ import Rating from './Rating';
 import TextArea from './TextArea';
 import Box from '@mui/material/Box';
 import { FormControl } from '@mui/material';
+import { Rubric } from '../../../../types/Rubric';
 
 interface SectionProps {
     navbar: any;
     category: string;
-    currentRocsData: any;
-    assessmentTaskRubric: any;
+    currentRocsData: Record<string, {
+        rating_json: Record<string, string>;
+        observable_characteristics: string[];
+        suggestions: string[];
+        rating: number;
+        comments: string;
+        description: string;
+    }>;
+    assessmentTaskRubric: Rubric;
     isDone: boolean;
     currentUnitTabIndex: number;
     handleUnitTabChange: (index: number) => void;
-    modifyUnitCategoryProperty: (unitIndex: number, categoryName: string, propertyName: string, propertyValue: any) => void;
+    modifyUnitCategoryProperty: (unitIndex: number, categoryName: string, propertyName: string, propertyValue: unknown) => void;
     markForAutosave: (unitIndex: number) => void;
 }
 
@@ -37,9 +45,9 @@ interface SectionProps {
  * @param {Function} props.markForAutosave - Function to mark a unit for autosaving.
  */
 class Section extends Component<SectionProps> {
-    autosave: any;
-    setCategoryProperty: any;
-    constructor(props: any) {
+    autosave: () => void;
+    setCategoryProperty: (propertyName: string, propertyValue: unknown) => void;
+    constructor(props: SectionProps) {
         super(props);
         
         this.autosave = () => {
@@ -51,7 +59,7 @@ class Section extends Component<SectionProps> {
          * @param {String} propertyName - the name of the ROCS category property that is to be changed
          * @param {Any} propertyValue - the new value for the property
          */
-        this.setCategoryProperty = (propertyName: any, propertyValue: any) => {
+        this.setCategoryProperty = (propertyName: string, propertyValue: unknown) => {
             this.props.modifyUnitCategoryProperty(this.props.currentUnitTabIndex, this.props.category, propertyName, propertyValue);
         };
     }
@@ -60,27 +68,28 @@ class Section extends Component<SectionProps> {
         const assessmentTaskRubric = this.props.assessmentTaskRubric;
         const currentRocsData = this.props.currentRocsData;
         const category = this.props.category;
-        const categoryJson = assessmentTaskRubric["category_json"][category];
-        
-        const ratingJson = currentRocsData[category]["rating_json"];
+        const categoryJson = assessmentTaskRubric["category_json"][category]!;
+        const categoryRocsData = currentRocsData[category]!;
+
+        const ratingJson = categoryRocsData["rating_json"];
 
         const sliderValues = Object.keys(ratingJson).map(option => {
             return {
                 "value": option,
-                "label": ratingJson[option],
+                "label": ratingJson[option]!,
                 "key": option,
             };
         });
-        
+
         const observableCharacteristics = categoryJson["observable_characteristics"];
 
-        const observableCharacteristicList = observableCharacteristics.map((observableCharacteristic: any, index: any) => {
+        const observableCharacteristicList = observableCharacteristics.map((observableCharacteristic: string, index: number) => {
             return (
                 <ObservableCharacteristic
                     navbar={this.props.navbar}
                     observableCharacteristic={observableCharacteristic}
-                    observableCharacteristics={currentRocsData[category]["observable_characteristics"]}
-                    setObservableCharacteristics={(newValue: any) => this.setCategoryProperty("observable_characteristics", newValue)}
+                    observableCharacteristics={categoryRocsData["observable_characteristics"]}
+                    setObservableCharacteristics={(newValue: string) => this.setCategoryProperty("observable_characteristics", newValue)}
                     id={index}
                     key={index}
                     autosave={this.autosave}
@@ -90,14 +99,14 @@ class Section extends Component<SectionProps> {
         
         const suggestions = categoryJson["suggestions"];
 
-        const suggestionList = suggestions.map((suggestion: any, index: any) => {
+        const suggestionList = suggestions.map((suggestion: string, index: number) => {
             return (
                 <Suggestion
                     navbar={this.props.navbar}
                     suggestion={suggestion}
-                    suggestions={currentRocsData[category]["suggestions"]}
-                    setCategoryProperty={this.setCategoryProperty}
-                    setSuggestions={(newValue: any) => this.setCategoryProperty("suggestions", newValue)}
+                    suggestions={categoryRocsData["suggestions"]}
+                    // setCategoryProperty={this.setCategoryProperty}
+                    setSuggestions={(newValue: string) => this.setCategoryProperty("suggestions", newValue)}
                     id={index}
                     key={index}
                     autosave={this.autosave}
@@ -105,8 +114,8 @@ class Section extends Component<SectionProps> {
             );
         });
 
-        const currentRating = currentRocsData[category]["rating"];
-        const categoryDescription = currentRocsData[category]["description"];
+        const currentRating = categoryRocsData["rating"];
+        const categoryDescription = categoryRocsData["description"];
 
         return (
             <Box id="rating">
@@ -120,7 +129,7 @@ class Section extends Component<SectionProps> {
                             <Box sx={{display:"flex" , justifyContent:"center"}}>
                                 <Rating
                                     navbar={this.props.navbar}
-                                    setRating={(newValue: any) => this.setCategoryProperty("rating", newValue)}
+                                    setRating={(newValue: number) => this.setCategoryProperty("rating", newValue)}
                                     currentRating={currentRating}
                                     sliderValues={sliderValues}
                                     autosave={this.autosave}
@@ -150,8 +159,8 @@ class Section extends Component<SectionProps> {
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}
-                                setComments={(newValue: any) => this.setCategoryProperty("comments", newValue)}
-                                currentValue={currentRocsData[category]["comments"]}
+                                setComments={(newValue: string) => this.setCategoryProperty("comments", newValue)}
+                                currentValue={categoryRocsData["comments"]}
                                 autosave={this.autosave}
                             />
                         </Box>

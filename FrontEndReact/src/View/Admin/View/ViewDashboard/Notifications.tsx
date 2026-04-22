@@ -31,10 +31,13 @@ import { genericResourcePOST, genericResourceGET, genericResourceDELETE } from '
  * Use of componentDidMount if needed for fetching existing notifications.
  * 
  */
+interface ViewNotificationProps {
+    navbar: any;
+}
 
 interface ViewNotificationState {
-  errorMessage: any;
-  isLoaded: any;
+  errorMessage: string | null;
+  isLoaded: boolean | null;
   showDialog: boolean;
   emailSubject: string;
   emailMessage: string;
@@ -50,8 +53,8 @@ interface ViewNotificationState {
   };
 }
 
-class ViewNotification extends Component<any, ViewNotificationState> {
-  constructor(props: any) {
+class ViewNotification extends Component<ViewNotificationProps, ViewNotificationState> {
+  constructor(props: ViewNotificationProps) {
     super(props);
 
     this.state = {
@@ -85,7 +88,7 @@ class ViewNotification extends Component<any, ViewNotificationState> {
     genericResourceGET('/admin_notifications', 'admin_notifications', this);
   };
 
-  handleChange = (e: any) => {
+  handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     this.setState({
         [id]: value,

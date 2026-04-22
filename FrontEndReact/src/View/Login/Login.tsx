@@ -33,11 +33,11 @@ import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
  */
 
 interface LoginState {
-    isLoaded: any;
-    errorMessage: any;
-    loggedIn: any;
-    hasSetPassword: any;
-    resettingPassword: any;
+    isLoaded: boolean | null;
+    errorMessage: string | null;
+    loggedIn: boolean | null;
+    hasSetPassword: boolean | null;
+    resettingPassword: boolean | null;
     isRefreshing: boolean;
     email: string;
     password: string;
@@ -49,14 +49,15 @@ interface LoginState {
 }
 
 class Login extends Component<{}, LoginState> {
-    cookies: any;
-    handleChange: any;
-    handleTogglePasswordVisibility: any;
-    keyPress: any;
-    login: any;
-    logout: any;
-    resetPassword: any;
-    constructor(props: any) {
+    cookies!: Cookies;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleTogglePasswordVisibility: () => void;
+    keyPress: (e: React.KeyboardEvent) => void;
+    login: () => void;
+    logout: () => void;
+    resetPassword: () => void;
+
+    constructor(props: {}) {
         super(props);
 
         this.state = {
@@ -84,7 +85,7 @@ class Login extends Component<{}, LoginState> {
          */
 
         // handleChange has been altered to account for the 20 character limit for password
-        this.handleChange = (e: any) => {
+        this.handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const { id, value } = e.target;
 
             // This will create an error message if password is empty and/or exceeding the 20 character limit
@@ -188,7 +189,7 @@ class Login extends Component<{}, LoginState> {
 
                             this.setState(() => ({
                                 isLoaded: true,
-                                errorMessage: error
+                                errorMessage: String(error)
                             }));
                         }
                     )
@@ -222,7 +223,7 @@ class Login extends Component<{}, LoginState> {
          * @param {*} e - the keyboard input event.
          */
 
-        this.keyPress = (e: any) => {
+        this.keyPress = (e: React.KeyboardEvent) => {
             if (e.key === 'Enter') {
                 this.login();
             };

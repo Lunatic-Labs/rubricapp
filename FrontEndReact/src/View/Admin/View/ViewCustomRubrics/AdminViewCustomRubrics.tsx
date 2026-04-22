@@ -5,17 +5,23 @@ import ErrorMessage from "../../../Error/ErrorMessage";
 import { Grid } from "@mui/material";
 import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton";
 import Loading from "../../../Loading/Loading";
+import { Rubric } from '../../../../types/Rubric';
+import { Category } from '../../../../types/Category';
 
-interface AdminViewCustomRubricsState {
-    isLoaded: any;
-    errorMessage: any;
-    rubrics: any;
-    categories: any;
+interface AdminViewCustomRubricsProps {
     navbar: any;
 }
 
-class AdminViewCustomRubrics extends Component<any, AdminViewCustomRubricsState> {
-    constructor(props: any) {
+interface AdminViewCustomRubricsState {
+    isLoaded: boolean | null;
+    errorMessage: string | null;
+    rubrics: Rubric[] | null;
+    categories: Category[] | null;
+    navbar: any;
+}
+
+class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, AdminViewCustomRubricsState> {
+    constructor(props: AdminViewCustomRubricsProps) {
         super(props);
 
         this.state = {
@@ -74,7 +80,6 @@ class AdminViewCustomRubrics extends Component<any, AdminViewCustomRubricsState>
                         rubrics={rubrics}
                         readOnly={true}
                         showEditButton={true}
-                        showDeleteButton={true}
                         navbar={this.state.navbar}
                     />
                 </Grid>

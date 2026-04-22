@@ -13,7 +13,8 @@ import {
     validatePasswordField,
     testPasswordStrength,
     getPasswordStrengthIcon,
-    generatePasswordStrengthColors
+    generatePasswordStrengthColors,
+    PasswordStrength
 } from '../../utils/passwordUtils';
 
 /**
@@ -40,6 +41,11 @@ import {
  * @property {string} state.PasswordStrength.WEAK - Weak password flag.
  */
 
+interface CookieUser {
+    user_name: string;
+    email: string;
+}
+
 interface UserAccountProps {
     navbar?: any;
 }
@@ -50,7 +56,7 @@ interface UserAccountState {
     password: string;
     confirmationPassword: string;
     showPassword: boolean;
-    user: any;
+    user: CookieUser | null;
     resetPasswordDialogOpen: boolean;
     isLoaded?: boolean;
     errors: {
@@ -103,8 +109,8 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      * @param {*} e - the input event.
      */
 
-    // handleChange uses shared validation utility
-    handleChange(e: any) {
+    // handleChange has been altered to account for the 20 character limit for password
+    handleChange(e: React.ChangeEvent<HTMLInputElement>) {
         const { id, value } = e.target;
         const errorMessage = validatePasswordField(id, value);
 
@@ -151,7 +157,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      */
 
     // getIcon uses shared utility
-    getIcon(strength: any) {
+    getIcon(strength: PasswordStrength) {
         const iconName = getPasswordStrengthIcon(strength);
         return iconName === 'CheckIcon' ? CheckIcon : ErrorOutlineIcon;
     }
@@ -163,7 +169,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      */
 
     // generateColors uses shared utility
-    generateColors(strength: any) {
+    generateColors(strength: PasswordStrength) {
         return generatePasswordStrengthColors(strength);
     }
 
@@ -192,7 +198,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
      */
 
     // testPasswordStrength uses shared utility
-    testPasswordStrength(password: any) {
+    testPasswordStrength(password: string) {
         return testPasswordStrength(password);
     }
 
