@@ -7,9 +7,6 @@ WORKDIR /app
 # Copy only package files first to leverage Docker cache
 COPY FrontEndReact/package*.json ./
 
-# Disable Husky for docker
- ENV HUSKY=0
-
 # Install dependencies (faster & deterministic)
 RUN npm ci
 

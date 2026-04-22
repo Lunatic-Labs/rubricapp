@@ -54,7 +54,7 @@
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject",
-    "prepare": "git config core.hooksPath FrontEndReact/.husky/"
+    "prepare": "git rev-parse --is-inside-work-tree && git config core.hooksPath FrontEndReact/.husky/ || true"
   },
   "eslintConfig": {
     "extends": [
