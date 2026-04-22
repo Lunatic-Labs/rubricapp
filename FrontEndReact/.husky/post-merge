@@ -1,0 +1,10 @@
+#!/bin/sh
+. "$(dirname "$0")"
+
+# Check to see if there were changes to either package.json or package-lock.json
+if git diff --name-only HEAD@{1} HEAD | grep -qE 'FrontEndReact/(package.json|package-lock.json)$'; then
+    echo "Changes to package.json or package-lock.json found"
+    sh ./Scripts/setupMergeDriver.sh
+else 
+    echo "No dependency changes to the frontend. Skipping npm install --package-lock-only"
+fi

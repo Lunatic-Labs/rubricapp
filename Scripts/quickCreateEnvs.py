@@ -15,7 +15,7 @@ def findRepoRoot(root = "rubricapp"):
     path = pathlib.Path(__file__).resolve()
     while path.name != root:
         if path.name == path:
-            print("ERROR: Could not find rubricapp/ directory. Run it from Scripts/ or rubricapp/")
+            print("ERROR: Could not find rubricapp/ directory. Run it from within rubricapp/ or its sub-directories")
             sys.exit(1)
         path = path.parent
     return path
