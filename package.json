@@ -1,6 +1,0 @@
-{
-  "devDependencies": {
-    "@types/testing-library__jest-dom": "^5.14.9",
-    "baseline-browser-mapping": "^2.10.0"
-  }
-}

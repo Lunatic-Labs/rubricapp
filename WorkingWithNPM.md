@@ -1,0 +1,3 @@
+- never touch the files
+- if things are out of sync run npm install --package-lock-only
+- run npm install on your local machine so that husky for precommit hooks can be installed
