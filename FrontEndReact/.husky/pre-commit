@@ -5,5 +5,3 @@ cd FrontEndReact
 
 npm install --package-lock-only
 git add -f package-lock.json
-
-
