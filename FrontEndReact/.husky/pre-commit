@@ -1,7 +1,12 @@
 #!/bin/sh
 . "$(dirname "$0")"
 
-cd FrontEndReact
-
-npm install --package-lock-only
-git add -f package-lock.json
+# Check to see if there were changes to either package.json or package-lock.json
+if git diff --cached --name-only | grep -qE 'FrontEndReact/(package.json|package-lock.json)$'; then
+    echo "Changes to package.json or package-lock.json found"
+    cd FrontEndReact
+    npm install --package-lock-only
+    git add -f package-lock.json
+else 
+    echo "No dependency changes in the frontend. Skipping npm install --package-lock-only"
+fi
