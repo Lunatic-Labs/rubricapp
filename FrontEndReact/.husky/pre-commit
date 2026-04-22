@@ -8,5 +8,5 @@ if git diff --cached --name-only | grep -qE 'FrontEndReact/(package.json|package
     npm install --package-lock-only
     git add -f package-lock.json
 else 
-    echo "No dependency changes in the frontend. Skipping npm install --package-lock-only"
+    echo "No dependency changes to the frontend. Skipping npm install --package-lock-only"
 fi
