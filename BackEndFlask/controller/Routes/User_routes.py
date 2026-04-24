@@ -52,7 +52,8 @@ from models.user import(
     make_admin,
     unmake_admin,
     delete_user,
-    #get_user_by_email,
+    set_user_dark_mode,
+    get_user_by_email,
 )
 
 from models.queries import (
@@ -131,8 +132,8 @@ def get_all_users():
 
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
-        if(request.args and request.args.get("uid")):
-            user_id = request.args.get("uid") # uid instead of user_id since user_id is used by authenication system
+        if(request.args and request.args.get("user_id")):
+            user_id = request.args.get("user_id") 
 
             user = get_user(user_id)  # Trigger an error if not exists.
 
@@ -316,6 +317,22 @@ def update_user():
 
             return create_good_response([], 201, "users")
 
+# change was made here...
+
+        if(request.args and request.args.get("user_id")):
+            uid = request.args.get("user_id")
+
+            # print(uid)
+
+            user = get_user(uid)  # Trigger an error if not exists.
+
+            user_dark_mode = request.json["user_dark_mode"]
+
+            set_user_dark_mode(uid, user_dark_mode)  # Trigger an error if not exists.
+
+            return create_good_response([], 201, "users")
+
+
         user_id = request.args.get("uid")
         new_email = request.args.get("new_email")
         owner_id = request.args.get("owner_id")
@@ -367,6 +384,27 @@ def delete_selected_user():
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
+# new route for user to 'put' things into the back-end.
+# currently used only for user settings, additional use might
+# require renaming of route to '/user_general_put'
+@bp.route('/user_settings', methods = ['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def update_user_settings():
+    try:
+        if(request.args and request.args.get("user_id")):
+            uid = request.args.get("user_id")
+
+            user_dark_mode = request.json["user_dark_mode"]
+
+            set_user_dark_mode(uid, user_dark_mode)
+
+            return create_good_response([], 201, "users")
+
+    except Exception as e:
+        return create_bad_response(f"An error occurred while modifying settings: {e}", "users", 400)
+
 class UserSchema(ma.Schema):
     user_id     = fields.Integer()
     first_name  = fields.String()
@@ -381,6 +419,7 @@ class UserSchema(ma.Schema):
     has_set_password = fields.Boolean()
     is_admin    = fields.Boolean()
     role_id     = fields.Integer()
+    user_dark_mode  = fields.Boolean()
     last_update = fields.DateTime()
 
 user_schema = UserSchema()

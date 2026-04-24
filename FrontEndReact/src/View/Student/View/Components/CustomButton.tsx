@@ -1,6 +1,16 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 
+interface CustomButtonProps {
+  label: string;
+  onClick?: () => void;
+  style?: React.CSSProperties;
+  isOutlined?: boolean;
+  position?: any;
+  disabled?: boolean;
+  'aria-label'?: string;
+}
+
 const CustomButton = ({
   label,
   onClick,
@@ -9,7 +19,7 @@ const CustomButton = ({
   position,
   disabled,
   'aria-label': ariaLabel
-}: any) => {
+}: CustomButtonProps) => {
   // Default styles for the button
   const defaultStyle = {
     backgroundColor: isOutlined ? 'white' : '#2E8BEF',
@@ -31,7 +41,7 @@ const CustomButton = ({
     	<Button
         onClick={onClick}
         style={buttonStyle}
-        disabled={disabled}
+        disabled={disabled ?? false}
         aria-label={ariaLabel}
       >
         {label}

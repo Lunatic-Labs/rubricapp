@@ -3,14 +3,21 @@ import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
+import { AssessmentTask } from '../../types/AssessmentTask';
+import { SelectChangeEvent } from '@mui/material/Select';
 
+interface AssessmentTaskDropdownProps {
+    assessmentTasks: AssessmentTask[];
+    chosenAssessmentId: string | number;
+    setChosenAssessmentId: (id: string | number) => void;
+}
 
-export default function AssessmentTaskDropdown(props: any) {
+export default function AssessmentTaskDropdown(props: AssessmentTaskDropdownProps) {
   var assessmentTaskList = [];
 
   // Check if assessmentTasks exists and is not empty to prevent null reference errors
   if (props.assessmentTasks && props.assessmentTasks.length > 0) {
-    props.assessmentTasks.map((assessmentTask: any) => {
+    props.assessmentTasks.map((assessmentTask: AssessmentTask) => {
 
     const taskName = assessmentTask["assessment_task_name"];
 
@@ -45,12 +52,30 @@ export default function AssessmentTaskDropdown(props: any) {
   } 
 
   return (
-    <FormControl 
+    <FormControl
+    
     // controls the way the 'dropdown' is displayed.
       sx={{ 
         m: 3,           // margin
         width: (!props.assessmentTasks || props.assessmentTasks.length === 0) ? '100%' : '95%',    // wider width when showing "no tasks" message
-        minWidth: '275px'  // ensure minimum width to display the full message
+        minWidth: '275px',  // ensure minimum width to display the full message
+        '& .MuiInputBase-root': {
+          backgroundColor: 'var(--dropdown-bg)',
+          color: 'var(--dropdown-text)',
+        },
+        '& .MuiOutlinedInput-notchedOutline': {
+          borderColor: 'var(--dropdown-border)',
+        },
+        '& .MuiInputLabel-root': {
+          color: 'var(--dropdown-label)',
+        },
+        '& .MuiSelect-icon': {
+          color: 'var(--dropdown-icon)',
+        },
+        '& .Mui-disabled': {
+          backgroundColor: 'var(--dropdown-disabled-bg)',
+          color: 'var(--dropdown-disabled-text)',
+        }
       }}
     >
       <InputLabel id="demo-simple-select-autowidth-label">
@@ -63,7 +88,7 @@ export default function AssessmentTaskDropdown(props: any) {
         labelId="demo-simple-select-autowidth-label"
         id="demo-simple-select-autowidth"
         value={props.chosenAssessmentId || ""}
-        onChange={props.setChosenAssessmentId}
+        onChange={(event: SelectChangeEvent<string | number>) => props.setChosenAssessmentId(event.target.value)}
         disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
         autoWidth={false}
         label={(!props.assessmentTasks || props.assessmentTasks.length === 0) 
@@ -76,6 +101,26 @@ export default function AssessmentTaskDropdown(props: any) {
             textOverflow: 'ellipsis',
             whiteSpace: 'nowrap'
           }
+        }}
+        MenuProps={{
+          PaperProps: {
+            
+            sx: {
+              backgroundColor: 'var(--dropdown-bg)',
+              color: 'var(--dropdown-text)',
+              '& .MuiMenuItem-root': {
+                '&:hover': {
+                  backgroundColor: 'var(--dropdown-hover)',
+                },
+                '&.Mui-selected': {
+                  backgroundColor: 'var(--dropdown-selected)',
+                  '&:hover': {
+                    backgroundColor: 'var(--dropdown-selected)',
+                  },
+                },
+              },
+            },
+          },
         }}
       >
         { assessmentTaskList }

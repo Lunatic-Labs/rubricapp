@@ -4,11 +4,11 @@ import '@testing-library/jest-dom';
 // Declare expect as global for Jest environment
 declare const expect: any;
 
-export function clickElementWithAriaLabel(ariaLabel: any) { // given label it will click on it 
+export function clickElementWithAriaLabel(ariaLabel: string) { // given label it will click on it 
     fireEvent.click(screen.getByLabelText(ariaLabel));
 }
 
-export function clickFirstElementWithAriaLabel(ariaLabel: any) { // given label it will click on the first element
+export function clickFirstElementWithAriaLabel(ariaLabel: string) { // given label it will click on the first element
     const elements = screen.getAllByLabelText(ariaLabel);
     const el = elements[0];
     if (!el) {
@@ -17,11 +17,11 @@ export function clickFirstElementWithAriaLabel(ariaLabel: any) { // given label 
     fireEvent.click(el);
 }
 
-export function expectElementWithAriaLabelToBeInDocument(ariaLabel: any) { // ariaLabel is in page itself
+export function expectElementWithAriaLabelToBeInDocument(ariaLabel: string) { // ariaLabel is in page itself
     expect(screen.getByLabelText(ariaLabel)).toBeInTheDocument();
 }
 
-export function expectElementWithAriaLabelToHaveErrorMessage(ariaLabel: any, message: any) { // ariaLabel provides specific message
+export function expectElementWithAriaLabelToHaveErrorMessage(ariaLabel: string, message: string) { // ariaLabel provides specific message
     const el = screen.getByLabelText(ariaLabel);
     const last = el.lastChild as HTMLElement | null;
     if (!last || !(last instanceof HTMLElement)) {
@@ -30,16 +30,30 @@ export function expectElementWithAriaLabelToHaveErrorMessage(ariaLabel: any, mes
     expect(last.innerHTML).toBe(message);
 }
 
-export function changeElementWithAriaLabelWithInput(ariaLabel: any, input: any) { // to put text into a label
-    const el = screen.getByLabelText(ariaLabel) as Element;
-    const inputEl = el.querySelector('input, textarea') as HTMLInputElement | HTMLTextAreaElement | null;
+export function changeElementWithAriaLabelWithInput(ariaLabel: string, input: string) { // to put text into a label
+    const el = screen.getByLabelText(ariaLabel) as HTMLElement;
+
+    // If getByLabelText returns the actual input/textarea, use it directly.
+    if (el instanceof HTMLInputElement || el instanceof HTMLTextAreaElement) {
+        fireEvent.change(el, { target: { value: input } });
+        return;
+    }
+
+    // Otherwise assume it's a container and find the nested input.
+    const inputEl = el.querySelector('input, textarea') as
+    | HTMLInputElement
+    | HTMLTextAreaElement
+    | null;
+
+
     if (!inputEl) {
         throw new Error(`No input or textarea found for aria-label: ${ariaLabel}`);
     }
+
     fireEvent.change(inputEl, { target: { value: input } });
 }
 
-export function changeElementWithAriaLabelWithCode(ariaLabel: any, code: any) { // types in code for validate reset
+export function changeElementWithAriaLabelWithCode(ariaLabel: string, code: string | string[]) { // types in code for validate reset
     const el = screen.getByLabelText(ariaLabel) as Element;
     const children = el.children;
 

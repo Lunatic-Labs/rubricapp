@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewCompletedAssessmentTasks from './ViewCompletedAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
+import { AssessmentTask } from '../../../../types/AssessmentTask';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
 
 /**
  * @description
@@ -24,8 +26,8 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 
 interface StudentCompletedAssessmentTasksProps {
     navbar: any;
-    assessmentTasks: any[];
-    filteredCompleteAssessments: any[];
+    assessmentTasks: AssessmentTask[];
+    filteredCompleteAssessments: CompleteAssessmentTask[];
 }
 
 interface StudentCompletedAssessmentTasksState {
@@ -57,7 +59,7 @@ class StudentCompletedAssessmentTasks extends Component<StudentCompletedAssessme
 
         const ATs = this.props.assessmentTasks;    
         const filteredCATs = this.props.filteredCompleteAssessments;
-        const doneCATs = filteredCATs?.filter((cat: any) => cat.done === true) || [];
+        const doneCATs = filteredCATs?.filter(cat => cat.done === true) || [];
 
         if (errorMessage) {
             return(

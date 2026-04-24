@@ -12,6 +12,7 @@ import Cookies from 'universal-cookie';
 import { ROLE } from '../../Enums/Role';
 import { AssessmentTask } from '../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../types/CompleteAssessmentTask';
+import { Rubric } from '../../types/Rubric';
 const apiUrl = process.env.REACT_APP_API_URL;
 
 // StudentDashboard is used for both students and TAs.
@@ -63,21 +64,20 @@ const RUBRIC_COLOR_MAP = {
 
 interface StudentDashboardProps {
     navbar: any;
-    chosenCourse?: any;
 }
 
 interface StudentDashboardState {
-    roles: any;
-    assessmentTasks: any;
-    completedAssessments: any;
+    roles: { role_id: number; role_name: string; } | null;
+    assessmentTasks: AssessmentTask[] | null;
+    completedAssessments: CompleteAssessmentTask[] | null;
     averageData: any;
-    filteredATs: any;
-    filteredCATs: any;
+    filteredATs: AssessmentTask[] | null;
+    filteredCATs: CompleteAssessmentTask[] | null;
     isSwitchingBack: boolean;
-    userTeamIds: any[];
-    fullyDoneCATS: any;
-    rubrics: any;
-    rubricNames: any;
+    userTeamIds: number[];
+    fullyDoneCATS: CompleteAssessmentTask[] | null;
+    rubrics: Rubric[] | null;
+    rubricNames: Record<string, string> | null;
     chartData: any;
     teamsFetched: boolean;
 }
@@ -111,7 +111,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
      * Upates the team ids that the user is a part of.
      * @param {array} teamIds - Team ids that the user is a part of.
      */
-    updateUserTeamsIds = (teamIds: any) => {
+    updateUserTeamsIds = (teamIds: number[]) => {
         this.setState({
             userTeamIds: teamIds,
             teamsFetched: true
@@ -161,13 +161,13 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         if (canFilter === false){return;}
 
         // Students need their team info ready to correctly match the student to team CATs.
-        const roleId: number = roles.role_id;
+        const roleId: number = roles!.role_id;
         const isStudent: boolean = roleId === ROLE.STUDENT;
         const teamInfoReady: boolean = userTeamIds.length > 0 || this.state.teamsFetched;
         const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
 
         if (roleId === ROLE.TA_INSTRUCTOR || canFilterStudentByTeam) {
-            const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics);
+            const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics as any);
 
             let editableCats: CompleteAssessmentTask[] = [];
             let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];
@@ -182,11 +182,11 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 }`
             };
 
-            completedAssessments.forEach((cat: CompleteAssessmentTask) => {
+            completedAssessments!.forEach((cat: CompleteAssessmentTask) => {
                 const team_id: number|null = cat.team_id;
                 
                 if (roleId === ROLE.TA_INSTRUCTOR || team_id === null || userTeamIds.includes(team_id)){                    
-                    const at: AssessmentTask | undefined = assessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
+                    const at: AssessmentTask | undefined = assessmentTasks!.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
                     const isTeamAssessment: boolean = at?.unit_of_assessment === true;                    
 
                     const key: string = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
@@ -208,15 +208,15 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             const isATDone = (cat: CompleteAssessmentTask | undefined) : boolean => cat !== undefined && cat.done;
             const isATPastDue = (at: AssessmentTask, today: Date): boolean => (new Date(at.due_date)) < today; 
 
-            let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks.filter((task: AssessmentTask) => {
+            let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks!.filter((task: AssessmentTask) => {
                 
                 const isTeamAssessment: boolean = task.unit_of_assessment === true;
                 let relevantTeamId: number | null = null;
                                 
                 if (isTeamAssessment && userTeamIds.length > 0) {
                     // For team assessments, find which team this user is on for this task
-                    const userCAT: CompleteAssessmentTask | undefined = completedAssessments.find((cat: CompleteAssessmentTask) => 
-                        cat.assessment_task_id === task.assessment_task_id && userTeamIds.includes(cat.team_id)
+                    const userCAT: CompleteAssessmentTask | undefined = completedAssessments!.find((cat: CompleteAssessmentTask) => 
+                        cat.assessment_task_id === task.assessment_task_id && cat.team_id !== null && userTeamIds.includes(cat.team_id)
                     );
                     relevantTeamId = userCAT?.team_id || null;
                 }
@@ -232,7 +232,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 const published: boolean = task.published;
                 const pastDue: boolean = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const isStudent: boolean = roles.role_id === ROLE.STUDENT;
+                const isStudent: boolean = roles!.role_id === ROLE.STUDENT;
                 const isStudentTask: boolean = task.role_id === ROLE.STUDENT;
                 const baseConditions: boolean = correctUser && !locked && published && !pastDue;
 
@@ -287,7 +287,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             };
 
             // helper: pick the *created* timestamp for the AT (fallbacks just in case)
-            const getCreatedDate = (at: any, cat: any) => {
+            const getCreatedDate = (at: any, cat: CompleteAssessmentTask) => {
             const raw =
                 at?.created_at ||
                 at?.created_time ||
@@ -310,9 +310,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             }
 
             let chartDataCore: ChartDataCoreItem[] = showableDoneCats
-                .map((cat: any, i: number): ChartDataCoreItem => {
+                .map((cat: CompleteAssessmentTask, i: number): ChartDataCoreItem => {
                     const avgObj = filteredAvgData[i];
-                    const at = assessmentTasks.find((a: any) => a.assessment_task_id === cat.assessment_task_id);
+                    const at = assessmentTasks!.find((a) => a.assessment_task_id === cat.assessment_task_id);
                     const avg = computeAvg(avgObj);
 
                     const createdDate: Date = getCreatedDate(at, cat); // creation date for ordering
@@ -567,8 +567,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     <StudentViewAssessmentTask
                         navbar={navbar}
                         role={roles}
-                        filteredAssessments={filteredATs}
-                        CompleteAssessments={filteredCATs}
+                        filteredAssessments={filteredATs ?? []}
+                        CompleteAssessments={filteredCATs ?? []}
                         userTeamIds={this.state.userTeamIds}
                     />
                 </Box>
@@ -592,8 +592,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     {[4, 5].includes(roles["role_id"]) &&
                         <StudentCompletedAssessmentTasks
                             navbar={navbar}
-                            assessmentTasks={assessmentTasks}
-                            filteredCompleteAssessments={fullyDoneCATS}
+                            assessmentTasks={assessmentTasks ?? []}
+                            filteredCompleteAssessments={fullyDoneCATS ?? []}
                         />
                     }
                 </Box>

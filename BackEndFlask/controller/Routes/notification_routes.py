@@ -16,14 +16,16 @@ from flask_sqlalchemy import *
 from controller import bp
 from models.assessment_task import get_assessment_task, toggle_notification_sent_to_true
 from controller.Route_response import *
-from models.queries import get_students_for_emailing
-from flask_jwt_extended import jwt_required
-from models.utility import email_students_feedback_is_ready_to_view
+from marshmallow import fields
+from models.queries import get_students_for_emailing, get_admin_notifications, delete_admin_notifications, send_notification_update
+from flask_jwt_extended import jwt_required, get_jwt_identity
+from models.utility import email_students_feedback_is_ready_to_view, email_admins_notification
+from models.schemas import AdminNotification
 import datetime
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
-    admin_check
+    admin_check, super_admin_check
 )
 
 @bp.route('/mass_notification', methods = ['PUT'])
@@ -160,3 +162,195 @@ def send_single_email():
             "Individual/Team not notified",
             400
         )
+
+@bp.route('/send_admin_notification', methods = ['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def send_admin_notification():
+    """
+    Description:
+        Sends an email notification from the SuperAdmin to all admin users
+        who have at least one active course.
+
+    Parameters (from json body):
+        subject: <class 'str'> (email subject line)
+        message: <class 'str'> (email message body)
+
+    Returns:
+        Good or bad response.
+
+    Exceptions:
+        None – all should be caught and handled.
+    """
+    try:
+        data = request.json
+        subject = data.get('subject', '').strip()
+        message = data.get('message', '').strip()
+
+        if not subject or not message:
+            return create_bad_response(
+                "Subject and message are required.",
+                "missing_fields",
+                400
+            )
+
+        email_admins_notification(subject, message)
+
+        # Log the sent notification to the database
+        notification_record = AdminNotification(
+            sender_id=int(get_jwt_identity()),
+            subject=subject,
+            message=message,
+            sent_at=datetime.datetime.utcnow()
+        )
+        from core import db
+        db.session.add(notification_record)
+        db.session.commit()
+
+        return create_good_response(
+            "Notification sent to admins",
+            200,
+            "admins_notified"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred sending admin notification: {e}",
+            "admins_not_notified",
+            400
+        )
+
+@bp.route('/admin_notifications', methods=['DELETE'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def delete_admin_notifications_route():
+    """
+    Description:
+    Deletes one or more admin notifications by their IDs.
+
+    Parameters (JSON body):
+        notification_ids: <class 'list[int]'> (list of notification IDs to delete)
+
+    Returns:
+        Good response with count of deleted notifications, or bad response on error.
+    """
+    try:
+        data = request.get_json()
+        if not data or 'notification_ids' not in data or not data['notification_ids']:
+            return create_bad_response(
+                "notification_ids is required and must be a non-empty list",
+                "missing_notification_ids",
+                400
+            )
+        notification_ids = data['notification_ids']
+        if not isinstance(notification_ids, list):
+            return create_bad_response(
+                "notification_ids must be a list",
+                "invalid_notification_ids",
+                400
+            )
+        deleted_count = delete_admin_notifications(notification_ids)
+        return create_good_response(
+            {"deleted_count": deleted_count},
+            200,
+            "delete_result"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred deleting notifications: {e}",
+            "notifications_not_deleted",
+            400
+        )
+
+@bp.route('/admin_notifications', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def get_admin_notification_history():
+    """
+    GET /api/admin_notifications
+
+    Returns a list of all admin notifications sent by the SuperAdmin,
+    ordered by most recent first. Only accessible by the SuperAdmin.
+
+    Response:
+        { success: true, content: { admin_notifications: [...] } }
+    """
+    try:
+        notifications = get_admin_notifications()
+        return create_good_response(
+            admin_notifications_schema.dump(notifications),
+            200,
+            "admin_notifications"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred fetching admin notifications: {e}",
+            "notifications_not_fetched",
+            400
+        )
+
+@bp.route('/admin_notifications/<int:notification_id>', methods=['PUT'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def update_admin_notification(notification_id):
+    """
+    Description:
+    Sends an update to an existing admin notification.
+    Creates a new AdminNotification record linked to the original via thread_id,
+    and re-emails all admins with the update.
+
+    Parameters (JSON body):
+        subject: <class 'str'> (the subject of the update)
+        message: <class 'str'> (the message body of the update)
+
+    Returns:
+        Good response with the new notification record, or bad response on error.
+    """
+    try:
+        data = request.get_json()
+        if not data:
+            return create_bad_response(
+                "Request body is required",
+                "missing_body",
+                400
+            )
+        subject = data.get('subject', '').strip()
+        message = data.get('message', '').strip()
+        if not subject or not message:
+            return create_bad_response(
+                "Subject and message are required",
+                "missing_fields",
+                400
+            )
+        sender_id = int(get_jwt_identity())
+        new_notification = send_notification_update(notification_id, sender_id, subject, message)
+        email_admins_notification(subject, message)
+        return create_good_response(
+            admin_notifications_schema.dump([new_notification])[0],
+            200,
+            "admin_notification"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred sending notification update: {e}",
+            "notification_not_updated",
+            400
+        )
+
+
+class AdminNotificationSchema(ma.Schema):
+    admin_notification_id = fields.Int()
+    sender_id = fields.Int()
+    thread_id = fields.Int()
+    subject = fields.Str()
+    message = fields.Str()
+    sent_at = fields.DateTime()
+
+admin_notifications_schema = AdminNotificationSchema(many=True)

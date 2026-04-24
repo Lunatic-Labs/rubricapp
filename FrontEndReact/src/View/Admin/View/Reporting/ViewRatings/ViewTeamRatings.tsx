@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import MUIDataTable from 'mui-datatables';
 
-class ViewTeamRatings extends Component<any> {
+interface ViewTeamRatingsProps {
+    navbar: any;
+    ratings: unknown[];
+}
+
+class ViewTeamRatings extends Component<ViewTeamRatingsProps> {
   render() {
-    var allRatings: any = [];
-    var rating: any = {};
+    var allRatings: Record<string, unknown>[] = [];
+    var rating: Record<string, unknown> = {};
 
     this.props.ratings.map((currentRating: any) => {
         rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];

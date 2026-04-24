@@ -6,6 +6,7 @@ import DeleteIcon from "@mui/icons-material/Delete";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { genericResourceDELETE } from "../../../../utility";
+import { Team } from '../../../../types/Team';
 
 /**
  * Creates an instance of the ViewTeams component.
@@ -19,13 +20,21 @@ import { genericResourceDELETE } from "../../../../utility";
  * @param {function(string):void} props.onSuccess - Displays a success message after deletion succeeds.
  * @param {function():void} props.refreshData - Refetches team data after delete or modification.
  */
+interface ViewTeamsProps {
+    navbar: any;
+    teams: Team[] | null;
+    users: Record<string, string>;
+    onError: (message: string) => void;
+    onSuccess: (message: string) => void;
+    refreshData: () => void;
+}
 
-class ViewTeams extends Component<any> {
+class ViewTeams extends Component<ViewTeamsProps> {
   /**
    * @method deleteTeam - Attempts to delete a team using the backend API.
    * @param {number|string} teamId - The ID of the team to delete.
    */
-  async deleteTeam(teamId: any) {
+  async deleteTeam(teamId: number) {
     try {
       const result = await genericResourceDELETE(`/team?team_id=${teamId}`, this, {
         dest: "teams",
@@ -82,7 +91,7 @@ class ViewTeams extends Component<any> {
           setCellProps: () => {
             return { width: "30%" };
           },
-          customBodyRender: (observerId: any) => {
+          customBodyRender: (observerId: number) => {
             return observerId === chosenCourse["admin_id"] ? (
               <p> Admin </p>
             ) : (
@@ -102,7 +111,7 @@ class ViewTeams extends Component<any> {
           setCellProps: () => {
             return { width: "20%" };
           },
-          customBodyRender: (date: any) => {
+          customBodyRender: (date: string) => {
             var year = "";
             var month = "";
             var day = "";
@@ -146,7 +155,7 @@ class ViewTeams extends Component<any> {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId: any) => {
+          customBodyRender: (teamId: number) => {
             return (
               <IconButton
                 onClick={() => {
@@ -180,7 +189,7 @@ class ViewTeams extends Component<any> {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId: any) => {
+          customBodyRender: (teamId: number) => {
             return (
               <IconButton
                 onClick={() => {
@@ -218,7 +227,7 @@ class ViewTeams extends Component<any> {
               className: "button-column-alignment",
             };
           },
-          customBodyRender: (teamId: any) => {
+          customBodyRender: (teamId: number) => {
             return (
               <IconButton
                 onClick={() => {

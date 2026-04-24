@@ -19,7 +19,11 @@ import Box from '@mui/material/Box';
  * @property {boolean} useFixedTeams - Determines whether the "Teams" tab is shown, based on the selected course's `use_fixed_teams` configuration.
  */
 
-export default function BasicTabs (props: any){
+interface BasicTabsProps {
+    navbar: any;
+}
+
+export default function BasicTabs (props: BasicTabsProps){
   var navbar = props.navbar;
   var state = navbar.state;
   var activeTab = state.activeTab;
@@ -44,14 +48,33 @@ export default function BasicTabs (props: any){
    * @param {number} newValue - The index of the newly selected tab within the MUI Tabs component.
    */
 
-  const handleChange = (event: any, newValue: any) => {
+  const handleChange = (event: React.SyntheticEvent, newValue: number) => {
     setValue(newValue);
   };
 
   return (
-    <Box>
+    <Box className="tab-colors">
       <Box sx={{ borderColor: 'divider' }}>
-        <Tabs value={value} onChange={handleChange} aria-label="basic tabs example">
+        <Tabs 
+          value={value} 
+          onChange={handleChange} 
+          aria-label="basic tabs example"
+          sx={{
+            '& .MuiTab-root': {
+              color: 'var(--tab-text)',
+              textTransform: 'uppercase',
+              fontWeight: 450,
+            },
+            '& .MuiTab-root.Mui-selected': {
+              color: 'var(--tab-text-selected)',
+              fontWeight: 550,
+            },
+            '& .MuiTabs-indicator': {
+              backgroundColor: 'var(--tab-text-selected)',
+              height: '2px',
+            },
+          }}
+        >
           <Tab
             onClick={() => {
               setNewTab("Users");
