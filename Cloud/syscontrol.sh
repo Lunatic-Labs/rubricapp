@@ -411,7 +411,7 @@ function install_npm_deps() {
     rm -rf node_modules
 
     if [ -f package-lock.json ]; then
-        npm install --legacy-peer-deps
+        npm ci --legacy-peer-deps
     else
         npm install --legacy-peer-deps
     fi

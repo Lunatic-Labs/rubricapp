@@ -9,13 +9,9 @@
 <meta name="author" content="Zachary Haskins" />
 <style type="text/css">
   .title  { text-align: center; margin-bottom: .2em; }
-  .subtitle { text-align: center; font-size: medium; font-weight: bold; margin-top:0; }
-  .todo   { font-family: monospace; color: red; }
-  .done   { font-family: monospace; color: green; }
   .warning { background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 8px 12px; margin: 1em 0; }
   .note { background-color: #d1ecf1; border-left: 4px solid #17a2b8; padding: 8px 12px; margin: 1em 0; }
-  .tag    { background-color: #eee; font-family: monospace; padding: 2px; font-size: 80%; font-weight: normal; }
-  #postamble p, #preamble p { font-size: 90%; margin: .2em; }
+  #postamble p { font-size: 90%; margin: .2em; }
   pre {
     border: 1px solid #ccc;
     box-shadow: 3px 3px 3px #eee;
@@ -27,10 +23,6 @@
   table { border-collapse:collapse; }
   td, th { vertical-align:top; padding: 6px 12px; border: 1px solid #ccc; }
   th { background-color: #f5f5f5; font-weight: bold; }
-  dt { font-weight: bold; }
-  .figure { padding: 1em; }
-  .figure p { text-align: center; }
-  textarea { overflow-x: auto; }
   body { font-family: sans-serif; max-width: 900px; margin: 0 auto; padding: 1em 2em; line-height: 1.6; }
   h1, h2, h3 { color: #333; }
   code { background: #f4f4f4; padding: 2px 4px; border-radius: 3px; font-family: monospace; }
@@ -67,7 +59,6 @@
 </div>
 
 <!-- ============================================================ -->
-<div id="outline-container-tldr">
 <h2 id="tldr"><span class="section-number-2">1</span> TL;DR</h2>
 
 <p><strong>For a server without a domain pointed yet (test server):</strong></p>
@@ -76,7 +67,7 @@
   <li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
   <li><code>./syscontrol.sh --fresh</code></li>
   <li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
-  <li>Set up your <code>BackEndFlask/.env</code> file — see <a href="#env-setup">Section 2</a></li>
+  <li>Create <code>BackEndFlask/.env</code> — see <a href="#env-setup">Section 2</a></li>
   <li><code>./syscontrol.sh --init</code> — enter your domain, answer <code>Y</code> to continue, answer <code>N</code> to the SSL question</li>
   <li><code>./syscontrol.sh --serve</code> — enter your domain when prompted</li>
 </ol>
@@ -87,7 +78,7 @@
   <li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
   <li><code>./syscontrol.sh --fresh</code></li>
   <li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
-  <li>Set up your <code>BackEndFlask/.env</code> file — see <a href="#env-setup">Section 2</a></li>
+  <li>Create <code>BackEndFlask/.env</code> — see <a href="#env-setup">Section 2</a></li>
   <li><code>./syscontrol.sh --init</code> — enter your domain, answer <code>Y</code> to continue, answer <code>Y</code> to the SSL question</li>
   <li><code>./syscontrol.sh --serve</code> — enter your domain when prompted</li>
 </ol>
@@ -95,72 +86,33 @@
 <div class="warning">
   <strong>WARNING:</strong> <code>--init</code> completely wipes the database. Do not run it on a server with live data unless you intend to reset it.
 </div>
-</div>
 
 <!-- ============================================================ -->
-<div id="outline-container-env-setup">
 <h2 id="env-setup"><span class="section-number-2">2</span> Environment Setup (.env)</h2>
 
 <p>
-  Before running <code>--init</code>, the backend <code>.env</code> file must exist at:
+  Before running any command, the backend <code>.env</code> file must be manually created at:
 </p>
 <pre>~/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/.env</pre>
 
 <p>
-  The script will fail during <code>configure_db</code> if this file is missing or has no database credentials.
-  The <code>.env</code> file is not stored in the repo for security reasons. Contact the server admin or
-  refer to the server guide for the correct values for each environment.
+  This file is not stored in the repo and is never pushed by the servers — they only pull from master.
+  Refer to the server guide for the correct values for your environment.
 </p>
 
-<p><strong>Required variables:</strong></p>
-<table>
-  <tr><th>Variable</th><th>Description</th></tr>
-  <tr><td><code>FRONT_END_URL</code></td><td>URL of the frontend (e.g. https://skill-builder.net)</td></tr>
-  <tr><td><code>SUPER_ADMIN_PASSWORD</code></td><td>Password for the super admin account</td></tr>
-  <tr><td><code>DEMO_ADMIN_PASSWORD</code></td><td>Password for demo admin account</td></tr>
-  <tr><td><code>DEMO_TA_INSTRUCTOR_PASSWORD</code></td><td>Password for demo TA account</td></tr>
-  <tr><td><code>DEMO_STUDENT_PASSWORD</code></td><td>Password for demo student account</td></tr>
-  <tr><td><code>SECRET_KEY</code></td><td>Flask secret key for session signing</td></tr>
-  <tr><td><code>MYSQL_HOST</code></td><td>Database host (use <code>localhost</code> for local MySQL, or the managed DB host)</td></tr>
-  <tr><td><code>MYSQL_PORT</code></td><td>Database port (3306 for local, 25060 for DO managed DB)</td></tr>
-  <tr><td><code>MYSQL_USER</code></td><td>Database username</td></tr>
-  <tr><td><code>MYSQL_PASSWORD</code></td><td>Database password</td></tr>
-  <tr><td><code>MYSQL_DATABASE</code></td><td>Database name (typically <code>rubricapp</code>)</td></tr>
-  <tr><td><code>MYSQL_SSLMODE</code></td><td>Set to <code>REQUIRED</code> for managed DB, omit for local MySQL</td></tr>
-</table>
-
-<p><strong>Local MySQL example (test server):</strong></p>
-<pre>
-FRONT_END_URL=http://localhost:3000
-SUPER_ADMIN_PASSWORD=@super_admin_password123
-DEMO_ADMIN_PASSWORD=demo_admin
-DEMO_TA_INSTRUCTOR_PASSWORD=demo_ta
-DEMO_STUDENT_PASSWORD=demo_student
-SECRET_KEY=yoursecretkeyhere
-MYSQL_HOST=localhost
-MYSQL_PORT=3306
-MYSQL_USER=rubricapp_admin
-MYSQL_PASSWORD=yourpassword
-MYSQL_DATABASE=rubricapp
-</pre>
-
-<div class="note">
-  <strong>Note:</strong> For the DO managed database or AWS RDS credentials, refer to the server guide.
-  Do not commit <code>.env</code> files to the repo.
-</div>
+<div class="warning">
+  <strong>Important:</strong> The script will fail at the database setup step if this file is missing
+  or incomplete. Always create it before running <code>--init</code>.
 </div>
 
 <!-- ============================================================ -->
-<div id="outline-container-first-time">
 <h2 id="first-time"><span class="section-number-2">3</span> First Time Setup</h2>
 
 <p>Clone the repo onto the server and <code>cd</code> into it.</p>
-
 <pre class="src src-bash">git clone https://github.com/Lunatic-Labs/rubricapp.git
 cd ./rubricapp/Cloud/</pre>
 
 <p>Run <code>syscontrol.sh</code> with the <code>--fresh</code> option.</p>
-
 <pre class="src src-bash">./syscontrol.sh --fresh</pre>
 
 <p>
@@ -169,13 +121,13 @@ cd ./rubricapp/Cloud/</pre>
 </p>
 
 <p>Navigate to the production directory:</p>
-
 <pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Cloud/</pre>
 
-<p>Set up your <code>.env</code> file before continuing — see <a href="#env-setup">Section 2</a>.</p>
+<p>
+  Create your <code>BackEndFlask/.env</code> file before continuing — see <a href="#env-setup">Section 2</a>.
+</p>
 
 <p>Then run:</p>
-
 <pre class="src src-bash">./syscontrol.sh --init</pre>
 
 <p>
@@ -184,12 +136,9 @@ cd ./rubricapp/Cloud/</pre>
 </p>
 
 <p>Finally, start the application:</p>
-
 <pre class="src src-bash">./syscontrol.sh --serve</pre>
-</div>
 
 <!-- ============================================================ -->
-<div id="outline-container-options">
 <h2 id="options"><span class="section-number-2">4</span> Available Options</h2>
 
 <!-- HELP -->
@@ -221,12 +170,12 @@ cd ./rubricapp/Cloud/</pre>
 </p>
 <ol>
   <li>Prompts for the domain name</li>
+  <li>Asks whether to continue (database will be wiped)</li>
   <li>Asks if the domain is already pointing to this server</li>
   <li>Runs <code>--install</code> (all dependencies)</li>
   <li>Runs <code>--configure</code> if domain is ready, or <code>--configure-no-ssl</code> if not</li>
   <li>Runs <code>dbcreate.py</code> to initialize the database</li>
 </ol>
-
 <div class="warning">
   <strong>WARNING:</strong> This option completely wipes the database and sets it up fresh.
   You will be prompted to confirm with <code>Y</code> before anything is deleted.
@@ -239,7 +188,7 @@ cd ./rubricapp/Cloud/</pre>
 <pre class="src src-bash">./syscontrol.sh --install</pre>
 <p>Installs all dependencies needed to run the application:</p>
 <ul>
-  <li><strong>System packages via apt</strong> — python3, nginx, redis-server, certbot, ufw, and others (see DEPS block in script for full list with explanations)</li>
+  <li><strong>System packages via apt</strong> — python3, nginx, mysql-server, redis-server, certbot, ufw, and others (see DEPS block in script for full list with explanations)</li>
   <li><strong>Python packages via pip</strong> — installed from <code>BackEndFlask/requirements.txt</code> inside the virtual environment at <code>~/RUBRICAPP_PRODUCTION/rubricapp-env/</code></li>
   <li><strong>Node.js via NVM</strong> — installs Node v20.11.1 and npm packages from <code>FrontEndReact/package.json</code></li>
 </ul>
@@ -248,7 +197,10 @@ cd ./rubricapp/Cloud/</pre>
 <h3 id="configure"><span class="section-number-3">4.5</span> Configure (SSL)</h3>
 <p><em>Usage:</em></p>
 <pre class="src src-bash">./syscontrol.sh --configure</pre>
-<p>Configures all services with SSL. Runs the following steps in order:</p>
+<p>
+  Configures all services with SSL. You will be prompted to confirm before anything runs.
+  Runs the following steps in order:
+</p>
 
 <p><strong>SSL Certificate (Certbot)</strong><br />
 Obtains a Let's Encrypt SSL certificate for the domain using Certbot in standalone mode.
@@ -267,6 +219,7 @@ Writes a single combined config to <code>/etc/nginx/sites-available/rubricapp</c
   <li>Port 80 — redirects all HTTP traffic to HTTPS</li>
   <li>Port 443 SSL — proxies to the React frontend on port 3000</li>
 </ul>
+<p>If a no-SSL config already exists from a previous <code>--configure-no-ssl</code> run, it will be overwritten automatically.</p>
 
 <p><strong>Firewall (UFW)</strong><br />
 Opens ports: 22 (SSH), 80 (HTTP), 443 (HTTPS), 5000 (backend API), 3000 (frontend)</p>
@@ -274,6 +227,7 @@ Opens ports: 22 (SSH), 80 (HTTP), 443 (HTTPS), 5000 (backend API), 3000 (fronten
 <div class="warning">
   <strong>Note:</strong> The domain must be pointing to this server's IP before running <code>--configure</code>,
   otherwise Certbot will fail. If the domain is not ready yet, use <code>--configure-no-ssl</code> instead.
+  You will be asked to confirm before anything runs.
 </div>
 
 <!-- CONFIGURE NO SSL -->
@@ -283,7 +237,6 @@ Opens ports: 22 (SSH), 80 (HTTP), 443 (HTTPS), 5000 (backend API), 3000 (fronten
 <p>
   Configures all services without SSL. Use this for test servers or any server where the
   domain is not yet pointing to the server's IP. Skips the Certbot step entirely.
-  Runs the following steps:
 </p>
 
 <p><strong>Gunicorn Service</strong><br />
@@ -301,8 +254,8 @@ Same as <code>--configure</code>.</p>
 
 <div class="note">
   <strong>Note:</strong> To upgrade to SSL later, point the domain to the server then run
-  <code>--configure</code>. It will overwrite the no-SSL Nginx config with the SSL version
-  and obtain the certificate automatically. See <a href="#switching-ssl">Section 6</a>.
+  <code>--configure</code>. It will prompt for confirmation, then overwrite the no-SSL Nginx config
+  with the SSL version and obtain the certificate automatically. See <a href="#switching-ssl">Section 6</a>.
 </div>
 
 <!-- SERVE -->
@@ -332,7 +285,7 @@ Same as <code>--configure</code>.</p>
 <p><em>Usage:</em></p>
 <pre class="src src-bash">./syscontrol.sh --update</pre>
 <p>
-  Stops all services and pulls the latest code from the remote repo. Does <strong>not</strong>
+  Stops all services and pulls the latest code from master. Does <strong>not</strong>
   automatically restart services — run <code>--serve</code> manually afterward to bring everything back up.
 </p>
 <ol>
@@ -373,31 +326,21 @@ Same as <code>--configure</code>.</p>
   <li><code>nginx.service</code></li>
 </ul>
 <p>Also kills any remaining processes on ports <code>5000</code>, <code>5001</code>, and <code>3000</code>.</p>
-</div>
 
 <!-- ============================================================ -->
-<div id="outline-container-domain-prompt">
 <h2 id="domain-prompt"><span class="section-number-2">5</span> Domain Prompt</h2>
 <p>
-  The script prompts for a domain name at startup for commands that need it
+  The script prompts for a domain name for commands that need it
   (<code>--init</code>, <code>--configure</code>, <code>--configure-no-ssl</code>, <code>--serve</code>).
-  Nothing is hardcoded — enter the correct domain for the server you are setting up.
+  Nothing is hardcoded in the script. Refer to the server guide for the correct domain
+  for each environment.
 </p>
-<table>
-  <tr><th>Server</th><th>Domain</th></tr>
-  <tr><td>DO Production</td><td>skill-builder.net</td></tr>
-  <tr><td>DO Test</td><td>skill-builder-testing.net</td></tr>
-  <tr><td>AWS Production</td><td>skill-builder.net</td></tr>
-  <tr><td>AWS Test</td><td>(see server guide)</td></tr>
-</table>
 <div class="note">
   <strong>Note:</strong> Commands like <code>--status</code> and <code>--kill</code> do not prompt for a domain
   since they only manage running services.
 </div>
-</div>
 
 <!-- ============================================================ -->
-<div id="outline-container-switching-ssl">
 <h2 id="switching-ssl"><span class="section-number-2">6</span> Switching from No-SSL to SSL</h2>
 <p>
   If a server was set up with <code>--configure-no-ssl</code> and the domain is now pointing
@@ -409,13 +352,13 @@ Same as <code>--configure</code>.</p>
   <li>Run:
     <pre class="src src-bash">./syscontrol.sh --configure</pre>
   </li>
-  <li>This will obtain the SSL cert, overwrite the no-SSL Nginx config with the SSL version, and reload Nginx</li>
+  <li>Confirm when prompted</li>
+  <li>The script will obtain the SSL cert, overwrite the no-SSL Nginx config with the SSL version, and reload Nginx</li>
   <li>Run <code>--serve</code> to restart everything cleanly</li>
 </ol>
 <div class="warning">
-  <strong>Note:</strong> Port 80 and 443 must be free when Certbot runs. The script handles this
+  <strong>Note:</strong> Ports 80 and 443 must be free when Certbot runs. The script handles this
   automatically by stopping Nginx before attempting certificate generation.
-</div>
 </div>
 
 </div>
@@ -424,7 +367,7 @@ Same as <code>--configure</code>.</p>
   <p class="date">Created: 2024-03-05 Tue 13:50</p>
   <br>
   <p class="author">Updated by: Beshoy Iskandar</p>
-  <p class="date">Last Updated: 2026-04-19</p>
+  <p class="date">Last Updated: 2026-04-21</p>
 </div>
 </body>
 </html>
