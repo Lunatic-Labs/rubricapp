@@ -2,10 +2,18 @@ import * as React from 'react';
 import { Box, Typography } from '@mui/material';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
 
+interface ViewRatingsHeaderProps {
+    navbar: any;
+    assessmentTasks: AssessmentTask[];
+    chosenAssessmentId: string | number;
+    setChosenAssessmentId: (id: string | number) => void;
+    csvCreation: { csv_data: string } | null;
+    userData: unknown;
+}
 
-
-export default function ViewRatingsHeader(props: any) {
+export default function ViewRatingsHeader(props: ViewRatingsHeaderProps) {
   var assessmentIsTeam = parseAssessmentIndividualOrTeam(props.assessmentTasks);
   return (
     <Box>

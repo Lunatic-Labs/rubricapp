@@ -2,12 +2,17 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import { Box, Button, Typography, TextField } from "@mui/material";
+import { Box, Button, Typography, TextField, SelectChangeEvent } from "@mui/material";
 import { genericResourcePOST, genericResourcePUT, genericResourceGET } from "../../../../utility";
 import { FormControl, MenuItem, InputLabel, Select } from "@mui/material";
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 import Loading from "../../../Loading/Loading";
+import { User } from "../../../../types/User";
+
+interface AdminAddTeamProps {
+    navbar: any;
+}
 
 interface AdminAddTeamState {
     isLoaded: boolean | null;
@@ -16,15 +21,15 @@ interface AdminAddTeamState {
     editTeam: boolean;
     observerId: string;
     teamName: string;
-    users: any[] | null;
+    users: User[] | null;
     errors: {
         teamName: string;
         observerId: string;
     };
 }
 
-class AdminAddTeam extends Component<any, AdminAddTeamState> {
-    constructor(props: any) {
+class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
+    constructor(props: AdminAddTeamProps) {
         super(props);
 
         this.state = {
@@ -74,7 +79,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
         }
     }
 
-    handleSelect = (event: any) => {
+    handleSelect = (event: SelectChangeEvent<string>) => {
         this.setState({
             observerId: event.target.value,
         });
@@ -139,7 +144,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
         }
     };
 
-    handleChange = (e: any) => {
+    handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { id, value } = e.target;
 
         //Define max length for teamName
@@ -171,7 +176,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
 
         const userName = cookies.get('user')["user_name"]
 
-        var instructors: any[] = []; 
+        var instructors: { id: number; firstName: string; lastName: string }[] = []; 
 
         if (this.state.isLoaded){
             if (this.state.users === null) {
@@ -179,7 +184,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
                     <Loading />
                 );
             }
-            instructors = this.state.users.map((item: any) => { 
+            instructors = this.state.users.map((item: User) => { 
                 return {
                     id: item["user_id"],
                     firstName: item["first_name"],
@@ -293,7 +298,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
                                         labelId="Observer"
                                         value={observerId}
                                         label="Observer"
-                                        onChange={(event: any) => this.handleSelect(event)}
+                                        onChange={(event: SelectChangeEvent<string>) => this.handleSelect(event)}
                                         required
                                         error={!!errors.observerId}
                                         aria-label="userObserverDropDown"
@@ -323,7 +328,7 @@ class AdminAddTeam extends Component<any, AdminAddTeamState> {
                                             <MenuItem value={userId} key={userId}>{userName}</MenuItem>
                                         }
 
-                                        {instructors.map((x: any) => <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
+                                        {instructors.map((x: { id: number; firstName: string; lastName: string }) => <MenuItem value={x.id} key={x.id}>{x.firstName + " " + x.lastName}</MenuItem>
                                         )}
                                     </Select>
                                     <FormHelperText>{errors.observerId}</FormHelperText>

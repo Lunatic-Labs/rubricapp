@@ -35,15 +35,21 @@ import Settings from '@mui/icons-material/Settings';
  * @property {boolean} open - Derived state that indicates whether the dropdown menu is currently open.
  */
 
-export default function ButtonAppBar(props: any) {
-  const [anchorEl, setAnchorEl] = React.useState(null);
+interface ButtonAppBarProps {
+    userName?: string;
+    setNewTab: (tab: string) => void;
+    logout: () => void;
+}
+
+export default function ButtonAppBar(props: ButtonAppBarProps) {
+  const [anchorEl, setAnchorEl] = React.useState<HTMLElement | null>(null);
   const open = Boolean(anchorEl);
 
     /**
    * @method handleClick - Opens the user account dropdown menu by setting `anchorEl` to the clicked element.
    * @param {*} event - the input event.
    */
-  const handleClick = (event: any) => {
+  const handleClick = (event: React.MouseEvent<HTMLButtonElement>) => {
     setAnchorEl(event.currentTarget);
   };
 

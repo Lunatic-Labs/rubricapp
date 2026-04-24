@@ -13,17 +13,30 @@ import { getUnitCategoryStatus } from './cat_utils';
 import FormGroup from '@mui/material/FormGroup';
 import FormControlLabel from '@mui/material/FormControlLabel';
 import Switch from '@mui/material/Switch'
+import { ATUnit } from './unit';
+import { Rubric } from '../../../../types/Rubric';
+import { CheckinsTracker } from './cat_utils';
+
+interface FormProps {
+    navbar: any;
+    usingTeams: boolean;
+    units: ATUnit[];
+    assessmentTaskRubric: Rubric;
+    roleName: string;
+    jumpId: number | null;
+    checkins: CheckinsTracker;
+}
 
 interface FormState {
-    units: any[];
+    units: ATUnit[];
     currentUnitTabIndex: number;
-    categoryList: any[] | null;
+    categoryList: JSX.Element[] | null;
     currentCategoryTabIndex: number;
-    section: any;
+    section: JSX.Element | null;
     displaySavedNotification: boolean;
-    jumpId: any;
+    jumpId: number | null;
     hideUnits: boolean;
-    consistentValidUnit: number;
+    consistentValidUnit: number | null;
 }
 
 /**
@@ -47,21 +60,21 @@ interface FormState {
  * @property {int} state.consistentValidUnit - Int to what tab I want to jump to when swapping between hidden units.
  * @property {Set<number>} unitsThatNeedSaving - A set of all the unit indexes that need saving for autosave.
  */
-class Form extends Component<any, FormState> {
-    areAllCategoriesCompleted: any;
-    doAutosave: any;
-    findPersistantTab: any;
-    generateCategoriesAndSection: any;
-    getUnitCategoryStatus: any;
-    handleCategoryChange: any;
-    handleUnitTabChange: any;
-    hideTabs: any;
-    markForAutosave: any;
-    modifyUnitCategoryProperty: any;
-    saveUnit: any;
-    shouldTabsCategoriesRender: any;
-    unitsThatNeedSaving: any;
-    constructor(props: any) {
+class Form extends Component<FormProps, FormState> {
+    areAllCategoriesCompleted: () => boolean;
+    doAutosave: () => void;
+    findPersistantTab: () => number | null;
+    generateCategoriesAndSection: () => void;
+    getUnitCategoryStatus: (unitId: number, categoryName: string) => string;
+    handleCategoryChange: (newCategoryTabIndex: number) => void;
+    handleUnitTabChange: (newUnitTabIndex: number) => void;
+    hideTabs: (event: React.ChangeEvent<HTMLInputElement>) => void;
+    markForAutosave: (unitIndex: number) => void;
+    modifyUnitCategoryProperty: (unitIndex: number, categoryName: string, propertyName: string, propertyValue: unknown) => void;
+    saveUnit: (unitIndex: number, markDone: boolean) => void;
+    shouldTabsCategoriesRender: (renderObject: React.ReactNode) => React.ReactNode | false;
+    unitsThatNeedSaving: Set<number>;
+    constructor(props: FormProps) {
         super(props);
 
         this.state = {
@@ -82,7 +95,7 @@ class Form extends Component<any, FormState> {
          * @method handleUnitTabChange - Handles the change of the unit tab.
          * @param {number} newUnitTabIndex - The new index of the unit tab.
          */
-        this.handleUnitTabChange = (newUnitTabIndex: any) => {
+        this.handleUnitTabChange = (newUnitTabIndex: number) => {
             if (this.state.currentUnitTabIndex !== newUnitTabIndex) {
                 this.setState(
                     {
@@ -100,7 +113,7 @@ class Form extends Component<any, FormState> {
          * @method handleCategoryChange - Handles the change of the category tab.
          * @param {number} newCategoryTabIndex - The new index of the category tab.
          */
-        this.handleCategoryChange = (newCategoryTabIndex: any) => {
+        this.handleCategoryChange = (newCategoryTabIndex: number) => {
             if (this.state.currentCategoryTabIndex !== newCategoryTabIndex) {
                 this.setState(
                     {
@@ -120,15 +133,15 @@ class Form extends Component<any, FormState> {
          * @param {string} propertyName The name of the category property to modify.
          * @param {any} propertyValue The value to set.
          */
-        this.modifyUnitCategoryProperty = (unitIndex: any, categoryName: any, propertyName: any, propertyValue: any) => {
-            if (this.state.units[unitIndex].isDone && !this.props.navbar.props.isAdmin) return;
+        this.modifyUnitCategoryProperty = (unitIndex: number, categoryName: string, propertyName: string, propertyValue: unknown) => {
+            if (this.state.units[unitIndex]!.isDone && !this.props.navbar.props.isAdmin) return;
             
             this.setState(
-                (prevState: any) => {
+                (prevState: FormState) => {
                     const updatedUnits = [...prevState.units];
                     
-                    updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewRocsData((rocs: any) => {
-                        rocs[categoryName][propertyName] = propertyValue;
+                    updatedUnits[unitIndex] = updatedUnits[unitIndex]!.withNewRocsData((rocs: Record<string, unknown>) => {
+                        (rocs[categoryName] as Record<string, unknown>)[propertyName] = propertyValue;
                     });
                     
                     return { units: updatedUnits };
@@ -145,11 +158,11 @@ class Form extends Component<any, FormState> {
          * @param {string} categoryName - The name of the category.
          * @returns {string} - The status of the unit category.
          */
-        this.getUnitCategoryStatus = (unitId: any, categoryName: any) => {
-            const unit = this.state.units[unitId];
+        this.getUnitCategoryStatus = (unitId: number, categoryName: string) => {
+            const unit = this.state.units[unitId]!;
             const assessmentTask = this.props.navbar.state.chosenAssessmentTask;
             
-            return getUnitCategoryStatus(unit, assessmentTask, categoryName);
+            return getUnitCategoryStatus(unit as { rocsData: { [key: string]: { observable_characteristics: string[]; suggestions: string[] } } }, assessmentTask, categoryName);
         }
 
         /**
@@ -157,14 +170,14 @@ class Form extends Component<any, FormState> {
          */
         this.generateCategoriesAndSection = () => {
             const assessmentTaskRubric = this.props.assessmentTaskRubric;
-            const categoryList: any = [];
-            let section;
+            const categoryList: JSX.Element[] = [];
+            let section: JSX.Element | null = null;
             
             // We sort assessmentTaskRubric["category_json"] by the index of each entry, since the the data gets
             // automatically sorted when it comes out of the backend
             Object.entries(assessmentTaskRubric["category_json"])
-                .sort((a: any, b: any) => a[1].index - b[1].index)
-                .forEach(([category, _]: [any, any], index: any) => {
+                .sort((a, b) => a[1].index - b[1].index)
+                .forEach(([category, _], index) => {
                     categoryList.push(
                         <Tab label={
                             <Box sx={{ display:"flex", flexDirection:"row", alignItems: "center", justifyContent: "center", maxHeight: 10}}>
@@ -191,11 +204,11 @@ class Form extends Component<any, FormState> {
                     if (this.state.currentCategoryTabIndex === index) {
                         section = <Section
                             navbar={this.props.navbar}
-                            isDone={this.state.units[this.state.currentUnitTabIndex].isDone}
+                            isDone={this.state.units[this.state.currentUnitTabIndex]!.isDone}
                             category={category}
                             assessmentTaskRubric={this.props.assessmentTaskRubric}
                             currentUnitTabIndex={this.state.currentUnitTabIndex}
-                            currentRocsData={this.state.units[this.state.currentUnitTabIndex].rocsData}
+                            currentRocsData={this.state.units[this.state.currentUnitTabIndex]!.rocsData as Record<string, { rating_json: Record<string, string>; observable_characteristics: string[]; suggestions: string[]; rating: number; comments: string; description: string; }>}
                             key={index}
                             handleUnitTabChange={this.handleUnitTabChange}
                             modifyUnitCategoryProperty={this.modifyUnitCategoryProperty}
@@ -215,9 +228,9 @@ class Form extends Component<any, FormState> {
          * @returns {boolean} - True if all categories are completed, false otherwise.
          */
         this.areAllCategoriesCompleted = () => {
-            const currentUnit = this.state.units[this.state.currentUnitTabIndex];
-            
-            return currentUnit.categoryNames().every((category: any) => {
+            const currentUnit = this.state.units[this.state.currentUnitTabIndex]!;
+
+            return currentUnit.categoryNames().every((category: string) => {
                 return this.getUnitCategoryStatus(this.state.currentUnitTabIndex, category) === StatusIndicatorState.COMPLETED;
             });
         };
@@ -227,10 +240,10 @@ class Form extends Component<any, FormState> {
          * @param {number} unitIndex - The index of the unit to save.
          * @param {boolean} markDone - If the unit should be marked as done or retain the current done status.
          */
-        this.saveUnit = (unitIndex: any, markDone: any) => {
+        this.saveUnit = (unitIndex: number, markDone: boolean) => {
             
             const chosenAssessmentTaskId = this.props.navbar.state.chosenAssessmentTask["assessment_task_id"];
-            const unit = this.state.units[unitIndex];
+            const unit = this.state.units[unitIndex]!;
 
             const cookies = new Cookies();
             const currentUserId = cookies.get("user")["user_id"];
@@ -240,7 +253,7 @@ class Form extends Component<any, FormState> {
             const newIsDone = markDone ? true : unit.isDone;
             
             const newUnit = unit.withNewIsDone(newIsDone);
-            const newCAT = newUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate);
+            const newCAT = newUnit.generateNewCAT(chosenAssessmentTaskId, currentUserId, currentDate.toISOString());
             
             let promise;
             
@@ -265,9 +278,9 @@ class Form extends Component<any, FormState> {
             
             // Replace the selected unit with updated unit and display saving notification
             this.setState(
-                (prevState: any) => {
+                (prevState: FormState) => {
                     const updatedUnits = [...prevState.units];
-                    
+
                     updatedUnits[unitIndex] = newUnit;
 
                     return { 
@@ -285,10 +298,10 @@ class Form extends Component<any, FormState> {
                 if (completeAssessmentEntry) {
                     
                     this.setState(
-                        (prevState: any) => {
+                        (prevState: FormState) => {
                             const updatedUnits = [...prevState.units];
 
-                            updatedUnits[unitIndex] = updatedUnits[unitIndex].withNewCAT(completeAssessmentEntry);
+                            updatedUnits[unitIndex] = updatedUnits[unitIndex]!.withNewCAT(completeAssessmentEntry);
 
                             return { units: updatedUnits };
                         }
@@ -309,7 +322,7 @@ class Form extends Component<any, FormState> {
          * @method markForAutosave - Marks a unit to be autosaving soon.
          * @param {number} unitIndex - The index of the unit.
          */
-        this.markForAutosave = (unitIndex: any) => {
+        this.markForAutosave = (unitIndex: number) => {
             this.unitsThatNeedSaving.add(unitIndex);
             
             this.doAutosave();
@@ -319,7 +332,7 @@ class Form extends Component<any, FormState> {
          * @method doAutosave - Performs an autosave.
          */
         this.doAutosave = debounce(() => {
-            this.unitsThatNeedSaving.forEach((unitIndex: any) => {
+            this.unitsThatNeedSaving.forEach((unitIndex) => {
                 this.saveUnit(unitIndex, false);
             });
             
@@ -329,7 +342,7 @@ class Form extends Component<any, FormState> {
         /**
         * @method hideTabs - Handles setting the properties needed for hiding tabs.
         */
-        this.hideTabs = (event: any) => {
+        this.hideTabs = (event: React.ChangeEvent<HTMLInputElement>) => {
             this.setState({
                 hideUnits: event.target.checked
             })
@@ -347,8 +360,8 @@ class Form extends Component<any, FormState> {
             const currentUserId = cookies.get("user")["user_id"];
 
             for(let index = 0; index < this.state.units.length; ++index){
-                let currentUnit = this.state.units[index];
-                if (currentUnit["team"]["observer_id"] === currentUserId){
+                let currentUnit = this.state.units[index]!;
+                if ((currentUnit as any)["team"]["observer_id"] === currentUserId){
                     return index;
                 }
 
@@ -361,7 +374,7 @@ class Form extends Component<any, FormState> {
         * 
         * @param {object} - What is supposed to be rendered.
         */
-        this.shouldTabsCategoriesRender = (renderObject: any) => {
+        this.shouldTabsCategoriesRender = (renderObject: React.ReactNode) => {
             const {hideUnits, consistentValidUnit} = this.state;
             const tabToDefualtTo = consistentValidUnit !== null;
             // {hideUnits} holds precedence.
@@ -379,7 +392,7 @@ class Form extends Component<any, FormState> {
         if(jumpId !== null){
             for (let index = 0; index < this.state.units.length; index++){
                 const unit = this.state.units[index];
-                if(unit[entity][entityId] === jumpId){
+                if((unit as any)[entity][entityId] === jumpId){
                     this.setState({
                         currentUnitTabIndex : index,
                     }, () => {
@@ -418,7 +431,7 @@ class Form extends Component<any, FormState> {
                                 control={
                                     <Switch 
                                         checked={this.state.hideUnits}
-                                        onChange={(event: any) => this.hideTabs(event)}
+                                        onChange={(event: React.ChangeEvent<HTMLInputElement>) => this.hideTabs(event)}
                                         sx={{
                                             '& .MuiSwitch-track': {
                                                 width: '2.6rem',
@@ -479,7 +492,7 @@ class Form extends Component<any, FormState> {
                             className="assessment-tab-colors"
                             value={this.state.currentCategoryTabIndex} 
                         
-                            onChange={(event: any, newCategoryTabIndex: any) => {
+                            onChange={(_event: React.SyntheticEvent, newCategoryTabIndex: number) => {
                                 this.handleCategoryChange(newCategoryTabIndex);
                             }}
 

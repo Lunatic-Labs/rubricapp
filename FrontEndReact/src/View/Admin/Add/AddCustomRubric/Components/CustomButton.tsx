@@ -1,13 +1,22 @@
 import React from 'react';
 import Button from '@mui/material/Button';
 
+interface CustomButtonProps {
+    label: string;
+    onClick: () => void;
+    style?: React.CSSProperties;
+    isOutlined?: boolean;
+    position?: React.CSSProperties['position'];
+}
+
 const CustomButton = ({
   label,
   onClick,
   style,
   isOutlined,
   position
-}: any) => {
+}: CustomButtonProps) => {
+
   // Default styles for the button
   const defaultStyle = {
     backgroundColor: isOutlined ? 'white' : '#2E8BEF',

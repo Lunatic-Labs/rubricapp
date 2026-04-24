@@ -6,18 +6,22 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, parseCourseRoles } from '../../../../utility';
 import { Box, Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading';
+import { Course } from '../../../../types/Course';
 
 // AdminViewCourses is a component that displays the courses that are available to the admin.
 // The admin can add a course by clicking the "Add Course" button.
-
-interface AdminViewCoursesState {
-    errorMessage: any;
-    isLoaded: boolean;
-    courses: any;
+interface AdminViewCoursesProps {
+    navbar: any;
 }
 
-class AdminViewCourses extends Component<any, AdminViewCoursesState> {
-    constructor(props: any) {
+interface AdminViewCoursesState {
+    errorMessage: string | null;
+    isLoaded: boolean;
+    courses: Course[] | null;
+}
+
+class AdminViewCourses extends Component<AdminViewCoursesProps, AdminViewCoursesState> {
+    constructor(props: AdminViewCoursesProps) {
         super(props);
 
         this.state = {
@@ -61,7 +65,7 @@ class AdminViewCourses extends Component<any, AdminViewCoursesState> {
 
       navbar.adminViewCourses = {};
       navbar.adminViewCourses.courses = courses;
-      navbar.adminViewCourses.courseRoles = parseCourseRoles(courses);
+      navbar.adminViewCourses.courseRoles = parseCourseRoles(courses as any);
 
       if(course === null && addCourse === null) {
           return(
@@ -69,7 +73,7 @@ class AdminViewCourses extends Component<any, AdminViewCoursesState> {
                   <Box sx={{ 
                       display: "flex",
                       justifyContent: "space-between",
-                      alignItems: "right",
+                      alignItems: "center",
                       alignSelf: "stretch"}}>
                           <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h4">
                               Courses

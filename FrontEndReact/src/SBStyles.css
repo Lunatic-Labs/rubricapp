@@ -665,9 +665,9 @@ body.mode .app-container {
     background-color: var(--dropdown-bg) !important;
 }
 
-/* MUI Paper components */
-.MuiPaper-root,
-.MuiPaper-outlined {
+/* MUI Paper components (exclude Alert so its filled colors are not overridden) */
+.MuiPaper-root:not(.MuiAlert-root),
+.MuiPaper-outlined:not(.MuiAlert-root) {
     background-color: var(--table-toolbar) !important;
 }
 

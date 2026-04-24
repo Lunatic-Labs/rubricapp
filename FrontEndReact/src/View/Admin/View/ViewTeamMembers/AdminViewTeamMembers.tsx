@@ -5,6 +5,7 @@ import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames } from '../../../../utility';
 import { Button, Typography } from '@mui/material';
 import Loading from '../../../Loading/Loading';
+import { User } from '../../../../types/User';
 
 /**
  * Creates an instance of the AdminViewTeamMembers component.
@@ -19,15 +20,18 @@ import Loading from '../../../Loading/Loading';
  * @property {Array} state.users - The list of users who are members of the team.
  * 
  */
-
-interface AdminViewTeamMembersState {
-    errorMessage: any;
-    isLoaded: any;
-    users: any[];
+interface AdminViewTeamMembersProps {
+    navbar: any;
 }
 
-class AdminViewTeamMembers extends Component<any, AdminViewTeamMembersState> {
-    constructor(props: any) {
+interface AdminViewTeamMembersState {
+    errorMessage: string | null;
+    isLoaded: boolean | null;
+    users: User[];
+}
+
+class AdminViewTeamMembers extends Component<AdminViewTeamMembersProps, AdminViewTeamMembersState> {
+    constructor(props: AdminViewTeamMembersProps) {
         super(props);
 
         this.state = {
@@ -121,7 +125,7 @@ class AdminViewTeamMembers extends Component<any, AdminViewTeamMembersState> {
                                     setAddTeamTabWithTeam(
                                         [team],
                                         team["team_id"],
-                                        parseUserNames(users),
+                                        parseUserNames(users as any),
                                         "AdminEditTeamMembers",
                                         "Add"
                                     );
@@ -143,7 +147,7 @@ class AdminViewTeamMembers extends Component<any, AdminViewTeamMembersState> {
                                     this.props.navbar.setAddTeamTabWithTeam(
                                         [team],
                                         team["team_id"],
-                                        parseUserNames(users),
+                                        parseUserNames(users as any),
                                         "AdminEditTeamMembers",
                                         "Remove"
                                     );

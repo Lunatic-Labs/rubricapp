@@ -33,20 +33,24 @@ import FormHelperText from '@mui/material/FormHelperText';
  * TODO:
  */
 
+interface AdminImportAssessmentTaskProps {
+    navbar: any;
+}
+
 interface AdminImportAssessmentTaskState {
     errorMessage: string | null;
     validMessage: string;
-    courses: any[];
+    courses: unknown[];
     selectedCourse: string;
     errors: {
         courseToImportTasksFrom: string;
     };
 }
 
-class AdminImportAssessmentTask extends Component<any, AdminImportAssessmentTaskState> {
-    handleImportTasks: any;
-    setSelectedCourse: any;
-    constructor(props: any) {
+class AdminImportAssessmentTask extends Component<AdminImportAssessmentTaskProps, AdminImportAssessmentTaskState> {
+    handleImportTasks: () => void;
+    setSelectedCourse: (newSelectedCourse: string) => void;
+    constructor(props: AdminImportAssessmentTaskProps) {
         super(props);
 
         this.state = {
@@ -67,7 +71,7 @@ class AdminImportAssessmentTask extends Component<any, AdminImportAssessmentTask
          * Called by the CourseDropdown component when a course is selected.
          */
 
-        this.setSelectedCourse = (newSelectedCourse: any) => {
+        this.setSelectedCourse = (newSelectedCourse: string) => {
             this.setState({
                 selectedCourse: newSelectedCourse
             });

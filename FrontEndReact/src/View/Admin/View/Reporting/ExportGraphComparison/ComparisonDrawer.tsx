@@ -54,7 +54,7 @@ const dialogTitleSx = {
   pb: 1.5,
 } as const;
 
-const percentFormatter = (v: any) => `${v}%`;
+const percentFormatter = (v: unknown) => `${v}%`;
 
 const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
   selectedGraphItems,
@@ -150,16 +150,16 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
 
   // Memoize chart data transformations for preview graphs
   const previewChartData = useMemo(() => {
-    const dataMap = new Map<string, any>();
+    const dataMap = new Map<string, { label: string; number: number; percentage: number }[]>();
     orderedItems.slice(0, MAX_COMPARISON_SLOTS).forEach((item) => {
       const { graph_type, graph_data } = item;
-      if (graph_type === 'characteristics' && graph_data?.characteristics) {
-        dataMap.set(item.id, graph_data.characteristics.map((c: any) => ({
+      if (graph_type === 'characteristics' && 'characteristics' in graph_data) {
+        dataMap.set(item.id, graph_data.characteristics.map((c) => ({
           ...c,
           label: truncateLabel(c.characteristic, 25),
         })));
-      } else if (graph_type === 'improvements' && graph_data?.improvements) {
-        dataMap.set(item.id, graph_data.improvements.map((imp: any) => ({
+      } else if (graph_type === 'improvements' && 'improvements' in graph_data) {
+        dataMap.set(item.id, graph_data.improvements.map((imp) => ({
           ...imp,
           label: truncateLabel(imp.improvement, 25),
         })));
@@ -171,7 +171,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
   const renderPreviewGraph = (item: GraphItem) => {
     const { graph_type, graph_data } = item;
 
-    if (graph_type === 'distribution' && graph_data?.ratings) {
+    if (graph_type === 'distribution' && 'ratings' in graph_data) {
       const { ratings, avg, stdev } = graph_data;
       return (
         <Box sx={{ width: '100%', height: '100%', display: 'flex', flexDirection: 'column' }}>
