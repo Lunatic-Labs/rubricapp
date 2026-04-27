@@ -36,7 +36,7 @@ jobs:
 
       - name: Create envs
         run: |
-          python3 quickCreateEnvs.py
+          python3 Scripts/quickCreateEnvs.py
 
       # Sets up node and runner cache.
       - name: Set up Node.js
@@ -86,7 +86,7 @@ jobs:
       
       - name: Create envs
         run: |
-          python3 quickCreateEnvs.py
+          python3 Scripts/quickCreateEnvs.py
 
       # Sets up the docker builder.
       - name: Set up Docker Buildx
@@ -199,7 +199,7 @@ jobs:
 #
 #      - name: Create envs
 #        run: |
-#          python3 quickCreateEnvs.py
+#          python3 Scripts/quickCreateEnvs.py
 #
 #      - name: Set up Docker Buildx
 #        uses: docker/setup-buildx-action@v3
@@ -273,7 +273,7 @@ jobs:
 
       - name: Create envs
         run: |
-          python3 quickCreateEnvs.py
+          python3 Scripts/quickCreateEnvs.py
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
