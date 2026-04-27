@@ -714,10 +714,17 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
               Clear All
             </Button>
             <Button
+              className='primary-color'
               variant="contained"
               onClick={this.handleExport}
               disabled={selectedGraphIds.size === 0 || exporting}
               startIcon={exporting ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : undefined}
+              sx={{
+                '&.Mui-disabled': {
+                  color: 'var(--export_disabled_text) !important',
+                  backgroundColor: 'var(--primary-disabled-bg)',
+                }
+              }}
             >
               {exporting ? 'Exporting...' : 'Export Selected as PDF'}
             </Button>

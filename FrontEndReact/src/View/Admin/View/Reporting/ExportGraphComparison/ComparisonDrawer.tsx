@@ -50,7 +50,8 @@ const dialogTitleSx = {
   display: 'flex',
   justifyContent: 'space-between',
   alignItems: 'center',
-  borderBottom: '1px solid #eee',
+  borderBottom: '1px solid var(--border-color)',
+  color: 'var(--text-color)',
   pb: 1.5,
 } as const;
 
@@ -183,16 +184,16 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
                 barCategoryGap={0.5}
                 margin={{ top: 5, right: 15, left: -5, bottom: 0 }}
               >
-                <XAxis dataKey="rating" type="category" style={{ fontSize: '0.75rem' }} />
-                <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.75rem' }} />
-                <CartesianGrid vertical={false} />
+                <XAxis dataKey="rating" type="category" tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+                <YAxis type="number" domain={[0, 'auto']} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+                <CartesianGrid vertical={false} stroke="var(--chart-grid-color)" />
                 <Bar dataKey="number" fill={GRAPH_BAR_COLORS.distribution} isAnimationActive={false}>
-                  <LabelList dataKey="number" fill="#ffffff" position="inside" style={{ fontSize: '0.7rem' }} />
+                  <LabelList dataKey="number" fill="var(--text-white)" position="inside" style={{ fontSize: '0.7rem' }} />
                 </Bar>
               </BarChart>
             </ResponsiveContainer>
           </Box>
-          <Box sx={{ textAlign: 'center', fontSize: '0.8rem', color: '#666', flexShrink: 0 }}>
+          <Box sx={{ textAlign: 'center', fontSize: '0.8rem', color: 'var(--text-color-secondary)', flexShrink: 0 }}>
             Avg: {avg} &nbsp; StdDev: {stdev}
           </Box>
         </Box>
@@ -209,13 +210,14 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
             data={chartData}
             margin={{ top: 5, right: 35, left: 10, bottom: 0 }}
           >
-            <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.7rem' }} />
-            <YAxis dataKey="label" type="category" width={110} style={{ fontSize: '0.65rem' }} />
-            <CartesianGrid horizontal={false} />
+            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.7rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <YAxis dataKey="label" type="category" width={110} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.65rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <CartesianGrid horizontal={false} stroke="var(--chart-grid-color)" />
             <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.characteristics} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
+                fill="var(--chart-axis-color)"
                 style={{ fontSize: '0.65rem' }}
                 formatter={percentFormatter}
               />
@@ -233,13 +235,14 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
             data={chartData}
             margin={{ top: 5, right: 35, left: 10, bottom: 0 }}
           >
-            <XAxis type="number" domain={[0, 100]} style={{ fontSize: '0.7rem' }} />
-            <YAxis dataKey="label" type="category" width={110} style={{ fontSize: '0.65rem' }} />
-            <CartesianGrid horizontal={false} />
+            <XAxis type="number" domain={[0, 100]} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.7rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <YAxis dataKey="label" type="category" width={110} tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.65rem' }} axisLine={{ stroke: 'var(--border-color)' }} tickLine={false} />
+            <CartesianGrid horizontal={false} stroke="var(--chart-grid-color)" />
             <Bar dataKey="percentage" fill={GRAPH_BAR_COLORS.improvements} isAnimationActive={false}>
               <LabelList
                 dataKey="percentage"
                 position="right"
+                fill="var(--chart-axis-color)"
                 style={{ fontSize: '0.65rem' }}
                 formatter={percentFormatter}
               />
@@ -363,10 +366,17 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
                 Clear Selection
               </Button>
               <Button
+                className="primary-color white-text-button"
                 variant="contained"
-                startIcon={<OpenInFullIcon />}
+                startIcon={<OpenInFullIcon sx={{ color: 'inherit' }} />}
                 onClick={handlePreviewOpen}
                 disabled={orderedItems.length === 0}
+                sx={{
+                  '&.Mui-disabled': {
+                    color: 'var(--export_disabled_text) !important',
+                    backgroundColor: 'var(--primary-disabled-bg)',
+                  }
+                }}
               >
                 Comparison View
               </Button>
@@ -386,7 +396,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         <DialogTitle sx={dialogTitleSx}>
           <Box>
             <Box sx={{ fontWeight: 700, fontSize: '1.2rem' }}>Comparison View</Box>
-            <Box sx={{ fontSize: '0.85rem', color: '#666', mt: 0.5 }}>
+            <Box sx={{ fontSize: '0.85rem', color: 'var(--text-color-secondary)', mt: 0.5 }}>
               {previewItems.length} graph{previewItems.length !== 1 ? 's' : ''} selected for comparison
             </Box>
           </Box>
@@ -410,7 +420,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
               Drag cards to reorder
             </Box>
           )}
-          <Box ref={previewGridRef} sx={{ backgroundColor: '#fff' }}>
+          <Box ref={previewGridRef} sx={{ backgroundColor: 'var(--card-bg)' }}>
             {comparisonTitle && (
               <Box className="preview-export-title">
                 {comparisonTitle}
@@ -445,15 +455,22 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
           </Box>
         </DialogContent>
 
-        <DialogActions sx={{ borderTop: '1px solid #eee', px: 3, py: 2 }}>
+        <DialogActions sx={{ borderTop: '1px solid var(--border-color)', px: 3, py: 2 }}>
           <Button variant="outlined" onClick={handlePreviewClose}>
             Close
           </Button>
           <Button
+            className='primary-color white-text-button'
             variant="contained"
             startIcon={exporting ? <CircularProgress size={16} sx={{ color: '#fff' }} /> : <DownloadIcon />}
             onClick={handleExportFromPreview}
             disabled={exporting}
+            sx={{
+              '&.Mui-disabled': {
+                color: 'var(--export_disabled_text) !important',
+                backgroundColor: 'var(--primary-disabled-bg)',
+              }
+            }}
           >
             {exporting ? 'Exporting...' : 'Export as PDF'}
           </Button>
