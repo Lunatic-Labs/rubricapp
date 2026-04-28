@@ -814,6 +814,83 @@ def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
 
 
 @error_log
+def get_rubrics_and_total_categories_by_course_id(course_id):
+    """
+    Description:
+    Gets all rubrics that are assigned to assessment tasks in the given course,
+    along with their total category counts.
+
+    Parameters:
+    course_id: int (The id of a course)
+    """
+    rubrics_and_total_categories = db.session.query(
+        Rubric.rubric_id,
+        Rubric.rubric_name,
+        Rubric.rubric_description,
+        sqlalchemy.func.count(Category.category_id).label('category_total')
+    ).join(
+        AssessmentTask, AssessmentTask.rubric_id == Rubric.rubric_id
+    ).join(
+        RubricCategory, Rubric.rubric_id == RubricCategory.rubric_id
+    ).join(
+        Category, RubricCategory.category_id == Category.category_id
+    ).filter(
+        AssessmentTask.course_id == course_id
+    ).group_by(
+        Rubric.rubric_id
+    ).all()
+
+    return rubrics_and_total_categories
+
+
+@error_log
+def get_rubrics_and_total_categories_with_courses(user_id):
+    """
+    Description:
+    Gets all custom rubrics owned by the user (or their owner) with
+    total category counts and a comma-separated string of course names
+    where each rubric is used via AssessmentTask.
+
+    Parameters:
+    user_id: int (The id of a user)
+    """
+    user = get_user(user_id)
+    owner_id = user.owner_id
+
+    course_names_subquery = db.session.query(
+        AssessmentTask.rubric_id,
+        func.group_concat(Course.course_name.distinct().op('ORDER BY')(Course.course_name)).label('course_names')
+    ).join(
+        Course, AssessmentTask.course_id == Course.course_id
+    ).group_by(
+        AssessmentTask.rubric_id
+    ).subquery()
+
+    rubrics_with_courses = db.session.query(
+        Rubric.rubric_id,
+        Rubric.rubric_name,
+        Rubric.rubric_description,
+        sqlalchemy.func.count(Category.category_id).label('category_total'),
+        course_names_subquery.c.course_names.label('course_names')
+    ).join(
+        RubricCategory, Rubric.rubric_id == RubricCategory.rubric_id
+    ).join(
+        Category, RubricCategory.category_id == Category.category_id
+    ).outerjoin(
+        course_names_subquery, Rubric.rubric_id == course_names_subquery.c.rubric_id
+    ).filter(
+        or_(
+            Rubric.owner == user_id,
+            Rubric.owner == owner_id
+        )
+    ).group_by(
+        Rubric.rubric_id
+    ).all()
+
+    return rubrics_with_courses
+
+
+@error_log
 def get_categories_for_user_id(user_id):
     """
     Description:

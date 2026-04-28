@@ -3,12 +3,13 @@ from marshmallow import fields, Schema
 from controller import bp 
 from models.rubric_categories import *
 from controller.Route_response import *
+from core import db
 from flask_jwt_extended import jwt_required
 from models.rubric   import get_rubric, get_rubrics, create_rubric, delete_rubric_by_id
 from models.category import get_categories_per_rubric, get_categories, get_ratings_by_category
 from models.suggestions import get_suggestions_per_category
 from models.observable_characteristics import get_observable_characteristic_per_category
-from models.queries import get_rubrics_and_total_categories, get_rubrics_and_total_categories_for_user_id, get_categories_for_user_id
+from models.queries import get_rubrics_and_total_categories, get_rubrics_and_total_categories_for_user_id, get_rubrics_and_total_categories_by_course_id, get_rubrics_and_total_categories_with_courses, get_categories_for_user_id
 from models.user import get_user
 
 from controller.security.CustomDecorators import( 
@@ -91,13 +92,18 @@ def get_all_rubrics():
 
         get_user(user_id)   # Triggers an error if not exists
 
-        rubrics = get_rubrics_and_total_categories(1)   # Get default rubrics only!
+        if request.args.get("course_id"):
+            rubrics = get_rubrics_and_total_categories_by_course_id(int(request.args.get("course_id")))
+        elif request.args.get("custom") and request.args.get("include_courses"):
+            rubrics = get_rubrics_and_total_categories_with_courses(user_id)
+        else:
+            rubrics = get_rubrics_and_total_categories(1)   # Get default rubrics only!
 
-        if request.args.get("custom"):
-            rubrics = get_rubrics_and_total_categories_for_user_id(user_id) # Get rubrics created by logged in user!
-        
-        if request.args.get("all"):
-            rubrics = get_rubrics_and_total_categories_for_user_id(user_id, True)   # Get default rubrics and rubrics created by the loggin user!
+            if request.args.get("custom"):
+                rubrics = get_rubrics_and_total_categories_for_user_id(user_id) # Get rubrics created by logged in user!
+            
+            if request.args.get("all"):
+                rubrics = get_rubrics_and_total_categories_for_user_id(user_id, True)   # Get default rubrics and rubrics created by the loggin user!
 
         return create_good_response(rubrics_schema.dump(rubrics), 200, "rubrics")
 

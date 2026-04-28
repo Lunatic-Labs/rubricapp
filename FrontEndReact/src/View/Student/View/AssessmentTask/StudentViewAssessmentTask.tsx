@@ -90,8 +90,8 @@ class StudentViewAssessmentTask extends Component<StudentViewAssessmentTaskProps
 
         // Per-course check-in status for the current student
         genericResourceGET(`/checkin?course_id=${chosenCourseID}`,"checkin", this as any);
-        // Rubric metadata used to build rubricNames for the table
-        genericResourceGET(`/rubric?all=${true}`, "rubrics", this as any);
+        // Rubric metadata used to build rubricNames for the table (course-scoped)
+        genericResourceGET(`/rubric?course_id=${chosenCourseID}`, "rubrics", this as any);
         // Course counts/metadata needed by ViewAssessmentTasks (e.g., number of students)
         genericResourceGET(`/course?course_id=${chosenCourseID}`, "course_count", this as any, {dest: "counts"});
     }

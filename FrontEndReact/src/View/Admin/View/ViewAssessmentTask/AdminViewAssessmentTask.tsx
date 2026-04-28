@@ -65,7 +65,7 @@ class AdminViewAssessmentTask extends Component<any, AdminViewAssessmentTaskStat
             'roles', 
             this
         );
-        //API call 4: fetch all available rubrics
+        //API call 4: fetch rubrics (all default + user's custom)
         genericResourceGET(`/rubric?all=${true}`, 'rubrics', this);
         
         // Set the viewing mode in state

@@ -101,6 +101,7 @@ const CollapsableRubricCategoryTable = ({
           <TableHead>
             <TableRow>
               <TableCell>Rubric</TableCell>
+              <TableCell>Courses</TableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -163,11 +164,14 @@ const CollapsableRubricCategoryTable = ({
                       )}
                     </div>
                   </TableCell>
+                  <TableCell>
+                    {rubric["course_names"] || "Not assigned"}
+                  </TableCell>
                 </TableRow>
                 <TableRow>
                   <TableCell
                     style={{ paddingBottom: 0, paddingTop: 0 }}
-                    colSpan={6}
+                    colSpan={2}
                   >
                     <Collapse
                       in={openRubric === rubric["rubric_id"]}
