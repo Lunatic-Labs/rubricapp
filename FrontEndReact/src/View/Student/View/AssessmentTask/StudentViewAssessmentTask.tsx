@@ -4,6 +4,8 @@ import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, parseRubricNames } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
+import { AssessmentTask } from '../../../../types/AssessmentTask';
+import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
 
 /**
  * @description
@@ -30,10 +32,10 @@ import Loading from '../../../Loading/Loading';
 
 interface StudentViewAssessmentTaskProps {
     navbar: any;
-    role: any;
-    filteredAssessments: any[];
-    CompleteAssessments: any[];
-    userTeamIds: any[];
+    role: { role_id: number; role_name: string };
+    filteredAssessments: AssessmentTask[];
+    CompleteAssessments: CompleteAssessmentTask[];
+    userTeamIds: number[];
 }
 
 interface StudentViewAssessmentTaskState {

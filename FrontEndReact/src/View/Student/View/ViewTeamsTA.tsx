@@ -20,13 +20,15 @@ import CustomDataTable from "../../Components/CustomDataTable";
  *    any sort options use default behavior).
  */
 
+interface TATeam {
+    teamName: string;
+    studentNames: string;
+}
+
 interface ViewTeamsTAProps {
-  // `navbar` is passed from the parent `TAViewTeams` component
-  navbar?: any;
-  // `teams` is the data table rows
-  teams?: any[];
-  // `users` may be passed by the parent (unused here currently), keep it optional
-  users?: any;
+    navbar?: any;
+    teams?: TATeam[];
+    users?: Record<string, string>;
 }
 
 class ViewTeamsTA extends Component<ViewTeamsTAProps> {
@@ -51,7 +53,7 @@ class ViewTeamsTA extends Component<ViewTeamsTAProps> {
           filter: true,
           setCellHeaderProps: () => { return { width:"230px" } },
           setCellProps: () => { return { width:"230px" } },
-          customBodyRender: (users: any) => {
+          customBodyRender: (users: string) => {
             return(
               <p className="pt-3">{users}</p>
             )

@@ -15,6 +15,10 @@ import {
   Link,
 } from '@mui/material';
 import { GRAPH_TYPE_LABELS } from './graphConstants';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
+import { Rubric } from '../../../../../types/Rubric';
+import { Team } from '../../../../../types/Team';
+import { User } from '../../../../../types/User';
 
 export interface FilterState {
   dateStart: string;
@@ -28,10 +32,10 @@ export interface FilterState {
 
 interface FilterPanelProps {
   filters: FilterState;
-  assessmentTasks: any[];
-  rubrics: any[];
-  teams: any[];       // kept for future use
-  students: any[];    // kept for future use
+  assessmentTasks: AssessmentTask[];
+  rubrics: Rubric[];
+  teams: Team[];       // kept for future use
+  students: User[];    // kept for future use
   onFilterChange: (key: keyof FilterState, value: string | string[]) => void;
   onApplyFilters: () => void;
   onClearFilters: () => void;
@@ -41,10 +45,50 @@ const ITEM_HEIGHT = 48;
 const ITEM_PADDING_TOP = 8;
 const MenuProps = {
   PaperProps: {
+    sx: {
+      backgroundColor: 'var(--dropdown-bg)',
+      color: 'var(--dropdown-text)',
+    },
     style: {
       maxHeight: ITEM_HEIGHT * 4.5 + ITEM_PADDING_TOP,
       width: 250,
     },
+  },
+  MenuListProps: {
+    sx: {
+      '& .MuiMenuItem-root': {
+        color: 'var(--dropdown-text)',
+        '&:hover': {
+          backgroundColor: 'var(--dropdown-hover)',
+        },
+        '&.Mui-selected': {
+          backgroundColor: 'var(--dropdown-selected)',
+          '&:hover': {
+            backgroundColor: 'var(--dropdown-selected)',
+          },
+        },
+      },
+    },
+  },
+};
+
+const dropdownFieldSx = {
+  '& .MuiInputBase-root': {
+    backgroundColor: 'var(--dropdown-bg)',
+    color: 'var(--dropdown-text)',
+  },
+  '& .MuiOutlinedInput-notchedOutline': {
+    borderColor: 'var(--dropdown-border)',
+  },
+  '& .MuiInputLabel-root': {
+    color: 'var(--dropdown-label)',
+  },
+  '& .MuiSelect-icon': {
+    color: 'var(--dropdown-icon)',
+  },
+  '& .Mui-disabled': {
+    backgroundColor: 'var(--dropdown-disabled-bg)',
+    color: 'var(--dropdown-disabled-text)',
   },
 };
 
@@ -68,6 +112,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
   );
 
   // Get display text for multiselect
+  // items uses any[] because this helper accesses arbitrary string keys dynamically
   const getMultiSelectDisplayText = (selectedIds: string[], items: any[], idKey: string, nameKey: string) => {
     if (selectedIds.length === 0) return '';
     const selectedItems = items.filter((item) => selectedIds.includes(item[idKey]?.toString()));
@@ -80,7 +125,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
       <Box className="filter-row" sx={{ marginBottom: 2 }}>
         {/* Date Range */}
         <Box className="filter-item date-range">
-          <InputLabel shrink className="filter-label">
+          <InputLabel shrink className="filter-label" sx={{ color: 'var(--dropdown-label)' }}>
             Date Range
           </InputLabel>
           <Box className="date-inputs">
@@ -89,21 +134,59 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               size="small"
               value={filters.dateStart}
               onChange={(e) => onFilterChange('dateStart', e.target.value)}
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{ shrink: true, sx: { color: 'var(--dropdown-label)' } }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  backgroundColor: 'var(--dropdown-bg)',
+                  color: 'var(--dropdown-text)',
+                },
+                '& input': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                  filter: 'var(--calendar-icon-filter)',
+                  opacity: 0.9,
+                },
+                '& .MuiSvgIcon-root': {
+                  color: 'var(--dropdown-icon)',
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--dropdown-border)',
+                },
+              }}
             />
             <TextField
               type="date"
               size="small"
               value={filters.dateEnd}
               onChange={(e) => onFilterChange('dateEnd', e.target.value)}
-              InputLabelProps={{ shrink: true }}
+              InputLabelProps={{ shrink: true, sx: { color: 'var(--dropdown-label)' } }}
+              sx={{
+                '& .MuiInputBase-root': {
+                  backgroundColor: 'var(--dropdown-bg)',
+                  color: 'var(--dropdown-text)',
+                },
+                '& input': {
+                  color: 'var(--dropdown-text)',
+                },
+                '& input[type="date"]::-webkit-calendar-picker-indicator': {
+                  filter: 'var(--calendar-icon-filter)',
+                  opacity: 0.9,
+                },
+                '& .MuiSvgIcon-root': {
+                  color: 'var(--dropdown-icon)',
+                },
+                '& .MuiOutlinedInput-notchedOutline': {
+                  borderColor: 'var(--dropdown-border)',
+                },
+              }}
             />
           </Box>
         </Box>
 
         {/* Assessment Tasks (Multiselect) */}
         <Box className="filter-item" sx={{ minWidth: 200 }}>
-          <FormControl size="small" fullWidth>
+          <FormControl size="small" fullWidth sx={dropdownFieldSx}>
             <InputLabel>Assessment Tasks</InputLabel>
             <Select
               multiple
@@ -115,7 +198,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               }
               MenuProps={MenuProps}
             >
-              {assessmentTasks.map((task: any) => (
+              {assessmentTasks.map((task) => (
                 <MenuItem key={task.assessment_task_id} value={task.assessment_task_id.toString()}>
                   <Checkbox checked={filters.assessmentTaskIds.includes(task.assessment_task_id.toString())} />
                   <ListItemText primary={task.assessment_task_name} />
@@ -127,7 +210,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Rubric (Multiselect) */}
         <Box className="filter-item" sx={{ minWidth: 180 }}>
-          <FormControl size="small" fullWidth>
+          <FormControl size="small" fullWidth sx={dropdownFieldSx}>
             <InputLabel>Rubric</InputLabel>
             <Select
               multiple
@@ -139,7 +222,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
               }
               MenuProps={MenuProps}
             >
-              {rubrics.map((rubric: any) => (
+              {rubrics.map((rubric) => (
                 <MenuItem key={rubric.rubric_id} value={rubric.rubric_id.toString()}>
                   <Checkbox checked={filters.rubricIds.includes(rubric.rubric_id.toString())} />
                   <ListItemText primary={rubric.rubric_name} />
@@ -151,7 +234,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
 
         {/* Graph Type (Multiselect) */}
         <Box className="filter-item" sx={{ minWidth: 200 }}>
-          <FormControl size="small" fullWidth>
+          <FormControl size="small" fullWidth sx={dropdownFieldSx}>
             <InputLabel>Graph Type</InputLabel>
             <Select
               multiple
@@ -260,7 +343,7 @@ const FilterPanel: React.FC<FilterPanelProps> = ({
           >
             Clear All
           </Link>
-          <Button variant="contained" onClick={onApplyFilters}>
+          <Button variant="contained" onClick={onApplyFilters} sx={{ color: 'white' }} className="white-text-button">
             Apply
           </Button>
         </Box>

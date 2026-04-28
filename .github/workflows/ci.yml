@@ -36,12 +36,12 @@ jobs:
 
       - name: Create envs
         run: |
-          python3 quickCreateEnvs.py
+          python3 Scripts/quickCreateEnvs.py
 
       # Sets up node and runner cache.
       - name: Set up Node.js
         uses: actions/setup-node@v4
-        with: 
+        with:
           node-version: 20
           cache: "npm"
           cache-dependency-path: FrontEndReact/package.json
@@ -58,7 +58,7 @@ jobs:
       - name: Install Node dependencies
         run:  |
           cd FrontEndReact
-          npm install
+          npm ci
       
       # Main part where frontend independent tests should be added.
       - name: Run ESLint
@@ -86,7 +86,7 @@ jobs:
       
       - name: Create envs
         run: |
-          python3 quickCreateEnvs.py
+          python3 Scripts/quickCreateEnvs.py
 
       # Sets up the docker builder.
       - name: Set up Docker Buildx
@@ -199,7 +199,7 @@ jobs:
 #
 #      - name: Create envs
 #        run: |
-#          python3 quickCreateEnvs.py
+#          python3 Scripts/quickCreateEnvs.py
 #
 #      - name: Set up Docker Buildx
 #        uses: docker/setup-buildx-action@v3
@@ -273,7 +273,7 @@ jobs:
 
       - name: Create envs
         run: |
-          python3 quickCreateEnvs.py
+          python3 Scripts/quickCreateEnvs.py
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -317,7 +317,7 @@ jobs:
       - name: Install Node dependencies
         run: |
           cd FrontEndReact
-          npm install
+          npm ci
 
       - name: Verify React Scripts
         run: |

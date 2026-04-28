@@ -1,8 +1,10 @@
 import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse, IconButton } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
-import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { createTheme, ThemeProvider } from '@mui/material';
 import React, { useState } from "react";
 import Button from "@mui/material/Button";
+import { Rubric } from "../../../../types/Rubric";
+import { Category } from "../../../../types/Category";
 
 // NOTE: Custom Theme for the Collapsible table
 const customTheme = createTheme({
@@ -38,6 +40,16 @@ const customTheme = createTheme({
   },
 });
 
+interface CollapsableRubricCategoryTableProps {
+    categories: Category[];
+    rubrics: Rubric[];
+    onCategorySelect?: (categoryId: number, isSelected: boolean) => void;
+    readOnly: boolean;
+    showEditButton?: boolean;
+    selectedCategories?: Category[];
+    navbar?: any;
+}
+
 const CollapsableRubricCategoryTable = ({
   categories,
   rubrics,
@@ -46,41 +58,41 @@ const CollapsableRubricCategoryTable = ({
   showEditButton,
   selectedCategories,
   navbar
-}: any) => {
+}: CollapsableRubricCategoryTableProps) => {
 
   // NOTE: Manage whether the rubric was clicked or not
-  const [openRubric, setOpenRubric] = useState(null);
+  const [openRubric, setOpenRubric] = useState<number | null>(null);
 
-  const handleRubricClick = (rubricId: any) => {
+  const handleRubricClick = (rubricId: number) => {
     setOpenRubric(openRubric === rubricId ? null : rubricId);
   };
   
   // NOTE: Manage whether the category was clicked or not
   const [checkedCategories, setCheckedCategories] = useState(
-    readOnly ? [] : selectedCategories.map((category: any) => category.category_id)
+    readOnly ? [] : (selectedCategories ?? []).map((category: Category) => category.category_id)
   );
 
-  const handleCheckboxChange = (categoryId: any) => {
+  const handleCheckboxChange = (categoryId: number) => {
     const isChecked = checkedCategories.includes(categoryId);
 
     if (isChecked) {
       setCheckedCategories(
-        checkedCategories.filter((id: any) => id !== categoryId),
+        checkedCategories.filter((id: number) => id !== categoryId),
       );
 
       // Call onCategorySelect with isSelected set to false
-      onCategorySelect(categoryId, false);
+      onCategorySelect?.(categoryId, false);
 
     } else {
       setCheckedCategories([...checkedCategories, categoryId]);
 
       // Call onCategorySelect with isSelected set to true
-      onCategorySelect(categoryId, true);
+      onCategorySelect?.(categoryId, true);
     }
   };
 
   // Handle keyboard events for the chevron button
-  const handleChevronKeyDown = (event: any, rubricId: any) => {
+  const handleChevronKeyDown = (event: React.KeyboardEvent, rubricId: number) => {
     if (event.key === 'Enter' || event.key === ' ') {
       event.preventDefault();
       event.stopPropagation(); // Prevent the TableRow click event
@@ -89,7 +101,7 @@ const CollapsableRubricCategoryTable = ({
   };
 
   // Handle chevron click separately from row click
-  const handleChevronClick = (event: any, rubricId: any) => {
+  const handleChevronClick = (event: React.MouseEvent, rubricId: number) => {
     event.stopPropagation(); // Prevent the TableRow click event
     handleRubricClick(rubricId);
   };
@@ -110,7 +122,7 @@ const CollapsableRubricCategoryTable = ({
                 <TableCell>No Custom Rubrics Found</TableCell>
               </TableRow>
             ) : (
-              rubrics.map((rubric: any) => <React.Fragment key={rubric["rubric_id"]}>
+              rubrics.map((rubric: Rubric) => <React.Fragment key={rubric["rubric_id"]}>
                 <TableRow onClick={() => handleRubricClick(rubric["rubric_id"])}>
                   <TableCell>
                     <div style={{ 
@@ -121,8 +133,8 @@ const CollapsableRubricCategoryTable = ({
                       <div style={{ display: 'flex', alignItems: 'center' }}>
                         <span>{rubric["rubric_name"]}</span>
                         <IconButton
-                          onClick={(event: any) => handleChevronClick(event, rubric["rubric_id"])}
-                          onKeyDown={(event: any) => handleChevronKeyDown(event, rubric["rubric_id"])}
+                          onClick={(event: React.MouseEvent<HTMLButtonElement>) => handleChevronClick(event, rubric["rubric_id"])}
+                          onKeyDown={(event: React.KeyboardEvent<HTMLButtonElement>) => handleChevronKeyDown(event, rubric["rubric_id"])}
                           aria-label={`${openRubric === rubric["rubric_id"] ? 'Collapse' : 'Expand'} ${rubric["rubric_name"]} categories`}
                           aria-expanded={openRubric === rubric["rubric_id"]}
                           tabIndex={0}
@@ -150,14 +162,16 @@ const CollapsableRubricCategoryTable = ({
                       {showEditButton && (
                         <Button
                           variant="contained"
-                          onClick={(event: any) => {
+                          onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                             event.stopPropagation(); // Prevent row click
                             navbar.rubricId = rubric["rubric_id"];
                             navbar.setAddCustomRubric(false)
                           }}
+                          className="white-text-button"
                           style={{
-                            fontSize: '14px',       
+                            fontSize: '14px',
                             minWidth: '70px',
+                            color: 'white',
                           }}
                           aria-label="myCustomRubricsEditCustomRubricButton"
                         >Edit</Button>
@@ -183,9 +197,9 @@ const CollapsableRubricCategoryTable = ({
                         <TableBody>
                           {categories
                             .filter(
-                              (category: any) => category["rubric_id"] === rubric["rubric_id"],
+                              (category: Category) => category["rubric_id"] === rubric["rubric_id"],
                             )
-                            .map((category: any) => <TableRow key={category["category_id"]}>
+                            .map((category: Category) => <TableRow key={category["category_id"]}>
                             <TableCell component="th" scope="row" aria-label="rubricCategoryNames">
                               <div
                                 style={{

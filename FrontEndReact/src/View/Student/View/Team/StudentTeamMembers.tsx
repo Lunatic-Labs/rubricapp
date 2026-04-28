@@ -4,6 +4,7 @@ import ViewTeamMembers from './TeamMembers';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET } from '../../../../utility';
 import Loading from '../../../Loading/Loading';
+import { User } from '../../../../types/User';
 
 /**
  * @description
@@ -27,14 +28,12 @@ import Loading from '../../../Loading/Loading';
 
 interface StudentTeamMembersProps {
     navbar: any;
-    team?: any;
-    chosenCourse?: any;
 }
 
 interface StudentTeamMembersState {
     isLoaded: boolean | null;
     errorMessage: string | null;
-    users: any[] | null;
+    users: User[] | null;
 }
 
 class StudentTeamMembers extends Component<StudentTeamMembersProps, StudentTeamMembersState> {

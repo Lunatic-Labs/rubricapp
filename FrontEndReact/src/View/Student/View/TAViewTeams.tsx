@@ -31,11 +31,9 @@ interface TAViewTeamsProps {
 }
 
 interface TAViewTeamsState {
-    errorMessage: any;
+    errorMessage: string | null;
     isLoaded: boolean;
-    teams: any;
-    users: any;
-    user_id: any;
+    user_id: number | null;
     team_members?: any;
 }
 
@@ -46,8 +44,6 @@ class TAViewTeams extends Component<TAViewTeamsProps, TAViewTeamsState> {
         this.state = {
             errorMessage: null,
             isLoaded: false,
-            teams: null,
-            users: null,
             user_id: null
         }
 
