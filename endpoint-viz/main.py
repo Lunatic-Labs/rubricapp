@@ -169,12 +169,12 @@ def create_graph(elements: List[Dict], output_path: str = "graph.html"):
     print(f"Graph written to {output_path}")
 
 
-def generate_graph_elements(endpoints:      List["endpoint.Endpoint"],
-                            endpoint_calls: List["endpointcall.EndpointCall"]) -> List[Dict[str, Any]]:
+def generate_graph_elements(endpoints:      List[endpoint.Endpoint],
+                            endpoint_calls: List[endpointcall.EndpointCall]) -> List[Dict[str, Any]]:
     elements: List[Dict[str, Any]] = []
     endpoint_map: Dict[str, str] = {}  # endpoint_str -> node_id
 
-    # 1. Endpoint nodes
+    # Endpoints
     for idx, point in enumerate(endpoints):
         node_id = f"ep_{idx}"
         endpoint_map[point.endpoint_str] = node_id
@@ -189,7 +189,7 @@ def generate_graph_elements(endpoints:      List["endpoint.Endpoint"],
             }
         })
 
-    # 2. EndpointCall nodes
+    # Calls
     for idx, call in enumerate(endpoint_calls):
         node_id = f"call_{idx}"
         elements.append({
@@ -204,7 +204,7 @@ def generate_graph_elements(endpoints:      List["endpoint.Endpoint"],
             }
         })
 
-        # Link if the endpoint exists
+        # Link if possible
         if call.dst in endpoint_map:
             elements.append({
                 "data": {
