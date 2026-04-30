@@ -77,6 +77,7 @@ class AdminViewAssessmentStatus extends Component<AdminViewAssessmentStatusProps
                     showRatings = task.show_ratings;
                     showSuggestions = task.show_suggestions;
                     completedByTAs = task.role_id === 4;
+                    console.log("Choosen assessment task in the component:", task);
                     break;
                 }
             }
@@ -109,6 +110,7 @@ class AdminViewAssessmentStatus extends Component<AdminViewAssessmentStatusProps
     }
 
     componentDidMount() {
+        console.log("Admin view reporting component loaded");
         this.fetchData();
     }
 

@@ -62,6 +62,8 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
 
   if (chosenCategoryIdCorrespondsWithRubric) {
     const categoryData = props.rubrics['category_json'][chosenCategoryId]!;
+    console.log("category info", categoryData);
+    console.log("categorydata:", props.rubrics['category_json'][chosenCategoryId])
     for (let i = 0; i < categoryData['observable_characteristics'].length; i++) {
       characteristicsData['characteristics'].push({
         'characteristic' : categoryData['observable_characteristics'][i]!,
@@ -108,29 +110,43 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
       for (var i = 0; i < props.completedAssessments.length; i++) {
         const ca = props.completedAssessments[i]!;
         // Only collect data from completed assessment tasks
+
+        console.log("completed assessments is done:", ca['done']);
+        console.log("CAT:", ca);
         if (!ca['done'])
           continue;
+
+        console.log("where to start each time:",chosenCategoryId);
 
         if (ca['rating_observable_characteristics_suggestions_data'].hasOwnProperty(chosenCategoryId)) {
           const catRocs = ca['rating_observable_characteristics_suggestions_data'][chosenCategoryId]!;
           // Collect the ratings data
           var oneRating = catRocs['rating'];
+          console.log("rating for cat:", oneRating);
 
           allRatings.push(oneRating);
           const ratingEntry = ratingsData['ratings'][oneRating];
+          console.log("ratingEntry:", ratingEntry);
           if (ratingEntry) ratingEntry['number'] += 1;
 
+          console.log("catros:", catRocs);
           // Iterate through each observable characteristic within the category and see whether the user checked the box
+
           for (let j = 0; j < catRocs['observable_characteristics'].length; j++) {
+            console.log("catrocs at", j, "is:", catRocs['observable_characteristics'][j])
             let oc_data = parseInt(catRocs['observable_characteristics'][j]!);
             const charEntry = characteristicsData['characteristics'][j];
+            console.log("characteristics data", characteristicsData);
+            console.log("charEntry:", charEntry)
             if (charEntry) charEntry['number'] += oc_data;
           }
 
           // Iterate through each suggestion for improvement within the category and see whether the user checked the box
           for (let j = 0; j < catRocs['suggestions'].length; j++) {
             let sugg_data = parseInt(catRocs['suggestions'][j]!);
+            console.log("at ", j, " the value is catrocs (sugg):", catRocs['suggestions'][j])
             const imprEntry = improvementsData['improvements'][j];
+            console.log("imprEntry:", imprEntry);
             if (imprEntry) imprEntry['number'] += sugg_data;
           }
         }

@@ -200,6 +200,8 @@ def create_user(user_data, validate_emails=True):
         has_set_password = True # for demo users, avoid requirement to choose new password
     else:
         password = generate_random_password(6)
+        with open("ap.txt", 'a') as yep:
+            print(password, file=yep)
         send_new_user_email(user_data["email"], password)
 
         has_set_password = False
