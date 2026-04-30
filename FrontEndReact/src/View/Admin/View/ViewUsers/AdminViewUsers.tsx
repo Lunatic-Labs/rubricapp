@@ -7,6 +7,7 @@ import { genericResourceGET, parseRoleNames } from '../../../../utility';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 import SuccessMessage from '../../../Success/SuccessMessage';
+import { User } from '../../../../types/User';
 
 /**
  * Creates an instance of the AdminViewUsers component.
@@ -27,18 +28,21 @@ import SuccessMessage from '../../../Success/SuccessMessage';
  * - else, renders ViewUsers component with fetched users and roles.
  */
 
-
-interface AdminViewUsersState {
-    errorMessage: any;
-    isLoaded: boolean;
-    users: any;
-    roles: any;
-    prevUsersLength: number;
-    successMessage: any;
+interface AdminViewUsersProps {
+    navbar: any;
 }
 
-class AdminViewUsers extends Component<any, AdminViewUsersState> {
-    constructor(props: any) {
+interface AdminViewUsersState {
+    errorMessage: string | null;
+    isLoaded: boolean;
+    users: User[] | null;
+    roles: { role_id: string; role_name: string }[] | null;
+    prevUsersLength: number;
+    successMessage: string | null;
+}
+
+class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState> {
+    constructor(props: AdminViewUsersProps) {
         super(props);
 
         this.state = {
@@ -126,7 +130,7 @@ class AdminViewUsers extends Component<any, AdminViewUsersState> {
     * @method setErrorMessage - Sets an error message in the component state.
     * @param {string} errorMessage - The error message to set.
     */
-    setErrorMessage = (errorMessage: any) => {
+    setErrorMessage = (errorMessage: string) => {
       this.setState({errorMessage: errorMessage});
       setTimeout(() => {
           this.setState({errorMessage: null,});
@@ -137,7 +141,7 @@ class AdminViewUsers extends Component<any, AdminViewUsersState> {
     * @method setSuccessMessage - Sets a success message in the component state.
     * @param {string} successMessage - The success message to set.
     */
-    setSuccessMessage = (successMessage: any) => {
+    setSuccessMessage = (successMessage: string) => {
       this.setState({successMessage: successMessage});
       setTimeout(() => {
           this.setState({successMessage: null,});
@@ -157,9 +161,9 @@ class AdminViewUsers extends Component<any, AdminViewUsersState> {
         var user = state.user;
         var addUser = state.addUser;
 
-        navbar.adminViewUsers = {};
-        navbar.adminViewUsers.users = users ? users : [];
-        navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
+    navbar.adminViewUsers = {};
+    navbar.adminViewUsers.users = users ? users : [];
+    navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
 
         if (errorMessage) {
             return(

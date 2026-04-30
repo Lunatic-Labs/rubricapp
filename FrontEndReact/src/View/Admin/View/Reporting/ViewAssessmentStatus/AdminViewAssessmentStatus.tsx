@@ -4,26 +4,37 @@ import ErrorMessage from '../../../../Error/ErrorMessage';
 import ViewAssessmentStatus from './ViewAssessmentStatus';
 import { genericResourceGET } from '../../../../../utility';
 import Loading from '../../../../Loading/Loading';
+import { AssessmentTask } from '../../../../../types/AssessmentTask';
+import { Category } from '../../../../../types/Category';
+import { Rubric } from '../../../../../types/Rubric';
+import { CompleteAssessmentTask } from '../../../../../types/CompleteAssessmentTask';
+
+interface AdminViewAssessmentStatusProps {
+    navbar: any;
+    chosenAssessmentId: string | number;
+    assessmentTasks: AssessmentTask[];
+    setChosenAssessmentId: (id: string | number) => void;
+}
 
 interface AdminViewAssessmentStatusState {
-    errorMessage: any;
-    isLoaded: any;
-    completedAssessments: any;
-    loadedAssessmentId: any;
-    categories: any;
-    rubrics: any;
+    errorMessage: string | null;
+    isLoaded: boolean | null;
+    completedAssessments: CompleteAssessmentTask[] | null;
+    loadedAssessmentId: string | number;
+    categories: Category[] | null;
+    rubrics: Rubric | null;
     showRatings: boolean;
     showSuggestions: boolean;
     completedByTAs: boolean;
-    courseTotalStudents: any;
-    csvCreation: any;
-    downloadedAssessment: any;
+    courseTotalStudents: number | null;
+    csvCreation: {csv_data: string} | null;
+    downloadedAssessment: string | null;
     chosenCategoryId: string;
 }
 
-class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatusState> {
-    fetchData: any;
-    constructor(props: any) {
+class AdminViewAssessmentStatus extends Component<AdminViewAssessmentStatusProps, AdminViewAssessmentStatusState> {
+    fetchData: () => void;
+    constructor(props: AdminViewAssessmentStatusProps) {
         super(props);
 
         this.state = {
@@ -60,11 +71,12 @@ class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatus
             var completedByTAs = true; 
 
             for (var i = 0; i < this.props.assessmentTasks.length; i++) {
-                if (this.props.assessmentTasks[i]['assessment_task_id'] === this.props.chosenAssessmentId) {
-                    rubricId = this.props.assessmentTasks[i]['rubric_id'];
-                    showRatings = this.props.assessmentTasks[i]['show_ratings'];
-                    showSuggestions = this.props.assessmentTasks[i]['show_suggestions'];
-                    completedByTAs = this.props.assessmentTasks[i]['role_id'] === 4;
+                const task = this.props.assessmentTasks[i]!;
+                if (task.assessment_task_id === this.props.chosenAssessmentId) {
+                    rubricId = task.rubric_id;
+                    showRatings = task.show_ratings;
+                    showSuggestions = task.show_suggestions;
+                    completedByTAs = task.role_id === 4;
                     break;
                 }
             }
@@ -109,10 +121,10 @@ class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatus
         if (this.state.isLoaded && this.state.csvCreation) {
             let fileName = this.props.navbar.state.chosenCourse['course_name'];
 
-            let assessment = this.props.assessmentTasks.find((obj: any) => obj["assessment_task_id"] === this.props.chosenAssessmentId);
+            let assessment = this.props.assessmentTasks.find((obj: AssessmentTask) => obj["assessment_task_id"] === this.props.chosenAssessmentId);
             if (assessment) {
                 const atName = assessment["assessment_task_name"].split(' ');
-                const abbreviationLetters = atName.map((word: any) => word.charAt(0).toUpperCase());
+                const abbreviationLetters = atName.map((word: string) => word.charAt(0).toUpperCase());
                 fileName += '-' + abbreviationLetters.join('');
             }
 
@@ -147,7 +159,7 @@ class AdminViewAssessmentStatus extends Component<any, AdminViewAssessmentStatus
             { dest: "csvCreation" }
         );
 
-        promise.then((result: any) => {
+        promise.then((result: {errorMessage: string | null}) => {
             if (result !== undefined && result.errorMessage === null) {
                 this.setState({
                     downloadedAssessment: "aggregates",

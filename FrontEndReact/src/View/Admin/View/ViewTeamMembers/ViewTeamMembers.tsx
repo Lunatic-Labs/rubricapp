@@ -17,8 +17,11 @@ import CustomDataTable from "../../../Components/CustomDataTable";
  * Handled via CustomDataTable component.
  * 
  */
+interface ViewTeamMembersProps {
+    navbar: any;
+}
 
-class ViewTeamMembers extends Component<any>{
+class ViewTeamMembers extends Component<ViewTeamMembersProps>{
   render() {
     var navbar = this.props.navbar;
     var users = navbar.adminViewTeamMembers.users;

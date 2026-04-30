@@ -47,6 +47,8 @@ BackEndFlask/*.*
 FrontEndReact/*.env*
 FrontEndReact/.env.production
 .vscode
+package.json
+package-lock.json
 
 # Nginx configuration files
 /etc/nginx/sites-available/*

@@ -1397,6 +1397,74 @@ def is_admin_by_user_id(user_id: int) -> bool:
         return True
     return False
 
+def is_super_admin_by_user_id(user_id: int) -> bool:
+    """
+    Description:
+    Returns whether a certain user_id is the super admin (user_id == 1).
+
+    Parameters:
+    user_id: int (User id)
+    
+    Returns:
+    <class 'bool'> (True if user_id is the super admin)
+    """
+    return user_id == 1
+
+def get_admin_notifications() -> list[AdminNotification]:
+    """
+    Description:
+    Returns all admin notifications ordered by most recent first.
+
+    Parameters:
+    None
+    
+    Returns:
+    list[AdminNotification] (All admin notification records)
+    """
+    return db.session.query(AdminNotification).order_by(AdminNotification.sent_at.desc()).all()
+
+def delete_admin_notifications(notification_ids: list[int]) -> int:
+    """
+    Description:
+    Deletes admin notifications by their IDs.
+
+    Parameters:
+    notification_ids: <class 'list[int]'> (list of notification IDs to delete)
+    
+    Returns:
+    int (number of records deleted)
+    """
+    count = db.session.query(AdminNotification).filter(
+        AdminNotification.admin_notification_id.in_(notification_ids)
+    ).delete(synchronize_session='fetch')
+    db.session.commit()
+    return count
+
+def send_notification_update(original_id: int, sender_id: int, subject: str, message: str) -> AdminNotification:
+    """
+    Description:
+    Creates a new AdminNotification record as an update to an existing notification.
+    The new record's thread_id points back to the original notification.
+
+    Parameters:
+    original_id: <class 'int'> (the admin_notification_id of the original notification)
+    sender_id: <class 'int'> (the user_id of the sender)
+    subject: <class 'str'> (the subject of the update)
+    message: <class 'str'> (the message body of the update)
+    
+    Returns:
+    AdminNotification (the newly created notification record)
+    """
+    notification = AdminNotification(
+        sender_id=sender_id,
+        thread_id=original_id,
+        subject=subject,
+        message=message
+    )
+    db.session.add(notification)
+    db.session.commit()
+    return notification
+
 def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id: int = None) -> tuple[dict[str],dict[str]]:
     """
     Description:

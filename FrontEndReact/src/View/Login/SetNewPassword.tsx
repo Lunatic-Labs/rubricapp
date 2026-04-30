@@ -13,7 +13,8 @@ import {
     submitPasswordChange,
     testPasswordStrength,
     getPasswordStrengthIcon,
-    generatePasswordStrengthColors
+    generatePasswordStrengthColors,
+    PasswordStrength
 } from '../../utils/passwordUtils';
 
 interface SetNewPasswordProps {
@@ -21,11 +22,11 @@ interface SetNewPasswordProps {
 }
 
 interface SetNewPasswordState {
-    errorMessage: any;
+    errorMessage: string | null;
     isPasswordSet: boolean;
     password: string;
     confirmationPassword: string;
-    showPassword: any;
+    showPassword: boolean;
     errors: {
         password: string;
         confirmationPassword: string;
@@ -38,13 +39,14 @@ interface SetNewPasswordState {
 }
 
 class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState> {
-    generateColors: any;
-    getIcon: any;
-    handleChange: any;
-    handleTogglePasswordVisibility: any;
-    setPassword: any;
-    testPasswordStrength: any;
-    validatePasswordLength: any;
+    generateColors: (strength: PasswordStrength) => string[];
+    getIcon: (strength: PasswordStrength) => React.ElementType;
+    handleChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
+    handleTogglePasswordVisibility: () => void;
+    setPassword: () => void;
+    testPasswordStrength: (password: string) => PasswordStrength;
+    validatePasswordLength: (password: string, fieldName: string) => boolean;
+
     constructor(props: SetNewPasswordProps) {
         super(props);
 
@@ -53,7 +55,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             isPasswordSet: false,
             password: '',
             confirmationPassword: '',
-            showPassword:'',
+            showPassword:false,
 
             errors : {
                 password: '',
@@ -67,8 +69,8 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             }
         }
 
-        // handleChange uses shared validation utility
-        this.handleChange = (e: any) => {
+        // handleChange has been altered to account for the 20 character limit for password
+        this.handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
             const { id, value } = e.target;
             const errorMessage = validatePasswordField(id, value);
 
@@ -82,13 +84,13 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
         };
 
         // getIcon uses shared utility
-        this.getIcon = (strength: any) => {
+        this.getIcon = (strength: PasswordStrength) => {
             const iconName = getPasswordStrengthIcon(strength);
             return iconName === 'CheckIcon' ? CheckIcon : ErrorOutlineIcon;
         };
 
         // generateColors uses shared utility
-        this.generateColors = (strength: any) => {
+        this.generateColors = (strength: PasswordStrength) => {
             return generatePasswordStrengthColors(strength);
         };
 
@@ -114,7 +116,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
         };
 
         // testPasswordStrength uses shared utility
-        this.testPasswordStrength = (password: any) => {
+        this.testPasswordStrength = (password: string) => {
             return testPasswordStrength(password);
         };
 
@@ -187,7 +189,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                 })
                 .catch((error: any) => {
                     this.setState({
-                        errorMessage: error
+                        errorMessage: String(error)
                     });
                 });
         }
@@ -252,6 +254,37 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                             onChange={this.handleChange}
                                             inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
                                             aria-label="setNewPasswordInput"
+                                            sx={{
+                                                '& .MuiInputBase-input': {
+                                                    color: errors.password ? 'var(--error-color)' : 'var(--text-color)',
+                                                },
+                                                '& .MuiInputLabel-root': {
+                                                    color: errors.password ? 'var(--error-color)' : 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiInputLabel-root.Mui-focused': {
+                                                    color: 'var(--text-color-secondary)',
+                                                },
+                                                '& .MuiOutlinedInput-root': {
+                                                    '& fieldset': {
+                                                        borderColor: 'var(--border-color)',
+                                                    },
+                                                    '&:hover fieldset': {
+                                                        borderColor: 'var(--border-hover-color)',
+                                                    },
+                                                    '&.Mui-focused fieldset': {
+                                                        borderColor: 'var(--textbox-border-focused)',
+                                                    },
+                                                },
+                                                '& .MuiFormHelperText-root': {
+                                                    color: 'var(--error-color)',
+                                                },
+                                                '& .MuiIconButton-root': {
+                                                    color: 'var(--icon-color)',
+                                                },
+                                                '& .MuiSvgIcon-root': {
+                                                    color: 'var(--icon-color)',
+                                                },
+                                            }}
                                             InputProps={{
                                                     endAdornment: (
                                                     <InputAdornment position="end">
@@ -268,7 +301,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                             />
                                         
                                         <Box sx={{display:"flex", alignItems:"center", justifyContent:"center", gap:"5px", margin:"10px 0"}}>
-                                            {colors.map((color: any,index: any) => (
+                                            {colors.map((color: string,index: number) => (
                                                 <Box key={index} bgcolor={color} sx={{ flex: 1, height:"5px", borderRadius:"5px"}}></Box>
                                             ))}
                                         </Box>
@@ -296,7 +329,33 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                     </Box>
 
                                     <TextField
-                                        sx={{ mb: 3, mt: 2 }}
+                                        sx={{ 
+                                            mb: 3, 
+                                            mt: 2,
+                                            '& .MuiInputBase-input': {
+                                                color: errors.confirmationPassword ? 'var(--error-color)' : 'var(--text-color)',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: errors.confirmationPassword ? 'var(--error-color)' : 'var(--text-color-secondary)',
+                                            },
+                                            '& .MuiInputLabel-root.Mui-focused': {
+                                                color: 'var(--text-color-secondary)',
+                                            },
+                                            '& .MuiOutlinedInput-root': {
+                                                '& fieldset': {
+                                                    borderColor: 'var(--border-color)',
+                                                },
+                                                '&:hover fieldset': {
+                                                    borderColor: 'var(--border-hover-color)',
+                                                },
+                                                '&.Mui-focused fieldset': {
+                                                    borderColor: 'var(--textbox-border-focused)',
+                                                },
+                                            },
+                                            '& .MuiFormHelperText-root': {
+                                                color: 'var(--error-color)',
+                                            },
+                                        }}
                                         margin="normal"
                                         required
                                         fullWidth

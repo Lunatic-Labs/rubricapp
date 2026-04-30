@@ -6,7 +6,15 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 
-export default function DropConfirmation( props: any ) {
+interface DropConfirmationProps {
+    userFirstName: string;
+    userLastName: string;
+    show: boolean;
+    handleDialog: () => void;
+    dropUser: () => void;
+}
+
+export default function DropConfirmation( props: DropConfirmationProps ) {
     var userInformation = `${props.userFirstName} ${props.userLastName}`;
 
     return (
