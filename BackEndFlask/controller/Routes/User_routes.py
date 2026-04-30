@@ -194,6 +194,8 @@ def get_all_team_members():
 
             return create_good_response(result, 200, "team_members")
 
+        return create_bad_response("course_id is required", "team_members", 400)
+
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
@@ -301,6 +303,9 @@ def update_user():
                 raise Exception("Admin users cannot be enrolled as students or instructors")
             
             replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
+            user_data = user_schema.dump(user)
+            user_data["role_id"] = role_id
+            return create_good_response(user_data, 201, "users")
 
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")

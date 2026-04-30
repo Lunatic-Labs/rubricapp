@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(MYSQL_HOST=\"localhost:5551\" python -m pytest Tests/integration/models/ --tb=short -q)",
+      "Bash(MYSQL_HOST=\"localhost:5551\" python -m pytest Tests/integration/models/ --tb=line -q)",
+      "Bash(MYSQL_HOST=\"localhost:5551\" python -m pytest Tests/integration/models/test_observable_characteristics_integration.py Tests/integration/models/test_suggestions_integration.py::test_get_suggestions Tests/integration/models/test_team_integration.py::test_get_team_ratings --tb=short -q)",
+      "Bash(MYSQL_HOST=\"localhost:5551\" python -m pytest Tests/integration/models/test_email_validation_integration.py --tb=short -q)"
+    ]
+  }
+}

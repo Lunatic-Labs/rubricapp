@@ -350,7 +350,7 @@ def replace_user(user_data, user_id):
     one_user = User.query.filter_by(user_id=user_id).first()
 
     if one_user is None:
-        raise InvalidUserID
+        raise InvalidUserID(user_id)
 
     if one_user.email != user_data["email"]:
         spawn_thread(validate_pending_emails)

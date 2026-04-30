@@ -114,6 +114,33 @@ def create_completed_assessment(completed_assessment_data):
     
     return completed_assessment
 
+@error_log
+def toggle_lock_status(completed_assessment_id):
+    ca = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    if ca is None:
+        raise InvalidCRID(completed_assessment_id)
+    ca.locked = not ca.locked
+    db.session.commit()
+    return ca
+
+@error_log
+def make_complete_assessment_locked(completed_assessment_id):
+    ca = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    if ca is None:
+        raise InvalidCRID(completed_assessment_id)
+    ca.locked = True
+    db.session.commit()
+    return ca
+
+@error_log
+def make_complete_assessment_unlocked(completed_assessment_id):
+    ca = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    if ca is None:
+        raise InvalidCRID(completed_assessment_id)
+    ca.locked = False
+    db.session.commit()
+    return ca
+
 def toggle_individual_lock_status(completed_assessment_id, locked):
     """
     Toggle the lock status for a single completed assessment

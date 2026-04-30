@@ -283,7 +283,7 @@ def get_all_adhoc_teams_from_AT(assessment_task_id):
 
 # HERE
 @error_log
-def get_team_users(course_id: int, team_id: int, user_id: int):
+def get_team_users(course_id: int, team_id: int, user_id: int = None):
     """
     Description:
     Gets all users associated with the given team in the given course.
@@ -327,8 +327,6 @@ def get_team_by_course_id_and_observer_id(course_id, observer_id):
     """
     teams = db.session.query(
         Team
-    ).join(
-        TeamUser, TeamUser.team_id == Team.team_id
     ).filter(
         and_(
             Team.course_id == course_id,
@@ -666,31 +664,23 @@ def get_team_ratings(assessment_task_id):
             User.first_name,
             User.last_name,
             CompletedAssessment.completed_by,
-            TeamUser.user_id,
+            CompletedAssessment.user_id,
         )
         .select_from(CompletedAssessment)
-        # One CompletedAssessment per team for this AT
         .join(
             Team,
             CompletedAssessment.team_id == Team.team_id,
         )
-        # All users assigned to that team
-        .join(
-            TeamUser,
-            TeamUser.team_id == Team.team_id,
-        )
-        # User info for each team member
-        .join(
+        .outerjoin(
             User,
-            User.user_id == TeamUser.user_id,
+            User.user_id == CompletedAssessment.user_id,
         )
-        # Feedback (if it exists) for that user + completed assessment
         .outerjoin(
             Feedback,
             and_(
                 Feedback.completed_assessment_id
                 == CompletedAssessment.completed_assessment_id,
-                Feedback.user_id == User.user_id,
+                Feedback.user_id == CompletedAssessment.user_id,
             ),
         )
         .filter(
@@ -800,10 +790,7 @@ def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
         )
     else:
         all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
-            or_(
-                Rubric.owner == user_id,
-                Rubric.owner == owner_id
-            )
+            Rubric.owner == user_id
         )
 
     all_rubrics_and_total_categories = all_rubrics_and_total_categories.group_by(
@@ -1163,7 +1150,7 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     complete_assessments = complete_assessments_team.union(complete_assessments_ind)
     final_result = complete_assessments.union(complete_assessments_adhoc)
 
-    return final_result
+    return final_result.all()
 
 @error_log
 def get_completed_assessment_by_ta_user_id(course_id, user_id):
@@ -1432,15 +1419,13 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
     if at_id is None and completed_at_id is None:
         raise TypeError("Both at_id and completed_at_id can not be <class 'NoneType'>.")
 
-    student_info = db.session.query(
-        CompletedAssessment.last_update,
-        User.first_name,
-        User.last_name,
-        User.email
-    )
-
     if is_teams:
-        student_info = student_info.join(
+        student_info = db.session.query(
+            func.max(CompletedAssessment.last_update).label('last_update'),
+            User.first_name,
+            User.last_name,
+            User.email
+        ).join(
             TeamUser,
             TeamUser.team_id == CompletedAssessment.team_id
         ).join(
@@ -1448,7 +1433,12 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
             User.user_id == TeamUser.user_id
         )
     else:
-        student_info = student_info.join(
+        student_info = db.session.query(
+            CompletedAssessment.last_update,
+            User.first_name,
+            User.last_name,
+            User.email
+        ).join(
             User,
             User.user_id == CompletedAssessment.user_id
         )
@@ -1460,6 +1450,11 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
     else:
         student_info = student_info.filter(
             CompletedAssessment.completed_assessment_id == completed_at_id
+        )
+
+    if is_teams:
+        student_info = student_info.group_by(
+            User.user_id, User.first_name, User.last_name, User.email
         )
 
     return student_info.all() 
@@ -1506,7 +1501,13 @@ def get_num_of_adhocs(assessment_task_id:int):
     """
 
     pattern = '^Team [0-9]+$'
-    count = db.session.query(func.count(Team.team_id)).filter(
+    count = db.session.query(func.count(func.distinct(Team.team_id))).join(
+        Checkin,
+        and_(
+            Checkin.team_number == Team.team_id,
+            Checkin.assessment_task_id == assessment_task_id,
+        )
+    ).filter(
         Team.team_name.op('REGEXP')(pattern),
         Team.assessment_task_id == assessment_task_id
     ).scalar()

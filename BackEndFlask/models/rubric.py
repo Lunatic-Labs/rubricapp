@@ -74,7 +74,7 @@ def delete_rubric_by_id(rubric_id):
             AssessmentTask.rubric_id == rubric_id
         ).count()
         if in_use_count > 0:
-            raise ValueError("Cannot delete custom rubric with associated tasks")
+            raise ValueError("Cannot delete rubric used in one or more assessment tasks")
 
         # Remove dependent RubricCategories first (avoids MySQL 1451 FK error)
         db.session.query(RubricCategory).filter(
@@ -84,12 +84,12 @@ def delete_rubric_by_id(rubric_id):
         # Delete the rubric itself
         db.session.delete(rubric)
         db.session.commit()
-        return True
+        return rubric
 
     except IntegrityError as e:
         db.session.rollback()
         if "foreign key constraint" in str(e).lower():
-            raise ValueError("Cannot delete custom rubric with associated tasks")
+            raise ValueError("Cannot delete rubric used in one or more assessment tasks")
         raise
     except Exception:
         db.session.rollback()
