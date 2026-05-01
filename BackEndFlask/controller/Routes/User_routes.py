@@ -133,11 +133,14 @@ def get_all_users():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("user_id")):
-            user_id = request.args.get("user_id") 
+            uid = request.args.get("uid")
 
-            user = get_user(user_id)  # Trigger an error if not exists.
+            if uid:
+                user = get_user(uid)  # Trigger an error if not exists.
+                return create_good_response(user_schema.dump(user), 200, "users")
 
-            return create_good_response(user_schema.dump(user), 200, "users")
+            all_users = get_users()
+            return create_good_response(users_schema.dump(all_users), 200, "users")
 
         all_users = get_users()
 
@@ -324,10 +327,8 @@ def update_user():
 
 # change was made here...
 
-        if(request.args and request.args.get("user_id")):
+        if(request.args and request.args.get("user_id") and not request.args.get("uid")):
             uid = request.args.get("user_id")
-
-            # print(uid)
 
             user = get_user(uid)  # Trigger an error if not exists.
 

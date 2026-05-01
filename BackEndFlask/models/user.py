@@ -403,7 +403,7 @@ def replace_user(user_data, user_id):
 
     one_user.owner_id = user_data["owner_id"]
 
-    one_user.user_dark_mode = user_data["user_dark_mode"]
+    one_user.user_dark_mode = user_data.get("user_dark_mode", False)
 
     db.session.commit()
 
