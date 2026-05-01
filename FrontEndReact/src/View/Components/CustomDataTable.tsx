@@ -189,36 +189,33 @@ const customTheme = createTheme({
 MuiTablePagination: {
   styleOverrides: {
     root: {
-      '@media (max-width: 600px)': {
         width: '100%',
         overflowX: 'hidden',
-      }
+      
     },
     toolbar: {
-      '@media (max-width: 600px)': {
         flexWrap: 'wrap',
         padding: '4px 0px',
         justifyContent: 'flex-end',
         width: '100%',
         gap: '4px',
-      }
-    },
+        minHeight: 'unset',
+      },
     spacer: {
-      '@media (max-width: 600px)': {
         display: 'none',
-      }
     },
     selectLabel: {
-      '@media (max-width: 600px)': {
         fontSize: '0.75rem',
         margin: '0px',
-      }
     },
     displayedRows: {
-      '@media (max-width: 600px)': {
-        fontSize: '0.85rem',
-      }
-    },
+        fontSize: '0.75rem',
+        margin: '0px',
+      },
+    actions: {
+      marginLeft: '0px',
+      flexShrink: 0,
+    }
   }
 },
   },
