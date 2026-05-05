@@ -3,7 +3,7 @@
 set -e
 
 # =====================================================
-# This script is made for Ubunut / Debian-Based Distros
+# This script is made for Ubuntu / Debian-Based Distros
 # =====================================================
 
 # ===================================================================
@@ -361,7 +361,9 @@ function install_sys_deps() {
 
     log "installing dependencies"
 
-    sudo apt install $DEPS -y
+
+    # Install all dependencies and ensures non-interactive install for openssh-server and mysql-server
+    sudo DEBIAN_FRONTEND=noninteractive apt install $DEPS -y
 
     log "done"
 }
@@ -410,11 +412,7 @@ function install_npm_deps() {
     # Clean partial installs if needed
     rm -rf node_modules
 
-    if [ -f package-lock.json ]; then
-        npm ci --legacy-peer-deps
-    else
-        npm install --legacy-peer-deps
-    fi
+    npm install --legacy-peer-deps || panic "Failed to install npm dependencies"
 
     # Fix ajv dependency conflict with react-scripts/webpack
     # react-scripts ships with an older ajv that breaks the build
@@ -602,7 +600,8 @@ function setup_proj_root() {
 
     log "The project has been successfully setup.
     The main project has been cloned into: $PROJ_DIR.
-    Next, re-run this script which is located in $PROJ_DIR/Cloud with $INIT"}
+    Next, re-run this script which is located in $PROJ_DIR/Cloud with $INIT"
+}
 
 # ======================
 # APPLICATION SERVING

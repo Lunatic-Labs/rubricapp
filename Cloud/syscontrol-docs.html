@@ -61,25 +61,13 @@
 <!-- ============================================================ -->
 <h2 id="tldr"><span class="section-number-2">1</span> TL;DR</h2>
 
-<p><strong>For a server without a domain pointed yet (test server):</strong></p>
 <ol>
   <li>Clone the repo</li>
   <li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
   <li><code>./syscontrol.sh --fresh</code></li>
   <li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
-  <li>Create <code>BackEndFlask/.env</code> — see <a href="#env-setup">Section 2</a></li>
-  <li><code>./syscontrol.sh --init</code> — enter your domain, answer <code>Y</code> to continue, answer <code>N</code> to the SSL question</li>
-  <li><code>./syscontrol.sh --serve</code> — enter your domain when prompted</li>
-</ol>
-
-<p><strong>For a server with a domain already pointed:</strong></p>
-<ol>
-  <li>Clone the repo</li>
-  <li><code>cd</code> into <code>./rubricapp/Cloud</code></li>
-  <li><code>./syscontrol.sh --fresh</code></li>
-  <li><code>cd ~/RUBRICAPP_PRODUCTION/rubricapp/Cloud</code></li>
-  <li>Create <code>BackEndFlask/.env</code> — see <a href="#env-setup">Section 2</a></li>
-  <li><code>./syscontrol.sh --init</code> — enter your domain, answer <code>Y</code> to continue, answer <code>Y</code> to the SSL question</li>
+  <li>Create both <code>.env</code> files — see <a href="#env-setup">Section 2</a></li>
+  <li><code>./syscontrol.sh --init</code> — you will be prompted for your domain and asked whether SSL is ready</li>
   <li><code>./syscontrol.sh --serve</code> — enter your domain when prompted</li>
 </ol>
 
@@ -91,18 +79,54 @@
 <h2 id="env-setup"><span class="section-number-2">2</span> Environment Setup (.env)</h2>
 
 <p>
-  Before running any command, the backend <code>.env</code> file must be manually created at:
-</p>
-<pre>~/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/.env</pre>
-
-<p>
-  This file is not stored in the repo and is never pushed by the servers — they only pull from master.
-  Refer to the server guide for the correct values for your environment.
+  Before running <code>--init</code>, two <code>.env</code> files must be manually created on the server.
+  These files are not stored in the repo. Refer to the server guide for the correct values for your environment.
 </p>
 
 <div class="warning">
-  <strong>Important:</strong> The script will fail at the database setup step if this file is missing
-  or incomplete. Always create it before running <code>--init</code>.
+  <strong>Important:</strong> The script will fail at the database setup step if these files are missing
+  or incomplete. Always create them before running <code>--init</code>.
+</div>
+
+<h3>BackEndFlask/.env — Test Server (local MySQL)</h3>
+<pre>
+FRONT_END_URL=[server-ip-or-domain]
+SUPER_ADMIN_PASSWORD=[your-super-admin-password]
+DEMO_ADMIN_PASSWORD=[demo-admin-password]
+DEMO_TA_INSTRUCTOR_PASSWORD=[demo-ta-password]
+DEMO_STUDENT_PASSWORD=[demo-student-password]
+SECRET_KEY=[your-secret-key]
+MYSQL_HOST=localhost
+MYSQL_PORT=3306
+MYSQL_USER=[your-mysql-user]
+MYSQL_PASSWORD=[your-mysql-password]
+MYSQL_DATABASE=rubricapp
+</pre>
+
+<h3>BackEndFlask/.env — Production Server (managed DB)</h3>
+<pre>
+FRONT_END_URL=[your-domain]
+SUPER_ADMIN_PASSWORD=[your-super-admin-password]
+DEMO_ADMIN_PASSWORD=[demo-admin-password]
+DEMO_TA_INSTRUCTOR_PASSWORD=[demo-ta-password]
+DEMO_STUDENT_PASSWORD=[demo-student-password]
+SECRET_KEY=[your-secret-key]
+MYSQL_HOST=[your-managed-db-host]
+MYSQL_PORT=25060
+MYSQL_USER=[your-managed-db-user]
+MYSQL_PASSWORD=[your-managed-db-password]
+MYSQL_DATABASE=rubricapp
+MYSQL_SSLMODE=REQUIRED
+</pre>
+
+<h3>BackEndFlask/sendgrid.env</h3>
+<pre>
+SENDGRID_API_KEY=[your-sendgrid-api-key]
+</pre>
+
+<div class="note">
+  <strong>Note:</strong> Actual credentials for each environment are in the server guide or would need to be obtained.
+  Do not commit these files to the repo.
 </div>
 
 <!-- ============================================================ -->
@@ -123,9 +147,10 @@ cd ./rubricapp/Cloud/</pre>
 <p>Navigate to the production directory:</p>
 <pre class="src src-bash">cd /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/Cloud/</pre>
 
-<p>
-  Create your <code>BackEndFlask/.env</code> file before continuing — see <a href="#env-setup">Section 2</a>.
-</p>
+<div class="warning">
+  <strong>Important:</strong> Before going any further, create both <code>.env</code> files — see <a href="#env-setup">Section 2</a>.
+  The script will fail at the database step if they are missing.
+</div>
 
 <p>Then run:</p>
 <pre class="src src-bash">./syscontrol.sh --init</pre>
@@ -367,7 +392,7 @@ Same as <code>--configure</code>.</p>
   <p class="date">Created: 2024-03-05 Tue 13:50</p>
   <br>
   <p class="author">Updated by: Beshoy Iskandar</p>
-  <p class="date">Last Updated: 2026-04-21</p>
+  <p class="date">Last Updated: 2026-04-28</p>
 </div>
 </body>
 </html>
