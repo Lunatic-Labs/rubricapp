@@ -88,7 +88,8 @@ def create_graph(elements: List[Dict], output_path: str = "graph.html"):
                         'width': '50px',
                         'height': '50px',
                         'text-wrap': 'wrap',
-                        'text-max-width': '120px'
+                        'text-max-width': '120px',
+                        'color': '#ffffff'
                     }}
                 }},
                 {{
@@ -172,45 +173,52 @@ def create_graph(elements: List[Dict], output_path: str = "graph.html"):
 def generate_graph_elements(endpoints:      List[endpoint.Endpoint],
                             endpoint_calls: List[endpointcall.EndpointCall]) -> List[Dict[str, Any]]:
     elements: List[Dict[str, Any]] = []
-    endpoint_map: Dict[str, str] = {}  # endpoint_str -> node_id
 
-    # Endpoints
+    endpoint_map: Dict[tuple[str, int], str] = {}  # (endpoint_str, kind) -> node_id
+
+    # endpoints
     for idx, point in enumerate(endpoints):
         node_id = f"ep_{idx}"
-        endpoint_map[point.endpoint_str] = node_id
+        key = (point.endpoint_str, point.kind)
+        endpoint_map[key] = node_id
+
         elements.append({
             "data": {
                 "id": node_id,
-                "label": f"{point.func_name} ({point.endpoint_str})",
+                "label": f"{point.func_name} ({point.endpoint_str} [{glconf.KIND_NAME[point.kind]}])",
                 "type": "endpoint",
                 "func_name": point.func_name,
                 "endpoint_str": point.endpoint_str,
+                "kind": glconf.KIND_NAME[point.kind],
                 "location": point.location.to_dict(),
             }
         })
 
-    # Calls
+    # calls
     for idx, call in enumerate(endpoint_calls):
+        kind_name = glconf.KIND_NAME[call.kind]
         node_id = f"call_{idx}"
+
         elements.append({
             "data": {
                 "id": node_id,
-                "label": f"{call.kind.name} {call.dst}",
+                "label": f"{kind_name} {call.dst}",
                 "type": "call",
-                "kind": call.kind.name,
+                "kind": kind_name,
                 "dst": call.dst,
                 "args": call.args,
                 "location": call.location.to_dict(),
             }
         })
 
-        # Link if possible
-        if call.dst in endpoint_map:
+        # link to correct endpoint
+        key = (call.dst, call.kind)
+        if key in endpoint_map:
             elements.append({
                 "data": {
                     "id": f"edge_{idx}",
                     "source": node_id,
-                    "target": endpoint_map[call.dst],
+                    "target": endpoint_map[key],
                 }
             })
 
@@ -242,20 +250,20 @@ def parse_args():
     parser.add_argument(
         '--nocolor',
         action='store_true',
-        help='Disable colored output'
+        help='Disable colored output (unimplemented)'
     )
 
     parser.add_argument(
         '--nogui',
         action='store_true',
-        help='Disable GUI (run in headless mode)'
+        help='Disable GUI (run in headless mode) (unimplemented)'
     )
 
     parser.add_argument(
         '-e',
         '--exportmap',
         action='store_true',
-        help='Export map/data'
+        help='Export map/data (unimplemented)'
     )
 
     parser.add_argument(
@@ -271,7 +279,7 @@ def parse_args():
         required=True,
         type=Path,
         metavar='PATH',
-        help='Path to TypeScript/React (.tsx) files directory'
+        help='Path to TypeScript/React files directory'
     )
 
     args = parser.parse_args()
@@ -281,13 +289,13 @@ def parse_args():
 
 def link_calls(endpoints:      List[endpoint.Endpoint],
                endpoint_calls: List[endpointcall.EndpointCall]):
-
-    linked, unlinked = ([], [])
+    linked, unlinked = [], []
 
     for call in endpoint_calls:
         found = False
         for point in endpoints:
-            if point.endpoint_str == call.dst:
+            if point.endpoint_str == call.dst \
+               and point.kind == call.kind:
                 found = True
                 break
         if found:
@@ -299,27 +307,25 @@ def link_calls(endpoints:      List[endpoint.Endpoint],
 
 
 def main():
-    try:
-        pyfiles        = inout.collect_files_by_extension(glconf.state.pypath, 'py')
-        tsxfiles       = inout.collect_files_by_extension(glconf.state.tsxpath, 'tsx')
-        endpoints      = []
-        endpoint_calls = []
+    pyfiles        = inout.collect_files_by_extension(glconf.state.pypath, 'py')
+    tsxfiles       = inout.collect_files_by_extension(glconf.state.tsxpath, 'tsx')
+    endpoints      = []
+    endpoint_calls = []
 
-        for f in pyfiles:  endpoints      += parse_python(f)
-        for f in tsxfiles: endpoint_calls += parse_tsx(f)
+    for f in pyfiles:  endpoints      += parse_python(f)
+    for f in tsxfiles: endpoint_calls += parse_tsx(f)
 
-        linked, unlinked = link_calls(endpoints, endpoint_calls)
+    linked, unlinked = link_calls(endpoints, endpoint_calls)
 
-        elements = generate_graph_elements(endpoints, endpoint_calls)
-        create_graph(elements, "graph.html")
+    elements = generate_graph_elements(endpoints, endpoint_calls)
+    create_graph(elements, "index.html")
 
-        for l in linked:
-            print(f'Linked: {l}')
-        for u in unlinked:
-            print(f'Unlinked: {u}')
+    for l in linked:   print(f'Linked: {l}')
+    for u in unlinked: print(f'Unlinked: {u}')
 
-    except Exception as e:
-        print(f'error: {e}', file=sys.stderr)
+    print('\n*** OPEN `index.html\' IN A WEB BROWSER TO VIEW THE CALL GRAPH ***')
+
+    sys.exit(0)
 
 
 if __name__ == '__main__':

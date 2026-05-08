@@ -3,21 +3,20 @@ from enum import Enum
 import tree_sitter_typescript as tstypescript
 
 from location import Location
+from glconf import GET, POST, PUT, KIND_NAME
 
 class EndpointCall:
-    class Kind(Enum):
-        GET  = 0
-        POST = 1
-        PUT  = 2
-
-    def __init__(self, kind, dst, args, location):
+    def __init__(self, kind: int, dst, args, location):
+        assert kind >= GET and kind <= PUT
         self.kind     = kind
         self.dst      = dst
         self.args     = args
         self.location = location
 
     def __str__(self):
-        return f'{self.kind.name} -> {self.dst}, args = {self.args} @ {self.location}'
+        try: kind = KIND_NAME[self.kind]
+        except: kind = 'UNKNOWN'
+        return f'{kind} -> {self.dst}, args = {self.args} @ {self.location}'
 
 
 def trimdst(s):
@@ -39,11 +38,11 @@ def find(node, src, path):
             kind = None
 
             if func_name == 'genericResourcePOST':
-                kind = EndpointCall.Kind.POST
+                kind = POST
             elif func_name == 'genericResourcePUT':
-                kind = EndpointCall.Kind.PUT
+                kind = PUT
             elif func_name == 'genericResourceGET':
-                kind = EndpointCall.Kind.GET
+                kind = GET
 
             if kind is not None:
                 args_node = next((c for c in node.children if c.type == 'arguments'), None)
