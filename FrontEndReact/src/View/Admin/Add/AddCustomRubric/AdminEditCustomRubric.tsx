@@ -4,16 +4,18 @@ import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourceGET, parseCategoriesToContained, parseCategoryIDToCategories, } from "../../../../utility";
 import AddCustomRubric from "./AddCustomRubric";
 import Loading from "../../../Loading/Loading";
+import { Rubric } from "../../../../types/Rubric";
+import { Category } from "../../../../types/Category";
 
 interface AdminEditCustomRubricProps {
     navbar: any;
 }
 
 interface AdminEditCustomRubricState {
-    isLoaded: any;
-    errorMessage: any;
-    rubrics: any;
-    categories: any;
+    isLoaded: boolean | null;
+    errorMessage: string | null;
+    rubrics: Rubric[] | null;
+    categories: Category[] | null;
 }
 
 class AdminEditCustomRubric extends Component<AdminEditCustomRubricProps, AdminEditCustomRubricState> {

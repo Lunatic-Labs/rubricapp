@@ -4,6 +4,7 @@ import CustomButton from '../Components/CustomButton';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import { Grid, Alert } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility';
+import { User } from '../../../../types/User';
 
 /**
  * @description
@@ -29,7 +30,7 @@ import { genericResourcePOST } from '../../../../utility';
  */
 
 interface ConfirmCurrentTeamTableProps {
-	students: any[];
+	students: User[];
 	teamId: string | number;
 	teamName: string;
 	navbar: any;
@@ -158,7 +159,7 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 				name: "email",
 				label: "Email",
 				options: {
-					customBodyRender: (value: any) => <div style={{ textAlign: 'left' }}>{value}</div>,
+					customBodyRender: (value: string) => <div style={{ textAlign: 'left' }}>{value}</div>,
 					filter: true
 				},
 			},

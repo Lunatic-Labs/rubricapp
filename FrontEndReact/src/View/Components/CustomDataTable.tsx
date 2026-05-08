@@ -1,7 +1,13 @@
 import React from 'react';
+import { createTheme, ThemeProvider } from '@mui/material';
 import MUIDataTable from 'mui-datatables';
-import { createTheme, ThemeProvider } from '@mui/material/';
 import { useMediaQuery } from '@mui/material';
+
+interface CustomDataTableProps {
+    data: object[];
+    columns: any[];
+    options?: Record<string, unknown>;
+}
 
 const customTheme = createTheme({
   spacing: 4,
@@ -45,6 +51,16 @@ const customTheme = createTheme({
         },
       },
     },
+    MuiPaper: {
+  styleOverrides: {
+    root: {
+      width: '100%',    
+      maxWidth: '100%',
+      overflowX: 'hidden',
+      boxSizing: 'border-box'
+        }
+      }
+     },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -159,115 +175,64 @@ const customTheme = createTheme({
         },
       },
     },
-    // Add styling for the paper/root element to ensure proper background
-    // @ts-ignore: MUIDataTable custom component
-    MUIDataTable: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "var(--table-toolbar)",
-        },
-      },
-    },
-    // Style the pagination component
-    MuiTablePagination: {
-      styleOverrides: {
-        root: {
-          color: "var(--table-text)",
-        },
-        selectIcon: {
-          color: "var(--table-text)",
-        },
-        actions: {
-          color: "var(--table-text)",
-        },
-      },
-    },
-    // Style the select dropdown in the toolbar
-    MuiSelect: {
-      styleOverrides: {
-        root: {
-          color: "var(--table-text)",
-        },
-        icon: {
-          color: "var(--table-text)",
-        },
-      },
-    },
-    MuiMenuItem: {
-      styleOverrides: {
-        root: {
-          color: "var(--table-text)",
-          backgroundColor: "var(--dropdown-bg)",
-          '&.Mui-selected': {
-            backgroundColor: "var(--dropdown-selected)",
-          },
-          '&.Mui-selected:hover': {
-            backgroundColor: "var(--dropdown-selected)",
-          },
-          '&:hover': {
-            backgroundColor: "var(--dropdown-hover)",
-          },
-        },
-      },
-    },
-    MuiButtonBase: {
-      styleOverrides: {
-        root: {
-          color: "var(--table-text)",
-        },
-      },
-    },
-    // Style the paper component used for dropdowns
-    MuiPaper: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "var(--table-toolbar)",
-        },
-        outlined: {
-          backgroundColor: "var(--table-toolbar)",
-        },
-      },
-    },
-    // @ts-ignore: MUIDataTable custom component
-    MUIDataTableFilter: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "var(--dropdown-bg)",
-          color: "var(--table-text)",
-        },
-        header: {
-          backgroundColor: "var(--dropdown-bg)",
-          color: "var(--table-text)",
-        },
-        resetLink: {
-          color: "var(--table-text)",
-        },
-      },
-    },
-    // @ts-ignore: MUIDataTable custom component
-    MUIDataTableFilterList: {
-      styleOverrides: {
-        root: {
-          color: "var(--table-text)",
-        },
-      },
+    MUIDataTablePagination: {
+    styleOverrides: {
+    root: {
+      '@media (max-width: 600px)': {
+        flexWrap: 'wrap',
+        padding: '0px',
+        width: '100%',
+      }
     },
   },
-});
+},
+MuiTablePagination: {
+  styleOverrides: {
+    root: {
+      '@media (max-width: 600px)': {
+        width: '100%',
+        overflowX: 'hidden',
+      }
+    },
+    toolbar: {
+      '@media (max-width: 600px)': {
+        flexWrap: 'wrap',
+        padding: '4px 0px',
+        justifyContent: 'flex-end',
+        width: '100%',
+        gap: '4px',
+      }
+    },
+    spacer: {
+      '@media (max-width: 600px)': {
+        display: 'none',
+      }
+    },
+    selectLabel: {
+      '@media (max-width: 600px)': {
+        fontSize: '0.75rem',
+        margin: '0px',
+      }
+    },
+    displayedRows: {
+      '@media (max-width: 600px)': {
+        fontSize: '0.85rem',
+      }
+    },
+  }
+},
+  },
+}
+);
 
-const CustomDataTable = ({
-  data,
-  columns,
-  options
-}: any) => {
-    const isMobile = useMediaQuery('(max-width:600px)');
-  
-    const defaultOptions = {
+const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
+  const isMobile = useMediaQuery('(max-width:600px)');
+  const defaultOptions = {
     rowStyle: { height: 4 },
-    responsive: isMobile ? "vertical" : "standard",
+    responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard",
   };
 
-  const tableOptions = { ...defaultOptions, ...options,};
+  const tableOptions = { ...defaultOptions, ...options,}
 
   return (
     <ThemeProvider theme={customTheme}>

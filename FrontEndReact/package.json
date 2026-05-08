@@ -53,7 +53,8 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "eject": "react-scripts eject",
+    "prepare": "git rev-parse --is-inside-work-tree && git config core.hooksPath FrontEndReact/.husky/ || true"
   },
   "eslintConfig": {
     "extends": [
@@ -82,9 +83,10 @@
     "@types/mui-datatables": "^4.3.13",
     "@types/react": "^18.3.12",
     "@types/react-dom": "^18.3.7",
+    "@types/testing-library__jest-dom": "^5.14.9",
     "@types/universal-cookie": "^2.2.0",
     "@types/validator": "^13.15.10",
-    "jest": "^25.0.0",
+    "jest": "^30.3.0",
     "react-test-renderer": "^18.3.1",
     "resize-observer-polyfill": "1.5.1"
   },
