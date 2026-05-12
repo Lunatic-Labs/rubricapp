@@ -1,9 +1,9 @@
+import json
 import pytest
 from unittest.mock import patch, MagicMock, call
 from models.utility import *
 from controller.Routes.RouteExceptions import *
 import string
-from time import time
 
 
 class TestGenerateRandomPassword:
@@ -172,14 +172,14 @@ class TestCheckBouncedEmails:
         mock_config.rubricapp_running_locally = False
         mock_response = MagicMock()
         mock_response.status_code = 200
-        mock_response.body = [
+        mock_response.body = json.dumps([
             {
                 'created': 1234567890,
                 'email': 'bounced@example.com',
                 'status': '550 User not found',
                 'reason': 'Invalid recipient'
             }
-        ]
+        ]).encode('utf-8')
         mock_sendgrid.client.suppression.bounces.get.return_value = mock_response
         
         result = check_bounced_emails()

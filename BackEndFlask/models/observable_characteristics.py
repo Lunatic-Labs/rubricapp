@@ -17,17 +17,17 @@ def get_observable_characteristics():
 
 @error_log
 def get_observable_characteristic(observable_characteristic_id):
-    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
+    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristics_id=observable_characteristic_id).first()
 
     if one_observable_characteristic is None:
         raise InvalidObservableCharacteristicID(observable_characteristic_id)
-    
+
     return one_observable_characteristic
 
 
 @error_log
 def get_observable_characteristic_per_category(category_id):
-    observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id)
+    observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id).all()
 
     return observable_characteristic_per_category
 
@@ -47,14 +47,13 @@ def create_observable_characteristic(observable_characteristic):
 
 @error_log
 def replace_observable_characteristic(observable_characteristic, observable_characteristic_id):
-    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristic_id=observable_characteristic_id).first()
+    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristics_id=observable_characteristic_id).first()
 
     if one_observable_characteristic is None:
         raise InvalidObservableCharacteristicID(observable_characteristic_id)
     
-    one_observable_characteristic.rubric_id = observable_characteristic[0]
-    one_observable_characteristic.category_id = observable_characteristic[1]
-    one_observable_characteristic.observable_characteristic_text = observable_characteristic[2]
+    one_observable_characteristic.category_id = observable_characteristic[0]
+    one_observable_characteristic.observable_characteristic_text = observable_characteristic[1]
 
     db.session.commit()
 

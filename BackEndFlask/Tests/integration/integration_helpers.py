@@ -43,7 +43,7 @@ def build_sample_task_payload(course_id, rubric_id, role_id=5, task_name=None):
         "course_id": course_id,
         "rubric_id": rubric_id,
         "role_id": role_id,
-        "due_date": "2026-01-01T12:00:00", 
+        "due_date": "2099-01-01T12:00:00",
         "time_zone": "EST",
         "show_suggestions": True,
         "show_ratings": True,

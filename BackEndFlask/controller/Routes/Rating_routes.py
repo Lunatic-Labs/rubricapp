@@ -111,7 +111,9 @@ def get_ratings():
                 400,
             )
 
-        team_flag = request.args.get("team_id")
+        team_flag_raw = request.args.get("team_id")
+        # team_id=0 means individual assessment; only treat as team when > 0
+        team_flag = team_flag_raw and team_flag_raw != "0"
 
         # Fetch notification_sent for both team and individual branches
         from models.assessment_task import get_assessment_task
@@ -247,10 +249,20 @@ def student_view_feedback():
                 400,
             )
 
+        # For team assessments (team_id > 0), feedback is keyed by team not user
+        team_id_param = request.args.get("team_id")
+        is_team = team_id_param and team_id_param != "0"
+
+        if is_team:
+            effective_user_id = None
+        else:
+            body_user_id = payload.get("user_id")
+            effective_user_id = body_user_id if body_user_id is not None else user_id
+
         team_id = payload.get("team_id")
 
-        # Do not create duplicates for the same user + completed assessment
-        exists = check_feedback_exists(user_id, completed_assessment_id)
+        # Do not create duplicates for the same user/team + completed assessment
+        exists = check_feedback_exists(effective_user_id, completed_assessment_id)
         if exists:
             return create_bad_response(
                 "Using server's existing data as source of truth.",
@@ -259,12 +271,13 @@ def student_view_feedback():
             )
 
         feedback_data = dict(payload)
-        feedback_data["user_id"] = user_id
+        feedback_data["user_id"] = effective_user_id
         feedback_data["team_id"] = team_id if team_id is not None else None
 
-        # Use server time as the feedback_time stamp
-        string_format = "%Y-%m-%dT%H:%M:%S.%fZ"
-        feedback_data["feedback_time"] = datetime.now().strftime(string_format)
+        # Use provided feedback_time if available, otherwise use server time
+        if not feedback_data.get("feedback_time"):
+            string_format = "%Y-%m-%dT%H:%M:%S.%fZ"
+            feedback_data["feedback_time"] = datetime.now().strftime(string_format)
 
         feedback = create_feedback(feedback_data)
 

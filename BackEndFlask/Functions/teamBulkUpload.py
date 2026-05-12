@@ -100,6 +100,8 @@ def _parse(lst: list[list[str]]) -> list[TBUTeam]:
             ta = hd[0]
             current_state = ParseState.TEAM 
         elif current_state == ParseState.TEAM:
+            if len(hd) == 0:
+                raise EmptyTeamName
             if len(hd) != 1:
                 raise TooManyColumns(current_row, 1, len(hd))
             team_name = hd[0]
@@ -319,7 +321,7 @@ def _verify_information(teams: list[TBUTeam]):
             if student.email == "":
                 raise EmptyStudentEmail
             if not helper_verify_email_syntax(student.email):
-                raise SuspectedMisformatting()
+                raise SuspectedMisformatting(student.email)
 
 # First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):

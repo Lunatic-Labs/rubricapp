@@ -42,11 +42,31 @@ def get_feedback_per_id(feedback_id):
 
 @error_log
 def create_feedback(feedback_data):
+    feedback_time_raw = feedback_data["feedback_time"]
+    if isinstance(feedback_time_raw, datetime):
+        feedback_time = feedback_time_raw
+    else:
+        # Try ISO formats directly first
+        for fmt in ('%Y-%m-%dT%H:%M:%S.%fZ', '%Y-%m-%dT%H:%M:%SZ', '%Y-%m-%dT%H:%M:%S.%f', '%Y-%m-%dT%H:%M:%S'):
+            try:
+                feedback_time = datetime.strptime(feedback_time_raw, fmt)
+                break
+            except ValueError:
+                pass
+        else:
+            # Try HTTP date format (e.g. 'Thu, 09 Apr 2026 18:43:20 GMT')
+            # Avoid %Z unreliability by normalizing the timezone suffix
+            try:
+                normalized = feedback_time_raw.replace(' GMT', '+0000').replace(' UTC', '+0000')
+                feedback_time = datetime.strptime(normalized, '%a, %d %b %Y %H:%M:%S%z').replace(tzinfo=None)
+            except ValueError:
+                raise ValueError(f"Cannot parse feedback_time: {feedback_time_raw!r}")
+
     new_feedback = Feedback(
         user_id=feedback_data.get("user_id"),
         team_id=feedback_data.get("team_id"),
         completed_assessment_id=feedback_data["completed_assessment_id"],
-        feedback_time=datetime.strptime(feedback_data["feedback_time"], '%Y-%m-%dT%H:%M:%S.%fZ'),
+        feedback_time=feedback_time,
     )
 
     db.session.add(new_feedback)

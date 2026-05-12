@@ -50,7 +50,8 @@ def test_update_checkin_user(flask_app_mock, client, sample_token, auth_header):
 
             response = client.post(
                 f"/api/checkin?assessment_task_id={task.assessment_task_id}&team_id={team2.team_id}&user_id={user[0].user_id}",
-                headers=auth_header(token)
+                headers=auth_header(token),
+                json={"password": "pw123"}
             )
 
 

@@ -44,7 +44,7 @@ def test_toggle_complete_assessment_lock_status(
             token = sample_token(user_id=result["user_id"])
             
             response = client.put(
-                f"/api/completed_assessment_toggle_lock?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
+                f"/api/completed_assessment_toggle_lock?completed_assessment_id={comp.completed_assessment_id}&locked=true&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             
@@ -122,7 +122,7 @@ def test_lock_complete_assessment(flask_app_mock, sample_token, auth_header, cli
             token = sample_token(user_id=result["user_id"])
             
             response = client.put(
-                f"/api/completed_assessment_lock?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
+                f"/api/completed_assessment_lock?completed_assessment_id={comp.completed_assessment_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             
@@ -196,12 +196,12 @@ def test_unlock_complete_assessment(flask_app_mock, sample_token, auth_header, c
                 task_id=task.assessment_task_id,
                 c_by=result["user_id"]
             ))
-            toggle_lock_status(comp.completed_assessment_id)
+            lock_individual_assessment(comp.completed_assessment_id)
 
             token = sample_token(user_id=result["user_id"])
-            
+
             response = client.put(
-                f"/api/completed_assessment_unlock?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
+                f"/api/completed_assessment_unlock?completed_assessment_id={comp.completed_assessment_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             

@@ -79,7 +79,7 @@ def cleanup_test_users(session=None):
 #   - creates a test teacher and a test course
 #   - returns a json object containing the id of the test teacher and test course
 def create_one_admin_course(use_tas):
-    teacher = template_user
+    teacher = template_user.copy()
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher{get_users().__len__()}@gmail.com"
@@ -143,13 +143,13 @@ def delete_all_users_user_courses(course_id):
 #       - unless an error occurs
 #           - returns the error message
 def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, skip_student_enrollment=False):
-    teacher = template_user
+    teacher = template_user.copy()
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher@gmail.com"
     teacher["owner_id"] = 1
     new_teacher = create_user(teacher)
- 
+
     new_course = create_course({
         "course_number": "CRS001",
         "course_name": "Summer Internship",
@@ -160,15 +160,15 @@ def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, s
         "use_tas": use_tas,
         "use_fixed_teams": False
     })
-    
+
     if use_tas:
-        ta = template_user
+        ta = template_user.copy()
         ta["first_name"] = "Test TA"
         ta["last_name"] = "1"
         ta["email"] = f"testta@gmail.com"
         ta["owner_id"] = new_teacher.user_id
         new_ta = create_user(ta)
-        
+
         if not skip_ta_enrollment:
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
@@ -176,8 +176,8 @@ def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, s
                 # role_id of 4 is a "TA"
                 "role_id": 4
             })
-    
-    student = template_user
+
+    student = template_user.copy()
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
     student["email"] = f"teststudent@gmail.com"
@@ -201,7 +201,7 @@ def create_one_admin_ta_student_course(use_tas=True, skip_ta_enrollment=False, s
     return result
 
 def create_two_admin_two_ta_student_course(use_tas=True, skip_ta_unenroll=False, skip_student_unenroll=False):
-    teacher = template_user
+    teacher = template_user.copy()
     teacher["first_name"] = "Test Teacher"
     teacher["last_name"] = "1"
     teacher["email"] = f"testteacher@gmail.com"
@@ -220,7 +220,7 @@ def create_two_admin_two_ta_student_course(use_tas=True, skip_ta_unenroll=False,
     })
 
     if use_tas:
-        ta = template_user
+        ta = template_user.copy()
         ta["first_name"] = "Test TA 1"
         ta["last_name"] = "1"
         ta["email"] = f"testta1@gmail.com"
@@ -230,10 +230,9 @@ def create_two_admin_two_ta_student_course(use_tas=True, skip_ta_unenroll=False,
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta.user_id,
-                # role_id of 4 is a "TA"
                 "role_id": 4
             })
-        ta2 = template_user
+        ta2 = template_user.copy()
         ta2["first_name"] = "Test TA 2"
         ta2["last_name"] = "2"
         ta2["email"] = f"testta2@gmail.com"
@@ -243,11 +242,10 @@ def create_two_admin_two_ta_student_course(use_tas=True, skip_ta_unenroll=False,
             new_user_course = create_user_course({
                 "course_id": new_course.course_id,
                 "user_id": new_ta2.user_id,
-                # role_id of 4 is a "TA"
                 "role_id": 4
             })
 
-    student = template_user
+    student = template_user.copy()
     student["first_name"] = "Test Student"
     student["last_name"] = "1"
     student["email"] = f"teststudent@gmail.com"
@@ -311,7 +309,7 @@ def delete_one_admin_ta_student_course(result, use_tas=True):
 def create_users(course_id, teacher_id, number_of_users, role_id=5):
     users = []
     for index in range(1, number_of_users):
-        user = template_user
+        user = template_user.copy()
         user["first_name"] = "Test " + (lambda: (lambda: "", lambda: "TA")[role_id==4](), lambda: "Student")[role_id==5]()
         user["last_name"] = f"{index}"
         user["email"] = f"test{(lambda: (lambda: '', lambda: 'TA')[role_id==4](), lambda: 'Student')[role_id==5]()}{index}@gmail.com"

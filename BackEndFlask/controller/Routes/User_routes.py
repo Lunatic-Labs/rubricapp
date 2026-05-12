@@ -133,11 +133,14 @@ def get_all_users():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("user_id")):
-            user_id = request.args.get("user_id") 
+            uid = request.args.get("uid")
 
-            user = get_user(user_id)  # Trigger an error if not exists.
+            if uid:
+                user = get_user(uid)  # Trigger an error if not exists.
+                return create_good_response(user_schema.dump(user), 200, "users")
 
-            return create_good_response(user_schema.dump(user), 200, "users")
+            all_users = get_users()
+            return create_good_response(users_schema.dump(all_users), 200, "users")
 
         all_users = get_users()
 
@@ -194,6 +197,8 @@ def get_all_team_members():
             result["team_name"] = get_team(team_id).team_name
 
             return create_good_response(result, 200, "team_members")
+
+        return create_bad_response("course_id is required", "team_members", 400)
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
@@ -302,6 +307,9 @@ def update_user():
                 raise Exception("Admin users cannot be enrolled as students or instructors")
             
             replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
+            user_data = user_schema.dump(user)
+            user_data["role_id"] = role_id
+            return create_good_response(user_data, 201, "users")
 
         if(request.args and request.args.get("team_id")):
             team_id = request.args.get("team_id")
@@ -319,10 +327,8 @@ def update_user():
 
 # change was made here...
 
-        if(request.args and request.args.get("user_id")):
+        if(request.args and request.args.get("user_id") and not request.args.get("uid")):
             uid = request.args.get("user_id")
-
-            # print(uid)
 
             user = get_user(uid)  # Trigger an error if not exists.
 

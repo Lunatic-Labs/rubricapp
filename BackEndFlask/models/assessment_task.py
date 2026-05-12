@@ -2,6 +2,7 @@ from core import db
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
 from models.utility import error_log
+from sqlalchemy import and_, or_
 from sqlalchemy.exc import SQLAlchemyError
 from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 
@@ -64,13 +65,14 @@ def get_assessment_tasks_by_role_id(role_id):
 
 @error_log
 def get_assessment_tasks_by_team_id(team_id):
-    db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
-            Team.team_id == team_id
-            and
-            (
-                (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
-                or
-                (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
+    return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+            and_(
+                Team.team_id == team_id,
+                AssessmentTask.due_date >= Team.date_created,
+                or_(
+                    Team.active_until == None,
+                    AssessmentTask.due_date <= Team.active_until
+                )
             )
         ).all()
 @error_log
