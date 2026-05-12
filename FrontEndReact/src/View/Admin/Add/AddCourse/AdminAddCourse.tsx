@@ -6,7 +6,7 @@ import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import Cookies from "universal-cookie";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import { Box, Button, FormControl, Typography, Popover, TextField, Tooltip, IconButton, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
+import { Box, Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography, Popover, TextField, Tooltip, IconButton, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
 
 interface AdminAddCourseProps {
     navbar: any;
@@ -24,12 +24,14 @@ interface AdminAddCourseState {
     active: boolean;
     useTas: boolean;
     useFixedTeams: boolean;
+    timeZone: string;
     anchorEl: HTMLElement | null;
     errors: {
         courseName: string;
         courseNumber: string;
         term: string;
         year: string;
+        timeZone: string;
     };
 }
 
@@ -49,7 +51,8 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             year: "",
             active: true,
             useTas: true,
-            useFixedTeams: true, 
+            useFixedTeams: true,
+            timeZone: "",
             anchorEl: null,
 
             errors: {
@@ -57,6 +60,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                 courseNumber: "",
                 term: "",
                 year: "",
+                timeZone: "",
             },
         };
         
@@ -82,6 +86,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                 active: course["active"],
                 useTas: course["use_tas"],
                 useFixedTeams: course["use_fixed_teams"],
+                timeZone: course["time_zone"] ?? "",
                 editCourse: true,
             });
         }
@@ -162,6 +167,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             active,
             useTas,
             useFixedTeams,
+            timeZone,
         } = this.state;
 
         var year = yearState.toString().trim();
@@ -174,7 +180,8 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             "courseName": "",
             "courseNumber": "",
             "year": "",
-            "term": ""
+            "term": "",
+            "timeZone": ""
         };
 
 //Course Name Validation
@@ -205,6 +212,10 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
         else if (term.length > 20)
             newErrors["term"] = "Term cannot exceed 20 characters";
 
+        //Timezone Validation
+        if (timeZone.trim() === "")
+            newErrors["timeZone"] = "Time Zone cannot be empty";
+
        if (Object.values(newErrors).some(error => error !== "")) {
             this.setState({
                 errors: newErrors
@@ -223,7 +234,8 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             "active": active,
             "admin_id": cookies.get("user")["user_id"],
             "use_tas": useTas,
-            "use_fixed_teams": useFixedTeams
+            "use_fixed_teams": useFixedTeams,
+            "time_zone": timeZone
         })
 
         let promise;
@@ -260,6 +272,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
             active,
             useTas,
             useFixedTeams,
+            timeZone,
             editCourse,
         } = this.state;
 
@@ -462,6 +475,31 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                         }}
                                         aria-label="courseYearInput"
                                     />
+
+                                    <FormControl
+                                        fullWidth
+                                        required
+                                        error={!!errors.timeZone}
+                                        sx={{ mb: 3 }}
+                                    >
+                                        <InputLabel id="timeZoneLabel">Time Zone</InputLabel>
+                                        <Select
+                                            labelId="timeZoneLabel"
+                                            id="timeZone"
+                                            value={timeZone}
+                                            label="Time Zone"
+                                            onChange={(event: any) => {
+                                                this.setState({ timeZone: event.target.value });
+                                            }}
+                                            aria-label="courseTimeZoneDropdown"
+                                        >
+                                            <MenuItem value={"America/New_York"}>Eastern Time</MenuItem>
+                                            <MenuItem value={"America/Chicago"}>Central Time</MenuItem>
+                                            <MenuItem value={"America/Denver"}>Mountain Time</MenuItem>
+                                            <MenuItem value={"America/Los_Angeles"}>Pacific Time</MenuItem>
+                                        </Select>
+                                        {errors.timeZone && <FormHelperText>{errors.timeZone}</FormHelperText>}
+                                    </FormControl>
 
                                     <FormGroup>
                                         <FormControlLabel

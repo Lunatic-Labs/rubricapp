@@ -33,22 +33,20 @@ def parse_and_convert_timezone(time_str, assessment_task, timezone = None):
         time_str = time_str + "Z"
 
     # Parse the time string into a UTC datetime object
-    # utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
+    utc_time = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ').replace(tzinfo=pytz.UTC)
 
-    # Handles the conversion of the chosen assessment task timezone
-    #if assessment_task and assessment_task.time_zone:
-        # pytz_timezone = pytz.timezone(timezone_list.get(assessment_task.time_zone, "UTC"))
-        # return utc_time.astimezone(pytz_timezone)
-    # return utc_time
+    # Handles the conversion of the chosen assessment task timezone.
+    # Supports both IANA format (e.g. "America/New_York") and legacy abbreviations (e.g. "EST").
+    if assessment_task and assessment_task.time_zone:
+        tz_str = assessment_task.time_zone
+        if "/" in tz_str:
+            iana_tz = tz_str
+        else:
+            iana_tz = timezone_list.get(tz_str, "UTC")
+        pytz_timezone = pytz.timezone(iana_tz)
+        return utc_time.astimezone(pytz_timezone)
 
-    if timezone:
-        tz = pytz.timezone(timezone)
-        time_obj = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
-        time_obj = tz.localize(time_obj)
-    else:
-        time_obj = datetime.strptime(time_str, '%Y-%m-%dT%H:%M:%S.%fZ')
-    
-    return time_obj.astimezone(pytz.UTC)
+    return utc_time.astimezone(pytz.UTC)
 
 def ensure_utc_datetime(dt):
     """
