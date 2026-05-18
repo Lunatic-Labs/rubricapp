@@ -12,6 +12,7 @@
 *.log
 *.rdb
 *.csv
+!Tests/integration/functions/sample_files/**/*.csv
 Functions/t2.py
 Functions/test.py
 Models/hidden.py
