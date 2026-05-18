@@ -422,7 +422,7 @@ class Login extends Component<{}, LoginState> {
                                                                 onClick={this.handleTogglePasswordVisibility}
                                                                 edge="end"
                                                             >
-                                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                                                {showPassword ? <Visibility /> : <VisibilityOff />}
                                                             </IconButton>
                                                         </InputAdornment>
                                                     ),
