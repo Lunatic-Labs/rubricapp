@@ -51,7 +51,7 @@ Deprecated == 1.2.18
 et_xmlfile == 2.0.0
 greenlet == 3.2.4
 httplib2 == 0.31.0
-idna == 3.10
+idna == 3.15
 itsdangerous == 2.2.0
 iniconfig == 2.1.0
 Jinja2 == 3.1.6
