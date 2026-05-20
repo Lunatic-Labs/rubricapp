@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Container, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid';
@@ -24,11 +24,12 @@ interface ViewAssessmentStatusProps {
     onExportAggregates?: (categoryId: string) => void;
 }
 export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
-  // Check if rubrics and category_json exist to prevent null reference errors when no tasks are available
-  var categoryList = (props.rubrics && props.rubrics.category_json)
-    ? Object.keys(props.rubrics.category_json)
-        .sort((a,b) => props.rubrics.category_json[a]!.index - props.rubrics.category_json[b]!.index)
-    : [];
+  // Each render does not need to recompute the array.
+  const categoryList = useMemo(() => 
+    (props.rubrics && props.rubrics.category_json) ? 
+      Object.keys(props.rubrics.category_json).sort((a,b) => props.rubrics.category_json[a]!.index - props.rubrics.category_json[b]!.index)
+      : []
+  ,[props.rubrics])
 
     // Ensure chosenAssessmentId is valid when no assessment tasks are available
   const validAssessmentId = (props.assessmentTasks && props.assessmentTasks.length > 0)
@@ -36,21 +37,29 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
   : '';
 
   // Set initial category ID, defaulting to empty string if no categories available
-  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] ?? '' : '');
+  var [userChosenCategoryId, setUserChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] ?? '' : '');
 
-  const handleChosenCategoryIdChange = (id: string) => {
-    setChosenCategoryId(id);
+  const handleUserChosenCategoryIdChange = (id: string) => {
+    setUserChosenCategoryId(id);
   };
+
+  // Recomputes the category id in situations where the user has not yet chosen a value and the prop state category id is lagging behind. 
+  const chosenCategoryId = (categoryList.length > 0) && userChosenCategoryId  && props.rubrics.category_json.hasOwnProperty(userChosenCategoryId)
+                            ? userChosenCategoryId : categoryList[0] ?? "";
 
   // When the user changes the assessment task, the chosenCategoryId may not correspond to any selectable
   // category in the new rubric, causing the default value in the CategoryDropdown to be blank (ugly).
   // This piece of code ensures that the category dropdown always populates with a default value,
   // and that the default value corresponds to the currently chosen rubric.
-  var chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
+  
+  const chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
 
-  if (!chosenCategoryIdCorrespondsWithRubric) {
-    setChosenCategoryId(categoryList[0] ?? '');
-  }
+  // Commented out as manipulating the state in a render is problematic here.
+  //var chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
+  //
+  //if (!chosenCategoryIdCorrespondsWithRubric) {
+  //  setChosenCategoryId(categoryList[0] ?? '');
+  //}
 
   var characteristicsData: { characteristics: { characteristic: string; number: number; percentage: number }[] } = {
     'characteristics': []
@@ -238,7 +247,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                       <CategoryDropdown
                         categories={categoryList}
                         chosenCategoryId={chosenCategoryId}
-                        setChosenCategoryId={handleChosenCategoryIdChange}
+                        setChosenCategoryId={handleUserChosenCategoryIdChange}
                       />
                     </Grid>
                     <Grid item xs={12}>
