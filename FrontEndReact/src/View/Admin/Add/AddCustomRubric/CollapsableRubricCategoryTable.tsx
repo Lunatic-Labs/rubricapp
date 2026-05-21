@@ -166,9 +166,11 @@ const CollapsableRubricCategoryTable = ({
                             navbar.rubricId = rubric["rubric_id"];
                             navbar.setAddCustomRubric(false)
                           }}
+                          className="white-text-button"
                           style={{
-                            fontSize: '14px',       
+                            fontSize: '14px',
                             minWidth: '70px',
+                            color: 'white',
                           }}
                           aria-label="myCustomRubricsEditCustomRubricButton"
                         >Edit</Button>

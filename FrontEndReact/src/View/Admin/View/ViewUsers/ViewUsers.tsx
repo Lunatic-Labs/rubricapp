@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
+import { Visibility } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable";
@@ -146,6 +147,30 @@ class ViewUsers extends Component<ViewUsersProps> {
           }
         } as any
       );
+      columns.push({
+      name: "user_id",
+      label: "View",
+      options: {
+        filter: false,
+        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        customBodyRender: (userId: number) => {
+          var cookies = new Cookies();
+          return (
+            <IconButton id={"viewUsersViewButton" + userId}
+              size="small"
+              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+              onClick={() => {
+                console.log(userId);
+              }}
+              aria-label="viewUserButton"
+            >
+              <Visibility />
+            </IconButton>
+          )
+        },
+      },
+    } as any);
     }
 /**
  * Edit and Delete Buttons:
