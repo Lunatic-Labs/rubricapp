@@ -14,6 +14,7 @@ from models.team import (
 )
 from models.completed_assessment import completed_assessment_team_or_user_exists
 from models.team_user import *
+from models.course import get_course
 
 from controller.security.CustomDecorators import(
     AuthCheck, bad_token_check,
@@ -40,6 +41,7 @@ def get_all_teams():
         if request.args and request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
 
+            get_course(course_id)  # Trigger an error if not exists.
             teams = get_team_by_course_id(course_id)
 
             return create_good_response(teams_schema.dump(teams), 200, "teams")
@@ -92,6 +94,8 @@ def get_all_teams_by_user():
 
             return create_good_response(json, 200, "teams")
             # return create_good_response(teams_schema.dump(teams), 200, "teams")
+
+        return create_bad_response("No parameter's given to retrieve teams", "teams", 400)
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
@@ -156,14 +160,16 @@ def get_all_teams_by_observer():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
 
-@bp.route('/team', methods=['GET'])
+@bp.route('/one_team', methods=['GET'])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
 def get_one_team():
     try:
         team_id = request.args.get("team_id")
-        one_team = get_team(team_id)
+        if not team_id:
+            return create_bad_response("team_id is required", "teams", 400)
+        one_team = get_team(int(team_id))
 
         return create_good_response(team_schema.dump(one_team), 200, "teams")
 
@@ -220,6 +226,8 @@ def get_nonfull_adhoc():
 
             return create_good_response(teams_schema.dump(valid_teams), 200, "teams")
 
+        return create_bad_response("No parameter's given to retrieve nonfull adhoc teams", "teams", 400)
+
     except Exception as e:
         return create_bad_response(f"An error occurred getting nonfull adhoc teams {e}", "teams", 400)
 
@@ -234,6 +242,8 @@ def get_how_many_adhocs_teams_exist():
         if request.args and request.args.get("assessment_task_id"):
             assessment_task_id = int(request.args.get("assessment_task_id"))
             return create_good_response(get_num_of_adhocs(assessment_task_id), 200, "teams")
+
+        return create_bad_response("No parameter's given to retrieve adhoc teams amount", "teams", 400)
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all teams: {e}", "teams", 400)
@@ -301,7 +311,8 @@ def update_team_user_by_edit():
                 team_user_id = result.team_user_id
                 replace_team_user(temp, int(team_user_id))
 
-        return create_good_response(team_users_schema.dump(temp), 200, "team_users")
+        updated_team_users = get_team_users_by_team_id(int(team_id))
+        return create_good_response(team_users_schema.dump(updated_team_users), 200, "team_users")
 
     except Exception as e:
         return create_bad_response(f"An error occurred updating a team: {e}", "teams", 400)
@@ -312,25 +323,27 @@ def update_team_user_by_edit():
 @AuthCheck()
 def delete_selected_teams():
     try:
-        if request.args and request.args.get("team_id"):
-            team_id = int(request.args.get("team_id"))
-            team = get_team(team_id)
-            if not team:
-                return create_bad_response("Team does not exist", "teams", 400)
+        body = request.get_json(silent=True) or {}
+        team_ids = body.get("team_ids")
 
-            associated_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
-            if associated_tasks is None:
-                associated_tasks = []
-            if len(associated_tasks) > 0:
-                refetched_tasks = completed_assessment_team_or_user_exists(team_id, user_id=None)
-                if not refetched_tasks:
-                    delete_team(team_id)
-                    return create_good_response([], 200, "teams")
-                else:
-                    return create_bad_response("Cannot delete team with associated tasks", "teams", 400)
-            else:
-                delete_team(team_id)
-                return create_good_response([], 200, "teams")
+        if team_ids is None:
+            return create_bad_response("team_ids is required in request body", "teams", 400)
+
+        if not isinstance(team_ids, list):
+            raise ValueError(f"team_ids must be a list, got {type(team_ids).__name__}")
+
+        for team_id in team_ids:
+            team_id = int(team_id)
+            get_team(team_id)  # raises if not exists
+
+            associated_tasks = completed_assessment_team_or_user_exists(team_id=team_id, user_id=None)
+            if associated_tasks:
+                return create_bad_response(
+                    f"Cannot delete team {team_id} with associated tasks", "teams", 400
+                )
+            delete_team(team_id)
+
+        return create_good_response([], 200, "teams")
 
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a team: {e}", "teams", 400)

@@ -179,6 +179,7 @@ def test_load_demo_user_course_student(flask_app_mock):
         cleanup_test_users(db.session)
 
         load_demo_admin()
+        load_demo_ta_instructor()
         load_demo_student()
         load_demo_course()
         load_demo_user_course_student()

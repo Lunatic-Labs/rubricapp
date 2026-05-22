@@ -35,13 +35,29 @@ def get_all_roles():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def post_details(role_id):  # Fix: should not have the role_id
+def post_details(role_id):
     try:
         single_role = get_role(role_id)
         result = role_schema.dump(single_role)
 
         return create_good_response(result, 200, "roles")
 
+    except Exception as e:
+        return create_bad_response(f"An error occurred fetching a role: {e}", "roles", 400)
+
+
+@bp.route('/role_id', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_role_by_query_param():
+    try:
+        role_id = request.args.get("role_id")
+        if not role_id:
+            return create_bad_response("role_id is required", "roles", 400)
+        single_role = get_role(int(role_id))
+        result = role_schema.dump(single_role)
+        return create_good_response(result, 200, "roles")
     except Exception as e:
         return create_bad_response(f"An error occurred fetching a role: {e}", "roles", 400)
 

@@ -91,29 +91,7 @@ def get_all_assessment_tasks():
                 200, "assessment_tasks",
             )
 
-        if request.args and request.args.get("user_id"):
-            user_id = int(request.args.get("user_id"))
-
-            get_user(user_id)
-
-            user_courses = get_user_courses_by_user_id(user_id)
-
-            all_assessment_tasks = []
-
-            for user_course in user_courses:
-                assessment_tasks = get_assessment_tasks_by_course_id(
-                    user_course.course_id
-                )
-
-                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
-
-            return create_good_response(
-                assessment_tasks_schema.dump(all_assessment_tasks),
-                200,
-                "assessment_tasks",
-            )
-
-        if request.args and request.args.get("role_id"):
+        if request.args and request.args.get("role_id") and not request.args.get("course_id"):
             role_id = int(request.args.get("role_id"))
 
             get_role(role_id)  # Trigger an error if not exists.
@@ -135,6 +113,28 @@ def get_all_assessment_tasks():
 
             return create_good_response(
                 assessment_tasks_schema.dump(team_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
+        if request.args and request.args.get("user_id"):
+            user_id = int(request.args.get("user_id"))
+
+            get_user(user_id)
+
+            user_courses = get_user_courses_by_user_id(user_id)
+
+            all_assessment_tasks = []
+
+            for user_course in user_courses:
+                assessment_tasks = get_assessment_tasks_by_course_id(
+                    user_course.course_id
+                )
+
+                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
                 200,
                 "assessment_tasks",
             )

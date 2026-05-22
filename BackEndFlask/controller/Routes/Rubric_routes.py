@@ -1,8 +1,9 @@
 from flask import request
 from marshmallow import fields, Schema
-from controller import bp 
+from controller import bp
 from models.rubric_categories import *
 from controller.Route_response import *
+from core import db
 from flask_jwt_extended import jwt_required
 from models.rubric   import get_rubric, get_rubrics, create_rubric, delete_rubric_by_id
 from models.category import get_categories_per_rubric, get_categories, get_ratings_by_category

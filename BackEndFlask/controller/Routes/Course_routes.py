@@ -47,12 +47,15 @@ def get_all_courses():
         
         # Allow test students to access their own data
         if str(jwt_identity) != str(user_id):
-            user = User.query.get(user_id)
+            user = db.session.get(User, int(user_id) if str(user_id).isdigit() else None)
             if not (user and user.email and user.email.startswith("teststudent")):
                 return create_bad_response("Unauthorized", "courses", 403)
         
         if request.args and request.args.get("admin_id"):
             admin_id = request.args.get("admin_id")
+            admin_user = db.session.get(User, int(admin_id))
+            if not admin_user:
+                return create_bad_response(f"Admin with id {admin_id} not found", "courses", 400)
             all_courses = get_courses_by_admin_id(admin_id)
             return create_good_response(courses_schema.dump(all_courses), 200, "courses")
         
@@ -71,8 +74,8 @@ def get_all_courses():
             user_id = int(user_id)
             print(f"Converted user_id to int: {user_id}")
             
-            user = User.query.get(user_id)
-            
+            user = db.session.get(User, user_id)
+
             if not user:
                 print(f"ERROR: User {user_id} not found in database")
                 return create_bad_response(f"User {user_id} not found", "courses", 404)
@@ -93,7 +96,7 @@ def get_all_courses():
                 
                 courses_data = []
                 for enrollment in enrollments:
-                    course = Course.query.get(enrollment.course_id)
+                    course = db.session.get(Course, enrollment.course_id)
                     if course:
                         # Build course data matching expected format
                         course_dict = {
@@ -151,6 +154,21 @@ def get_one_course(course_id):
         return create_good_response(course_schema.dump(course), 200, "courses")
     except Exception as e:
         return create_bad_response(f"An error occurred fetching course_id: {e}", "courses", 400)
+
+
+@bp.route('/one_course', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_one_course_by_query():
+    try:
+        course_id = request.args.get("course_id")
+        if not course_id:
+            return create_bad_response("course_id is required", "courses", 400)
+        course = get_course(int(course_id))
+        return create_good_response(course_schema.dump(course), 200, "courses")
+    except Exception as e:
+        return create_bad_response(f"An error occurred fetching course: {e}", "courses", 400)
 
 
 @bp.route('/course', methods=['POST'])
