@@ -81,7 +81,7 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
 };
 
 export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string, isMenuItem: boolean = false) {
-    const lookingFor = isMenuItem ? 'option':'menuitem'
+    const lookingFor = isMenuItem ? 'menuitem':'option'
     const user = userEvent.setup();
     await user.click(screen.getByLabelText(ariaLabel));
     const option = await screen.findByRole(lookingFor, { name: optionText });
