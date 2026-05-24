@@ -81,7 +81,7 @@ def team_csv_to_db(team_file, owner_id, course_id):
                 else:
                     user = get_user(owner_id)
                     if user is None:
-                        raise UserDoesNotExist()
+                        raise UserDoesNotExist(str(owner_id))
 
                     course = get_course(course_id)
                     courses = get_courses_by_admin_id(owner_id)
@@ -91,8 +91,8 @@ def team_csv_to_db(team_file, owner_id, course_id):
                         if course is admin_course:
                             course_found = True
                     if not course_found:
-                        raise OwnerIDDidNotCreateTheCourse()
-            
+                        raise OwnerIDDidNotCreateTheCourse(owner_id, course_id)
+
                 students = []
                 lower_bound = 1 if course_uses_tas == 0 else 2
                 for index in range(lower_bound, len(row_list)):
@@ -103,7 +103,7 @@ def team_csv_to_db(team_file, owner_id, course_id):
                     user = get_user_by_email(student_email)
 
                     if user is None:
-                        raise UserDoesNotExist()
+                        raise UserDoesNotExist(student_email)
 
                     user_id = get_user_user_id_by_email(student_email)
                     user_course = get_user_course_by_user_id_and_course_id(

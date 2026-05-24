@@ -11,14 +11,18 @@ def gen_password(length=35):
     password = ''.join(random.choice(options) for i in range(length))
     return password
 
+def findRepoRoot(root = "rubricapp"):
+    path = pathlib.Path(__file__).resolve()
+    while path.name != root:
+        if path.name == path:
+            print("ERROR: Could not find rubricapp/ directory. Run it from within rubricapp/ or its sub-directories")
+            sys.exit(1)
+        path = path.parent
+    return path
+
+
 def main():
-    cwd = "rubricapp"
-
-    if pathlib.Path.cwd().name != cwd:
-        print("ERROR: The current workind directory must be /rubricapp")
-        sys.exit(1)
-
-    root_dir = pathlib.Path(__file__).resolve().parent
+    root_dir = findRepoRoot()
     root_env = root_dir / ".env"
     backend_env = root_dir / "BackEndFlask" / ".env"
     frontend_env = root_dir / "FrontEndReact" / ".env"

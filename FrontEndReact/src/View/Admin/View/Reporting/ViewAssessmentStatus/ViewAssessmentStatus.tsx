@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useMemo, useState } from 'react';
 import Box from '@mui/material/Box';
 import { Button, Container, Tooltip } from '@mui/material';
 import Grid from '@mui/material/Grid';
-import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer } from 'recharts';
+import { BarChart, CartesianGrid, XAxis, YAxis, Bar, Cell, LabelList, ResponsiveContainer } from 'recharts';
 import AssessmentTaskDropdown from '../../../../Components/AssessmentTaskDropdown';
 import CategoryDropdown from '../../../../Components/CategoryDropdown';
 import CharacteristicsAndImprovements from './CharacteristicsAndImprovements';
@@ -24,11 +24,12 @@ interface ViewAssessmentStatusProps {
     onExportAggregates?: (categoryId: string) => void;
 }
 export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
-  // Check if rubrics and category_json exist to prevent null reference errors when no tasks are available
-  var categoryList = (props.rubrics && props.rubrics.category_json)
-    ? Object.keys(props.rubrics.category_json)
-        .sort((a,b) => props.rubrics.category_json[a]!.index - props.rubrics.category_json[b]!.index)
-    : [];
+  // Each render does not need to recompute the array.
+  const categoryList = useMemo(() => 
+    (props.rubrics && props.rubrics.category_json) ? 
+      Object.keys(props.rubrics.category_json).sort((a,b) => props.rubrics.category_json[a]!.index - props.rubrics.category_json[b]!.index)
+      : []
+  ,[props.rubrics])
 
     // Ensure chosenAssessmentId is valid when no assessment tasks are available
   const validAssessmentId = (props.assessmentTasks && props.assessmentTasks.length > 0)
@@ -36,21 +37,29 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
   : '';
 
   // Set initial category ID, defaulting to empty string if no categories available
-  var [chosenCategoryId, setChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] ?? '' : '');
+  var [userChosenCategoryId, setUserChosenCategoryId] = useState(categoryList.length > 0 ? categoryList[0] ?? '' : '');
 
-  const handleChosenCategoryIdChange = (id: string) => {
-    setChosenCategoryId(id);
+  const handleUserChosenCategoryIdChange = (id: string) => {
+    setUserChosenCategoryId(id);
   };
+
+  // Recomputes the category id in situations where the user has not yet chosen a value and the prop state category id is lagging behind. 
+  const chosenCategoryId = (categoryList.length > 0) && userChosenCategoryId  && props.rubrics.category_json.hasOwnProperty(userChosenCategoryId)
+                            ? userChosenCategoryId : categoryList[0] ?? "";
 
   // When the user changes the assessment task, the chosenCategoryId may not correspond to any selectable
   // category in the new rubric, causing the default value in the CategoryDropdown to be blank (ugly).
   // This piece of code ensures that the category dropdown always populates with a default value,
   // and that the default value corresponds to the currently chosen rubric.
-  var chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
+  
+  const chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
 
-  if (!chosenCategoryIdCorrespondsWithRubric) {
-    setChosenCategoryId(categoryList[0] ?? '');
-  }
+  // Commented out as manipulating the state in a render is problematic here.
+  //var chosenCategoryIdCorrespondsWithRubric = props.rubrics.category_json.hasOwnProperty(chosenCategoryId);
+  //
+  //if (!chosenCategoryIdCorrespondsWithRubric) {
+  //  setChosenCategoryId(categoryList[0] ?? '');
+  //}
 
   var characteristicsData: { characteristics: { characteristic: string; number: number; percentage: number }[] } = {
     'characteristics': []
@@ -108,6 +117,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
       for (var i = 0; i < props.completedAssessments.length; i++) {
         const ca = props.completedAssessments[i]!;
         // Only collect data from completed assessment tasks
+
         if (!ca['done'])
           continue;
 
@@ -121,6 +131,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
           if (ratingEntry) ratingEntry['number'] += 1;
 
           // Iterate through each observable characteristic within the category and see whether the user checked the box
+
           for (let j = 0; j < catRocs['observable_characteristics'].length; j++) {
             let oc_data = parseInt(catRocs['observable_characteristics'][j]!);
             const charEntry = characteristicsData['characteristics'][j];
@@ -164,10 +175,12 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
   const innerGridStyle = {
     borderRadius: '6px',
     height: '100%',
-    border: "#7f7f7fff", 
+    border: '1px solid var(--border-color)',
     padding: 0,
     margin: 0,
-    boxShadow: "0.3em 0.3em 1em var(--box-shadow)"
+    boxShadow: '0 0 1em rgba(0, 0, 0, 0.18)',
+    backgroundColor: 'var(--card-bg)',
+    color: 'var(--text-color)',
   };
 
   const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
@@ -178,7 +191,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
         <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw",  }}>
         <Grid container item xs={12} spacing={2}>
             <Grid item xs={12} md={6}>
-              <div className={innerDivClassName} style={{
+              <div className={`reporting-card ${innerDivClassName}`} style={{
                 ...innerGridStyle,
                 minHeight: '250px'
               }}>
@@ -194,17 +207,33 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                         barCategoryGap={0.5}
                         margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
                       >
-                        <XAxis dataKey="rating" type="category" style={{ fontSize: '0.75rem' }} />
-                        <YAxis type="number" domain={[0, 'auto']} style={{ fontSize: '0.75rem' }} />
-                        <CartesianGrid vertical={false} />
+                        <XAxis
+                          dataKey="rating"
+                          type="category"
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }}
+                        />
+                        <YAxis
+                          type="number"
+                          domain={[0, 'auto']}
+                          stroke="var(--chart-axis-color)"
+                          tick={{ fill: 'var(--chart-axis-color)', fontSize: '0.75rem' }}
+                        />
+                        <CartesianGrid vertical={false} stroke="var(--chart-grid-color)" />
                         <Bar dataKey="number" fill="#2e8bef">
-                          <LabelList dataKey="number" fill="#ffffff" position="inside" />
+                          {ratingsData.ratings.map((entry: any, index: number) => (
+                            <Cell
+                              key={`rating-bar-cell-${index}`}
+                              fill={entry.number === 0 ? 'transparent' : '#2e8bef'}
+                            />
+                          ))}
+                          <LabelList dataKey="number" fill="var(--text-white)" position="inside" formatter={(value: any) => value === 0 ? '' : value} />
                         </Bar>
                       </BarChart>
                     </ResponsiveContainer>
                   ) : (
                     <div style={{textAlign: "center"}}>
-                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="grey" className="bi bi-bar-chart" viewBox="0 0 16 16">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="190" height="190" fill="currentColor" style={{ color: 'var(--text-color)' }} className="bi bi-bar-chart" viewBox="0 0 16 16">
                       <path d="M4 11H2v3h2zm5-4H7v7h2zm5-5v12h-2V2zm-2-1a1 1 0 0 0-1 1v12a1 1 0 0 0 1 1h2a1 1 0 0 0 1-1V2a1 1 0 0 0-1-1zM6 7a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v7a1 1 0 0 1-1 1H7a1 1 0 0 1-1-1zm-5 4a1 1 0 0 1 1-1h2a1 1 0 0 1 1 1v3a1 1 0 0 1-1 1H2a1 1 0 0 1-1-1z"/>
                     </svg>
                     </div>
@@ -220,7 +249,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
 
             <Grid item xs={12} md={6}>
               <div style={{ height: '100%', display: 'flex', flexDirection: 'column', gap: 2 }}>
-                <div style={{
+                <div className="reporting-card" style={{
                   ...innerGridStyle,
                   padding: '16px'
                 }}>
@@ -236,7 +265,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                       <CategoryDropdown
                         categories={categoryList}
                         chosenCategoryId={chosenCategoryId}
-                        setChosenCategoryId={handleChosenCategoryIdChange}
+                        setChosenCategoryId={handleUserChosenCategoryIdChange}
                       />
                     </Grid>
                     <Grid item xs={12}>
@@ -247,6 +276,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                             size="small"
                             disabled={!props.assessmentTasks || props.assessmentTasks.length === 0}
                             onClick={() => props.onExportAggregates && props.onExportAggregates(chosenCategoryId)}
+                            className="export-aggregates-button"
                             sx={{ mt: 1 }}
                           >
                             Export Aggregates
@@ -256,7 +286,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                     </Grid>
                   </Grid>
                 </div>
-                <div style={{
+                <div className="reporting-card" style={{
                   ...innerGridStyle,
                   padding: '20px',
                   marginTop: '16px',  
@@ -264,7 +294,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
                   <h3 style={{ fontWeight: 'normal', textAlign: 'center'}}>
                     <u>Assessment Tasks Completed:</u>
                   </h3>
-                  <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px' }}>
+                  <div className="progress" style={{ height: "30px", width: "100%", borderRadius: '50px', backgroundColor: 'var(--progress-track-bg)' }}>
                     <div
                       className="progress-bar"
                       role="progressbar"

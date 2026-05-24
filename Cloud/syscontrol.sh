@@ -3,7 +3,7 @@
 set -e
 
 # =====================================================
-# This script is made for Ubunut / Debian-Based Distros
+# This script is made for Ubuntu / Debian-Based Distros
 # =====================================================
 
 # ===================================================================
@@ -14,6 +14,7 @@ set -e
 FRESH="--fresh"
 INIT="--init"
 CONFIGURE="--configure"
+CONFIGURE_NO_SSL="--configure-no-ssl"
 INSTALL="--install"
 HELP="--help"
 UPDATE="--update"
@@ -41,7 +42,8 @@ KILL="--kill"
       nginx
       certbot
       python3-certbot-nginx
-      lsof'
+      lsof
+      mysql-server'
 
 # =====================================================
 # DIRECTORY STRUCTURE
@@ -54,81 +56,8 @@ PROD_NAME="RUBRICAPP_PRODUCTION"
 VENV_DIR="/home/$USER/$PROD_NAME/rubricapp-env"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
 SERVICE_NAME="rubricapp.service"
-FRONTEND_SERVICE_NAME="rubricapp-frontend.service"
-DOMAIN="skill-builder-testing.net"
 # =====================================================
 
-# ========================================================
-# NGINX CONFIG
-# This gets put into /etc/nginx/sites-available/rubricapp
-# ========================================================
-
-# Port 5000 SSL Proxy to Gunicorn
-NGINX_BACKEND_CONFIG="server {
-    listen 5000 ssl;
-    server_name $DOMAIN;
-
-    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-    location / {
-        proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-}"
-
-# Redirect HTTP -> HTTPS and port 433 proxy to React (Port 3000)
-NGINX_FRONTEND_CONFIG="server {
-    listen 80;
-    server_name ${DOMAIN};
-    return 301 https://\$host\$request_uri;
-}
-
-server {
-    listen 443 ssl;
-    server_name ${DOMAIN};
-
-    ssl_certificate /etc/letsencrypt/live/${DOMAIN}/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/${DOMAIN}/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-    location / {
-        proxy_pass http://localhost:3000/;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-        
-        # WebSocket support
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection "upgrade";
-    }
-}"
-
-# ========================================================
-# GUNICORN CONFIG
-# This gets put into /etc/systemd/system/rubricapp.service
-# ========================================================
-GUNICORN_CONFIG="[Unit]
-Description=Gunicorn instance to serve rubricapp
-After=network.target
-
-[Service]
-User=$USER
-Group=www-data
-WorkingDirectory=/home/$USER/$PROD_NAME/rubricapp/BackEndFlask
-Environment=\"PATH=$VENV_DIR/bin\"
-ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock wsgi:app
-[Install]
-WantedBy=multi-user.target
-"
 
 # ================
 # UTIL FUNCTIONS
@@ -150,6 +79,127 @@ function panic() {
     exit 1
 }
 
+# =====================================================
+# DOMAIN SETUP
+# Prompts the user for the domain name so nothing
+# =====================================================
+function prompt_domain() {
+    echo "Enter the domain for this server (e.g. skill-builder-testing.net):"
+    read DOMAIN
+    if [ -z "$DOMAIN" ]; then
+        panic "Domain cannot be empty"
+    fi
+    log "Using domain: $DOMAIN"
+}
+
+# =====================================================
+# NGINX + GUNICORN CONFIG BUILDERS
+# Called after prompt_domain so $DOMAIN is set.
+# All configs are built here so they are ready
+# to be written to disk by the configure functions.
+# Port 5000 SSL Proxy to Gunicorn
+# =====================================================
+function build_configs() {
+    # Combined SSL config — backend on port 5000, frontend on port 443
+    # Used by configure_nginx (--configure)
+    NGINX_SSL_CONFIG="server {
+    listen 5000 ssl;
+    server_name $DOMAIN;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    location / {
+        proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}
+
+server {
+    listen 80;
+    server_name $DOMAIN;
+    return 301 https://\$host\$request_uri;
+}
+
+server {
+    listen 443 ssl;
+    server_name $DOMAIN;
+
+    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    location / {
+        proxy_pass http://localhost:3000/;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection \"upgrade\";
+    }
+}"
+
+    # Combined no-SSL config — backend on port 5000, frontend on port 80
+    # Used by configure_nginx_no_ssl (--configure-no-ssl)
+    NGINX_NO_SSL_CONFIG="server {
+    listen 80;
+    server_name $DOMAIN;
+
+    location / {
+        proxy_pass http://localhost:3000/;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+
+        proxy_http_version 1.1;
+        proxy_set_header Upgrade \$http_upgrade;
+        proxy_set_header Connection \"upgrade\";
+    }
+}
+
+server {
+    listen 5000;
+    server_name $DOMAIN;
+
+    location / {
+        proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+}"
+
+    # Gunicorn systemd service config
+    GUNICORN_CONFIG="[Unit]
+Description=Gunicorn instance to serve rubricapp
+After=network.target
+
+[Service]
+User=$USER
+Group=www-data
+WorkingDirectory=/home/$USER/$PROD_NAME/rubricapp/BackEndFlask
+Environment=\"PATH=$VENV_DIR/bin\"
+ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock wsgi:app
+
+[Install]
+WantedBy=multi-user.target
+"
+}
+# ===================
+# MORE UTIL FUNCTIONS
+# ===================
+
 # Displays the usage information.
 function usage() {
     echo "Usage:"
@@ -160,6 +210,7 @@ function usage() {
     echo "    $INIT             :: inits the project by calling $INSTALL and $CONFIGURE"
     echo "    $INSTALL          :: only installs dependencies"
     echo "    $CONFIGURE        :: configure SSL certificate,gunicorn and nginx"
+    echo "    $CONFIGURE_NO_SSL    :: configure gunicorn and nginx without SSL (no domain needed)"
     echo "    $SERVE <dev|prod> :: serve the application with either development environment or production environment"
     echo "    $UPDATE           :: updates the repository and calls $SERVE"
     echo "    $STATUS           :: shows the status of everything running"
@@ -203,9 +254,6 @@ function show_status() {
     log "rubricapp.service"
     systemctl status rubricapp.service --no-pager || true
 
-    log "rubricapp-frontend.service"
-    systemctl status rubricapp-frontend.service --no-pager || true
-
     log "redis-server.service"
     systemctl status redis-server.service --no-pager || true
 
@@ -235,7 +283,6 @@ function show_status() {
 function kill_procs() {
     log "killing all processes/services"
 
-    sudo systemctl stop rubricapp-frontend.service 2>/dev/null || true
     sudo systemctl stop redis-server.service 2>/dev/null || true
     sudo systemctl stop rubricapp.service 2>/dev/null || true
     sudo systemctl stop nginx.service 2>/dev/null || true
@@ -314,7 +361,9 @@ function install_sys_deps() {
 
     log "installing dependencies"
 
-    sudo apt install $DEPS -y
+
+    # Install all dependencies and ensures non-interactive install for openssh-server and mysql-server
+    sudo DEBIAN_FRONTEND=noninteractive apt install $DEPS -y
 
     log "done"
 }
@@ -349,8 +398,9 @@ function install_npm_deps() {
     nvm install 20.11.1
     nvm use 20.11.1
 
-    # Ensure global serve exists (systemd will call it)
-    npm list -g --depth=0 serve >/dev/null 2>&1 || sudo npm install -g serve
+    # Install serve globally without sudo so it installs under NVM's node
+    # Using sudo here would install under system node, not NVM node
+    npm list -g --depth=0 serve >/dev/null 2>&1 || npm install -g serve
 
     cd "$PROJ_DIR/FrontEndReact"
 
@@ -362,11 +412,11 @@ function install_npm_deps() {
     # Clean partial installs if needed
     rm -rf node_modules
 
-    if [ -f package-lock.json ]; then
-        npm ci --legacy-peer-deps
-    else
-        npm install --legacy-peer-deps
-    fi
+    npm install --legacy-peer-deps || panic "Failed to install npm dependencies"
+
+    # Fix ajv dependency conflict with react-scripts/webpack
+    # react-scripts ships with an older ajv that breaks the build
+    npm install ajv@^8 --legacy-peer-deps
 
     cd -
     log "done"
@@ -454,7 +504,7 @@ function configure_ssl() {
         sudo ls -la "/etc/letsencrypt/archive/$DOMAIN" || true
         panic "SSL certificate files not found after certbot run"
     fi
-
+        
     # Make sure nginx include files exist (prevents your earlier error)
     ensure_le_nginx_files
 
@@ -462,28 +512,47 @@ function configure_ssl() {
     log "done"
 }
 
-# Configure NGINX. It uses the configuration
-# that is in the same directory as this script
-# `./nginx_config`.
+
+# Writes the SSL config to the single rubricapp nginx file
+# To switch from no-ssl to ssl, just run --configure after
+# pointing the domain and it will overwrite the no-ssl config
 function configure_nginx() {
-    log "configuring nginx"
+    log "configuring nginx (ssl)"
 
-    echo "$NGINX_BACKEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
-    echo "$NGINX_FRONTEND_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp-frontend > /dev/null
-    
-    # Creates site-enabled directory if it does not exist
+    sudo rm -f /etc/nginx/sites-enabled/rubricapp
+    sudo rm -f /etc/nginx/sites-available/rubricapp
+
+    echo "$NGINX_SSL_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
+
     sudo mkdir -p /etc/nginx/sites-enabled
+    sudo ln -sf /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled/rubricapp
 
-    # use -sf consistently for symbolic links
-    sudo ln -sf /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled/
-    sudo ln -sf /etc/nginx/sites-available/rubricapp-frontend /etc/nginx/sites-enabled/
-
-    # Include sites-enabled in nginx.conf if not already there
     if ! grep -q "include /etc/nginx/sites-enabled/\*;" /etc/nginx/nginx.conf; then
         sudo sed -i '/include \/etc\/nginx\/conf.d\/\*.conf;/a\    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
     fi
 
-    # Test Nginx configuration
+    sudo nginx -t || panic "Nginx configuration test failed"
+
+    log "done"
+}
+
+# Writes the no-ssl config to the single rubricapp nginx file
+# To upgrade to ssl later, point the domain then run --configure
+function configure_nginx_no_ssl() {
+    log "configuring nginx (no ssl)"
+
+    sudo rm -f /etc/nginx/sites-enabled/rubricapp
+    sudo rm -f /etc/nginx/sites-available/rubricapp
+
+    echo "$NGINX_NO_SSL_CONFIG" | sudo tee /etc/nginx/sites-available/rubricapp > /dev/null
+
+    sudo mkdir -p /etc/nginx/sites-enabled
+    sudo ln -sf /etc/nginx/sites-available/rubricapp /etc/nginx/sites-enabled/rubricapp
+
+    if ! grep -q "include /etc/nginx/sites-enabled/\*;" /etc/nginx/nginx.conf; then
+        sudo sed -i '/include \/etc\/nginx\/conf.d\/\*.conf;/a\    include /etc/nginx/sites-enabled/*;' /etc/nginx/nginx.conf
+    fi
+
     sudo nginx -t || panic "Nginx configuration test failed"
 
     log "done"
@@ -515,38 +584,6 @@ function configure_gunicorn() {
     log "done"
 }
 
-function configure_frontend_service() {
-    log \"configuring frontend systemd service\"
-
-    local serve_path
-    serve_path=\"$(command -v serve || true)\"
-    if [ -z \"$serve_path\" ]; then
-        panic \"serve not found. Run --install first.\"
-    fi
-
-    sudo tee \"/etc/systemd/system/$FRONTEND_SERVICE_NAME\" > /dev/null <<EOF
-[Unit]
-Description=Rubricapp React Frontend (serve)
-After=network.target
-
-[Service]
-User=$USER
-WorkingDirectory=$PROJ_DIR/FrontEndReact
-ExecStart=$serve_path -s build -l 3000
-Restart=always
-RestartSec=2
-Environment=PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
-
-[Install]
-WantedBy=multi-user.target
-EOF
-
-    sudo systemctl daemon-reload
-    sudo systemctl enable \"$FRONTEND_SERVICE_NAME\"
-
-    log \"done\"
-}
-
 # Sets up the root of the project, namely
 # in /home/$USER/$PROD_NAME/. All project
 # files will be stored here, including the
@@ -563,7 +600,7 @@ function setup_proj_root() {
 
     log "The project has been successfully setup.
     The main project has been cloned into: $PROJ_DIR.
-    Next, re-run this script which is located in $PROJ_DIR/Cloud with $CONFIGURE"
+    Next, re-run this script which is located in $PROJ_DIR/Cloud with $INIT"
 }
 
 # ======================
@@ -600,15 +637,24 @@ function serve_rubricapp() {
 
     exit_venv
 
-    # Frontend build + systemd restart
+    # Loading NVM
+    export NVM_DIR="$HOME/.nvm"
+    [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
+    [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
+    nvm use 20.11.1
+
+    # Frontend build
     log "building front-end"
     cd "$PROJ_DIR/FrontEndReact"
     npm run build || panic "Failed NPM run build"
     cd - >/dev/null 2>&1 || true
 
-    log "starting front-end service"
-    sudo systemctl reset-failed "$FRONTEND_SERVICE_NAME" 2>/dev/null || true
-    sudo systemctl restart "$FRONTEND_SERVICE_NAME"
+    # Start frontend as background process
+    # Logs go to frontend.log for debugging
+    log "starting front-end"
+    cd "$PROJ_DIR/FrontEndReact"
+    nohup npm start &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
+    cd - >/dev/null 2>&1 || true
 
     log "done"
 }
@@ -642,7 +688,13 @@ function configure() {
     configure_ssl
     configure_gunicorn
     configure_nginx
-    configure_frontend_service
+    configure_ufw
+}
+
+function configure_no_ssl() {
+    assure_proj_dir
+    configure_gunicorn
+    configure_nginx_no_ssl
     configure_ufw
 }
 
@@ -670,6 +722,7 @@ then
     usage
 fi
 
+
 # Process the command-line argument
 # Add new options here.
 case "$1" in
@@ -680,14 +733,22 @@ case "$1" in
         # Full initialization with warning
         red="\033[0;31m"
         nc="\033[0m"
+        prompt_domain
+        build_configs
         echo -e "${red}WARNING: Running $INIT will RESET THE DATABASE COMPLETELY.${nc}"
         echo -e "${red}Do you want to continue? (Y/n)${nc}"
         read ans
-        
+
         if [ "$ans" == "Y" ] || [ "$ans" == "y" ]; then
-            install
-            configure
-            configure_db  # Resets database!
+            echo -e "Is your domain already pointing to this server? (Y/n)"
+            read domain_ans
+            install < /dev/null
+            if [ "$domain_ans" == "Y" ] || [ "$domain_ans" == "y" ]; then
+                configure
+        else
+            configure_no_ssl
+        fi
+                configure_db < /dev/null
         else
             panic "Initialization aborted by user"
         fi
@@ -696,9 +757,30 @@ case "$1" in
         install
         ;;
     "$CONFIGURE")
+    prompt_domain
+    build_configs
+    echo "--------------------------------------------"
+    echo "This will obtain an SSL certificate for $DOMAIN"
+    echo "and overwrite the current Nginx configuration."
+    echo "Make sure $DOMAIN is pointing to this server"
+    echo "before continuing, otherwise certbot will fail."
+    echo "--------------------------------------------"
+    echo "Do you want to continue? (Y/n)"
+    read confirm
+    if [ "$confirm" == "Y" ] || [ "$confirm" == "y" ]; then
         configure
+    else
+        panic "Configure aborted by user"
+    fi
+    ;;
+    "$CONFIGURE_NO_SSL")
+        prompt_domain
+        build_configs
+        configure_no_ssl
         ;;
     "$SERVE")
+        prompt_domain
+        build_configs
         serve_rubricapp
         ;;
     "$UPDATE")
