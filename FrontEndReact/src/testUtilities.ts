@@ -87,14 +87,14 @@ export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optio
     await user.click(option);
 };
 
-export async function selectMuiMenuItem(ariaLable:string, optionText:string){
+export async function selectComboBoxMenuItem(ariaLable:string, optionText:string){
     const user = userEvent.setup();
 
-    const selectButton = screen.getByRole("button", {name : ariaLable});
+    const selectButton = screen.getByRole("combobox", {name : ariaLable});
     await user.click(selectButton);
 
-    const menuItem = await screen.findByRole("menuitem", {name : optionText});
-    await user.click(menuItem);
+    const option = await screen.findByRole("option", {name : optionText});
+    await user.click(option);
 }
 
 export const expectEnabledElementWithAriaLabelToExist = (ariaLabel: any) => {
