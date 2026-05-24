@@ -284,7 +284,7 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
 
     changeElementWithAriaLabelWithInput(cyi, "2024");
 
-    await selectMuiMenuItem(ctzd, "Central Time");
+    await selectMuiMenuItem("Time Zone", "Central Time");
 
     clickElementWithAriaLabel(aosacb);
 
