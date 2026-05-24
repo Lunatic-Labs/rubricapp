@@ -8,7 +8,6 @@ import {
     expectElementWithAriaLabelToBeInDocument,
     changeElementWithAriaLabelWithInput,
     expectElementWithAriaLabelToHaveErrorMessage,
-    selectDropdownOptionWithAriaLabel,
     selectMuiMenuItem
 } from "../../../../../testUtilities";
 
