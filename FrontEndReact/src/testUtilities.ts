@@ -80,13 +80,22 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
     enabledElement.click();
 };
 
-export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string, isMenuItem: boolean = false) {
-    const lookingFor = isMenuItem ? 'menuitem':'option'
+export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string) {
     const user = userEvent.setup();
     await user.click(screen.getByLabelText(ariaLabel));
-    const option = await screen.findByRole(lookingFor, { name: optionText });
+    const option = await screen.findByRole('option', { name: optionText });
     await user.click(option);
 };
+
+export async function selectMuiMenuItem(ariaLable:string, optionText:string){
+    const user = userEvent.setup();
+
+    const selectButton = screen.getByRole("button", {name : ariaLable});
+    await user.click(selectButton);
+
+    const menuItem = await screen.findByRole("menuitem", {name : optionText});
+    await user.click(menuItem);
+}
 
 export const expectEnabledElementWithAriaLabelToExist = (ariaLabel: any) => {
     const elements = screen.queryAllByLabelText(ariaLabel);
