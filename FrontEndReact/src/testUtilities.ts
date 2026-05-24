@@ -80,10 +80,11 @@ export const clickFirstEnabledElementWithAriaLabel = (ariaLabel: any) => {
     enabledElement.click();
 };
 
-export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string) {
+export async function selectDropdownOptionWithAriaLabel(ariaLabel: string, optionText: string, isMenuItem: boolean = false) {
+    const lookingFor = isMenuItem ? 'option':'menuitem'
     const user = userEvent.setup();
     await user.click(screen.getByLabelText(ariaLabel));
-    const option = await screen.findByRole('option', { name: optionText });
+    const option = await screen.findByRole(lookingFor, { name: optionText });
     await user.click(option);
 };
 

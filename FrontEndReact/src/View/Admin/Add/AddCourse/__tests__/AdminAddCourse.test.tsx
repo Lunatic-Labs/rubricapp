@@ -284,7 +284,7 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
 
     changeElementWithAriaLabelWithInput(cyi, "2024");
 
-    await selectDropdownOptionWithAriaLabel(ctzd, "Central Time");
+    await selectDropdownOptionWithAriaLabel(ctzd, "Central Time", true);
 
     clickElementWithAriaLabel(aosacb);
 
