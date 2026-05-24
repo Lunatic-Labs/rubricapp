@@ -26,7 +26,7 @@ var cnumi = "courseNumberInput";
 var cti = "courseTermInput";
 var cyi = "courseYearInput";
 var vcd = "viewCourseDiv";
-var ctzd = "courseTimeZoneDropdown";
+var ctzd = "Time Zone";
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
@@ -284,7 +284,7 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
 
     changeElementWithAriaLabelWithInput(cyi, "2024");
 
-    await selectMuiMenuItem("Time Zone", "Central Time");
+    await selectMuiMenuItem(ctzd, "Central Time");
 
     clickElementWithAriaLabel(aosacb);
 
