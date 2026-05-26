@@ -117,8 +117,8 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
         if (assessmentTask && !addAssessmentTask) {
             genericResourceGET(
-            `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`, 
-            "completed_assessments", 
+            `/completed_assessment?assessment_task_id=${assessmentTask["assessment_task_id"]}`,
+            "completed_assessments",
             this,
             { dest: "completedAssessments" }
         );
@@ -133,11 +133,16 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                 suggestions: assessmentTask["show_suggestions"],
                 ratings: assessmentTask["show_ratings"],
                 usingTeams: assessmentTask["unit_of_assessment"],
-                dueDate: new Date(assessmentTask["due_date"]),
+                dueDate: new Date(assessmentTask["due_date"].endsWith("Z") ? assessmentTask["due_date"] : assessmentTask["due_date"] + "Z"),
                 editAssessmentTask: true,
                 numberOfTeams: assessmentTask["number_of_teams"],
                 maxTeamSize: assessmentTask["max_team_size"]
             });
+        } else {
+            var chosenCourse = state.chosenCourse;
+            if (chosenCourse && chosenCourse.time_zone) {
+                this.setState({ timeZone: chosenCourse.time_zone });
+            }
         }
     }
 
@@ -173,7 +178,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
         //Define max lengths for fields
         const maxLengths: { [key: string]: number } = {
             taskName: 50,
-            timeZone: 5,
+            timeZone: 50,
             password: 20,
         };
 
@@ -256,7 +261,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                 errors: {
                     taskName: taskName.trim() === '' ? 'Task Name cannot be empty' : taskName.length > 50 ? 'Task Name cannot exceed 50 characters' : '',
                     dueDate: '',
-                    timeZone: timeZone === '' ? 'Time Zone cannot be empty' : timeZone.length > 5 ? 'Time Zone cannot exceed 5 characters' : '',
+                    timeZone: timeZone === '' ? 'Time Zone cannot be empty' : timeZone.length > 50 ? 'Time Zone cannot exceed 50 characters' : '',
                     roleId: roleId === '' ? 'Completed By cannot be empty' : '',
                     rubricId: rubricId === '' ? 'Rubric cannot be empty' : '',
                     notes: notes.trim() === '' ? 'Assessment Notes cannot be empty' : '',
@@ -884,23 +889,13 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                 style={{width: "200px"}}
                                                 aria-label="addAssessmentTimezoneDropdown"
                                             >
-                                                {timeZone ? <MenuItem value={timeZone}>{timeZone}</MenuItem> : ''}
+                                                <MenuItem value={"America/New_York"} aria-label="addAssessmentEasternRadioOption">Eastern Time</MenuItem>
 
-                                                <MenuItem value={"EST"} aria-label="addAssessmentEstRadioOption" >EST</MenuItem>
+                                                <MenuItem value={"America/Chicago"} aria-label="addAssessmentCentralRadioOption">Central Time</MenuItem>
 
-                                                <MenuItem value={"EDT"} aria-label="addAssessmentEdtRadioOption" >EDT</MenuItem>
+                                                <MenuItem value={"America/Denver"} aria-label="addAssessmentMountainRadioOption">Mountain Time</MenuItem>
 
-                                                <MenuItem value={"CST"} aria-label="addAssessmentCstRadioOption" >CST</MenuItem>
-
-                                                <MenuItem value={"CDT"} aria-label="addAssessmentCdtRadioOption" >CDT</MenuItem>
-
-                                                <MenuItem value={"MST"} aria-label="addAssessmentMstRadioOption" >MST</MenuItem>
-
-                                                <MenuItem value={"MDT"} aria-label="addAssessmentMdtRadioOption" >MDT</MenuItem>
-
-                                                <MenuItem value={"PST"} aria-label="addAssessmentPstRadioOption" >PST</MenuItem>
-
-                                                <MenuItem value={"PDT"} aria-label="addAssessmentPdtRadioOption" >PDT</MenuItem>
+                                                <MenuItem value={"America/Los_Angeles"} aria-label="addAssessmentPacificRadioOption">Pacific Time</MenuItem>
                                             </Select>
                                             <FormHelperText>{errors.timeZone}</FormHelperText>
                                         </FormControl>

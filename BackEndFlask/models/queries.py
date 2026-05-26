@@ -60,6 +60,7 @@ def get_courses_by_user_courses_by_user_id(user_id):
         Course.admin_id,
         Course.use_tas,
         Course.use_fixed_teams,
+        Course.time_zone,
         UserCourse.role_id,
         UserCourse.active.label("UserCourse_active")
     ).join(
