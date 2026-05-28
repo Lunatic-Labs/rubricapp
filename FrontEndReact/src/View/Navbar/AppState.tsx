@@ -129,6 +129,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
     resetJump!: () => void;
     setAddAssessmentTaskTabWithAssessmentTask!: (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, course: CourseType, roleNames: string[], rubricNames: string[]) => void;
     setAddCourseTabWithCourse!: (courses: CourseType[], courseId: number | null, tab: string) => void;
+    setCoursesTabWithUser!: (users: UserType[], userId: number) => void;
     setAddCustomRubric!: (addCustomRubric: boolean | null) => void;
     setAddTeamTabWithTeam!: (teams: TeamType[], teamId: number, users: UserType[], tab: string, addTeamAction: string | null) => void;
     setAddTeamTabWithUsers!: (users: UserType[]) => void;
@@ -143,6 +144,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setStudentDashboardWithCourse!: (courseId: number, courses: CourseType[]) => void;
     setSuccessMessage!: (message: string | null) => void;
     setViewCompleteAssessmentTaskTabWithAssessmentTask!: (completedAssessmentTasks: CompleteAssessmentTaskType[] | null, completedAssessmentId: number | null, chosenAssessmentTask: AssessmentTaskType | null, jumpId?: string | null) => void;
+    setViewAssessmentDashboardwithCourse!: (courseId: number, courses: CourseType[]) => void;
     constructor(props: AppStateProps) {
         super(props);
         
@@ -222,12 +224,18 @@ class AppState extends Component<AppStateProps, AppStateState> {
             });
         }
 
+        /**
+         * @method setCoursesTabWithUser - Prepares course editing or viewing state, depending on user selection.
+         * @param {Array<Object>} users - List of user objects.
+         * @param {number|string} userId - The ID of the user being edited.
+         */
+
         this.setCoursesTabWithUser = (users: UserType[], userId: number) => {
-            const viewedUser = users.find(u => u.user_id === userId);
+            const viewUser = users.find(u => u.user_id === userId) ?? null;
             
             this.setState({
                 activeTab: "Courses",
-                user: viewedUser,
+                user: viewUser,
                 addUser: false
             });
         }
@@ -532,6 +540,21 @@ class AppState extends Component<AppStateProps, AppStateState> {
         }
 
         /**
+         * @method setStudentDashboardWithCourse - Navigates student to dashboard with chosen course.
+         * @param {number|string} courseId - Course ID.
+         * @param {Array<Object>} courses - Course list.
+         */
+
+        this.setViewAssessmentDashboardwithCourse = (courseId: number, courses: CourseType[]) => {
+            const chosenCourse = courses.find(c => c.course_id === courseId) ?? null;
+
+            this.setState({
+                activeTab: "AssessmentTasks",
+                chosenCourse: chosenCourse
+            });
+        }
+
+        /**
          * @method setAddCustomRubric - Opens custom rubric creation.
          * @param {Object} addCustomRubric - Rubric config object.
          */
@@ -543,6 +566,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 addCustomRubric: addCustomRubric
             });
         }
+
+        
 
         /**
          * @method confirmCreateResource - Handles post-save navigation after creating resources.
