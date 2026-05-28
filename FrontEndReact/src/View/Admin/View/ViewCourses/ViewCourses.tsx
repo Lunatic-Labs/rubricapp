@@ -101,7 +101,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
 
       // If the logged in user is an Admin of at least one course then the edit column will show.
       // Otherwise the edit column will not be shown!
-      if (navbar.props.isAdmin) {
+      if (navbar.props.isAdmin && !navbar.props.isSuperAdmin) {
         columns.push(
         {
           // If the logged in user is an Admin in the course, they can edit the course.

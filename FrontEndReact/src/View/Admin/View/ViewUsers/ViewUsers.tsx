@@ -86,6 +86,7 @@ class ViewUsers extends Component<ViewUsersProps> {
     var users = adminViewUsers.users;
     var roleNames = adminViewUsers.roleNames;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
+    var setCoursesTabWithUser = navbar.setCoursesTabWithUser;
 
     const columns = [
       {
@@ -161,7 +162,7 @@ class ViewUsers extends Component<ViewUsersProps> {
               size="small"
               hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
               onClick={() => {
-                console.log(userId);
+                setCoursesTabWithUser(users, userId);
               }}
               aria-label="viewUserButton"
             >

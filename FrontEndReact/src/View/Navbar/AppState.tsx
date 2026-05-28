@@ -133,6 +133,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setAddTeamTabWithTeam!: (teams: TeamType[], teamId: number, users: UserType[], tab: string, addTeamAction: string | null) => void;
     setAddTeamTabWithUsers!: (users: UserType[]) => void;
     setAddUserTabWithUser!: (users: UserType[], userId: number) => void;
+    setViewUserTabWithUser!: (users: UserType[], userId: number) => void;
     setAssessmentTaskInstructions!: (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, completedAssessments?: CompleteAssessmentTaskType[] | CompleteAssessmentTaskType | null, options?: { readOnly?: boolean; skipInstructions?: boolean }) => void;
     setCompleteAssessmentTaskTabWithID!: (assessmentTask: AssessmentTaskType | null) => void;
     setConfirmCurrentTeam!: (assessmentTasks: AssessmentTaskType[], assessmentTaskId: number, switchTeam: boolean) => void;
@@ -217,6 +218,16 @@ class AppState extends Component<AppStateProps, AppStateState> {
             this.setState({
                 activeTab: "AddUser",
                 user: newUser,
+                addUser: false
+            });
+        }
+
+        this.setCoursesTabWithUser = (users: UserType[], userId: number) => {
+            const viewedUser = users.find(u => u.user_id === userId);
+            
+            this.setState({
+                activeTab: "Courses",
+                user: viewedUser,
                 addUser: false
             });
         }
@@ -609,6 +620,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         this.setState({
                             activeTab: "MyCustomRubrics"
                         });
+                    } else if (resource==="SuperAdminUsers") {
+                        this.setState({
+                            activeTab: "SuperAdminUsers",
+                            user: null,
+                            addUser: null
+                        });
                     }
                 }
             }, delay);
@@ -839,6 +856,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                 {this.state.activeTab==="Courses" &&
                     <Box className="page-spacing">
+                        {this.props.isSuperAdmin && 
+                        <BackButtonResource
+                          navbar={this}
+                          tabSelected={"SuperAdminUsers"}
+                        />
+                        }
                         <AdminViewCourses
                             navbar={this}
                         />
