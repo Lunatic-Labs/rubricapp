@@ -136,6 +136,13 @@ jobs:
             FrontEndReact/.env
           key: ${{ hashFiles('Scripts/quickCreateEnvs.py') }}-env
 
+      - name: Load generated env vars into MYSql
+        id: load-env
+        run: |
+          echo "MYSQL_USER=$(grep MYSQL_USER BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+          echo "MYSQL_PASSWORD=$(grep MYSQL_PASSWORD BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+          echo "MYSQL_DATABASE=$(grep MYSQL_DATABASE BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_ENV
+
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
