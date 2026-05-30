@@ -65,6 +65,7 @@ jobs:
         working-directory: FrontEndReact/
         run: npm ci
 
+
   lint_frontend:
     runs-on: ubuntu-latest
     needs: install_frontEnd_dependencies
@@ -89,6 +90,7 @@ jobs:
         working-directory: FrontEndReact/
         run: npx eslint --max-warnings=0 .
 
+
   install_backend_dependencies:
     runs-on: ubuntu-latest
     steps:
@@ -105,6 +107,7 @@ jobs:
       - name: Install dependencies
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
+
 
   start_backend:
     runs-on: ubuntu-latest
@@ -130,15 +133,6 @@ jobs:
           --health-retries=5
         ports:
           - 3306:3306
-      redis:
-        image: redis:7.2.4
-        ports:
-          - 6379:6379
-      redis_limiter:
-        image: redis:7.2.4
-        command: redis-server --port 6380
-        ports:
-          - 6380:6380
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -168,7 +162,6 @@ jobs:
           echo -e '#!/bin/bash\necho "active"' | sudo tee /usr/bin/systemctl > /dev/null
           sudo chmod +x /usr/bin/systemctl
 
-
       - name: Install Redis server
         run: |
           sudo apt-get update
@@ -177,7 +170,6 @@ jobs:
       - name: Start Redis manually
         run: |
           sudo redis-server --daemonize yes
-
 
       - name: Start backend
         working-directory: BackEndFlask/
@@ -190,12 +182,18 @@ jobs:
     needs: 
       - start_backend
       - lint_frontend
+    env:
+      MYSQL_USER: ${{ needs.setup_envs.outputs.mysql_user }}
+      MYSQL_PASSWORD: ${{ needs.setup_envs.outputs.mysql_password }}
+      MYSQL_DATABASE: ${{ needs.setup_envs.outputs.mysql_database }}
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
         options: >-
           --health-cmd="mysqladmin ping -h localhost"
           --health-interval=10s
@@ -203,17 +201,6 @@ jobs:
           --health-retries=5
         ports:
           - 3306:3306
-
-      redis:
-        image: redis:7.2.4
-        ports:
-          - 6379:6379
-
-      redis_limiter:
-        image: redis:7.2.4
-        command: redis-server --port 6380
-        ports:
-          - 6380:6380
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -238,31 +225,19 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
-      - name: Install MySQL
+      - name: Stub systemctl to avoid errors
+        run: |
+          echo -e '#!/bin/bash\necho "active"' | sudo tee /usr/bin/systemctl > /dev/null
+          sudo chmod +x /usr/bin/systemctl
+
+      - name: Install Redis server
         run: |
           sudo apt-get update
-          sudo apt-get install -y mysql-server
-
-      - name: Start MySQL
-        run: sudo systemctl start mysql
-
-      - name: Configure MySQL
+          sudo apt-get install -y redis-server
+      
+      - name: Start Redis manually
         run: |
-          sudo mysql --user=root <<EOF
-          CREATE DATABASE rubricapp;
-          CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';
-          GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';
-          FLUSH PRIVILEGES;
-          EOF
-
-      - name: Install Redis
-        run: sudo apt-get install -y redis-server
-
-      - name: Start Redis
-        run: sudo systemctl start redis-server
-
-      - name: Start Redis limiter
-        run: sudo redis-server --port 6380 --daemonize yes
+          sudo redis-server --daemonize yes
 
       - name: Start backend
         working-directory: BackEndFlask/
@@ -301,7 +276,7 @@ jobs:
         working-directory: FrontEndReact/
         run: npm test -- --all --cacheDirectory /tmp/jest-cache
         env:
-          REACT_APP_API_URL: "http://127.0.0.1:5050/api"
+          REACT_APP_API_URL: "http://127.0.0.1:5000/api"
 
 # Uncomment when tests are ready to use.
 #  run_backend_tests:
