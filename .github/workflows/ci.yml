@@ -70,7 +70,7 @@ jobs:
             FrontEndReact/package-lock.json
       
       - name: Install linter
-        working-directly: FrontEndReact/
+        working-directory: FrontEndReact/
         run: npm ci
 
       - name: ESLint FrontEnd
