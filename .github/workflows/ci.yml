@@ -212,6 +212,15 @@ jobs:
           python3 setupEnv.py -ds &
           bash ../.github/workflows/wait_for_port.sh
 
+      - name: Setup Nodejs 
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+          cache-dependency-path: |
+            FrontEndReact/package.json
+            FrontEndReact/package-lock.json
+
       - name: Cache npm dependencies
         uses: actions/cache@v5
         with:
