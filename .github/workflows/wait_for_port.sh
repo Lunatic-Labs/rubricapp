@@ -3,7 +3,7 @@
 echo "Waiting for backend to start..."
 
 for i in {1..30}; do
-  if nc -z 127.0.0.1 5050; then
+  if nc -z 127.0.0.1 5000; then
     echo "Backend up and listening."
     exit 0
   fi
