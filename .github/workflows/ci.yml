@@ -123,31 +123,50 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
+      #--------------------------------------------------------------------
       - name: Install MySQL
         run: |
           sudo apt-get update
           sudo apt-get install -y mysql-server
-
-      - name: Start MySQL
-        run: sudo systemctl start mysql
-
-      - name: Configure MySQL
+  
+      - name: Stop MySQL
+        run: sudo systemctl stop mysql
+  
+      - name: Start MySQL in safe mode (skip grant tables)
+        run: sudo mysqld_safe --skip-grant-tables --skip-networking &
+      
+      - name: Wait for MySQL safe mode
+        run: sleep 5
+  
+      - name: Reset MySQL root password
         run: |
-          sudo mysql --user=root <<EOF
+          sudo mysql -e "FLUSH PRIVILEGES;"
+          sudo mysql -e "ALTER USER 'root'@'localhost' IDENTIFIED BY 'rootpassword';"
+  
+      - name: Restart MySQL normally
+        run: |
+          sudo systemctl stop mysql
+          sudo systemctl start mysql
+  
+      - name: Configure MySQL (DB + user)
+        run: |
+          mysql -u root -prootpassword <<EOF
           CREATE DATABASE rubricapp;
           CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';
           GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';
           FLUSH PRIVILEGES;
           EOF
-
+  
       - name: Install Redis
         run: sudo apt-get install -y redis-server
-
+  
       - name: Start Redis
         run: sudo systemctl start redis-server
+  
+      - name: Start Redis limiter (port 6380)
+      run: sudo redis-server --port 6380 --daemonize yes
 
-      - name: Start Redis limiter
-        run: sudo redis-server --port 6380 --daemonize yes
+      #=-------------------------------------------------------------------
 
       - name: Start backend
         working-directory: BackEndFlask/
