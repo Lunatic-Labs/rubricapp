@@ -182,6 +182,7 @@ jobs:
     needs: 
       - start_backend
       - lint_frontend
+      - setup_envs
     env:
       MYSQL_USER: ${{ needs.setup_envs.outputs.mysql_user }}
       MYSQL_PASSWORD: ${{ needs.setup_envs.outputs.mysql_password }}
