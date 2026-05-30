@@ -120,7 +120,7 @@ jobs:
 
       redis_limiter:
         image: redis:7.2.4
-        command: ["redis-server", "--port", "6380"]
+        command: redis-server --port 6380
         ports:
           - 6380:6380
     steps:
@@ -171,15 +171,15 @@ jobs:
           --health-retries=5
         ports:
           - 3306:3306
-  
+
       redis:
         image: redis:7.2.4
         ports:
           - 6379:6379
-  
+
       redis_limiter:
         image: redis:7.2.4
-        command: ["redis-server", "--port", "6380"]
+        command: redis-server --port 6380
         ports:
           - 6380:6380
     steps:
