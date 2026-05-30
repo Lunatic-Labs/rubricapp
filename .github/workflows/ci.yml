@@ -157,6 +157,7 @@ jobs:
       - name: Start backend
         working-directory: BackEndFlask/
         run: |
+          touch sendgrid.env &
           python3 setupEnv.py -ds &
           bash ../.github/workflows/wait_for_port.sh
 
