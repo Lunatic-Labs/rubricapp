@@ -1,38 +1,122 @@
 #-----------------------------------------------------------------------
-# This is a file that is run by Github actions to test certain aspects
-# of our code before we merge into master.
+# This yaml file is used to configure continuous intergration for
+# RubricApp.
 #
-# Date last modified: Tue Jun  3 12:30:35 PM CDT 2025
+# Date last modified: Thu May 28 01:32:57 PM CDT 2026
 #-----------------------------------------------------------------------
 name: Rubric App Continuous Integration
 
-# Specifies to run on PRs set to merge into master
+# Triggers on pull request to master.
 on:
   pull_request:
   push:
     branches:
       - master
 
-# Front-end linting and back-end building are their own jobs
-# since they arent dependent on each other.
 jobs:
-  # lint job builds the frontend and runs ESLint.
+  setup_envs:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+      
+      - name: Cache enviroment
+        id: cache-env
+        uses: actions/cache@v5
+        with:
+          path: |
+            .env
+            BackEndFlask/.env
+            FrontEndReact/.env
+          key: ${{ hashFiles('Scripts/quickCreateEnvs.py') }}-env
+
+      - name: Generate Envs
+        if: steps.cache-env.outputs.cache-hit != 'true'
+        run: python3 Scripts/quickCreateEnvs.py
+
+  install_frontEnd_dependencies:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Nodejs
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+          cache-dependency-path: |
+            FrontEndReact/package.json
+            FrontEndReact/package-lock.json
+      - name: cache node_modules
+        id: node-modules
+        uses: actions@cache@v5
+        with:
+          path: FrontEndReact/node_modules/
+          key: ${{ hashFiles('FrontEndReact/package-lock.json') }}-env
+
+      - name: Install dependencies
+        run: |
+          cd FrontEndReact
+          npm ci
+
+  lint_frontend:
+    runs-on: ubuntu-latest
+    needs: install_frontEnd_dependencies
+    steps: 
+      - name: Checkout code
+        uses: actions/checkout@v6
+
+      - name: Setup Nodejs 
+        uses: actions/setup-node@v6
+        with:
+          node-version: 24
+          cache: "npm"
+          cache-dependency-path: |
+            FrontEndReact/package.json
+            FrontEndReact/package-lock.json
+
+      - name: Restore node_modules
+        uses: actions@cache@v5
+        with:
+          path: FrontEndReact/node_modules/
+          key: npm-${{ hashFiles('FrontEndReact/package-lock.json') }}
+      
+      - name: ESLint FrontEnd
+        run: |
+          cd FrontEndReact
+          npm run lint
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  # Build the frontend and run eslint.
   lint:
     runs-on: ubuntu-latest
     steps:
-      # Fetchs runner info to see what we are working with.
-      - name: Display system info
-        run:  |
-          echo "CPU info:"
-          lscpu
-          echo "Memory usage:"
-          free -h
-          echo "Disk usage:"
-          df -h
-
+      
       # Loads files for the runner.
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Create envs
         run: |
@@ -40,7 +124,7 @@ jobs:
 
       # Sets up node and runner cache.
       - name: Set up Node.js
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v6
         with:
           node-version: 20
           cache: "npm"
@@ -48,7 +132,7 @@ jobs:
 
       # Retrives/Setup frontend cache.
       - name: Cache npm dependencies directly
-        uses: actions/cache@v3
+        uses: actions/cache@v5
         with:
           path: FrontEndReact/node_modules
           key: ${{ runner.os }}-node-${{ hashFiles('FrontEndReact/package-lock.json') }}
