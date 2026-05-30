@@ -75,7 +75,7 @@ jobs:
 
       - name: ESLint FrontEnd
         working-directory: FrontEndReact/
-        run: npm run lint
+        run: npx eslint --max-warnings=0 .
 
   install_backend_dependencies:
     runs-on: ubuntu-latest
@@ -123,6 +123,30 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
+      - name: Install MySQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-server
+
+      - name: Start MySQL
+        run: sudo systemctl start mysql
+
+      - name: Configure MySQL
+        run: |
+          sudo mysql -e "CREATE DATABASE rubricapp;"
+          sudo mysql -e "CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';"
+          sudo mysql -e "GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';"
+          sudo mysql -e "FLUSH PRIVILEGES;"
+
+      - name: Install Redis
+        run: sudo apt-get install -y redis-server
+
+      - name: Start Redis
+        run: sudo systemctl start redis-server
+
+      - name: Start Redis limiter
+        run: sudo redis-server --port 6380 --daemonize yes
+
       - name: Start backend
         working-directory: BackEndFlask/
         run: |
@@ -158,6 +182,30 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
+      - name: Install MySQL
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y mysql-server
+
+      - name: Start MySQL
+        run: sudo systemctl start mysql
+
+      - name: Configure MySQL
+        run: |
+          sudo mysql -e "CREATE DATABASE rubricapp;"
+          sudo mysql -e "CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';"
+          sudo mysql -e "GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';"
+          sudo mysql -e "FLUSH PRIVILEGES;"
+
+      - name: Install Redis
+        run: sudo apt-get install -y redis-server
+
+      - name: Start Redis
+        run: sudo systemctl start redis-server
+
+      - name: Start Redis limiter
+        run: sudo redis-server --port 6380 --daemonize yes
+
       - name: Start backend
         working-directory: BackEndFlask/
         run: |
@@ -175,6 +223,12 @@ jobs:
       - name: Install Node dependencies
         working-directory: FrontEndReact/
         run: npm ci
+
+      - name: Cache Jest
+        uses: actions/cache@v5
+        with:
+          path: /tmp/jest-cache
+          key: jest-${{ runner.os }}-${{ hashFiles('FrontEndReact/package-lock.json') }}
 
       - name: Run Jest tests
         working-directory: FrontEndReact/
