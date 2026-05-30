@@ -16,6 +16,10 @@ on:
 jobs:
   setup_envs:
     runs-on: ubuntu-latest
+    outputs:
+      mysql_user: ${{ steps.export-mysql.outputs.mysql_user }}
+      mysql_password: ${{ steps.export-mysql.outputs.mysql_password }}
+      mysql_database: ${{ steps.export-mysql.outputs.mysql_database }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -34,6 +38,14 @@ jobs:
         if: steps.cache-env.outputs.cache-hit != 'true'
         working-directory: Scripts/
         run: python3 quickCreateEnvs.py
+      
+      - name: Export MySQL envs
+        id: export-mysql
+        run: |
+          echo "mysql_user=$(grep MYSQL_USER BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_OUTPUT
+          echo "mysql_password=$(grep MYSQL_PASSWORD BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_OUTPUT
+          echo "mysql_database=$(grep MYSQL_DATABASE BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_OUTPUT
+
 
   install_frontEnd_dependencies:
     runs-on: ubuntu-latest
@@ -99,12 +111,18 @@ jobs:
     needs:
       - setup_envs
       - install_backend_dependencies
+    env:
+      MYSQL_USER: ${{ needs.setup_envs.outputs.mysql_user }}
+      MYSQL_PASSWORD: ${{ needs.setup_envs.outputs.mysql_password }}
+      MYSQL_DATABASE: ${{ needs.setup_envs.outputs.mysql_database }}
     services:
       mysql:
         image: mysql:8.0
         env:
           MYSQL_ROOT_PASSWORD: root
-          MYSQL_DATABASE: testdb
+          MYSQL_USER: ${{ env.MYSQL_USER }}
+          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
+          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
         options: >-
           --health-cmd="mysqladmin ping -h localhost"
           --health-interval=10s
@@ -112,12 +130,10 @@ jobs:
           --health-retries=5
         ports:
           - 3306:3306
-
       redis:
         image: redis:7.2.4
         ports:
           - 6379:6379
-
       redis_limiter:
         image: redis:7.2.4
         command: redis-server --port 6380
@@ -136,13 +152,6 @@ jobs:
             FrontEndReact/.env
           key: ${{ hashFiles('Scripts/quickCreateEnvs.py') }}-env
 
-      - name: Load generated env vars into MYSql
-        id: load-env
-        run: |
-          echo "MYSQL_USER=$(grep MYSQL_USER BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_ENV
-          echo "MYSQL_PASSWORD=$(grep MYSQL_PASSWORD BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_ENV
-          echo "MYSQL_DATABASE=$(grep MYSQL_DATABASE BackEndFlask/.env | cut -d '=' -f2)" >> $GITHUB_ENV
-
       - name: Setup Python
         uses: actions/setup-python@v6
         with:
@@ -154,10 +163,12 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
+      - name: Supress sendgrid warning
+        run: touch BackEndFlask/sendgrid.env
+
       - name: Start backend
         working-directory: BackEndFlask/
         run: |
-          touch sendgrid.env &
           python3 setupEnv.py -ds &
           bash ../.github/workflows/wait_for_port.sh
 
