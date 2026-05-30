@@ -133,10 +133,12 @@ jobs:
 
       - name: Configure MySQL
         run: |
-          sudo mysql -e "CREATE DATABASE rubricapp;"
-          sudo mysql -e "CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';"
-          sudo mysql -e "GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';"
-          sudo mysql -e "FLUSH PRIVILEGES;"
+          sudo mysql --user=root <<EOF
+          CREATE DATABASE rubricapp;
+          CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';
+          GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';
+          FLUSH PRIVILEGES;
+          EOF
 
       - name: Install Redis
         run: sudo apt-get install -y redis-server
@@ -192,10 +194,12 @@ jobs:
 
       - name: Configure MySQL
         run: |
-          sudo mysql -e "CREATE DATABASE rubricapp;"
-          sudo mysql -e "CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';"
-          sudo mysql -e "GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';"
-          sudo mysql -e "FLUSH PRIVILEGES;"
+          sudo mysql --user=root <<EOF
+          CREATE DATABASE rubricapp;
+          CREATE USER 'rubric'@'localhost' IDENTIFIED BY 'password';
+          GRANT ALL PRIVILEGES ON rubricapp.* TO 'rubric'@'localhost';
+          FLUSH PRIVILEGES;
+          EOF
 
       - name: Install Redis
         run: sudo apt-get install -y redis-server
