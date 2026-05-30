@@ -163,14 +163,11 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
-      - name: Supress sendgrid warning
-        run: touch BackEndFlask/core/sendgrid.env
-
       - name: Install Redis server
         run: |
           sudo apt-get update
           sudo apt-get install -y redis-server
-      
+
 
       - name: Start backend
         working-directory: BackEndFlask/
