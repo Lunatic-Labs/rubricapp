@@ -8,7 +8,7 @@ for i in {1..30}; do
     exit 0
   fi
   echo "Backend not ready..."
-  sleep 1
+  sleep 3
 done
 
 echo "Backend did not start within timeout."
