@@ -163,10 +163,20 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
+      - name: Stub systemctl to avoid errors
+        run: |
+          echo -e '#!/bin/bash\necho "active"' | sudo tee /usr/bin/systemctl > /dev/null
+          sudo chmod +x /usr/bin/systemctl
+
+
       - name: Install Redis server
         run: |
           sudo apt-get update
           sudo apt-get install -y redis-server
+      
+      - name: Start Redis manually
+        run: |
+          sudo redis-server --daemonize yes
 
 
       - name: Start backend
