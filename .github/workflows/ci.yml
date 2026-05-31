@@ -279,12 +279,19 @@ jobs:
       - name: Install pytest-xdist
         run: pip install pytest-xdist
 
-      - name: Run tests
+      - name: Run unit tests
         working-directory: BackEndFlask/
         env:
           RUBRICAPP_RUNNING_LOCALLY: "0"
           TESTING_MODE: "1"
-        run: pytest -n auto -vv --disable-warnings
+        run: pytest Tests/unit -n auto -vv --disable-warning
+
+      - name: Run integration tests
+        working-directory: BackEndFlask/
+        env:
+          RUBRICAPP_RUNNING_LOCALLY: "0"
+          TESTING_MODE: "1"
+        run: pytest Tests/integration -vv --disable-warnings
 
 
 
