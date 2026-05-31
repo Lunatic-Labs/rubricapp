@@ -272,9 +272,17 @@ jobs:
         run: |
           sudo redis-server --daemonize yes
 
+      - name: Add BackEndFlask to PYTHONPATH
+        working-directory: BackEndFlask/
+        run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
+
       - name: Run tests
         working-directory: BackEndFlask/
+        env:
+          RUBRICAPP_RUNNING_LOCALLY: "0"
+          TESTING_MODE: "1"
         run: pytest -vv --disable-warnings
+
 
 
 # Uncomment when tests are ready to use.
