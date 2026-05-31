@@ -284,7 +284,7 @@ jobs:
         env:
           RUBRICAPP_RUNNING_LOCALLY: "0"
           TESTING_MODE: "1"
-        run: pytest Tests/unit -n auto -vv --disable-warning
+        run: pytest Tests/unit -n auto -vv --disable-warnings
 
       - name: Run integration tests
         working-directory: BackEndFlask/
