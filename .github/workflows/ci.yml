@@ -198,6 +198,13 @@ jobs:
           TESTING_MODE: "1"
         run: pytest Tests/integration -vv --disable-warnings
 
+      - name: Start backend
+        if: matrix.test_type == 'jest'
+        working-directory: BackEndFlask/
+        run: |
+          python3 setupEnv.py -ds &
+          bash ../.github/workflows/wait_for_port.sh
+
       - name: Setup Nodejs 
         if: matrix.test_type == 'jest'
         uses: actions/setup-node@v6
