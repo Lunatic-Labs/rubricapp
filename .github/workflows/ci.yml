@@ -178,7 +178,7 @@ jobs:
           sudo redis-server --daemonize yes
 
       - name: Add BackEndFlask to PYTHONPATH
-        if: matrix.test_type = 'pytest-unit' || matrix.test_type == 'pytest-integrated'
+        if: matrix.test_type == 'pytest-unit' || matrix.test_type == 'pytest-integrated'
         working-directory: BackEndFlask/
         run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
 
