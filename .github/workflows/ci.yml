@@ -296,21 +296,6 @@ jobs:
       MYSQL_USER: ${{ needs.setup_envs.outputs.mysql_user }}
       MYSQL_PASSWORD: ${{ needs.setup_envs.outputs.mysql_password }}
       MYSQL_DATABASE: ${{ needs.setup_envs.outputs.mysql_database }}
-    services:
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_ROOT_PASSWORD: root
-          MYSQL_USER: ${{ env.MYSQL_USER }}
-          MYSQL_PASSWORD: ${{ env.MYSQL_PASSWORD }}
-          MYSQL_DATABASE: ${{ env.MYSQL_DATABASE }}
-        options: >-
-          --health-cmd="mysqladmin ping -h localhost"
-          --health-interval=10s
-          --health-timeout=5s
-          --health-retries=5
-        ports:
-          - 3306:3306
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
