@@ -116,6 +116,14 @@ jobs:
       matrix:
         include:
           - test_type: jest
+            shard: 1
+            total_shards: 3
+          - test_type: jest
+            shard: 2
+            total_shards: 3
+          - test_type: jest
+            shard: 3
+            total_shards: 3
     
           - test_type: pytest-unit
     
@@ -254,10 +262,14 @@ jobs:
           path: /tmp/jest-cache
           key: jest-${{ runner.os }}-${{ hashFiles('FrontEndReact/package-lock.json') }}
 
-      - name: Run Jest tests
+      - name: Run Jest tests (sharded)
         if: matrix.test_type == 'jest'
         working-directory: FrontEndReact/
-        run: npm test -- --all --cacheDirectory /tmp/jest-cache
+        run: |
+          npx jest \
+            --all \
+            --cacheDirectory /tmp/jest-cache \
+            --shard=${{ matrix.shard }}/${{ matrix.total_shards }}
         env:
           REACT_APP_API_URL: "http://127.0.0.1:5000/api"
 
