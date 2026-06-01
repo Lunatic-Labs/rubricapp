@@ -113,12 +113,12 @@ jobs:
     needs: [setup_envs, install_backend_dependencies, install_frontEnd_dependencies]
     strategy:
       fail-fast: true
-      matrix: 
-        test_type:
+      matrix:
+        include:
           - test_type: jest
-
+    
           - test_type: pytest-unit
-
+    
           - test_type: pytest-integrated
             shard: 1
             total_shards: 3
