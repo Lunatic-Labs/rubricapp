@@ -114,7 +114,20 @@ jobs:
     strategy:
       fail-fast: true
       matrix: 
-        test_type: [jest, pytest-integrated, pytest-unit]
+        test_type:
+          - test_type: jest
+
+          - test_type: pytest-unit
+
+          - test_type: pytest-integrated
+            shard: 1
+            total_shards: 3
+          - test_type: pytest-integrated
+            shard: 2
+            total_shards: 3
+          - test_type: pytest-integrated
+            shard: 3
+            total_shards: 3
     env:
       MYSQL_USER: ${{ needs.setup_envs.outputs.mysql_user }}
       MYSQL_PASSWORD: ${{ needs.setup_envs.outputs.mysql_password }}
@@ -158,10 +171,12 @@ jobs:
         working-directory: BackEndFlask/
         run: pip install -r requirements.txt
 
-      - name: Install pytest-xdist
-        if: matrix.test_type == 'pytest-unit'
+      - name: Install pytest tools
+        if: matrix.test_type != 'jest'
         working-directory: BackEndFlask/
-        run: pip install pytest-xdist
+        run: |
+          pip install pytest-xdist
+          pip install pytest-split
 
       - name: Stub systemctl to avoid errors
         run: |
@@ -178,7 +193,7 @@ jobs:
           sudo redis-server --daemonize yes
 
       - name: Add BackEndFlask to PYTHONPATH
-        if: matrix.test_type == 'pytest-unit' || matrix.test_type == 'pytest-integrated'
+        if: matrix.test_type != 'jest'
         working-directory: BackEndFlask/
         run: echo "PYTHONPATH=$PWD" >> $GITHUB_ENV
 
@@ -190,13 +205,17 @@ jobs:
           TESTING_MODE: "1"
         run: pytest Tests/unit -n auto -vv --disable-warnings
       
-      - name: Run integration tests
+      - name: Run integration tests (sharded)
         if: matrix.test_type == 'pytest-integrated'
         working-directory: BackEndFlask/
         env:
           RUBRICAPP_RUNNING_LOCALLY: "0"
           TESTING_MODE: "1"
-        run: pytest Tests/integration -vv --disable-warnings
+        run: |
+          pytest Tests/integration \
+            --splits=${{ matrix.total_shards }} \
+            --group=${{ matrix.shard }} \
+            -vv --disable-warnings
 
       - name: Start backend
         if: matrix.test_type == 'jest'
