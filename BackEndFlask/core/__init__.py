@@ -105,7 +105,10 @@ jwt = JWTManager(app)
 account_db_path = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
 
 # Initalize MySql.
-MYSQL_HOST=os.getenv('MYSQL_HOST')
+MYSQL_HOST=os.getenv('MYSQL_HOST', 'localhost')
+# Strip port from host if it was included (e.g. localhost:3306)
+if ':' in MYSQL_HOST:
+    MYSQL_HOST = MYSQL_HOST.split(':')[0]
 
 MYSQL_USER=os.getenv('MYSQL_USER')
 
