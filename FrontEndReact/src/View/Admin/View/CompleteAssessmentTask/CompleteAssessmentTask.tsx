@@ -108,9 +108,10 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
         const navbar = this.props.navbar;
         const state = navbar.state;
         const chosenAssessmentTask = state.chosenAssessmentTask;
+        const courseId = state.chosenCourse.course_id;
         
         genericResourceGET(
-            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}`,
+            `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&course_id=${courseId}`,
             'checkin', this
         ).then(data => {
             let checkinData = new CheckinsTracker(data['checkin']);

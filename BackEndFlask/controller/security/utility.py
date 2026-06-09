@@ -3,6 +3,7 @@ import datetime
 from flask import request
 from core  import app
 from jwt   import ExpiredSignatureError
+from enums.roles import Roles
 from controller.Route_response import *
 from flask_jwt_extended.exceptions import InvalidQueryParamError
 from flask_jwt_extended import (
