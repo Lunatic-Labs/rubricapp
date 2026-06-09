@@ -136,15 +136,8 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
-        proxy_pass http://localhost:3000/;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection \"upgrade\";
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
+        try_files \$uri /index.html;
     }
 }"
 
@@ -155,15 +148,8 @@ server {
     server_name $DOMAIN;
 
     location / {
-        proxy_pass http://localhost:3000/;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-
-        proxy_http_version 1.1;
-        proxy_set_header Upgrade \$http_upgrade;
-        proxy_set_header Connection \"upgrade\";
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
+        try_files \$uri /index.html;
     }
 }
 
@@ -779,8 +765,6 @@ case "$1" in
         configure_no_ssl
         ;;
     "$SERVE")
-        prompt_domain
-        build_configs
         serve_rubricapp
         ;;
     "$UPDATE")

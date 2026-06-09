@@ -105,7 +105,10 @@ jwt = JWTManager(app)
 account_db_path = os.getcwd() + os.path.join(os.path.sep, "core") + os.path.join(os.path.sep, "account.db")
 
 # Initalize MySql.
-MYSQL_HOST=os.getenv('MYSQL_HOST')
+MYSQL_HOST=os.getenv('MYSQL_HOST', 'localhost')
+# Strip port from host if it was included (e.g. localhost:3306)
+if ':' in MYSQL_HOST:
+    MYSQL_HOST = MYSQL_HOST.split(':')[0]
 
 MYSQL_USER=os.getenv('MYSQL_USER')
 
@@ -113,7 +116,15 @@ MYSQL_PASSWORD=os.getenv('MYSQL_PASSWORD')
 
 MYSQL_DATABASE=os.getenv('MYSQL_DATABASE')
 
-db_uri = (f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}/{MYSQL_DATABASE}")
+# MYSQL_PORT and MYSQL_SSLMODE are optional — defaults to 3306 with no SSL
+# For DigitalOcean managed databases set MYSQL_PORT=25060 and MYSQL_SSLMODE=REQUIRED in .env
+MYSQL_PORT=os.getenv('MYSQL_PORT', '3306')
+MYSQL_SSLMODE=os.getenv('MYSQL_SSLMODE', '')
+
+# Skip SSL cert verification for DO managed DB which uses a self-signed cert
+ssl_args = "?ssl=true&ssl_verify_cert=false" if MYSQL_SSLMODE == "REQUIRED" else ""
+
+db_uri = (f"mysql+pymysql://{MYSQL_USER}:{MYSQL_PASSWORD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DATABASE}{ssl_args}")
 
 app.config['SQLALCHEMY_DATABASE_URI'] = db_uri
 
