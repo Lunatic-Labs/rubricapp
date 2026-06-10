@@ -1,13 +1,14 @@
 from flask import request
 from marshmallow import fields
 from flask_jwt_extended import jwt_required
-from controller.security.CustomDecorators import AuthCheck, bad_token_check, admin_check
+from controller.security.CustomDecorators import AuthCheck, bad_token_check, privilege_check
 from models.checkin import *
 from controller import bp
 from controller.Route_response import *
 from enums.http_status_codes import HttpStatus
 from core import red
 from models.assessment_task import get_assessment_task
+from enums.roles import Roles, roles_at_or_above
 
 from models.queries import (
     get_all_checkins_for_assessment,
@@ -128,7 +129,7 @@ def checkin_to_assessment():
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-@admin_check()
+@privilege_check(roles_at_or_above(Roles.TA_INSTRUCTOR))
 def check_checkedin():
     """
     Called by Admins/teachers views to get who is logged in for a specific requested assessment task.
