@@ -646,7 +646,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                     }
                 }
             },
-            {
+        {
                 name: "assessment_task_id",
                 label: "Notify",
                 options: {
