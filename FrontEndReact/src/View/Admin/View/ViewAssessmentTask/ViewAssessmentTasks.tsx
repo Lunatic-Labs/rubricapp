@@ -46,7 +46,9 @@ interface ViewCompletedAssessmentsCellConfig {
     setStudentAssessmentView: any,
     component: React.ComponentType<any> | keyof JSX.IntrinsicElements,
     content: React.ReactNode,
-    sx?: object;
+    sx?: object,
+    variant?: string,
+    className?: string;
 }
 
 class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssessmentTasksState> {
@@ -249,6 +251,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
         });
     }
 
+    // Returns a react node for viewing completed assessments.
     private renderViewCompletedAssessmentsCell(cellCfg: ViewCompletedAssessmentsCellConfig): React.ReactNode {
         if (!cellCfg.assessmentTaskId || !cellCfg.sortedAssessmentTasks) {
             return <>{"N/A"}</>;
@@ -263,13 +266,14 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
         
         const atLeastOneCAT =
             this.state.completedAssessments?.some(
-                (cat) => cat.assessment_task_id === cellCfg.assessmentTaskId,
+                (cat) => cat.assessment_task_id === cellCfg.assessmentTaskId &&
+                cat?.completed_count > 0,
             ) 
         ?? false;
 
         const tooltipMsg = atLeastOneCAT
-        ?   "Completed Rubrics are not present."
-        :   "Instructors can review the contents of the assessment task to ensure everything is up to date.";
+        ?   "Instructors can review the contents of the assessment task to ensure everything is up to date."
+        :   "Completed Rubrics are not present.";
 
         return (
             <>
@@ -285,6 +289,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                         id=""
                         disabled={!atLeastOneCAT}
                         aria-label='viewCompletedAssessmentIconButton'
+                        variant={cellCfg?.variant}
+                        className={cellCfg?.className}
                         onClick={() => {
                             if (this.state.isViewingAsStudent) {
                                 // Call student view method
@@ -665,80 +671,26 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                     setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
                     setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
                     customBodyRender: (assessmentTaskId: number) => {
-                        if (assessmentTaskId && sortedAssessmentTasks) {
-                            const selectedTask = sortedAssessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === assessmentTaskId);
-                            const completedAssessments = this.state.completedAssessments!.filter((ca: { assessment_task_id: number; completed_count: number }) => ca.assessment_task_id === assessmentTaskId);
-                            const completedCount = completedAssessments.length > 0 ? completedAssessments[0]!.completed_count : 0;
+                        const cellConfig: ViewCompletedAssessmentsCellConfig = {
+                            assessmentTaskId: assessmentTaskId,
+                            sortedAssessmentTasks: sortedAssessmentTasks,
+                            setCompleteAssessmentTaskTabWithID:
+                                setCompleteAssessmentTaskTabWithID,
+                            setStudentAssessmentView:
+                                navbar.setStudentAssessmentView,
+                            component: Button,
+                            content: "Notify",
+                            sx: {
+                                "&.Mui-disabled": {
+                                color: "var(--export_disabled_text) !important",
+                                backgroundColor: "var(--primary-disabled-bg)",
+                                },
+                            },
+                            variant: 'contained',
+                            className: 'primary-color'
+                        };
 
-                            if (completedCount === 0) {
-                                return (
-                                    <>
-                                        <Tooltip
-                                            title={
-                                                <>
-                                                    <p>
-                                                        Completed Rubrics are not present.
-                                                    </p>
-                                                </>
-                                            }>
-                                            <span>
-                                                <Button
-                                                    id={"assessment_export_" + assessmentTaskId}
-                                                    className='primary-color'
-                                                    variant='contained'
-                                                    disabled
-                                                    aria-label='exportAssessmentTaskButton'
-                                                    sx={{
-                                                        '&.Mui-disabled': {
-                                                        color: 'var(--export_disabled_text) !important',
-                                                        backgroundColor: 'var(--primary-disabled-bg)',
-                                                }
-                                            }}
-                                                >
-                                                    Notify
-                                                </Button>
-                                            </span>
-                                        </Tooltip>
-                                    </>
-                                );
-                            }
-                            if (selectedTask) {
-                                return (
-                                    <>
-                                        <Tooltip
-                                            title={
-                                                <>
-                                                    <p>
-                                                        Instructors can review the contents of the assessment task to ensure everything is up to date.
-                                                    </p>
-                                                </>
-                                            }>
-                                            <Button
-                                                id=""
-                                                className='primary-color'
-                                                variant='contained'
-                                                onClick={() => {
-                                                    if (this.state.isViewingAsStudent) {
-                                                        // Call student view method
-                                                        navbar.setStudentAssessmentView(selectedTask);
-                                                    } else {
-                                                        // Call admin view method
-                                                        setCompleteAssessmentTaskTabWithID(selectedTask);
-                                                    }
-                                                }}
-                                            >
-                                                Notify
-                                            </Button>
-                                        </Tooltip>
-                                    </>
-                                );
-                            }
-                        }
-                        return (
-                            <>
-                                {"N/A"}
-                            </>
-                        )
+                        return this.renderViewCompletedAssessmentsCell(cellConfig);
                     }
                 }
             },
