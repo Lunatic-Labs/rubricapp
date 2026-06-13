@@ -3,7 +3,9 @@ from functools import wraps
 from .utility  import to_int
 from .blacklist import is_token_blacklisted
 from typing     import Callable 
+from enums.roles import Roles
 from models.queries import is_admin_by_user_id, is_super_admin_by_user_id
+from models.user_course import get_role_from_usercourse_by_userid_courseid
 from flask_jwt_extended import decode_token, get_jwt_identity
 from flask_jwt_extended.exceptions import (
     NoAuthorizationError,
@@ -116,6 +118,49 @@ def verify_admin(refresh: bool) -> None:
         if is_admin_by_user_id(decoded_id) == False:
             course_redis_out("\nI am: is_admin_by_user_id in verify_admin")
             course_redis_out("\nI saw the user was not an admin in the db\n")
+            course_redis_out(decoded_id)
+            raise NoAuthorizationError("No Authorization")
+    except Exception as e:
+        course_redis_out(e)
+        course_redis_out("\nI am: verify_admin")
+        course_redis_out("\nIf the other inner function is not present then i failed to decode.")
+        course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
+        raise NoAuthorizationError("No Authorization")
+    
+def privilege_check(desired_privilege_level: list[Roles], refresh: bool = False) -> Callable:
+    """
+    Description:
+    This is a decorator that checks to make sure that the route was called by a user with the desired privilege level.
+    It is best to use the decorator as the last decorator since it hits the db.
+    NOTE: The course_id must be provided.
+    """
+    def wrapper(fn):
+        @wraps(fn)
+        def decorator(*args):
+            sufficent_privilege(desired_privilege_level, refresh)
+            return current_app.ensure_sync(fn)(*args)
+        return decorator
+    return wrapper
+
+def sufficent_privilege(desired_privilege_level: list[Roles], refresh: bool) -> None:
+    """
+    Description:
+    Uses token user_id to check user permisions.
+
+    Exceptions: 
+    Raises NoAuthorizationError if at any instance it can not be reliably determined if
+    the individual that called the route has the desired level permissions.
+    """
+    try:
+        # Figuring out the user_id from token.
+        # Assumes authcheck() has already concluded token_user_id == user_id from parameters.
+        token = request.headers.get('Authorization').split()[1]
+        course_id = request.args.get('course_id')
+        decoded_id = decode_token(token)['sub'] if not refresh else decode_token(token)['sub'][0]
+        course_role = get_role_from_usercourse_by_userid_courseid(decoded_id, course_id)
+        if course_role not in desired_privilege_level:
+            course_redis_out("\nI am: sufficient_privilege in privilege_check")
+            course_redis_out("\nI saw the user was not of appropriate auth in the db\n")
             course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
     except Exception as e:
