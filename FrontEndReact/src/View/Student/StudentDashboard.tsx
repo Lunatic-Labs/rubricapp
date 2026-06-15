@@ -150,228 +150,233 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         } = this.state;
 
         const canFilter: boolean = Boolean(
-            roles && 
-            assessmentTasks && 
-            completedAssessments && 
-            averageData && 
-            rubrics && 
-            (filteredATs === null)
+            roles &&
+            assessmentTasks &&
+            completedAssessments &&
+            averageData &&
+            rubrics &&
+            filteredATs === null
         );
-
-        if (canFilter === false){return;}
 
         // Students need their team info ready to correctly match the student to team CATs.
         const roleId: number = roles!.role_id;
         const isStudent: boolean = roleId === ROLE.STUDENT;
-        const teamInfoReady: boolean = userTeamIds.length > 0 || this.state.teamsFetched;
-        const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
+        const teamInfoReady: boolean =
+          userTeamIds.length > 0 || this.state.teamsFetched;
+        const canFilterStudentByTeam: boolean = isStudent && teamInfoReady;
 
-        if (roleId === ROLE.TA_INSTRUCTOR || canFilterStudentByTeam) {
-            const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics as any);
+        if (
+          !canFilter ||
+          (roleId !== ROLE.TA_INSTRUCTOR && !canFilterStudentByTeam)
+        ) {return;}
 
-            let editableCats: CompleteAssessmentTask[] = [];
-            let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];
-            let showableDoneCats: CompleteAssessmentTask[] = [];
+        const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics as any);
 
-            const CATmap: Map<string, CompleteAssessmentTask> = new Map();
-            const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
+        let editableCats: CompleteAssessmentTask[] = [];
+        let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];
+        let showableDoneCats: CompleteAssessmentTask[] = [];
+
+        const CATmap: Map<string, CompleteAssessmentTask> = new Map();
+        const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
             
-            const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean): string => {
-                return `${assessment_task_id}${
-                    isTeamAssessment && team_id !== null ? `-${team_id}`:''
-                }`
-            };
+        const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean): string => {
+            return `${assessment_task_id}${
+                isTeamAssessment && team_id !== null ? `-${team_id}`:''
+            }`
+        };
 
-            completedAssessments!.forEach((cat: CompleteAssessmentTask) => {
-                const team_id: number|null = cat.team_id;
+        completedAssessments!.forEach((cat: CompleteAssessmentTask) => {
+            const team_id: number|null = cat.team_id;
                 
-                if (roleId === ROLE.TA_INSTRUCTOR || team_id === null || userTeamIds.includes(team_id)){                    
-                    const at: AssessmentTask | undefined = assessmentTasks!.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
-                    const isTeamAssessment: boolean = at?.unit_of_assessment === true;                    
+            if (roleId === ROLE.TA_INSTRUCTOR || team_id === null || userTeamIds.includes(team_id)){                    
+                const at: AssessmentTask | undefined = assessmentTasks!.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
+                const isTeamAssessment: boolean = at?.unit_of_assessment === true;                    
 
-                    const key: string = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
-                    const existing: CompleteAssessmentTask | undefined = CATmap.get(key);
-        
-                    const shouldReplace: boolean = !existing ||
-                        (cat.done && !existing.done) ||
-                        (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
-                                
-                    if (shouldReplace) {
-                        CATmap.set(key, cat);
-                    }
+                const key: string = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
+                const existing: CompleteAssessmentTask | undefined = CATmap.get(key);
+
+                const shouldReplace: boolean = !existing ||
+                    (cat.done && !existing.done) ||
+                    (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
+
+                if (shouldReplace) {
+                    CATmap.set(key, cat);
                 }
-            });
+            }
+        });
             
-            averageData.forEach((cat: CompleteAssessmentTask) => { AVGmap.set(cat.assessment_task_id, cat) });
+        averageData.forEach((cat: CompleteAssessmentTask) => { AVGmap.set(cat.assessment_task_id, cat) });
 
-            const currentDate: Date = new Date();
-            const isATDone = (cat: CompleteAssessmentTask | undefined) : boolean => cat !== undefined && cat.done;
-            const isATPastDue = (at: AssessmentTask, today: Date): boolean => (new Date(at.due_date)) < today; 
+        const currentDate: Date = new Date();
+        const isATDone = (cat: CompleteAssessmentTask | undefined) : boolean => cat !== undefined && cat.done;
+        const isATPastDue = (at: AssessmentTask, today: Date): boolean => (new Date(at.due_date)) < today; 
 
-            let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks!.filter((task: AssessmentTask) => {
-                
-                const isTeamAssessment: boolean = task.unit_of_assessment === true;
-                let relevantTeamId: number | null = null;
-                                
-                if (isTeamAssessment && userTeamIds.length > 0) {
-                    // For team assessments, find which team this user is on for this task
-                    const userCAT: CompleteAssessmentTask | undefined = completedAssessments!.find((cat: CompleteAssessmentTask) => 
-                        cat.assessment_task_id === task.assessment_task_id && cat.team_id !== null && userTeamIds.includes(cat.team_id)
-                    );
-                    relevantTeamId = userCAT?.team_id || null;
-                }
-                
-                const catKey: string = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
-                const cat: CompleteAssessmentTask | undefined = CATmap.get(catKey);
-                const avg: CompleteAssessmentTask| undefined = AVGmap.get(task.assessment_task_id);
+        let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks!.filter((task: AssessmentTask) => {
+            
+            const isTeamAssessment: boolean = task.unit_of_assessment === true;
+            let relevantTeamId: number | null = null;
+                            
+            if (isTeamAssessment && userTeamIds.length > 0) {
+                // For team assessments, find which team this user is on for this task
+                const userCAT: CompleteAssessmentTask | undefined = completedAssessments!.find((cat: CompleteAssessmentTask) => 
+                    cat.assessment_task_id === task.assessment_task_id && cat.team_id !== null && userTeamIds.includes(cat.team_id)
+                );
+                relevantTeamId = userCAT?.team_id || null;
+            }
+            
+            const catKey: string = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
+            const cat: CompleteAssessmentTask | undefined = CATmap.get(catKey);
+            const avg: CompleteAssessmentTask| undefined = AVGmap.get(task.assessment_task_id);
 
-                // Qualities for if an AT is viewable.
-                const done: boolean = isATDone(cat);
-                const correctUser: boolean = roleId === task.role_id || (roleId === ROLE.STUDENT && task.role_id === ROLE.TA_INSTRUCTOR);
-                const locked: boolean = task.locked;
-                const published: boolean = task.published;
-                const pastDue: boolean = !correctUser || locked || !published || isATPastDue(task, currentDate);
+            // Qualities for if an AT is viewable.
+            const done: boolean = isATDone(cat);
+            const correctUser: boolean = roleId === task.role_id || (roleId === ROLE.STUDENT && task.role_id === ROLE.TA_INSTRUCTOR);
+            const locked: boolean = task.locked;
+            const published: boolean = task.published;
+            const pastDue: boolean = !correctUser || locked || !published || isATPastDue(task, currentDate);
 
-                const isStudent: boolean = roles!.role_id === ROLE.STUDENT;
-                const isStudentTask: boolean = task.role_id === ROLE.STUDENT;
-                const baseConditions: boolean = correctUser && !locked && published && !pastDue;
+            const isStudent: boolean = roles!.role_id === ROLE.STUDENT;
+            const isStudentTask: boolean = task.role_id === ROLE.STUDENT;
+            const baseConditions: boolean = correctUser && !locked && published && !pastDue;
 
-                let viewable: boolean, CATviewable: boolean;
+            let viewable: boolean, CATviewable: boolean;
 
-                if (isStudent && isStudentTask) {
-                    viewable = !done && baseConditions;
-                    CATviewable = correctUser && done;
-                } else if (isStudent) {
-                    if (task.role_id === ROLE.TA_INSTRUCTOR && done){
-                        viewable = false;
-                        CATviewable = true;
-                    } else {
-                        viewable = baseConditions && !task.notification_sent;
-                        CATviewable = Boolean(pastDue || task.notification_sent) && published && correctUser;
-                    }
+            if (isStudent && isStudentTask) {
+                viewable = !done && baseConditions;
+                CATviewable = correctUser && done;
+            } else if (isStudent) {
+                if (task.role_id === ROLE.TA_INSTRUCTOR && done){
+                    viewable = false;
+                    CATviewable = true;
                 } else {
-                    viewable = baseConditions;
-                    CATviewable = pastDue && correctUser;
+                    viewable = baseConditions && !task.notification_sent;
+                    CATviewable = Boolean(pastDue || task.notification_sent) && published && correctUser; 
                 }
-
-                if (CATviewable && cat !== undefined) {
-                    viewable ? editableCats.push(cat): showableDoneCats.push(cat);
-                    filteredAvgData.push(avg);
-                } else if (viewable && cat !== undefined){
-                    editableCats.push(cat);
+            } else {
+                viewable = baseConditions;
+                CATviewable = pastDue && correctUser;
+                if (!CATviewable && viewable && task.role_id === ROLE.TA_INSTRUCTOR && done){
+                    CATviewable = true;
+                    viewable = false;
                 }
-                return viewable;
-            });
-
-            // Helpers for chart data
-            const computeAvg = (avgObj: any) => {
-                if (avgObj == null) return null;
-                if (typeof avgObj === 'number') return avgObj;
-                if (typeof avgObj?.average === 'number') return avgObj.average;
-                if (typeof avgObj?.avg === 'number') return avgObj.avg;
-                if (typeof avgObj?.overall_average === 'number') return avgObj.overall_average;
-                if (avgObj?.averages && typeof avgObj.averages === 'object') {
-                    const vals = Object.values(avgObj.averages).map(Number).filter(v => !Number.isNaN(v));
-                    if (vals.length) return vals.reduce((a, b) => a + b, 0) / vals.length;
-                }
-                if (typeof avgObj?.value === 'number') return avgObj.value;
-                return null;
-            };
-
-            const fmtDate = (ts: any) => {
-                try {
-                    const d = new Date(ts);
-                    if (!isNaN(d.getTime())) return d.toLocaleDateString();
-                } catch (e) {}
-                return 'N/A';
-            };
-
-            // helper: pick the *created* timestamp for the AT (fallbacks just in case)
-            const getCreatedDate = (at: any, cat: CompleteAssessmentTask) => {
-            const raw =
-                at?.created_at ||
-                at?.created_time ||
-                at?.created ||
-                at?.initial_time || 
-                cat?.initial_time ||
-                at?.due_date;        
-            const d = raw ? new Date(raw) : new Date(0);
-            return isNaN(d.getTime()) ? new Date(0) : d;
-            };
-
-            interface ChartDataCoreItem {
-                key: string;
-                name: string;
-                dateLabel: string;
-                avg: number | null;
-                rubric_id: number | null;
-                rubricName: string | undefined;
-                createdDate: Date;
             }
 
-            let chartDataCore: ChartDataCoreItem[] = showableDoneCats
-                .map((cat: CompleteAssessmentTask, i: number): ChartDataCoreItem => {
-                    const avgObj = filteredAvgData[i];
-                    const at = assessmentTasks!.find((a) => a.assessment_task_id === cat.assessment_task_id);
-                    const avg = computeAvg(avgObj);
-
-                    const createdDate: Date = getCreatedDate(at, cat); // creation date for ordering
-                    const lastUpdatedTs: any = cat.last_update || cat.initial_time || at?.due_date;
-                    const rubric_id: number | null = at?.rubric_id ?? null;
-                    const rubricName: string | undefined = rubric_id != null ? rubricNameMap?.[rubric_id] : undefined;
-
-                    return {
-                        key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
-                        name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
-                        dateLabel: fmtDate(lastUpdatedTs),
-                        avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
-
-                        // grouping + ordering fields
-                        rubric_id,
-                        rubricName,
-                        createdDate,
-                    };
-                })
-                .filter((d: ChartDataCoreItem) => d.avg !== null);
-
-            // === Group by rubric, then by created (oldest → newest) ===
-            chartDataCore.sort((a, b) => {
-                const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);
-                if (r !== 0) return r;
-                return (a.createdDate?.getTime?.() ?? 0) - (b.createdDate?.getTime?.() ?? 0);
-            });
-
-            const chartData = [];
-            for (let i = 0; i < chartDataCore.length; i++) {
-            const cur = chartDataCore[i];
-            const prev = chartDataCore[i - 1];
-
-            if (i > 0 && cur && prev?.rubric_id !== cur?.rubric_id) {
-                chartData.push({
-                key: `spacer-${cur.rubric_id}-${i}`,
-                name: '',
-                avg: null,
-                isSpacer: true,
-                });
+            if (CATviewable && cat !== undefined) {
+                viewable ? editableCats.push(cat): showableDoneCats.push(cat);
+                filteredAvgData.push(avg);
+            } else if (viewable && cat !== undefined){
+                editableCats.push(cat);
             }
-            if (cur) {
-                chartData.push(cur);
+            console.log("cat", cat);
+            return viewable;
+        });
+
+        // Helpers for chart data
+        const computeAvg = (avgObj: any) => {
+            if (avgObj == null) return null;
+            if (typeof avgObj === 'number') return avgObj;
+            if (typeof avgObj?.average === 'number') return avgObj.average;
+            if (typeof avgObj?.avg === 'number') return avgObj.avg;
+            if (typeof avgObj?.overall_average === 'number') return avgObj.overall_average;
+            if (avgObj?.averages && typeof avgObj.averages === 'object') {
+                const vals = Object.values(avgObj.averages).map(Number).filter(v => !Number.isNaN(v));
+                if (vals.length) return vals.reduce((a, b) => a + b, 0) / vals.length;
             }
-            }
+            if (typeof avgObj?.value === 'number') return avgObj.value;
+            return null;
+        };
 
-            this.setState({
-                filteredATs: filteredAssessmentTasks,
-                filteredCATs: editableCats,
-                fullyDoneCATS: showableDoneCats,
+        const fmtDate = (ts: any) => {
+            try {
+                const d = new Date(ts);
+                if (!isNaN(d.getTime())) return d.toLocaleDateString();
+            } catch (e) {}
+            return 'N/A';
+        };
 
-                rubricNames: rubricNameMap,
-                chartData,
-            });
+        // helper: pick the *created* timestamp for the AT (fallbacks just in case)
+        const getCreatedDate = (at: any, cat: CompleteAssessmentTask) => {
+        const raw =
+            at?.created_at ||
+            at?.created_time ||
+            at?.created ||
+            at?.initial_time || 
+            cat?.initial_time ||
+            at?.due_date;        
+        const d = raw ? new Date(raw) : new Date(0);
+        return isNaN(d.getTime()) ? new Date(0) : d;
+        };
 
-            console.log("filteredATs:", this.state.filteredATs);
-            console.log("filteredCATs:", this.state.filteredCATs);
-            console.log("fullyDoneCats:", this.state.fullyDoneCATS);
+        interface ChartDataCoreItem {
+            key: string;
+            name: string;
+            dateLabel: string;
+            avg: number | null;
+            rubric_id: number | null;
+            rubricName: string | undefined;
+            createdDate: Date;
         }
+
+        let chartDataCore: ChartDataCoreItem[] = showableDoneCats
+            .map((cat: CompleteAssessmentTask, i: number): ChartDataCoreItem => {
+                const avgObj = filteredAvgData[i];
+                const at = assessmentTasks!.find((a) => a.assessment_task_id === cat.assessment_task_id);
+                const avg = computeAvg(avgObj);
+
+                const createdDate: Date = getCreatedDate(at, cat); // creation date for ordering
+                const lastUpdatedTs: any = cat.last_update || cat.initial_time || at?.due_date;
+                const rubric_id: number | null = at?.rubric_id ?? null;
+                const rubricName: string | undefined = rubric_id != null ? rubricNameMap?.[rubric_id] : undefined;
+
+                return {
+                    key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
+                    name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
+                    dateLabel: fmtDate(lastUpdatedTs),
+                    avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
+
+                    // grouping + ordering fields
+                    rubric_id,
+                    rubricName,
+                    createdDate,
+                };
+            }).filter((d: ChartDataCoreItem) => d.avg !== null);
+
+        // === Group by rubric, then by created (oldest → newest) ===
+        chartDataCore.sort((a, b) => {
+            const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);
+            if (r !== 0) return r;
+            return (a.createdDate?.getTime?.() ?? 0) - (b.createdDate?.getTime?.() ?? 0);
+        });
+
+        const chartData = [];
+        for (let i = 0; i < chartDataCore.length; i++) {
+        const cur = chartDataCore[i];
+        const prev = chartDataCore[i - 1];
+
+        if (i > 0 && cur && prev?.rubric_id !== cur?.rubric_id) {
+            chartData.push({
+            key: `spacer-${cur.rubric_id}-${i}`,
+            name: '',
+            avg: null,
+            isSpacer: true,
+            });
+        }
+        if (cur) {
+            chartData.push(cur);
+        }
+        }
+
+        this.setState({
+            filteredATs: filteredAssessmentTasks,
+            filteredCATs: editableCats,
+            fullyDoneCATS: showableDoneCats,
+            rubricNames: rubricNameMap,
+            chartData,
+        });
+
+        console.log("filteredATs:", this.state.filteredATs);
+        console.log("filteredCATs:", this.state.filteredCATs);
+        console.log("fullyDoneCats:", this.state.fullyDoneCATS);
     }
 
     // Method to handle switching back to admin with spam protection
