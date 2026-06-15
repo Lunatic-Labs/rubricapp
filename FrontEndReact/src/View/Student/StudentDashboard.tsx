@@ -367,6 +367,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 rubricNames: rubricNameMap,
                 chartData,
             });
+
+            console.log("filteredATs:", this.state.filteredATs);
+            console.log("filteredCATs:", this.state.filteredCATs);
+            console.log("fullyDoneCats:", this.state.fullyDoneCATS);
         }
     }
 
