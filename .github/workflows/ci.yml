@@ -191,7 +191,7 @@ jobs:
       # Credit: https://github.com/JasonHonKL/Pardus-Browser/commit/9603e572d7ed34b3eda06b4e7ed23db483b7a20f
       # Based on https://github.com/CrowdStrike/glide-core/pull/1113
       - name: Change Mirror Priorities
-        runs:
+        run:
           using: "composite"
           steps:
             # https://github.com/actions/runner-images/issues/7048
