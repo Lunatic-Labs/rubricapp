@@ -771,7 +771,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                         )
                     }
                 }
-            ]),
+    }]),
         ]
 
         const options = {
