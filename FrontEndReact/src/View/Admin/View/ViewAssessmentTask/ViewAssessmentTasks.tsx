@@ -476,224 +476,226 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                     }
                 }
             },
-            {
-                name: "assessment_task_id",
-                label: "Publish",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    customBodyRender: (atId: number) => {
-                        const task = sortedAssessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
-                        const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
-                        return (
-                            <Tooltip
-                                title={
-                                    <>
-                                        <p>
-                                            If the icon shows <strong>an upward arrow</strong>, the assessment task is published and visible to students; otherwise, the task is unpublished and hidden from students.
-                                        </p>
-
-                                    </>
-                                }>
-                                <IconButton
-                                    aria-label={isPublished ? "unlock" : "lock"}
-                                    onClick={() => this.handlePublishToggle(atId, task)}
-                                >
-                                    {isPublished ? <PublishIcon /> : <UnpublishedIcon />}
-                                </IconButton>
-                            </Tooltip>
-                        );
-                    }
-                }
-            },
-            {
-                name: "assessment_task_id",
-                label: "Lock",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    customBodyRender: (atId: number) => {
-                        const task = sortedAssessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
-                        const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
-
-                        return (
-                            <Tooltip
-                                title={
-                                    <>
-                                        <p>
-                                            If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
-                                        </p>
-                                    </>
-                                }>
-                                <IconButton
-                                    aria-label={isLocked ? "unlock" : "lock"}
-                                    onClick={() => this.handleLockToggle(atId, task)}
-                                >
-                                    {isLocked ? <LockIcon /> : <LockOpenIcon />}
-                                </IconButton>
-                            </Tooltip>
-                        );
-                    }
-                }
-            },
-            {
-                name: "assessment_task_id",
-                label: "Edit",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    customBodyRender: (assessmentTaskId: number) => {
-                        if (assessmentTaskId && sortedAssessmentTasks && chosenCourse && rubricNames) {
+            ...(navbar.props.isSuperAdmin ? [] : [
+                {
+                    name: "assessment_task_id",
+                    label: "Publish",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        customBodyRender: (atId: number) => {
+                            const task = sortedAssessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
+                            const isPublished = this.state.publishedStatus[atId] !== undefined ? this.state.publishedStatus[atId] : (task ? task.published : false);
                             return (
                                 <Tooltip
                                     title={
                                         <>
                                             <p>
-                                                Instructors can modify the details of the assessment task such as its name, unit of assessment, due date or assigned rubric.
+                                                If the icon shows <strong>an upward arrow</strong>, the assessment task is published and visible to students; otherwise, the task is unpublished and hidden from students.
+                                            </p>
+
+                                        </>
+                                    }>
+                                    <IconButton
+                                        aria-label={isPublished ? "unlock" : "lock"}
+                                        onClick={() => this.handlePublishToggle(atId, task)}
+                                    >
+                                        {isPublished ? <PublishIcon /> : <UnpublishedIcon />}
+                                    </IconButton>
+                                </Tooltip>
+                            );
+                        }
+                    }
+                },
+                {
+                    name: "assessment_task_id",
+                    label: "Lock",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        customBodyRender: (atId: number) => {
+                            const task = sortedAssessmentTasks.find((task: AssessmentTask) => task["assessment_task_id"] === atId);
+                            const isLocked = this.state.lockStatus[atId] !== undefined ? this.state.lockStatus[atId] : (task ? task.locked : false);
+
+                            return (
+                                <Tooltip
+                                    title={
+                                        <>
+                                            <p>
+                                                If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
                                             </p>
                                         </>
                                     }>
                                     <IconButton
-                                        id=""
-                                        onClick={() => {
-                                            setAddAssessmentTaskTabWithAssessmentTask(
-                                                sortedAssessmentTasks,
-                                                assessmentTaskId,
-                                                chosenCourse,
-                                                roleNames,
-                                                rubricNames
-                                            )
-                                        }}
-                                        aria-label='editAssessmentIconButton'
+                                        aria-label={isLocked ? "unlock" : "lock"}
+                                        onClick={() => this.handleLockToggle(atId, task)}
                                     >
-                                        <EditIcon sx={{ color: "black" }} />
+                                        {isLocked ? <LockIcon /> : <LockOpenIcon />}
                                     </IconButton>
-                                </Tooltip>
-                            )
-
-                        } else {
-                            return (
-                                <>
-                                    {"N/A"}
-                                </>
-                            )
-                        }
-                    },
-                }
-            },
-            {
-                name: "assessment_task_id",
-                label: "View",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    customBodyRender: (assessmentTaskId: number) => {
-                        const cellConfig: ViewCompletedAssessmentsCellConfig = {
-                            assessmentTaskId: assessmentTaskId,
-                            sortedAssessmentTasks: sortedAssessmentTasks,
-                            setCompleteAssessmentTaskTabWithID: setCompleteAssessmentTaskTabWithID,
-                            setStudentAssessmentView: navbar.setStudentAssessmentView,
-                            component: IconButton,
-                            content: <VisibilityIcon sx={{ color: "rgba(0, 0, 0, 0.26)" }} />,
-                        };
-                        return this.renderViewCompletedAssessmentsCell(cellConfig);
-                    }
-                }
-            },
-            {
-                name: "assessment_task_id",
-                label: "To Do",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
-                    setCellProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
-                    customBodyRender: (atId: number) => {
-                        const assessmentTask = sortedAssessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === atId);
-                        const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
-                        const teamsExist = this.props.teams && this.props.teams.length > 0;
-
-                        if (isTeamAssessment && (fixedTeams && !teamsExist)) {
-                            return (
-                                <Tooltip title="No teams available for this team assessment">
-                                    <span>
-                                        <Button
-                                            className='primary-color'
-                                            variant='contained'
-                                            disabled
-                                            aria-label="startAssessmentTasksButton"
-                                        >
-                                            START
-                                        </Button>
-                                    </span>
                                 </Tooltip>
                             );
                         }
+                    }
+                },
+                {
+                    name: "assessment_task_id",
+                    label: "Edit",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        customBodyRender: (assessmentTaskId: number) => {
+                            if (assessmentTaskId && sortedAssessmentTasks && chosenCourse && rubricNames) {
+                                return (
+                                    <Tooltip
+                                        title={
+                                            <>
+                                                <p>
+                                                    Instructors can modify the details of the assessment task such as its name, unit of assessment, due date or assigned rubric.
+                                                </p>
+                                            </>
+                                        }>
+                                        <IconButton
+                                            id=""
+                                            onClick={() => {
+                                                setAddAssessmentTaskTabWithAssessmentTask(
+                                                    sortedAssessmentTasks,
+                                                    assessmentTaskId,
+                                                    chosenCourse,
+                                                    roleNames,
+                                                    rubricNames
+                                                )
+                                            }}
+                                            aria-label='editAssessmentIconButton'
+                                        >
+                                            <EditIcon sx={{ color: "black" }} />
+                                        </IconButton>
+                                    </Tooltip>
+                                )
 
-                        return (
-                            <Tooltip
-                                title={
+                            } else {
+                                return (
                                     <>
-                                        <p>
-                                            Begins the process of completing an assessment task, allowing the assessor to review the instructions and rubric criteria for the selected task.
-                                        </p>
+                                        {"N/A"}
                                     </>
-                                }>
-                                <Button
-                                    className='primary-color'
-                                    variant='contained'
-                                    onClick={() => {
-                                        navbar.setAssessmentTaskInstructions(sortedAssessmentTasks, atId);
-                                    }}
-                                    aria-label='startAssessmentTasksButton'
-                                >
-                                    START
-                                </Button>
-                            </Tooltip>
-                        )
+                                )
+                            }
+                        },
                     }
-                }
-            },
-            {
-                name: "assessment_task_id",
-                label: "Notify",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
-                    customBodyRender: (assessmentTaskId: number) => {
-                        const cellConfig: ViewCompletedAssessmentsCellConfig = {
-                            assessmentTaskId: assessmentTaskId,
-                            sortedAssessmentTasks: sortedAssessmentTasks,
-                            setCompleteAssessmentTaskTabWithID:
-                                setCompleteAssessmentTaskTabWithID,
-                            setStudentAssessmentView:
-                                navbar.setStudentAssessmentView,
-                            component: Button,
-                            content: "Notify",
-                            sx: {
-                                "&.Mui-disabled": {
-                                color: "var(--export_disabled_text) !important",
-                                backgroundColor: "var(--primary-disabled-bg)",
-                                },
-                            },
-                            variant: 'contained',
-                            className: 'primary-color'
-                        };
+                },
+                {
+                    name: "assessment_task_id",
+                    label: "View",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        customBodyRender: (assessmentTaskId: number) => {
+                            const cellConfig: ViewCompletedAssessmentsCellConfig = {
+                                assessmentTaskId: assessmentTaskId,
+                                sortedAssessmentTasks: sortedAssessmentTasks,
+                                setCompleteAssessmentTaskTabWithID: setCompleteAssessmentTaskTabWithID,
+                                setStudentAssessmentView: navbar.setStudentAssessmentView,
+                                component: IconButton,
+                                content: <VisibilityIcon sx={{ color: "rgba(0, 0, 0, 0.26)" }} />,
+                            };
+                            return this.renderViewCompletedAssessmentsCell(cellConfig);
+                        }
+                    }
+                },
+                {
+                    name: "assessment_task_id",
+                    label: "To Do",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        setCellHeaderProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
+                        setCellProps: () => { return { align: "center", width: "80px", className: "button-column-alignment" } },
+                        customBodyRender: (atId: number) => {
+                            const assessmentTask = sortedAssessmentTasks.find((task: AssessmentTask) => task.assessment_task_id === atId);
+                            const isTeamAssessment = assessmentTask && assessmentTask.unit_of_assessment;
+                            const teamsExist = this.props.teams && this.props.teams.length > 0;
 
-                        return this.renderViewCompletedAssessmentsCell(cellConfig);
+                            if (isTeamAssessment && (fixedTeams && !teamsExist)) {
+                                return (
+                                    <Tooltip title="No teams available for this team assessment">
+                                        <span>
+                                            <Button
+                                                className='primary-color'
+                                                variant='contained'
+                                                disabled
+                                                aria-label="startAssessmentTasksButton"
+                                            >
+                                                START
+                                            </Button>
+                                        </span>
+                                    </Tooltip>
+                                );
+                            }
+
+                            return (
+                                <Tooltip
+                                    title={
+                                        <>
+                                            <p>
+                                                Begins the process of completing an assessment task, allowing the assessor to review the instructions and rubric criteria for the selected task.
+                                            </p>
+                                        </>
+                                    }>
+                                    <Button
+                                        className='primary-color'
+                                        variant='contained'
+                                        onClick={() => {
+                                            navbar.setAssessmentTaskInstructions(sortedAssessmentTasks, atId);
+                                        }}
+                                        aria-label='startAssessmentTasksButton'
+                                    >
+                                        START
+                                    </Button>
+                                </Tooltip>
+                            )
+                        }
+                    }
+                },
+                {
+                    name: "assessment_task_id",
+                    label: "Notify",
+                    options: {
+                        filter: false,
+                        sort: false,
+                        setCellHeaderProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        setCellProps: () => { return { align: "center", width: "70px", className: "button-column-alignment" } },
+                        customBodyRender: (assessmentTaskId: number) => {
+                            const cellConfig: ViewCompletedAssessmentsCellConfig = {
+                                assessmentTaskId: assessmentTaskId,
+                                sortedAssessmentTasks: sortedAssessmentTasks,
+                                setCompleteAssessmentTaskTabWithID:
+                                    setCompleteAssessmentTaskTabWithID,
+                                setStudentAssessmentView:
+                                    navbar.setStudentAssessmentView,
+                                component: Button,
+                                content: "Notify",
+                                sx: {
+                                    "&.Mui-disabled": {
+                                    color: "var(--export_disabled_text) !important",
+                                    backgroundColor: "var(--primary-disabled-bg)",
+                                    },
+                                },
+                                variant: 'contained',
+                                className: 'primary-color'
+                            };
+
+                            return this.renderViewCompletedAssessmentsCell(cellConfig);
+                        }
                     }
                 }
-            },
+            ]),
         ]
 
         const options = {
