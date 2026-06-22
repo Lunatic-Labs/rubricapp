@@ -267,7 +267,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             } else if (viewable && cat !== undefined){
                 editableCats.push(cat);
             }
-            console.log("cat", cat);
+            
             return viewable;
         });
 
@@ -373,10 +373,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames: rubricNameMap,
             chartData,
         });
-
-        console.log("filteredATs:", this.state.filteredATs);
-        console.log("filteredCATs:", this.state.filteredCATs);
-        console.log("fullyDoneCats:", this.state.fullyDoneCATS);
     }
 
     // Method to handle switching back to admin with spam protection
