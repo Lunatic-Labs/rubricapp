@@ -137,6 +137,35 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
     }
 
+    private extractDidUpdateProperties(state: StudentDashboardState){
+        return {
+            roleId: state.roles?.role_id ?? undefined,
+            userTeamIds: state.userTeamIds,
+            teamsFetched: state.teamsFetched,
+        };
+    }
+
+    newComponentDidUpdate() {
+        const {
+            roleId,
+            userTeamIds,
+            teamsFetched,
+        } = this.extractDidUpdateProperties(this.state);
+
+        // Assume that you are a TA if not a student.
+        const isStudent = roleId === ROLE.STUDENT;
+        const isTeamInfoReady = userTeamIds.length > 0 || teamsFetched;
+        const canFilterStudentByTeam = isStudent && isTeamInfoReady;
+
+        const canFilter = Boolean(
+            roleId &&
+            (!isStudent || canFilterStudentByTeam)
+        );
+
+        if (!canFilter) {return}
+
+    }
+
     componentDidUpdate() {
         const {
             filteredATs, 
