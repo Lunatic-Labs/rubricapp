@@ -82,6 +82,15 @@ interface StudentDashboardState {
     teamsFetched: boolean;
 }
 
+type DidUpdateProps = {
+    roleId: number | undefined,
+    userTeamIds: number[],
+    teamsFetched: boolean,
+    rubrics:Rubric[] | null,
+    rubricNames:Record<string, string> | null,
+    isAtsFiltered:boolean,
+};
+
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
     constructor(props: StudentDashboardProps) {
         super(props);
@@ -142,6 +151,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             roleId: state.roles?.role_id ?? undefined,
             userTeamIds: state.userTeamIds,
             teamsFetched: state.teamsFetched,
+            rubrics: state.rubrics,
+            rubricNames: state.rubricNames,
+            isAtsFiltered: !!state.filteredATs,
         };
     }
 
@@ -150,6 +162,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             roleId,
             userTeamIds,
             teamsFetched,
+            rubrics,
+            rubricNames,
+            isAtsFiltered,
         } = this.extractDidUpdateProperties(this.state);
 
         // Assume that you are a TA if not a student.
@@ -158,11 +173,16 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const canFilterStudentByTeam = isStudent && isTeamInfoReady;
 
         const canFilter = Boolean(
+            !isAtsFiltered &&
             roleId &&
+            rubrics &&
+            rubricNames &&
             (!isStudent || canFilterStudentByTeam)
         );
 
         if (!canFilter) {return}
+
+        const rubricNameMap: Record<string, string> = rubricNames ?? parseRubricNames(rubrics as any);
 
     }
 
