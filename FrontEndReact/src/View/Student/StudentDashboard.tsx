@@ -86,9 +86,10 @@ type DidUpdateProps = {
     roleId: number | undefined,
     userTeamIds: number[],
     teamsFetched: boolean,
-    rubrics:Rubric[] | null,
-    rubricNames:Record<string, string> | null,
-    isAtsFiltered:boolean,
+    rubrics: Rubric[] | null,
+    rubricNames: Record<string, string> | null,
+    completedAssessments: CompleteAssessmentTask[] | null,
+    isAtsFiltered: boolean,
 };
 
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
@@ -146,13 +147,14 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
     }
 
-    private extractDidUpdateProperties(state: StudentDashboardState){
+    private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps{
         return {
             roleId: state.roles?.role_id ?? undefined,
             userTeamIds: state.userTeamIds,
             teamsFetched: state.teamsFetched,
             rubrics: state.rubrics,
             rubricNames: state.rubricNames,
+            completedAssessments: state.completedAssessments,
             isAtsFiltered: !!state.filteredATs,
         };
     }
@@ -164,6 +166,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             teamsFetched,
             rubrics,
             rubricNames,
+            completedAssessments,
             isAtsFiltered,
         } = this.extractDidUpdateProperties(this.state);
 
@@ -176,13 +179,43 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             !isAtsFiltered &&
             roleId &&
             rubrics &&
-            rubricNames &&
+            completedAssessments &&
             (!isStudent || canFilterStudentByTeam)
         );
-
+        
         if (!canFilter) {return}
 
-        const rubricNameMap: Record<string, string> = rubricNames ?? parseRubricNames(rubrics as any);
+        type RubricId = string | number;
+        type RubricName = string;
+        type CatGenId = string;
+
+        // Search worries; observe how data is hit here at diff times. This will continue to grow the more the system is used.
+        const rubricNamefromId: Record<RubricId, RubricName> =
+          rubricNames ?? parseRubricNames(rubrics as any);
+
+        let catsUserCanEdit: CompleteAssessmentTask[] = [];
+        let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
+        let viewableDoneCats: CompleteAssessmentTask[] = [];
+
+        const CatMap: Map<CatGenId, CompleteAssessmentTask> = new Map();
+        const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
+        
+        // Returns in form ^[0-9]+(-[0-9]+)?$. Dash is there to create a unique Cat-team key.
+        const generateCatKey = (
+          assessment_task_id: number,
+          team_id: number | null,
+          isTeamAssessment: boolean,
+        ): CatGenId => {
+          return `${assessment_task_id}${
+            isTeamAssessment && team_id !== null ? `-${team_id}` : ""
+          }`;
+        };
+
+        completedAssessments?.forEach((cat: CompleteAssessmentTask) => {
+            const teamId = cat.team_id
+
+
+        });
 
     }
 
@@ -216,6 +249,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const canFilterStudentByTeam : boolean = isStudent && teamInfoReady;
 
         if (roleId === ROLE.TA_INSTRUCTOR || canFilterStudentByTeam) {
+            this.newComponentDidUpdate();
+            console.log("END");
             const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics as any);
 
             let editableCats: CompleteAssessmentTask[] = [];
@@ -250,6 +285,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     }
                 }
             });
+
+            console.log(CATmap);
             
             averageData.forEach((cat: CompleteAssessmentTask) => { AVGmap.set(cat.assessment_task_id, cat) });
 
