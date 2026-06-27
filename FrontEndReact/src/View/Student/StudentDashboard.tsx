@@ -90,6 +90,7 @@ type DidUpdateProps = {
     rubricNames: Record<string, string> | null,
     assessmentTasks:  AssessmentTask[] | null,
     completedAssessments: CompleteAssessmentTask[] | null,
+    averageData: any,
     isAtsFiltered: boolean,
 };
 
@@ -157,6 +158,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames: state.rubricNames,
             assessmentTasks: state.assessmentTasks,
             completedAssessments: state.completedAssessments,
+            averageData: state.averageData,
             isAtsFiltered: !!state.filteredATs,
         };
     }
@@ -170,6 +172,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames,
             assessmentTasks,
             completedAssessments,
+            averageData,
             isAtsFiltered,
         } = this.extractDidUpdateProperties(this.state);
 
@@ -184,6 +187,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubrics &&
             assessmentTasks &&
             completedAssessments &&
+            averageData &&
             (!isStudent || canFilterStudentByTeam)
         );
         
@@ -240,19 +244,151 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
                 const existingCat: CompleteAssessmentTask | undefined = CatMap.get(key);
 
-                //Seems flaky at best
+                //Seems flaky at best; code should be aware here if we are a ta or student and adjust what cats get saved.
                 const shouldInsertCat: boolean =
                     !existingCat ||
                     (cat.done && !existingCat.done) ||
                     (cat.done === existingCat.done &&
                         teamId !== null &&
-                        userTeamIds.includes(teamId));
+                        userTeamIds.includes(teamId))
+                ;
 
                 if (shouldInsertCat) {
                     CatMap.set(key, cat);
                 }
             }
         });
+
+        averageData.forEach( 
+            (cat: CompleteAssessmentTask) => 
+                { AVGmap.set(cat.assessment_task_id, cat) }
+        );
+
+        const isUserDone = 
+            ( cat: CompleteAssessmentTask | undefined ) =>
+            { return !!cat && cat.done; }
+        ;
+        const isTaskPastDue = 
+            ( at: AssessmentTask ) =>
+            { new Date(at.due_date) < new Date() }
+        ;
+
+        let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks!.filter(
+            (task: AssessmentTask) => {
+                return 0;
+            },
+        ); 
+
+        // Helpers for chart data
+        const computeAvg = (avgObj: any) => {
+            if (avgObj == null) return null;
+            if (typeof avgObj === 'number') return avgObj;
+            if (typeof avgObj?.average === 'number') 
+                return avgObj.average;
+            if (typeof avgObj?.avg === 'number') 
+                return avgObj.avg;
+            if (typeof avgObj?.overall_average === 'number') 
+                return avgObj.overall_average;
+            if (avgObj?.averages && typeof avgObj.averages === 'object') {
+                const vals = Object.values(avgObj.averages)
+                    .map(Number)
+                    .filter(v => !Number.isNaN(v));
+                if (vals.length) 
+                    return vals.reduce((a, b) => a + b, 0) / vals.length;
+            }
+            if (typeof avgObj?.value === 'number') 
+                return avgObj.value;
+            return null;
+        };
+
+        const fmtDate = (ts: any) => {
+            try {
+                const d = new Date(ts);
+                if (!isNaN(d.getTime())) return d.toLocaleDateString();
+            } catch (e) {}
+            return 'N/A';
+        };
+
+        // helper: pick the *created* timestamp for the AT (fallbacks just in case)
+        const getCreatedDate = (at: any, cat: CompleteAssessmentTask) => {
+            const raw =
+                at?.created_at ||
+                at?.created_time ||
+                at?.created ||
+                at?.initial_time || 
+                cat?.initial_time ||
+                at?.due_date;        
+            const d = raw ? new Date(raw) : new Date(0);
+            return isNaN(d.getTime()) ? new Date(0) : d;
+        };
+
+        interface ChartDataCoreItem {
+            key: string;
+            name: string;
+            dateLabel: string;
+            avg: number | null;
+            rubric_id: number | null;
+            rubricName: string | undefined;
+            createdDate: Date;
+        };
+
+        let chartDataCore: ChartDataCoreItem[] = viewableDoneCats
+            .map((cat: CompleteAssessmentTask, i: number): ChartDataCoreItem => {
+                const avgObj = filteredAvgData[i];
+                const at = assessmentTasks!.find((a) => a.assessment_task_id === cat.assessment_task_id);
+                const avg = computeAvg(avgObj);
+
+                const createdDate: Date = getCreatedDate(at, cat); // creation date for ordering
+                const lastUpdatedTs: any = cat.last_update || cat.initial_time || at?.due_date;
+                const rubric_id: number | null = at?.rubric_id ?? null;
+                const rubricName: string | undefined = rubric_id != null ? rubricNamefromId?.[rubric_id] : undefined;
+
+                return {
+                    key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
+                    name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
+                    dateLabel: fmtDate(lastUpdatedTs),
+                    avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
+
+                    // grouping + ordering fields
+                    rubric_id,
+                    rubricName,
+                    createdDate,
+                };
+            }
+        ).filter((d: ChartDataCoreItem) => d.avg !== null);
+
+        // === Group by rubric, then by created (oldest → newest) ===
+        chartDataCore.sort((a, b) => {
+            const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);
+            if (r !== 0) return r;
+            return (a.createdDate?.getTime?.() ?? 0) - (b.createdDate?.getTime?.() ?? 0);
+        });
+
+        const chartData = [];
+        for (let i = 0; i < chartDataCore.length; i++) {
+            const cur = chartDataCore[i];
+            const prev = chartDataCore[i - 1];
+
+            if (i > 0 && cur && prev?.rubric_id !== cur?.rubric_id) {
+                chartData.push({
+                key: `spacer-${cur.rubric_id}-${i}`,
+                name: '',
+                avg: null,
+                isSpacer: true,
+                });
+            }
+            if (cur) {
+                chartData.push(cur);
+            }
+        }
+
+        //this.setState({
+        //    filteredATs: filteredAssessmentTasks,
+        //    filteredCATs: editableCats,
+        //    fullyDoneCATS: showableDoneCats,
+        //    rubricNames: rubricNameMap,
+        //    chartData,
+        //});
     }
 
     componentDidUpdate() {
