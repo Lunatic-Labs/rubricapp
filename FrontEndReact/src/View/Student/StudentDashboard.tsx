@@ -88,6 +88,7 @@ type DidUpdateProps = {
     teamsFetched: boolean,
     rubrics: Rubric[] | null,
     rubricNames: Record<string, string> | null,
+    assessmentTasks:  AssessmentTask[] | null,
     completedAssessments: CompleteAssessmentTask[] | null,
     isAtsFiltered: boolean,
 };
@@ -154,6 +155,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             teamsFetched: state.teamsFetched,
             rubrics: state.rubrics,
             rubricNames: state.rubricNames,
+            assessmentTasks: state.assessmentTasks,
             completedAssessments: state.completedAssessments,
             isAtsFiltered: !!state.filteredATs,
         };
@@ -166,6 +168,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             teamsFetched,
             rubrics,
             rubricNames,
+            assessmentTasks,
             completedAssessments,
             isAtsFiltered,
         } = this.extractDidUpdateProperties(this.state);
@@ -179,6 +182,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             !isAtsFiltered &&
             roleId &&
             rubrics &&
+            assessmentTasks &&
             completedAssessments &&
             (!isStudent || canFilterStudentByTeam)
         );
@@ -202,21 +206,53 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         
         // Returns in form ^[0-9]+(-[0-9]+)?$. Dash is there to create a unique Cat-team key.
         const generateCatKey = (
-          assessment_task_id: number,
-          team_id: number | null,
-          isTeamAssessment: boolean,
+            assessment_task_id: number,
+            team_id: number | null,
+            isTeamAssessment: boolean,
         ): CatGenId => {
-          return `${assessment_task_id}${
-            isTeamAssessment && team_id !== null ? `-${team_id}` : ""
-          }`;
+            return `${assessment_task_id}${
+                isTeamAssessment && team_id !== null ? `-${team_id}` : ""
+            }`;
         };
-
+        
         completedAssessments?.forEach((cat: CompleteAssessmentTask) => {
-            const teamId = cat.team_id
+            const teamId = cat.team_id;
 
+            const canSeeAssessment = 
+                !isStudent ||
+                !!!teamId  ||
+                userTeamIds.includes(teamId)
+            ;
 
+            if (canSeeAssessment) {
+                //Do we need an AT comparision? no teamid then cat is indvidual and vice versa no? we are looking when there is one cat completed
+                const at: AssessmentTask | undefined = assessmentTasks!.find(
+                  (at: AssessmentTask) =>
+                      at.assessment_task_id === cat.assessment_task_id
+                );
+
+                const isTeamAssessment = at?.unit_of_assessment === true;
+                const key: CatGenId = generateCatKey(
+                  cat.assessment_task_id,
+                  teamId,
+                  isTeamAssessment,
+                );
+
+                const existingCat: CompleteAssessmentTask | undefined = CatMap.get(key);
+
+                //Seems flaky at best
+                const shouldInsertCat: boolean =
+                    !existingCat ||
+                    (cat.done && !existingCat.done) ||
+                    (cat.done === existingCat.done &&
+                        teamId !== null &&
+                        userTeamIds.includes(teamId));
+
+                if (shouldInsertCat) {
+                    CatMap.set(key, cat);
+                }
+            }
         });
-
     }
 
     componentDidUpdate() {
@@ -285,8 +321,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     }
                 }
             });
-
-            console.log(CATmap);
             
             averageData.forEach((cat: CompleteAssessmentTask) => { AVGmap.set(cat.assessment_task_id, cat) });
 
