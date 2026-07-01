@@ -177,9 +177,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         } = this.extractDidUpdateProperties(this.state);
 
         // Assume that you are a TA if not a student.
-        const isStudent = roleId === ROLE.STUDENT;
+        const isUserStudent = roleId === ROLE.STUDENT;
         const isTeamInfoReady = userTeamIds.length > 0 || teamsFetched;
-        const canFilterStudentByTeam = isStudent && isTeamInfoReady;
+        const canFilterStudentByTeam = isUserStudent && isTeamInfoReady;
 
         const canFilter = Boolean(
             !isAtsFiltered &&
@@ -188,7 +188,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             assessmentTasks &&
             completedAssessments &&
             averageData &&
-            (!isStudent || canFilterStudentByTeam)
+            (!isUserStudent || canFilterStudentByTeam)
         );
         
         if (!canFilter) {return}
@@ -222,13 +222,13 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         completedAssessments?.forEach((cat: CompleteAssessmentTask) => {
             const teamId = cat.team_id;
 
-            const canSeeAssessment = 
-                !isStudent ||
+            const canSeeCatAssessment = 
+                !isUserStudent ||
                 !!!teamId  ||
                 userTeamIds.includes(teamId)
             ;
 
-            if (canSeeAssessment) {
+            if (canSeeCatAssessment) {
                 //Do we need an AT comparision? no teamid then cat is indvidual and vice versa no? we are looking when there is one cat completed
                 const at: AssessmentTask | undefined = assessmentTasks!.find(
                   (at: AssessmentTask) =>
@@ -270,12 +270,72 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         ;
         const isTaskPastDue = 
             ( at: AssessmentTask ) =>
-            { new Date(at.due_date) < new Date() }
+            { return new Date(at.due_date) < new Date() }
         ;
 
-        let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks!.filter(
-            (task: AssessmentTask) => {
-                return 0;
+        let viewableAssessmenTasks: AssessmentTask[] = assessmentTasks!.filter(
+            (at: AssessmentTask) => {
+                const isTeamAt = at.unit_of_assessment;
+                
+                let relaventTeamId: number | null = null;
+
+                if (isTeamAt && userTeamIds.length > 0) {
+                    // For team assessments, find which team this user is on for this task
+                    const userCAT: CompleteAssessmentTask | undefined = completedAssessments!.find((cat: CompleteAssessmentTask) => 
+                        cat.assessment_task_id === at.assessment_task_id && cat.team_id !== null && userTeamIds.includes(cat.team_id)
+                    );
+                    relaventTeamId = userCAT?.team_id || null;
+                }
+
+                const catKey: CatGenId = generateCatKey(at.assessment_task_id, relaventTeamId, isTeamAt);
+                const cat: CompleteAssessmentTask | undefined = CatMap.get(catKey);
+                const avg: CompleteAssessmentTask | undefined = AVGmap.get(at.assessment_task_id);
+
+                // Qualities for if an AT if viewable.
+
+                type ATStatus = {
+                    isATDone: boolean;
+                    isATAssignedToUser: boolean;
+                    isATLocked: boolean;
+                    isATPublished: boolean;
+                    isATPastDue: boolean;
+                };
+
+                const atStatus: ATStatus = {
+                    isATDone: isUserDone(cat),
+                    isATAssignedToUser: roleId === at.role_id,
+                    isATLocked: at.locked,
+                    isATPublished: at.published,
+                    isATPastDue: isTaskPastDue(at),
+                };
+
+                type Section = {
+                    inATSection: boolean;
+                    inCATSection: boolean;
+                };
+
+                let finalLocOfAT: Section = {
+                    inATSection: false,
+                    inCATSection: false,
+                };
+
+                if (isUserStudent){
+
+                } else {
+
+                }
+                
+                if (finalLocOfAT.inCATSection) {
+                    if (cat) { 
+                        viewableDoneCats.push(cat); 
+                        filteredAvgData.push(cat);
+                    }
+                }
+                if (finalLocOfAT.inATSection) {
+                    if (cat) { catsUserCanEdit.push(cat); }
+                }
+
+                return finalLocOfAT.inATSection || finalLocOfAT.inCATSection;
             },
         ); 
 
@@ -382,17 +442,18 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             }
         }
 
-        //this.setState({
-        //    filteredATs: filteredAssessmentTasks,
-        //    filteredCATs: editableCats,
-        //    fullyDoneCATS: showableDoneCats,
-        //    rubricNames: rubricNameMap,
-        //    chartData,
-        //});
+        this.setState({
+            filteredATs: viewableAssessmenTasks,
+            filteredCATs: catsUserCanEdit,
+            fullyDoneCATS: viewableDoneCats,
+            rubricNames: rubricNamefromId,
+            chartData,
+        });
     }
 
     componentDidUpdate() {
-        const {
+        this.newComponentDidUpdate();
+        /* const {
             filteredATs, 
             roles,
             assessmentTasks,
@@ -623,7 +684,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 rubricNames: rubricNameMap,
                 chartData,
             });
-        }
+        } */
     }
 
     // Method to handle switching back to admin with spam protection
