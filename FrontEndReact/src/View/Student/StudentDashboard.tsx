@@ -293,22 +293,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
                 // Qualities for if an AT if viewable.
 
-                type ATStatus = {
-                    isATDone: boolean;
-                    isATAssignedToUser: boolean;
-                    isATLocked: boolean;
-                    isATPublished: boolean;
-                    isATPastDue: boolean;
-                };
-
-                const atStatus: ATStatus = {
-                    isATDone: isUserDone(cat),
-                    isATAssignedToUser: roleId === at.role_id,
-                    isATLocked: at.locked,
-                    isATPublished: at.published,
-                    isATPastDue: isTaskPastDue(at),
-                };
-
                 type Section = {
                     inATSection: boolean;
                     inCATSection: boolean;
@@ -319,12 +303,24 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     inCATSection: false,
                 };
 
-                if (isUserStudent){
+                const isATDone = isUserDone(cat);
+                const isATAssignedToUser = roleId === at.role_id;
+                const isATLocked = at.locked;
+                const isATPublished = at.published;
+                const isATPastDue = isTaskPastDue(at);
 
-                } else {
+                const isATEditable = !isATLocked && !isATPastDue;
+                const isATViewable = isATPublished;
 
+                if (isATViewable) {
+                    if (isATAssignedToUser) {
+                        finalLocOfAT.inATSection = isATEditable && !isATDone;
+                        finalLocOfAT.inCATSection = isATDone || !isATEditable;
+                    } else {
+                        finalLocOfAT.inCATSection = isATDone || !isATEditable;
+                    }
                 }
-                
+
                 if (finalLocOfAT.inCATSection) {
                     if (cat) { 
                         viewableDoneCats.push(cat); 
