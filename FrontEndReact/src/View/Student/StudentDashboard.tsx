@@ -193,6 +193,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         
         if (!canFilter) {return}
 
+        console.log("Got in");
+
         type RubricId = string | number;
         type RubricName = string;
         type CatGenId = string;
@@ -218,9 +220,12 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 isTeamAssessment && team_id !== null ? `-${team_id}` : ""
             }`;
         };
-        
+        console.log("Before filter asssessmetns", assessmentTasks);
+        console.log("Before filter completed assessments:", completedAssessments);
         completedAssessments?.forEach((cat: CompleteAssessmentTask) => {
+            console.log("current cat:", cat);
             const teamId = cat.team_id;
+            console.log("team id:", teamId);
 
             const canSeeCatAssessment = 
                 !isUserStudent ||
@@ -258,6 +263,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 }
             }
         });
+
+        console.log("after cat filter the catmap:", CatMap);
 
         averageData.forEach( 
             (cat: CompleteAssessmentTask) => 
@@ -324,7 +331,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 if (finalLocOfAT.inCATSection) {
                     if (cat) { 
                         viewableDoneCats.push(cat); 
-                        filteredAvgData.push(cat);
+                        filteredAvgData.push(avg);
                     }
                 }
                 if (finalLocOfAT.inATSection) {

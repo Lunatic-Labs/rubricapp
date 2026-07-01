@@ -25,7 +25,7 @@ from models.completed_assessment import (
 )
 
 from models.queries import (
-    get_completed_assessment_by_ta_user_id,
+    get_completed_assessments_for_tas_by_course_id,
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id,
     get_completed_assessment_with_user_name,
@@ -150,7 +150,7 @@ def get_all_completed_assessments():
 
             user_id = request.args.get("user_id")
 
-            completed_assessments_task_by_user = get_completed_assessment_by_ta_user_id(course_id, user_id)
+            completed_assessments_task_by_user = get_completed_assessments_for_tas_by_course_id(course_id)
 
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
