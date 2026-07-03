@@ -83,6 +83,7 @@ interface StudentDashboardState {
 }
 
 type DidUpdateProps = {
+    userId: number | undefined,
     roleId: number | undefined,
     userTeamIds: number[],
     teamsFetched: boolean,
@@ -150,7 +151,11 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
     }
 
     private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps{
+        const cookies = new Cookies();
+        const userId: number | undefined = cookies.get('user')?.user_id;
+
         return {
+            userId: userId,
             roleId: state.roles?.role_id ?? undefined,
             userTeamIds: state.userTeamIds,
             teamsFetched: state.teamsFetched,
@@ -165,6 +170,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
     newComponentDidUpdate() {
         const {
+            userId,
             roleId,
             userTeamIds,
             teamsFetched,
@@ -178,7 +184,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         // Assume that you are a TA if not a student.
         const isUserStudent = roleId === ROLE.STUDENT;
-        const isTeamInfoReady = userTeamIds.length > 0 || teamsFetched;
+        const isTeamInfoReady = teamsFetched;
         const canFilterStudentByTeam = isUserStudent && isTeamInfoReady;
 
         const canFilter = Boolean(
@@ -191,17 +197,18 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             (!isUserStudent || canFilterStudentByTeam)
         );
         
-        if (!canFilter) {return}
+        if (!canFilter) { return; }
 
         console.log("Got in");
 
-        type RubricId = string | number;
+        type RubricId   = string | number;
         type RubricName = string;
-        type CatGenId = string;
+        type CatGenId   = string;
 
         // Search worries; observe how data is hit here at diff times. This will continue to grow the more the system is used.
         const rubricNamefromId: Record<RubricId, RubricName> =
-          rubricNames ?? parseRubricNames(rubrics as any);
+          rubricNames ?? parseRubricNames(rubrics as any)
+        ;
 
         let catsUserCanEdit: CompleteAssessmentTask[] = [];
         let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
@@ -220,45 +227,48 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 isTeamAssessment && team_id !== null ? `-${team_id}` : ""
             }`;
         };
-        console.log("Before filter asssessmetns", assessmentTasks);
+
         console.log("Before filter completed assessments:", completedAssessments);
         completedAssessments?.forEach((cat: CompleteAssessmentTask) => {
-            console.log("current cat:", cat);
             const teamId = cat.team_id;
-            console.log("team id:", teamId);
 
-            const canSeeCatAssessment = 
-                !isUserStudent ||
-                !!!teamId  ||
-                userTeamIds.includes(teamId)
+            const isTaSoOverride = !isUserStudent;
+            const isStudentIndependentCAT = !!!teamId;
+            const doesUserIdMatchCATUserId = userId === cat.user_id;
+
+            const doesIndvCATBelongStudentUser = isStudentIndependentCAT 
+                ? doesUserIdMatchCATUserId 
+                : false
+            ; 
+            const isStudentOnCATTeam = !isStudentIndependentCAT
+                ? userTeamIds.includes(teamId)
+                : false
             ;
 
-            if (canSeeCatAssessment) {
-                //Do we need an AT comparision? no teamid then cat is indvidual and vice versa no? we are looking when there is one cat completed
-                const at: AssessmentTask | undefined = assessmentTasks!.find(
-                  (at: AssessmentTask) =>
-                      at.assessment_task_id === cat.assessment_task_id
-                );
+            const canSeeCATAssessment = 
+                isTaSoOverride ||
+                doesIndvCATBelongStudentUser ||
+                isStudentOnCATTeam
+            ;
 
-                const isTeamAssessment = at?.unit_of_assessment === true;
+            if (canSeeCATAssessment) {
+                const isTeamAssessment = !!teamId;
+                const isCurCATDone = cat.done;
+                
                 const key: CatGenId = generateCatKey(
                   cat.assessment_task_id,
                   teamId,
                   isTeamAssessment,
                 );
 
-                const existingCat: CompleteAssessmentTask | undefined = CatMap.get(key);
+                const storedCat: CompleteAssessmentTask | undefined = CatMap.get(key);
 
-                //Seems flaky at best; code should be aware here if we are a ta or student and adjust what cats get saved.
-                const shouldInsertCat: boolean =
-                    !existingCat ||
-                    (cat.done && !existingCat.done) ||
-                    (cat.done === existingCat.done &&
-                        teamId !== null &&
-                        userTeamIds.includes(teamId))
-                ;
+                const shouldInsertCAT = Boolean(
+                    !!!storedCat ||
+                    !isCurCATDone && storedCat.done
+                );
 
-                if (shouldInsertCat) {
+                if (shouldInsertCAT) {
                     CatMap.set(key, cat);
                 }
             }
