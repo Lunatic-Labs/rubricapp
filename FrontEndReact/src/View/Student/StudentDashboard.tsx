@@ -207,7 +207,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         // Search worries; observe how data is hit here at diff times. This will continue to grow the more the system is used.
         const rubricNamefromId: Record<RubricId, RubricName> =
-          rubricNames ?? parseRubricNames(rubrics as any)
+            rubricNames ?? parseRubricNames(rubrics as any)
         ;
 
         let catsUserCanEdit: CompleteAssessmentTask[] = [];
@@ -265,7 +265,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
                 const shouldInsertCAT = Boolean(
                     !!!storedCat ||
-                    !isCurCATDone && storedCat.done
+                    (!isCurCATDone && storedCat.done)
                 );
 
                 if (shouldInsertCAT) {
@@ -290,9 +290,14 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             { return new Date(at.due_date) < new Date() }
         ;
 
+        console.log("now in the viewableassesments task section");
+
         let viewableAssessmenTasks: AssessmentTask[] = assessmentTasks!.filter(
             (at: AssessmentTask) => {
+                console.log(at);
+
                 const isTeamAt = at.unit_of_assessment;
+                console.log("isTeamAT:",isTeamAt);
                 
                 let relaventTeamId: number | null = null;
 
@@ -302,14 +307,17 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         cat.assessment_task_id === at.assessment_task_id && cat.team_id !== null && userTeamIds.includes(cat.team_id)
                     );
                     relaventTeamId = userCAT?.team_id || null;
+                    console.log("hit a team and the relaveant id is:", relaventTeamId);
                 }
 
                 const catKey: CatGenId = generateCatKey(at.assessment_task_id, relaventTeamId, isTeamAt);
                 const cat: CompleteAssessmentTask | undefined = CatMap.get(catKey);
                 const avg: CompleteAssessmentTask | undefined = AVGmap.get(at.assessment_task_id);
 
-                // Qualities for if an AT if viewable.
+                console.log("related cat:", cat);
 
+                // Qualities for if an AT if viewable.
+ 
                 type Section = {
                     inATSection: boolean;
                     inCATSection: boolean;
@@ -321,36 +329,53 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 };
 
                 const isATDone = isUserDone(cat);
-                const isATAssignedToUser = roleId === at.role_id;
+                console.log("isATDone:", isATDone);
+                const isUserCompletionAssignee = roleId === at.role_id;
+                console.log("isUserCompletionAssignee:", isUserCompletionAssignee);
                 const isATLocked = at.locked;
+                console.log("isATLocked:", isATLocked);
                 const isATPublished = at.published;
+                console.log("isATPublished:", isATPublished);
                 const isATPastDue = isTaskPastDue(at);
+                console.log("isAtPastDue:", isATPastDue);
 
-                const isATEditable = !isATLocked && !isATPastDue;
+                const doAdminsAllowEdits = !isATLocked && !isATPastDue;
+                console.log("doAdminsAllowEdits:", doAdminsAllowEdits);
                 const isATViewable = isATPublished;
+                console.log("isatviewable:", isATViewable);
 
                 if (isATViewable) {
-                    if (isATAssignedToUser) {
-                        finalLocOfAT.inATSection = isATEditable && !isATDone;
-                        finalLocOfAT.inCATSection = isATDone || !isATEditable;
+                    if (isUserCompletionAssignee) {
+                        finalLocOfAT.inATSection = doAdminsAllowEdits && !isATDone;
+                        finalLocOfAT.inCATSection = isATDone || !doAdminsAllowEdits;
                     } else {
-                        finalLocOfAT.inCATSection = isATDone || !isATEditable;
+                        finalLocOfAT.inCATSection = isATDone || !doAdminsAllowEdits;
                     }
                 }
+
+                console.log("am i in at section:", finalLocOfAT.inATSection);
+                console.log("am i in cat section:", finalLocOfAT.inCATSection);
 
                 if (finalLocOfAT.inCATSection) {
                     if (cat) { 
                         viewableDoneCats.push(cat); 
                         filteredAvgData.push(avg);
+                        console.log("pushed into cat");
                     }
                 }
                 if (finalLocOfAT.inATSection) {
+                    console.log("pushed into at");
                     if (cat) { catsUserCanEdit.push(cat); }
                 }
 
-                return finalLocOfAT.inATSection || finalLocOfAT.inCATSection;
+                console.warn("separator----------------------------------------------");
+
+                return finalLocOfAT.inATSection;
             },
         ); 
+
+        console.log("ats to modify:", viewableAssessmenTasks);
+        console.log("done cats:",viewableDoneCats);
 
         // Helpers for chart data
         const computeAvg = (avgObj: any) => {
