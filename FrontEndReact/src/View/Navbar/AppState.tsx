@@ -1142,6 +1142,10 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                 {this.state.activeTab==="Reporting" &&
                     <Box className="page-spacing" aria-label="reportingDashboard">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={this.props.isSuperAdmin ? "AssessmentTask" : "User"}
+                        />
                         <ReportingDashboard
                             navbar={this}
                         />

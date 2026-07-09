@@ -35,6 +35,8 @@ export default function BasicTabs (props: BasicTabsProps){
             (activeTab === "Teams" && useFixedTeams ? 1 : 
             (activeTab === "AssessmentTasks" ? (useFixedTeams ? 2 : 1) : 
             (activeTab === "Reporting" ? (useFixedTeams ? 3 : 2) : 0)));
+  
+  idTab = navbar.props.isSuperAdmin ? idTab - 1 : idTab;
 
   const [value, setValue] = React.useState(idTab);
 
@@ -75,14 +77,17 @@ export default function BasicTabs (props: BasicTabsProps){
             },
           }}
         >
-          <Tab
+          {!navbar.props.isSuperAdmin && 
+            <Tab
             onClick={() => {
               setNewTab("Users");
             }}
 
             label="Roster"
             aria-label="rosterTab"
-          />
+            />
+          }
+          
 
         {useFixedTeams && 
           <Tab

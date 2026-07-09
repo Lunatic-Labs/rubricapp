@@ -16,10 +16,6 @@ export default function ReportingMainHeader (props: ReportingMainHeaderProps) {
 
     return (
         <>
-            <BackButtonResource
-                navbar={navbar}
-                tabSelected={"User"}
-            />
             <Box className="content-spacing">
                 <CourseInfo
                     courseTitle={chosenCourse["course_name"]}
