@@ -203,7 +203,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         type RubricId   = string | number;
         type RubricName = string;
-        type CatGenId   = string;
+        type ATId = string;
 
         // Search worries; observe how data is hit here at diff times. This will continue to grow the more the system is used.
         const rubricNamefromId: Record<RubricId, RubricName> =
@@ -214,19 +214,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
         let viewableDoneCats: CompleteAssessmentTask[] = [];
 
-        const CatMap: Map<CatGenId, CompleteAssessmentTask> = new Map();
+        const CatMap: Map<ATId, CompleteAssessmentTask> = new Map();
         const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
-        
-        // Returns in form ^[0-9]+(-[0-9]+)?$. Dash is there to create a unique Cat-team key.
-        const generateCatKey = (
-            assessment_task_id: number,
-            team_id: number | null,
-            isTeamAssessment: boolean,
-        ): CatGenId => {
-            return `${assessment_task_id}${
-                isTeamAssessment && team_id !== null ? `-${team_id}` : ""
-            }`;
-        };
+
+        console.log("assessment tasks to bind to:", assessmentTasks);
 
         console.log("Before filter completed assessments:", completedAssessments);
         completedAssessments?.forEach((cat: CompleteAssessmentTask) => {
@@ -245,21 +236,16 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 : false
             ;
 
-            const canSeeCATAssessment = 
+            const canUserSeeCAT = 
                 isTaSoOverride ||
                 doesIndvCATBelongStudentUser ||
                 isStudentOnCATTeam
             ;
 
-            if (canSeeCATAssessment) {
-                const isTeamAssessment = !!teamId;
+            if (canUserSeeCAT) {
                 const isCurCATDone = cat.done;
                 
-                const key: CatGenId = generateCatKey(
-                  cat.assessment_task_id,
-                  teamId,
-                  isTeamAssessment,
-                );
+                const key: ATId = String(cat.assessment_task_id);
 
                 const storedCat: CompleteAssessmentTask | undefined = CatMap.get(key);
 
@@ -298,19 +284,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
                 const isTeamAt = at.unit_of_assessment;
                 console.log("isTeamAT:",isTeamAt);
-                
-                let relaventTeamId: number | null = null;
 
-                if (isTeamAt && userTeamIds.length > 0) {
-                    // For team assessments, find which team this user is on for this task
-                    const userCAT: CompleteAssessmentTask | undefined = completedAssessments!.find((cat: CompleteAssessmentTask) => 
-                        cat.assessment_task_id === at.assessment_task_id && cat.team_id !== null && userTeamIds.includes(cat.team_id)
-                    );
-                    relaventTeamId = userCAT?.team_id || null;
-                    console.log("hit a team and the relaveant id is:", relaventTeamId);
-                }
-
-                const catKey: CatGenId = generateCatKey(at.assessment_task_id, relaventTeamId, isTeamAt);
+                const catKey: ATId = String(at.assessment_task_id);
                 const cat: CompleteAssessmentTask | undefined = CatMap.get(catKey);
                 const avg: CompleteAssessmentTask | undefined = AVGmap.get(at.assessment_task_id);
 
