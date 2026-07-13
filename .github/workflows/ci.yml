@@ -279,7 +279,7 @@ jobs:
   monitor_workflow:
     timeout-minutes: 10
     runs-on: ubuntu-latest
-    needs: [lint_frontend, tests]
+    needs: [lint_frontend]
     if: failure()
     steps:
       - name: Cancel workflow
