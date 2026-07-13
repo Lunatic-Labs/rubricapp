@@ -158,6 +158,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             filteredATs === null
         );
 
+        if (!canFilter) {return;}
+
         // Students need their team info ready to correctly match the student to team CATs.
         const roleId: number = roles!.role_id;
         const isStudent: boolean = roleId === ROLE.STUDENT;
@@ -166,7 +168,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const canFilterStudentByTeam: boolean = isStudent && teamInfoReady;
 
         if (
-          !canFilter ||
           (roleId !== ROLE.TA_INSTRUCTOR && !canFilterStudentByTeam)
         ) {return;}
 
