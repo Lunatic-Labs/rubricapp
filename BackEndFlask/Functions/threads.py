@@ -36,18 +36,19 @@ class EmailValidationProcessor:
 
     def process_pending_emails_once(self):
         try:
-            emails_to_check = get_emails_need_checking()
+            with app.app_context():
+                emails_to_check = get_emails_need_checking()
 
-            if not emails_to_check:
-                return 0
+                if not emails_to_check:
+                    return 0
 
-            oldest_time, all_pending_emails, email_to_owner_map = self._get_pending_emails_data(emails_to_check)
+                oldest_time, all_pending_emails, email_to_owner_map = self._get_pending_emails_data(emails_to_check)
 
-            mark_emails_as_checked(all_pending_emails)
+                mark_emails_as_checked(all_pending_emails)
 
-            self._process_bounced_emails(oldest_time, email_to_owner_map)
+                self._process_bounced_emails(oldest_time, email_to_owner_map)
 
-            return len(emails_to_check)
+                return len(emails_to_check)
 
         except Exception as e:
             logger.error(f"Error in process_pending_emails_once: {e}")
