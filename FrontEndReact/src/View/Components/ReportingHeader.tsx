@@ -1,6 +1,5 @@
 import CourseInfo from "./CourseInfo";
 import { Box } from "@mui/material";
-import BackButtonResource from "./BackButtonResource";
 import TabManager from "../Admin/View/Reporting/ReportTabs";
 
 interface ReportingMainHeaderProps {
