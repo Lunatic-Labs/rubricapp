@@ -505,6 +505,44 @@ def test_get_all_team_members_with_course_and_user_ids(flask_app_mock, sample_to
                 print(f"Cleanup skipped: {e}")
 
 
+def test_get_all_team_members_with_unassigned_user(flask_app_mock, sample_token, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+
+            team = sample_team(
+                team_name="Alpha",
+                observer_id=result["user_id"],
+                course_id=result["course_id"]
+            )
+            sample_team_user(team_id=team.team_id, user_id=users[0].user_id)
+            sample_team_user(team_id=team.team_id, user_id=users[1].user_id)
+
+            token = sample_token(user_id=users[2].user_id)
+
+            response = client.get(
+                f"/api/team_members?course_id={result['course_id']}&user_id={users[2].user_id}",
+                headers=auth_header(token)
+            )
+
+            data = response.get_json()
+            assert response.status_code == 404
+            assert data["message"] == "An error occurred: User is not assigned to a team in this course."
+
+        finally:
+            # Clean up
+            try:
+                TeamUser.query.delete()
+                delete_team(team.team_id)
+                delete_users(users)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
 def test_get_all_team_members_raises_exception(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
