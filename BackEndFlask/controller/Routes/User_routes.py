@@ -189,7 +189,7 @@ def get_all_team_members():
             team_members, team_id = get_team_members(user_id, course_id)
 
             if team_id is None:
-                return create_bad_response(
+                return create_warning_response(
                     "User is not assigned to a team in this course.",
                     "team_members",
                     404,
