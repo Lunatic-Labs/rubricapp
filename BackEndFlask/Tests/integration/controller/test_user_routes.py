@@ -530,7 +530,7 @@ def test_get_all_team_members_with_unassigned_user(flask_app_mock, sample_token,
 
             data = response.get_json()
             assert response.status_code == 404
-            assert data["message"] == "An error occurred: User is not assigned to a team in this course."
+            assert data["message"] == "User is not assigned to a team in this course."
 
         finally:
             # Clean up
