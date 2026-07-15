@@ -387,6 +387,7 @@ def replace_user(user_data, user_id):
         raise InvalidUserID(user_id)
 
     if one_user.email != user_data["email"]:
+        one_user.last_update = datetime.now()
         spawn_thread(validate_pending_emails)
 
     one_user.first_name = user_data["first_name"]
