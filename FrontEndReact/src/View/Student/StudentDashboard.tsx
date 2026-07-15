@@ -271,8 +271,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         let viewableAssessmenTasks: AssessmentTask[] = assessmentTasks!.filter(
             (at: AssessmentTask) => {
-                const isTeamAt = at.unit_of_assessment;
-
                 const catKey: ATId = String(at.assessment_task_id);
                 const cat: CompleteAssessmentTask | undefined = CatMap.get(catKey);
                 const avg: CompleteAssessmentTask | undefined = AVGmap.get(at.assessment_task_id);
