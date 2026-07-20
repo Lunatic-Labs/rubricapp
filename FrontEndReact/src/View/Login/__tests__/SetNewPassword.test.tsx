@@ -1,4 +1,4 @@
-import { test, expect } from "@jest/globals";
+import { test } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import SetNewPassword from "../SetNewPassword";
@@ -17,10 +17,6 @@ var snpb = "setNewPasswordButton";
 var ema = "errorMessageAlert";
 var snpi = "setNewPasswordInput";
 var sncpi = "setNewPasswordConfirmInput";
-var lf = "loginForm";
-test("NOTE: Test 11 will not pass if Demo Data is not loaded!", () => {
-    expect(true).toBe(true);
-});
 test("SetNewPassword.test.tsx Test 1: should render SetNewPassword Form component", () => {
     render(<SetNewPassword email="test@example.com" />);
 
@@ -140,7 +136,7 @@ test("SetNewPassword.test.tsx Test 9: should display error check password streng
         expectElementWithAriaLabelToHaveErrorMessage(ema, "Please verify your password strength");
     });
 });
-test("SetNewPassword.test.tsx Test 10: should display error missing email or password when email is missing but check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
+test("SetNewPassword.test.tsx Test 10: should display error missing email, password, or code when email and code are missing but check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
     render(<SetNewPassword email={""} />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -152,10 +148,10 @@ test("SetNewPassword.test.tsx Test 10: should display error missing email or pas
     clickElementWithAriaLabel(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Missing Email or Password");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Missing Email or Password or Code");
     });
 });
-test("SetNewPassword.test.tsx Test 11: should display login page when email is valid and check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
+test("SetNewPassword.test.tsx Test 11: should display error requiring a reset code when email is valid but no code was confirmed", async () => {
     render(<SetNewPassword email={"demostudent5@skillbuilder.edu"} />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -167,6 +163,6 @@ test("SetNewPassword.test.tsx Test 11: should display login page when email is v
     clickElementWithAriaLabel(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(lf);
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Missing Email or Password or Code");
     });
 });

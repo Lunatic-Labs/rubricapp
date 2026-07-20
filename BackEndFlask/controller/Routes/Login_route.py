@@ -2,9 +2,11 @@ from flask import request
 from controller  import bp
 from .User_routes import UserSchema
 from controller.Route_response import *
-from models.user import get_user_by_email, get_user_password
+from models.user import get_user_by_email, get_user_password, get_user
 from werkzeug.security import check_password_hash, generate_password_hash
 from controller.security.utility import create_new_tokens, revoke_tokens
+from controller.security.CustomDecorators import bad_token_check
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
@@ -47,15 +49,40 @@ def login():
 @bp.route('/password', methods = ['PUT'])
 def set_new_password():
     try:
-        email, password = request.json.get('email'), request.json.get('password')
+        email, password, code = request.json.get('email'), request.json.get('password'), request.json.get('code')
 
-        if is_any_variable_in_array_missing([email, password]):
-            raise MissingException(["Email", "Password"])
+        if is_any_variable_in_array_missing([email, password, code]):
+            raise MissingException(["Email", "Password", "Code"])
 
         user = get_user_by_email(email)
 
-        if user is None:
+        if user is None or user.reset_code is None or not check_password_hash(user.reset_code, code):
             raise InvalidCredentialsException
+
+        update_password(user.user_id, password)
+
+        has_changed_password(user.user_id, True)
+
+        set_reset_code(user.user_id, None)
+
+        return create_good_response(f"Successfully set new password for user {user.user_id}!", {}, 201, "password")
+
+    except Exception as e:
+        return create_bad_response(f"{e}", "password", 400)
+
+
+@bp.route('/password/change', methods = ['PUT'])
+@jwt_required()
+@bad_token_check()
+def change_password():
+    """Authenticated password change for an already-logged-in user (not the forgot-password flow)."""
+    try:
+        password = request.json.get('password')
+
+        if is_any_variable_in_array_missing([password]):
+            raise MissingException(["Password"])
+
+        user = get_user(get_jwt_identity())
 
         update_password(user.user_id, password)
 

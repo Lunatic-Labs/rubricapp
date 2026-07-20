@@ -19,6 +19,7 @@ import {
 
 interface SetNewPasswordProps {
     readonly email: string;
+    readonly code?: string;
 }
 
 interface SetNewPasswordState {
@@ -175,7 +176,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
             }
 
             // Use shared password submission utility
-            (submitPasswordChange as any)(apiUrl, this.props.email, pass1)
+            (submitPasswordChange as any)(apiUrl, this.props.email, pass1, this.props.code)
                 .then((result: any) => {
                     if(result['success']) {
                         this.setState({

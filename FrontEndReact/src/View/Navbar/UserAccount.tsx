@@ -217,7 +217,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
     // both check that character length does not exceed 20
     setPassword() {
         const cookies = new Cookies();
-        const user = cookies.get('user');
+        const accessToken = cookies.get('access_token');
         var pass1 = this.state.password;
         var pass2 = this.state.confirmationPassword;
 
@@ -269,14 +269,14 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
         }
 
         fetch(
-            apiUrl + "/password",
+            apiUrl + "/password/change",
             {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
+                    "Authorization": "Bearer " + accessToken,
                 },
                 body: JSON.stringify({
-                    email: user.email,
                     password: pass1,
                 }),
             }

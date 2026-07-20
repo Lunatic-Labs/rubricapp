@@ -211,13 +211,14 @@ export function validatePasswordReset(password: string, confirmationPassword: st
 }
 
 /**
- * Submits a password change request to the backend API
+ * Submits a forgot-password reset request to the backend API
  * @param apiUrl - The base API URL
  * @param email - The user's email address
  * @param password - The new password
+ * @param code - The reset code sent to the user's email and confirmed in the previous step
  * @returns Promise with the API response
  */
-export async function submitPasswordChange(apiUrl: string, email: string, password: string): Promise<any> {
+export async function submitPasswordChange(apiUrl: string, email: string, password: string, code: string): Promise<any> {
     const response = await fetch(
         apiUrl + "/password",
         {
@@ -228,6 +229,7 @@ export async function submitPasswordChange(apiUrl: string, email: string, passwo
             body: JSON.stringify({
                 email: email,
                 password: password,
+                code: code,
             }),
         }
     );
