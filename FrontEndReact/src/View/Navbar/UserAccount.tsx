@@ -221,6 +221,14 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
         var pass1 = this.state.password;
         var pass2 = this.state.confirmationPassword;
 
+        if (!accessToken) {
+            this.setState({
+                errorMessage: "Your session has expired. Please log in again."
+            });
+
+            return;
+        }
+
         if (pass1 === '') {
             this.setState({
                 errorMessage: "Password cannot be empty"

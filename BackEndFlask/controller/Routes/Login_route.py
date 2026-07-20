@@ -7,7 +7,7 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from controller.security.utility import create_new_tokens, revoke_tokens
 from controller.security.CustomDecorators import bad_token_check
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email
+from models.user import update_password, has_changed_password, set_reset_code
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
 from controller.Routes.RouteExceptions import MissingException, InvalidCredentialsException

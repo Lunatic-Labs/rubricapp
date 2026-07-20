@@ -175,8 +175,18 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                 return;
             }
 
+            const { email, code } = this.props;
+
+            if (!email || !code) {
+                this.setState({
+                    errorMessage: "An error occurred: Missing Email or Password or Code"
+                });
+
+                return;
+            }
+
             // Use shared password submission utility
-            (submitPasswordChange as any)(apiUrl, this.props.email, pass1, this.props.code)
+            submitPasswordChange(apiUrl, email, pass1, code)
                 .then((result: any) => {
                     if(result['success']) {
                         this.setState({

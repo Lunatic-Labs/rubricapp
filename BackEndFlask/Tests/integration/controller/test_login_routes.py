@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 from models.feedback import *
 from Tests.PopulationFunctions import cleanup_test_users
 from integration.integration_helpers import *
-from models.user import create_user, delete_user, set_reset_code
+from models.user import create_user, delete_user, set_reset_code, get_user_by_email
 import jwt
 
 
@@ -79,9 +79,12 @@ def test_set_new_password(flask_app_mock, client):
             del user_data["password"]
             user = create_user(user_data)
 
+            reset_code = "password?123"
+            set_reset_code(user.user_id, generate_password_hash(reset_code))
+
             response = client.put(
                 "/api/password",
-                json={"email": user.email, "password": "password123"}
+                json={"email": user.email, "password": "password123", "code": reset_code}
             )
 
             assert response.status_code == 200
@@ -90,7 +93,10 @@ def test_set_new_password(flask_app_mock, client):
             print(data)
             msg = data["content"]["201"][0]
             assert f"Successfully set new password for user {user.user_id}" in msg
-        
+
+            reloaded_user = get_user_by_email(user.email)
+            assert reloaded_user.reset_code is None
+
         finally:
             # Clean up
             try:
@@ -120,7 +126,7 @@ def test_set_new_password_with_invalid_credentials(flask_app_mock, client):
             
         response = client.put(
             "/api/password",
-            json={"email": "testuser@example", "password": "password123"}
+            json={"email": "testuser@example", "password": "password123", "code": "000000"}
         )
 
         assert response.status_code == 400
