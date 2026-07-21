@@ -236,3 +236,30 @@ export async function submitPasswordChange(apiUrl: string, email: string, passwo
 
     return await response.json();
 }
+
+/**
+ * Submits an authenticated password change for an already-logged-in user (e.g. first-login
+ * password setup, or a user changing their password from account settings) — no reset code
+ * involved, identity comes from the JWT.
+ * @param apiUrl - The base API URL
+ * @param accessToken - The user's JWT access token
+ * @param password - The new password
+ * @returns Promise with the API response
+ */
+export async function submitAuthenticatedPasswordChange(apiUrl: string, accessToken: string, password: string): Promise<any> {
+    const response = await fetch(
+        apiUrl + "/password/change",
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + accessToken,
+            },
+            body: JSON.stringify({
+                password: password,
+            }),
+        }
+    );
+
+    return await response.json();
+}

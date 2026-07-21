@@ -6,11 +6,13 @@ import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconBu
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
 import { apiUrl } from '../../App';
+import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 import {
     validatePasswordField,
     submitPasswordChange,
+    submitAuthenticatedPasswordChange,
     testPasswordStrength,
     getPasswordStrengthIcon,
     generatePasswordStrengthColors,
@@ -177,16 +179,38 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
 
             const { email, code } = this.props;
 
-            if (!email || !code) {
-                this.setState({
-                    errorMessage: "An error occurred: Missing Email or Password or Code"
-                });
+            var submission: Promise<any>;
 
-                return;
+            if (code) {
+                // Forgot-password flow: a reset code was confirmed by ValidateReset.
+                if (!email) {
+                    this.setState({
+                        errorMessage: "An error occurred: Missing Email or Password or Code"
+                    });
+
+                    return;
+                }
+
+                submission = submitPasswordChange(apiUrl, email, pass1, code);
+
+            } else {
+                // First-login / already-authenticated flow (e.g. Login.tsx when has_set_password
+                // is false): no reset code exists, so identity comes from the JWT instead.
+                const cookies = new Cookies();
+                const accessToken = cookies.get('access_token');
+
+                if (!accessToken) {
+                    this.setState({
+                        errorMessage: "Your session has expired. Please log in again."
+                    });
+
+                    return;
+                }
+
+                submission = submitAuthenticatedPasswordChange(apiUrl, accessToken, pass1);
             }
 
-            // Use shared password submission utility
-            submitPasswordChange(apiUrl, email, pass1, code)
+            submission
                 .then((result: any) => {
                     if(result['success']) {
                         this.setState({

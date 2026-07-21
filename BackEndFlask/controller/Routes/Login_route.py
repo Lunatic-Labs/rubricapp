@@ -65,7 +65,7 @@ def set_new_password():
 
         set_reset_code(user.user_id, None)
 
-        return create_good_response(f"Successfully set new password for user {user.user_id}!", {}, 201, "password")
+        return create_good_response(f"Successfully set new password for user {user.user_id}!", 201, "password")
 
     except Exception as e:
         return create_bad_response(f"{e}", "password", 400)
@@ -88,7 +88,7 @@ def change_password():
 
         has_changed_password(user.user_id, True)
 
-        return create_good_response(f"Successfully set new password for user {user.user_id}!", {}, 201, "password")
+        return create_good_response(f"Successfully set new password for user {user.user_id}!", 201, "password")
 
     except Exception as e:
         return create_bad_response(f"{e}", "password", 400)
@@ -117,7 +117,7 @@ def send_reset_code():
 
         send_reset_code_email(email, code)
 
-        return create_good_response(f"Successfully sent reset code to {email}!", {}, 201, "reset_code")
+        return create_good_response(f"Successfully sent reset code to {email}!", 201, "reset_code")
 
     except Exception as e:
         return create_bad_response(f"{e}", "reset_code", 400)
@@ -136,7 +136,7 @@ def check_reset_code():
         if user is None or not check_password_hash(user.reset_code, code):
             raise InvalidCredentialsException
 
-        return create_good_response(f"Successfully matched passed in code with stored code for email: {email}!", {}, 200, 'reset_code')
+        return create_good_response(f"Successfully matched passed in code with stored code for email: {email}!", 200, 'reset_code')
 
     except Exception as e:
         return create_bad_response(f"{e}", "reset_code", 400)

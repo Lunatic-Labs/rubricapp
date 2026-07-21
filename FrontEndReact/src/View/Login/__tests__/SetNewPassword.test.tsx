@@ -136,8 +136,8 @@ test("SetNewPassword.test.tsx Test 9: should display error check password streng
         expectElementWithAriaLabelToHaveErrorMessage(ema, "Please verify your password strength");
     });
 });
-test("SetNewPassword.test.tsx Test 10: should display error missing email, password, or code when email and code are missing but check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
-    render(<SetNewPassword email={""} />);
+test("SetNewPassword.test.tsx Test 10: should display error missing email, password, or code when a reset code is present but email is missing, and check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
+    render(<SetNewPassword email={""} code={"123456"} />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
 
@@ -151,7 +151,7 @@ test("SetNewPassword.test.tsx Test 10: should display error missing email, passw
         expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Missing Email or Password or Code");
     });
 });
-test("SetNewPassword.test.tsx Test 11: should display error requiring a reset code when email is valid but no code was confirmed", async () => {
+test("SetNewPassword.test.tsx Test 11: should display a session-expired error when no code is provided (first-login flow) and no access token cookie exists", async () => {
     render(<SetNewPassword email={"demostudent5@skillbuilder.edu"} />);
 
     expectElementWithAriaLabelToBeInDocument(snpfl);
@@ -163,6 +163,6 @@ test("SetNewPassword.test.tsx Test 11: should display error requiring a reset co
     clickElementWithAriaLabel(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Missing Email or Password or Code");
+        expectElementWithAriaLabelToHaveErrorMessage(ema, "Your session has expired. Please log in again.");
     });
 });

@@ -87,11 +87,11 @@ def test_set_new_password(flask_app_mock, client):
                 json={"email": user.email, "password": "password123", "code": reset_code}
             )
 
-            assert response.status_code == 200
+            assert response.status_code == 201
 
             data = response.get_json()
             print(data)
-            msg = data["content"]["201"][0]
+            msg = data["content"]["password"][0]
             assert f"Successfully set new password for user {user.user_id}" in msg
 
             reloaded_user = get_user_by_email(user.email)
@@ -146,10 +146,10 @@ def test_send_reset_code(flask_app_mock, client):
                 f"/api/reset_code?email={user.email}"
             )
 
-            assert response.status_code == 200
+            assert response.status_code == 201
 
             data = response.get_json()
-            msg = data["content"]["201"][0]
+            msg = data["content"]["reset_code"][0]
             assert f"Successfully sent reset code to {user.email}!" in msg
         
         finally:
@@ -205,7 +205,7 @@ def test_check_reset_code(flask_app_mock, client):
             assert response.status_code == 200
 
             data = response.get_json()
-            msg = data["content"]["200"][0]
+            msg = data["content"]["reset_code"][0]
             assert f"Successfully matched passed in code with stored code for email: {user.email}!" in msg
         
         finally:
