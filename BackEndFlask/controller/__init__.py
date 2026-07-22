@@ -3,7 +3,9 @@ from flask_cors import CORS
 from core import ma
 import os
 bp = Blueprint('api', __name__)
-cors = CORS(bp, resources={r"/api/*": {"origins": "*"}})
+
+FRONT_END_URL = os.environ.get('FRONT_END_URL', 'http://127.0.0.1:3000')
+cors = CORS(bp, resources={r"/api/*": {"origins": FRONT_END_URL}})
 from controller.Routes import User_routes
 from controller.Routes import Course_routes
 from controller.Routes import Rubric_routes
