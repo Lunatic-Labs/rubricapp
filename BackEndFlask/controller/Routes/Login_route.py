@@ -82,7 +82,7 @@ def change_password():
         if is_any_variable_in_array_missing([password]):
             raise MissingException(["Password"])
 
-        user = get_user(get_jwt_identity())
+        user = get_user(int(get_jwt_identity()))
 
         update_password(user.user_id, password)
 
@@ -132,8 +132,8 @@ def check_reset_code():
             raise MissingException(["Email", "Code"])
 
         user = get_user_by_email(email)
-        
-        if user is None or not check_password_hash(user.reset_code, code):
+
+        if user is None or user.reset_code is None or not check_password_hash(user.reset_code, code):
             raise InvalidCredentialsException
 
         return create_good_response(f"Successfully matched passed in code with stored code for email: {email}!", 200, 'reset_code')
