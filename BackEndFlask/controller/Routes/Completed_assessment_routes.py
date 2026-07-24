@@ -228,7 +228,9 @@ def get_student_filtered_assessments():
         user_id = int(request.args.get("user_id"))
         course_id = int(request.args.get("course_id"))
         assessments = getStudentDashBoardAssessments(user_id, course_id)
-        return create_good_response(assessments, HttpStatus.OK.value, "completed_assessments")
+        return create_good_response(
+            assessments, HttpStatus.OK.value, "completed_assessments"
+        )
     except Exception as e:
         return create_bad_response(
             f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
