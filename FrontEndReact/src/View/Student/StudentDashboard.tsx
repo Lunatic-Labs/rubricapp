@@ -349,6 +349,13 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             } catch (e) {}
             return 'N/A';
         };
+        const fmtDate = (ts: any) => {
+            try {
+                const d = new Date(ts);
+                if (!isNaN(d.getTime())) return d.toLocaleDateString();
+            } catch (e) {}
+            return 'N/A';
+        };
 
         // helper: pick the *created* timestamp for the AT (fallbacks just in case)
         const getCreatedDate = (at: any, cat: CompleteAssessmentTask) => {
@@ -389,6 +396,11 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
                     dateLabel: fmtDate(lastUpdatedTs),
                     avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
+                return {
+                    key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
+                    name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
+                    dateLabel: fmtDate(lastUpdatedTs),
+                    avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
 
                     // grouping + ordering fields
                     rubric_id,
@@ -398,6 +410,12 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             }
         ).filter((d: ChartDataCoreItem) => d.avg !== null);
 
+        // === Group by rubric, then by created (oldest → newest) ===
+        chartDataCore.sort((a, b) => {
+            const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);
+            if (r !== 0) return r;
+            return (a.createdDate?.getTime?.() ?? 0) - (b.createdDate?.getTime?.() ?? 0);
+        });
         // === Group by rubric, then by created (oldest → newest) ===
         chartDataCore.sort((a, b) => {
             const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);

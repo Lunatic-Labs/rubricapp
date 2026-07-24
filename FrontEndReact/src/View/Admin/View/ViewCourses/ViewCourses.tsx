@@ -22,6 +22,9 @@ class ViewCourses extends Component<ViewCoursesProps> {
     const cookies = new Cookies();
     const user = cookies.get('user');
     const isViewingAsStudent = user?.viewingAsStudent || false;
+    const roleTA = 4;
+    const roleStudent = 5;
+    const roleAdmin = 3;
 
     const columns = [
       {
@@ -101,7 +104,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
 
       // If the logged in user is an Admin of at least one course then the edit column will show.
       // Otherwise the edit column will not be shown!
-      if (navbar.props.isAdmin) {
+      if (navbar.props.isAdmin && !navbar.props.isSuperAdmin) {
         columns.push(
         {
           // If the logged in user is an Admin in the course, they can edit the course.
@@ -145,19 +148,18 @@ class ViewCourses extends Component<ViewCoursesProps> {
                 <IconButton id={courseId}
                 role = "img" aria-label="viewCourseIconButton"
               onClick={() => {
-                // the fix is here. TEMP COMMMENT.
-                navbar.setState({ user: null, addUser: null });
-                navbar.setAddCourseTabWithCourse(courses, courseId, "Users");
+                // Allegedly the 2 lines below are a "fix" but I have been unable to determine for what
+                //    navbar.setState({ user: null, addUser: null });
+                //    navbar.setAddCourseTabWithCourse(courses, courseId, "Users");
                 // If viewing as student, always go to student dashboard
                 if (isViewingAsStudent) {
-                  navbar.setStudentDashboardWithCourse(courseId, courses);
-                } else {
-                  // Normal behavior based on role
-                  if(courseRoles[courseId] === 3) {
+                  navbar.setStudentDashboardWithCourse(courseId, courses); 
+                } else if(courseRoles[courseId] === roleAdmin) { // Normal behavior based on role
                     setAddCourseTabWithCourse(courses, courseId, "Users");
-                  } else if (courseRoles[courseId] === 4 || courseRoles[courseId] === 5) {
-                    navbar.setStudentDashboardWithCourse(courseId, courses);
-                  }
+                } else if (courseRoles[courseId] === roleTA || courseRoles[courseId] === roleStudent) {
+                  navbar.setStudentDashboardWithCourse(courseId, courses);
+                } else if (navbar.props.isSuperAdmin) {
+                  navbar.setViewAssessmentDashboardwithCourse(courseId, courses);
                 }
               }}
               >
