@@ -238,6 +238,20 @@ def get_student_filtered_assessments():
             HttpStatus.BAD_REQUEST.value,
         )
 
+@bp.route("/ta_filtered_assessments", methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_ta_filtered_assessments():
+    try:
+        course_id = int(request.args.get("course_id"))
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
+            "completed_assessments",
+            HttpStatus.BAD_REQUEST.value,
+        )
+
 @bp.route('/completed_assessment_by_team_or_user', methods = ['GET'])
 @jwt_required()
 @bad_token_check()
