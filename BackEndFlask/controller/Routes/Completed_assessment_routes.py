@@ -4,6 +4,8 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
+from enums.http_status_codes import HttpStatus
+from procedures.studentDashboard import getStudentDashBoardAssessments
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -217,6 +219,23 @@ def get_all_completed_assessments():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
 
+@bp.route("/student_filtered_assessments", methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_student_filtered_assessments():
+    try:
+        user_id = int(request.args.get("user_id"))
+        course_id = int(request.args.get("course_id"))
+        assessments = getStudentDashBoardAssessments(user_id, course_id)
+        return create_good_response(assessments, HttpStatus.OK.value, "completed_assessments")
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
+            "completed_assessments",
+            HttpStatus.BAD_REQUEST.value,
+        )
+
 @bp.route('/completed_assessment_by_team_or_user', methods = ['GET'])
 @jwt_required()
 @bad_token_check()
@@ -295,10 +314,10 @@ def update_completed_assessment():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing completed_assessment {e}", "completed_assessments", 400)
 
-#----------------------------------------
+# ----------------------------------------
 # gets the average of all completed
 # assessment task into an array
-#----------------------------------------
+# ----------------------------------------
 @bp.route('/average', methods=['GET'])
 @jwt_required()
 @bad_token_check()
