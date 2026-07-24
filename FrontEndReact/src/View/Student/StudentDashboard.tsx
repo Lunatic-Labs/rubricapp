@@ -349,13 +349,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             } catch (e) {}
             return 'N/A';
         };
-        const fmtDate = (ts: any) => {
-            try {
-                const d = new Date(ts);
-                if (!isNaN(d.getTime())) return d.toLocaleDateString();
-            } catch (e) {}
-            return 'N/A';
-        };
 
         // helper: pick the *created* timestamp for the AT (fallbacks just in case)
         const getCreatedDate = (at: any, cat: CompleteAssessmentTask) => {
@@ -391,11 +384,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 const rubric_id: number | null = at?.rubric_id ?? null;
                 const rubricName: string | undefined = rubric_id != null ? rubricNamefromId?.[rubric_id] : undefined;
 
-                return {
-                    key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
-                    name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
-                    dateLabel: fmtDate(lastUpdatedTs),
-                    avg: typeof avg === 'number' ? Number(avg.toFixed(2)) : null,
                 return {
                     key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
                     name: at?.assessment_task_name || `AT ${cat.assessment_task_id}`,
