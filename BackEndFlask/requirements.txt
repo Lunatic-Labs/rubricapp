@@ -74,7 +74,7 @@ pytz == 2025.2
 requests == 2.33.0
 rich == 14.1.0
 rsa == 4.9.1
-setuptools == 80.9.0
+setuptools == 83.0.0
 six == 1.17.0
 tzdata == 2025.2
 typing_extensions == 4.15.0
