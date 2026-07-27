@@ -1,11 +1,9 @@
 from core import db
 from sqlalchemy.sql import text
-from models.utility import error_log
 from sqlalchemy import RowMapping
 from collections.abc import Sequence
 
-@error_log
-def getStudentDashBoardAssessments(
+def call_procedure_FilterStudentAssessmentTasks(
     user_id: int, course_id: int
 ) -> Sequence[RowMapping]:
     """Returns the desired assessment tasks bound with their respective completed assessments.
@@ -17,13 +15,15 @@ def getStudentDashBoardAssessments(
     Returns:
         A mapping where a row contains all the assessment task information and completed assessment task data in a non-repeated form.
     """
-    result = db.session.execute(
-        text("CALL FilterStudentAssessmentTasks(:user_id, :course_id)"),
+    result = db.session.connection().execute(
+        text("CALL FilterStudentAssessmentTasks(:user_id, :course_id);"),
         {
             "user_id": user_id,
             "course_id": course_id,
         },
     )
 
-    result = result.mappings()
-    return result.all()
+    with open("ap.txt", 'a') as out:
+        print(type(result), file=out)
+
+    return [dict(row) for row in result.mappings()]

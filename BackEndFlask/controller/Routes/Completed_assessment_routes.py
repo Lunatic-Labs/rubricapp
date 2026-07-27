@@ -5,7 +5,7 @@ from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
 from enums.http_status_codes import HttpStatus
-from procedures.studentDashboard import getStudentDashBoardAssessments
+from procedures.studentDashboard import call_procedure_FilterStudentAssessmentTasks
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -219,22 +219,31 @@ def get_all_completed_assessments():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
 
-@bp.route("/student_filtered_assessments", methods=["GET"])
+@bp.route("/student_dashboard_assessments", methods=["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-def get_student_filtered_assessments():
+def get_student_dashboard_assessments():
     try:
         user_id = int(request.args.get("user_id"))
         course_id = int(request.args.get("course_id"))
-        assessments = getStudentDashBoardAssessments(user_id, course_id)
+        with open("ap.txt", "w") as out:
+            import inspect
+            print(inspect.getfile(call_procedure_FilterStudentAssessmentTasks), file=out)
+        assessments = call_procedure_FilterStudentAssessmentTasks(user_id, course_id)
+#
+        #with open("ap.txt", "a") as out:
+        #    print("function ran", file=out)
+        #    print(assessments, file=out)
         return create_good_response(
-            assessments, HttpStatus.OK.value, "completed_assessments"
+            assessments, 
+            HttpStatus.OK.value, 
+            "studentAssessments"
         )
     except Exception as e:
         return create_bad_response(
             f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
-            "completed_assessments",
+            "studentAssessments",
             HttpStatus.BAD_REQUEST.value,
         )
 
