@@ -80,7 +80,7 @@ interface StudentDashboardState {
     rubricNames: Record<string, string> | null;
     chartData: any;
     teamsFetched: boolean;
-    studentAssessments: any,
+    userFilteredAts: any,
 }
 
 type DidUpdateProps = {
@@ -118,7 +118,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
             chartData: null,
             teamsFetched: false,
-            studentAssessments: null
+            userFilteredAts: null
         }
     }
 
@@ -139,7 +139,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const chosenCourse = state.chosenCourse["course_id"];
         const userRole = state.chosenCourse.role_id;
 
-        genericResourceGET(`/student_dashboard_assessments?course_id=${chosenCourse}`, 'studentAssessments', this, {dest:"studentAssessments"});
+        const filterRouteToCall = userRole == ROLE.STUDENT ? "/student_dashboard_assessments" : "/ta_filtered_assessments";
+        genericResourceGET(`${filterRouteToCall}?course_id=${chosenCourse}`, "userFilteredAts", this, {dest:"userFilteredAts"});
 
         genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
 
@@ -173,10 +174,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
     }
 
     componentDidUpdate() {
-        const {
-            studentAssessments
-        } = this.state;
-
         const {
             userId,
             roleId,
