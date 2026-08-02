@@ -2,7 +2,7 @@ from core import db
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
 from models.utility import error_log
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, select
 from sqlalchemy.exc import SQLAlchemyError
 from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 
@@ -529,4 +529,13 @@ def toggle_published_status(assessment_task_id):
     return one_assessment_task
 
 def get_valid_ta_tasks_via_course(course_id: int):
-    return
+    stmt = select(AssessmentTask.__table__).where(
+        AssessmentTask.course_id == course_id,
+        AssessmentTask.due_date >= datetime.now(),
+        AssessmentTask.published == True,
+        AssessmentTask.locked == False,
+    )
+
+    result = db.session.execute(stmt)
+
+    return [dict(row) for row in result.mappings()]
