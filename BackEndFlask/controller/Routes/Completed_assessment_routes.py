@@ -3,7 +3,7 @@ from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from models.assessment_task import get_assessment_task
+from models.assessment_task import get_assessment_task, get_valid_ta_tasks_via_course
 from enums.http_status_codes import HttpStatus
 from procedures.studentDashboard import call_procedure_FilterStudentAssessmentTasks
 
@@ -231,12 +231,12 @@ def get_student_dashboard_assessments():
         return create_good_response(
             assessments, 
             HttpStatus.OK.value, 
-            "studentAssessments"
+            "userFilteredAts"
         )
     except Exception as e:
         return create_bad_response(
             f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
-            "studentAssessments",
+            "userFilteredAts",
             HttpStatus.BAD_REQUEST.value,
         )
 
@@ -247,10 +247,16 @@ def get_student_dashboard_assessments():
 def get_ta_filtered_assessments():
     try:
         course_id = int(request.args.get("course_id"))
+        assesssments = get_valid_ta_tasks_via_course(course_id)
+        create_good_response(
+            assesssments,
+            "userFilteredAts",
+            HttpStatus.OK.value,
+        )
     except Exception as e:
         return create_bad_response(
             f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
-            "completed_assessments",
+            "userFilteredAts",
             HttpStatus.BAD_REQUEST.value,
         )
 

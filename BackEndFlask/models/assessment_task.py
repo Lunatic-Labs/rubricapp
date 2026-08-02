@@ -527,3 +527,6 @@ def toggle_published_status(assessment_task_id):
     one_assessment_task.published = not one_assessment_task.published
     db.session.commit()
     return one_assessment_task
+
+def get_valid_ta_tasks_via_course(course_id: int):
+    return

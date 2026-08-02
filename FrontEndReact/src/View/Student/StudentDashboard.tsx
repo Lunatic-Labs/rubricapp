@@ -175,6 +175,12 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
     componentDidUpdate() {
         const {
+            userFilteredAts
+        } = this.state;
+
+        console.log("here:", userFilteredAts);
+
+        const {
             userId,
             roleId,
             userTeamIds,
