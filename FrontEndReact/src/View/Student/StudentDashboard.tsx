@@ -139,8 +139,18 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const chosenCourse = state.chosenCourse["course_id"];
         const userRole = state.chosenCourse.role_id;
 
-        const filterRouteToCall = userRole == ROLE.STUDENT ? "/student_dashboard_assessments" : "/ta_filtered_assessments";
-        genericResourceGET(`${filterRouteToCall}?course_id=${chosenCourse}`, "userFilteredAts", this, {dest:"userFilteredAts"});
+        const filterRouteToCall =
+            userRole == ROLE.STUDENT
+            ? "/student_dashboard_assessments"
+            : "/ta_filtered_assessments"
+        ;
+
+        genericResourceGET(
+            `${filterRouteToCall}?course_id=${chosenCourse}`,
+            "userFilteredAts",
+            this,
+            { dest: "userFilteredAts" },
+        );
 
         genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
 
