@@ -138,7 +138,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const state = navbar.state;
         const chosenCourse = state.chosenCourse["course_id"];
         const userRole = state.chosenCourse.role_id;
-
         const filterRouteToCall =
             userRole == ROLE.STUDENT
             ? "/student_dashboard_assessments"
