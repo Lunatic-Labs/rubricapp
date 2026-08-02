@@ -328,7 +328,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 return finalLocOfAT.inATSection;
             },
         ); 
-
+        // REMEMBER THAT THE FULLY FINSHED ONES NEED THEIR INFO PUSHED filteredAvgData.push(avg)
         // Helpers for chart data
         const computeAvg = (avgObj: any) => {
             if (avgObj == null) return null;
@@ -651,30 +651,32 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 </Box>
             </Box>
 
-            <Box className="page-spacing">
-                <Box sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    alignSelf: "stretch"
-                }}>
-                    <Box sx={{ width: "100%" }} className="content-spacing">
-                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
-                            Completed Assessments
-                        </Typography>
+            { ROLE.STUDENT == roles.role_id  && (
+                <Box className="page-spacing">
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"
+                    }}>
+                        <Box sx={{ width: "100%" }} className="content-spacing">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
+                                Completed Assessments
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                    <Box>
+                        {[4, 5].includes(roles["role_id"]) &&
+                            <StudentCompletedAssessmentTasks
+                                navbar={navbar}
+                                assessmentTasks={assessmentTasks ?? []}
+                                filteredCompleteAssessments={fullyDoneCATS ?? []}
+                            />
+                        }
                     </Box>
                 </Box>
-
-                <Box>
-                    {[4, 5].includes(roles["role_id"]) &&
-                        <StudentCompletedAssessmentTasks
-                            navbar={navbar}
-                            assessmentTasks={assessmentTasks ?? []}
-                            filteredCompleteAssessments={fullyDoneCATS ?? []}
-                        />
-                    }
-                </Box>
-            </Box>
+            )}
 
             <Box className="page-spacing">
                 <Box sx={{
