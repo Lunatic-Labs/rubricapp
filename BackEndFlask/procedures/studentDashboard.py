@@ -23,7 +23,4 @@ def call_procedure_FilterStudentAssessmentTasks(
         },
     )
 
-    with open("ap.txt", 'a') as out:
-        print(type(result), file=out)
-
     return [dict(row) for row in result.mappings()]

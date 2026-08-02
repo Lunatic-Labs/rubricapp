@@ -227,14 +227,7 @@ def get_student_dashboard_assessments():
     try:
         user_id = int(request.args.get("user_id"))
         course_id = int(request.args.get("course_id"))
-        with open("ap.txt", "w") as out:
-            import inspect
-            print(inspect.getfile(call_procedure_FilterStudentAssessmentTasks), file=out)
         assessments = call_procedure_FilterStudentAssessmentTasks(user_id, course_id)
-#
-        #with open("ap.txt", "a") as out:
-        #    print("function ran", file=out)
-        #    print(assessments, file=out)
         return create_good_response(
             assessments, 
             HttpStatus.OK.value, 

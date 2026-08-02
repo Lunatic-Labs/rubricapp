@@ -138,8 +138,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const state = navbar.state;
         const chosenCourse = state.chosenCourse["course_id"];
         const userRole = state.chosenCourse.role_id;
-        const cookies = new Cookies();
-        //const userId = cookies.get('user')?.user_id;
 
         genericResourceGET(`/student_dashboard_assessments?course_id=${chosenCourse}`, 'studentAssessments', this, {dest:"studentAssessments"});
 
@@ -208,8 +206,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         );
         
         if (!canFilter) { return; }
-
-        console.log("New:", studentAssessments);
 
         type RubricId   = string | number;
         type RubricName = string;
@@ -320,11 +316,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     if (cat) { 
                         viewableDoneCats.push(cat); 
                         filteredAvgData.push(avg);
-                        console.log("pushed into cat");
                     }
                 }
                 if (finalLocOfAT.inATSection) {
-                    console.log("pushed into at");
                     if (cat) { catsUserCanEdit.push(cat); }
                 }
 
