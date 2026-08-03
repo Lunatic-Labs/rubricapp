@@ -374,6 +374,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
             return (
                 <SetNewPassword
                     email={email}
+                    code={code}
                 />
             );
         }

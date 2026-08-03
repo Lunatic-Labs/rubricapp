@@ -211,13 +211,14 @@ export function validatePasswordReset(password: string, confirmationPassword: st
 }
 
 /**
- * Submits a password change request to the backend API
+ * Submits a forgot-password reset request to the backend API
  * @param apiUrl - The base API URL
  * @param email - The user's email address
  * @param password - The new password
+ * @param code - The reset code sent to the user's email and confirmed in the previous step
  * @returns Promise with the API response
  */
-export async function submitPasswordChange(apiUrl: string, email: string, password: string): Promise<any> {
+export async function submitPasswordChange(apiUrl: string, email: string, password: string, code: string): Promise<any> {
     const response = await fetch(
         apiUrl + "/password",
         {
@@ -227,6 +228,34 @@ export async function submitPasswordChange(apiUrl: string, email: string, passwo
             },
             body: JSON.stringify({
                 email: email,
+                password: password,
+                code: code,
+            }),
+        }
+    );
+
+    return await response.json();
+}
+
+/**
+ * Submits an authenticated password change for an already-logged-in user (e.g. first-login
+ * password setup, or a user changing their password from account settings) — no reset code
+ * involved, identity comes from the JWT.
+ * @param apiUrl - The base API URL
+ * @param accessToken - The user's JWT access token
+ * @param password - The new password
+ * @returns Promise with the API response
+ */
+export async function submitAuthenticatedPasswordChange(apiUrl: string, accessToken: string, password: string): Promise<any> {
+    const response = await fetch(
+        apiUrl + "/password/change",
+        {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer " + accessToken,
+            },
+            body: JSON.stringify({
                 password: password,
             }),
         }
