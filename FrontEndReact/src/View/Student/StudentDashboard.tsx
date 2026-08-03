@@ -83,19 +83,6 @@ interface StudentDashboardState {
     userFilteredAts: any,
 }
 
-type DidUpdateProps = {
-    userId: number | undefined,
-    roleId: number | undefined,
-    userTeamIds: number[],
-    teamsFetched: boolean,
-    rubrics: Rubric[] | null,
-    rubricNames: Record<string, string> | null,
-    assessmentTasks:  AssessmentTask[] | null,
-    completedAssessments: CompleteAssessmentTask[] | null,
-    averageData: any,
-    isAtsFiltered: boolean,
-};
-
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
     constructor(props: StudentDashboardProps) {
         super(props);
@@ -164,54 +151,25 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
     }
 
-    private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps{
-        const cookies = new Cookies();
-        const userId: number | undefined = cookies.get('user')?.user_id;
-
-        return {
-            userId: userId,
-            roleId: state.roles?.role_id ?? undefined,
-            userTeamIds: state.userTeamIds,
-            teamsFetched: state.teamsFetched,
-            rubrics: state.rubrics,
-            rubricNames: state.rubricNames,
-            assessmentTasks: state.assessmentTasks,
-            completedAssessments: state.completedAssessments,
-            averageData: state.averageData,
-            isAtsFiltered: !!state.filteredATs,
-        };
-    }
-
     componentDidUpdate() {
         const {
-            userFilteredAts
+            userFilteredAts,
+            rubrics,
+            rubricNames,
+            assessmentTasks,// Figure out how to remove this binding
         } = this.state;
 
         console.log("here:", userFilteredAts);
 
-        //let catsUserCanEdit: CompleteAssessmentTask[] = [];
-        //let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
-        //let viewableDoneCats: CompleteAssessmentTask[] = [];
+        let catsUserCanEdit: CompleteAssessmentTask[] = [];
+        let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
+        let viewableDoneCats: CompleteAssessmentTask[] = [];
 
-        const {
-            userId,
-            roleId,
-            userTeamIds,
-            teamsFetched,
-            rubrics,
-            rubricNames,
-            assessmentTasks,
-            completedAssessments,
-            averageData,
-            isAtsFiltered,
-        } = this.extractDidUpdateProperties(this.state);
-
-
-        //type RubricId   = string | number;
-        //type RubricName = string;
-        //const rubricNamefromId: Record<RubricId, RubricName> =
-        //    rubricNames ?? parseRubricNames(rubrics as any)
-        //;
+        type RubricId   = string | number;
+        type RubricName = string;
+        const rubricNamefromId: Record<RubricId, RubricName> =
+            rubricNames ?? parseRubricNames(rubrics as any)
+        ;
 
         // REMEMBER THAT THE FULLY FINSHED ONES NEED THEIR INFO PUSHED filteredAvgData.push(avg)
         // Helpers for chart data
