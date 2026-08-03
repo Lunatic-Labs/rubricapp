@@ -48,8 +48,9 @@ export default function TabManager(props: TabManagerProps) {
 
           aria-label='assessmentStatusTab'
         />
-
-        <Tab
+        { 
+          !props.navbar.props.isSuperAdmin &&
+          <Tab
           label="Ratings and Feedback"
 
           onClick={() => {
@@ -57,7 +58,8 @@ export default function TabManager(props: TabManagerProps) {
           }}
 
           aria-label='ratingAndFeedbackTab'
-        />
+          />
+        }
 
         <Tab
           label="Export Graph Comparison"
