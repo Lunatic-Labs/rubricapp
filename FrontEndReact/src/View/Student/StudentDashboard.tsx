@@ -80,8 +80,17 @@ interface StudentDashboardState {
     rubricNames: Record<string, string> | null;
     chartData: any;
     teamsFetched: boolean;
-    userFilteredAts: any,
+    userFilteredAts: (AssessmentTask & Partial<CompleteAssessmentTask>)[] | null;
 }
+
+type DidUpdateProps = {
+    userFilteredAts: (AssessmentTask & Partial<CompleteAssessmentTask>)[] | null,
+    rubrics: Rubric[] | null,
+    rubricNames: Record<string, string> | null,
+    assessmentTasks: AssessmentTask[] | null,
+    isRoleInfoReady: boolean,
+    isUserStudent: boolean,
+};
 
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
     constructor(props: StudentDashboardProps) {
@@ -151,27 +160,76 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
     }
 
+    private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps {
+        const roleId = state.roles?.role_id;
+
+        return {
+            userFilteredAts: state.userFilteredAts,
+            rubrics: state.rubrics,
+            rubricNames: state.rubricNames,
+            assessmentTasks: state.assessmentTasks,
+            isRoleInfoReady: roleId != undefined,
+            isUserStudent: roleId == ROLE.STUDENT,
+        }
+    }
+
     componentDidUpdate() {
         const {
             userFilteredAts,
             rubrics,
             rubricNames,
             assessmentTasks,// Figure out how to remove this binding
-        } = this.state;
+            isRoleInfoReady,
+            isUserStudent, // Assume user is a TA if not a student.
+        } = this.extractDidUpdateProperties(this.state);
 
-        console.log("here:", userFilteredAts);
+        const readyToParse = (
+            !!userFilteredAts &&
+            !!rubrics &&
+            !!rubricNames &&
+            !!assessmentTasks &&
+            isRoleInfoReady
+        );
 
+        if (!readyToParse) {
+            return;
+        }
+
+        console.log("Entered filtering logic:", userFilteredAts);
+
+        let viewableAssessmentTasks: AssessmentTask[] = [];
         let catsUserCanEdit: CompleteAssessmentTask[] = [];
         let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
         let viewableDoneCats: CompleteAssessmentTask[] = [];
 
+        userFilteredAts.forEach( atCatUnion => {
+            let at: AssessmentTask = {...atCatUnion};
+            if (isUserStudent) {
+                //CID yes && done -> done
+                //CID yes && !done -> edit
+                //CID no -> edit
+                const isCatIdPresent = !!atCatUnion?.completed_assessment_id;
+                if (isCatIdPresent) {
+                    if (atCatUnion.done){
+                        let cat: CompleteAssessmentTask = {...atCatUnion} as CompleteAssessmentTask;
+                        viewableDoneCats.push(cat);
+                        filteredAvgData.push(cat);
+                        return;
+                    }
+                }
+            }
+            else {
+
+            }
+        });
+        
         type RubricId   = string | number;
         type RubricName = string;
         const rubricNamefromId: Record<RubricId, RubricName> =
             rubricNames ?? parseRubricNames(rubrics as any)
         ;
 
-        // REMEMBER THAT THE FULLY FINSHED ONES NEED THEIR INFO PUSHED filteredAvgData.push(avg)
+        // REMEMBER THAT THE FULLY FINSHED ONES NEED THEIR INFO PUSHED filteredAvgData.push(avg)-> CAT
         // Helpers for chart data
         const computeAvg = (avgObj: any) => {
             if (avgObj == null) return null;
@@ -282,7 +340,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         }
 
         this.setState({
-            filteredATs: viewableAssessmenTasks,
+            filteredATs: viewableAssessmentTasks,
             filteredCATs: catsUserCanEdit,
             fullyDoneCATS: viewableDoneCats,
             rubricNames: rubricNamefromId,
