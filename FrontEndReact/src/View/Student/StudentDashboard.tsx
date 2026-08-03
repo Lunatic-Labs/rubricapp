@@ -189,6 +189,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         console.log("here:", userFilteredAts);
 
+        //let catsUserCanEdit: CompleteAssessmentTask[] = [];
+        //let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
+        //let viewableDoneCats: CompleteAssessmentTask[] = [];
+
         const {
             userId,
             roleId,
@@ -202,141 +206,13 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             isAtsFiltered,
         } = this.extractDidUpdateProperties(this.state);
 
-        // Assume that you are a TA if not a student.
-        const isUserStudent = roleId === ROLE.STUDENT;
-        const isTeamInfoReady = teamsFetched;
-        const canFilterStudentByTeam = isUserStudent && isTeamInfoReady;
 
-        const canFilter = Boolean(
-            !isAtsFiltered &&
-            roleId &&
-            rubrics &&
-            assessmentTasks &&
-            completedAssessments &&
-            averageData &&
-            (!isUserStudent || canFilterStudentByTeam)
-        );
-        
-        if (!canFilter) { return; }
+        //type RubricId   = string | number;
+        //type RubricName = string;
+        //const rubricNamefromId: Record<RubricId, RubricName> =
+        //    rubricNames ?? parseRubricNames(rubrics as any)
+        //;
 
-        type RubricId   = string | number;
-        type RubricName = string;
-        type ATId = string;
-
-        // Search worries; observe how data is hit here at diff times. This will continue to grow the more the system is used.
-        const rubricNamefromId: Record<RubricId, RubricName> =
-            rubricNames ?? parseRubricNames(rubrics as any)
-        ;
-
-        let catsUserCanEdit: CompleteAssessmentTask[] = [];
-        let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
-        let viewableDoneCats: CompleteAssessmentTask[] = [];
-
-        const CatMap: Map<ATId, CompleteAssessmentTask> = new Map();
-        const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
-
-        completedAssessments?.forEach((cat: CompleteAssessmentTask) => {
-            const teamId = cat.team_id;
-
-            const isTaSoOverride = !isUserStudent;
-            const isStudentIndependentCAT = !!!teamId;
-            const doesUserIdMatchCATUserId = userId === cat.user_id;
-
-            const doesIndvCATBelongStudentUser = isStudentIndependentCAT 
-                ? doesUserIdMatchCATUserId 
-                : false
-            ; 
-            const isStudentOnCATTeam = !isStudentIndependentCAT
-                ? userTeamIds.includes(teamId)
-                : false
-            ;
-
-            const canUserSeeCAT = 
-                isTaSoOverride ||
-                doesIndvCATBelongStudentUser ||
-                isStudentOnCATTeam
-            ;
-
-            if (canUserSeeCAT) {
-                const isCurCATDone = cat.done;
-                
-                const key: ATId = String(cat.assessment_task_id);
-
-                const storedCat: CompleteAssessmentTask | undefined = CatMap.get(key);
-
-                const shouldInsertCAT = Boolean(
-                    !!!storedCat ||
-                    (!isCurCATDone && storedCat.done)
-                );
-
-                if (shouldInsertCAT) {
-                    CatMap.set(key, cat);
-                }
-            }
-        });
-
-        averageData.forEach( 
-            (cat: CompleteAssessmentTask) => 
-                { AVGmap.set(cat.assessment_task_id, cat) }
-        );
-
-        const isUserDone = 
-            ( cat: CompleteAssessmentTask | undefined ) =>
-            { return !!cat && cat.done; }
-        ;
-        const isTaskPastDue = 
-            ( at: AssessmentTask ) =>
-            { return new Date(at.due_date) < new Date() }
-        ;
-
-        let viewableAssessmenTasks: AssessmentTask[] = assessmentTasks!.filter(
-            (at: AssessmentTask) => {
-                const catKey: ATId = String(at.assessment_task_id);
-                const cat: CompleteAssessmentTask | undefined = CatMap.get(catKey);
-                const avg: CompleteAssessmentTask | undefined = AVGmap.get(at.assessment_task_id);
-
-                // Qualities for if an AT if viewable.
-                type Section = {
-                    inATSection: boolean;
-                    inCATSection: boolean;
-                };
-
-                let finalLocOfAT: Section = {
-                    inATSection: false,
-                    inCATSection: false,
-                };
-
-                const isATDone = isUserDone(cat);
-                const isUserCompletionAssignee = roleId === at.role_id;
-                const isATLocked = at.locked;
-                const isATPublished = at.published;
-                const isATPastDue = isTaskPastDue(at);
-
-                const doAdminsAllowEdits = !isATLocked && !isATPastDue;
-                const isATViewable = isATPublished;
-
-                if (isATViewable) {
-                    if (isUserCompletionAssignee) {
-                        finalLocOfAT.inATSection = doAdminsAllowEdits && !isATDone;
-                        finalLocOfAT.inCATSection = isATDone || !doAdminsAllowEdits;
-                    } else {
-                        finalLocOfAT.inCATSection = isATDone || !doAdminsAllowEdits;
-                    }
-                }
-
-                if (finalLocOfAT.inCATSection) {
-                    if (cat) { 
-                        viewableDoneCats.push(cat); 
-                        filteredAvgData.push(avg);
-                    }
-                }
-                if (finalLocOfAT.inATSection) {
-                    if (cat) { catsUserCanEdit.push(cat); }
-                }
-
-                return finalLocOfAT.inATSection;
-            },
-        ); 
         // REMEMBER THAT THE FULLY FINSHED ONES NEED THEIR INFO PUSHED filteredAvgData.push(avg)
         // Helpers for chart data
         const computeAvg = (avgObj: any) => {
