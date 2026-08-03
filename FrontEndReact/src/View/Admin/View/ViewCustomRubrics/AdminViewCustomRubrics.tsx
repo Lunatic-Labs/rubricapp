@@ -2,7 +2,7 @@ import { Component } from "react";
 import { genericResourceGET } from "../../../../utility";
 import CollapsableRubricCategoryTable from "../../Add/AddCustomRubric/CollapsableRubricCategoryTable";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import { Grid } from "@mui/material";
+import { Grid, Box} from "@mui/material";
 import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton";
 import Loading from "../../../Loading/Loading";
 import { Rubric } from '../../../../types/Rubric';
@@ -55,18 +55,10 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
         }
 
         return(
-            <Grid container spacing={6.5}>
-                <Grid item xs={6}>
-                    { errorMessage &&
-                        <ErrorMessage
-                            errorMessage={errorMessage}
-                        />
-                    }
+            <div>
+                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: "16px"}}>
                     <h2
                         style={{
-                            borderBottom: "1px solid #D9D9D9",
-                            paddingTop: "16px",
-                            paddingBottom: "16px",
                             textAlign: "left",
                             fontWeight: "bold",
                         }}
@@ -74,17 +66,6 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                     >
                         My Custom Rubrics
                     </h2>
-
-                    <CollapsableRubricCategoryTable
-                        categories={categories}
-                        rubrics={rubrics}
-                        readOnly={true}
-                        showEditButton={true}
-                        navbar={this.state.navbar}
-                    />
-                </Grid>
-
-                <Grid item xs={6} container justifyContent="flex-end">
                     <CustomButton
                         label="Add Custom Rubric"
                         isOutlined={false}
@@ -93,8 +74,23 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                         }}
                         aria-label="myCustomRubricsAddCustomRubricButton"
                     />
-                </Grid>
-            </Grid>
+                </div>
+                <hr style={{ borderTop: "1px solid #787878"}}/>
+
+                { errorMessage &&
+                    <ErrorMessage
+                        errorMessage={errorMessage}
+                    />
+                }
+                
+                <CollapsableRubricCategoryTable
+                    categories={categories}
+                    rubrics={rubrics}
+                    readOnly={true}
+                    showEditButton={true}
+                    navbar={this.state.navbar}
+                />
+            </div>
         );
     }
 }
