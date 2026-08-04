@@ -197,29 +197,25 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         console.log("Entered filtering logic:", userFilteredAts);
 
-        let viewableAssessmentTasks: AssessmentTask[] = [];
-        let catsUserCanEdit: CompleteAssessmentTask[] = [];
+        let allATs: AssessmentTask[] = [];
+        let editableCats: CompleteAssessmentTask[] = [];
         let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
-        let viewableDoneCats: CompleteAssessmentTask[] = [];
+        let doneCATs: CompleteAssessmentTask[] = [];
+
 
         userFilteredAts.forEach( atCatUnion => {
-            let at: AssessmentTask = {...atCatUnion};
-            if (isUserStudent) {
-                //CID yes && done -> done
-                //CID yes && !done -> edit
-                //CID no -> edit
-                const isCatIdPresent = !!atCatUnion?.completed_assessment_id;
-                if (isCatIdPresent) {
-                    if (atCatUnion.done){
-                        let cat: CompleteAssessmentTask = {...atCatUnion} as CompleteAssessmentTask;
-                        viewableDoneCats.push(cat);
-                        filteredAvgData.push(cat);
-                        return;
-                    }
-                }
+            const at: AssessmentTask = {...atCatUnion};
+            allATs.push(at);
+            
+            if (!isUserStudent) {
+                return
             }
-            else {
+            
+            const catPresent = atCatUnion?.completed_assessment_id != undefined;
 
+            if (catPresent){
+                const cat = {...atCatUnion} as CompleteAssessmentTask;
+                cat.done ? (doneCATs.push(cat) && filteredAvgData.push(cat)) : editableCats.push(cat);
             }
         });
         
@@ -283,7 +279,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             createdDate: Date;
         };
 
-        let chartDataCore: ChartDataCoreItem[] = viewableDoneCats
+        let chartDataCore: ChartDataCoreItem[] = doneCATs
             .map((cat: CompleteAssessmentTask, i: number): ChartDataCoreItem => {
                 const avgObj = filteredAvgData[i];
                 const at = assessmentTasks!.find((a) => a.assessment_task_id === cat.assessment_task_id);
@@ -340,9 +336,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         }
 
         this.setState({
-            filteredATs: viewableAssessmentTasks,
-            filteredCATs: catsUserCanEdit,
-            fullyDoneCATS: viewableDoneCats,
+            filteredATs: allATs,
+            filteredCATs: editableCats,
+            fullyDoneCATS: doneCATs,
             rubricNames: rubricNamefromId,
             chartData,
         });
