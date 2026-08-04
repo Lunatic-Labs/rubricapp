@@ -203,19 +203,21 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         let doneCATs: CompleteAssessmentTask[] = [];
 
 
-        userFilteredAts.forEach( atCatUnion => {
-            const at: AssessmentTask = {...atCatUnion};
+        userFilteredAts.forEach( (atCatUnion) => {
+            const at: AssessmentTask = { ...atCatUnion };
             allATs.push(at);
             
             if (!isUserStudent) {
-                return
+                return;
             }
             
             const catPresent = atCatUnion?.completed_assessment_id != undefined;
 
             if (catPresent){
-                const cat = {...atCatUnion} as CompleteAssessmentTask;
-                cat.done ? (doneCATs.push(cat) && filteredAvgData.push(cat)) : editableCats.push(cat);
+                const cat = { ...atCatUnion } as CompleteAssessmentTask;
+                cat.done ? 
+                (doneCATs.push(cat) && filteredAvgData.push(cat)) : 
+                editableCats.push(cat);
             }
         });
         
