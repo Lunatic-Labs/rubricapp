@@ -84,6 +84,7 @@ interface StudentDashboardState {
 }
 
 type DidUpdateProps = {
+    hasBeenParsed: boolean,
     userFilteredAts: (AssessmentTask & Partial<CompleteAssessmentTask>)[] | null,
     rubrics: Rubric[] | null,
     rubricNames: Record<string, string> | null,
@@ -164,6 +165,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const roleId = state.roles?.role_id;
 
         return {
+            hasBeenParsed: state.filteredATs !== null,
             userFilteredAts: state.userFilteredAts,
             rubrics: state.rubrics,
             rubricNames: state.rubricNames,
@@ -175,6 +177,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
     componentDidUpdate() {
         const {
+            hasBeenParsed,
             userFilteredAts,
             rubrics,
             rubricNames,
@@ -186,9 +189,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const readyToParse = (
             !!userFilteredAts &&
             !!rubrics &&
-            !!rubricNames &&
             !!assessmentTasks &&
-            isRoleInfoReady
+            isRoleInfoReady &&
+            !hasBeenParsed
         );
 
         if (!readyToParse) {
@@ -211,7 +214,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 return;
             }
             
-            const catPresent = atCatUnion?.completed_assessment_id !== undefined;
+            const catPresent = atCatUnion?.completed_assessment_id != null;
+            console.log("current union:", atCatUnion);
+            console.log("catPresent", catPresent);
+            console.log("cat cid:", atCatUnion?.completed_assessment_id);
 
             if (catPresent){
                 const cat = { ...atCatUnion } as CompleteAssessmentTask;
@@ -220,6 +226,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 editableCats.push(cat);
             }
         });
+
+        console.log("all ats", allATs);
+        console.log("all editable", editableCats);
+        console.log("all done:", doneCATs);
         
         type RubricId   = string | number;
         type RubricName = string;
