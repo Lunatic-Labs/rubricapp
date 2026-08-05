@@ -135,7 +135,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const chosenCourse = state.chosenCourse["course_id"];
         const userRole = state.chosenCourse.role_id;
         const filterRouteToCall =
-            userRole == ROLE.STUDENT
+            userRole === ROLE.STUDENT
             ? "/student_dashboard_assessments"
             : "/ta_filtered_assessments"
         ;
@@ -168,8 +168,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubrics: state.rubrics,
             rubricNames: state.rubricNames,
             assessmentTasks: state.assessmentTasks,
-            isRoleInfoReady: roleId != undefined,
-            isUserStudent: roleId == ROLE.STUDENT,
+            isRoleInfoReady: roleId !== undefined,
+            isUserStudent: roleId === ROLE.STUDENT,
         }
     }
 
@@ -211,7 +211,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 return;
             }
             
-            const catPresent = atCatUnion?.completed_assessment_id != undefined;
+            const catPresent = atCatUnion?.completed_assessment_id !== undefined;
 
             if (catPresent){
                 const cat = { ...atCatUnion } as CompleteAssessmentTask;
@@ -550,7 +550,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 </Box>
             </Box>
 
-            { ROLE.STUDENT == roles.role_id  && (
+            { ROLE.STUDENT === roles.role_id  && (
                 <Box className="page-spacing">
                     <Box sx={{
                         display: "flex",
