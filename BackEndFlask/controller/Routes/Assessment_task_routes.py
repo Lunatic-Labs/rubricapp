@@ -9,6 +9,8 @@ from models.team   import get_team
 from models.role   import get_role
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
+from models.assessment_task import get_assessment_task, get_valid_ta_tasks_via_course
+from enums.http_status_codes import HttpStatus
 
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import (
@@ -173,7 +175,26 @@ def get_one_assessment_task():
             f"An error occurred retrieving one assessment tasks: {e}", "assessment_task", 400
         )
 
-
+@bp.route("/ta_filtered_assessments", methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_ta_filtered_assessments():
+    try:
+        course_id = int(request.args.get("course_id"))
+        assesssments = get_valid_ta_tasks_via_course(course_id)
+        assesssments = assessment_tasks_schema.dump(assesssments)
+        create_good_response(
+            assesssments,
+            "userFilteredAts",
+            HttpStatus.OK.value,
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
+            "userFilteredAts",
+            HttpStatus.BAD_REQUEST.value,
+        )
 
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])

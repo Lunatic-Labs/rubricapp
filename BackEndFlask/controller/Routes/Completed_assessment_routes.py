@@ -3,10 +3,9 @@ from marshmallow import fields
 from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
-from models.assessment_task import get_assessment_task, get_valid_ta_tasks_via_course
+from models.assessment_task import get_assessment_task
 from enums.http_status_codes import HttpStatus
 from procedures.studentDashboard import call_procedure_FilterStudentAssessmentTasks
-from Assessment_task_routes import assessment_tasks_schema
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -234,27 +233,6 @@ def get_student_dashboard_assessments():
             assessments, 
             HttpStatus.OK.value, 
             "userFilteredAts"
-        )
-    except Exception as e:
-        return create_bad_response(
-            f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
-            "userFilteredAts",
-            HttpStatus.BAD_REQUEST.value,
-        )
-
-@bp.route("/ta_filtered_assessments", methods=["GET"])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-def get_ta_filtered_assessments():
-    try:
-        course_id = int(request.args.get("course_id"))
-        assesssments = get_valid_ta_tasks_via_course(course_id)
-        assesssments = assessment_tasks_schema.dump(assesssments)
-        create_good_response(
-            assesssments,
-            "userFilteredAts",
-            HttpStatus.OK.value,
         )
     except Exception as e:
         return create_bad_response(
