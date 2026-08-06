@@ -207,7 +207,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
 
         userFilteredAts.forEach( (atCatUnion) => {
-            const at: AssessmentTask = { ...atCatUnion };
+            let at: AssessmentTask = { ...atCatUnion };
             allATs.push(at);
             
             if (!isUserStudent) {
@@ -220,7 +220,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             console.log("cat cid:", atCatUnion?.completed_assessment_id);
 
             if (catPresent){
-                const cat = { ...atCatUnion } as CompleteAssessmentTask;
+                let cat = { ...atCatUnion } as CompleteAssessmentTask;
                 cat.done ? 
                 (doneCATs.push(cat) && filteredAvgData.push(cat)) : 
                 editableCats.push(cat);

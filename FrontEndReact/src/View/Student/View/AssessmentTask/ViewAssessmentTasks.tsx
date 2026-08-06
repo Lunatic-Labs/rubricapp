@@ -243,7 +243,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                                     flexFlow: "row wrap",
                                 }}
                             >
-                                {!!assessmentTasks.find((at: AssessmentTask) => at["assessment_task_id"] === atId)!["unit_of_assessment"] &&
+                                {assessmentTasks.find((at: AssessmentTask) => at["assessment_task_id"] === atId)!["unit_of_assessment"] &&
                                     <Button
                                         className='primary-color'
 

@@ -6,6 +6,7 @@ from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task, get_valid_ta_tasks_via_course
 from enums.http_status_codes import HttpStatus
 from procedures.studentDashboard import call_procedure_FilterStudentAssessmentTasks
+from Assessment_task_routes import assessment_tasks_schema
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -228,6 +229,7 @@ def get_student_dashboard_assessments():
         user_id = int(request.args.get("user_id"))
         course_id = int(request.args.get("course_id"))
         assessments = call_procedure_FilterStudentAssessmentTasks(user_id, course_id)
+        assessments = fusions_schema.dump(assessments)
         return create_good_response(
             assessments, 
             HttpStatus.OK.value, 
@@ -248,6 +250,7 @@ def get_ta_filtered_assessments():
     try:
         course_id = int(request.args.get("course_id"))
         assesssments = get_valid_ta_tasks_via_course(course_id)
+        assesssments = assessment_tasks_schema.dump(assesssments)
         create_good_response(
             assesssments,
             "userFilteredAts",
@@ -381,3 +384,37 @@ class CompletedAssessmentSchema(ma.Schema):
 
 completed_assessment_schema = CompletedAssessmentSchema()
 completed_assessment_schemas = CompletedAssessmentSchema(many=True)
+
+class AssessmentTaskCompleteAssessmentFusionSchema(ma.Schema):
+    completed_assessment_id = fields.Integer()
+    assessment_task_id      = fields.Integer()
+    completed_by            = fields.Integer()
+    team_id                 = fields.Integer()
+    team_name               = fields.String()
+    user_id                 = fields.Integer()
+    first_name              = fields.String()
+    last_name               = fields.String()
+    initial_time            = fields.DateTime()
+    done                    = fields.Boolean()
+    last_update             = fields.DateTime()
+    rating_observable_characteristics_suggestions_data = fields.Raw()
+    completed_count         = fields.Integer()
+    assessment_task_name = fields.String()
+    course_id            = fields.Integer()
+    rubric_id            = fields.Integer()
+    role_id              = fields.Integer()
+    due_date             = fields.DateTime()
+    time_zone            = fields.String()
+    show_suggestions     = fields.Boolean()
+    show_ratings         = fields.Boolean()
+    unit_of_assessment   = fields.Boolean()
+    create_team_password = fields.String()
+    comment              = fields.String()
+    number_of_teams      = fields.Integer()
+    max_team_size        = fields.Integer()
+    notification_sent    = fields.DateTime()
+    locked               = fields.Boolean()
+    published            = fields.Boolean()
+
+fusion_schema = AssessmentTaskCompleteAssessmentFusionSchema()
+fusions_schema = AssessmentTaskCompleteAssessmentFusionSchema(many=True)

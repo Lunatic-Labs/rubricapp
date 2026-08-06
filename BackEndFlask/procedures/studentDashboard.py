@@ -24,22 +24,5 @@ def call_procedure_FilterStudentAssessmentTasks(
         },
     )
 
-    rows = []
-
-    datetime_fields = [
-        "due_date",
-        "initial_time",
-        "last_update",
-        "notification_sent",
-    ]
-
-    for row in result.mappings():
-        row = dict(row)
-
-        for field in datetime_fields:
-            if row[field] is not None:
-                row[field] = row[field].isoformat()
-
-        rows.append(row)
-
-    return rows 
+    return [dict(row) for row in result.mappings()]
+ 
