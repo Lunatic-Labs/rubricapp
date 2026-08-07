@@ -1,4 +1,3 @@
-DELIMITER // 
 CREATE PROCEDURE FilterStudentAssessmentTasks (
     IN procedure_user_id int,
     IN procedure_course_id int
@@ -60,5 +59,4 @@ WHERE
         )
     );
 
-END // 
-DELIMITER ;
+END
