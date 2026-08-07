@@ -18,6 +18,7 @@ from controller.security.blacklist import start_redis
 from sqlalchemy import create_engine, text
 from models.feedback import *
 from sqlalchemy import text, inspect
+from pathlib import Path
 import time
 import os
 import sys
@@ -27,6 +28,18 @@ sleep_time = 0
 
 print("[dbcreate] starting...")
 time.sleep(sleep_time)
+
+def load_stored_procedures():
+    procedures_dir = Path("procedures")
+
+    for sql_file in procedures_dir.glob("*.sql"):
+        print(f"[dbcreate] loading procedure: {sql_file.name}")
+
+        sql = sql_file.read_text(encoding="utf-8")
+
+        db.session.execute(text(sql))
+
+    db.session.commit()
 
 def ensure_database_exists():
     """Create database before anything else runs"""
@@ -76,6 +89,7 @@ with app.app_context():
             subprocess.run(["flask db upgrade"], shell=True, check=True) #Try running "flask db upgrade " if you need to merge multiple and docker compose up is not letting the backend work.
         else:
             db.create_all() #extra test
+            load_stored_procedures()
             subprocess.run(["flask db stamp head"], shell=True, check=True)
 
 
