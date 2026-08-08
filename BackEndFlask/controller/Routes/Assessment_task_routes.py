@@ -184,7 +184,7 @@ def get_ta_filtered_assessments():
         course_id = int(request.args.get("course_id"))
         assesssments = get_valid_ta_tasks_via_course(course_id)
         assesssments = assessment_tasks_schema.dump(assesssments)
-        create_good_response(
+        return create_good_response(
             assesssments,
             "userFilteredAts",
             HttpStatus.OK.value,
