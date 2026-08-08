@@ -162,6 +162,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
     }
 
     private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps {
+        console.log(state.filteredATs);
         const roleId = state.roles?.role_id;
 
         return {

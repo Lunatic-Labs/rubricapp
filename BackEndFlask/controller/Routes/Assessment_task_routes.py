@@ -186,8 +186,8 @@ def get_ta_filtered_assessments():
         assesssments = assessment_tasks_schema.dump(assesssments)
         return create_good_response(
             assesssments,
-            "userFilteredAts",
             HttpStatus.OK.value,
+            "userFilteredAts",
         )
     except Exception as e:
         return create_bad_response(
