@@ -229,6 +229,16 @@ def get_student_dashboard_assessments():
         course_id = int(request.args.get("course_id"))
         assessments = call_procedure_FilterStudentAssessmentTasks(user_id, course_id)
         assessments = fusions_schema.dump(assessments)
+
+        with open("ap.txt", "a") as out:
+            print(repr(assessments[0]["unit_of_assessment"]), file=out)
+            print(type(assessments[0]["unit_of_assessment"]), file=out)
+            print(fusions_schema.fields["unit_of_assessment"], file=out)
+            print(type(fusions_schema.fields["unit_of_assessment"]), file=out)
+            field = fusions_schema.fields["unit_of_assessment"]
+            print("FIELD:", field, file=out)
+            print("DIRECT SERIALIZE 0:", field._serialize(0, "unit_of_assessment", {}),file=out)
+            print("DIRECT SERIALIZE 1:", field._serialize(1, "unit_of_assessment", {}),file=out)
         return create_good_response(
             assessments, 
             HttpStatus.OK.value, 
