@@ -44,6 +44,14 @@ WITH
                     from
                         StudentsTeams
                 )
+                OR CAT.team_id = (
+                    SELECT C.team_number
+                    FROM Checkin AS C
+                    WHERE 
+                        C.user_id = procedure_user_id
+                        AND C.assessment_task_id=VA.assessment_task_id
+                    LIMIT 1
+                )
             )
     )
 SELECT

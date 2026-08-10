@@ -208,12 +208,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
 
         userFilteredAts.forEach( (atCatUnion) => {
+            let unionAddedToArr = false;
             let at: AssessmentTask = { ...atCatUnion };
-            allATs.push(at);
-            
-            if (!isUserStudent) {
-                return;
-            }
             
             const catPresent = atCatUnion?.completed_assessment_id != null;
             console.log("current union:", atCatUnion);
@@ -225,6 +221,15 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 cat.done ? 
                 (doneCATs.push(cat) && filteredAvgData.push(cat)) : 
                 editableCats.push(cat);
+
+                if (at.role_id === ROLE.STUDENT && !cat.done){
+                    allATs.push(at);
+                }
+
+                unionAddedToArr = true;
+            }
+            if (!unionAddedToArr) {
+                allATs.push(at)
             }
         });
 
