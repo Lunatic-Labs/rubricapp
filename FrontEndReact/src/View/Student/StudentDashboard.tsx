@@ -90,6 +90,7 @@ type DidUpdateProps = {
     rubricNames: Record<string, string> | null,
     assessmentTasks: AssessmentTask[] | null,
     isRoleInfoReady: boolean,
+    averageData: any,
 };
 
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
@@ -171,6 +172,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames: state.rubricNames,
             assessmentTasks: state.assessmentTasks,
             isRoleInfoReady: roleId !== undefined,
+            averageData: state.averageData,
         }
     }
 
@@ -182,6 +184,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames,
             assessmentTasks,// Figure out how to remove this binding
             isRoleInfoReady,
+            averageData,
         } = this.extractDidUpdateProperties(this.state);
 
         const readyToParse = (
@@ -197,6 +200,12 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         }
 
         console.log("Entered filtering logic:", userFilteredAts);
+        
+        const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
+
+        averageData?.forEach((avg: CompleteAssessmentTask) => {
+            AVGmap.set(avg.assessment_task_id, avg);
+        });
 
         let allATs: AssessmentTask[] = [];
         let editableCats: CompleteAssessmentTask[] = [];
@@ -217,7 +226,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
                 if (cat.done){
                     doneCATs.push(cat);
-                    filteredAvgData.push(cat);
+                    
+                    const avg = AVGmap.get(cat.assessment_task_id);
+                    filteredAvgData.push(avg);
                 } else {
                     const editable = !cat.locked && ( new Date() < new Date(at.due_date) );
 
@@ -226,7 +237,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         allATs.push(at);
                     } else {
                         doneCATs.push(cat);
-                        filteredAvgData.push(cat);
+
+                        const avg = AVGmap.get(cat.assessment_task_id);
+                        filteredAvgData.push(avg);
                     }
                 }
             } else {
@@ -329,12 +342,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             if (r !== 0) return r;
             return (a.createdDate?.getTime?.() ?? 0) - (b.createdDate?.getTime?.() ?? 0);
         });
-        // === Group by rubric, then by created (oldest → newest) ===
-        chartDataCore.sort((a, b) => {
-            const r = (a.rubric_id ?? 0) - (b.rubric_id ?? 0);
-            if (r !== 0) return r;
-            return (a.createdDate?.getTime?.() ?? 0) - (b.createdDate?.getTime?.() ?? 0);
-        });
 
         const chartData = [];
         for (let i = 0; i < chartDataCore.length; i++) {
@@ -354,12 +361,14 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             }
         }
 
+        console.log("FINAL CHART DATA:", chartData);
+
         this.setState({
             filteredATs: allATs,
             filteredCATs: editableCats,
             fullyDoneCATS: doneCATs,
             rubricNames: rubricNamefromId,
-            chartData: chartData,
+            chartData,
         });
     }
 
