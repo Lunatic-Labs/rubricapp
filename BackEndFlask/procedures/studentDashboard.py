@@ -14,7 +14,7 @@ def call_procedure_FilterStudentAssessmentTasks(
         course_id: Course id the assessment tasks belong to.
 
     Returns:
-        A mapping where a row contains all the assessment task information and completed assessment task data in a non-repeated form.
+        A mashmallow mapping where a row contains all non-repeated assessment task information and completed assessment task data.
     """
     stmt = text(
         "CALL FilterStudentAssessmentTasks(:user_id, :course_id)"
