@@ -161,6 +161,11 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
     }
 
+    /**
+     * Sets the appropriate basic values for componentDidUpdate().
+     * @param {StudentDashboardState} state 
+     * @returns {StudentDashboardProps}
+     */
     private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps {
         const roleId = state.roles?.role_id;
 
@@ -181,7 +186,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             userFilteredAts,
             rubrics,
             rubricNames,
-            assessmentTasks,// Figure out how to remove this binding
+            assessmentTasks,
             isRoleInfoReady,
             averageData,
         } = this.extractDidUpdateProperties(this.state);
@@ -211,6 +216,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
 
         userFilteredAts.forEach( (atCatUnion) => {
+            // The AT fields will always exist.
             let at: AssessmentTask = { ...atCatUnion };
             
             const catPresent = atCatUnion?.completed_assessment_id != null;
@@ -247,7 +253,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames ?? parseRubricNames(rubrics as any)
         ;
 
-        // REMEMBER THAT THE FULLY FINSHED ONES NEED THEIR INFO PUSHED filteredAvgData.push(avg)-> CAT
         // Helpers for chart data
         const computeAvg = (avgObj: any) => {
             if (avgObj == null) return null;
