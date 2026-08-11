@@ -224,12 +224,21 @@ def get_all_completed_assessments():
 @bad_token_check()
 @AuthCheck()
 def get_student_dashboard_assessments():
+    """ Returns all valid AssessmentTask+CompletedAssessmentTask unions for their 
+    student dashboard.
+
+    Args:
+        user_id (int): user id the ATs and CATs should belong to.
+        course_id (int): course id the ATs and CATs should belong to.
+
+    Returns: 
+        AssessmentTask+CompletedAssessmentTask union rows.
+    """
     try:
         user_id = int(request.args.get("user_id"))
         course_id = int(request.args.get("course_id"))
         assessments = call_procedure_FilterStudentAssessmentTasks(user_id, course_id)
         assessments = fusions_schema.dump(assessments)
-
         return create_good_response(
             assessments, 
             HttpStatus.OK.value, 
