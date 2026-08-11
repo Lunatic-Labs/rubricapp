@@ -440,10 +440,10 @@ def test_get_all_completed_assessments_with_course_id_and_role_id(
             # Clean up 
             try:
                 # 1. Delete all completed assessments first
-                for i in range(len(comp)):  # Ensure we delete all comp items
+                for i in range(len(comp)):
                     delete_completed_assessment_tasks(comp[i].completed_assessment_id)
                 
-                # 2. Delete assessment tasks
+                # 2. Delete assessment tasks (BEFORE deleting users)
                 for i in range(3):
                     delete_assessment_task(task[i].assessment_task_id)
                 
@@ -453,7 +453,7 @@ def test_get_all_completed_assessments_with_course_id_and_role_id(
                 # 4. Delete regular users
                 delete_users(user)
                 
-                # 5. Delete TA users (who created the tasks)
+                # 5. Delete TA users (NOW safe since their tasks are deleted)
                 delete_users(ta)
                 
                 # 6. Finally delete the course and admin user
