@@ -530,6 +530,15 @@ def toggle_published_status(assessment_task_id):
     return one_assessment_task
 
 def get_valid_ta_tasks_via_course(course_id: int):
+    """Returns all valid assessments tasks to display the student dashboard
+    for a ta.
+
+    Args:
+        course_id (int): Course of the desired assignments.
+    
+    Returns:
+        list[list] (AssessmentTask Obj): All Assessment tasks.
+    """
     stmt = select(AssessmentTask.__table__).where(
         AssessmentTask.course_id == course_id,
         AssessmentTask.role_id < Roles.STUDENT.value,
