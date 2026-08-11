@@ -162,7 +162,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
     }
 
     private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps {
-        console.log(state.filteredATs);
         const roleId = state.roles?.role_id;
 
         return {
@@ -198,8 +197,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         if (!readyToParse) {
             return;
         }
-
-        console.log("Entered filtering logic:", userFilteredAts);
         
         const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
 
@@ -217,9 +214,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             let at: AssessmentTask = { ...atCatUnion };
             
             const catPresent = atCatUnion?.completed_assessment_id != null;
-            console.log("current union:", atCatUnion);
-            console.log("catPresent", catPresent);
-            console.log("cat cid:", atCatUnion?.completed_assessment_id);
 
             if (catPresent){
                 let cat = { ...atCatUnion } as CompleteAssessmentTask;
@@ -246,10 +240,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 allATs.push(at);
             }
         });
-
-        console.log("all ats", allATs);
-        console.log("all editable", editableCats);
-        console.log("all done:", doneCATs);
         
         type RubricId   = string | number;
         type RubricName = string;
@@ -361,8 +351,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             }
         }
 
-        console.log("FINAL CHART DATA:", chartData);
-
         this.setState({
             filteredATs: allATs,
             filteredCATs: editableCats,
@@ -376,11 +364,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
     handleSwitchBack = async () => {
         // Prevent multiple clicks
         if (this.state.isSwitchingBack) {
-            console.log('Already switching back, ignoring click');
             return;
         }
-        
-        console.log('=== SWITCHING BACK TO ADMIN ===');
         
         // Set switching flag
         this.setState({ isSwitchingBack: true });
@@ -398,7 +383,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         
         try {
             const adminCredentials = JSON.parse(adminCredentialsStr);
-            console.log('Restoring admin:', adminCredentials.user);
 
             try {
                 // Blacklist test student tokens
@@ -413,7 +397,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         refresh_token: cookies.get('refresh_token')
                     })
                 });
-                console.log('Test student tokens blacklisted');
             } catch (logoutError) {
                 console.error('Failed to blacklist test student tokens:', logoutError);
             }
@@ -439,7 +422,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             sessionStorage.removeItem('chosenCourse');
             sessionStorage.removeItem('testStudentCourse');
             
-            console.log('Admin cookies restored');
             window.location.reload();
             
         } catch (error) {
