@@ -30,6 +30,10 @@ print("[dbcreate] starting...")
 time.sleep(sleep_time)
 
 def load_stored_procedures():
+    """Load procedures into the database from sql files.
+    Note:
+        Expects BackEndFlask/procedures/.. to exist.
+    """
     procedures_dir = Path("procedures")
 
     for sql_file in procedures_dir.glob("*.sql"):
