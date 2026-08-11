@@ -180,6 +180,14 @@ def get_one_assessment_task():
 @bad_token_check()
 @AuthCheck()
 def get_ta_filtered_assessments():
+    """Returns all valid ta assessment tasks.
+
+    Args:
+        course_id (int): Course to find the assessment tasks in.
+
+    Returns:
+        Json Assessment Tasks.
+    """
     try:
         course_id = int(request.args.get("course_id"))
         assesssments = get_valid_ta_tasks_via_course(course_id)
