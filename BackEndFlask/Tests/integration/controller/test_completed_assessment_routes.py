@@ -437,13 +437,13 @@ def test_get_all_completed_assessments_with_course_id_and_role_id(
             assert results[2]["assessment_task_id"] == task[1].assessment_task_id
             
         finally:
-            # Clean up 
+        # Clean up 
             try:
                 for i in range(3):
                     delete_completed_assessment_tasks(comp[i].completed_assessment_id)
-                delete_users(user)
                 for i in range(3):
-                    delete_assessment_task(task[i].assessment_task_id)
+                    delete_assessment_task(task[i].assessment_task_id)  # Delete tasks first
+                delete_users(user)  # Then delete users
                 delete_rubric_by_id(rubric.rubric_id)
                 delete_users(ta)
                 delete_one_admin_course(result)
