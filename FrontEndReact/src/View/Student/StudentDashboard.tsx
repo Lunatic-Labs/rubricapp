@@ -90,7 +90,6 @@ type DidUpdateProps = {
     rubricNames: Record<string, string> | null,
     assessmentTasks: AssessmentTask[] | null,
     isRoleInfoReady: boolean,
-    isUserStudent: boolean,
 };
 
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
@@ -172,7 +171,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames: state.rubricNames,
             assessmentTasks: state.assessmentTasks,
             isRoleInfoReady: roleId !== undefined,
-            isUserStudent: roleId === ROLE.STUDENT,
         }
     }
 
@@ -184,7 +182,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubricNames,
             assessmentTasks,// Figure out how to remove this binding
             isRoleInfoReady,
-            isUserStudent, // Assume user is a TA if not a student.
         } = this.extractDidUpdateProperties(this.state);
 
         const readyToParse = (
@@ -208,7 +205,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
 
         userFilteredAts.forEach( (atCatUnion) => {
-            let unionAddedToArr = false;
             let at: AssessmentTask = { ...atCatUnion };
             
             const catPresent = atCatUnion?.completed_assessment_id != null;
@@ -218,18 +214,23 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
             if (catPresent){
                 let cat = { ...atCatUnion } as CompleteAssessmentTask;
-                cat.done ? 
-                (doneCATs.push(cat) && filteredAvgData.push(cat)) : 
-                editableCats.push(cat);
 
-                if (at.role_id === ROLE.STUDENT && !cat.done){
-                    allATs.push(at);
+                if (cat.done){
+                    doneCATs.push(cat);
+                    filteredAvgData.push(cat);
+                } else {
+                    const editable = !cat.locked && ( new Date() < new Date(at.due_date) );
+
+                    if (editable) {
+                        editableCats.push(cat);
+                        allATs.push(at);
+                    } else {
+                        doneCATs.push(cat);
+                        filteredAvgData.push(cat);
+                    }
                 }
-
-                unionAddedToArr = true;
-            }
-            if (!unionAddedToArr) {
-                allATs.push(at)
+            } else {
+                allATs.push(at);
             }
         });
 
@@ -358,7 +359,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             filteredCATs: editableCats,
             fullyDoneCATS: doneCATs,
             rubricNames: rubricNamefromId,
-            chartData,
+            chartData: chartData,
         });
     }
 
