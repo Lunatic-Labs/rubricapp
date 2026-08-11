@@ -215,14 +215,14 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             
             const catPresent = atCatUnion?.completed_assessment_id != null;
 
-            if (catPresent){
+            if (catPresent) {
                 let cat = { ...atCatUnion } as CompleteAssessmentTask;
 
                 if (cat.done){
                     doneCATs.push(cat);
-                    
-                    const avg = AVGmap.get(cat.assessment_task_id);
-                    filteredAvgData.push(avg);
+                    filteredAvgData.push(
+                        AVGmap.get(cat.assessment_task_id)
+                    );
                 } else {
                     const editable = !cat.locked && ( new Date() < new Date(at.due_date) );
 
@@ -231,9 +231,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         allATs.push(at);
                     } else {
                         doneCATs.push(cat);
-
-                        const avg = AVGmap.get(cat.assessment_task_id);
-                        filteredAvgData.push(avg);
+                        filteredAvgData.push(
+                            AVGmap.get(cat.assessment_task_id)
+                        );
                     }
                 }
             } else {
