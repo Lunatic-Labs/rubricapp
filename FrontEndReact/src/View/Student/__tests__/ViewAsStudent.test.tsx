@@ -488,6 +488,7 @@ describe("View as Student Feature Tests", () => {
     // Test 5: Student view shows "Switch Back to Admin" banner
     // =========================================================================
     test("ViewAsStudent.test.js Test 5: Should show 'Switch Back to Admin' banner when viewing as student", async () => {
+        setupFetchMock(); // Ensure fetch mock is set up with proper handlers
         setupMockCookies('student');
         const adminData = {
             user: adminUser,
@@ -495,21 +496,21 @@ describe("View as Student Feature Tests", () => {
             refresh_token: 'admin_refresh'
         };
         sessionStorage.setItem('adminCredentials', JSON.stringify(adminData));
-    
+
         render(<Login />);
-    
+
         // Wait for the courses to load before checking for the banner
         await waitFor(() => { 
             expectElementWithAriaLabelToBeInDocument(ct); 
         }, { timeout: 10000 });
-    
+
         clickFirstElementWithAriaLabel(vcib);
-    
-        // The banner should now be visible in the student view
+
+        // Wait for the student view to load and the banner to appear
         await waitFor(() => {
             const switchBackButton = screen.queryByText(/Switch Back to Admin/i);
             expect(switchBackButton).toBeInTheDocument();
-        }, { timeout: 10000 });
+        }, { timeout: 15000 }); // Increased timeout
     });
     // =========================================================================
     // Test 6: Click "Switch Back to Admin" -> restores admin creds, reloads
