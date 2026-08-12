@@ -350,7 +350,7 @@ describe("View as Student Feature Tests", () => {
             // Default fallback
             const urlParts = urlStr.split('/');
             const lastPart = urlParts[urlParts.length - 1]?.split('?')[0] || 'data';
-            console.error("🚨 UNHANDLED FETCH:", urlStr);
+            console.error("UNHANDLED FETCH:", urlStr);
             return Promise.resolve({
                 ok: true,
                 json: () => Promise.resolve({
