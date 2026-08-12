@@ -495,19 +495,22 @@ describe("View as Student Feature Tests", () => {
             refresh_token: 'admin_refresh'
         };
         sessionStorage.setItem('adminCredentials', JSON.stringify(adminData));
-
+    
         render(<Login />);
-
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
-
+    
+        // Wait for the courses to load before checking for the banner
+        await waitFor(() => { 
+            expectElementWithAriaLabelToBeInDocument(ct); 
+        }, { timeout: 10000 });
+    
         clickFirstElementWithAriaLabel(vcib);
-
+    
+        // The banner should now be visible in the student view
         await waitFor(() => {
             const switchBackButton = screen.queryByText(/Switch Back to Admin/i);
             expect(switchBackButton).toBeInTheDocument();
         }, { timeout: 10000 });
     });
-
     // =========================================================================
     // Test 6: Click "Switch Back to Admin" -> restores admin creds, reloads
     // =========================================================================
