@@ -90,8 +90,7 @@ describe("View as Student Feature Tests", () => {
         role_id: 6,
         has_set_password: true,
         viewingAsStudent: true,
-        originalCourseId: 1,
-        course_id: 1
+        originalCourseId: 1
     };
 
     const testCoursesArray = [
