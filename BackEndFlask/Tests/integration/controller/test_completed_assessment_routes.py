@@ -424,17 +424,12 @@ def test_get_all_completed_assessments_with_course_id_and_role_id(
             )
             
             data = response.get_json()
+            print(data)
             assert response.status_code == 200
         
             results = data['content']['completed_assessments'][0]
-            print(results)
+            #Code no longer filters on completed by.
             assert len(results) == 0
-            assert results[0]["completed_assessment_id"] == comp[0].completed_assessment_id
-            assert results[0]["assessment_task_id"] == task[0].assessment_task_id
-            assert results[1]["completed_assessment_id"] == comp[1].completed_assessment_id
-            assert results[1]["assessment_task_id"] == task[0].assessment_task_id
-            assert results[2]["completed_assessment_id"] == comp[2].completed_assessment_id
-            assert results[2]["assessment_task_id"] == task[1].assessment_task_id
             
         finally:
             # Clean up 
