@@ -334,6 +334,22 @@ describe("View as Student Feature Tests", () => {
                 });
             }
 
+            // Handle student dashboard assessments endpoint
+            if (urlStr.includes('/student_dashboard_assessments')) {
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({
+                        success: true,
+                        content: {
+                            student_dashboard_assessments: [[]],
+                            student_dashboard_assessment: [[]],
+                            assessments: [[]],
+                            assessment: [[]]
+                        }
+                    })
+                });
+            }
+
             // Default fallback
             const urlParts = urlStr.split('/');
             const lastPart = urlParts[urlParts.length - 1]?.split('?')[0] || 'data';
