@@ -341,10 +341,7 @@ describe("View as Student Feature Tests", () => {
                     json: () => Promise.resolve({
                         success: true,
                         content: {
-                            student_dashboard_assessments: [[]],
-                            student_dashboard_assessment: [[]],
-                            assessments: [[]],
-                            assessment: [[]]
+                            userFilteredAts: [[]]
                         }
                     })
                 });
