@@ -369,9 +369,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
     handleSwitchBack = async () => {
         // Prevent multiple clicks
         if (this.state.isSwitchingBack) {
+            console.log('Already switching back, ignoring click');
             return;
         }
-        
+        console.log('=== SWITCHING BACK TO ADMIN ===');
         // Set switching flag
         this.setState({ isSwitchingBack: true });
         
@@ -426,9 +427,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             sessionStorage.removeItem('adminCredentials');
             sessionStorage.removeItem('chosenCourse');
             sessionStorage.removeItem('testStudentCourse');
-            
+            console.log('Admin cookies restored');
             window.location.reload();
-            
+            console.log('Test student tokens blacklisted');
         } catch (error) {
             console.error('Error switching back:', error);
             alert('Error switching back to admin view');
