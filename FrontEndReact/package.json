@@ -2,6 +2,7 @@
   "name": "front-end-react",
   "version": "1.0.0",
   "private": true,
+  "type": "module",
   "jest": {
     "transformIgnorePatterns": [
       "node_modules/(?!mui-one-time-password-input)/"

@@ -13,7 +13,7 @@ import { ROLE } from '../../Enums/Role';
 import { AssessmentTask } from '../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../types/CompleteAssessmentTask';
 import { Rubric } from '../../types/Rubric';
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 // StudentDashboard is used for both students and TAs.
 // StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
