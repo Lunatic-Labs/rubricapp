@@ -1,6 +1,6 @@
 {
   "name": "front-end-react",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "jest": {
     "transformIgnorePatterns": [
@@ -8,8 +8,6 @@
     ]
   },
   "dependencies": {
-    "@babel/plugin-proposal-private-property-in-object": "",
-    "@babel/preset-react": "^7.25.9",
     "@emotion/react": "^11.13.5",
     "@emotion/styled": "^11.13.5",
     "@fontsource/roboto": "^5.1.0",
@@ -28,7 +26,6 @@
     "dotenv-expand": "^12.0.1",
     "eventsource-client": "^1.1.3",
     "html2canvas": "^1.4.1",
-    "jest-dom": "^4.0.0",
     "jspdf": "^4.2.1",
     "mui-datatables": "^4.3.0",
     "mui-one-time-password-input": "^3.0.1",
@@ -38,11 +35,9 @@
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.30.4",
-    "react-script": "^2.0.5",
-    "react-scripts": "^5.0.1",
     "react-select": "^5.8.3",
     "react-validation": "^3.0.7",
-    "recharts": "",
+    "recharts": "^3.8.1",
     "ts-node": "^10.9.2",
     "typescript": "4.9.5",
     "universal-cookie": "^7.2.2",
@@ -50,32 +45,13 @@
     "web-vitals": "^4.2.4"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject",
+    "dev": "vite",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "jest",
     "prepare": "git rev-parse --is-inside-work-tree && git config core.hooksPath FrontEndReact/.husky/ || true"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
-  "browserslist": {
-    "production": [
-      ">0.2%",
-      "not dead",
-      "not op_mini all"
-    ],
-    "development": [
-      "last 1 chrome version",
-      "last 1 firefox version",
-      "last 1 safari version"
-    ]
-  },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.26.0",
     "@jest/globals": "^27.5.1",
     "@juggle/resize-observer": "^3.4.0",
     "@testing-library/dom": "^10.4.1",
@@ -86,9 +62,11 @@
     "@types/testing-library__jest-dom": "^5.14.9",
     "@types/universal-cookie": "^2.2.0",
     "@types/validator": "^13.15.10",
+    "@vitejs/plugin-react": "^6.0.0",
     "jest": "^30.3.0",
     "react-test-renderer": "^18.3.1",
-    "resize-observer-polyfill": "1.5.1"
+    "resize-observer-polyfill": "1.5.1",
+    "vite": "^8.2.0"
   },
   "overrides": {
     "nth-check": "^2.0.1",
