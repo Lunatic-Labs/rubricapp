@@ -17,4 +17,4 @@ COPY FrontEndReact/ ./
 EXPOSE 3000
 
 # Start the frontend server
-CMD ["npm", "run", "build"]
+CMD ["npm", "run", "dev"]
