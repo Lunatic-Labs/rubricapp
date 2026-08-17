@@ -59,7 +59,6 @@ class StudentCompletedAssessmentTasks extends Component<StudentCompletedAssessme
 
         const ATs = this.props.assessmentTasks;    
         const filteredCATs = this.props.filteredCompleteAssessments;
-        const doneCATs = filteredCATs?.filter(cat => cat.done === true) || [];
 
         if (errorMessage) {
             return(
@@ -75,7 +74,7 @@ class StudentCompletedAssessmentTasks extends Component<StudentCompletedAssessme
                 <div className='container'>
                     <ViewCompletedAssessmentTasks
                         navbar={this.props.navbar}
-                        completedAssessments={doneCATs}
+                        completedAssessments={filteredCATs}
                         assessmentTasks={ATs}
                     />
                 </div>
