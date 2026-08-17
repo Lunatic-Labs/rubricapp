@@ -424,7 +424,6 @@ def test_get_all_completed_assessments_with_course_id_and_role_id(
             )
             
             data = response.get_json()
-            print(data)
             assert response.status_code == 200
         
             results = data['content']['completed_assessments'][0]
