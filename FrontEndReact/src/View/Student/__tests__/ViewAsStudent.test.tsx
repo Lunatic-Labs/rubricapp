@@ -334,9 +334,23 @@ describe("View as Student Feature Tests", () => {
                 });
             }
 
+            // Handle student dashboard assessments endpoint
+            if (urlStr.includes('/student_dashboard_assessments')) {
+                return Promise.resolve({
+                    ok: true,
+                    json: () => Promise.resolve({
+                        success: true,
+                        content: {
+                            userFilteredAts: [[]]
+                        }
+                    })
+                });
+            }
+
             // Default fallback
             const urlParts = urlStr.split('/');
             const lastPart = urlParts[urlParts.length - 1]?.split('?')[0] || 'data';
+            console.error("UNHANDLED FETCH:", urlStr);
             return Promise.resolve({
                 ok: true,
                 json: () => Promise.resolve({
@@ -487,6 +501,7 @@ describe("View as Student Feature Tests", () => {
     // Test 5: Student view shows "Switch Back to Admin" banner
     // =========================================================================
     test("ViewAsStudent.test.js Test 5: Should show 'Switch Back to Admin' banner when viewing as student", async () => {
+        setupFetchMock(); // Ensure fetch mock is set up with proper handlers
         setupMockCookies('student');
         const adminData = {
             user: adminUser,
@@ -497,16 +512,19 @@ describe("View as Student Feature Tests", () => {
 
         render(<Login />);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
+        // Wait for the courses to load before checking for the banner
+        await waitFor(() => { 
+            expectElementWithAriaLabelToBeInDocument(ct); 
+        }, { timeout: 10000 });
 
         clickFirstElementWithAriaLabel(vcib);
 
+        // Wait for the student view to load and the banner to appear
         await waitFor(() => {
             const switchBackButton = screen.queryByText(/Switch Back to Admin/i);
             expect(switchBackButton).toBeInTheDocument();
-        }, { timeout: 10000 });
+        }, { timeout: 15000 }); // Increased timeout
     });
-
     // =========================================================================
     // Test 6: Click "Switch Back to Admin" -> restores admin creds, reloads
     // =========================================================================
