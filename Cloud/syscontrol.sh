@@ -381,8 +381,8 @@ function install_npm_deps() {
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
-    nvm install 20.11.1
-    nvm use 20.11.1
+    nvm install 24.19.0
+    nvm use 24.19.0
 
     # Install serve globally without sudo so it installs under NVM's node
     # Using sudo here would install under system node, not NVM node
@@ -639,7 +639,7 @@ function serve_rubricapp() {
     # Logs go to frontend.log for debugging
     log "starting front-end"
     cd "$PROJ_DIR/FrontEndReact"
-    nohup npm start &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
+    nohup npm run preview &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
     cd - >/dev/null 2>&1 || true
 
     log "done"
