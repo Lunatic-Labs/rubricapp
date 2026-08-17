@@ -4,6 +4,12 @@ import react from '@vitejs/plugin-react';
 export default defineConfig({
   plugins: [react()],
 
+  resolve: {
+    alias: {
+      '@mui/icons-material': '@mui/icons-material/esm',
+    },
+  },
+
   optimizeDeps: {
     include: ['mui-datatables'],
   },
