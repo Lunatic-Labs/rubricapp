@@ -64,9 +64,11 @@
     "prepare": "git rev-parse --is-inside-work-tree && git config core.hooksPath FrontEndReact/.husky/ || true"
   },
   "devDependencies": {
-    "@babel/preset-env": "^7.29.7",
-    "@babel/preset-react": "^7.29.7",
-    "@babel/preset-typescript": "^7.29.7",
+    "@babel/core": "^8.0.1",
+    "@babel/plugin-transform-runtime": "^8.0.1",
+    "@babel/preset-env": "^8.0.2",
+    "@babel/preset-react": "^8.0.1",
+    "@babel/preset-typescript": "^8.0.1",
     "@jest/globals": "^30.3.0",
     "@juggle/resize-observer": "^3.4.0",
     "@testing-library/dom": "^10.4.1",
@@ -84,18 +86,18 @@
     "eslint-config-react-app": "^7.0.1",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.3.0",
-    "jest-location-mock": "^4.0.1",
     "jest-environment-jsdom": "^30.4.1",
+    "jest-location-mock": "^4.0.1",
     "react-test-renderer": "^18.3.1",
     "resize-observer-polyfill": "1.5.1",
     "vite": "^8.2.0",
     "whatwg-fetch": "^3.6.20"
   },
   "eslintConfig": {
-  "extends": [
-    "react-app",
-    "react-app/jest"
-  ]
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
   },
   "overrides": {
     "nth-check": "^2.0.1",
