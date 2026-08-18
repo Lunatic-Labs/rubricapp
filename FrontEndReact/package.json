@@ -4,8 +4,19 @@
   "private": true,
   "type": "module",
   "jest": {
+    "testEnvironment": "jsdom",
+    "setupFilesAfterEnv": [
+      "<rootDir>/src/setupTests.ts"
+    ],
+    "transform": {
+      "^.+\\.(t|j)sx?$": "babel-jest"
+    },
+    "moduleNameMapper": {
+      "\\.(css|less|scss|sass)$": "identity-obj-proxy",
+      "\\.(png|jpg|jpeg|gif|svg)$": "<rootDir>/src/__mocks__/fileMock.cjs"
+    },
     "transformIgnorePatterns": [
-      "node_modules/(?!mui-one-time-password-input)/"
+      "node_modules/(?!mui-one-time-password-input)"
     ]
   },
   "dependencies": {
@@ -53,7 +64,10 @@
     "prepare": "git rev-parse --is-inside-work-tree && git config core.hooksPath FrontEndReact/.husky/ || true"
   },
   "devDependencies": {
-    "@jest/globals": "^27.5.1",
+    "@babel/preset-env": "^7.29.7",
+    "@babel/preset-react": "^7.29.7",
+    "@babel/preset-typescript": "^7.29.7",
+    "@jest/globals": "^30.3.0",
     "@juggle/resize-observer": "^3.4.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.0.1",
@@ -64,12 +78,18 @@
     "@types/universal-cookie": "^2.2.0",
     "@types/validator": "^13.15.10",
     "@vitejs/plugin-react": "^6.0.0",
+    "babel-jest": "^30.4.1",
+    "babel-plugin-transform-vite-meta-env": "^1.0.3",
     "eslint": "^8.57.1",
     "eslint-config-react-app": "^7.0.1",
+    "identity-obj-proxy": "^3.0.0",
     "jest": "^30.3.0",
+    "jest-location-mock": "^4.0.1",
+    "jest-environment-jsdom": "^30.4.1",
     "react-test-renderer": "^18.3.1",
     "resize-observer-polyfill": "1.5.1",
-    "vite": "^8.2.0"
+    "vite": "^8.2.0",
+    "whatwg-fetch": "^3.6.20"
   },
   "eslintConfig": {
   "extends": [

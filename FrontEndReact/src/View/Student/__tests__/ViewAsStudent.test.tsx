@@ -30,15 +30,8 @@ const MockedCookies = Cookies as jest.MockedClass<typeof Cookies>;
 const mockDemoAdminPassword = 'testpassword123';
 
 // GLOBAL MOCKS & STATE
-const originalLocation = window.location;
+// window.location.reload/assign are already jest spies via jest-location-mock (setupTests.ts).
 const originalFetch = global.fetch;
-
-delete (window as any).location;
-window.location = {
-    ...originalLocation,
-    reload: jest.fn(),
-    assign: jest.fn(),
-} as any;
 
 const sessionStorageMock = (() => {
     let store: Record<string, string> = {};
@@ -404,7 +397,6 @@ describe("View as Student Feature Tests", () => {
 
     afterAll(() => {
         jest.restoreAllMocks();
-        window.location = originalLocation;
         if (originalFetch) { global.fetch = originalFetch; }
         sessionStorage.clear();
     });
