@@ -1,4 +1,6 @@
+import { Component as ReactComponent } from 'react';
 import { MAX_PASSWORD_LENGTH } from '../Constants/password';
+import { genericResourcePUT } from '../utility';
 
 /**
  * Password strength levels
@@ -240,26 +242,19 @@ export async function submitPasswordChange(apiUrl: string, email: string, passwo
 /**
  * Submits an authenticated password change for an already-logged-in user (e.g. first-login
  * password setup, or a user changing their password from account settings) — no reset code
- * involved, identity comes from the JWT.
- * @param apiUrl - The base API URL
- * @param accessToken - The user's JWT access token
+ * involved, identity comes from the JWT. Routed through genericResourcePUT so an expired
+ * access token gets silently refreshed and the request retried, same as other authenticated
+ * calls in the app.
+ * @param component - The calling component (its access/refresh token cookies are used, and
+ * its setState is called on a hard auth failure)
  * @param password - The new password
  * @returns Promise with the API response
  */
-export async function submitAuthenticatedPasswordChange(apiUrl: string, accessToken: string, password: string): Promise<any> {
-    const response = await fetch(
-        apiUrl + "/password/change",
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-                "Authorization": "Bearer " + accessToken,
-            },
-            body: JSON.stringify({
-                password: password,
-            }),
-        }
+export async function submitAuthenticatedPasswordChange(component: ReactComponent<any, any>, password: string): Promise<any> {
+    return await genericResourcePUT(
+        "/password/change",
+        component,
+        JSON.stringify({ password }),
+        { rawResponse: true }
     );
-
-    return await response.json();
 }

@@ -222,12 +222,11 @@ def generate_secure_password(length=12):
 # Endpooint: get_test_student_token
 # This code creates or retrieves the test student information for a course.
 # Used for: "View as Student" feature.
+@bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
+@jwt_required()
 @bad_token_check()
 @AuthCheck()
 @admin_check()
-# In the get_test_student_token function, change both occurrences of role_id=5 to role_id=6:
-@bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
-@jwt_required()
 def get_test_student_token(course_id):
     try:
         admin_id = get_jwt_identity()
