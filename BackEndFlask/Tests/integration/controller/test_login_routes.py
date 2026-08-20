@@ -1,10 +1,10 @@
 import pytest
 from core import db
-from werkzeug.security import generate_password_hash
+from werkzeug.security import generate_password_hash, check_password_hash
 from models.feedback import *
 from Tests.PopulationFunctions import cleanup_test_users
 from integration.integration_helpers import *
-from models.user import create_user, delete_user, set_reset_code
+from models.user import create_user, delete_user, set_reset_code, get_user_by_email
 import jwt
 
 
@@ -79,18 +79,24 @@ def test_set_new_password(flask_app_mock, client):
             del user_data["password"]
             user = create_user(user_data)
 
+            reset_code = "password?123"
+            set_reset_code(user.user_id, generate_password_hash(reset_code))
+
             response = client.put(
                 "/api/password",
-                json={"email": user.email, "password": "password123"}
+                json={"email": user.email, "password": "password123", "code": reset_code}
             )
 
-            assert response.status_code == 200
+            assert response.status_code == 201
 
             data = response.get_json()
             print(data)
-            msg = data["content"]["201"][0]
+            msg = data["content"]["password"][0]
             assert f"Successfully set new password for user {user.user_id}" in msg
-        
+
+            reloaded_user = get_user_by_email(user.email)
+            assert reloaded_user.reset_code is None
+
         finally:
             # Clean up
             try:
@@ -120,13 +126,110 @@ def test_set_new_password_with_invalid_credentials(flask_app_mock, client):
             
         response = client.put(
             "/api/password",
-            json={"email": "testuser@example", "password": "password123"}
+            json={"email": "testuser@example", "password": "password123", "code": "000000"}
         )
 
         assert response.status_code == 400
         data = response.get_json()
         assert data['success'] == False
         assert "error" in data or "An error occurred" in str(data)
+
+
+def test_change_password(flask_app_mock, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+
+            login_response = client.post(
+                "/api/login",
+                json={"email": user.email, "password": "password123"}
+            )
+            access_token = login_response.get_json()["headers"]["access_token"]
+
+            response = client.put(
+                "/api/password/change",
+                json={"password": "newpassword456"},
+                headers=auth_header(access_token)
+            )
+
+            assert response.status_code == 201
+
+            data = response.get_json()
+            msg = data["content"]["password"][0]
+            assert f"Successfully set new password for user {user.user_id}" in msg
+
+            reloaded_user = get_user_by_email(user.email)
+            assert check_password_hash(reloaded_user.password, "newpassword456")
+
+        finally:
+            # Clean up
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_change_password_missing_credentials(flask_app_mock, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+
+            login_response = client.post(
+                "/api/login",
+                json={"email": user.email, "password": "password123"}
+            )
+            access_token = login_response.get_json()["headers"]["access_token"]
+
+            response = client.put(
+                "/api/password/change",
+                json={"password": None},
+                headers=auth_header(access_token)
+            )
+
+            assert response.status_code == 400
+            data = response.get_json()
+            assert data['success'] == False
+            assert "error" in data or "An error occurred" in str(data)
+
+        finally:
+            # Clean up
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_change_password_missing_token(flask_app_mock, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        response = client.put(
+            "/api/password/change",
+            json={"password": "newpassword456"}
+        )
+
+        assert response.status_code == 401
+        data = response.get_json()
+        assert data.get('success') is not True
+
+
+def test_change_password_invalid_token(flask_app_mock, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        response = client.put(
+            "/api/password/change",
+            json={"password": "newpassword456"},
+            headers={"Authorization": "Bearer not-a-real-token"}
+        )
+
+        assert response.status_code == 422
+        data = response.get_json()
+        assert data.get('success') is not True
 
 
 def test_send_reset_code(flask_app_mock, client):
@@ -140,10 +243,10 @@ def test_send_reset_code(flask_app_mock, client):
                 f"/api/reset_code?email={user.email}"
             )
 
-            assert response.status_code == 200
+            assert response.status_code == 201
 
             data = response.get_json()
-            msg = data["content"]["201"][0]
+            msg = data["content"]["reset_code"][0]
             assert f"Successfully sent reset code to {user.email}!" in msg
         
         finally:
@@ -199,9 +302,38 @@ def test_check_reset_code(flask_app_mock, client):
             assert response.status_code == 200
 
             data = response.get_json()
-            msg = data["content"]["200"][0]
+            msg = data["content"]["reset_code"][0]
             assert f"Successfully matched passed in code with stored code for email: {user.email}!" in msg
         
+        finally:
+            # Clean up
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_check_reset_code_after_code_already_cleared(flask_app_mock, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+
+            # reset_code is None here, as it is for any user who hasn't requested a
+            # reset code yet, or one who already consumed theirs via a successful
+            # password change (see set_new_password, which clears it after use).
+
+            response = client.post(
+                f"/api/reset_code?email={user.email}&code=password?123"
+            )
+
+            assert response.status_code == 400
+
+            data = response.get_json()
+            assert data['success'] == False
+            assert "An error occurred: Invalid Credentials" in data["message"]
+
         finally:
             # Clean up
             try:
