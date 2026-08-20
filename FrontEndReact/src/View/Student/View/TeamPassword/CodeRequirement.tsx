@@ -32,7 +32,6 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 	submitPasscode = async () => {
 		const enteredPassword = this.state.password;
 
-		const correctPassword = this.state.assessmentTasks!["create_team_password"];
 		this.setState({
 			validationError: null
 		});
