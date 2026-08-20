@@ -368,7 +368,7 @@ function configure_venv() {
     log "done"
 }
 
-# Installs NVM, Nodejs v20.11.1, serve and npm packages
+# Installs NVM, Nodejs v24.19.0, serve and npm packages
 function install_npm_deps() {
     log "installing npm dependencies"
 
@@ -627,7 +627,7 @@ function serve_rubricapp() {
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-    nvm use 20.11.1
+    nvm use 24.19.0
 
     # Frontend build
     log "building front-end"
