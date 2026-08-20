@@ -45,6 +45,11 @@ def create_new_feedback():
     try:
         payload = request.json or {}
 
+        user_id = payload.get("user_id")
+        completed_assessment_id = payload.get("completed_assessment_id")
+        if user_id and completed_assessment_id and check_feedback_exists(user_id, completed_assessment_id):
+            return create_bad_response("Feedback already exists for this user and assessment", "feedbacks", 409)
+
         # If the caller did not provide a feedback_time, use
         # the current server time in the same string format
         # used elsewhere in the app.

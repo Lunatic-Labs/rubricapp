@@ -141,13 +141,14 @@ def test_load_existing_roles_inserts_all_defaults(flask_app_mock):
             load_existing_roles()
 
             roles = get_roles()
-            assert len(roles) == 5
+            assert len(roles) == 6
             assert [r.role_name for r in roles] == [
                 "Researcher",
                 "SuperAdmin",
                 "Admin",
                 "TA/Instructor",
-                "Student"
+                "Student",
+                "TestStudent"
             ]
         finally:
             try:

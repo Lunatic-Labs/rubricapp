@@ -2,7 +2,9 @@ from core import db
 from models.schemas import AssessmentTask, Team
 from datetime import datetime
 from models.utility import error_log
+from sqlalchemy import and_, or_, select
 from sqlalchemy.exc import SQLAlchemyError
+from enums.roles import Roles
 from models.checkin import delete_checkins_over_team_count, delete_latest_checkins_over_team_size
 
 """
@@ -64,13 +66,14 @@ def get_assessment_tasks_by_role_id(role_id):
 
 @error_log
 def get_assessment_tasks_by_team_id(team_id):
-    db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
-            Team.team_id == team_id
-            and
-            (
-                (AssessmentTask.due_date >= Team.date_created and Team.active_until is None)
-                or
-                (AssessmentTask.due_date >= Team.date_created and AssessmentTask.due_date <= Team.active_until)
+    return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+            and_(
+                Team.team_id == team_id,
+                AssessmentTask.due_date >= Team.date_created,
+                or_(
+                    Team.active_until == None,
+                    AssessmentTask.due_date <= Team.active_until
+                )
             )
         ).all()
 @error_log
@@ -525,3 +528,25 @@ def toggle_published_status(assessment_task_id):
     one_assessment_task.published = not one_assessment_task.published
     db.session.commit()
     return one_assessment_task
+
+def get_valid_ta_tasks_via_course(course_id: int):
+    """Returns all valid assessments tasks to display the student dashboard
+    for a ta.
+
+    Args:
+        course_id (int): Course of the desired assignments.
+    
+    Returns:
+        list[list] (AssessmentTask Obj): All Assessment tasks.
+    """
+    stmt = select(AssessmentTask.__table__).where(
+        AssessmentTask.course_id == course_id,
+        AssessmentTask.role_id < Roles.STUDENT.value,
+        AssessmentTask.due_date >= datetime.now(),
+        AssessmentTask.published == True,
+        AssessmentTask.locked == False,
+    )
+
+    result = db.session.execute(stmt)
+
+    return [dict(row) for row in result.mappings()]

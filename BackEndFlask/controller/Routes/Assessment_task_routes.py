@@ -9,6 +9,8 @@ from models.team   import get_team
 from models.role   import get_role
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
+from models.assessment_task import get_assessment_task, get_valid_ta_tasks_via_course
+from enums.http_status_codes import HttpStatus
 
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import (
@@ -91,29 +93,7 @@ def get_all_assessment_tasks():
                 200, "assessment_tasks",
             )
 
-        if request.args and request.args.get("user_id"):
-            user_id = int(request.args.get("user_id"))
-
-            get_user(user_id)
-
-            user_courses = get_user_courses_by_user_id(user_id)
-
-            all_assessment_tasks = []
-
-            for user_course in user_courses:
-                assessment_tasks = get_assessment_tasks_by_course_id(
-                    user_course.course_id
-                )
-
-                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
-
-            return create_good_response(
-                assessment_tasks_schema.dump(all_assessment_tasks),
-                200,
-                "assessment_tasks",
-            )
-
-        if request.args and request.args.get("role_id"):
+        if request.args and request.args.get("role_id") and not request.args.get("course_id"):
             role_id = int(request.args.get("role_id"))
 
             get_role(role_id)  # Trigger an error if not exists.
@@ -135,6 +115,28 @@ def get_all_assessment_tasks():
 
             return create_good_response(
                 assessment_tasks_schema.dump(team_assessment_tasks),
+                200,
+                "assessment_tasks",
+            )
+
+        if request.args and request.args.get("user_id"):
+            user_id = int(request.args.get("user_id"))
+
+            get_user(user_id)
+
+            user_courses = get_user_courses_by_user_id(user_id)
+
+            all_assessment_tasks = []
+
+            for user_course in user_courses:
+                assessment_tasks = get_assessment_tasks_by_course_id(
+                    user_course.course_id
+                )
+
+                for assessment_task in assessment_tasks: all_assessment_tasks.append(assessment_task)
+
+            return create_good_response(
+                assessment_tasks_schema.dump(all_assessment_tasks),
                 200,
                 "assessment_tasks",
             )
@@ -173,7 +175,34 @@ def get_one_assessment_task():
             f"An error occurred retrieving one assessment tasks: {e}", "assessment_task", 400
         )
 
+@bp.route("/ta_filtered_assessments", methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_ta_filtered_assessments():
+    """Returns all valid ta assessment tasks.
 
+    Args:
+        course_id (int): Course to find the assessment tasks in.
+
+    Returns:
+        Json Assessment Tasks.
+    """
+    try:
+        course_id = int(request.args.get("course_id"))
+        assesssments = get_valid_ta_tasks_via_course(course_id)
+        assesssments = assessment_tasks_schema.dump(assesssments)
+        return create_good_response(
+            assesssments,
+            HttpStatus.OK.value,
+            "userFilteredAts",
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
+            "userFilteredAts",
+            HttpStatus.BAD_REQUEST.value,
+        )
 
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])

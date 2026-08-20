@@ -1,6 +1,6 @@
 from flask import request
 from marshmallow import fields, Schema
-from controller import bp 
+from controller import bp
 from models.rubric_categories import *
 from controller.Route_response import *
 from core import db

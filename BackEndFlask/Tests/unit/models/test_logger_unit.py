@@ -5,6 +5,17 @@ import pytest
 from datetime import datetime, timedelta
 from models.logger import Logger
 
+@pytest.fixture(autouse=True)
+def close_log_handlers():
+    """Close all file handlers after each test to prevent Windows file locking."""
+    yield
+    for _, logger_instance in logging.Logger.manager.loggerDict.items():
+        if isinstance(logger_instance, logging.Logger):
+            for handler in logger_instance.handlers[:]:
+                if isinstance(handler, logging.FileHandler):
+                    handler.close()
+                    logger_instance.removeHandler(handler)
+
 @pytest.fixture
 def temp_log_file(tmp_path):
     """Provide a temporary log file for each test."""

@@ -1,6 +1,8 @@
 from core import db
 from models.schemas import UserCourse
 from models.utility import error_log
+from sqlalchemy import select
+from enums.roles import Roles
 
 class InvalidUserCourseID(Exception):
     def __init__(self, id):
@@ -156,3 +158,15 @@ def delete_user_course(user_course_id):
     UserCourse.query.filter_by(user_course_id=user_course_id).delete()
 
     db.session.commit()
+
+def get_role_from_usercourse_by_userid_courseid(user_id: int, course_id: int) -> Roles:
+    stmt = select(
+        UserCourse.role_id
+    ).where(
+        UserCourse.user_id == user_id,
+        UserCourse.course_id == course_id
+    )
+
+    value = db.session.execute(stmt).scalar_one()
+
+    return Roles(value)

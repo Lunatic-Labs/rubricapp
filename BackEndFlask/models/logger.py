@@ -72,9 +72,6 @@ class Logger:
                             if last_parsed_time != None and now - last_parsed_time < timedelta(days=90):
                                 f.write(line)
 
-                        else:
-                            break
-
                     f.truncate()
 
 

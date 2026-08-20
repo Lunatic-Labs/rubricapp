@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
+import { Visibility } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable";
@@ -85,6 +86,7 @@ class ViewUsers extends Component<ViewUsersProps> {
     var users = adminViewUsers.users;
     var roleNames = adminViewUsers.roleNames;
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
+    var setCoursesTabWithUser = navbar.setCoursesTabWithUser;
 
     const columns = [
       {
@@ -146,6 +148,30 @@ class ViewUsers extends Component<ViewUsersProps> {
           }
         } as any
       );
+      columns.push({
+      name: "user_id",
+      label: "View",
+      options: {
+        filter: false,
+        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        customBodyRender: (userId: number) => {
+          var cookies = new Cookies();
+          return (
+            <IconButton id={"viewUsersViewButton" + userId}
+              size="small"
+              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+              onClick={() => {
+                setCoursesTabWithUser(users, userId);
+              }}
+              aria-label="viewUserButton"
+            >
+              <Visibility />
+            </IconButton>
+          )
+        },
+      },
+    } as any);
     }
 /**
  * Edit and Delete Buttons:
@@ -159,30 +185,32 @@ class ViewUsers extends Component<ViewUsersProps> {
  *   - Buttons are hidden if the userId matches the logged-in user and the user is an admin.
  * 
  */
-    columns.push({
-      name: "user_id",
-      label: "Edit",
-      options: {
-        filter: false,
-        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: number) => {
-          var cookies = new Cookies();
-          return (
-            <IconButton id={"viewUsersEditButton" + userId}
-              size="small"
-              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
-              onClick={() => {
-                setAddUserTabWithUser(users, userId);
-              }}
-              aria-label="editUserButton"
-            >
-              <EditIcon sx={{ color: "black" }} />
-            </IconButton>
-          )
+    if (!navbar.props.isSuperAdmin) {
+      columns.push({
+        name: "user_id",
+        label: "Edit",
+        options: {
+          filter: false,
+          setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+          setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+          customBodyRender: (userId: number) => {
+            var cookies = new Cookies();
+            return (
+              <IconButton id={"viewUsersEditButton" + userId}
+                size="small"
+                hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+                onClick={() => {
+                  setAddUserTabWithUser(users, userId);
+                }}
+                aria-label="editUserButton"
+              >
+                <EditIcon sx={{ color: "black" }} />
+              </IconButton>
+            )
+          },
         },
-      },
-    } as any);
+      } as any);
+    }
     columns.push({
       name: "user_id",
       label: "Delete",

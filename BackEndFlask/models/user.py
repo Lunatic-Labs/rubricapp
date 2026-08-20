@@ -384,9 +384,10 @@ def replace_user(user_data, user_id):
     one_user = User.query.filter_by(user_id=user_id).first()
 
     if one_user is None:
-        raise InvalidUserID
+        raise InvalidUserID(user_id)
 
     if one_user.email != user_data["email"]:
+        one_user.last_update = datetime.now()
         spawn_thread(validate_pending_emails)
 
     one_user.first_name = user_data["first_name"]
@@ -403,7 +404,7 @@ def replace_user(user_data, user_id):
 
     one_user.owner_id = user_data["owner_id"]
 
-    one_user.user_dark_mode = user_data["user_dark_mode"]
+    one_user.user_dark_mode = user_data.get("user_dark_mode", False)
 
     db.session.commit()
 
