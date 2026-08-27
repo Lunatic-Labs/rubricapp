@@ -8,7 +8,8 @@
   gap: 16px;
   padding: 24px 48px;
   padding-bottom: 240px; /* Space for fixed comparison drawer */
-  background-color: #F8F8F8;
+  background-color: var(--card-bg);
+  color: var(--text-color);
   min-height: calc(100vh - 200px);
 }
 
@@ -26,7 +27,7 @@
 }
 
 .selection-info {
-  color: #666;
+  color: var(--text-color-secondary);
   font-size: 0.9rem;
   margin-top: 4px;
   margin-bottom: 0;
@@ -48,8 +49,9 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 20px;
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 8px;
+  border: 1px solid var(--border-color);
   border-left: 3px solid #2E8BEF;
 }
 
@@ -61,20 +63,21 @@
 }
 
 .filter-chip {
-  background: #e8f1fc !important;
+  background: rgba(46, 139, 239, 0.12) !important;
   color: #2E8BEF !important;
 }
 
 .no-filters {
-  color: #999;
+  color: var(--text-color-secondary);
   font-size: 0.9rem;
 }
 
 /* Filter Panel */
 .filter-panel {
-  background: #fff;
+  background: var(--card-bg);
   border-radius: 10px;
   border-top: 3px solid #2E8BEF;
+  border: 1px solid var(--border-color);
   padding: 20px;
   margin-top: 8px;
 }
@@ -101,7 +104,7 @@
 .filter-label {
   font-size: 0.8rem !important;
   font-weight: 500 !important;
-  color: #555 !important;
+  color: var(--text-color-secondary) !important;
   margin-bottom: 4px;
 }
 
@@ -162,7 +165,8 @@
 
 /* Graph Card */
 .graph-card {
-  background: #fff;
+  background: var(--card-bg);
+  color: var(--text-color);
   border-radius: 10px;
   overflow: hidden;
   cursor: pointer;
@@ -171,7 +175,7 @@
 }
 
 .graph-card:hover {
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.18);
   transform: translateY(-2px);
 }
 
@@ -191,12 +195,12 @@
 
 /* Graph Preview Area */
 .graph-preview {
-  background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+  background: var(--progress-track-bg);
   height: 220px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #aaa;
+  color: var(--text-color-secondary);
   font-size: 0.85rem;
   position: relative;
   padding: 8px;
@@ -211,19 +215,19 @@
 /* Graph Card Info */
 .graph-card-info {
   padding: 14px 16px;
-  border-top: 1px solid #eee;
+  border-top: 1px solid var(--border-color);
 }
 
 .graph-card-title {
   font-weight: 600;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--text-color);
   margin: 0 0 6px 0;
 }
 
 .graph-card-meta {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-color-secondary);
   margin: 0;
 }
 
@@ -232,7 +236,7 @@
   grid-column: 1 / -1;
   text-align: center;
   padding: 60px 20px;
-  color: #666;
+  color: var(--text-color-secondary);
 }
 
 .no-graphs-message p {
@@ -246,8 +250,9 @@
   bottom: 0;
   left: 0;
   right: 0;
-  background: #fff;
+  background: var(--card-bg);
   border-top: 3px solid #2E8BEF;
+  border-top-color: #2E8BEF;
   z-index: 200;
 }
 
@@ -256,13 +261,13 @@
   justify-content: space-between;
   align-items: center;
   padding: 12px 48px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   cursor: pointer;
   transition: background 0.2s ease;
 }
 
 .drawer-header:hover {
-  background: #fafafa;
+  background: rgba(46, 139, 239, 0.04);
 }
 
 .drawer-title {
@@ -302,20 +307,20 @@
 }
 
 .comparison-slot {
-  background: #f5f5f5;
-  border: 2px dashed #ddd;
+  background: var(--card-bg);
+  border: 2px dashed var(--border-color);
   border-radius: 8px;
   height: 100px;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #999;
+  color: var(--text-color-secondary);
   font-size: 0.85rem;
   transition: all 0.3s ease;
 }
 
 .comparison-slot.filled {
-  background: linear-gradient(135deg, #f0f4f8 0%, #e8eef5 100%);
+  background: var(--progress-track-bg);
   border: 2px solid #2E8BEF;
   position: relative;
 }
@@ -325,7 +330,7 @@
   top: 4px;
   right: 4px;
   padding: 2px !important;
-  color: #999 !important;
+  color: var(--text-color-secondary) !important;
   transition: color 0.2s ease !important;
 }
 
@@ -336,7 +341,7 @@
 
 .slot-label {
   font-size: 0.75rem;
-  color: #555;
+  color: var(--text-color-secondary);
   text-align: center;
   padding: 8px;
   line-height: 1.4;
@@ -352,7 +357,7 @@
 .preview-export-title {
   font-size: 1.3rem;
   font-weight: 700;
-  color: #333;
+  color: var(--text-color);
   text-align: center;
   padding: 12px 16px 8px;
 }
@@ -365,8 +370,8 @@
 }
 
 .preview-card {
-  background: #fff;
-  border: 1px solid #e0e0e0;
+  background: var(--card-bg);
+  border: 1px solid var(--border-color);
   border-radius: 10px;
   display: flex;
   flex-direction: column;
@@ -391,25 +396,26 @@
 
 .preview-card-header {
   padding: 12px 16px;
-  border-bottom: 1px solid #eee;
+  border-bottom: 1px solid var(--border-color);
   flex-shrink: 0;
 }
 
 .preview-card-title {
   font-weight: 600;
   font-size: 0.95rem;
-  color: #333;
+  color: var(--text-color);
 }
 
 .preview-card-meta {
   font-size: 0.8rem;
-  color: #888;
+  color: var(--text-color-secondary);
   margin-top: 4px;
 }
 
 .preview-card-graph {
   min-height: 220px;
   padding: 12px;
+  background: var(--progress-track-bg);
 }
 
 @media (max-width: 768px) {

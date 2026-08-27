@@ -29,7 +29,7 @@ def test_create_and_get_assessment_task(flask_app_mock):
             fetched = get_assessment_task(task.assessment_task_id)
             assert fetched.assessment_task_name == payload["assessment_task_name"]
 
-            expected_dt = datetime.strptime("2026-01-01T12:00:00.000Z", "%Y-%m-%dT%H:%M:%S.%fZ")
+            expected_dt = datetime.strptime("2099-01-01T12:00:00.000Z", "%Y-%m-%dT%H:%M:%S.%fZ")
             assert fetched.due_date == expected_dt
 
         finally:

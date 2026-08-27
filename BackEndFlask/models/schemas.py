@@ -1,6 +1,6 @@
 from core import db
 from sqlalchemy import ForeignKey, func, DateTime, Interval, Index
-from datetime import datetime
+from datetime import datetime, timezone
 
 # TODO: Determine whether rating in Completed_Assessment is a sum of all the ratings or a JSON object of all ratings.
 
@@ -97,6 +97,7 @@ class Course(db.Model):
     admin_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete='RESTRICT'), nullable=False)
     use_tas = db.Column(db.Boolean, nullable=False)
     use_fixed_teams = db.Column(db.Boolean, nullable=False)
+    time_zone = db.Column(db.String(50), nullable=True)
 
 class UserCourse(db.Model):
     __tablename__ = "UserCourse"
@@ -119,7 +120,7 @@ class AssessmentTask(db.Model):
     rubric_id = db.Column(db.Integer, ForeignKey(Rubric.rubric_id)) # how to handle updates and deletes
     role_id = db.Column(db.Integer, ForeignKey(Role.role_id))
     due_date = db.Column(db.DateTime, nullable=False)
-    time_zone = db.Column(db.String(5), nullable=False)
+    time_zone = db.Column(db.String(50), nullable=False)
     show_suggestions = db.Column(db.Boolean, nullable=False)
     show_ratings = db.Column(db.Boolean, nullable=False)
     unit_of_assessment = db.Column(db.Boolean, nullable=False) # true if team, false if individuals
@@ -195,7 +196,7 @@ class EmailValidation(db.Model):
     user_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete="CASCADE"), nullable=False)
     email = db.Column(db.String(254), nullable=False)
     status = db.Column(db.String(50), nullable=False)
-    validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=datetime.utcnow)
+    validation_time = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
     validation_error = db.Column(db.String(500), nullable=True)
 
     user = db.relationship('User', backref=db.backref('email_validations', lazy=True, passive_deletes=True))

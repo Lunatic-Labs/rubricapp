@@ -11,7 +11,7 @@ from models.observable_characteristics import (
 from Tests.PopulationFunctions import cleanup_test_users
 from models.schemas import ObservableCharacteristic
 from models.category import create_category
-from models.loadExistingRubrics import load_existing_observable_characteristics
+from models.loadExistingRubrics import load_existing_observable_characteristics, load_existing_categories, load_existing_rubrics
 from integration.integration_helpers import sample_category, sample_observable_characteristic
 
 
@@ -39,6 +39,8 @@ def test_get_observable_characteristics_returns_all(flask_app_mock):
         cleanup_test_users(db.session)
 
         try:
+            load_existing_rubrics()
+            load_existing_categories()
             load_existing_observable_characteristics()
 
             all_oc = get_observable_characteristics()

@@ -72,7 +72,11 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 
 		} catch (error) {
 			this.setState({
+<<<<<<< HEAD
 				validationError: "An error occurred. Please try again."
+=======
+				validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
+>>>>>>> 691cf85ce738408a33cd328ccf67440a31606daa
 			});
 		}
 

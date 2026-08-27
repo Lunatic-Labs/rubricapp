@@ -91,7 +91,7 @@ app = Flask(__name__)
 # Configurations
 app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
 app.config['CORS_HEADERS'] = 'Content-Type'
-app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key')
+app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key_rubricapp_dev_only')
 app.config['JSON_SORT_KEYS'] = False
 
 # Enabling CORS.

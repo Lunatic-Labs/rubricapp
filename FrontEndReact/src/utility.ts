@@ -435,15 +435,7 @@ export function validPassword(password: string): boolean | string {
 }
 
 export function getDueDateString(dueDate: Date): string {
-  const year = dueDate.getFullYear();
-  const month = dueDate.getMonth() + 1;
-  const day = dueDate.getDate();
-  const hours = dueDate.getHours();
-  const minutes = dueDate.getMinutes();
-  const seconds = dueDate.getSeconds();
-  const milliseconds = dueDate.getMilliseconds();
-
-  return `${year}-${month}-${day}T${hours}:${minutes}:${seconds}.${milliseconds}Z`;
+  return dueDate.toISOString();
 }
 
 // formating
@@ -477,10 +469,14 @@ export function formatTime(time: string | Date, timeZone?: string): string {
 
 // specifically for due dates
 export function getHumanReadableDueDate(dueDate: string | Date, timeZone?: string): string {
-
-  let dateString: string | Date = dueDate;
-  const date = new Date(dateString);
-
+  // Backend stores datetimes in UTC but returns them without a timezone suffix.
+  // Appending Z ensures JavaScript parses them as UTC rather than local time.
+  let date: Date;
+  if (typeof dueDate === 'string' && !dueDate.endsWith('Z') && !/[+-]\d{2}:\d{2}$/.test(dueDate)) {
+    date = new Date(dueDate + 'Z');
+  } else {
+    date = new Date(dueDate);
+  }
 
   return formatDateTime(date, timeZone);
 }

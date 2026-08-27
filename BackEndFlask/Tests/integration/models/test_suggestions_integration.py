@@ -11,7 +11,7 @@ from models.suggestions import (
 from models.schemas import SuggestionsForImprovement, Category
 from models.category import create_category
 from Tests.PopulationFunctions import cleanup_test_users
-from models.loadExistingRubrics import load_existing_suggestions
+from models.loadExistingRubrics import load_existing_suggestions, load_existing_categories, load_existing_rubrics
 from integration.integration_helpers import sample_category, sample_suggestion
 
 
@@ -38,6 +38,8 @@ def test_get_suggestions(flask_app_mock):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
         
+        load_existing_rubrics()
+        load_existing_categories()
         load_existing_suggestions()
         all_suggestions = get_suggestions()
         assert any(s.suggestion_text == "Nothing specific at this time" for s in all_suggestions)

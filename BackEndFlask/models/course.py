@@ -19,7 +19,10 @@ def get_courses():
 
 @error_log
 def get_course(course_id):
-    return Course.query.filter_by(course_id=course_id).first()
+    course = Course.query.filter_by(course_id=course_id).first()
+    if course is None:
+        raise InvalidCourseID(course_id)
+    return course
 
 
 @error_log
@@ -45,7 +48,8 @@ def create_course(course_data):
         active=course_data["active"],
         admin_id=course_data["admin_id"],
         use_tas=course_data["use_tas"],
-        use_fixed_teams=course_data["use_fixed_teams"]
+        use_fixed_teams=course_data["use_fixed_teams"],
+        time_zone=course_data.get("time_zone")
     )
 
     db.session.add(course_data)
@@ -124,7 +128,7 @@ def replace_course(course_data, course_id):
     one_course = Course.query.filter_by(course_id=course_id).first()
 
     if one_course is None:
-        return InvalidCourseID.error
+        raise InvalidCourseID(course_id)
 
     one_course.course_number = course_data["course_number"]
     one_course.course_name = course_data["course_name"]
@@ -134,6 +138,7 @@ def replace_course(course_data, course_id):
     one_course.admin_id = course_data["admin_id"]
     one_course.use_tas = course_data["use_tas"]
     one_course.use_fixed_teams = course_data["use_fixed_teams"]
+    one_course.time_zone = course_data.get("time_zone")
 
     db.session.commit()
 

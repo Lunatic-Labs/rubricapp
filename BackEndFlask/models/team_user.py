@@ -15,11 +15,15 @@ def get_team_users():
     return TeamUser.query.all()
 
 @error_log
+def get_all_team_users():
+    return TeamUser.query.all()
+
+@error_log
 def get_team_user(team_user_id):
     one_team_user = TeamUser.query.filter_by(team_user_id = team_user_id).first()
 
     if one_team_user is None:
-        raise InvalidTeamUserID
+        raise InvalidTeamUserID(team_user_id)
 
     return one_team_user
 
@@ -56,6 +60,8 @@ def get_team_members(team_user_id):
     all_team_members = TeamUser.query.filter_by(team_id = one_team_user.team_id).all()
 
     return all_team_members
+
+get_all_team_members = get_team_members
 
 @error_log
 def create_team_user(teamuser_data):
