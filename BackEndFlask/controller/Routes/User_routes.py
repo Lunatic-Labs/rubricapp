@@ -133,7 +133,7 @@ def get_all_users():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("user_id")):
-            uid = request.args.get("user_id")  # fixed error with infinite loading arrow on settings page
+            uid = request.args.get("uid") or request.args.get("user_id")  # fixed error with infinite loading arrow on settings page
 
             if uid:
                 user = get_user(uid)  # Trigger an error if not exists.
