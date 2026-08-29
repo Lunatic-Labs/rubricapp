@@ -36,7 +36,7 @@ export default function BasicTabs (props: BasicTabsProps){
             (activeTab === "AssessmentTasks" ? (useFixedTeams ? 2 : 1) : 
             (activeTab === "Reporting" ? (useFixedTeams ? 3 : 2) : 0)));
   
-  idTab = navbar.props.isSuperAdmin ? idTab - 1 : idTab;
+  idTab = navbar.props.isSuperAdmin ? 0 : idTab; // SuperAdmin only sees assessmentTasks tab
 
   const [value, setValue] = React.useState(idTab);
 
@@ -89,7 +89,7 @@ export default function BasicTabs (props: BasicTabsProps){
           }
           
 
-        {useFixedTeams && 
+        {!navbar.props.isSuperAdmin && useFixedTeams && 
           <Tab
             onClick={() => {
               setNewTab("Teams");
@@ -109,6 +109,7 @@ export default function BasicTabs (props: BasicTabsProps){
             aria-label="assessmentTab"
           />
 
+        {!navbar.props.isSuperAdmin && 
           <Tab
             onClick={() => {
               setNewTab("Reporting");
@@ -117,6 +118,8 @@ export default function BasicTabs (props: BasicTabsProps){
             label="Reporting"
             aria-label="reportingTab"
           />
+        }
+        
         </Tabs>
       </Box>
     </Box>
