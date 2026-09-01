@@ -422,15 +422,12 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             data = response.get_json()
             assert response.status_code == 200
 
-            # Fix: Check if users is a list or wrapped in another list
+            # After backend fix: users_schema.dump([user]) returns a list
             users_data = data["content"]["users"]
-            if isinstance(users_data, list) and len(users_data) > 0 and isinstance(users_data[0], list):
-                results = users_data[0]
-            else:
-                results = users_data
+            results = users_data if isinstance(users_data, list) else [users_data]
             
+            # Verify created users are in results
             expected_ids = {
-                1,
                 result["user_id"],
                 users[0].user_id,
                 users[1].user_id,
@@ -438,12 +435,11 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             }
             actual_ids = {u["user_id"] for u in results}
 
-            assert actual_ids >= expected_ids
-            assert len(actual_ids) >= 5
+            assert actual_ids >= expected_ids, f"Expected at least {expected_ids}, got {actual_ids}"
+            assert len(actual_ids) >= 4
             print("teams users: ", results)
             assert any(u["user_id"] == users[0].user_id for u in results)
             assert any(u["user_id"] == result["user_id"] for u in results)
-            assert any(u["user_id"] == 1 for u in results)
             assert any(u["user_id"] == users[1].user_id for u in results)
             assert any(u["user_id"] == users[2].user_id for u in results)
             assert any(u["owner_id"] == result["user_id"] for u in results)

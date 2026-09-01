@@ -137,7 +137,8 @@ def get_all_users():
 
             if uid:
                 user = get_user(uid)  # Trigger an error if not exists.
-                return create_good_response(user_schema.dump(user), 200, "users")
+                # Return as list for consistency with other endpoints
+                return create_good_response(users_schema.dump([user]), 200, "users")
 
             all_users = get_users()
             return create_good_response(users_schema.dump(all_users), 200, "users")
@@ -274,7 +275,8 @@ def add_user():
                     "role_id": request.json["role_id"]
                 })
 
-                return create_good_response(user_schema.dump(user_exists), 200, "users")
+                return create_good_response(user_schema.dump(new_user), 200, "users"
+                #return create_good_response(user_schema.dump(user_exists), 200, "users")
 
         new_user = create_user(request.json)
 
