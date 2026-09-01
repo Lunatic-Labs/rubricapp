@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import MUIDataTable from '../../../../../LibAdapters/MUIDataTable';
+import CustomDataTable from '../../../../Components/CustomDataTable';
+import { GridColDef } from '@mui/x-data-grid';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 import { AssessmentTask } from '../../../../../types/AssessmentTask';
 import { Category } from '../../../../../types/Category';
@@ -59,6 +60,7 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
         let teamRow = teamMap.get(teamName);
         if (!teamRow) {
           teamRow = {
+            _row_id: teamMap.size,
             name: teamName,
             feedback_info: [],
           };
@@ -104,11 +106,11 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
         allRatings.push(row);
       });
     } else {
-      this.props.ratings.forEach((currentRating: any) => {
+      this.props.ratings.forEach((currentRating: any, index: number) => {
         const ratingData = currentRating['rating_observable_characteristics_suggestions_data'];
         if (!ratingData) return;
 
-        const row: any = {};
+        const row: any = { _row_id: index };
 
         // Name column
         if (currentRating.first_name || currentRating.last_name) {
@@ -137,26 +139,20 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
     }
 
     // === Columns ===
-    const columns: any[] = [
+    const columns: GridColDef[] = [
       {
-        name: 'name',
-        label: nameLabel,
-        options: {
-          filter: true,
-          setCellHeaderProps: () => ({ style: { width: '10%' } }),
-          setCellProps: () => ({ style: { width: '10%' } }),
-        },
+        field: 'name',
+        headerName: nameLabel,
+        flex: 1,
       },
     ];
 
     // Category columns
     this.props.categories.map((cat: Category) => {
       columns.push({
-        name: cat['category_name'],
-        label: cat['category_name'],
-        options: {
-          filter: true,
-        },
+        field: cat['category_name'],
+        headerName: cat['category_name'],
+        flex: 1,
       });
       return cat;
     });
@@ -164,47 +160,37 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
     // Feedback column(s)
     if (!isTeam) {
       columns.splice(1, 0, {
-        name: 'feedback_time_lag',
-        label: 'Feedback Time Lag',
-        options: {
-          filter: true,
-          customBodyRender: (value: any, tableMeta: any) => {
-            const rowData = allRatings[tableMeta.rowIndex];
-            const viewed = !!value;
-            const notified = rowData?.notification_sent;
+        field: 'feedback_time_lag',
+        headerName: 'Feedback Time Lag',
+        flex: 1,
+        renderCell: (params) => {
+          const viewed = !!params.value;
+          const notified = params.row.notification_sent;
 
-            const color = viewed
-              ? '#2e7d32'   // Green - feedback viewed
-              : notified
-              ? '#ed6c02'  // Orange - notification sent, not viewed
-              : '#d32f2f'; // Red - not notified
+          const color = viewed
+            ? '#2e7d32'   // Green - feedback viewed
+            : notified
+            ? '#ed6c02'  // Orange - notification sent, not viewed
+            : '#d32f2f'; // Red - not notified
 
-            const text = viewed
-              ? (typeof value === 'string' ? value : String(value))
-              : notified
-              ? 'Sent, not viewed'
-              : 'Not notified';
+          const text = viewed
+            ? (typeof params.value === 'string' ? params.value : String(params.value))
+            : notified
+            ? 'Sent, not viewed'
+            : 'Not notified';
 
-            return <span style={{ color, fontWeight: 500 }}>{text}</span>;
-          },
+          return <span style={{ color, fontWeight: 500 }}>{text}</span>;
         },
       });
     } else {
       columns.push({
-        name: 'feedback_info',
-        label: 'Feedback Information',
-        options: {
-          filter: true,
-          sort: false,
-          setCellProps: () => ({
-            style: {
-              verticalAlign: 'top',
-              paddingTop: '8px',
-              paddingBottom: '8px',
-            },
-          }),
-          customBodyRender: (value: any) => {
-            const people = Array.isArray(value) ? value : [];
+        field: 'feedback_info',
+        headerName: 'Feedback Information',
+        flex: 1,
+        sortable: false,
+        renderCell: (params) => {
+          const value = params.value;
+          const people = Array.isArray(value) ? value : [];
             if (!people.length) {
               return <span style={{ color: '#d32f2f' }}>No team members</span>;
             }
@@ -260,30 +246,16 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
                 )}
               </div>
             );
-          },
         },
       });
     }
 
-    const options: any = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: 'none',
-      selectableRowsHeader: false,
-      responsive: 'standard',
-      tableBodyMaxHeight: '70%',
-    };
-
-    const title = isTeam ? 'Team Ratings' : 'Student Ratings';
-
     return (
-      <MUIDataTable
-        title={title}
+      <CustomDataTable
         data={allRatings}
         columns={columns}
-        options={options}
+        getRowId={(row) => row._row_id}
+        height="70%"
       />
     );
   }

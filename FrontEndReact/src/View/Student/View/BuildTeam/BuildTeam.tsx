@@ -7,6 +7,7 @@ import { Grid, IconButton, Button } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import TextField from '@mui/material/TextField';
 import { User } from '../../../../types/User';
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * @description
@@ -90,90 +91,72 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
   render() {
     const students = this.props.users;
 
-    const selectedColumns = [
+    const selectedColumns: GridColDef[] = [
       {
-        name: "first_name",
-        label: "First Name",
-        options: {
-          filter: true,
-          align: "center",
-        },
+        field: "first_name",
+        headerName: "First Name",
+        flex: 1,
+        align: "center",
+        headerAlign: "center",
       },
       {
-        name: "last_name",
-        label: "Last Name",
-        options: {
-          filter: true,
-          align: "center",
-        },
+        field: "last_name",
+        headerName: "Last Name",
+        flex: 1,
+        align: "center",
+        headerAlign: "center",
       },
       {
-        name: "user_id",
-        label: "Action",
-        options: {
-          filter: false,
-          align: "center",
-          customBodyRender: (userId: number) => {
-            return (
-              <IconButton 
-                aria-label='controlled' 
-                onClick={() => this.handleChange(userId)}
-              >
-                {this.state.selected[userId] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
-              </IconButton>
-            );
-          },
-        },
+        field: "user_id",
+        headerName: "Action",
+        flex: 1,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <IconButton
+            aria-label='controlled'
+            onClick={() => this.handleChange(params.value)}
+          >
+            {this.state.selected[params.value] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
+          </IconButton>
+        ),
       },
     ];
 
-    const unselectedColumns = [
+    const unselectedColumns: GridColDef[] = [
       {
-        name: "first_name",
-        label: "First Name",
-        options: {
-          filter: true,
-          align: "center",
-        },
+        field: "first_name",
+        headerName: "First Name",
+        flex: 1,
+        align: "center",
+        headerAlign: "center",
       },
       {
-        name: "last_name",
-        label: "Last Name",
-        options: {
-          filter: true,
-          align: "center",
-        },
+        field: "last_name",
+        headerName: "Last Name",
+        flex: 1,
+        align: "center",
+        headerAlign: "center",
       },
       {
-        name: "user_id",
-        label: "Action",
-        options: {
-          filter: false,
-          sort: false,
-          customBodyRender: (userId: number) => {
-            return (
-              <IconButton 
-                aria-label='controlled' 
-                onClick={() => this.handleChange(userId)}
-              >
-                {this.state.selected[userId] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
-              </IconButton>
-            );
-          },
-        },
+        field: "user_id",
+        headerName: "Action",
+        flex: 1,
+        sortable: false,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => (
+          <IconButton
+            aria-label='controlled'
+            onClick={() => this.handleChange(params.value)}
+          >
+            {this.state.selected[params.value] ? <RemoveCircleOutlineIcon /> : <AddCircleOutlineIcon />}
+          </IconButton>
+        ),
       },
     ];
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "standard",
-      tableBodyMaxHeight: "21rem",
-    };
 
     const selectedStudents = students.filter((student) => this.state.selected[student["user_id"]]);
     const unselectedStudents = students.filter((student) => !this.state.selected[student["user_id"]]);
@@ -216,7 +199,8 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
                 <CustomDataTable
                   data={unselectedStudents}
                   columns={unselectedColumns}
-                  options={options}
+                  getRowId={(row) => row.user_id}
+                  height="21rem"
                 />
               </Grid>
 
@@ -224,7 +208,8 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
                 <CustomDataTable
                   data={selectedStudents}
                   columns={selectedColumns}
-                  options={options}
+                  getRowId={(row) => row.user_id}
+                  height="21rem"
                 />
               </Grid>
 

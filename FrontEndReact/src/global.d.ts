@@ -32,48 +32,4 @@ declare module '*.css' {
   export default content;
 }
 
-// MUIDataTable module declaration
-declare module 'mui-datatables' {
-  import { ComponentType } from 'react';
-  
-  interface MUIDataTableProps {
-    title?: string;
-    data: any[];
-    columns: any[];
-    options?: any;
-  }
-  
-  const MUIDataTable: ComponentType<MUIDataTableProps>;
-  export default MUIDataTable;
-}
-
-// Extend MUI theme to include MUIDataTable components
-declare module '@mui/material/styles' {
-  interface Components {
-    MUIDataTableBodyCell?: {
-      styleOverrides?: {
-        root?: React.CSSProperties;
-      };
-    };
-    MUIDataTableBodyRow?: {
-      styleOverrides?: {
-        root?: React.CSSProperties | Record<string, any>;
-      };
-    };
-    MUIDataTableToolbar?: {
-      styleOverrides?: {
-        root?: React.CSSProperties;
-      };
-    };
-    MUIDataTableFooter?: {
-      styleOverrides?: {
-        root?: React.CSSProperties;
-      };
-    };
-    MUIDataTableHeadCell?: {
-      styleOverrides?: {
-        root?: React.CSSProperties;
-      };
-    };
-  }
-}
+import type {} from '@mui/x-data-grid/themeAugmentation';

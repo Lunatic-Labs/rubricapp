@@ -5,6 +5,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import { Typography, Box} from "@mui/material";
 import Cookies from 'universal-cookie';
+import { GridColDef } from '@mui/x-data-grid';
 
 interface ViewCoursesProps {
     navbar: any;
@@ -26,80 +27,50 @@ class ViewCourses extends Component<ViewCoursesProps> {
     const roleStudent = 5;
     const roleAdmin = 3;
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "course_name",
-        label: "Course Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"25%" } },
-          setCellProps: () => { return { width:"25%" } },
-          customBodyRender: (courseName: string) => {
-            return(
-              <Typography
-                sx={{fontSize: "1.6rem"}}
-                aria-label={ courseName }
-              >
-                { courseName }
-              </Typography>
-            )
-          }
-        }
+        field: "course_name",
+        headerName: "Course Name",
+        flex: 25,
+        renderCell: (params) => (
+          <Typography
+            sx={{fontSize: "1.6rem"}}
+            aria-label={ params.value }
+          >
+            { params.value }
+          </Typography>
+        )
       },
       {
-        name: "course_number",
-        label: "Course Number",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"15%" } },
-          setCellProps: () => { return { width:"15%" } },
-        }
-      },  
-      {
-        name: "term",
-        label: "Term",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"10%" } },
-          setCellProps: () => { return { width:"10%" } },
-        }
-      },  
-      {
-        name: "year",
-        label: "Year",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"7%" } },
-          setCellProps: () => { return { width:"7%" } },
-        }
+        field: "course_number",
+        headerName: "Course Number",
+        flex: 15,
       },
       {
-        name: "use_tas",
-        label: "Use T.A's",
-        options : {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"6%" } },
-          setCellProps: () => { return { width:"6%" } },
-          customBodyRender: (value: boolean | null) => {
-            return(
-              <>{ value===null ? "N/A" : (value ? "Yes" : "No") }</>
-            )
-          }
-        }
+        field: "term",
+        headerName: "Term",
+        flex: 10,
       },
       {
-        name: "use_fixed_teams",
-        label: "Fixed Teams",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"7%" } },
-          setCellProps: () => { return { width:"7%" } },
-          customBodyRender: (value: boolean | null) => {
-            return(
-              <>{value===null ? "N/A": (value ? "Yes":"No")}</>
-            )
-          }
-        }
+        field: "year",
+        headerName: "Year",
+        flex: 7,
+      },
+      {
+        field: "use_tas",
+        headerName: "Use T.A's",
+        flex: 6,
+        renderCell: (params) => (
+          <>{ params.value===null ? "N/A" : (params.value ? "Yes" : "No") }</>
+        )
+      },
+      {
+        field: "use_fixed_teams",
+        headerName: "Fixed Teams",
+        flex: 7,
+        renderCell: (params) => (
+          <>{params.value===null ? "N/A": (params.value ? "Yes":"No")}</>
+        )
       }];
 
       // If the logged in user is an Admin of at least one course then the edit column will show.
@@ -110,76 +81,65 @@ class ViewCourses extends Component<ViewCoursesProps> {
           // If the logged in user is an Admin in the course, they can edit the course.
           // Otherwise the edit button is disabled because they did not make the course
           // and are either a TA/Instructor or Student in the course!
-          name: "course_id",
-          label: "EDIT",
-          options: {
-            filter: false,
-            setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-            setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-            customBodyRender: (courseId: any) => {
-              return (
-                <IconButton id={courseId}
-                role = "img" aria-label='editCourseIconButton'
-                  className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
-                  onClick={() => {
-                    if(courseRoles[courseId]===3) {
-                      setAddCourseTabWithCourse(courses, courseId, "AddCourse")
-                    }
-                }}
-                 >
-                  <EditIcon sx={{color:"var(--table-text)"}}/>
-                </IconButton>
-              )
-            },
-          }
+          field: "edit_action",
+          headerName: "EDIT",
+          flex: 10,
+          filterable: false,
+          align: "center",
+          headerAlign: "center",
+          renderCell: (params) => {
+            const courseId = params.row.course_id;
+            return (
+              <IconButton id={courseId}
+              role = "img" aria-label='editCourseIconButton'
+                className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
+                onClick={() => {
+                  if(courseRoles[courseId]===3) {
+                    setAddCourseTabWithCourse(courses, courseId, "AddCourse")
+                  }
+              }}
+               >
+                <EditIcon sx={{color:"var(--table-text)"}}/>
+              </IconButton>
+            )
+          },
         });
       }
 
       columns.push(
       {
-        name: "course_id",
-        label: "VIEW",
-        options: {
-          filter: false,
-          setCellHeaderProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-          setCellProps: () => { return { align:"center", width:"10%", className:"button-column-alignment" } },
-          customBodyRender: (courseId: any) => {
-            return (
-                <IconButton id={courseId}
-                role = "img" aria-label="viewCourseIconButton"
-              onClick={() => {
-                // Allegedly the 2 lines below are a "fix" but I have been unable to determine for what
-                //    navbar.setState({ user: null, addUser: null });
-                //    navbar.setAddCourseTabWithCourse(courses, courseId, "Users");
-                // If viewing as student, always go to student dashboard
-                if (isViewingAsStudent) {
-                  navbar.setStudentDashboardWithCourse(courseId, courses); 
-                } else if(courseRoles[courseId] === roleAdmin) { // Normal behavior based on role
-                    setAddCourseTabWithCourse(courses, courseId, "Users");
-                } else if (courseRoles[courseId] === roleTA || courseRoles[courseId] === roleStudent) {
-                  navbar.setStudentDashboardWithCourse(courseId, courses);
-                } else if (navbar.props.isSuperAdmin) {
-                  navbar.setViewAssessmentDashboardwithCourse(courseId, courses);
-                }
-              }}
-              >
-              <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
-            </IconButton>
+        field: "view_action",
+        headerName: "VIEW",
+        flex: 10,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const courseId = params.row.course_id;
+          return (
+              <IconButton id={courseId}
+              role = "img" aria-label="viewCourseIconButton"
+            onClick={() => {
+              // Allegedly the 2 lines below are a "fix" but I have been unable to determine for what
+              //    navbar.setState({ user: null, addUser: null });
+              //    navbar.setAddCourseTabWithCourse(courses, courseId, "Users");
+              // If viewing as student, always go to student dashboard
+              if (isViewingAsStudent) {
+                navbar.setStudentDashboardWithCourse(courseId, courses);
+              } else if(courseRoles[courseId] === roleAdmin) { // Normal behavior based on role
+                  setAddCourseTabWithCourse(courses, courseId, "Users");
+              } else if (courseRoles[courseId] === roleTA || courseRoles[courseId] === roleStudent) {
+                navbar.setStudentDashboardWithCourse(courseId, courses);
+              } else if (navbar.props.isSuperAdmin) {
+                navbar.setViewAssessmentDashboardwithCourse(courseId, courses);
+              }
+            }}
+            >
+            <VisibilityIcon sx={{color:"black"}} aria-hidden="true" />
+          </IconButton>
           )
         },
-      }
     });
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "standard",
-      tableBodyMaxHeight: "35vh",
-    };
 
     const activeCourses = courses ? courses.filter((course: any) => course.active) : [];
     const inactiveCourses = courses ? courses.filter((course: any) => !course.active) : [];
@@ -239,7 +199,8 @@ class ViewCourses extends Component<ViewCoursesProps> {
             <CustomDataTable
               data={activeCourses}
               columns={columns}
-              options={options}
+              getRowId={(row) => row.course_id}
+              height="35vh"
             />
           </Box>
         </Box>
@@ -263,7 +224,8 @@ class ViewCourses extends Component<ViewCoursesProps> {
               <CustomDataTable
                 data={inactiveCourses}
                 columns={columns}
-                options={options}
+                getRowId={(row) => row.course_id}
+                height="35vh"
               />
             </Box>
           </Box>

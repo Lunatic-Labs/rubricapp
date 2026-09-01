@@ -10,10 +10,6 @@ export default defineConfig({
     },
   },
 
-  optimizeDeps: {
-    include: ['mui-datatables'],
-  },
-  
   //legacy: {
   //  inconsistentCjsInterop: true,
   //},

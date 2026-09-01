@@ -7,6 +7,7 @@ import CustomButton from "../../../Student/View/Components/CustomButton";
 import SendMessageModal from '../../../Components/SendMessageModal';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { genericResourcePOST, genericResourceGET, genericResourceDELETE } from '../../../../utility';
+import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
 
 /**
  * Creates an instance of the ViewNotification component.
@@ -46,7 +47,7 @@ interface ViewNotificationState {
   successMessage: string;
   sendError: string;
   admin_notifications: any[];
-  selectedRows: number[];
+  selectedRows: GridRowSelectionModel;
   errors: {
     emailSubject: string;
     emailMessage: string;
@@ -68,7 +69,7 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
       successMessage: '',
       sendError: '',
       admin_notifications: [],
-      selectedRows: [],
+      selectedRows: [] as GridRowSelectionModel,
       errors: {
         emailSubject: '',
         emailMessage: '',
@@ -179,7 +180,7 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
     });
   };
 
-  handleDeleteSelected = (selectedRows: number[]) => {
+  handleDeleteSelected = (selectedRows: readonly (string | number)[]) => {
     if (selectedRows.length === 0) return;
     const confirmed = window.confirm(`Delete ${selectedRows.length === 1 ? 'this notification' : selectedRows.length + ' selected notifications'}?`);
     if (!confirmed) return;
@@ -247,110 +248,90 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
         <Box className="table-spacing narrow-select-table">
           <CustomDataTable
             data={this.state.admin_notifications}
+            getRowId={(row) => row.admin_notification_id}
+            height="400px"
             columns={[
               {
-                name: "admin_notification_id",
-                label: "ID",
-                options: {
-                  display: "excluded",
-                  filter: false,
+                field: "subject",
+                headerName: "Subject",
+                flex: 29,
+              },
+              {
+                field: "message",
+                headerName: "Message",
+                flex: 44,
+                renderCell: (params) => {
+                  if (!params.value) return '';
+                  return (
+                    <div style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word" }} title={params.value}>
+                      {params.value}
+                    </div>
+                  );
                 }
               },
               {
-                name: "subject",
-                label: "Subject",
-                options: {
-                  setCellHeaderProps: () => ({ width: "29%" }),
-                  setCellProps: () => ({ width: "29%" }),
+                field: "sent_at",
+                headerName: "Sent At",
+                flex: 20,
+                renderCell: (params) => {
+                  if (!params.value) return '';
+                  return <>{new Date(params.value).toLocaleString()}</>;
                 }
               },
               {
-                name: "message",
-                label: "Message",
-                options: {
-                  setCellHeaderProps: () => ({ width: "44%" }),
-                  setCellProps: () => ({ width: "44%" }),
-                  customBodyRender: (value: string) => {
-                    if (!value) return '';
-                    return (
-                      <div style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word" }} title={value}>
-                        {value}
-                      </div>
-                    );
-                  }
+                field: "delete_action",
+                headerName: "Delete",
+                flex: 5,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                  const notificationId = params.row.admin_notification_id;
+                  return (
+                    <Box sx={{ display: "flex", gap: "4px", justifyContent: "center" }}>
+                      <Tooltip title="Delete">
+                        <IconButton
+                          onClick={() => this.handleDeleteSelected([notificationId])}
+                          aria-label="DeleteNotification"
+                        >
+                          <DeleteIcon sx={{ color: "black" }} />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  );
                 }
               },
-              {
-                name: "sent_at",
-                label: "Sent At",
-                options: {
-                  setCellHeaderProps: () => ({ width: "20%" }),
-                  setCellProps: () => ({ width: "20%" }),
-                  customBodyRender: (value: string) => {
-                    if (!value) return '';
-                    return new Date(value).toLocaleString();
-                  }
-                }
-              },
-              {
-                name: "delete",
-                label: "Delete",
-                options: {
-                  setCellHeaderProps: () => ({ width: "5%", align: "center" as const }),
-                  setCellProps: () => ({ width: "5%", align: "center" as const }),
-                  customBodyRender: (value: any, tableMeta: any) => {
-                    const rowIndex = tableMeta.rowIndex;
-                    const notification = this.state.admin_notifications[rowIndex];
-                    if (!notification) return null;
-                    const notificationId = notification.admin_notification_id;
-                    return (
-                      <Box sx={{ display: "flex", gap: "4px", justifyContent: "center" }}>
-                        <Tooltip title="Delete">
-                          <IconButton
-                            onClick={() => this.handleDeleteSelected([notificationId])}
-                            aria-label="DeleteNotification"
-                          >
-                            <DeleteIcon sx={{ color: "black" }} />
-                          </IconButton>
-                        </Tooltip>
-                      </Box>
-                    );
-                  }
-                }
-              },
-            ]}
+            ] as GridColDef[]}
             options={{
-              responsive: "vertical",
-              tableBodyMaxHeight: "400px",
-              download: false,
-              print: false,
-              filter: false,
-              selectableRows: "multiple",
-              selectableRowsHeader: true,
-              viewColumns: false,
-              rowsPerPageOptions: [10, 25, 50],
-              onRowSelectionChange: (currentRowsSelected: any, allRowsSelected: any, rowsSelected: any) => {
-                const selectedIds = allRowsSelected.map((row: any) => this.state.admin_notifications[row.dataIndex]?.admin_notification_id).filter((id: any) => id !== undefined);
-                this.setState({ selectedRows: selectedIds });
+              checkboxSelection: true,
+              rowSelectionModel: this.state.selectedRows,
+              onRowSelectionModelChange: (newSelection) => {
+                this.setState({ selectedRows: newSelection });
               },
-              customToolbarSelect: (selectedRows: any, displayData: any, setSelectedRows: any) => (
-                <Box sx={{ display: "flex", alignItems: "center", gap: "8px", padding: "0 16px" }}>
-                  <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                    {selectedRows.data.length} selected
-                  </Typography>
-                  <Tooltip title="Delete Selected">
-                    <IconButton
-                      onClick={() => {
-                        const ids = selectedRows.data.map((row: any) => this.state.admin_notifications[row.dataIndex]?.admin_notification_id).filter((id: any) => id !== undefined);
-                        this.handleDeleteSelected(ids);
-                        setSelectedRows([]);
-                      }}
-                    >
-                      <DeleteIcon sx={{ color: "black" }} />
-                    </IconButton>
-                  </Tooltip>
-                </Box>
-              ),
+              pageSizeOptions: [10, 25, 50],
+              slots: {
+                toolbar: () => {
+                  const selectedIds = this.state.selectedRows;
+                  if (!selectedIds || selectedIds.length === 0) return null;
+                  return (
+                    <Box sx={{ display: "flex", alignItems: "center", gap: "8px", padding: "0 16px" }}>
+                      <Typography variant="body2" sx={{ color: "text.secondary" }}>
+                        {selectedIds.length} selected
+                      </Typography>
+                      <Tooltip title="Delete Selected">
+                        <IconButton
+                          onClick={() => {
+                            this.handleDeleteSelected(selectedIds);
+                          }}
+                        >
+                          <DeleteIcon sx={{ color: "black" }} />
+                        </IconButton>
+                      </Tooltip>
+                    </Box>
+                  );
+                },
+              },
             }}
           />
         </Box>

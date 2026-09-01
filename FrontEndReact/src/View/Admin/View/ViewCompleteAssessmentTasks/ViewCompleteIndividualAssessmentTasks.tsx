@@ -13,6 +13,7 @@ import CourseInfo from "../../../Components/CourseInfo";
 import LockIcon from '@mui/icons-material/Lock';
 import LockOpenIcon from '@mui/icons-material/LockOpen';
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { GridColDef } from '@mui/x-data-grid';
 
 // Shows a table of completed individual student rubrics with notifications and has privileges to who can edit submissions//
 interface ViewCompleteIndividualAssessmentTasksProps {
@@ -232,221 +233,190 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
 
         var catIds = completedAssessmentTasks.map((task: any) => task.completed_assessment_id);
 
-        const columns = [
+        const columns: GridColDef[] = [
             // Column 1 - assessment task name
             {
-                name: "assessment_task_id",
-                label: "Assessment Task",
-                options: {
-                    filter: true,
-                    //Custom rendering: Shows assessment name instead of ID
-                    customBodyRender: () => {
-                        return (
-                            <p>
-                                {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
-                            </p>
-                        );
-                    },
+                field: "assessment_task_id",
+                headerName: "Assessment Task",
+                flex: 1,
+                //Custom rendering: Shows assessment name instead of ID
+                renderCell: () => {
+                    return (
+                        <p>
+                            {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"]: "N/A"}
+                        </p>
+                    );
                 },
             },
             //Column 2 - student name
             {
-                name: "last_name",
-                label: "Student Name",
-                options: {
-                    filter: true,
-                    // custom rendering shows last name or N/A if missing
-                    customBodyRender: (last_name: string) => {
-                        return (
-                            <p>
-                                {last_name ? last_name : "N/A"}
-                            </p>
-                        );
-                    },
+                field: "last_name",
+                headerName: "Student Name",
+                flex: 1,
+                // custom rendering shows last name or N/A if missing
+                renderCell: (params) => {
+                    return (
+                        <p>
+                            {params.value ? params.value : "N/A"}
+                        </p>
+                    );
                 },
             },
             // column 3 - assessor (who graded the assessment)
             {
-                name: "completed_by",
-                label: "Assessor",
-                options: {
-                    filter: true,
-                    // Custom rendering Maps user ID to readable name
-                    customBodyRender: (completed_by: number) => {
-                        return (
-                            <p>
-                                {userNames && completed_by ? userNames[completed_by] : "N/A"}
-                            </p>
-                        );
-                    },
+                field: "completed_by",
+                headerName: "Assessor",
+                flex: 1,
+                // Custom rendering Maps user ID to readable name
+                renderCell: (params) => {
+                    return (
+                        <p>
+                            {userNames && params.value ? userNames[params.value] : "N/A"}
+                        </p>
+                    );
                 },
             },
             // Column 4 - Initial Time (when assessment was first started)
             {
-                name: "initial_time",
-                label: "Initial Time",
-                options: {
-                    filter: true,
-                    // custom rendering converts timestamp to human-readable format in course timezone
-                    customBodyRender: (initialTime: string) => {
-                        const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
+                field: "initial_time",
+                headerName: "Initial Time",
+                flex: 1,
+                // custom rendering converts timestamp to human-readable format in course timezone
+                renderCell: (params) => {
+                    const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
 
-                        return (
-                            <p>
-                                {getHumanReadableDueDate(initialTime,timeZone)}
-                            </p>
-                        );
-                    },
+                    return (
+                        <p>
+                            {getHumanReadableDueDate(params.value,timeZone)}
+                        </p>
+                    );
                 },
             },
             // Column 5: last updated (when assessment was last modified)
             {
-                name: "last_update",
-                label: "Last Updated",
-                options: {
-                    filter: true,
-                    // custom rendering: converts timezone to human readable
-                    customBodyRender: (lastUpdate: string) => {
-                        const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
-                      
-                        return(
-                            <p>
-                                {getHumanReadableDueDate(lastUpdate,timeZone)}
-                            </p>
-                        )
-                    },
+                field: "last_update",
+                headerName: "Last Updated",
+                flex: 1,
+                // custom rendering: converts timezone to human readable
+                renderCell: (params) => {
+                    const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
+
+                    return(
+                        <p>
+                            {getHumanReadableDueDate(params.value,timeZone)}
+                        </p>
+                    )
                 },
             },
             // Column 6 - lock/unlock toggle
             {
-                name: "completed_assessment_id",
-                label: "Lock",
-                options: {
-                    filter: true,
-                    customBodyRender: (completedAssessmentId: number) => {
-                        const task = completedAssessmentTasks.find((task: any) => task["completed_assessment_id"] === completedAssessmentId);
-                        // determine lock status by first checking local state (recent) and fallback to server data if state not set yet
-                        const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
+                field: "completed_assessment_id",
+                headerName: "Lock",
+                flex: 1,
+                renderCell: (params) => {
+                    const completedAssessmentId = params.value;
+                    const task = completedAssessmentTasks.find((task: any) => task["completed_assessment_id"] === completedAssessmentId);
+                    // determine lock status by first checking local state (recent) and fallback to server data if state not set yet
+                    const isLocked = this.state.lockStatus[completedAssessmentId] !== undefined ? this.state.lockStatus[completedAssessmentId] : (task ? task.locked : false);
 
-                            return (
-                                <Tooltip
-                                    title={
-                                        <>
-                                            <p>
-                                                If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
-                                            </p>
-                                        </>
-                                    }>
-                                    <IconButton
-                                        aria-label={isLocked ? "unlock" : "lock"}
-                                        onClick={() => this.handleLockToggle(completedAssessmentId, task)}
-                                    >
-                                        {isLocked ? <LockIcon /> : <LockOpenIcon />}
-                                    </IconButton>
-                                </Tooltip>
-                            );
-                    },
-                }
+                        return (
+                            <Tooltip
+                                title={
+                                    <>
+                                        <p>
+                                            If the assessment task is locked, students can no longer make changes to it. If the task is unlocked, students are allowed to make edits.
+                                        </p>
+                                    </>
+                                }>
+                                <IconButton
+                                    aria-label={isLocked ? "unlock" : "lock"}
+                                    onClick={() => this.handleLockToggle(completedAssessmentId, task)}
+                                >
+                                    {isLocked ? <LockIcon /> : <LockOpenIcon />}
+                                </IconButton>
+                            </Tooltip>
+                        );
+                },
             },
             //Column 7 - sees more detail
             {
-                name: "completed_assessment_id",
-                label: "See More Details",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-                    customBodyRender: (completedAssessmentId: number, completeAssessmentTasks: any) => {
-                        // Get row index to access user_id from props array
-                        const rowIndex = completeAssessmentTasks.rowIndex;
-                        // Extract user_id from completedAssessment prop 
-                        const userId = this.props.completedAssessment[rowIndex]!.user_id;
-                        if (completedAssessmentId) {
-                            return (
-                                <IconButton
-                                    onClick={() => {
-                                        // Navigate to detailed assessment view
-                                        //Passes assessment data, userID/ID, task info
-                                        navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                            completedAssessmentTasks,
-                                            completedAssessmentId,
-                                            chosenAssessmentTask,
-                                            userId,
-                                        );
-                                    }}
-                                    aria-label="assessmentIndividualSeeMoreDetailsButtons"
-                                >
-                                    <VisibilityIcon sx={{color:"black"}}/>
-                                </IconButton>
-                            )
+                field: "see_more_action",
+                headerName: "See More Details",
+                flex: 1,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                    const completedAssessmentId = params.row.completed_assessment_id;
+                    const userId = params.row.user_id;
+                    if (completedAssessmentId) {
+                        return (
+                            <IconButton
+                                onClick={() => {
+                                    // Navigate to detailed assessment view
+                                    //Passes assessment data, userID/ID, task info
+                                    navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                        completedAssessmentTasks,
+                                        completedAssessmentId,
+                                        chosenAssessmentTask,
+                                        userId,
+                                    );
+                                }}
+                                aria-label="assessmentIndividualSeeMoreDetailsButtons"
+                            >
+                                <VisibilityIcon sx={{color:"black"}}/>
+                            </IconButton>
+                        )
 
-            } else {
-              return(
-                <p> {"N/A"} </p>
-              )
-            }
-          }
-        }
-      },
-      // Column 8 - individual notification button
-      {
-        name: "Student/Team Id",
-        label: "Notify",
-        options: {
-          filter: false,
-          sort: false,
-          setCellHeaderProps: () => { return { align:"center", className:"button-column-alignment"}},
-          setCellProps: () => { return { align:"center", className:"button-column-alignment"} },
-          customBodyRender: (completedAssessmentId: number, completeAssessmentTasks: any) => {
-            const rowIndex = completeAssessmentTasks.rowIndex;
-            //Hardcoded in
-            // Assumes completed_assessment_id is always at index 5 in tableData array
-            //If columns are reordered this breaks
-            const completedATIndex = 5;
-            completedAssessmentId  = completeAssessmentTasks.tableData[rowIndex][completedATIndex];
-            if (completedAssessmentId !== null) {
-              return (
-                <Tooltip
-                    title={
-                        <>
-                            <p>
-                                Notifies one individual.
-                            </p>
-                        </>
-                    }>
-                    <span>
-                        <CustomButton
-                        onClick={() => this.handleDialog(true, completedAssessmentId)}
-                        label="Notify"
-                        // align="center"
-                        isOutlined={true}
-                        disabled={notificationSent}
-                        aria-label="Send individual messages"
-                        />
-                    </span>
-                </Tooltip>
-              )
-            }else{
-              return(
-                <p> {''} </p>
-              )
-            }
-          }
-        }
-      },
-    ];
-
-        const options = {
-            onRowsDelete: false,            //Disable row deletion
-            download: false,                //Disable download button
-            print: false,                   //Disable print button
-            selectableRows: "none",         //Disable row selection checkboxes
-            viewColumns: false,             //Disable view columns button
-            selectableRowsHeader: false,    //Disable select all checkbox in header
-            responsive: "vertical",         //table responsiveness scrolling
-            tableBodyMaxHeight: "21rem",    //max height before scrolling
-        };
+                    } else {
+                        return(
+                            <p> {"N/A"} </p>
+                        )
+                    }
+                }
+            },
+            // Column 8 - individual notification button
+            {
+                field: "notify_action",
+                headerName: "Notify",
+                flex: 1,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                    const completedAssessmentId = params.row.completed_assessment_id;
+                    if (completedAssessmentId !== null) {
+                        return (
+                            <Tooltip
+                                title={
+                                    <>
+                                        <p>
+                                            Notifies one individual.
+                                        </p>
+                                    </>
+                                }>
+                                <span>
+                                    <CustomButton
+                                    onClick={() => this.handleDialog(true, completedAssessmentId)}
+                                    label="Notify"
+                                    // align="center"
+                                    isOutlined={true}
+                                    disabled={notificationSent}
+                                    aria-label="Send individual messages"
+                                    />
+                                </span>
+                            </Tooltip>
+                        )
+                    }else{
+                        return(
+                            <p> {''} </p>
+                        )
+                    }
+                }
+            },
+        ];
 
         //Render UI
         return (
@@ -510,7 +480,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
         <CustomDataTable
           data={completedAssessmentTasks ? completedAssessmentTasks : []}
           columns={columns}
-          options={options}
+          getRowId={(row) => row.completed_assessment_id}
+          height="21rem"
         />
         </Box>
       </Box>

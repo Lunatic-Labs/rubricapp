@@ -10,6 +10,7 @@ import { genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { GridColDef } from '@mui/x-data-grid';
 
 interface ViewCompleteTeamAssessmentTasksProps {
     navbar: any;
@@ -155,166 +156,138 @@ class ViewCompleteTeamAssessmentTasks extends Component<
         const notificationSent = state?.notificationSent;
         const chosenCourse = state?.chosenCourse;
 
-        const columns: any[] = [
+        const columns: GridColDef[] = [
             {
-                name: "assessment_task_id",
-                label: "Assessment Task",
-                options: {
-                    filter: true,
-                    customBodyRender: () => (
+                field: "assessment_task_id",
+                headerName: "Assessment Task",
+                flex: 1,
+                renderCell: () => (
+                    <Typography variant="body2" align="left">
+                        {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"] : "N/A"}
+                    </Typography>
+                ),
+            },
+            {
+                field: "team_name",
+                headerName: "Team Name",
+                flex: 1,
+                renderCell: (params) => (
+                    <Typography variant="body2" align="left">
+                        {params.value ? params.value : "N/A"}
+                    </Typography>
+                ),
+            },
+            {
+                field: "completed_by",
+                headerName: "Assessor",
+                flex: 1,
+                renderCell: (params) => (
+                    <Typography variant="body2" align="left">
+                        {userNames && params.value ? userNames[params.value] : "N/A"}
+                    </Typography>
+                ),
+            },
+            {
+                field: "initial_time",
+                headerName: "Initial Time",
+                flex: 1,
+                renderCell: (params) => {
+                    const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
+                    return (
                         <Typography variant="body2" align="left">
-                            {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"] : "N/A"}
+                            {getHumanReadableDueDate(params.value, timeZone)}
                         </Typography>
-                    ),
+                    );
                 },
             },
             {
-                name: "team_name",
-                label: "Team Name",
-                options: {
-                    filter: true,
-                    customBodyRender: (team_name: string) => (
+                field: "last_update",
+                headerName: "Last Updated",
+                flex: 1,
+                renderCell: (params) => {
+                    const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
+                    return (
                         <Typography variant="body2" align="left">
-                            {team_name ? team_name : "N/A"}
+                            {getHumanReadableDueDate(params.value, timeZone)}
                         </Typography>
-                    ),
+                    );
                 },
             },
             {
-                name: "completed_by",
-                label: "Assessor",
-                options: {
-                    filter: true,
-                    customBodyRender: (completed_by: number) => (
-                        <Typography variant="body2" align="left">
-                            {userNames && completed_by ? userNames[completed_by] : "N/A"}
+                field: "completed_assessment_id",
+                headerName: "See More Details",
+                flex: 1,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                    const completedAssessmentId = params.value;
+                    const teamId = params.row.team_id ?? null;
+
+                    if (completedAssessmentId) {
+                        return (
+                            <IconButton
+                                onClick={() => {
+                                    navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
+                                        completedAssessmentTasks,
+                                        completedAssessmentId,
+                                        chosenAssessmentTask,
+                                        teamId
+                                    );
+                                }}
+                                aria-label="See more details"
+                            >
+                                <VisibilityIcon sx={{ color: "black" }} />
+                            </IconButton>
+                        );
+                    }
+
+                    return (
+                        <Typography variant="body2" align="center">
+                            N/A
                         </Typography>
-                    ),
+                    );
                 },
             },
             {
-                name: "initial_time",
-                label: "Initial Time",
-                options: {
-                    filter: true,
-                    customBodyRender: (initialTime: string) => {
-                        const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
-                        return (
-                            <Typography variant="body2" align="left">
-                                {getHumanReadableDueDate(initialTime, timeZone)}
-                            </Typography>
-                        );
-                    },
-                },
-            },
-            {
-                name: "last_update",
-                label: "Last Updated",
-                options: {
-                    filter: true,
-                    customBodyRender: (lastUpdate: string) => {
-                        const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
-                        return (
-                            <Typography variant="body2" align="left">
-                                {getHumanReadableDueDate(lastUpdate, timeZone)}
-                            </Typography>
-                        );
-                    },
-                },
-            },
-            {
-                name: "completed_assessment_id",
-                label: "See More Details",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => ({ align: "center", className: "button-column-alignment" }),
-                    setCellProps: () => ({ align: "center", className: "button-column-alignment" }),
-                    customBodyRender: (completedAssessmentId: number, tableMeta: any) => {
-                        const rowIndex = tableMeta?.rowIndex;
-                        const teamId =
-                            this.props.completedAssessment && rowIndex !== undefined
-                                ? this.props.completedAssessment[rowIndex]?.team_id
-                                : null;
+                field: "notify_action",
+                headerName: "Notify",
+                flex: 1,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                    const completedAssessmentId = params.row.completed_assessment_id ?? null;
 
-                        if (completedAssessmentId) {
-                            return (
-                                <IconButton
-                                    onClick={() => {
-                                        navbar.setViewCompleteAssessmentTaskTabWithAssessmentTask(
-                                            tableMeta,
-                                            completedAssessmentId,
-                                            chosenAssessmentTask,
-                                            teamId
-                                        );
-                                    }}
-                                    aria-label="See more details"
-                                >
-                                    <VisibilityIcon sx={{ color: "black" }} />
-                                </IconButton>
-                            );
-                        }
-
+                    if (completedAssessmentId !== null && completedAssessmentId !== undefined) {
                         return (
-                            <Typography variant="body2" align="center">
-                                N/A
-                            </Typography>
+                            <Tooltip
+                                title={<Typography variant="body2">Notify individual team.</Typography>}
+                            >
+                                <span>
+                                    <CustomButton
+                                        onClick={() => this.handleDialog(true, completedAssessmentId)}
+                                        label="Notify"
+                                        // align="center"
+                                        isOutlined={true}
+                                        disabled={notificationSent}
+                                        aria-label="Send individual messages"
+                                    />
+                                </span>
+                            </Tooltip>
                         );
-                    },
-                },
-            },
-            {
-                name: "Student/Team Id",
-                label: "Notify",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => ({ align: "center", className: "button-column-alignment" }),
-                    setCellProps: () => ({ align: "center", className: "button-column-alignment" }),
-                    customBodyRender: (_: any, tableMeta: any) => {
-                        const rowIndex = tableMeta?.rowIndex;
-                        const completedATIndex = 5;
-                        const completedAssessmentId = tableMeta?.tableData?.[rowIndex]?.[completedATIndex] ?? null;
+                    }
 
-                        if (completedAssessmentId !== null && completedAssessmentId !== undefined) {
-                            return (
-                                <Tooltip
-                                    title={<Typography variant="body2">Notify individual team.</Typography>}
-                                >
-                                    <span>
-                                        <CustomButton
-                                            onClick={() => this.handleDialog(true, completedAssessmentId)}
-                                            label="Notify"
-                                            // align="center"
-                                            isOutlined={true}
-                                            disabled={notificationSent}
-                                            aria-label="Send individual messages"
-                                        />
-                                    </span>
-                                </Tooltip>
-                            );
-                        }
-
-                        return (
-                            <Typography variant="body2" align="center">
-                                {" "}
-                            </Typography>
-                        );
-                    },
+                    return (
+                        <Typography variant="body2" align="center">
+                            {" "}
+                        </Typography>
+                    );
                 },
             },
         ];
-
-        const options: any = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            selectableRows: "none",
-            viewColumns: false,
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "21rem",
-        };
 
         return (
             <Box sx={{ display: "flex", flexDirection: "column", gap: "20px", marginTop: "20px" }}>
@@ -359,7 +332,8 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                     <CustomDataTable
                         data={completedAssessmentTasks ? completedAssessmentTasks : []}
                         columns={columns}
-                        options={options}
+                        getRowId={(row) => row.completed_assessment_id}
+                        height="21rem"
                     />
                 </Box>
             </Box>

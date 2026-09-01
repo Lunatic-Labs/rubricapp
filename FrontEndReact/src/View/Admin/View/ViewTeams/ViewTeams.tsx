@@ -7,6 +7,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import { genericResourceDELETE } from "../../../../utility";
 import { Team } from '../../../../types/Team';
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * Creates an instance of the ViewTeams component.
@@ -66,199 +67,130 @@ class ViewTeams extends Component<ViewTeamsProps> {
     var chosenCourse = state.chosenCourse;
     var setAddTeamTabWithTeam = navbar.setAddTeamTabWithTeam;
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "team_name",
-        label: "Team Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => {
-            return { width: "20%" };
-          },
-          setCellProps: () => {
-            return { width: "20%" };
-          },
+        field: "team_name",
+        headerName: "Team Name",
+        flex: 2,
+      },
+      {
+        field: "observer_id",
+        headerName: "Observer Name",
+        flex: 3,
+        renderCell: (params) => {
+          return params.value === chosenCourse["admin_id"] ? (
+            <p> Admin </p>
+          ) : (
+            <p>{users[params.value]}</p>
+          );
         },
       },
       {
-        name: "observer_id",
-        label: "Observer Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => {
-            return { width: "30%" };
-          },
-          setCellProps: () => {
-            return { width: "30%" };
-          },
-          customBodyRender: (observerId: number) => {
-            return observerId === chosenCourse["admin_id"] ? (
-              <p> Admin </p>
-            ) : (
-              <p>{users[observerId]}</p>
-            );
-          },
-        },
-      },
-      {
-        name: "date_created",
-        label: "Date Created",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => {
-            return { width: "20%" };
-          },
-          setCellProps: () => {
-            return { width: "20%" };
-          },
-          customBodyRender: (date: string) => {
-            var year = "";
-            var month = "";
-            var day = "";
+        field: "date_created",
+        headerName: "Date Created",
+        flex: 2,
+        renderCell: (params) => {
+          const date: string = params.value;
+          var year = "";
+          var month = "";
+          var day = "";
 
-            for (var dateIndex = 0; dateIndex < date.length; dateIndex++) {
-              if (date[dateIndex] !== "-") {
-                if (dateIndex >= 0 && dateIndex < 4) {
-                  year += date[dateIndex];
-                }
+          for (var dateIndex = 0; dateIndex < date.length; dateIndex++) {
+            if (date[dateIndex] !== "-") {
+              if (dateIndex >= 0 && dateIndex < 4) {
+                year += date[dateIndex];
+              }
 
-                if (dateIndex === 5 || dateIndex === 6) {
-                  month += date[dateIndex];
-                }
+              if (dateIndex === 5 || dateIndex === 6) {
+                month += date[dateIndex];
+              }
 
-                if (dateIndex > 6 && dateIndex < date.length) {
-                  day += date[dateIndex];
-                }
+              if (dateIndex > 6 && dateIndex < date.length) {
+                day += date[dateIndex];
               }
             }
-            return <p>{month + "/" + day + "/" + year}</p>;
-          },
+          }
+          return <p>{month + "/" + day + "/" + year}</p>;
         },
       },
       {
-        name: "team_id",
-        label: "Edit",
-        options: {
-          filter: false,
-          sort: false,
-          setCellHeaderProps: () => {
-            return {
-              align: "center",
-              width: "10%",
-              className: "button-column-alignment",
-            };
-          },
-          setCellProps: () => {
-            return {
-              align: "center",
-              width: "10%",
-              className: "button-column-alignment",
-            };
-          },
-          customBodyRender: (teamId: number) => {
-            return (
-              <IconButton
-                onClick={() => {
-                  setAddTeamTabWithTeam(teams, teamId, users, "AddTeam");
-                }}
-                aria-label="editTeamIconButton"
-              >
-                <EditIcon sx={{ color: "black" }} />
-              </IconButton>
-            );
-          },
+        field: "edit_action",
+        headerName: "Edit",
+        flex: 1,
+        sortable: false,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const teamId = params.row.team_id;
+          return (
+            <IconButton
+              onClick={() => {
+                setAddTeamTabWithTeam(teams, teamId, users, "AddTeam");
+              }}
+              aria-label="editTeamIconButton"
+            >
+              <EditIcon sx={{ color: "black" }} />
+            </IconButton>
+          );
         },
       },
       {
-        name: "team_id",
-        label: "Delete",
-        options: {
-          filter: false,
-          sort: false,
-          setCellHeaderProps: () => {
-            return {
-              align: "center",
-              width: "10%",
-              className: "button-column-alignment",
-            };
-          },
-          setCellProps: () => {
-            return {
-              align: "center",
-              width: "10%",
-              className: "button-column-alignment",
-            };
-          },
-          customBodyRender: (teamId: number) => {
-            return (
-              <IconButton
-                onClick={() => {
-                  if (
-                    window.confirm("Are you sure you want to delete this team?")
-                  ) {
-                    this.deleteTeam(teamId);
-                  }
-                }}
-                aria-label="deleteTeamIconButton"
-              >
-                <DeleteIcon sx={{ color: "black" }} />
-              </IconButton>
-            );
-          },
+        field: "delete_action",
+        headerName: "Delete",
+        flex: 1,
+        sortable: false,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const teamId = params.row.team_id;
+          return (
+            <IconButton
+              onClick={() => {
+                if (
+                  window.confirm("Are you sure you want to delete this team?")
+                ) {
+                  this.deleteTeam(teamId);
+                }
+              }}
+              aria-label="deleteTeamIconButton"
+            >
+              <DeleteIcon sx={{ color: "black" }} />
+            </IconButton>
+          );
         },
       },
       {
-        name: "team_id",
-        label: "View Team Members",
-        options: {
-          filter: false,
-          sort: false,
-          setCellHeaderProps: () => {
-            return {
-              align: "center",
-              width: "10%",
-              className: "button-column-alignment",
-            };
-          },
-          setCellProps: () => {
-            return {
-              align: "center",
-              width: "10%",
-              className: "button-column-alignment",
-            };
-          },
-          customBodyRender: (teamId: number) => {
-            return (
-              <IconButton
-                onClick={() => {
-                  setAddTeamTabWithTeam(teams, teamId, users, "TeamMembers");
-                }}
-                aria-label="viewTeamsIconButton"
-              >
-                <VisibilityIcon sx={{ color: "black" }} />
-              </IconButton>
-            );
-          },
+        field: "view_members_action",
+        headerName: "View Team Members",
+        flex: 1,
+        sortable: false,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const teamId = params.row.team_id;
+          return (
+            <IconButton
+              onClick={() => {
+                setAddTeamTabWithTeam(teams, teamId, users, "TeamMembers");
+              }}
+              aria-label="viewTeamsIconButton"
+            >
+              <VisibilityIcon sx={{ color: "black" }} />
+            </IconButton>
+          );
         },
       },
     ];
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "55vh",
-    };
 
     return (
       <CustomDataTable
         data={teams ? teams : []}
         columns={columns}
-        options={options}
+        getRowId={(row) => row.team_id}
+        height="55vh"
       />
     );
   }

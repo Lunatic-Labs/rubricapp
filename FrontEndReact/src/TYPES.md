@@ -1091,10 +1091,12 @@ The components in this folder form a tree: `CompleteAssessmentTask` → `Form` �
 | Field | Type |
 |-------|------|
 | `data` | `object[]` |
-| `columns` | `any[]` |
-| `options?` | `Record<string, unknown>` |
+| `columns` | `GridColDef[]` |
+| `getRowId` | `(row: any) => string \| number` |
+| `height?` | `string` |
+| `options?` | `Partial<DataGridProps>` |
 
-> Uses `import MUIDataTable from 'mui-datatables'` (default import only — named exports not available in installed version).
+> Uses `import { DataGrid } from '@mui/x-data-grid'`. `getRowId` is required since row objects use entity-specific id fields (e.g. `user_id`, `team_id`) rather than a plain `id`.
 
 ---
 

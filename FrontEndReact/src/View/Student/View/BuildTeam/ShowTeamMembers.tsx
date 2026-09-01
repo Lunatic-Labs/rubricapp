@@ -5,6 +5,7 @@ import { IconButton } from '@mui/material';
 import CustomDataTable from '../../../Components/CustomDataTable'
 import { genericResourceGET } from '../../../../utility';
 import { User } from '../../../../types/User';
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * @description
@@ -115,54 +116,40 @@ class ShowTeamMembers extends Component<ShowTeamMembersProps, ShowTeamMembersSta
     }
 
     render() {
-        const studentColumns = [
+        const studentColumns: GridColDef[] = [
             {
-                name: "first_name",
-                label: "First Name",
-                options: {
-                    filter: true,
-                    align: "center",
-                }
+                field: "first_name",
+                headerName: "First Name",
+                flex: 1,
+                align: "center",
+                headerAlign: "center",
             },
             {
-                name: "last_name",
-                label: "Last Name",
-                options: {
-                    filter: true,
-                    align: "center"
-                }
+                field: "last_name",
+                headerName: "Last Name",
+                flex: 1,
+                align: "center",
+                headerAlign: "center",
             },
             {
-                name: "user_id",
-                label: "Unassign",
-                options: {
-                    filter: false,
-                    sort: false,
-                    customBodyRender: (userId: number) => {
-                        return (
-                            <IconButton aria-label='controlled'
-                                onClick={() => {
-                                    this.removeUser(userId);
-                                }}
-                            >
-                                <RemoveCircleOutlineIcon/>
-                            </IconButton>
-                        );
-                    }
-                }
+                field: "user_id",
+                headerName: "Unassign",
+                flex: 1,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => (
+                    <IconButton aria-label='controlled'
+                        onClick={() => {
+                            this.removeUser(params.value);
+                        }}
+                    >
+                        <RemoveCircleOutlineIcon/>
+                    </IconButton>
+                )
             }
         ];
-
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "standard",
-            tableBodyMaxHeight: "21rem",
-        };
 
         var navbar = this.props.navbar;
         var teamId = navbar.buildTeam.selectedTeam;
@@ -172,10 +159,11 @@ class ShowTeamMembers extends Component<ShowTeamMembersProps, ShowTeamMembersSta
             <>
                 { (teamId !== null) && students !== null &&
                     <>
-                        <CustomDataTable 
+                        <CustomDataTable
                             data={students}
                             columns={studentColumns}
-                            options={options}
+                            getRowId={(row) => row.user_id}
+                            height="21rem"
                         />
                     </>
                 }

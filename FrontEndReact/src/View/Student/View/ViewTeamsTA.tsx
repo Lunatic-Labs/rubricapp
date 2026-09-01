@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * @description
@@ -21,6 +22,7 @@ import CustomDataTable from "../../Components/CustomDataTable";
  */
 
 interface TATeam {
+    team_id: number;
     teamName: string;
     studentNames: string;
 }
@@ -35,49 +37,28 @@ class ViewTeamsTA extends Component<ViewTeamsTAProps> {
   render() {
     var teams = this.props.teams;
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "teamName",
-        label: "Team Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"230px" } },
-          setCellProps: () => { return { width:"230px" } },
-        }
+        field: "teamName",
+        headerName: "Team Name",
+        width: 230,
       },
-      
       {
-        name: "studentNames",
-        label: "Team Member Names",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"230px" } },
-          setCellProps: () => { return { width:"230px" } },
-          customBodyRender: (users: string) => {
-            return(
-              <p className="pt-3">{users}</p>
-            )
-          }
-        }
+        field: "studentNames",
+        headerName: "Team Member Names",
+        width: 230,
+        renderCell: (params) => (
+          <p className="pt-3">{params.value}</p>
+        )
       },
     ];
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "21rem"
-    };
 
     return (
       <CustomDataTable
         data={teams ? teams : []}
         columns={columns}
-        options={options}
+        getRowId={(row) => row.team_id}
+        height="21rem"
       />
     )
   }

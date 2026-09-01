@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
-import MUIDataTable from '../../../../../LibAdapters/MUIDataTable';
+import CustomDataTable from '../../../../Components/CustomDataTable';
+import { GridColDef } from '@mui/x-data-grid';
 
 interface ViewTeamRatingsProps {
     navbar: any;
@@ -9,9 +10,9 @@ interface ViewTeamRatingsProps {
 class ViewTeamRatings extends Component<ViewTeamRatingsProps> {
   render() {
     var allRatings: Record<string, unknown>[] = [];
-    var rating: Record<string, unknown> = {};
 
-    this.props.ratings.map((currentRating: any) => {
+    this.props.ratings.map((currentRating: any, index: number) => {
+        var rating: Record<string, unknown> = { _row_id: index };
         rating["student_name"] = currentRating["first_name"] + " " + currentRating["last_name"];
 
         if(currentRating["rating_observable_characteristics_suggestions_data"]) {
@@ -25,80 +26,60 @@ class ViewTeamRatings extends Component<ViewTeamRatingsProps> {
         return allRatings;
     });
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "team_name",
-        label: "Team Name",
-        options: {
-          filter: true,
-        }
+        field: "team_name",
+        headerName: "Team Name",
+        flex: 1,
       },
       {
-        name: "Identifying the Goal",
-        label: "Identifying the Goal",
-        options: {
-          filter: true,
-        }
+        field: "Identifying the Goal",
+        headerName: "Identifying the Goal",
+        flex: 1,
       },
       {
-        name: "Evaluating",
-        label: "Evaluating",
-        options: {
-          filter: true,
-        }
+        field: "Evaluating",
+        headerName: "Evaluating",
+        flex: 1,
       },
       {
-        name: "Analyzing",
-        label: "Analyzing",
-        options : {
-          filter: true,
-        }
+        field: "Analyzing",
+        headerName: "Analyzing",
+        flex: 1,
       },
       {
-        name: "Synthesizing",
-        label: "Synthesizing",
-        options: {
-          filter: true,
-        }
+        field: "Synthesizing",
+        headerName: "Synthesizing",
+        flex: 1,
       },
       {
-        name: "Forming Arguments (Structure)",
-        label: "Forming Arguments (Structure)",
-        options: {
-          filter: true,
-        }
+        field: "Forming Arguments (Structure)",
+        headerName: "Forming Arguments (Structure)",
+        flex: 1,
       },
       {
-        name: "Forming Arguments (Validity)",
-        label: "Forming Arguments (Validity)",
-        options: {
-          filter: true,
-          align: "center"
-        }
+        field: "Forming Arguments (Validity)",
+        headerName: "Forming Arguments (Validity)",
+        flex: 1,
+        align: "center",
+        headerAlign: "center",
       },
       {
-        name: "Feedback Information",
-        label: "Feedback Information",
-        options: {
-          filter: true,
-          align: "center"
-        }
+        field: "Feedback Information",
+        headerName: "Feedback Information",
+        flex: 1,
+        align: "center",
+        headerAlign: "center",
       }
     ];
 
-    const options: any = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "standard",
-      tableBodyMaxHeight: "70%",
-    };
-
     return (
-      <MUIDataTable title="" data={allRatings} columns={columns} options={options}/>
+      <CustomDataTable
+        data={allRatings}
+        columns={columns}
+        getRowId={(row) => row._row_id}
+        height="70%"
+      />
     )
   }
 }

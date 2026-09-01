@@ -6,6 +6,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { genericResourcePOST, formatTime } from "../../../../utility";
 import { AssessmentTask } from '../../../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { GridColDef } from '@mui/x-data-grid';
 
 interface ViewCompletedAssessmentTasksProps {
     navbar: any;
@@ -34,167 +35,138 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
         const completedAssessments = this.props.completedAssessments;
         const assessmentTasks = this.props.assessmentTasks;
 
-        const columns = [
+        const columns: GridColDef[] = [
             {
-                name: "assessment_task_name",
-                label: "Task Name",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"250px" } },
-                    setCellProps: () => { return { width:"250px" } },
+                field: "assessment_task_name",
+                headerName: "Task Name",
+                width: 250,
+            },
+            {
+                field: "initial_time",
+                headerName: "Initial Time",
+                width: 150,
+                renderCell: (params) => {
+                    const atId = params.row.assessment_task_id;
+                    const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
+                    const timeZone = chosenAT?.time_zone || '';
+                    return(
+                        <>
+                            {params.value ? formatTime(params.value, timeZone) : "N/A"}
+                        </>
+                    );
                 }
             },
             {
-                name: "initial_time",
-                label: "Initial Time",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"150px" } },
-                    setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (initial_time: string, tableMeta: { rowData: unknown[] }) => {
-                        const atId = tableMeta.rowData[3] as number;
-                        const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
-                        const timeZone = chosenAT?.time_zone || '';
-                        return(
-                            <>
-                                {initial_time ? formatTime(initial_time, timeZone) : "N/A"}
-                            </>
-                        );
-                    }
+                field: "last_update",
+                headerName: "Last Update",
+                width: 150,
+                renderCell: (params) => {
+                    const atId = params.row.assessment_task_id;
+                    const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
+                    const timeZone = chosenAT?.time_zone || '';
+                    return(
+                        <>
+                            {params.value ? formatTime(params.value, timeZone) : "N/A"}
+                        </>
+                    );
                 }
             },
             {
-                name: "last_update",
-                label: "Last Update",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"150px" } },
-                    setCellProps: () => { return { width:"150px" } },
-                    customBodyRender: (last_update: string, tableMeta: { rowData: unknown[] }) => {
-                        const atId = tableMeta.rowData[3] as number;
-                        const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
-                        const timeZone = chosenAT?.time_zone || '';
-                        return(
-                            <>
-                                {last_update ? formatTime(last_update, timeZone) : "N/A"}
-                            </>
-                        );
+                field: "assessment_task_id",
+                headerName: "Unit of Assessment",
+                width: 170,
+                renderCell: (params) => {
+                    const chosenAT = assessmentTasks.find((at) => at.assessment_task_id === params.value);
+                    if (!chosenAT) {
+                        return <>UNDEFINED</>
                     }
+                    return <>{chosenAT.unit_of_assessment ? "Team" : "Individual"}</>;
                 }
             },
             {
-                name: "assessment_task_id",
-                label: "Unit of Assessment",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"170px" } },
-                    setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId: number) => {
-                        const chosenAT = assessmentTasks.find((at) => at.assessment_task_id === atId);
-                        if (!chosenAT) {
-                            return <>UNDEFINED</>
-                        }
-                        return <>{chosenAT.unit_of_assessment ? "Team" : "Individual"}</>;
-                    }
+                field: "completed_by_role",
+                headerName: "Completed By",
+                width: 140,
+                renderCell: (params) => {
+                    const atId = params.row.assessment_task_id;
+                    const at = assessmentTasks.find((at) => at.assessment_task_id === atId);
+                    const completer = at?.role_id;
+                    return <>{completer === 5 ? "Student" : "TA/Instructor"}</>;
                 }
             },
             {
-                name: "assessment_task_id",
-                label: "Completed By",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"140px" } },
-                    setCellProps: () => { return { width:"140px" } },
-                    customBodyRender: (atId: number) => {
-                        const at = assessmentTasks.find((at) => at.assessment_task_id === atId);
-                        const completer = at?.role_id;
-                        return <>{completer === 5 ? "Student" : "TA/Instructor"}</>;
-                    }
-                }
-            },
-            {
-                name: "assessment_task_id",
-                label: "View",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
-                    setCellProps: () => { return { align:"center", width:"100px", className:"button-column-alignment" } },
-                    customBodyRender: (atId: number) => {
-                        return (
-                            <div>
-                                <IconButton
-                                    onClick={() => {
-                              var singularCompletedAssessment = null;
-                              if (completedAssessments) {
-                                  singularCompletedAssessment
-                                      = completedAssessments.find(
-                                          (completedAssessment) => completedAssessment.assessment_task_id === atId
-                                      ) ?? null;
-                              }
-                                /**
-                                 * POST /rating
-                                 *
-                                 * Purpose:
-                                 *  - Record that a user has viewed the rating/feedback for a
-                                 *    specific completed assessment.
-                                 *
-                                 * Endpoint:
-                                 *  - POST /rating
-                                 *
-                                 * Body (JSON):
-                                 *  {
-                                 *    "user_id": <number>,                 // singularCompletedAssessment.user_id
-                                 *    "completed_assessment_id": <number>  // singularCompletedAssessment.completed_assessment_id
-                                 *  }
-                                 *
-                                 * Notes:
-                                 *  - No query parameters are used on this endpoint.
-                                 *  - This call runs each time the "View" icon is clicked before
-                                 *    navigating to the instructions/feedback view.
-                                 */
-                              genericResourcePOST(
-                                `/rating`,
-                                this,
-                                JSON.stringify({
-                                    "user_id" : singularCompletedAssessment!.user_id,
-                                    "completed_assessment_id": singularCompletedAssessment!.completed_assessment_id,
-                                }),
-                              );
-                              this.props.navbar.setAssessmentTaskInstructions(
-                                  assessmentTasks,
-                                  atId,
-                                  completedAssessments,
-                                  { readOnly: true, skipInstructions: true }
-                              );
-                                      }}
-                                    aria-label="completedAssessmentTasksViewIconButton"
-                                >
-                                    <VisibilityIcon sx={{color:"black"}} />
-                                </IconButton>
-                            </div>
-                        );
-                    }
+                field: "view_action",
+                headerName: "View",
+                width: 100,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                    const atId = params.row.assessment_task_id;
+                    return (
+                        <div>
+                            <IconButton
+                                onClick={() => {
+                          var singularCompletedAssessment = null;
+                          if (completedAssessments) {
+                              singularCompletedAssessment
+                                  = completedAssessments.find(
+                                      (completedAssessment) => completedAssessment.assessment_task_id === atId
+                                  ) ?? null;
+                          }
+                            /**
+                             * POST /rating
+                             *
+                             * Purpose:
+                             *  - Record that a user has viewed the rating/feedback for a
+                             *    specific completed assessment.
+                             *
+                             * Endpoint:
+                             *  - POST /rating
+                             *
+                             * Body (JSON):
+                             *  {
+                             *    "user_id": <number>,                 // singularCompletedAssessment.user_id
+                             *    "completed_assessment_id": <number>  // singularCompletedAssessment.completed_assessment_id
+                             *  }
+                             *
+                             * Notes:
+                             *  - No query parameters are used on this endpoint.
+                             *  - This call runs each time the "View" icon is clicked before
+                             *    navigating to the instructions/feedback view.
+                             */
+                          genericResourcePOST(
+                            `/rating`,
+                            this,
+                            JSON.stringify({
+                                "user_id" : singularCompletedAssessment!.user_id,
+                                "completed_assessment_id": singularCompletedAssessment!.completed_assessment_id,
+                            }),
+                          );
+                          this.props.navbar.setAssessmentTaskInstructions(
+                              assessmentTasks,
+                              atId,
+                              completedAssessments,
+                              { readOnly: true, skipInstructions: true }
+                          );
+                                  }}
+                                aria-label="completedAssessmentTasksViewIconButton"
+                            >
+                                <VisibilityIcon sx={{color:"black"}} />
+                            </IconButton>
+                        </div>
+                    );
                 }
             },
         ];
-
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "21rem"
-        };
 
         return (
             <CustomDataTable
                 data={completedAssessments ? completedAssessments : []}
                 columns={columns}
-                options={options}
+                getRowId={(row) => row.completed_assessment_id}
+                height="21rem"
             />
         )
     }

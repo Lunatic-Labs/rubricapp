@@ -5,6 +5,7 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import { genericResourceGET, genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import { Checkbox, Typography } from "@mui/material";
 import { User } from "../../../../types/User";
+import { GridColDef } from '@mui/x-data-grid';
 
 interface AdminEditTeamMembersProps {
     navbar: any;
@@ -100,107 +101,51 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
 
     render() {
         
-        const columns = [
+        const columns: GridColDef[] = [
             {
-                name: "first_name",
-                label: "First Name",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => {
-                        return { width: "300px" };
-                    },
-                    setCellProps: () => {
-                        return { width: "300px" };
-                    },
-                },
+                field: "first_name",
+                headerName: "First Name",
+                width: 300,
             },
             {
-                name: "last_name",
-                label: "Last Name",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => {
-                        return { width: "300px" };
-                    },
-                    setCellProps: () => {
-                        return { width: "300px" };
-                    },
-                },
+                field: "last_name",
+                headerName: "Last Name",
+                width: 300,
             },
             {
-              name: "team_name",
-              label: "Current Team",
-              options: {
-                  filter: true,
-                  setCellHeaderProps: () => {
-                      return { width: "300px" };
-                  },
-                  setCellProps: () => {
-                      return { width: "300px" };
-                  },
-                  customBodyRender: (teamName: string | null) => {
-                    return teamName ? teamName : "No team assigned";
-                  }
-              },
+              field: "team_name",
+              headerName: "Current Team",
+              width: 300,
+              renderCell: (params) => (
+                <>{params.value ? params.value : "No team assigned"}</>
+              )
             },
             {
-                name: "email",
-                label: "Email",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => {
-                        return { width: "300px" };
-                    },
-                    setCellProps: () => {
-                        return { width: "300px" };
-                    },
-                },
+                field: "email",
+                headerName: "Email",
+                width: 300,
             },
             {
-                name: "user_id",
-                label: this.props.addTeamAction,
-                options: {
-                    filter: true,
-                    sort: false,
-                    setCellHeaderProps: () => {
-                        return {
-                            align: "center",
-                            width: "130px",
-                            className: "button-column-alignment",
-                        };
-                    },
-                    setCellProps: () => {
-                        return {
-                            align: "center",
-                            width: "130px",
-                            className: "button-column-alignment",
-                        };
-                    },
-                    customBodyRender: (userId: number) => {
-                        return (
-                            <Checkbox
-                                checked={this.state.userEdits[userId] !== undefined}
-                                onChange={() => {
-                                    this.saveUser(userId);
-                                }}
-                                sx={{ color: "black" }}
-                            />
-                        );
-                    },
+                field: "user_id",
+                headerName: this.props.addTeamAction,
+                width: 130,
+                sortable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                    const userId = params.value;
+                    return (
+                        <Checkbox
+                            checked={this.state.userEdits[userId] !== undefined}
+                            onChange={() => {
+                                this.saveUser(userId);
+                            }}
+                            sx={{ color: "black" }}
+                        />
+                    );
                 },
             },
         ];
-
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "500px",
-        };
 
         return (
             <div className="container">
@@ -235,7 +180,8 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
                 <CustomDataTable
                     data={this.state.users ? this.state.users : []}
                     columns={columns}
-                    options={options}
+                    getRowId={(row) => row.user_id}
+                    height="500px"
                 />
             </div>
         );

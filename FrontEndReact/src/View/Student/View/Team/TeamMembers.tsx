@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from '../../../Components/CustomDataTable';
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * @description
@@ -29,46 +30,30 @@ class TeamMembers extends Component<TeamMembersProps>{
     var navbar = this.props.navbar;
     var users = navbar.studentTeamMembers.users;
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "first_name",
-        label: "First Name",
-        options: {
-          filter: true,
-        }
+        field: "first_name",
+        headerName: "First Name",
+        flex: 1,
       },
       {
-        name: "last_name",
-        label: "Last Name",
-        options: {
-          filter: true,
-        }
+        field: "last_name",
+        headerName: "Last Name",
+        flex: 1,
       },
       {
-        name: "email",
-        label: "Email",
-        options: {
-          filter: true,
-        }
+        field: "email",
+        headerName: "Email",
+        flex: 1,
       }
     ];
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "75%"
-    };
 
     return (
       <CustomDataTable
         data={users ? users : []}
         columns={columns}
-        options={options}
+        getRowId={(row) => row.user_id}
+        height="75%"
       />
     )
   }

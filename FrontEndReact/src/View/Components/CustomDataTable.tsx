@@ -1,33 +1,41 @@
 import React from 'react';
-import { createTheme, ThemeProvider } from '@mui/material';
-//import MUIDataTable from 'mui-datatables';
-import { useMediaQuery } from '@mui/material';
-import MUIDataTable from "../../LibAdapters/MUIDataTable";
+import { Box, createTheme, ThemeProvider } from '@mui/material';
+import { DataGrid, DataGridProps, GridColDef } from '@mui/x-data-grid';
 
 interface CustomDataTableProps {
-    data: object[];
-    columns: any[];
-    options?: Record<string, unknown>;
+  data: object[];
+  columns: GridColDef[];
+  getRowId: (row: any) => string | number;
+  height?: string;
+  options?: Partial<DataGridProps>;
 }
 
 const customTheme = createTheme({
   spacing: 4,
   components: {
-    MUIDataTableBodyCell: {
+    MuiDataGrid: {
       styleOverrides: {
         root: {
-          fontSize: "1.5rem",
-          padding: ".01rem .5rem",
-          margin: ".01rem",
-          alignItems: "center",
-          color: "var(--table-text)",
+          border: 'none',
         },
-      },
-    },
-    // @ts-ignore: MUIDataTable custom component
-    MUIDataTableBodyRow: {
-      styleOverrides: {
-        root: {
+        columnHeaders: {
+          backgroundColor: 'var(--table-header)',
+        },
+        columnHeader: {
+          fontSize: '1.4rem',
+          padding: '.01rem .5rem',
+          color: 'var(--table-text)',
+        },
+        columnHeaderTitle: {
+          color: 'var(--table-text)',
+        },
+        cell: {
+          fontSize: '1.5rem',
+          padding: '.01rem .5rem',
+          alignItems: 'center',
+          color: 'var(--table-text)',
+        },
+        row: {
           '&:nth-of-type(even)': {
             backgroundColor: 'var(--light_grey_ADA)',
             '&:hover': {
@@ -41,27 +49,28 @@ const customTheme = createTheme({
             },
           },
         },
-      },
-    },
-    // @ts-ignore: MUIDataTable custom component
-    MUIDataTableToolbar: {
-      styleOverrides: {
-        root: {
-          backgroundColor: "var(--table-toolbar)",
-          color: "var(--table-text)",
+        toolbarContainer: {
+          backgroundColor: 'var(--table-toolbar)',
+          color: 'var(--table-text)',
+        },
+        footerContainer: {
+          padding: '.01rem .5rem',
+          fontSize: '1rem',
+          backgroundColor: 'var(--table-toolbar)',
+          color: 'var(--table-text)',
         },
       },
     },
     MuiPaper: {
-  styleOverrides: {
-    root: {
-      width: '100%',    
-      maxWidth: '100%',
-      overflowX: 'hidden',
-      boxSizing: 'border-box'
+      styleOverrides: {
+        root: {
+          width: '100%',
+          maxWidth: '100%',
+          overflowX: 'hidden',
+          boxSizing: 'border-box'
         }
       }
-     },
+    },
     MuiButton: {
       styleOverrides: {
         root: {
@@ -86,17 +95,6 @@ const customTheme = createTheme({
           '&:hover': {
             backgroundColor: "var(--light_grey_hover)",
           },
-        },
-      },
-    },
-    // @ts-ignore: MUIDataTable custom component
-    MUIDataTableFooter: {
-      styleOverrides: {
-        root: {
-          padding: ".01rem .5rem",
-          fontSize: "1rem",
-          backgroundColor: "var(--table-toolbar)",
-          color: "var(--table-text)",
         },
       },
     },
@@ -165,81 +163,61 @@ const customTheme = createTheme({
         },
       },
     },
-    // @ts-ignore: MUIDataTable custom component
-    MUIDataTableHeadCell: {
+    MuiTablePagination: {
       styleOverrides: {
         root: {
-          backgroundColor: "var(--table-header)",
-          color: "var(--table-text)",
-          padding: ".01rem .5rem", 
-          fontSize: "1.4rem",
+          width: '100%',
+          overflowX: 'hidden',
         },
-      },
-    },
-    MUIDataTablePagination: {
-    styleOverrides: {
-    root: {
-      '@media (max-width: 600px)': {
-        flexWrap: 'wrap',
-        padding: '0px',
-        width: '100%',
+        toolbar: {
+          flexWrap: 'wrap',
+          padding: '4px 0px',
+          justifyContent: 'flex-end',
+          width: '100%',
+          gap: '4px',
+          minHeight: 'unset',
+        },
+        spacer: {
+          display: 'none',
+        },
+        selectLabel: {
+          fontSize: '0.75rem',
+          margin: '0px',
+        },
+        displayedRows: {
+          fontSize: '0.75rem',
+          margin: '0px',
+        },
+        actions: {
+          marginLeft: '0px',
+          flexShrink: 0,
+        }
       }
     },
   },
-},
-MuiTablePagination: {
-  styleOverrides: {
-    root: {
-        width: '100%',
-        overflowX: 'hidden',
-      
-    },
-    toolbar: {
-        flexWrap: 'wrap',
-        padding: '4px 0px',
-        justifyContent: 'flex-end',
-        width: '100%',
-        gap: '4px',
-        minHeight: 'unset',
-      },
-    spacer: {
-        display: 'none',
-    },
-    selectLabel: {
-        fontSize: '0.75rem',
-        margin: '0px',
-    },
-    displayedRows: {
-        fontSize: '0.75rem',
-        margin: '0px',
-      },
-    actions: {
-      marginLeft: '0px',
-      flexShrink: 0,
-    }
-  }
-},
+});
+
+const defaultOptions: Partial<DataGridProps> = {
+  disableRowSelectionOnClick: true,
+  pageSizeOptions: [10, 25, 50],
+  initialState: {
+    pagination: { paginationModel: { pageSize: 10 } },
   },
-}
-);
+};
 
-const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
-  const isMobile = useMediaQuery('(max-width:100%)');
-  const defaultOptions = {
-    rowStyle: { height: 4 },
-    responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard",
-  };
-
-  const tableOptions = { ...defaultOptions, ...options, responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard" };
+const CustomDataTable = ({ data, columns, getRowId, height = "50vh", options }: CustomDataTableProps) => {
+  const gridOptions = { ...defaultOptions, ...options };
 
   return (
     <ThemeProvider theme={customTheme}>
-      <MUIDataTable
-        title=""
-        data={data}
-        columns={columns}
-        options={tableOptions}
-      />
+      <Box sx={{ height, width: '100%' }}>
+        <DataGrid
+          rows={data}
+          columns={columns}
+          getRowId={getRowId}
+          {...gridOptions}
+        />
+      </Box>
     </ThemeProvider>
   );
 };

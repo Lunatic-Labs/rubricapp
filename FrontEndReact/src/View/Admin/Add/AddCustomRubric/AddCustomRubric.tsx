@@ -14,6 +14,7 @@ import Loading from '../../../Loading/Loading';
 import FormHelperText from '@mui/material/FormHelperText';
 import { Rubric } from "../../../../types/Rubric";
 import { Category } from "../../../../types/Category";
+import { GridColDef } from '@mui/x-data-grid';
 
 interface AddCustomRubricProps {
     navbar: any;
@@ -216,42 +217,24 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
     render() {
         const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics } = this.state;
 
-        const categoryTableColumns = [
+        const categoryTableColumns: GridColDef[] = [
             {
-                name: "category_name",
-                label: "Category",
-                options: {
-                    filter: true,
-                    align: "center",
-                    customBodyRender: (categoryName: string) => {
-                        return <p>{categoryName}</p>;
-                    },
-                },
+                field: "category_name",
+                headerName: "Category",
+                flex: 1,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => <p>{params.value}</p>,
             },
             {
-                name: "rubric_name",
-                label: "Rubric",
-                options: {
-                    align: "center",
-                    customBodyRender: (rubricName: string) => {
-                        return <p>{rubricName}</p>;
-                    },
-                },
+                field: "rubric_name",
+                headerName: "Rubric",
+                flex: 1,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => <p>{params.value}</p>,
             },
         ];
-
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "21rem",
-            search: false,
-            filter: false,
-            viewColumns: false,
-        };
 
         if (errorMessage){
             return(
@@ -461,7 +444,8 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             <CustomDataTable
                                 data={pickedCategories}
                                 columns={categoryTableColumns}
-                                options={options}
+                                getRowId={(row) => row.category_id}
+                                height="21rem"
                             />
                         </Grid>
 

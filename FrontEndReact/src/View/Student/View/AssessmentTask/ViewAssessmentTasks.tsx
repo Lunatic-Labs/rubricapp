@@ -5,6 +5,7 @@ import { Box, Button } from '@mui/material';
 import { getHumanReadableDueDate } from '../../../../utility';
 import { AssessmentTask } from '../../../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * @description
@@ -161,76 +162,57 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
 
         var assessmentTasks = this.props.assessmentTasks;
 
-        const columns = [
+        const columns: GridColDef[] = [
             {
-                name: "assessment_task_name",
-                label: "Task Name",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"300x"}},
-                    setCellProps: () => { return { width:"300px"} },
-                }
+                field: "assessment_task_name",
+                headerName: "Task Name",
+                width: 300,
             },
             {
-                name: "unit_of_assessment",
-                label: "Unit of Assessment",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"270px"}},
-                    setCellProps: () => { return { width:"270px"} },
-                    customBodyRender: (isTeam: boolean) => {
-                        return (
-                            <p className='mt-3'>
-                                {isTeam ? "Team" : "Individual"}
-                            </p>
-                        )
-                    }
-                },
+                field: "unit_of_assessment",
+                headerName: "Unit of Assessment",
+                width: 270,
+                renderCell: (params) => (
+                    <p className='mt-3'>
+                        {params.value ? "Team" : "Individual"}
+                    </p>
+                )
             },
             {
-                name: "due_date",
-                label: "Due Date",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"170px"}},
-                    setCellProps: () => { return { width:"170px"} },
-                    customBodyRender: (dueDate: string) => {
-                        let dueDateString = getHumanReadableDueDate(dueDate);
+                field: "due_date",
+                headerName: "Due Date",
+                width: 170,
+                renderCell: (params) => {
+                    let dueDateString = getHumanReadableDueDate(params.value);
 
-                        return(
-                            <p className='mt-3'>
-                                {dueDate ? dueDateString : "N/A"}
-                            </p>
-                        )
-                    }
+                    return(
+                        <p className='mt-3'>
+                            {params.value ? dueDateString : "N/A"}
+                        </p>
+                    )
                 }
             },
             {
-                name: "rubric_id",
-                label: "Rubric Used",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"270px"}},
-                    setCellProps: () => { return { width:"270px"} },
-                    customBodyRender: (rubricId: number) => {
-                        return (
-                            <p className='mt-3'>
-                                {this.props.rubricNames ? this.props.rubricNames[rubricId]:""}
-                            </p>
-                        )
-                    }
-                }
+                field: "rubric_id",
+                headerName: "Rubric Used",
+                width: 270,
+                renderCell: (params) => (
+                    <p className='mt-3'>
+                        {this.props.rubricNames ? this.props.rubricNames[params.value]:""}
+                    </p>
+                )
             },
             {
-                name: "assessment_task_id",
-                label: "TO DO",
-                options: {
-                    filter: false,
-                    sort: false,
-                    setCellHeaderProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"}},
-                    setCellProps: () => { return { align:"center", width:"140px", className:"button-column-alignment"} },
-                    customBodyRender: (atId: number) => {
-                        let at = assessmentTasks.find((at: AssessmentTask) => at["assessment_task_id"] === atId)!;
+                field: "assessment_task_id",
+                headerName: "TO DO",
+                width: 140,
+                sortable: false,
+                filterable: false,
+                align: "center",
+                headerAlign: "center",
+                renderCell: (params) => {
+                    const atId = params.value;
+                    let at = assessmentTasks.find((at: AssessmentTask) => at["assessment_task_id"] === atId)!;
                         let filledByStudent = at!.role_id === 5;
 
                         // Check if user is switching teams (already checked in)
@@ -336,27 +318,16 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                                 </Button>
                             </Box>
                         );
-                    }
                 }
             }
         ];
-
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "21rem"
-        };
 
         return(
             <CustomDataTable
                 data={assessmentTasks ? assessmentTasks : []}
                 columns={columns}
-                options={options}
+                getRowId={(row) => row.assessment_task_id}
+                height="21rem"
             />
         )
     }
