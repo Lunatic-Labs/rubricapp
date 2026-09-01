@@ -12,6 +12,7 @@ from models.rubric import delete_rubric_by_id
 from models.team import delete_team
 from models.queries import *
 from models.ratings_numbers import *
+from models.queries import get_completed_assessments_for_tas_by_course_id
 
 def test_create_completed_assessment(flask_app_mock):
     with flask_app_mock.app_context():
@@ -516,7 +517,7 @@ def test_get_completed_assessment_by_ta_user_id(flask_app_mock):
             data = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
 
-            results = get_completed_assessment_by_ta_user_id(result["course_id"], user[0].user_id)
+            results = get_completed_assessments_for_tas_by_course_id(result["course_id"])
             assert all(r.completed_assessment_id == comp.completed_assessment_id for r in results)
             assert all(r.user_id == user[0].user_id for r in results)
 
