@@ -24,7 +24,8 @@ var sbub = "studentBulkUploadButton";
 var abut = "adminBulkUploadTitle";
 var aub = "addUserButton";
 var auf = "addUserForm";
-test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
+var sat = "superAdminTitle";
+test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminViewUsers.test.tsx Test 1: should render Login Form component", () => {
@@ -108,5 +109,26 @@ test("AdminViewUsers.test.tsx Test 5: Should show Add User Form when clicking th
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(auf);
+    });
+});
+test("AdminViewUsers.test.tsx Test 6: Should show Edit User Form when clicking the Edit Icon for super admin view using super admin credentials (SKIL-795 regression)", async () => {
+    render(<Login />);
+
+    changeElementWithAriaLabelWithInput(ei, "superadminuser01@skillbuilder.edu");
+
+    changeElementWithAriaLabelWithInput(pi, globalThis.SUPER_ADMIN_PASSWORD);
+
+    clickElementWithAriaLabel(lb);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(sat);
+    });
+
+    await waitFor(() => {
+        clickFirstElementWithAriaLabel(eub);
+    },{ timeout: 3000 });
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(eut);
     });
 });
