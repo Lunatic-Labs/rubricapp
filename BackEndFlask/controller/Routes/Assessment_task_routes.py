@@ -43,8 +43,8 @@ from models.queries import (
     get_students_by_team_id,
     get_assessment_task_by_course_id_and_role_id
 )
-
-
+# for password hashing
+import hmac
 
 # /assessment_task GET retrieves all assessment tasks
 # Supported individual filters:
@@ -368,6 +368,37 @@ def copy_course_assessments():
             f"An error occurred copying course assessments {e}", "assessment_tasks", 400
         )
 
+
+@bp.route("/verify_team_password", methods = ['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def verify_team_password():
+    try:
+        data = request.get_json()
+
+        if not data or 'password' not in data or 'assessment_task_id' not in data:
+            return create_bad_response ("Missing Information: password or assessment_task_id", "assesment_tasks", 400)
+        
+        assessment_task_id = data.get('assessment_task_id')
+        entered_password = data.get('password')
+        assessment_task_instance = get_assessment_task(assessment_task_id)
+        correct_password = assessment_task_instance.create_team_password
+
+        if not correct_password:
+            return create_bad_response ("No team switch password set for this assessment task.", 
+                                        "assessment_tasks", 400)
+        if hmac.compare_digest(entered_password, correct_password):
+            return create_good_response({"message": "Password is correct."},
+                                         200, "assessment_tasks")
+        else:
+            return create_bad_response ("Incorrect password.",
+                                         "assessment_tasks", 400)
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred verifying the team password: {e}",
+             "assessment_tasks", 400
+        )
 
 
 class AssessmentTaskSchema(ma.Schema):
