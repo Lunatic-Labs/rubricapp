@@ -64,7 +64,12 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 					this.props.navbar.setState({ teamSwitchPassword: enteredPassword });
 					this.props.navbar.setNewTab("SelectTeam");
 				} else {
+					// Bad response from the server (wrong password, etc.): stay on this
+					// screen so the student can retry, instead of falling into the
+					// generic <ErrorMessage> dead-end that genericResourcePOST's own
+					// setState({ errorMessage }) would otherwise trigger.
 					this.setState({
+						errorMessage: null,
 						validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
 					})
 				}
@@ -72,11 +77,8 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 
 		} catch (error) {
 			this.setState({
-<<<<<<< HEAD
-				validationError: "An error occurred. Please try again."
-=======
+				errorMessage: null,
 				validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
->>>>>>> 691cf85ce738408a33cd328ccf67440a31606daa
 			});
 		}
 
