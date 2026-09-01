@@ -26,6 +26,7 @@ from models.team_user import (
 from models.assessment_task import (
     create_assessment_task,
     delete_assessment_task,
+    get_assessment_tasks_by_course_id,
 )
 from models.completed_assessment import (
     create_completed_assessment,
@@ -201,6 +202,7 @@ def test_get_all_team_users_with_course_and_team_ids(flask_app_mock, sample_toke
             
         finally:
             _safe_cleanup(
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])] if 'result' in locals() else None,
                 lambda: TeamUser.query.delete() if 'team1' in locals() else None,
                 lambda: delete_team(team1.team_id) if 'team1' in locals() else None,
                 lambda: delete_team(team2.team_id) if 'team2' in locals() else None,
@@ -388,10 +390,7 @@ def test_get_all_user_info(flask_app_mock, sample_token, auth_header, client):
 
         finally:
             _safe_cleanup(
-                lambda: TeamUser.query.delete() if 'team1' in locals() else None,
-                lambda: delete_team(team1.team_id) if 'team1' in locals() else None,
-                lambda: delete_team(team2.team_id) if 'team2' in locals() else None,
-                lambda: delete_users(users) if 'users' in locals() else None,
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])] if 'result' in locals() else None,
                 lambda: delete_user(user) if 'user' in locals() else None,
                 lambda: delete_one_admin_course(result) if 'result' in locals() else None,
             )
@@ -451,6 +450,8 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
 
         finally:
             _safe_cleanup(
+                # Delete assessment tasks BEFORE users (CompletedAssessment has FK to both)
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])] if 'result' in locals() else None,
                 lambda: TeamUser.query.delete() if 'team1' in locals() else None,
                 lambda: delete_users(users) if 'users' in locals() else None,
                 lambda: delete_one_admin_course(result) if 'result' in locals() else None,
@@ -999,6 +1000,8 @@ def test_update_user_role_to_ta(flask_app_mock, sample_token, auth_header, clien
 
         finally:
             _safe_cleanup(
+                # Delete assessment tasks BEFORE users (CompletedAssessment has FK to both)
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])] if 'result' in locals() else None,
                 lambda: delete_users(users) if 'users' in locals() else None,
                 lambda: delete_one_admin_course(result) if 'result' in locals() else None,
             )
@@ -1106,6 +1109,8 @@ def test_remove_users_from_team(flask_app_mock, sample_token, auth_header, clien
         
         finally:
             _safe_cleanup(
+                # Delete assessment tasks BEFORE users (CompletedAssessment has FK to both)
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])] if 'result' in locals() else None,
                 lambda: TeamUser.query.delete() if 'team' in locals() else None,
                 lambda: delete_team(team.team_id) if 'team' in locals() else None,
                 lambda: delete_users(users) if 'users' in locals() else None,
