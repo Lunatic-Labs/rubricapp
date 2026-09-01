@@ -423,7 +423,8 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             assert response.status_code == 200
 
             # After backend fix: users_schema.dump([user]) returns a list
-            users_data = data["content"]["users"]
+            # create_good_response wraps the payload once, so the actual users payload is at index 0
+            users_data = data["content"]["users"][0]
             results = users_data if isinstance(users_data, list) else [users_data]
             
             # Verify created users are in results
