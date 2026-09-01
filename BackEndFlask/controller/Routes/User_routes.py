@@ -138,7 +138,7 @@ def get_all_users():
             if uid:
                 user = get_user(uid)  # Trigger an error if not exists.
                 # Return as list for consistency with other endpoints
-                return create_good_response(users_schema.dump([user]), 200, "users")
+                return create_good_response(userss_schema.dump([[user]]), 200, "users")
 
             all_users = get_users()
             return create_good_response(users_schema.dump(all_users), 200, "users")
