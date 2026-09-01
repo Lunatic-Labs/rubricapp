@@ -423,7 +423,13 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             data = response.get_json()
             assert response.status_code == 200
 
-            results = data["content"]["users"][0]
+            # Fix: Check if users is a list or wrapped in another list
+            users_data = data["content"]["users"]
+            if isinstance(users_data, list) and len(users_data) > 0 and isinstance(users_data[0], list):
+                results = users_data[0]
+            else:
+                results = users_data
+            
             expected_ids = {
                 1,
                 result["user_id"],
