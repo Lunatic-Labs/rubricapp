@@ -561,8 +561,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                             )
                         }
                     },
-                }
-            ] as GridColDef[]),
+                },
             {
                 field: "view_action",
                 headerName: "View",
@@ -670,6 +669,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                     return this.renderViewCompletedAssessmentsCell(cellConfig);
                 }
             }
+            ] as GridColDef[])
         ]
 
         return (
