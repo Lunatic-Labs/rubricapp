@@ -53,6 +53,24 @@ def create_bad_response(msg: str, content_type: str, status: int|None = None) ->
     return response, response['status']
 
 
+def create_warning_response(msg: str, content_type: str, status: int) -> tuple[dict, int]:
+    response = __init_response()
+
+    JSON = {content_type: []}
+
+    response["status"] = status
+
+    response["success"] = False
+
+    response["message"] = msg
+
+    response["content"] = JSON
+
+    logger.warning(f"Warning response sent: user_id: {request.args.get('user_id')}, content type: {content_type}, msg: {msg}, status: {response['status']}, warning raised from function: {inspect.stack()[1][3]}")
+
+    return response, response["status"]
+
+
 def create_good_response(whole_json: list[dict], status: int, content_type: str, jwt=None, refresh=None) -> dict:
     """
     Description:

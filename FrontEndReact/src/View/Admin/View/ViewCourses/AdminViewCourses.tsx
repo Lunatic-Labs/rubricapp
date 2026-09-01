@@ -32,7 +32,11 @@ class AdminViewCourses extends Component<AdminViewCoursesProps, AdminViewCourses
     }
 
     componentDidMount() {
-      genericResourceGET(`/course`, 'courses', this);
+        if (this.props.navbar.props.isSuperAdmin) {
+            genericResourceGET(`/course?admin_id=${this.props.navbar.state.user.user_id}`, 'courses', this);
+        } else {
+            genericResourceGET(`/course`, 'courses', this);
+        }
     }
 
     render() {
@@ -62,7 +66,6 @@ class AdminViewCourses extends Component<AdminViewCoursesProps, AdminViewCourses
       var course = state.course;
       var addCourse = state.addCourse;
       var setAddCourseTabWithCourse = navbar.setAddCourseTabWithCourse;
-
       navbar.adminViewCourses = {};
       navbar.adminViewCourses.courses = courses;
       navbar.adminViewCourses.courseRoles = parseCourseRoles(courses as any);
