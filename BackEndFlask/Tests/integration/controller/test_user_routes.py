@@ -837,9 +837,11 @@ def test_add_non_existing_user_to_course(flask_app_mock, sample_token, auth_head
             print("data: ", data)
             assert response.status_code == 200
 
-            assert len(data["content"]["users"][0]) == 0
+            result = data["content"]["users"]
+            assert result[0]["email"] == user_data["email"]
             user = get_user_by_email(user_data["email"])
             assert user is not None
+            assert result[0]["user_id"] == user.user_id
 
             assert get_user_courses_by_user_id(user.user_id) is not None
 
