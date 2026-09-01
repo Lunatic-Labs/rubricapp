@@ -134,6 +134,7 @@ def get_all_users():
 
         if(request.args and request.args.get("user_id")):
             uid = request.args.get("uid")
+            uid = request.args.get("uid") or request.args.get("user_id")
 
             if uid:
                 user = get_user(uid)  # Trigger an error if not exists.

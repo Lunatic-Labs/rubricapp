@@ -1,3 +1,47 @@
+/* ============================================ */
+/* MUI DATE/TIME PICKER — DARK MODE             */
+/* Popup is portaled to <body>, so scoped sx     */
+/* selectors on DateTimePicker never reach it.   */
+/* These global rules do.                        */
+/* ============================================ */
+
+body.mode .MuiPickersCalendarHeader-label,
+body.mode .MuiPickersCalendarHeader-switchViewButton,
+body.mode .MuiDayCalendar-weekDayLabel,
+body.mode .MuiPickersDay-root,
+body.mode .MuiPickersYear-yearButton,
+body.mode .MuiPickersMonth-monthButton,
+body.mode .MuiMultiSectionDigitalClockSection-item,
+body.mode .MuiPickersArrowSwitcher-button {
+  color: var(--dropdown-text) !important;
+}
+
+body.mode .MuiPickersDay-today {
+  border-color: var(--dropdown-text) !important;
+}
+
+body.mode .MuiPickersDay-root.Mui-selected,
+body.mode .MuiPickersYear-yearButton.Mui-selected,
+body.mode .MuiPickersMonth-monthButton.Mui-selected,
+body.mode .MuiMultiSectionDigitalClockSection-item.Mui-selected {
+  color: #ffffff !important;
+  background-color: #2E8BEF !important;
+}
+
+body.mode .MuiPickersDay-root.Mui-disabled,
+body.mode .MuiPickersYear-yearButton.Mui-disabled,
+body.mode .MuiPickersMonth-monthButton.Mui-disabled,
+body.mode .MuiPickersArrowSwitcher-button.Mui-disabled {
+  color: var(--dropdown-disabled-text) !important;
+}
+
+body.mode .MuiDateTimePickerToolbar-root,
+body.mode .MuiPickersToolbar-root,
+body.mode .MuiDateTimePickerTabs-root {
+  background-color: var(--table-toolbar) !important;
+  color: var(--dropdown-text) !important;
+}
+
 .app-body { 
   background-color: #F8F8F8;
   min-height: 100vh;
