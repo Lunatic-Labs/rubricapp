@@ -408,6 +408,63 @@ def test_get_all_user_info(flask_app_mock, sample_token, auth_header, client):
 
 
 def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
+    # NOTE: This test originally called GET /api/user?user_id=<admin_id> and
+    # asserted that ALL created users came back. That only passed because of
+    # a bug: the route's "user_id" branch (User_routes.py) was checking
+    # request.args.get("uid") instead of "user_id", so the filter was never
+    # applied and the code silently fell through to get_users() (all users).
+    # This same bug caused an infinite loading spinner on the frontend
+    # Settings page, which calls GET /user?user_id=<id> expecting a SINGLE
+    # user object back, not a list.
+    #
+    # Fixing the "uid"/"user_id" mismatch makes ?user_id=<id> correctly
+    # return just that one user, which is the intended contract (already
+    # covered by test_get_all_user_info above, which passes uid explicitly).
+    # So this test has been rewritten to exercise the actual "get all users"
+    # branch (no query params at all) instead of re-asserting the old bug.
+    #
+    # Original test body, kept for reference:
+    #
+    # def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
+    #     with flask_app_mock.app_context():
+    #         cleanup_test_users(db.session)
+    #
+    #         try:
+    #             result = create_one_admin_course(False)
+    #             users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+    #
+    #             token = sample_token(user_id=result["user_id"])
+    #
+    #             response = client.get(
+    #                 f"/api/user?user_id={result["user_id"]}",
+    #                 headers=auth_header(token)
+    #             )
+    #
+    #             data = response.get_json()
+    #             assert response.status_code == 200
+    #
+    #             # After backend fix: users_schema.dump([user]) returns a list
+    #             # create_good_response wraps the payload once, so the actual users payload is at index 0
+    #             users_data = data["content"]["users"][0]
+    #             results = users_data if isinstance(users_data, list) else [users_data]
+    #
+    #             # Verify created users are in results
+    #             expected_ids = {
+    #                 result["user_id"],
+    #                 users[0].user_id,
+    #                 users[1].user_id,
+    #                 users[2].user_id,
+    #             }
+    #             actual_ids = {u["user_id"] for u in results}
+    #
+    #             assert actual_ids >= expected_ids, f"Expected at least {expected_ids}, got {actual_ids}"
+    #             assert len(actual_ids) >= 4
+    #             print("teams users: ", results)
+    #             assert any(u["user_id"] == users[0].user_id for u in results)
+    #             assert any(u["user_id"] == result["user_id"] for u in results)
+    #             assert any(u["user_id"] == users[1].user_id for u in results)
+    #             assert any(u["user_id"] == users[2].user_id for u in results)
+    #             assert any(u["owner_id"] == result["user_id"] for u in results)
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
 
@@ -418,18 +475,17 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?user_id={result["user_id"]}",
+                "/api/user",
                 headers=auth_header(token)
             )
 
             data = response.get_json()
             assert response.status_code == 200
 
-            # After backend fix: users_schema.dump([user]) returns a list
-            # create_good_response wraps the payload once, so the actual users payload is at index 0
-            users_data = data["content"]["users"][0]
-            results = users_data if isinstance(users_data, list) else [users_data]
-            
+            # create_good_response wraps the payload in a list once more
+            # (see Route_response.py), so the actual users payload is at index 0
+            results = data["content"]["users"][0]
+
             # Verify created users are in results
             expected_ids = {
                 result["user_id"],
