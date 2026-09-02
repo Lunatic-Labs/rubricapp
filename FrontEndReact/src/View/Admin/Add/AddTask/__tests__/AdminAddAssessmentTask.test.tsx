@@ -185,8 +185,11 @@ test("AdminAddAssessmentTask.test.tsx Test 5: Should return back to the Assessme
 
     clickElementWithAriaLabel(aatn);
 
+    // The backend has no assessment-task-delete endpoint, so this test can't
+    // clean up after itself; a unique name per run keeps repeat runs from
+    // colliding with a task an earlier run already created.
     await waitFor(() => {
-        changeElementWithAriaLabelWithInput(aatn, "Make a class");
+        changeElementWithAriaLabelWithInput(aatn, `Make a class ${Date.now()}`);
     });
 
     await waitFor(() => {
