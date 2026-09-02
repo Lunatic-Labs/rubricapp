@@ -500,7 +500,9 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
 
             # The other created users must NOT leak into this response --
             # this is the exact regression this test exists to catch.
-            other_ids = {users[0].user_id, users[1].user_id, users[2].user_id, users[3].user_id}
+            # (create_users(..., number_of_users=4) only yields 3 users --
+            # it loops range(1, number_of_users) -- so only [0]-[2] exist.)
+            other_ids = {users[0].user_id, users[1].user_id, users[2].user_id}
             actual_ids = {u["user_id"] for u in results}
             assert actual_ids.isdisjoint(other_ids), f"Unexpected users leaked into response: {actual_ids & other_ids}"
 
