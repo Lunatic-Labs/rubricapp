@@ -409,19 +409,25 @@ def test_get_all_user_info(flask_app_mock, sample_token, auth_header, client):
 
 def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
     # NOTE: This test originally called GET /api/user?user_id=<admin_id> and
-    # asserted that ALL created users came back. That only passed because of
-    # a bug: the route's "user_id" branch (User_routes.py) was checking
-    # request.args.get("uid") instead of "user_id", so the filter was never
-    # applied and the code silently fell through to get_users() (all users).
-    # This same bug caused an infinite loading spinner on the frontend
-    # Settings page, which calls GET /user?user_id=<id> expecting a SINGLE
-    # user object back, not a list.
+    # asserted that ALL created users came back. That only ever passed
+    # because of a bug: the route's "user_id" branch (User_routes.py) read
+    # request.args.get("uid") -- which was never sent -- instead of falling
+    # back to "user_id", so the filter never applied and the code silently
+    # returned every user in the database. The exact same bug is what caused
+    # an infinite loading spinner on the frontend Settings page (and a
+    # latent, defensively-worked-around version of it in AppState.tsx):
+    # both call GET /user?user_id=<id> with no "uid", expecting to get back
+    # just their own user record.
     #
-    # Fixing the "uid"/"user_id" mismatch makes ?user_id=<id> correctly
-    # return just that one user, which is the intended contract (already
-    # covered by test_get_all_user_info above, which passes uid explicitly).
-    # So this test has been rewritten to exercise the actual "get all users"
-    # branch (no query params at all) instead of re-asserting the old bug.
+    # Note also: GET /user requires "user_id" on every request regardless of
+    # branch (it's how AuthCheck/verify_token authenticates the caller --
+    # see CustomDecorators.py). That means there is no reachable authenticated
+    # call that returns literally every user with zero filters; the
+    # `all_users = get_users()` fallback at the very bottom of the route
+    # (when no args at all are present) is dead code. So "get all users you
+    # have no filter for" isn't a real scenario to test here -- the
+    # meaningful contract to protect is "user_id with no uid returns just
+    # yourself," which is exactly what broke twice already.
     #
     # Original test body, kept for reference:
     #
@@ -475,34 +481,28 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                "/api/user",
+                f"/api/user?user_id={result["user_id"]}",
                 headers=auth_header(token)
             )
 
             data = response.get_json()
             assert response.status_code == 200
 
-            # create_good_response wraps the payload in a list once more
-            # (see Route_response.py), so the actual users payload is at index 0
-            results = data["content"]["users"][0]
+            # user_id present, no uid -> falls back to "return the caller's
+            # own user" (see User_routes.py), so this is a single-user dump,
+            # not a list. create_good_response wraps whatever payload it's
+            # given in one more list either way (Route_response.py), so the
+            # actual payload lands at index 0.
+            results = data["content"]["users"]
 
-            # Verify created users are in results
-            expected_ids = {
-                result["user_id"],
-                users[0].user_id,
-                users[1].user_id,
-                users[2].user_id,
-            }
+            assert len(results) == 1
+            assert results[0]["user_id"] == result["user_id"]
+
+            # The other created users must NOT leak into this response --
+            # this is the exact regression this test exists to catch.
+            other_ids = {users[0].user_id, users[1].user_id, users[2].user_id, users[3].user_id}
             actual_ids = {u["user_id"] for u in results}
-
-            assert actual_ids >= expected_ids, f"Expected at least {expected_ids}, got {actual_ids}"
-            assert len(actual_ids) >= 4
-            print("teams users: ", results)
-            assert any(u["user_id"] == users[0].user_id for u in results)
-            assert any(u["user_id"] == result["user_id"] for u in results)
-            assert any(u["user_id"] == users[1].user_id for u in results)
-            assert any(u["user_id"] == users[2].user_id for u in results)
-            assert any(u["owner_id"] == result["user_id"] for u in results)
+            assert actual_ids.isdisjoint(other_ids), f"Unexpected users leaked into response: {actual_ids & other_ids}"
 
         finally:
             _safe_cleanup(
