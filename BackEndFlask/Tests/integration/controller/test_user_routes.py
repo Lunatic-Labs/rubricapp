@@ -26,12 +26,29 @@ from models.team_user import (
 from models.assessment_task import (
     create_assessment_task,
     delete_assessment_task,
+    get_assessment_tasks_by_course_id,
 )
 from models.completed_assessment import (
     create_completed_assessment,
     delete_completed_assessment_tasks
 )
 from models.rubric import delete_rubric_by_id
+
+# helper #
+def _safe_cleanup(*ops):
+    errors = []
+    for op in ops:
+        if op is None:
+            continue
+        try:
+            op()
+        except (NameError, AttributeError):
+            # Variable not defined or doesn't exist - this is expected for conditional cleanup
+            pass
+        except Exception as e:
+            errors.append(str(e))
+    if errors:
+        print("Cleanup issues:", " | ".join(errors))
 
 
 def test_get_all_admin_users(flask_app_mock, sample_token, auth_header, client):
@@ -61,11 +78,21 @@ def test_get_all_admin_users(flask_app_mock, sample_token, auth_header, client):
             assert any(r["email"] == teacher.email for r in result)
 
         finally:
-            # Clean up
-            try:
-                delete_user(teacher.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team1.team_id),
+                lambda: delete_team(team2.team_id),
+                lambda: delete_users(users),
+                lambda: delete_user(user),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        delete_user(teacher.user_id)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_teams_users(flask_app_mock, sample_token, auth_header, client):
@@ -117,15 +144,24 @@ def test_get_all_teams_users(flask_app_mock, sample_token, auth_header, client):
             
 
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team1.team_id),
+                lambda: delete_team(team2.team_id),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        TeamUser.query.delete()
+        #        delete_team(team1.team_id)
+        #        delete_team(team2.team_id)
+        #        delete_users(users)
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_team_users_with_course_and_team_ids(flask_app_mock, sample_token, auth_header, client):
@@ -168,15 +204,25 @@ def test_get_all_team_users_with_course_and_team_ids(flask_app_mock, sample_toke
             assert all(u["team_id"] == team1.team_id for u in team_users)
             
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])],
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team1.team_id),
+                lambda: delete_team(team2.team_id),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        TeamUser.query.delete()
+        #        delete_team(team1.team_id)
+        #        delete_team(team2.team_id)
+        #        delete_users(users)
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
     
 def test_get_all_non_team_users_with_course_and_team_ids(flask_app_mock, sample_token, auth_header, client):
@@ -219,15 +265,24 @@ def test_get_all_non_team_users_with_course_and_team_ids(flask_app_mock, sample_
             assert any(u["team_id"] == team2.team_id for u in results)
             
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team1.team_id),
+                lambda: delete_team(team2.team_id),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        TeamUser.query.delete()
+        #        delete_team(team1.team_id)
+        #        delete_team(team2.team_id)
+        #        delete_users(users)
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_users_with_course_and_role_ids(flask_app_mock, sample_token, auth_header, client):
@@ -257,12 +312,18 @@ def test_get_all_users_with_course_and_role_ids(flask_app_mock, sample_token, au
             assert all(u["owner_id"] == result["user_id"] for u in results)
             
         finally:
-            # Clean up
-            try:
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        delete_users(users)
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_users_with_course_id(flask_app_mock, sample_token, auth_header, client):
@@ -292,12 +353,18 @@ def test_get_all_users_with_course_id(flask_app_mock, sample_token, auth_header,
             assert all(u["owner_id"] == result["user_id"] for u in results)
             
         finally:
-            # Clean up
-            try:
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        delete_users(users)
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_user_info(flask_app_mock, sample_token, auth_header, client):
@@ -323,17 +390,87 @@ def test_get_all_user_info(flask_app_mock, sample_token, auth_header, client):
             assert all(u["user_id"] == user.user_id for u in results)
             assert all(u["email"] == user.email for u in results)
             assert all(u["owner_id"] == result["user_id"] for u in results)
-            
+
         finally:
-            # Clean up
-            try:
-                delete_user(user)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])],
+                lambda: delete_user(user),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        delete_user(user)
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
+    # NOTE: This test originally called GET /api/user?user_id=<admin_id> and
+    # asserted that ALL created users came back. That only ever passed
+    # because of a bug: the route's "user_id" branch (User_routes.py) read
+    # request.args.get("uid") -- which was never sent -- instead of falling
+    # back to "user_id", so the filter never applied and the code silently
+    # returned every user in the database. The exact same bug is what caused
+    # an infinite loading spinner on the frontend Settings page (and a
+    # latent, defensively-worked-around version of it in AppState.tsx):
+    # both call GET /user?user_id=<id> with no "uid", expecting to get back
+    # just their own user record.
+    #
+    # Note also: GET /user requires "user_id" on every request regardless of
+    # branch (it's how AuthCheck/verify_token authenticates the caller --
+    # see CustomDecorators.py). That means there is no reachable authenticated
+    # call that returns literally every user with zero filters; the
+    # `all_users = get_users()` fallback at the very bottom of the route
+    # (when no args at all are present) is dead code. So "get all users you
+    # have no filter for" isn't a real scenario to test here -- the
+    # meaningful contract to protect is "user_id with no uid returns just
+    # yourself," which is exactly what broke twice already.
+    #
+    # Original test body, kept for reference:
+    #
+    # def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
+    #     with flask_app_mock.app_context():
+    #         cleanup_test_users(db.session)
+    #
+    #         try:
+    #             result = create_one_admin_course(False)
+    #             users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+    #
+    #             token = sample_token(user_id=result["user_id"])
+    #
+    #             response = client.get(
+    #                 f"/api/user?user_id={result["user_id"]}",
+    #                 headers=auth_header(token)
+    #             )
+    #
+    #             data = response.get_json()
+    #             assert response.status_code == 200
+    #
+    #             # After backend fix: users_schema.dump([user]) returns a list
+    #             # create_good_response wraps the payload once, so the actual users payload is at index 0
+    #             users_data = data["content"]["users"][0]
+    #             results = users_data if isinstance(users_data, list) else [users_data]
+    #
+    #             # Verify created users are in results
+    #             expected_ids = {
+    #                 result["user_id"],
+    #                 users[0].user_id,
+    #                 users[1].user_id,
+    #                 users[2].user_id,
+    #             }
+    #             actual_ids = {u["user_id"] for u in results}
+    #
+    #             assert actual_ids >= expected_ids, f"Expected at least {expected_ids}, got {actual_ids}"
+    #             assert len(actual_ids) >= 4
+    #             print("teams users: ", results)
+    #             assert any(u["user_id"] == users[0].user_id for u in results)
+    #             assert any(u["user_id"] == result["user_id"] for u in results)
+    #             assert any(u["user_id"] == users[1].user_id for u in results)
+    #             assert any(u["user_id"] == users[2].user_id for u in results)
+    #             assert any(u["owner_id"] == result["user_id"] for u in results)
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
 
@@ -351,23 +488,40 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             data = response.get_json()
             assert response.status_code == 200
 
-            results = data["content"]["users"][0]
-            assert len(results) == 5
-            print("teams users: ", results)
-            assert any(u["user_id"] == users[0].user_id for u in results)
-            assert any(u["user_id"] == result["user_id"] for u in results)
-            assert any(u["user_id"] == 1 for u in results)
-            assert any(u["user_id"] == users[1].user_id for u in results)
-            assert any(u["user_id"] == users[2].user_id for u in results)
-            assert any(u["owner_id"] == result["user_id"] for u in results)
-            
+            # user_id present, no uid -> falls back to "return the caller's
+            # own user" (see User_routes.py), so this is a single-user dump,
+            # not a list. create_good_response wraps whatever payload it's
+            # given in one more list either way (Route_response.py), so the
+            # actual payload lands at index 0.
+            results = data["content"]["users"]
+
+            assert len(results) == 1
+            assert results[0]["user_id"] == result["user_id"]
+
+            # The other created users must NOT leak into this response --
+            # this is the exact regression this test exists to catch.
+            # (create_users(..., number_of_users=4) only yields 3 users --
+            # it loops range(1, number_of_users) -- so only [0]-[2] exist.)
+            other_ids = {users[0].user_id, users[1].user_id, users[2].user_id}
+            actual_ids = {u["user_id"] for u in results}
+            assert actual_ids.isdisjoint(other_ids), f"Unexpected users leaked into response: {actual_ids & other_ids}"
+
         finally:
-            # Clean up
-            try:
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                # Delete assessment tasks BEFORE users (CompletedAssessment has FK to both)
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])],
+                lambda: TeamUser.query.delete(),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        delete_users(users)
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_users_raises_exception(flask_app_mock, sample_token, auth_header, client):
@@ -390,11 +544,16 @@ def test_get_all_users_raises_exception(flask_app_mock, sample_token, auth_heade
             assert "error" in data or "An error occurred" in str(data)
 
         finally:
-            # Clean up
-            try:
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")  
+            _safe_cleanup(
+                lambda: delete_one_admin_course(result),
+            )
+
+        #finally:
+        #    # Clean up
+        #    try:
+        #        delete_one_admin_course(result)
+        #    except Exception as e:
+        #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_team_members_with_course_and_observer_ids(flask_app_mock, sample_token, auth_header, client):
@@ -440,15 +599,24 @@ def test_get_all_team_members_with_course_and_observer_ids(flask_app_mock, sampl
             assert all(u["observer_id"] == result["user_id"] for u in results)
             
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team1.team_id),
+                lambda: delete_team(team2.team_id),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        TeamUser.query.delete()
+            #        delete_team(team1.team_id)
+            #        delete_team(team2.team_id)
+            #        delete_users(users)
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_team_members_with_course_and_user_ids(flask_app_mock, sample_token, auth_header, client):
@@ -494,15 +662,24 @@ def test_get_all_team_members_with_course_and_user_ids(flask_app_mock, sample_to
             assert any(u["team_id"] == team1.team_id for u in results)
             
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_team(team1.team_id)
-                delete_team(team2.team_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team1.team_id),
+                lambda: delete_team(team2.team_id),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        TeamUser.query.delete()
+            #        delete_team(team1.team_id)
+            #        delete_team(team2.team_id)
+            #        delete_users(users)
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_team_members_with_unassigned_user(flask_app_mock, sample_token, auth_header, client):
@@ -533,14 +710,22 @@ def test_get_all_team_members_with_unassigned_user(flask_app_mock, sample_token,
             assert data["message"] == "User is not assigned to a team in this course."
 
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_team(team.team_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team.team_id),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        TeamUser.query.delete()
+            #        delete_team(team.team_id)
+            #        delete_users(users)
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_get_all_team_members_raises_exception(flask_app_mock, sample_token, auth_header, client):
@@ -563,11 +748,16 @@ def test_get_all_team_members_raises_exception(flask_app_mock, sample_token, aut
             assert "error" in data or "An error occurred" in str(data)
 
         finally:
-            # Clean up
-            try:
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")  
+            _safe_cleanup(
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_add_user_to_team(flask_app_mock, sample_token, auth_header, client):
@@ -598,14 +788,22 @@ def test_add_user_to_team(flask_app_mock, sample_token, auth_header, client):
             assert len(data['content']["users"][0]) == 0
 
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_users(users)
-                delete_team(team.team_id)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: TeamUser.query.delete(),
+                lambda: delete_users(users),
+                lambda: delete_team(team.team_id),
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        TeamUser.query.delete()
+            #        delete_users(users)
+            #        delete_team(team.team_id)
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_add_existing_user_to_course(flask_app_mock, sample_token, auth_header, client):
@@ -650,14 +848,22 @@ def test_add_existing_user_to_course(flask_app_mock, sample_token, auth_header, 
             assert user_course is not None
 
         finally:
-            # Clean up
-            try:
-                UserCourse.query.delete()
-                delete_course(course.course_id)
-                delete_user(user.user_id)
-                delete_user(teacher.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: UserCourse.query.delete(),
+                lambda: delete_course(course.course_id),
+                lambda: delete_user(user.user_id),
+                lambda: delete_user(teacher.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        UserCourse.query.delete()
+            #        delete_course(course.course_id)
+            #        delete_user(user.user_id)
+            #        delete_user(teacher.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_add_non_existing_user_to_course(flask_app_mock, sample_token, auth_header, client):
@@ -689,21 +895,31 @@ def test_add_non_existing_user_to_course(flask_app_mock, sample_token, auth_head
             print("data: ", data)
             assert response.status_code == 200
 
-            assert len(data["content"]["users"][0]) == 0
+            result = data["content"]["users"]
+            assert result[0]["email"] == user_data["email"]
             user = get_user_by_email(user_data["email"])
             assert user is not None
+            assert result[0]["user_id"] == user.user_id
 
             assert get_user_courses_by_user_id(user.user_id) is not None
 
         finally:
-            # Clean up
-            try:
-                UserCourse.query.delete()
-                delete_course(course.course_id)
-                delete_user(user.user_id)
-                delete_user(teacher.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: UserCourse.query.delete(),
+                lambda: delete_course(course.course_id),
+                lambda: delete_user(user.user_id),
+                lambda: delete_user(teacher.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        UserCourse.query.delete()
+            #        delete_course(course.course_id)
+            #        delete_user(user.user_id)
+            #        delete_user(teacher.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_add_user_course_exists_raises_exception(
@@ -750,14 +966,22 @@ def test_add_user_course_exists_raises_exception(
             assert "User is already enrolled in course" in str(data)
 
         finally:
-            # Clean up
-            try:
-                delete_user_course(user_course.user_course_id)
-                delete_course(course.course_id)
-                delete_user(user.user_id)
-                delete_user(teacher.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_user_course(user_course.user_course_id),
+                lambda: delete_course(course.course_id),
+                lambda: delete_user(user.user_id),
+                lambda: delete_user(teacher.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_user_course(user_course.user_course_id)
+            #        delete_course(course.course_id)
+            #        delete_user(user.user_id)
+            #        delete_user(teacher.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_add_user(flask_app_mock, sample_token, auth_header, client):
@@ -793,12 +1017,18 @@ def test_add_user(flask_app_mock, sample_token, auth_header, client):
             assert result[0]["first_name"] == user_data["first_name"]
 
         finally:
-            # Clean up
-            try:
-                delete_user(result[0]["user_id"])
-                delete_user(teacher.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_user(result[0]["user_id"]),
+                lambda: delete_user(teacher.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_user(result[0]["user_id"])
+            #        delete_user(teacher.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_update_user_role_to_ta(flask_app_mock, sample_token, auth_header, client):
@@ -829,12 +1059,20 @@ def test_update_user_role_to_ta(flask_app_mock, sample_token, auth_header, clien
             assert rslt[0]["role_id"] == 4
 
         finally:
-            # Clean up
-            try:
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                # Delete assessment tasks BEFORE users (CompletedAssessment has FK to both)
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])],
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_users(users)
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_update_user_status_to_unenroll(flask_app_mock, sample_token, auth_header, client):
@@ -877,14 +1115,22 @@ def test_update_user_status_to_unenroll(flask_app_mock, sample_token, auth_heade
             assert user_course.user_id == user.user_id
 
         finally:
-            # Clean up
-            try:
-                delete_user_course(user_course.user_course_id)
-                delete_course(course.course_id)
-                delete_user(user.user_id)
-                delete_user(teacher.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_user_course(user_course.user_course_id),
+                lambda: delete_course(course.course_id),
+                lambda: delete_user(user.user_id),
+                lambda: delete_user(teacher.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_user_course(user_course.user_course_id)
+            #        delete_course(course.course_id)
+            #        delete_user(user.user_id)
+            #        delete_user(teacher.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_remove_users_from_team(flask_app_mock, sample_token, auth_header, client):
@@ -922,14 +1168,24 @@ def test_remove_users_from_team(flask_app_mock, sample_token, auth_header, clien
             assert len(get_team_users_by_team_id(team.team_id)) == 2
         
         finally:
-            # Clean up
-            try:
-                TeamUser.query.delete()
-                delete_team(team.team_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                # Delete assessment tasks BEFORE users (CompletedAssessment has FK to both)
+                lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])],
+                lambda: TeamUser.query.delete(),
+                lambda: delete_team(team.team_id),
+                lambda: delete_users(users),
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        TeamUser.query.delete()
+            #        delete_team(team.team_id)
+            #        delete_users(users)
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_update_user_to_admin_with_new_email(
@@ -970,13 +1226,20 @@ def test_update_user_to_admin_with_new_email(
             assert rslt[0]["is_admin"] is True
 
         finally:
-            # Clean up
-            try:
-                delete_users(users)
-                delete_users(ta)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_users(users),
+                lambda: delete_users(ta),
+                lambda: delete_one_admin_course(result),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_users(users)
+            #        delete_users(ta)
+            #        delete_one_admin_course(result)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_unmake_admin_user(flask_app_mock, sample_token, auth_header, client):
@@ -1017,13 +1280,20 @@ def test_unmake_admin_user(flask_app_mock, sample_token, auth_header, client):
             assert rslt[0]["is_admin"] is False
 
         finally:
-            # Clean up
-            try:
-                delete_user(teacher.user_id)
-                delete_one_admin_course(result)
-                delete_user(user.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_user(teacher.user_id),
+                lambda: delete_one_admin_course(result),
+                lambda: delete_user(user.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_user(teacher.user_id)
+            #        delete_one_admin_course(result)
+            #        delete_user(user.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_update_user_raises_exception(flask_app_mock, sample_token, auth_header, client):
@@ -1046,11 +1316,16 @@ def test_update_user_raises_exception(flask_app_mock, sample_token, auth_header,
             assert "An error occurred replacing a user_id" in str(data)
 
         finally:
-            # Clean up
-            try:
-                delete_user(user.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}") 
+            _safe_cleanup(
+                lambda: delete_user(user.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_user(user.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_delete_selected_user(flask_app_mock, sample_token, auth_header, client):
@@ -1084,11 +1359,16 @@ def test_delete_selected_user(flask_app_mock, sample_token, auth_header, client)
                 get_user(user.user_id)
 
         finally:
-            # Clean up
-            try:
-                delete_user(admin.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}") 
+            _safe_cleanup(
+                lambda: delete_user(admin.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_user(admin.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
 
 
 def test_cannot_delete_user_with_associated_task(
@@ -1131,16 +1411,26 @@ def test_cannot_delete_user_with_associated_task(
             assert "Cannot delete user with associated tasks" in str(data)
 
         finally:
-            # Clean up 
-            try:
-                delete_completed_assessment_tasks(comp.completed_assessment_id)
-                delete_users(user)
-                delete_assessment_task(task.assessment_task_id)
-                delete_rubric_by_id(rubric.rubric_id)
-                delete_one_admin_course(result)
-                delete_user(admin.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
+            _safe_cleanup(
+                lambda: delete_completed_assessment_tasks(comp.completed_assessment_id),
+                lambda: delete_users(user),
+                lambda: delete_assessment_task(task.assessment_task_id),
+                lambda: delete_rubric_by_id(rubric.rubric_id),
+                lambda: delete_one_admin_course(result),
+                lambda: delete_user(admin.user_id),
+            )
+
+            #finally:
+            #    # Clean up 
+            #    try:
+            #        delete_completed_assessment_tasks(comp.completed_assessment_id)
+            #        delete_users(user)
+            #        delete_assessment_task(task.assessment_task_id)
+            #        delete_rubric_by_id(rubric.rubric_id)
+            #        delete_one_admin_course(result)
+            #        delete_user(admin.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}")
                 
 
 def test_delete_selected_user_raises_exception(flask_app_mock, sample_token, auth_header, client):
@@ -1163,8 +1453,13 @@ def test_delete_selected_user_raises_exception(flask_app_mock, sample_token, aut
             assert "An error occurred deleting a user" in str(data)
 
         finally:
-            # Clean up
-            try:
-                delete_user(user.user_id)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}") 
+            _safe_cleanup(
+                lambda: delete_user(user.user_id),
+            )
+
+            #finally:
+            #    # Clean up
+            #    try:
+            #        delete_user(user.user_id)
+            #    except Exception as e:
+            #        print(f"Cleanup skipped: {e}") 

@@ -133,7 +133,7 @@ def get_all_users():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("user_id")):
-            uid = request.args.get("uid")
+            uid = request.args.get("uid") or request.args.get("user_id") # fixes infinite loading loop on settings
 
             if uid:
                 user = get_user(uid)  # Trigger an error if not exists.
@@ -274,7 +274,8 @@ def add_user():
                     "role_id": request.json["role_id"]
                 })
 
-                return create_good_response(user_schema.dump(user_exists), 200, "users")
+                return create_good_response(user_schema.dump(new_user), 200, "users")
+                #return create_good_response(user_schema.dump(user_exists), 200, "users")
 
         new_user = create_user(request.json)
 
