@@ -88,7 +88,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
                   isLoaded: true,
                   user: user["user_id"],
                   darkMode: user["user_dark_mode"] ?? false,
-                }
+                },
                 () => {
                   if (this.state.darkMode) {
                     document.body.classList.add("mode");
