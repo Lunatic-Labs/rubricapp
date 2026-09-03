@@ -149,7 +149,7 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                     // resolves (never rejects) with errorMessage set in both cases, so this
                     // branch is what actually surfaces the message via <ErrorMessage>.
                     this.setState({
-                        errorMessage: result?.errorMessage,
+                        errorMessage: result?.errorMessage ?? "Upload failed. Please try again.",
                         uploadRequestStatus: REQUEST_STATE.ERROR,
                     });
                 }
