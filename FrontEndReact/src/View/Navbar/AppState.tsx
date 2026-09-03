@@ -735,6 +735,20 @@ class AppState extends Component<AppStateProps, AppStateState> {
             // IMPORTANT: We must NOT set this.state.user here — that state is reserved
             // for the edit-user flow (setAddUserTabWithUser). Setting it here causes a
             // race condition that breaks AdminAddUser (shows "Edit User" instead of "Add User").
+            // Falls back to the cookie's dark mode preference on any failure
+            // (server error or network error — genericResourceGET resolves,
+            // it does not reject, for either case).
+            const applyDarkModeFallback = () => {
+                const darkMode = user["user_dark_mode"] || false;
+                this.setState({ darkMode }, () => {
+                    if (darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
+                });
+            };
+
             genericResourceGET(
                 `/user?user_id=${user["user_id"]}`,
                 "users",
@@ -754,19 +768,13 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                 document.body.classList.remove('mode');
                             }
                         });
-                    }
-                }
-            }).catch(error => {
-                console.error("Error fetching user data:", error);
-                // Fallback: use dark mode from cookie user object
-                const darkMode = user["user_dark_mode"] || false;
-                this.setState({ darkMode }, () => {
-                    if (darkMode) {
-                        document.body.classList.add('mode');
                     } else {
-                        document.body.classList.remove('mode');
+                        applyDarkModeFallback();
                     }
-                });
+                } else {
+                    console.error("Error fetching user data:", result?.errorMessage);
+                    applyDarkModeFallback();
+                }
             });
         }
     }
