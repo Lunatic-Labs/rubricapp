@@ -136,7 +136,7 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
-        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/dist;
         try_files \$uri /index.html;
     }
 }"
@@ -148,7 +148,7 @@ server {
     server_name $DOMAIN;
 
     location / {
-        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/dist;
         try_files \$uri /index.html;
     }
 }
