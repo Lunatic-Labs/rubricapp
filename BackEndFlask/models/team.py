@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import delete, func, select
 from models.schemas import Team
 from datetime import datetime
 from models.utility import error_log
@@ -13,44 +14,45 @@ class InvalidTeamID(Exception):
 
 @error_log
 def get_team_name_by_name(team_name):
-    return Team.query.filter_by(team_name=team_name).first()
+    return db.session.scalars(select(Team).filter_by(team_name=team_name).limit(1)).first()
 
 @error_log
 def get_teams():
-    return Team.query.filter_by(active_until=None).all()
+    return db.session.scalars(select(Team).filter_by(active_until=None)).all()
 
 
 @error_log
 def get_team_by_course_id(course_id):
-    return Team.query.filter_by(course_id=course_id).all()
+    return db.session.scalars(select(Team).filter_by(course_id=course_id)).all()
 
 @error_log
 def get_team_count_by_course_id(course_id):
-    return Team.query.filter_by(course_id=course_id,active_until=None).count()
+    return db.session.scalar(
+        select(func.count()).select_from(
+            select(Team).filter_by(course_id=course_id,active_until=None).subquery()
+        )
+    )
 
 @error_log
 def get_team_by_team_name_and_course_id(team_name, course_id):
-    return Team.query.filter_by(team_name=team_name, course_id=course_id).first()
-
-
-@error_log
-def get_team_by_team_name_and_course_id(team_name, course_id):
-    return Team.query.filter_by(team_name=team_name, course_id=course_id).first()
+    return db.session.scalars(select(Team).filter_by(team_name=team_name, course_id=course_id).limit(1)).first()
 
 
 @error_log
 def get_teams_by_observer_id(observer_id, course_id):
-    return Team.query.filter_by(active_until=None, observer_id=observer_id, course_id=course_id).all()
+    return db.session.scalars(
+        select(Team).filter_by(active_until=None, observer_id=observer_id, course_id=course_id)
+    ).all()
 
 
 @error_log
 def get_last_created_team_team_id():
-    return Team.query.order_by(Team.team_id.desc()).first().team_id
+    return db.session.scalars(select(Team).order_by(Team.team_id.desc()).limit(1)).first().team_id
 
 
 @error_log
 def get_team(team_id):
-    one_team = Team.query.filter_by(team_id=team_id).first()
+    one_team = db.session.scalars(select(Team).filter_by(team_id=team_id).limit(1)).first()
 
     if one_team is None:
         raise InvalidTeamID(team_id)
@@ -60,7 +62,7 @@ def get_team(team_id):
 
 @error_log
 def team_is_active(team_id):
-    one_team = Team.query.filter_by(team_id=team_id).first()
+    one_team = db.session.scalars(select(Team).filter_by(team_id=team_id).limit(1)).first()
 
     if one_team is None:
         raise InvalidTeamID(team_id)
@@ -70,7 +72,7 @@ def team_is_active(team_id):
 
 @error_log
 def deactivate_team(team_id):
-    one_team = Team.query.filter_by(team_id=team_id).first()
+    one_team = db.session.scalars(select(Team).filter_by(team_id=team_id).limit(1)).first()
 
     if one_team is None:
         raise InvalidTeamID(team_id)
@@ -134,7 +136,7 @@ def load_demo_team():
 
 @error_log
 def replace_team(team_data, team_id):
-    one_team = Team.query.filter_by(team_id=team_id).first()
+    one_team = db.session.scalars(select(Team).filter_by(team_id=team_id).limit(1)).first()
 
     if one_team is None:
         raise InvalidTeamID(team_id)
@@ -149,6 +151,6 @@ def replace_team(team_data, team_id):
 
 @error_log
 def delete_team(team_id):
-    Team.query.filter_by(team_id=team_id).delete()
+    db.session.execute(delete(Team).filter_by(team_id=team_id))
 
     db.session.commit()

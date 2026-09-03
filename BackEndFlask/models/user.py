@@ -2,7 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from models.schemas import User, UserCourse, CompletedAssessment, Course
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
@@ -34,31 +34,31 @@ class EmailAlreadyExists(Exception):
 
 @error_log
 def get_users():
-    return User.query.all()
+    return db.session.scalars(select(User)).all()
 
 
 @error_log
 def get_users_by_owner_id(owner_id):
-    return User.query.filter_by(owner_id=owner_id).all()
+    return db.session.scalars(select(User).filter_by(owner_id=owner_id)).all()
 
 
 @error_log
 def get_users_by_email(email):
-    return User.query.filter_by(email=email).all()
+    return db.session.scalars(select(User).filter_by(email=email)).all()
 
 
 @error_log
 def get_user_consent(user_id):
-    return User.query.filter_by(user_id=user_id).first().consent
+    return db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first().consent
 
 # added get_user_darkmode
 @error_log
 def get_user_dark_mode(user_id):
-    return User.query.filter_by(user_id=user_id).first().user_dark_mode
+    return db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first().user_dark_mode
 
 @error_log
 def set_user_dark_mode(user_id, user_dark_mode):
-    user = User.query.filter_by(user_id=user_id).first()
+    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     setattr(user, 'user_dark_mode', user_dark_mode)
 
@@ -67,7 +67,7 @@ def set_user_dark_mode(user_id, user_dark_mode):
 
 @error_log
 def get_user(user_id):
-    one_user = User.query.filter_by(user_id=user_id).first()
+    one_user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     if one_user is None:
         raise InvalidUserID(user_id)
@@ -77,7 +77,7 @@ def get_user(user_id):
 
 @error_log
 def get_user_password(user_id):
-    user = User.query.filter_by(user_id=user_id).first()
+    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     if user is None:
         raise InvalidUserID(user_id)
@@ -87,51 +87,53 @@ def get_user_password(user_id):
 
 @error_log
 def get_user_admins():
-   all_user_admins = db.session.query(
-       User.user_id,
-       User.first_name,
-       User.last_name,
-       User.email,
-       User.lms_id,
-       User.consent,
-       User.owner_id
-   ).filter_by(
-       is_admin=True
-   ).all()
+    all_user_admins = db.session.execute(
+        select(
+            User.user_id,
+            User.first_name,
+            User.last_name,
+            User.email,
+            User.lms_id,
+            User.consent,
+            User.owner_id
+        ).filter_by(
+            is_admin=True
+        )
+    ).all()
 
-   db.session.query()
-
-   return all_user_admins
+    return all_user_admins
 
 
 @error_log
 def get_admins_with_active_courses():
-   """
-   Returns all admin users who own at least one active course.
-   """
-   admins_with_active_courses = db.session.query(
-       User.user_id,
-       User.first_name,
-       User.last_name,
-       User.email
-   ).join(
-       Course, Course.admin_id == User.user_id
-   ).filter(
-       User.is_admin == True,
-       Course.active == True
-   ).distinct().all()
+    """
+    Returns all admin users who own at least one active course.
+    """
+    admins_with_active_courses = db.session.execute(
+        select(
+            User.user_id,
+            User.first_name,
+            User.last_name,
+            User.email
+        ).join(
+            Course, Course.admin_id == User.user_id
+        ).where(
+            User.is_admin == True,
+            Course.active == True
+        ).distinct()
+    ).all()
 
-   return admins_with_active_courses
+    return admins_with_active_courses
 
 
 @error_log
 def get_user_first_name(user_id):
-    return User.query.filter_by(user_id=user_id).first().first_name
+    return db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first().first_name
 
 
 @error_log
 def get_user_user_id_by_first_name(first_name):
-    return User.query.filter_by(first_name=first_name).first().user_id
+    return db.session.scalars(select(User).filter_by(first_name=first_name).limit(1)).first().user_id
 
 
 @error_log
@@ -141,17 +143,17 @@ def get_user_user_id_by_email(email):
 
 @error_log
 def get_user_by_email(email):
-    return User.query.filter_by(email=email).first()
+    return db.session.scalars(select(User).filter_by(email=email).limit(1)).first()
 
 
 @error_log
 def get_user_user_id_by_email(email):
-    return User.query.filter_by(email=email).first().user_id
+    return db.session.scalars(select(User).filter_by(email=email).limit(1)).first().user_id
 
 
 @error_log
 def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as having logged in before
-    user = User.query.filter_by(user_id=user_id).first()
+    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     setattr(user, 'has_set_password', status)
 
@@ -160,7 +162,7 @@ def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as
 
 @error_log
 def update_password(user_id, password) -> str:
-    user = User.query.filter_by(user_id=user_id).first()
+    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     pass_hash = generate_password_hash(password)
 
@@ -173,7 +175,7 @@ def update_password(user_id, password) -> str:
 
 @error_log
 def set_reset_code(user_id, code_hash):
-    user = User.query.filter_by(user_id=user_id).first()
+    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     setattr(user, 'reset_code', code_hash)
 
@@ -182,7 +184,7 @@ def set_reset_code(user_id, code_hash):
 
 @error_log
 def user_already_exists(user_data):
-    user = User.query.filter_by(email=user_data["email"]).first()
+    user = db.session.scalars(select(User).filter_by(email=user_data["email"]).limit(1)).first()
 
     if user is None:
         return None
@@ -234,7 +236,7 @@ def create_user(user_data, validate_emails=True):
 
 @error_log
 def make_admin(user_id):
-    user = User.query.filter_by(user_id=user_id).first()
+    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     user.is_admin = True
 
@@ -247,14 +249,16 @@ def make_admin(user_id):
 
 @error_log
 def unmake_admin(user_id):
-    user = User.query.filter_by(user_id=user_id).first()
+    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
-    roles_of_user_id = db.session.query(
-        UserCourse
-    ).filter(
-        and_(
-            UserCourse.user_id == user_id,
-            UserCourse.role_id == 3
+    roles_of_user_id = db.session.scalars(
+        select(
+            UserCourse
+        ).where(
+            and_(
+                UserCourse.user_id == user_id,
+                UserCourse.role_id == 3
+            )
         )
     ).all()
 
@@ -381,7 +385,7 @@ def load_demo_student():
 
 @error_log
 def replace_user(user_data, user_id):
-    one_user = User.query.filter_by(user_id=user_id).first()
+    one_user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
 
     if one_user is None:
         raise InvalidUserID(user_id)
@@ -414,12 +418,16 @@ def replace_user(user_data, user_id):
 @error_log
 def delete_user(user_id):
     try:
-        assessment_total = db.session.query(CompletedAssessment).filter(
-            or_(
-                CompletedAssessment.completed_by == user_id,
-                CompletedAssessment.user_id == user_id
+        assessment_total = db.session.scalar(
+            select(func.count()).select_from(
+                select(CompletedAssessment).where(
+                    or_(
+                        CompletedAssessment.completed_by == user_id,
+                        CompletedAssessment.user_id == user_id
+                    )
+                ).subquery()
             )
-        ).count()
+        )
 
         if assessment_total > 0:
             raise ValueError("Cannot delete user with associated tasks")

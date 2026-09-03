@@ -54,19 +54,22 @@ def validate_max_team_size(max_team_size):
 
 @error_log
 def get_assessment_tasks():
-    return AssessmentTask.query.all()
+    return db.session.scalars(select(AssessmentTask)).all()
 
 @error_log
 def get_assessment_tasks_by_course_id(course_id):
-    return AssessmentTask.query.filter_by(course_id=course_id).all() # query completed assesment tasks
+    return db.session.scalars(
+        select(AssessmentTask).filter_by(course_id=course_id)
+    ).all() # query completed assesment tasks
 
 @error_log
 def get_assessment_tasks_by_role_id(role_id):
-    return AssessmentTask.query.filter_by(role_id=role_id).all()
+    return db.session.scalars(select(AssessmentTask).filter_by(role_id=role_id)).all()
 
 @error_log
 def get_assessment_tasks_by_team_id(team_id):
-    return db.session.query(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).filter(
+    return db.session.scalars(
+        select(AssessmentTask).join(Team, AssessmentTask.course_id == Team.course_id).where(
             and_(
                 Team.team_id == team_id,
                 AssessmentTask.due_date >= Team.date_created,
@@ -75,10 +78,13 @@ def get_assessment_tasks_by_team_id(team_id):
                     AssessmentTask.due_date <= Team.active_until
                 )
             )
-        ).all()
+        )
+    ).unique().all()
 @error_log
 def get_assessment_task(assessment_task_id):
-    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=assessment_task_id).limit(1)
+    ).first()
 
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
@@ -458,7 +464,9 @@ def replace_assessment_task(assessment_task, assessment_task_id):
     validate_number_of_teams(assessment_task["number_of_teams"])
     validate_max_team_size(assessment_task["max_team_size"])
 
-    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=assessment_task_id).limit(1)
+    ).first()
 
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
@@ -491,7 +499,9 @@ def replace_assessment_task(assessment_task, assessment_task_id):
 
 @error_log 
 def delete_assessment_task(assessment_task_id):
-    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=assessment_task_id).limit(1)
+    ).first()
 
     if one_assessment_task is None:
         raise InvalidAssessmentTaskID(assessment_task_id)
@@ -507,7 +517,9 @@ def delete_assessment_task(assessment_task_id):
     return one_assessment_task
 @error_log
 def toggle_notification_sent_to_true(assessment_task_id, date):
-    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=assessment_task_id).limit(1)
+    ).first()
 
     one_assessment_task.notification_sent = datetime.strptime(date, '%Y-%m-%dT%H:%M:%S.%fZ')
 
@@ -517,14 +529,18 @@ def toggle_notification_sent_to_true(assessment_task_id, date):
 
 @error_log
 def toggle_lock_status(assessment_task_id):
-    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=assessment_task_id).limit(1)
+    ).first()
     one_assessment_task.locked = not one_assessment_task.locked
     db.session.commit()
     return one_assessment_task
 
 @error_log
 def toggle_published_status(assessment_task_id):
-    one_assessment_task = AssessmentTask.query.filter_by(assessment_task_id=assessment_task_id).first()
+    one_assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=assessment_task_id).limit(1)
+    ).first()
     one_assessment_task.published = not one_assessment_task.published
     db.session.commit()
     return one_assessment_task

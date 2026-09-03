@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import delete, select
 from models.schemas import Feedback
 from datetime import datetime
 from models.utility import error_log
@@ -12,27 +13,31 @@ class InvalidFeedbackID(Exception):
 
 @error_log
 def get_feedback():
-    return Feedback.query.all()
+    return db.session.scalars(select(Feedback)).all()
 
 
 @error_log
 def get_feedback_by_completed_assessment_id(completed_assessment_id):
-    return Feedback.query.filter_by(completed_assessment_id=completed_assessment_id).all()
+    return db.session.scalars(
+        select(Feedback).filter_by(completed_assessment_id=completed_assessment_id)
+    ).all()
 
 
 @error_log
 def get_feedback_by_user_id(user_id):
-    return Feedback.query.filter_by(user_id=user_id).all()
+    return db.session.scalars(select(Feedback).filter_by(user_id=user_id)).all()
 
 
 @error_log
 def get_feedback_by_user_id_and_completed_assessment_id(user_id, completed_assessment_id):
-    return Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first()
+    return db.session.scalars(
+        select(Feedback).filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
 
 
 @error_log
 def get_feedback_per_id(feedback_id):
-    one_feedback = Feedback.query.filter_by(feedback_id=feedback_id).first()
+    one_feedback = db.session.scalars(select(Feedback).filter_by(feedback_id=feedback_id).limit(1)).first()
 
     if one_feedback is None:
         raise InvalidFeedbackID(feedback_id)
@@ -78,7 +83,9 @@ def create_feedback(feedback_data):
 
 @error_log
 def check_feedback_exists(user_id, completed_assessment_id) -> bool: 
-    feedback = Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).first() 
+    feedback = db.session.scalars(
+        select(Feedback).filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
 
     return feedback is not None
 
@@ -92,7 +99,7 @@ def load_demo_feedback():
 
 @error_log
 def replace_feedback(feedback_time_data, feedback_id):
-    one_feedback = Feedback.query.filter_by(feedback_id=feedback_id).first()
+    one_feedback = db.session.scalars(select(Feedback).filter_by(feedback_id=feedback_id).limit(1)).first()
 
     if one_feedback is None:
         raise InvalidFeedbackID(feedback_id)
@@ -108,6 +115,8 @@ def replace_feedback(feedback_time_data, feedback_id):
 
 @error_log
 def delete_feedback_by_user_id_completed_assessment_id(user_id, completed_assessment_id):
-    Feedback.query.filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id).delete()
+    db.session.execute(
+        delete(Feedback).filter_by(user_id=user_id, completed_assessment_id=completed_assessment_id)
+    )
 
     db.session.commit()
