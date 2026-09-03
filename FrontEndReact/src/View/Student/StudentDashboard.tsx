@@ -13,7 +13,7 @@ import { ROLE } from '../../Enums/Role';
 import { AssessmentTask } from '../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../types/CompleteAssessmentTask';
 import { Rubric } from '../../types/Rubric';
-const apiUrl = process.env.REACT_APP_API_URL;
+const apiUrl = import.meta.env.VITE_API_URL;
 
 // StudentDashboard is used for both students and TAs.
 // StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
@@ -80,7 +80,18 @@ interface StudentDashboardState {
     rubricNames: Record<string, string> | null;
     chartData: any;
     teamsFetched: boolean;
+    userFilteredAts: (AssessmentTask & Partial<CompleteAssessmentTask>)[] | null;
 }
+
+type DidUpdateProps = {
+    hasBeenParsed: boolean,
+    userFilteredAts: (AssessmentTask & Partial<CompleteAssessmentTask>)[] | null,
+    rubrics: Rubric[] | null,
+    rubricNames: Record<string, string> | null,
+    assessmentTasks: AssessmentTask[] | null,
+    isRoleInfoReady: boolean,
+    averageData: any,
+};
 
 class StudentDashboard extends Component<StudentDashboardProps, StudentDashboardState> {
     constructor(props: StudentDashboardProps) {
@@ -104,6 +115,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
             chartData: null,
             teamsFetched: false,
+            userFilteredAts: null
         }
     }
 
@@ -123,6 +135,18 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const state = navbar.state;
         const chosenCourse = state.chosenCourse["course_id"];
         const userRole = state.chosenCourse.role_id;
+        const filterRouteToCall =
+            userRole === ROLE.STUDENT
+            ? "/student_dashboard_assessments"
+            : "/ta_filtered_assessments"
+        ;
+
+        genericResourceGET(
+            `${filterRouteToCall}?course_id=${chosenCourse}`,
+            "userFilteredAts",
+            this,
+            { dest: "userFilteredAts" },
+        );
 
         genericResourceGET(`/role?course_id=${chosenCourse}`, 'roles', this);
 
@@ -137,153 +161,117 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         genericResourceGET(`/rubric?all=${true}`, "rubrics", this, { dest: "rubrics" });
     }
 
+    /**
+     * Sets the appropriate basic values for componentDidUpdate().
+     * @param {StudentDashboardState} state 
+     * @returns {StudentDashboardProps}
+     */
+    private extractDidUpdateProperties(state: StudentDashboardState): DidUpdateProps {
+        const roleId = state.roles?.role_id;
+
+        return {
+            hasBeenParsed: state.filteredATs !== null,
+            userFilteredAts: state.userFilteredAts,
+            rubrics: state.rubrics,
+            rubricNames: state.rubricNames,
+            assessmentTasks: state.assessmentTasks,
+            isRoleInfoReady: roleId !== undefined,
+            averageData: state.averageData,
+        }
+    }
+
     componentDidUpdate() {
         const {
-            filteredATs, 
-            roles,
-            assessmentTasks,
-            completedAssessments,
-            userTeamIds,
-            averageData,
+            hasBeenParsed,
+            userFilteredAts,
             rubrics,
             rubricNames,
-        } = this.state;
+            assessmentTasks,
+            isRoleInfoReady,
+            averageData,
+        } = this.extractDidUpdateProperties(this.state);
 
-        const canFilter: boolean = Boolean(
-            roles &&
-            assessmentTasks &&
-            completedAssessments &&
-            averageData &&
-            rubrics &&
-            filteredATs === null
+        const readyToParse = (
+            !!userFilteredAts &&
+            !!rubrics &&
+            !!assessmentTasks &&
+            isRoleInfoReady &&
+            !hasBeenParsed
         );
 
-        if (!canFilter) {return;}
-
-        // Students need their team info ready to correctly match the student to team CATs.
-        const roleId: number = roles!.role_id;
-        const isStudent: boolean = roleId === ROLE.STUDENT;
-        const teamInfoReady: boolean =
-          userTeamIds.length > 0 || this.state.teamsFetched;
-        const canFilterStudentByTeam: boolean = isStudent && teamInfoReady;
-
-        if (
-          (roleId !== ROLE.TA_INSTRUCTOR && !canFilterStudentByTeam)
-        ) {return;}
-
-        const rubricNameMap: Record<string, string> | null = rubricNames ?? parseRubricNames(rubrics as any);
-
-        let editableCats: CompleteAssessmentTask[] = [];
-        let filteredAvgData: (CompleteAssessmentTask|undefined)[] = [];
-        let showableDoneCats: CompleteAssessmentTask[] = [];
-
-        const CATmap: Map<string, CompleteAssessmentTask> = new Map();
+        if (!readyToParse) {
+            return;
+        }
+        
         const AVGmap: Map<number, CompleteAssessmentTask> = new Map();
-            
-        const getCATKey = (assessment_task_id: number, team_id: number|null, isTeamAssessment: boolean): string => {
-            return `${assessment_task_id}${
-                isTeamAssessment && team_id !== null ? `-${team_id}`:''
-            }`
-        };
 
-        completedAssessments!.forEach((cat: CompleteAssessmentTask) => {
-            const team_id: number|null = cat.team_id;
-                
-            if (roleId === ROLE.TA_INSTRUCTOR || team_id === null || userTeamIds.includes(team_id)){                    
-                const at: AssessmentTask | undefined = assessmentTasks!.find((task: AssessmentTask) => task.assessment_task_id === cat.assessment_task_id);
-                const isTeamAssessment: boolean = at?.unit_of_assessment === true;                    
-
-                const key: string = getCATKey(cat.assessment_task_id, team_id, isTeamAssessment);
-                const existing: CompleteAssessmentTask | undefined = CATmap.get(key);
-
-                const shouldReplace: boolean = !existing ||
-                    (cat.done && !existing.done) ||
-                    (cat.done === existing.done && team_id !== null && userTeamIds.includes(team_id));
-
-                if (shouldReplace) {
-                    CATmap.set(key, cat);
-                }
-            }
+        averageData?.forEach((avg: CompleteAssessmentTask) => {
+            AVGmap.set(avg.assessment_task_id, avg);
         });
+
+        let allATs: AssessmentTask[] = [];
+        let editableCats: CompleteAssessmentTask[] = [];
+        let filteredAvgData: (CompleteAssessmentTask | undefined)[] = [];
+        let doneCATs: CompleteAssessmentTask[] = [];
+
+
+        userFilteredAts.forEach( (atCatUnion) => {
+            // The AT fields will always exist.
+            let at: AssessmentTask = { ...atCatUnion };
             
-        averageData.forEach((cat: CompleteAssessmentTask) => { AVGmap.set(cat.assessment_task_id, cat) });
+            const catPresent = atCatUnion?.completed_assessment_id != null;
 
-        const currentDate: Date = new Date();
-        const isATDone = (cat: CompleteAssessmentTask | undefined) : boolean => cat !== undefined && cat.done;
-        const isATPastDue = (at: AssessmentTask, today: Date): boolean => (new Date(at.due_date)) < today; 
+            if (catPresent) {
+                let cat = { ...atCatUnion } as CompleteAssessmentTask;
 
-        let filteredAssessmentTasks: AssessmentTask[] = assessmentTasks!.filter((task: AssessmentTask) => {
-            
-            const isTeamAssessment: boolean = task.unit_of_assessment === true;
-            let relevantTeamId: number | null = null;
-                            
-            if (isTeamAssessment && userTeamIds.length > 0) {
-                // For team assessments, find which team this user is on for this task
-                const userCAT: CompleteAssessmentTask | undefined = completedAssessments!.find((cat: CompleteAssessmentTask) => 
-                    cat.assessment_task_id === task.assessment_task_id && cat.team_id !== null && userTeamIds.includes(cat.team_id)
-                );
-                relevantTeamId = userCAT?.team_id || null;
-            }
-            
-            const catKey: string = getCATKey(task.assessment_task_id, relevantTeamId, isTeamAssessment);
-            const cat: CompleteAssessmentTask | undefined = CATmap.get(catKey);
-            const avg: CompleteAssessmentTask| undefined = AVGmap.get(task.assessment_task_id);
-
-            // Qualities for if an AT is viewable.
-            const done: boolean = isATDone(cat);
-            const correctUser: boolean = roleId === task.role_id || (roleId === ROLE.STUDENT && task.role_id === ROLE.TA_INSTRUCTOR);
-            const locked: boolean = task.locked;
-            const published: boolean = task.published;
-            const pastDue: boolean = !correctUser || locked || !published || isATPastDue(task, currentDate);
-
-            const isStudent: boolean = roles!.role_id === ROLE.STUDENT;
-            const isStudentTask: boolean = task.role_id === ROLE.STUDENT;
-            const baseConditions: boolean = correctUser && !locked && published && !pastDue;
-
-            let viewable: boolean, CATviewable: boolean;
-
-            if (isStudent && isStudentTask) {
-                viewable = !done && baseConditions;
-                CATviewable = correctUser && done;
-            } else if (isStudent) {
-                if (task.role_id === ROLE.TA_INSTRUCTOR && done){
-                    viewable = false;
-                    CATviewable = true;
+                if (cat.done){
+                    doneCATs.push(cat);
+                    filteredAvgData.push(
+                        AVGmap.get(cat.assessment_task_id)
+                    );
                 } else {
-                    viewable = baseConditions && !task.notification_sent;
-                    CATviewable = Boolean(pastDue || task.notification_sent) && published && correctUser; 
+                    const editable = !cat.locked && ( new Date() < new Date(at.due_date) );
+
+                    if (editable) {
+                        editableCats.push(cat);
+                        allATs.push(at);
+                    } else {
+                        doneCATs.push(cat);
+                        filteredAvgData.push(
+                            AVGmap.get(cat.assessment_task_id)
+                        );
+                    }
                 }
             } else {
-                viewable = baseConditions;
-                CATviewable = pastDue && correctUser;
-                if (!CATviewable && viewable && task.role_id === ROLE.TA_INSTRUCTOR && done){
-                    CATviewable = true;
-                    viewable = false;
-                }
+                allATs.push(at);
             }
-
-            if (CATviewable && cat !== undefined) {
-                viewable ? editableCats.push(cat): showableDoneCats.push(cat);
-                filteredAvgData.push(avg);
-            } else if (viewable && cat !== undefined){
-                editableCats.push(cat);
-            }
-            
-            return viewable;
         });
+        
+        type RubricId   = string | number;
+        type RubricName = string;
+        const rubricNamefromId: Record<RubricId, RubricName> =
+            rubricNames ?? parseRubricNames(rubrics as any)
+        ;
 
         // Helpers for chart data
         const computeAvg = (avgObj: any) => {
             if (avgObj == null) return null;
             if (typeof avgObj === 'number') return avgObj;
-            if (typeof avgObj?.average === 'number') return avgObj.average;
-            if (typeof avgObj?.avg === 'number') return avgObj.avg;
-            if (typeof avgObj?.overall_average === 'number') return avgObj.overall_average;
+            if (typeof avgObj?.average === 'number') 
+                return avgObj.average;
+            if (typeof avgObj?.avg === 'number') 
+                return avgObj.avg;
+            if (typeof avgObj?.overall_average === 'number') 
+                return avgObj.overall_average;
             if (avgObj?.averages && typeof avgObj.averages === 'object') {
-                const vals = Object.values(avgObj.averages).map(Number).filter(v => !Number.isNaN(v));
-                if (vals.length) return vals.reduce((a, b) => a + b, 0) / vals.length;
+                const vals = Object.values(avgObj.averages)
+                    .map(Number)
+                    .filter(v => !Number.isNaN(v));
+                if (vals.length) 
+                    return vals.reduce((a, b) => a + b, 0) / vals.length;
             }
-            if (typeof avgObj?.value === 'number') return avgObj.value;
+            if (typeof avgObj?.value === 'number') 
+                return avgObj.value;
             return null;
         };
 
@@ -297,15 +285,15 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         // helper: pick the *created* timestamp for the AT (fallbacks just in case)
         const getCreatedDate = (at: any, cat: CompleteAssessmentTask) => {
-        const raw =
-            at?.created_at ||
-            at?.created_time ||
-            at?.created ||
-            at?.initial_time || 
-            cat?.initial_time ||
-            at?.due_date;        
-        const d = raw ? new Date(raw) : new Date(0);
-        return isNaN(d.getTime()) ? new Date(0) : d;
+            const raw =
+                at?.created_at ||
+                at?.created_time ||
+                at?.created ||
+                at?.initial_time || 
+                cat?.initial_time ||
+                at?.due_date;        
+            const d = raw ? new Date(raw) : new Date(0);
+            return isNaN(d.getTime()) ? new Date(0) : d;
         };
 
         interface ChartDataCoreItem {
@@ -316,9 +304,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             rubric_id: number | null;
             rubricName: string | undefined;
             createdDate: Date;
-        }
+        };
 
-        let chartDataCore: ChartDataCoreItem[] = showableDoneCats
+        let chartDataCore: ChartDataCoreItem[] = doneCATs
             .map((cat: CompleteAssessmentTask, i: number): ChartDataCoreItem => {
                 const avgObj = filteredAvgData[i];
                 const at = assessmentTasks!.find((a) => a.assessment_task_id === cat.assessment_task_id);
@@ -327,7 +315,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 const createdDate: Date = getCreatedDate(at, cat); // creation date for ordering
                 const lastUpdatedTs: any = cat.last_update || cat.initial_time || at?.due_date;
                 const rubric_id: number | null = at?.rubric_id ?? null;
-                const rubricName: string | undefined = rubric_id != null ? rubricNameMap?.[rubric_id] : undefined;
+                const rubricName: string | undefined = rubric_id != null ? rubricNamefromId?.[rubric_id] : undefined;
 
                 return {
                     key: String(cat.completed_assessment_id ?? (at && at.assessment_task_id) ?? i),
@@ -340,7 +328,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     rubricName,
                     createdDate,
                 };
-            }).filter((d: ChartDataCoreItem) => d.avg !== null);
+            }
+        ).filter((d: ChartDataCoreItem) => d.avg !== null);
 
         // === Group by rubric, then by created (oldest → newest) ===
         chartDataCore.sort((a, b) => {
@@ -351,27 +340,27 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
 
         const chartData = [];
         for (let i = 0; i < chartDataCore.length; i++) {
-        const cur = chartDataCore[i];
-        const prev = chartDataCore[i - 1];
+            const cur = chartDataCore[i];
+            const prev = chartDataCore[i - 1];
 
-        if (i > 0 && cur && prev?.rubric_id !== cur?.rubric_id) {
-            chartData.push({
-            key: `spacer-${cur.rubric_id}-${i}`,
-            name: '',
-            avg: null,
-            isSpacer: true,
-            });
-        }
-        if (cur) {
-            chartData.push(cur);
-        }
+            if (i > 0 && cur && prev?.rubric_id !== cur?.rubric_id) {
+                chartData.push({
+                key: `spacer-${cur.rubric_id}-${i}`,
+                name: '',
+                avg: null,
+                isSpacer: true,
+                });
+            }
+            if (cur) {
+                chartData.push(cur);
+            }
         }
 
         this.setState({
-            filteredATs: filteredAssessmentTasks,
+            filteredATs: allATs,
             filteredCATs: editableCats,
-            fullyDoneCATS: showableDoneCats,
-            rubricNames: rubricNameMap,
+            fullyDoneCATS: doneCATs,
+            rubricNames: rubricNamefromId,
             chartData,
         });
     }
@@ -383,9 +372,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             console.log('Already switching back, ignoring click');
             return;
         }
-        
         console.log('=== SWITCHING BACK TO ADMIN ===');
-        
         // Set switching flag
         this.setState({ isSwitchingBack: true });
         
@@ -402,7 +389,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         
         try {
             const adminCredentials = JSON.parse(adminCredentialsStr);
-            console.log('Restoring admin:', adminCredentials.user);
 
             try {
                 // Blacklist test student tokens
@@ -417,7 +403,6 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         refresh_token: cookies.get('refresh_token')
                     })
                 });
-                console.log('Test student tokens blacklisted');
             } catch (logoutError) {
                 console.error('Failed to blacklist test student tokens:', logoutError);
             }
@@ -442,10 +427,9 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             sessionStorage.removeItem('adminCredentials');
             sessionStorage.removeItem('chosenCourse');
             sessionStorage.removeItem('testStudentCourse');
-            
             console.log('Admin cookies restored');
             window.location.reload();
-            
+            console.log('Test student tokens blacklisted');
         } catch (error) {
             console.error('Error switching back:', error);
             alert('Error switching back to admin view');
@@ -580,30 +564,32 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                 </Box>
             </Box>
 
-            <Box className="page-spacing">
-                <Box sx={{
-                    display: "flex",
-                    justifyContent: "space-between",
-                    alignItems: "center",
-                    alignSelf: "stretch"
-                }}>
-                    <Box sx={{ width: "100%" }} className="content-spacing">
-                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
-                            Completed Assessments
-                        </Typography>
+            { ROLE.STUDENT === roles.role_id  && (
+                <Box className="page-spacing">
+                    <Box sx={{
+                        display: "flex",
+                        justifyContent: "space-between",
+                        alignItems: "center",
+                        alignSelf: "stretch"
+                    }}>
+                        <Box sx={{ width: "100%" }} className="content-spacing">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
+                                Completed Assessments
+                            </Typography>
+                        </Box>
+                    </Box>
+
+                    <Box>
+                        {[4, 5].includes(roles["role_id"]) &&
+                            <StudentCompletedAssessmentTasks
+                                navbar={navbar}
+                                assessmentTasks={assessmentTasks ?? []}
+                                filteredCompleteAssessments={fullyDoneCATS ?? []}
+                            />
+                        }
                     </Box>
                 </Box>
-
-                <Box>
-                    {[4, 5].includes(roles["role_id"]) &&
-                        <StudentCompletedAssessmentTasks
-                            navbar={navbar}
-                            assessmentTasks={assessmentTasks ?? []}
-                            filteredCompleteAssessments={fullyDoneCATS ?? []}
-                        />
-                    }
-                </Box>
-            </Box>
+            )}
 
             <Box className="page-spacing">
                 <Box sx={{

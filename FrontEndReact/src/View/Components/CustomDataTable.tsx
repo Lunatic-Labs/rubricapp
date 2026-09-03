@@ -1,7 +1,8 @@
 import React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material';
-import MUIDataTable from 'mui-datatables';
+//import MUIDataTable from 'mui-datatables';
 import { useMediaQuery } from '@mui/material';
+import MUIDataTable from "../../LibAdapters/MUIDataTable";
 
 interface CustomDataTableProps {
     data: object[];

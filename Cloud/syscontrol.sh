@@ -136,7 +136,7 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location / {
-        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/dist;
         try_files \$uri /index.html;
     }
 }"
@@ -148,7 +148,7 @@ server {
     server_name $DOMAIN;
 
     location / {
-        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/dist;
         try_files \$uri /index.html;
     }
 }
@@ -368,7 +368,7 @@ function configure_venv() {
     log "done"
 }
 
-# Installs NVM, Nodejs v20.11.1, serve and npm packages
+# Installs NVM, Nodejs v24.19.0, serve and npm packages
 function install_npm_deps() {
     log "installing npm dependencies"
 
@@ -381,8 +381,8 @@ function install_npm_deps() {
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
-    nvm install 20.11.1
-    nvm use 20.11.1
+    nvm install 24.19.0
+    nvm use 24.19.0
 
     # Install serve globally without sudo so it installs under NVM's node
     # Using sudo here would install under system node, not NVM node
@@ -627,7 +627,7 @@ function serve_rubricapp() {
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-    nvm use 20.11.1
+    nvm use 24.19.0
 
     # Frontend build
     log "building front-end"
@@ -639,7 +639,7 @@ function serve_rubricapp() {
     # Logs go to frontend.log for debugging
     log "starting front-end"
     cd "$PROJ_DIR/FrontEndReact"
-    nohup npm start &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
+    nohup npm run preview &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
     cd - >/dev/null 2>&1 || true
 
     log "done"
