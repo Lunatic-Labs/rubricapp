@@ -206,7 +206,7 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
         }, 0);
         this.fetchNotifications();
       } else {
-        this.setState({ sendError: 'Failed to delete notifications.' });
+        this.setState({ sendError: 'Failed to delete notifications.', sendSuccess: false, successMessage: '' });
       }
     });
   };
