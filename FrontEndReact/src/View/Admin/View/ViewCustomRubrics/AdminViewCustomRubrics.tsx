@@ -2,7 +2,6 @@ import { Component } from "react";
 import { genericResourceGET } from "../../../../utility";
 import CollapsableRubricCategoryTable from "../../Add/AddCustomRubric/CollapsableRubricCategoryTable";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import { Grid, Box} from "@mui/material";
 import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton";
 import Loading from "../../../Loading/Loading";
 import { Rubric } from '../../../../types/Rubric';
