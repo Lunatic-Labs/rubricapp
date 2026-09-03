@@ -171,13 +171,15 @@ class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatings
           exportButtonId: newExportButtonJSON,
           lastSeenCsvType: type,
         });
+      } else {
+        // Covers server errors and network errors alike (genericResourceGET
+        // resolves for both). Clear any stale csvCreation so we don't re-download
+        // leftover data from a prior successful call.
+        this.setState({
+          csvCreation: null,
+        });
       }
-    })
-    .catch(error => {
-      this.setState({
-        csvCreation: null,
-      })
-    })
+    });
   }
 
   render() {

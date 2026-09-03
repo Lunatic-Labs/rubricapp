@@ -186,23 +186,28 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
 
     genericResourceDELETE('/admin_notifications', this, {
       body: JSON.stringify({ notification_ids: selectedRows }),
-    }).then(() => {
-      this.setState({
-        selectedRows: [],
-        sendSuccess: false,
-      });
-      setTimeout(() => {
+    }).then((result) => {
+      // genericResourceDELETE resolves (never rejects) on both server and
+      // network errors, so success must be confirmed via errorMessage here
+      // rather than assumed just because the promise resolved.
+      if (result !== undefined && result.errorMessage === null) {
         this.setState({
-          sendSuccess: true,
-          successMessage: selectedRows.length === 1
-            ? 'Notification deleted successfully.'
-            : `${selectedRows.length} notifications deleted successfully.`,
-          sendError: '',
+          selectedRows: [],
+          sendSuccess: false,
         });
-      }, 0);
-      this.fetchNotifications();
-    }).catch(() => {
-      this.setState({ sendError: 'Failed to delete notifications.' });
+        setTimeout(() => {
+          this.setState({
+            sendSuccess: true,
+            successMessage: selectedRows.length === 1
+              ? 'Notification deleted successfully.'
+              : `${selectedRows.length} notifications deleted successfully.`,
+            sendError: '',
+          });
+        }, 0);
+        this.fetchNotifications();
+      } else {
+        this.setState({ sendError: 'Failed to delete notifications.' });
+      }
     });
   };
 

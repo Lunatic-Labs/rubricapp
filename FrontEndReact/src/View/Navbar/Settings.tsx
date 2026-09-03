@@ -78,26 +78,26 @@ class Settings extends Component<SettingsProps, SettingsState> {
                   }
                 }
               );
-            }
-          })
-          .catch((error) => {
-            console.error("Error fetching user data:", error);
-            // Fallback to user object
-            this.setState(
-              {
-                isLoaded: false,
-                user: user,
-                darkMode: user["user_dark_mode"] || false,
-              },
-              () => {
-                // Apply dark mode in callback
-                if (this.state.darkMode) {
-                  document.body.classList.add("mode");
-                } else {
-                  document.body.classList.remove("mode");
+            } else {
+              // Covers server errors and network errors alike (genericResourceGET
+              // resolves, never rejects, for either) — fall back to the cookie's
+              // user object instead of getting stuck with isLoaded: false forever.
+              console.error("Error fetching user data:", result?.errorMessage);
+              this.setState(
+                {
+                  isLoaded: false,
+                  user: user,
+                  darkMode: user["user_dark_mode"] || false,
+                },
+                () => {
+                  if (this.state.darkMode) {
+                    document.body.classList.add("mode");
+                  } else {
+                    document.body.classList.remove("mode");
+                  }
                 }
-              }
-            );
+              );
+            }
           });
       }
     } else {
@@ -144,18 +144,21 @@ class Settings extends Component<SettingsProps, SettingsState> {
         if (result !== undefined && result.errorMessage === null) {
           // Update the state
           this.setState({ darkMode: newDarkMode }); // warning to not mutate state directly
-        }
-      })
-      .catch((error) => {
-        console.error("Error updating dark mode:", error);
-        // Revert on error
-        this.setState({ darkMode: !newDarkMode });
-        if (!newDarkMode) {
-          document.body.classList.add("mode");
         } else {
-          document.body.classList.remove("mode");
+          // Network failures now resolve through this same branch (instead of
+          // rejecting) with an errorMessage set, so this covers both server
+          // and network errors — revert the optimistic update.
+          console.error("Error updating dark mode:", result?.errorMessage);
+          this.setState({ darkMode: !newDarkMode });
+          if (!newDarkMode) {
+            document.body.classList.add("mode");
+          } else {
+            document.body.classList.remove("mode");
+          }
         }
       });
+      // No .catch() needed: genericResourcePUT resolves (never rejects) on
+      // both network and server failures — see utility.ts.
   };
 
   render() {

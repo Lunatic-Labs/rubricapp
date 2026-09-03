@@ -163,12 +163,16 @@ async function genericResourceFetch(
 
     response = await fetch(url, fetchInit);
   } catch(error){
-    component.setState({
+    // Resolve (don't reject) so network failures use the same errorMessage
+    // contract as server/auth failures below — callers only need a single
+    // .then() handler instead of also requiring a .catch().
+    const state: any = {
       isLoaded: true,
       errorMessage: error instanceof Error ? error.message : String(error),
-    });
+    };
 
-    throw error;
+    component.setState(state);
+    return state;
   }
 
   const result: ApiResponse = await response.json();

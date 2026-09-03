@@ -145,16 +145,14 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                         uploadRequestStatus: REQUEST_STATE.SUCCESS,
                     });
                 } else {
+                    // Covers both server errors and network errors — genericResourcePOST
+                    // resolves (never rejects) with errorMessage set in both cases, so this
+                    // branch is what actually surfaces the message via <ErrorMessage>.
                     this.setState({
+                        errorMessage: result?.errorMessage,
                         uploadRequestStatus: REQUEST_STATE.ERROR,
                     });
                 }
-            }).catch((error) => { 
-                this.setState({
-                    errorMessage: error,
-                    uploadRequestStatus: REQUEST_STATE.ERROR,
-                })
-                
             });
         }
     }
