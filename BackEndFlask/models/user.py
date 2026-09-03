@@ -87,43 +87,43 @@ def get_user_password(user_id):
 
 @error_log
 def get_user_admins():
-   all_user_admins = db.session.execute(
-       select(
-           User.user_id,
-           User.first_name,
-           User.last_name,
-           User.email,
-           User.lms_id,
-           User.consent,
-           User.owner_id
-       ).filter_by(
-           is_admin=True
-       )
-   ).all()
+    all_user_admins = db.session.execute(
+        select(
+            User.user_id,
+            User.first_name,
+            User.last_name,
+            User.email,
+            User.lms_id,
+            User.consent,
+            User.owner_id
+        ).filter_by(
+            is_admin=True
+        )
+    ).all()
 
-   return all_user_admins
+    return all_user_admins
 
 
 @error_log
 def get_admins_with_active_courses():
-   """
-   Returns all admin users who own at least one active course.
-   """
-   admins_with_active_courses = db.session.execute(
-       select(
-           User.user_id,
-           User.first_name,
-           User.last_name,
-           User.email
-       ).join(
-           Course, Course.admin_id == User.user_id
-       ).where(
-           User.is_admin == True,
-           Course.active == True
-       ).distinct()
-   ).all()
+    """
+    Returns all admin users who own at least one active course.
+    """
+    admins_with_active_courses = db.session.execute(
+        select(
+            User.user_id,
+            User.first_name,
+            User.last_name,
+            User.email
+        ).join(
+            Course, Course.admin_id == User.user_id
+        ).where(
+            User.is_admin == True,
+            Course.active == True
+        ).distinct()
+    ).all()
 
-   return admins_with_active_courses
+    return admins_with_active_courses
 
 
 @error_log
