@@ -2,7 +2,8 @@ from core import db
 from models.schemas import Category, RubricCategory, Rubric
 from models.utility import error_log
 from sqlalchemy import (
-    or_
+    or_,
+    select
 )
 from models.rubric import InvalidRubricID
 
@@ -16,37 +17,41 @@ class InvalidCategoryID(Exception):
 
 @error_log
 def get_categories(user_id=1):
-    return db.session.query(
-        Category.category_id,
-        Category.category_name,
-        Category.description,
-        Category.rating_json,
-        Rubric.rubric_id,
-        Rubric.rubric_name
-    ).join(
-        RubricCategory,
-        RubricCategory.category_id == Category.category_id
-    ).join(
-        Rubric,
-        RubricCategory.rubric_id == Rubric.rubric_id
-    ).filter(
-        or_(
-            Rubric.owner == 1,
-            Rubric.owner == user_id
+    return db.session.execute(
+        select(
+            Category.category_id,
+            Category.category_name,
+            Category.description,
+            Category.rating_json,
+            Rubric.rubric_id,
+            Rubric.rubric_name
+        ).join(
+            RubricCategory,
+            RubricCategory.category_id == Category.category_id
+        ).join(
+            Rubric,
+            RubricCategory.rubric_id == Rubric.rubric_id
+        ).where(
+            or_(
+                Rubric.owner == 1,
+                Rubric.owner == user_id
+            )
         )
     ).all()
 
 
 @error_log
 def get_categories_per_rubric(rubric_id):
-    category_per_rubric = db.session.query(
-        Category
-    ).join(
-        RubricCategory,
-        RubricCategory.category_id == Category.category_id
-    ).filter_by(
-        rubric_id=rubric_id
-    ).all()
+    category_per_rubric = db.session.scalars(
+        select(
+            Category
+        ).join(
+            RubricCategory,
+            RubricCategory.category_id == Category.category_id
+        ).filter_by(
+            rubric_id=rubric_id
+        )
+    ).unique().all()
 
     if not category_per_rubric:
         raise InvalidRubricID(rubric_id)
@@ -56,7 +61,7 @@ def get_categories_per_rubric(rubric_id):
 
 @error_log
 def get_category(category_id):
-    one_category = Category.query.filter_by(category_id=category_id).first()
+    one_category = db.session.scalars(select(Category).filter_by(category_id=category_id).limit(1)).first()
 
     if one_category is None:
         raise InvalidCategoryID(category_id)
@@ -65,7 +70,7 @@ def get_category(category_id):
 
 @error_log
 def get_ratings_by_category(category_id):
-    one_category = Category.query.filter_by(category_id=category_id).first()
+    one_category = db.session.scalars(select(Category).filter_by(category_id=category_id).limit(1)).first()
 
     if one_category is None:
         raise InvalidCategoryID(category_id)
@@ -89,7 +94,7 @@ def create_category(category):
 
 @error_log
 def replace_category(category, category_id):
-    one_category = Category.query.filter_by(category_id=category_id).first()
+    one_category = db.session.scalars(select(Category).filter_by(category_id=category_id).limit(1)).first()
 
     if one_category is None:
         raise InvalidCategoryID(category_id)

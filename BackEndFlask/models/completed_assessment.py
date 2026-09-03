@@ -1,5 +1,5 @@
 from core import db
-from sqlalchemy import and_, func, or_
+from sqlalchemy import and_, func, or_, select
 from sqlalchemy.exc import SQLAlchemyError
 from models.schemas import CompletedAssessment, AssessmentTask, User, Feedback
 from datetime import datetime, timezone
@@ -19,17 +19,21 @@ class InvalidCRID(Exception):
 
 @error_log
 def get_completed_assessments():
-    return CompletedAssessment.query.all()
+    return db.session.scalars(select(CompletedAssessment)).all()
 
 
 @error_log
 def get_completed_assessments_by_assessment_task_id(assessment_task_id):
-    return CompletedAssessment.query.filter_by(assessment_task_id=assessment_task_id).all()
+    return db.session.scalars(
+        select(CompletedAssessment).filter_by(assessment_task_id=assessment_task_id)
+    ).all()
 
 
 @error_log
 def get_completed_assessment(completed_assessment_id):
-    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    one_completed_assessment = db.session.scalars(
+        select(CompletedAssessment).filter_by(completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
 
     if one_completed_assessment is None:
         raise InvalidCRID(completed_assessment_id)
@@ -39,33 +43,45 @@ def get_completed_assessment(completed_assessment_id):
 
 @error_log
 def get_completed_assessment_by_course_id(course_id):
-    return db.session.query(CompletedAssessment).join(AssessmentTask, CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id).filter(
+    return db.session.scalars(
+        select(CompletedAssessment).join(AssessmentTask, CompletedAssessment.assessment_task_id == AssessmentTask.assessment_task_id).where(
             AssessmentTask.course_id == course_id
-        ).all()
+        )
+    ).unique().all()
 
 @error_log
 def get_completed_assessment_count(assessment_task_id):
-    return db.session.query(func.count(CompletedAssessment.completed_assessment_id)).filter_by(assessment_task_id=assessment_task_id).scalar()
+    return db.session.scalar(
+        select(func.count(CompletedAssessment.completed_assessment_id))
+        .select_from(CompletedAssessment)
+        .filter_by(assessment_task_id=assessment_task_id)
+    )
 
 @error_log
 def completed_assessment_exists(team_id, assessment_task_id, user_id):
     if (user_id == -1):   # Team assessment, otherwise individual assessment
-        return CompletedAssessment.query.filter_by(team_id=team_id, assessment_task_id=assessment_task_id).first()
+        return db.session.scalars(
+            select(CompletedAssessment).filter_by(team_id=team_id, assessment_task_id=assessment_task_id).limit(1)
+        ).first()
     else:   
-        return CompletedAssessment.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()          
+        return db.session.scalars(
+            select(CompletedAssessment).filter_by(user_id=user_id, assessment_task_id=assessment_task_id).limit(1)
+        ).first()
 
 @error_log
 def completed_assessment_team_or_user_exists(team_id=None, user_id=None):
     if team_id is not None:
-        return CompletedAssessment.query.filter_by(team_id=team_id).all()
+        return db.session.scalars(select(CompletedAssessment).filter_by(team_id=team_id)).all()
     elif user_id is not None:
-        return CompletedAssessment.query.filter_by(user_id=user_id).all()
+        return db.session.scalars(select(CompletedAssessment).filter_by(user_id=user_id)).all()
     else:
         return []
 
 @error_log 
 def delete_completed_assessment_tasks(completed_assessment_id):
-    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    one_completed_assessment = db.session.scalars(
+        select(CompletedAssessment).filter_by(completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
 
     if one_completed_assessment is None:
         raise InvalidCRID(completed_assessment_id)
@@ -83,7 +99,9 @@ def delete_completed_assessment_tasks(completed_assessment_id):
 
 @error_log
 def create_completed_assessment(completed_assessment_data):
-    assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=completed_assessment_data["assessment_task_id"]).first()
+    assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=completed_assessment_data["assessment_task_id"]).limit(1)
+    ).first()
     
     # Default to current time in UTC if no initial time provided
     if not completed_assessment_data.get("initial_time"):
@@ -116,7 +134,9 @@ def create_completed_assessment(completed_assessment_data):
 
 @error_log
 def toggle_lock_status(completed_assessment_id):
-    ca = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    ca = db.session.scalars(
+        select(CompletedAssessment).filter_by(completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
     if ca is None:
         raise InvalidCRID(completed_assessment_id)
     ca.locked = not ca.locked
@@ -125,7 +145,9 @@ def toggle_lock_status(completed_assessment_id):
 
 @error_log
 def make_complete_assessment_locked(completed_assessment_id):
-    ca = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    ca = db.session.scalars(
+        select(CompletedAssessment).filter_by(completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
     if ca is None:
         raise InvalidCRID(completed_assessment_id)
     ca.locked = True
@@ -134,7 +156,9 @@ def make_complete_assessment_locked(completed_assessment_id):
 
 @error_log
 def make_complete_assessment_unlocked(completed_assessment_id):
-    ca = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    ca = db.session.scalars(
+        select(CompletedAssessment).filter_by(completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
     if ca is None:
         raise InvalidCRID(completed_assessment_id)
     ca.locked = False
@@ -149,8 +173,10 @@ def toggle_individual_lock_status(completed_assessment_id, locked):
         completed_assessment_id: The ID of the completed assessment to toggle
         locked: Boolean indicating the new lock status
     """
-    completed_assessment = CompletedAssessment.query.filter_by(
-        completed_assessment_id=completed_assessment_id
+    completed_assessment = db.session.scalars(
+        select(CompletedAssessment).filter_by(
+            completed_assessment_id=completed_assessment_id
+        ).limit(1)
     ).first()
     
     if not completed_assessment:
@@ -169,8 +195,10 @@ def lock_individual_assessment(completed_assessment_id):
     Args:
         completed_assessment_id: The ID of the completed assessment to lock
     """
-    completed_assessment = CompletedAssessment.query.filter_by(
-        completed_assessment_id=completed_assessment_id
+    completed_assessment = db.session.scalars(
+        select(CompletedAssessment).filter_by(
+            completed_assessment_id=completed_assessment_id
+        ).limit(1)
     ).first()
     
     if not completed_assessment:
@@ -189,8 +217,10 @@ def unlock_individual_assessment(completed_assessment_id):
     Args:
         completed_assessment_id: The ID of the completed assessment to unlock
     """
-    completed_assessment = CompletedAssessment.query.filter_by(
-        completed_assessment_id=completed_assessment_id
+    completed_assessment = db.session.scalars(
+        select(CompletedAssessment).filter_by(
+            completed_assessment_id=completed_assessment_id
+        ).limit(1)
     ).first()
     
     if not completed_assessment:
@@ -1146,12 +1176,16 @@ def load_demo_completed_assessment():
         })
 
 def replace_completed_assessment(completed_assessment_data, completed_assessment_id):
-    one_completed_assessment = CompletedAssessment.query.filter_by(completed_assessment_id=completed_assessment_id).first()
+    one_completed_assessment = db.session.scalars(
+        select(CompletedAssessment).filter_by(completed_assessment_id=completed_assessment_id).limit(1)
+    ).first()
 
     if one_completed_assessment is None:
         raise InvalidCRID
 
-    assessment_task = db.session.query(AssessmentTask).filter_by(assessment_task_id=one_completed_assessment.assessment_task_id).first()
+    assessment_task = db.session.scalars(
+        select(AssessmentTask).filter_by(assessment_task_id=one_completed_assessment.assessment_task_id).limit(1)
+    ).first()
     
     if not completed_assessment_data.get("last_update"):
         completed_assessment_data["last_update"] = datetime.now(timezone.utc).isoformat() + "Z"

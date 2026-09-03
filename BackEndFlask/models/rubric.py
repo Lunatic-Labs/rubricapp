@@ -1,5 +1,5 @@
 from core import db
-from sqlalchemy import or_
+from sqlalchemy import delete, func, or_, select
 from sqlalchemy.exc import IntegrityError
 from models.schemas import Rubric, AssessmentTask, RubricCategory
 from models.utility import error_log
@@ -15,18 +15,20 @@ class InvalidRubricID(Exception):
 
 @error_log
 def get_rubrics():
-    return Rubric.query.all()
+    return db.session.scalars(select(Rubric)).all()
 
 
 @error_log
 def get_rubrics_for_user(user_id):
     # Return rubrics owned by the user or global (owner is NULL)
-    return db.session.query(Rubric).filter(or_(Rubric.owner == user_id, Rubric.owner == None))
+    return db.session.scalars(
+        select(Rubric).where(or_(Rubric.owner == user_id, Rubric.owner == None))
+    ).all()
 
 
 @error_log
 def get_rubric(rubric_id):
-    one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
+    one_rubric = db.session.scalars(select(Rubric).filter_by(rubric_id=rubric_id).limit(1)).first()
     if one_rubric is None:
         raise InvalidRubricID(rubric_id)
     return one_rubric
@@ -46,7 +48,7 @@ def create_rubric(rubric):
 
 @error_log
 def replace_rubric(rubric, rubric_id):
-    one_rubric = Rubric.query.filter_by(rubric_id=rubric_id).first()
+    one_rubric = db.session.scalars(select(Rubric).filter_by(rubric_id=rubric_id).limit(1)).first()
     if one_rubric is None:
         raise InvalidRubricID(rubric_id)
     # assuming rubric is [name, description]
@@ -70,16 +72,22 @@ def delete_rubric_by_id(rubric_id):
             raise InvalidRubricID(rubric_id)
 
         # Block deletion if any AssessmentTask uses this rubric
-        in_use_count = db.session.query(AssessmentTask).filter(
-            AssessmentTask.rubric_id == rubric_id
-        ).count()
+        in_use_count = db.session.scalar(
+            select(func.count()).select_from(
+                select(AssessmentTask).where(
+                    AssessmentTask.rubric_id == rubric_id
+                ).subquery()
+            )
+        )
         if in_use_count > 0:
             raise ValueError("Cannot delete rubric used in one or more assessment tasks")
 
         # Remove dependent RubricCategories first (avoids MySQL 1451 FK error)
-        db.session.query(RubricCategory).filter(
-            RubricCategory.rubric_id == rubric_id
-        ).delete(synchronize_session=False)
+        db.session.execute(
+            delete(RubricCategory).where(
+                RubricCategory.rubric_id == rubric_id
+            ).execution_options(synchronize_session=False)
+        )
 
         # Delete the rubric itself
         db.session.delete(rubric)

@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import select
 from models.schemas import ObservableCharacteristic
 from models.utility import error_log
 
@@ -12,12 +13,14 @@ class InvalidObservableCharacteristicID(Exception):
 
 @error_log
 def get_observable_characteristics():
-    return ObservableCharacteristic.query.all()
+    return db.session.scalars(select(ObservableCharacteristic)).all()
 
 
 @error_log
 def get_observable_characteristic(observable_characteristic_id):
-    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristics_id=observable_characteristic_id).first()
+    one_observable_characteristic = db.session.scalars(
+        select(ObservableCharacteristic).filter_by(observable_characteristics_id=observable_characteristic_id).limit(1)
+    ).first()
 
     if one_observable_characteristic is None:
         raise InvalidObservableCharacteristicID(observable_characteristic_id)
@@ -27,7 +30,9 @@ def get_observable_characteristic(observable_characteristic_id):
 
 @error_log
 def get_observable_characteristic_per_category(category_id):
-    observable_characteristic_per_category = ObservableCharacteristic.query.filter_by(category_id=category_id).all()
+    observable_characteristic_per_category = db.session.scalars(
+        select(ObservableCharacteristic).filter_by(category_id=category_id)
+    ).all()
 
     return observable_characteristic_per_category
 
@@ -47,7 +52,9 @@ def create_observable_characteristic(observable_characteristic):
 
 @error_log
 def replace_observable_characteristic(observable_characteristic, observable_characteristic_id):
-    one_observable_characteristic = ObservableCharacteristic.query.filter_by(observable_characteristics_id=observable_characteristic_id).first()
+    one_observable_characteristic = db.session.scalars(
+        select(ObservableCharacteristic).filter_by(observable_characteristics_id=observable_characteristic_id).limit(1)
+    ).first()
 
     if one_observable_characteristic is None:
         raise InvalidObservableCharacteristicID(observable_characteristic_id)

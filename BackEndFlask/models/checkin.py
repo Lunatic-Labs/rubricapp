@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import delete, select
 from models.schemas import Checkin
 from datetime import datetime, timedelta
 from models.utility import error_log
@@ -17,13 +18,17 @@ def create_checkin(checkin):
 
 @error_log
 def already_checked_in(user_id, assessment_task_id):
-    checkin = Checkin.query.filter_by(user_id=user_id, assessment_task_id=assessment_task_id).first()
+    checkin = db.session.scalars(
+        select(Checkin).filter_by(user_id=user_id, assessment_task_id=assessment_task_id).limit(1)
+    ).first()
 
     return checkin is not None
 
 @error_log
 def update_checkin(new_checkin):
-    checkin = Checkin.query.filter_by(user_id=new_checkin["user_id"], assessment_task_id=new_checkin["assessment_task_id"]).first()
+    checkin = db.session.scalars(
+        select(Checkin).filter_by(user_id=new_checkin["user_id"], assessment_task_id=new_checkin["assessment_task_id"]).limit(1)
+    ).first()
     
     setattr(checkin, "team_number", new_checkin["team_number"])
 
@@ -31,17 +36,19 @@ def update_checkin(new_checkin):
     
 @error_log
 def get_checkins_by_assessment(assessment_task_id):
-    checkins = Checkin.query.filter_by(assessment_task_id=assessment_task_id).all()
+    checkins = db.session.scalars(select(Checkin).filter_by(assessment_task_id=assessment_task_id)).all()
     
     return checkins
 
 # Generated with ChatGPT
 @error_log
 def delete_checkins_over_team_count(assessment_task_id, number_of_teams):
-    Checkin.query.filter(
-        Checkin.assessment_task_id == assessment_task_id,
-        Checkin.team_number > number_of_teams
-    ).delete()
+    db.session.execute(
+        delete(Checkin).where(
+            Checkin.assessment_task_id == assessment_task_id,
+            Checkin.team_number > number_of_teams
+        )
+    )
     
     db.session.commit()
 
@@ -49,7 +56,7 @@ def delete_checkins_over_team_count(assessment_task_id, number_of_teams):
 @error_log
 def delete_latest_checkins_over_team_size(assessment_task_id, max_team_size):
     # Get all checkins for the assessment task
-    checkins = Checkin.query.filter_by(assessment_task_id=assessment_task_id).all()
+    checkins = db.session.scalars(select(Checkin).filter_by(assessment_task_id=assessment_task_id)).all()
     
     # Create a dictionary  to count checkins per team member
     team_checkin_count = {}
@@ -65,7 +72,11 @@ def delete_latest_checkins_over_team_size(assessment_task_id, max_team_size):
     for team_number, count in team_checkin_count.items():
         while count > max_team_size:
             # Find the latest checkin for this team
-            latest_checkin = Checkin.query.filter_by(assessment_task_id=assessment_task_id, team_number=team_number).order_by(Checkin.time.desc()).first()
+            latest_checkin = db.session.scalars(
+                select(Checkin)
+                .filter_by(assessment_task_id=assessment_task_id, team_number=team_number)
+                .order_by(Checkin.time.desc()).limit(1)
+            ).first()
             
             if latest_checkin:
                 db.session.delete(latest_checkin)
@@ -97,12 +108,11 @@ def find_latest_team_user_checkin(assessment_task_id:int, team_or_user_id:int, i
     else:
         filters['user_id'] = team_or_user_id
 
-    return (
-        Checkin.query.
+    return db.session.scalars(
+        select(Checkin).
         filter_by(**filters).
-        order_by(Checkin.time.desc()).
-        first()
-    )
+        order_by(Checkin.time.desc()).limit(1)
+    ).first()
     
 @error_log
 def update_checkin_to_server_time(checkin_record:object) -> None:
@@ -127,8 +137,8 @@ def find_checkin_team_number(assessment_task_id:int, user_id:int) -> int:
     Returns:
         int: Will return a team_number or 0 if nothing.
     """
-    result = (Checkin.query.
-        with_entities(Checkin.team_number).
-        filter(Checkin.assessment_task_id == assessment_task_id, Checkin.user_id == user_id).
-        first())
+    result = db.session.execute(
+        select(Checkin.team_number).
+        where(Checkin.assessment_task_id == assessment_task_id, Checkin.user_id == user_id).limit(1)
+    ).first()
     return result.team_number if result else 0 

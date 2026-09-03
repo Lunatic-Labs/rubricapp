@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import select
 from models.schemas import Role
 from models.utility import error_log
 
@@ -11,12 +12,12 @@ class InvalidRoleID(Exception):
 
 @error_log
 def get_roles():
-    return Role.query.all()
+    return db.session.scalars(select(Role)).all()
 
 
 @error_log
 def get_role(role_id):
-    one_role = Role.query.filter_by(role_id=role_id).first()
+    one_role = db.session.scalars(select(Role).filter_by(role_id=role_id).limit(1)).first()
 
     if one_role is None:
         raise InvalidRoleID(role_id)
@@ -47,7 +48,7 @@ def load_existing_roles():
 
 @error_log
 def replace_role(new_role_name, role_id):
-    one_role = Role.query.filter_by(role_id=role_id).first()
+    one_role = db.session.scalars(select(Role).filter_by(role_id=role_id).limit(1)).first()
 
     if one_role is None:
         raise InvalidRoleID(role_id)

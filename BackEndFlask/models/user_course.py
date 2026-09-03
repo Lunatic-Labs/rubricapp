@@ -1,7 +1,7 @@
 from core import db
 from models.schemas import UserCourse
 from models.utility import error_log
-from sqlalchemy import select
+from sqlalchemy import delete, func, select
 from enums.roles import Roles
 
 class InvalidUserCourseID(Exception):
@@ -14,35 +14,49 @@ class InvalidUserCourseID(Exception):
 
 @error_log
 def get_user_courses():
-    return UserCourse.query.all()
+    return db.session.scalars(select(UserCourse)).all()
 
 
 @error_log
 def get_user_courses_by_course_id(course_id):
-    return UserCourse.query.filter_by(course_id=course_id, active=True).all()
+    return db.session.scalars(
+        select(UserCourse).filter_by(course_id=course_id, active=True)
+    ).all()
 
 @error_log
 def get_user_course_student_count_by_course_id(course_id):
-    return UserCourse.query.filter_by(course_id=course_id, active=True, role_id=5).count()
+    return db.session.scalar(
+        select(func.count()).select_from(
+            select(UserCourse).filter_by(course_id=course_id, active=True, role_id=5).subquery()
+        )
+    )
 
 @error_log
 def get_user_courses_by_user_id(user_id):
-    return UserCourse.query.filter_by(user_id=user_id, active=True).all()
+    return db.session.scalars(
+        select(UserCourse).filter_by(user_id=user_id, active=True)
+    ).all()
 
 
 @error_log
 def get_user_courses_by_user_id_and_course_id(user_id, course_id):
-    return UserCourse.query.filter_by(user_id=user_id, course_id=course_id, active=True).all()
+    return db.session.scalars(
+        select(UserCourse).filter_by(user_id=user_id, course_id=course_id, active=True)
+    ).all()
 
 
 @error_log
 def get_user_course_by_user_id_and_course_id(user_id, course_id):
-    return UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
+    return db.session.scalars(
+        select(UserCourse).filter_by(user_id=user_id, course_id=course_id).limit(1)
+    ).first()
 
 
 @error_log
 def get_user_course(user_course_id):
-    one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
+    one_user_course = db.session.scalars(
+        select(UserCourse).filter_by(user_course_id=user_course_id).limit(1)
+    ).first()
 
     if one_user_course is None:
         raise InvalidUserCourseID(user_course_id)
@@ -52,7 +66,9 @@ def get_user_course(user_course_id):
 
 @error_log
 def get_user_course_user_id(user_course_id):
-    return UserCourse.query.filter_by(user_course_id=user_course_id).first().user_id
+    return db.session.scalars(
+        select(UserCourse).filter_by(user_course_id=user_course_id).limit(1)
+    ).first().user_id
 
 
 @error_log
@@ -101,7 +117,9 @@ def load_demo_user_course_student():
 
 @error_log
 def replace_user_course(usercourse_data, user_course_id):
-    one_user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
+    one_user_course = db.session.scalars(
+        select(UserCourse).filter_by(user_course_id=user_course_id).limit(1)
+    ).first()
 
     if one_user_course is None:
         raise InvalidUserCourseID(user_course_id)
@@ -118,7 +136,9 @@ def replace_user_course(usercourse_data, user_course_id):
 
 @error_log
 def replace_role_id_given_user_id_and_course_id(user_id, course_id, role_id):
-    one_user_course = UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
+    one_user_course = db.session.scalars(
+        select(UserCourse).filter_by(user_id=user_id, course_id=course_id).limit(1)
+    ).first()
 
     if one_user_course is None:
         raise Exception("Invalid user_id or course_id")
@@ -132,7 +152,9 @@ def replace_role_id_given_user_id_and_course_id(user_id, course_id, role_id):
 
 @error_log
 def set_inactive_status_of_user_to_active(user_course_id):
-    user_course = UserCourse.query.filter_by(user_course_id=user_course_id).first()
+    user_course = db.session.scalars(
+        select(UserCourse).filter_by(user_course_id=user_course_id).limit(1)
+    ).first()
     user_course.active = True
 
     db.session.commit()
@@ -140,7 +162,9 @@ def set_inactive_status_of_user_to_active(user_course_id):
 
 @error_log
 def set_active_status_of_user_to_inactive(user_id, course_id):
-    one_user_course = UserCourse.query.filter_by(user_id=user_id, course_id=course_id).first()
+    one_user_course = db.session.scalars(
+        select(UserCourse).filter_by(user_id=user_id, course_id=course_id).limit(1)
+    ).first()
     one_user_course.active = False
 
     db.session.commit()
@@ -148,14 +172,14 @@ def set_active_status_of_user_to_inactive(user_id, course_id):
 
 @error_log
 def delete_user_course_by_user_id_course_id(user_id, course_id):
-        UserCourse.query.filter_by(user_id=user_id, course_id=course_id).delete()
+        db.session.execute(delete(UserCourse).filter_by(user_id=user_id, course_id=course_id))
 
         db.session.commit()
 
 
 @error_log
 def delete_user_course(user_course_id):
-    UserCourse.query.filter_by(user_course_id=user_course_id).delete()
+    db.session.execute(delete(UserCourse).filter_by(user_course_id=user_course_id))
 
     db.session.commit()
 

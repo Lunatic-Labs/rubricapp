@@ -1,4 +1,5 @@
 from core import db
+from sqlalchemy import delete, select
 from models.schemas import Course
 from models.user import User
 from models.user_course import UserCourse
@@ -14,12 +15,12 @@ class InvalidCourseID(Exception):
 
 @error_log
 def get_courses():
-    return Course.query.all()
+    return db.session.scalars(select(Course)).all()
 
 
 @error_log
 def get_course(course_id):
-    course = Course.query.filter_by(course_id=course_id).first()
+    course = db.session.scalars(select(Course).filter_by(course_id=course_id).limit(1)).first()
     if course is None:
         raise InvalidCourseID(course_id)
     return course
@@ -27,7 +28,7 @@ def get_course(course_id):
 
 @error_log
 def get_course_use_tas(course_id):
-    course = Course.query.filter_by(course_id=course_id).first()
+    course = db.session.scalars(select(Course).filter_by(course_id=course_id).limit(1)).first()
     if course:
         return course.use_tas
     return None
@@ -35,7 +36,7 @@ def get_course_use_tas(course_id):
 
 @error_log
 def get_courses_by_admin_id(admin_id):
-    return Course.query.filter_by(admin_id=admin_id).all()
+    return db.session.scalars(select(Course).filter_by(admin_id=admin_id)).all()
 
 
 @error_log
@@ -63,7 +64,7 @@ def load_demo_course():
     from models.role import Role
     
     # Ensure Student role exists (role_id=5)
-    student_role = Role.query.filter_by(role_id=5).first()
+    student_role = db.session.scalars(select(Role).filter_by(role_id=5).limit(1)).first()
     if not student_role:
         print("ERROR: Student role (id=5) not found. Loading roles first...")
         from models.role import load_existing_roles
@@ -125,7 +126,7 @@ def load_demo_course():
 
 @error_log
 def replace_course(course_data, course_id):
-    one_course = Course.query.filter_by(course_id=course_id).first()
+    one_course = db.session.scalars(select(Course).filter_by(course_id=course_id).limit(1)).first()
 
     if one_course is None:
         raise InvalidCourseID(course_id)
@@ -147,11 +148,11 @@ def replace_course(course_data, course_id):
 
 @error_log
 def delete_course(course_id):
-    deleted_course = Course.query.filter_by(course_id=course_id).first()
+    deleted_course = db.session.scalars(select(Course).filter_by(course_id=course_id).limit(1)).first()
 
     if deleted_course is None:
         raise InvalidCourseID(course_id)
 
-    Course.query.filter_by(course_id=course_id).delete()
+    db.session.execute(delete(Course).filter_by(course_id=course_id))
 
     db.session.commit()
