@@ -85,10 +85,10 @@ class Settings extends Component<SettingsProps, SettingsState> {
               console.error("Error fetching user data:", result?.errorMessage);
               this.setState(
                 {
-                  isLoaded: false,
-                  user: user,
-                  darkMode: user["user_dark_mode"] || false,
-                },
+                  isLoaded: true,
+                  user: user["user_id"],
+                  darkMode: user["user_dark_mode"] ?? false,
+                }
                 () => {
                   if (this.state.darkMode) {
                     document.body.classList.add("mode");
