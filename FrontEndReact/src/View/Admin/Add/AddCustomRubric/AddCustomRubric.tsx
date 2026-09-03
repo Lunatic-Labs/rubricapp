@@ -288,21 +288,15 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                     <ErrorMessage errorMessage={this.state.errorMessage} />
                 )}
                 <div>
-                    <Grid container spacing={10}>
-                        <Grid item xs={6}>
-                            <h2
-                                style={{
-                                    borderBottom: "1px solid #D9D9D9",
-                                    paddingTop: "16px",
-                                    paddingBottom: "16px",
-                                    textAlign: "left",
-                                    fontWeight: "bold",
-                                }}
-                                aria-label="addCustomizeYourRubricTitle"
-                            > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
-                            </h2>
-                        </Grid>
-
+                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: "16px"}}>
+                        <h2
+                            style={{
+                                textAlign: "left",
+                                fontWeight: "bold",
+                            }}
+                            aria-label="addCustomizeYourRubricTitle"
+                        > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
+                        </h2>
                         <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
                             {!this.state.addCustomRubric && (
                                 <Grid item>
@@ -329,7 +323,8 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 />
                             </Grid>
                         </Grid>
-                    </Grid>
+                    </div>
+                    <hr style={{ borderTop: "1px solid #787878"}}/>
 
                     <Grid
                         style={{
