@@ -6,7 +6,7 @@ import { genericResourcePUT, genericResourceGET } from "../../utility";
 import Loading from "../Loading/Loading";
 
 // 'mode' refers to the darkmode classlist in the SBStyles.css, by adding 'mode' to the
-// document body, the darkmode css will be applied.
+// document body, the darkmode css will be applied. 
 
 // currently settings has only one option and that is to toggle darkmode, more options
 // will be added later as the app grows.
