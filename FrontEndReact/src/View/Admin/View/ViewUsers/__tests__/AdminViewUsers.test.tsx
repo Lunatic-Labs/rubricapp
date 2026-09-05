@@ -1,6 +1,7 @@
 import { test, expect } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import Cookies from "universal-cookie";
 import Login from "../../../../Login/Login";
 
 import {
@@ -112,7 +113,19 @@ test("AdminViewUsers.test.tsx Test 5: Should show Add User Form when clicking th
     });
 });
 test("AdminViewUsers.test.tsx Test 6: Should show Edit User Form when clicking the Edit Icon for super admin view using super admin credentials (SKIL-795 regression)", async () => {
+    // Previous tests logged in as the demo admin and never logged out, so their
+    // auth cookies are still present. Clear them so Login renders the form
+    // instead of auto-authenticating as the demo admin via checkAuthStatus().
+    const cookies = new Cookies();
+    cookies.remove('access_token');
+    cookies.remove('refresh_token');
+    cookies.remove('user');
+
     render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(lf);
+    });
 
     changeElementWithAriaLabelWithInput(ei, "superadminuser01@skillbuilder.edu");
 
