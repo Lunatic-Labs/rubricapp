@@ -1,8 +1,6 @@
 import os
-import io
 import logging
 import pytest
-from datetime import datetime, timedelta
 from models.logger import Logger
 
 @pytest.fixture(autouse=True)
@@ -76,18 +74,15 @@ def test_password_reset_logs_correct_format(temp_log_file):
     assert "Name: John Doe" in content
     assert "Email: john@example.com" in content
 
-def test_try_clear_removes_old_entries(temp_log_file):
-    """Simulate a log older than 90 days and ensure it is removed."""
-    old_date = (datetime.now() - timedelta(days=91)).strftime("%Y-%m-%d %H:%M:%S")
-    new_date = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    with open(temp_log_file, "w") as f:
-        f.write(f"{old_date} - INFO - old log\n")
-        f.write(f"{new_date} - INFO - new log\n")
+def test_logger_uses_timed_rotation_with_90_day_retention(temp_log_file):
+    """Log files should rotate daily and keep 90 days of backups."""
+    from logging.handlers import TimedRotatingFileHandler
 
-    log = Logger("test_logger_clear", logfile=temp_log_file)
-    log.info("Trigger cleanup")
+    log = Logger("test_logger_rotation", logfile=temp_log_file)
 
-    with open(temp_log_file, "r") as f:
-        contents = f.read()
-    assert "old log" not in contents
-    assert "new log" in contents
+    rotating_handlers = [
+        h for h in log.logger.handlers if isinstance(h, TimedRotatingFileHandler)
+    ]
+    assert len(rotating_handlers) == 1
+    assert rotating_handlers[0].when.upper() == "MIDNIGHT"
+    assert rotating_handlers[0].backupCount == 90
