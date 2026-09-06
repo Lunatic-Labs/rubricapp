@@ -163,7 +163,7 @@ const CollapsableRubricCategoryTable = ({
                           variant="contained"
                           onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
                             event.stopPropagation(); // Prevent row click
-                            navbar.rubricId = rubric["rubric_id"];
+                            navbar.setSelectedRubricId(rubric["rubric_id"]);
                             navbar.setAddCustomRubric(false)
                           }}
                           className="white-text-button"
