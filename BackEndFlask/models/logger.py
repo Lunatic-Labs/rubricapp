@@ -1,9 +1,38 @@
 import os
+import json
 import logging
+from datetime import datetime
 from logging.handlers import TimedRotatingFileHandler
+
+from models.log_context import get_request_id, get_user_id
 
 # Number of daily rotated log files to keep before the oldest is deleted.
 LOG_RETENTION_DAYS = 90
+
+
+class JsonFormatter(logging.Formatter):
+    """
+    Description:
+    Formats each log record as a single-line JSON object, tagging it with
+    the request_id/user_id (if any) of the request currently being
+    handled so every line touched by one request can be correlated.
+    """
+
+    def format(self, record: logging.LogRecord) -> str:
+        payload = {
+            "timestamp": datetime.fromtimestamp(record.created).isoformat(),
+            "level": record.levelname,
+            "logger": record.name,
+            "message": record.getMessage(),
+            "request_id": get_request_id(),
+            "user_id": get_user_id(),
+        }
+
+        if record.exc_info:
+            payload["exc_info"] = self.formatException(record.exc_info)
+
+        return json.dumps(payload)
+
 
 class Logger:
     """
@@ -25,7 +54,7 @@ class Logger:
         """
         self.logger = logging.getLogger(name)
         self.logger.setLevel(logging.DEBUG)
-        formatter = logging.Formatter("%(asctime)s - %(levelname)s - %(message)s")
+        formatter = JsonFormatter()
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)
         self.logger.addHandler(console_handler)
