@@ -80,11 +80,7 @@ def test_get_all_admin_users(flask_app_mock, sample_token, auth_header, client):
         finally:
             _safe_cleanup(
                 lambda: TeamUser.query.delete(),
-                lambda: delete_team(team1.team_id),
-                lambda: delete_team(team2.team_id),
-                lambda: delete_users(users),
-                lambda: delete_user(user),
-                lambda: delete_one_admin_course(result),
+                lambda: delete_user(teacher.user_id),
             )
 
         #finally:
@@ -394,7 +390,7 @@ def test_get_all_user_info(flask_app_mock, sample_token, auth_header, client):
         finally:
             _safe_cleanup(
                 lambda: [delete_assessment_task(at.assessment_task_id) for at in get_assessment_tasks_by_course_id(result['course_id'])],
-                lambda: delete_user(user),
+                lambda: delete_user(user.user_id),
                 lambda: delete_one_admin_course(result),
             )
 
