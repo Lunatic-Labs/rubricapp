@@ -275,7 +275,6 @@ def add_user():
                 })
 
                 return create_good_response(user_schema.dump(new_user), 200, "users")
-                #return create_good_response(user_schema.dump(user_exists), 200, "users")
 
         new_user = create_user(request.json)
 
