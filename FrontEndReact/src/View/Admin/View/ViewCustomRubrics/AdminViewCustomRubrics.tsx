@@ -74,7 +74,7 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                         aria-label="myCustomRubricsAddCustomRubricButton"
                     />
                 </div>
-                <hr style={{ borderTop: "1px solid #787878"}}/>
+                <hr style={{ border: 0, borderTop: "1px solid #787878", margin: 0 }} />
 
                 { errorMessage &&
                     <ErrorMessage
