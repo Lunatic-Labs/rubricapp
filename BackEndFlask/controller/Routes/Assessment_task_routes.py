@@ -43,7 +43,7 @@ from models.queries import (
     get_students_by_team_id,
     get_assessment_task_by_course_id_and_role_id
 )
-# for password hashing
+# for constant-time string comparison
 import hmac
 
 # /assessment_task GET retrieves all assessment tasks
