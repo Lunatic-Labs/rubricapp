@@ -151,6 +151,6 @@ def replace_team(team_data, team_id):
 
 @error_log
 def delete_team(team_id):
-    db.session.execute(delete(Team).filter_by(team_id=team_id))
+    db.session.execute(delete(Team).where(Team.team_id == team_id))
 
     db.session.commit()
