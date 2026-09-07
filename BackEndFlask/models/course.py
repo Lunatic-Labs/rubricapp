@@ -153,6 +153,5 @@ def delete_course(course_id):
     if deleted_course is None:
         raise InvalidCourseID(course_id)
 
-    db.session.execute(delete(Course).filter_by(course_id=course_id))
-
+    db.session.execute(delete(Course).where(Course.course_id == course_id))
     db.session.commit()
