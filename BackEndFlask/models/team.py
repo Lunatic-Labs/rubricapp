@@ -28,8 +28,9 @@ def get_team_by_course_id(course_id):
 @error_log
 def get_team_count_by_course_id(course_id):
     return db.session.scalar(
-        select(func.count()).select_from(
-            select(Team).filter_by(course_id=course_id,active_until=None).subquery()
+        select(func.count()).select_from(Team).where(
+            Team.course_id == course_id,
+            Team.active_until.is_(None),
         )
     )
 

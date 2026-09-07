@@ -49,16 +49,16 @@ def get_users_by_email(email):
 
 @error_log
 def get_user_consent(user_id):
-    return db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first().consent
+    return get_user(user_id).consent
 
 # added get_user_darkmode
 @error_log
 def get_user_dark_mode(user_id):
-    return db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first().user_dark_mode
+    return get_user(user_id).user_dark_mode
 
 @error_log
 def set_user_dark_mode(user_id, user_dark_mode):
-    user = db.session.scalars(select(User).filter_by(user_id=user_id).limit(1)).first()
+    user = get_user(user_id)
 
     setattr(user, 'user_dark_mode', user_dark_mode)
 

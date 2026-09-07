@@ -26,8 +26,10 @@ def get_user_courses_by_course_id(course_id):
 @error_log
 def get_user_course_student_count_by_course_id(course_id):
     return db.session.scalar(
-        select(func.count()).select_from(
-            select(UserCourse).filter_by(course_id=course_id, active=True, role_id=5).subquery()
+        select(func.count()).select_from(UserCourse).where(
+            UserCourse.course_id == course_id,
+            UserCourse.active == True,
+            UserCourse.role_id == 5,
         )
     )
 
