@@ -614,9 +614,9 @@ def remove_user_from_team(user_id, team_id):
     team_id: int (The id of a team)
     """
     team_user = db.session.execute(
-        delete(TeamUser).filter_by(
-            user_id=user_id,
-            team_id=team_id
+        delete(TeamUser).where(
+            TeamUser.user_id == user_id,
+            TeamUser.team_id == team_id,
         )
     ).rowcount
 
