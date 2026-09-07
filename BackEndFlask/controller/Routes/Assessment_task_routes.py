@@ -378,7 +378,7 @@ def verify_team_password():
         data = request.get_json()
 
         if not data or 'password' not in data or 'assessment_task_id' not in data:
-            return create_bad_response ("Missing Information: password or assessment_task_id", "assesment_tasks", 400)
+            return create_bad_response ("Missing Information: password or assessment_task_id", "assessment_tasks", 400)
         
         assessment_task_id = data.get('assessment_task_id')
         entered_password = data.get('password')
