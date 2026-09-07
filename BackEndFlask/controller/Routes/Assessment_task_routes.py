@@ -382,6 +382,8 @@ def verify_team_password():
         
         assessment_task_id = data.get('assessment_task_id')
         entered_password = data.get('password')
+        if not isinstance(entered_password, str):
+            return create_bad_response("Password must be a string.", "assessment_tasks", 400)
         assessment_task_instance = get_assessment_task(assessment_task_id)
         correct_password = assessment_task_instance.create_team_password
 
