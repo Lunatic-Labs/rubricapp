@@ -1591,7 +1591,7 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
             User.first_name,
             User.last_name,
             User.email
-        ).join(
+        ).select_from(CompletedAssessment).join(
             User,
             User.user_id == CompletedAssessment.user_id
         )
