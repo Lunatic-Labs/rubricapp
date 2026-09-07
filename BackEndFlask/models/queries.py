@@ -1367,7 +1367,8 @@ def get_csv_categories(rubric_id: int, user_id: int, team_id: int, at_id: int, c
             ObservableCharacteristic.observable_characteristics_id if i == 0 else SuggestionsForImprovement.suggestion_id
         )
 
-        if team_id is not None : ocs_sfis_query[i].where(CompletedAssessment.team_id == team_id)
+        if team_id is not None:
+            ocs_sfis_query[i] = ocs_sfis_query[i].where(CompletedAssessment.team_id == team_id)
     
     # Executing the query
     ocs = db.session.execute(
