@@ -172,14 +172,21 @@ def set_active_status_of_user_to_inactive(user_id, course_id):
 
 @error_log
 def delete_user_course_by_user_id_course_id(user_id, course_id):
-        db.session.execute(delete(UserCourse).filter_by(user_id=user_id, course_id=course_id))
+    db.session.execute(
+        delete(UserCourse).where(
+            UserCourse.user_id == user_id,
+            UserCourse.course_id == course_id,
+        )
+    )
 
-        db.session.commit()
+    db.session.commit()
 
 
 @error_log
 def delete_user_course(user_course_id):
-    db.session.execute(delete(UserCourse).filter_by(user_course_id=user_course_id))
+    db.session.execute(
+        delete(UserCourse).where(UserCourse.user_course_id == user_course_id)
+    )
 
     db.session.commit()
 
