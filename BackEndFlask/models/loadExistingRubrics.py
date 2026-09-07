@@ -515,7 +515,7 @@ def load_existing_observable_characteristics():
         [63, "Refined one’s own argument in the light of contradictory evidence (usually from peers)."],
         [63, "Reached an evidence-based conclusion based on the merits of all the arguments presented."],
         [63, "None"],
-        # Engaging in diabolical argumentation Observable characteristics 1-5
+        # Engaging in dialogical argumentation Observable characteristics 1-5
         [64, "Articulated logically sound argument to justify one’s claims."],
         [64, "Clarified their argument when requested."],
         [64, "Responded adequately to the questions and challenges posed."],
