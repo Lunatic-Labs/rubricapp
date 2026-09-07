@@ -101,13 +101,15 @@ def replace_team_user(teamuser, team_user_id):
 
 @error_log
 def delete_team_user(team_user_id):
-    db.session.execute(delete(TeamUser).filter_by(team_user_id=team_user_id))
+    db.session.execute(delete(TeamUser).where(TeamUser.team_user_id == team_user_id))
 
     db.session.commit()
 
 
 @error_log
 def delete_team_user_by_user_id_and_team_id(user_id, team_id):
-    db.session.execute(delete(TeamUser).filter_by(user_id=user_id, team_id=team_id))
+    db.session.execute(
+        delete(TeamUser).where(TeamUser.user_id == user_id, TeamUser.team_id == team_id)
+    )
 
     db.session.commit()
