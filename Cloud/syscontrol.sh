@@ -43,6 +43,7 @@ KILL="--kill"
       certbot
       python3-certbot-nginx
       lsof
+      logrotate
       mysql-server'
 
 # =====================================================
@@ -167,6 +168,9 @@ server {
 }"
 
     # Gunicorn systemd service config
+    # --access-logfile/--error-logfile are relative to WorkingDirectory,
+    # landing in BackEndFlask/logs/ where they're rotated by the
+    # logrotate config below (LOGROTATE_CONFIG / configure_logrotate).
     GUNICORN_CONFIG="[Unit]
 Description=Gunicorn instance to serve rubricapp
 After=network.target
@@ -176,10 +180,27 @@ User=$USER
 Group=www-data
 WorkingDirectory=/home/$USER/$PROD_NAME/rubricapp/BackEndFlask
 Environment=\"PATH=$VENV_DIR/bin\"
-ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock wsgi:app
+ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock --access-logfile logs/gunicorn-access.log --error-logfile logs/gunicorn-error.log wsgi:app
 
 [Install]
 WantedBy=multi-user.target
+"
+
+    # logrotate config for gunicorn's access/error logs. Gunicorn has no
+    # built-in rotation of its own (unlike the app's models/logger.py,
+    # which rotates itself via TimedRotatingFileHandler), so this is
+    # handled at the OS level instead. copytruncate avoids needing to
+    # signal gunicorn to reopen its log files after rotation. Retention
+    # (90 days) matches LOG_RETENTION_DAYS in BackEndFlask/models/logger.py.
+    LOGROTATE_CONFIG="$PROJ_DIR/BackEndFlask/logs/gunicorn-access.log $PROJ_DIR/BackEndFlask/logs/gunicorn-error.log {
+    daily
+    rotate 90
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}
 "
 }
 # ===================
@@ -570,6 +591,17 @@ function configure_gunicorn() {
     log "done"
 }
 
+# Configures logrotate to rotate gunicorn's access/error logs, which
+# gunicorn itself never rotates or trims.
+function configure_logrotate() {
+    log "configuring logrotate for gunicorn logs"
+
+    echo -e "$LOGROTATE_CONFIG" | sudo tee "/etc/logrotate.d/rubricapp" > /dev/null
+    sudo chmod 644 /etc/logrotate.d/rubricapp
+
+    log "done"
+}
+
 # Sets up the root of the project, namely
 # in /home/$USER/$PROD_NAME/. All project
 # files will be stored here, including the
@@ -673,6 +705,7 @@ function configure() {
     assure_proj_dir
     configure_ssl
     configure_gunicorn
+    configure_logrotate
     configure_nginx
     configure_ufw
 }
@@ -680,6 +713,7 @@ function configure() {
 function configure_no_ssl() {
     assure_proj_dir
     configure_gunicorn
+    configure_logrotate
     configure_nginx_no_ssl
     configure_ufw
 }
