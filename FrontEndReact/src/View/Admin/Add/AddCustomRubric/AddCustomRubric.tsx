@@ -324,7 +324,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             </Grid>
                         </Grid>
                     </div>
-                    <hr style={{ borderTop: "1px solid #787878"}}/>
+                    <hr style={{ border: 0, borderTop: "1px solid #787878", margin: 0 }} />
 
                     <Grid
                         style={{
