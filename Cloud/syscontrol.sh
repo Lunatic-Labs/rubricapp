@@ -122,6 +122,10 @@ server {
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
+    location = /api {
+        return 301 /api/;
+    }
+
     location /api/ {
         proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
         proxy_set_header Host \$host;
@@ -141,6 +145,10 @@ server {
     NGINX_NO_SSL_CONFIG="server {
     listen 80;
     server_name $DOMAIN;
+
+    location = /api {
+        return 301 /api/;
+    }
 
     location /api/ {
         proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
