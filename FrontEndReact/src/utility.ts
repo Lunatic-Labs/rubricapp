@@ -149,8 +149,11 @@ async function genericResourceFetch(
   }
 
   let response: Response;
+  let result: ApiResponse;
 
-  // try block handles network related errors.
+  // try block covers both network failures (fetch throws) and a response body
+  // that isn't valid JSON (response.json() throws) — either way we resolve
+  // (don't reject) so callers only need a single .then() handler.
   try {
     const fetchInit: RequestInit = {
       method: type,
@@ -162,10 +165,8 @@ async function genericResourceFetch(
     }
 
     response = await fetch(url, fetchInit);
+    result = await response.json();
   } catch(error){
-    // Resolve (don't reject) so network failures use the same errorMessage
-    // contract as server/auth failures below — callers only need a single
-    // .then() handler instead of also requiring a .catch().
     const state: any = {
       isLoaded: true,
       errorMessage: error instanceof Error ? error.message : String(error),
@@ -174,8 +175,6 @@ async function genericResourceFetch(
     component.setState(state);
     return state;
   }
-
-  const result: ApiResponse = await response.json();
 
   if (result.success){
     const state: any = {

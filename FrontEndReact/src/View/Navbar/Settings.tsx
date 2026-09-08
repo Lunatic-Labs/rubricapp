@@ -58,7 +58,11 @@ class Settings extends Component<SettingsProps, SettingsState> {
 
         promise
           .then((result) => {
-            if (result !== undefined && result["users"] !== null) {
+            // errorMessage is the actual success signal from genericResourceFetch;
+            // result["users"] is undefined (not null) on error, so checking
+            // `!== null` alone let error results fall through into this branch
+            // and crash on userData["user_id"] below.
+            if (result !== undefined && result.errorMessage === null && result["users"] != null) {
               userData = result["users"];
 
               // user data is now set by the result for 'users' and the state is changed

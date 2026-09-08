@@ -730,7 +730,9 @@ class AppState extends Component<AppStateProps, AppStateState> {
         
         // if darkmode is not saved in cookies, the API will be called to check
         // the backend if the user has darkmode preferance set to 'true'
-        if (user !== null) {
+        // cookies.get returns undefined (not null) when the cookie is absent,
+        // so this must be a loose check or a missing cookie crashes user["user_id"] below.
+        if (user != null) {
             // Fetch all users to find the current user's dark mode preference.
             // IMPORTANT: We must NOT set this.state.user here — that state is reserved
             // for the edit-user flow (setAddUserTabWithUser). Setting it here causes a
