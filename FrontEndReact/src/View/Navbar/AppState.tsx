@@ -39,7 +39,7 @@ import { Course as CourseType } from '../../types/Course';
 import { User as UserType } from '../../types/User';
 import { Team as TeamType } from '../../types/Team';
 import Settings from './Settings';
-import { genericResourceGET } from "../../utility";
+import { genericResourceGET, parseRoleNames } from '../../utility';
 
 /**
  * Creates an instance of the AppState component.
@@ -83,6 +83,9 @@ import { genericResourceGET } from "../../utility";
  * @property {number|undefined} state.successMessageTimeout - Timeout ID for clearing messages.
  *
  * @property {string|null} state.jumpToSection - Used in Complete Assessment to auto-scroll to a specific section.
+ *
+ * @property {Object[]|null} state.roles - All roles in the system, fetched once via GET /role on mount (not scoped to a course).
+ * @property {Object|null} state.roleNameMap - role_id -> role_name lookup derived from state.roles, exposed app-wide via navbar.state.roleNameMap.
  */
 
 interface AppStateProps {
@@ -121,6 +124,8 @@ interface AppStateState {
     skipInstructions?: boolean;
     isLoaded?: boolean | null;
     darkMode?: boolean;
+    roles: { role_id: string; role_name: string }[] | null;
+    roleNameMap: Record<string, string> | null;
 }
 
 class AppState extends Component<AppStateProps, AppStateState> {
@@ -198,6 +203,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
             isLoaded: null,
             darkMode: false,
+
+            // Populated by componentDidMount's GET /role call; exposed app-wide
+            // via navbar.state so any screen can look up role names without its own fetch.
+            roles: null,
+            roleNameMap: null,
         }
 
         /**
@@ -778,6 +788,19 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 });
             });
         }
+
+        // Fetch all roles once on mount so any screen can read role names
+        // via navbar.state.roleNameMap without its own /role fetch.
+        genericResourceGET(`/role`, "roles", this).then(result => {
+            if (result !== undefined && result["roles"] != null) {
+                this.setState({
+                    roles: result["roles"],
+                    roleNameMap: parseRoleNames(result["roles"])
+                });
+            }
+        }).catch(error => {
+            console.error("Error fetching roles:", error);
+        });
     }
 
     render() {
@@ -1151,6 +1174,10 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                 {this.state.activeTab==="Reporting" &&
                     <Box className="page-spacing" aria-label="reportingDashboard">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={this.props.isSuperAdmin ? "AssessmentTask" : "User"}
+                        />
                         <ReportingDashboard
                             navbar={this}
                         />
