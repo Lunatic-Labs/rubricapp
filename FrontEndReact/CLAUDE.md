@@ -34,7 +34,7 @@ genericResourcePUT(fetchURL, component, body, options?)
 genericResourceDELETE(fetchURL, component, options?)
 ```
 
-These prepend `apiUrl` (from `App.tsx`, sourced from `VITE_API_URL`), attach `user_id` from the `user` cookie, unwrap the backend's `{ success, content: { <resource>: [...] } }` envelope, and transparently handle 401s via `refreshLock.tsx` (silent token refresh, then retry once) and full logout when refresh fails. Auth tokens/user info live in cookies via `universal-cookie`, not localStorage. Never read `document.cookie` inside a component — `genericResourceFetch` is the only place that does: it reads the `access_token` cookie itself and sets it as the outgoing `Authorization: Bearer <token>` header, so a calling component just passes a path and lets the helper handle auth.
+These prepend `apiUrl` (from `App.tsx`, sourced from `VITE_API_URL`), attach `user_id` from the `user` cookie, unwrap the backend's `{ success, content: { <resource>: [...] } }` envelope, and transparently handle 401s via `refreshLock.tsx` (silent token refresh, then retry once) and full logout when refresh fails. Auth tokens/user info live in cookies via `universal-cookie`, not localStorage. Avoid `document.cookie`; `genericResourceFetch`/`refreshLock` use `new Cookies().get(...)` and `genericResourceFetch` sets `Authorization: Bearer <token>` for you.
 
 On a token-expiry failure, `handleTokenErrorsAndRetry` calls `refreshAccessTokens()` (`refreshLock.tsx`) before giving up — `refreshLock` holds a single in-flight refresh promise so multiple components hitting an expired token at once share one `/refresh` call instead of firing several redundant ones. The retried request is re-issued exactly once with `isRetry: true` so a still-failing refresh can't loop.
 
