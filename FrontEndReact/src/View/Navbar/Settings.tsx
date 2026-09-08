@@ -35,23 +35,6 @@ class Settings extends Component<SettingsProps, SettingsState> {
     }
   }
 
-  componentDidUpdate(prevProps: SettingsProps) {
-    // necessary to sync updates
-    const prevDarkMode = prevProps.navbar?.state?.darkMode;
-    const currentDarkMode = this.props.navbar?.state?.darkMode;
-
-    if (prevDarkMode !== currentDarkMode && currentDarkMode !== this.state.darkMode) {
-      const darkMode = currentDarkMode ?? false;
-      this.setState({ darkMode }, () => {
-        if (darkMode) {
-          document.body.classList.add("mode");
-        } else {
-          document.body.classList.remove("mode");
-        }
-      });
-    }
-  }
-
   // will handle any changes within the change, currently only used for detecting if user
   // has set darkmode.
 
