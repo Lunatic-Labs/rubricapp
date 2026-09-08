@@ -41,7 +41,7 @@ On a token-expiry failure, `handleTokenErrorsAndRetry` calls `refreshAccessToken
 ## Testing
 
 - Jest + `@testing-library/react`, jsdom environment (config lives in `package.json`, not a separate jest.config file).
-- **Jest tests need the backend running and reachable** (`REACT_APP_API_URL`/`VITE_API_URL` pointed at it) — they exercise real login/API flows, not mocks, for most integration-style component tests.
+- **Jest tests need the backend running and reachable** (`VITE_API_URL` pointed at it) — they exercise real login/API flows, not mocks, for most integration-style component tests.
 - Tests are driven by `aria-label` almost exclusively — see `src/JestTestDocumentation.md` and `src/testUtilities.ts` for the helpers (`clickElementWithAriaLabel`, `changeElementWithAriaLabelWithInput`, `expectElementWithAriaLabelToBeInDocument`, etc.). When adding a new interactive element that a test will need to target, give it a unique `aria-label` rather than relying on text/role queries.
 - Run a single file: `npm test path/to/File.test.tsx` (from `FrontEndReact/`).
 - Lint: `npx eslint --max-warnings=0 .` — CI fails on any warning, not just errors.
