@@ -39,7 +39,7 @@ import { Course as CourseType } from '../../types/Course';
 import { User as UserType } from '../../types/User';
 import { Team as TeamType } from '../../types/Team';
 import Settings from './Settings';
-import { genericResourceGET, parseRoleNames } from "../../utility";
+import { genericResourceGET, parseRoleNames } from '../../utility';
 
 /**
  * Creates an instance of the AppState component.
