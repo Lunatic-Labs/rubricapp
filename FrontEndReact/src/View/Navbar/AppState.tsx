@@ -784,7 +784,10 @@ class AppState extends Component<AppStateProps, AppStateState> {
         // via navbar.state.roleNameMap without its own /role fetch.
         genericResourceGET(`/role`, "roles", this).then(result => {
             if (result !== undefined && result["roles"] != null) {
-                this.setState({ roleNameMap: parseRoleNames(result["roles"]) });
+                this.setState({
+                    roles: result["roles"],
+                    roleNameMap: parseRoleNames(result["roles"])
+                });
             }
         }).catch(error => {
             console.error("Error fetching roles:", error);
