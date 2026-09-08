@@ -4,7 +4,7 @@ Guidance for working in the Flask API. See the repo root `CLAUDE.md` for cross-c
 
 ## Layout
 
-- `controller/Routes/<Name>_routes.py` — one file per resource; registers routes on the shared `bp` Blueprint (`controller/__init__.py` imports every route module — a new route module must be imported there or it never registers).
+- `controller/Routes/<Name>_routes.py` (and a few legacy `<Name>_route.py`) — one file per resource; registers routes on the shared `bp` Blueprint (`controller/__init__.py` imports every route module — a new route module must be imported there or it never registers).
 - `controller/security/` — `CustomDecorators.py` (auth/role decorators), `blacklist.py` (Redis token blacklist), `utility.py`.
 - `models/<name>.py` — CRUD functions per entity, operating on SQLAlchemy models declared in `models/schemas.py`.
 - `models/queries.py` — cross-entity/joined queries that don't belong to a single model file.
