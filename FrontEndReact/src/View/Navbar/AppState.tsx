@@ -563,11 +563,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
          */
 
         this.setAddCustomRubric = (addCustomRubric: boolean | null) => {
-            this.setState({
+            this.setState((prevState) => ({
                 activeTab: "AddCustomRubric",
                 addCustomRubric: addCustomRubric,
-                selectedRubricId: addCustomRubric === true ? null : this.state.selectedRubricId
-            });
+                selectedRubricId: addCustomRubric === true ? null : prevState.selectedRubricId
+            }));
         }
 
         this.setSelectedRubricId = (rubricId: number | null) => {
