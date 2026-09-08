@@ -107,7 +107,7 @@ interface AppStateState {
     chosenCompleteAssessmentTask: CompleteAssessmentTaskType | null;
     unitOfAssessment: boolean | null;
     chosenCompleteAssessmentTaskIsReadOnly: boolean;
-   team: TeamType | null;
+    team: TeamType | null;
     addTeam: boolean;
     teams: TeamType[] | null;
     users: UserType[] | null;
