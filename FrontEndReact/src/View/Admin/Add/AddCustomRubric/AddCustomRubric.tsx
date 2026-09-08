@@ -17,6 +17,7 @@ import { Category } from "../../../../types/Category";
 
 interface AddCustomRubricProps {
     navbar: any;
+    rubricId?: number | null;
     rubrics: Rubric[];
     categories: Category[];
     chosenCategoryJson: any;
@@ -72,11 +73,10 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
         };
 
         this.handleCreateRubric = (pickedCategories: Category[]) => {
-            var navbar = this.props.navbar;
-            var rubricId: number = navbar.rubricId;
-            var categoryIds: number[] = [];
-            var rubricName = (document.getElementById("rubricNameInput") as HTMLInputElement)?.value || ""
-            var rubricDescription = (document.getElementById("rubricDescriptionInput") as HTMLTextAreaElement)?.value || ""
+            const rubricId = this.props.rubricId ?? navbar.state.selectedRubricId;
+            const categoryIds: number[] = [];
+            const rubricName = (document.getElementById("rubricNameInput") as HTMLInputElement)?.value || ""
+            const rubricDescription = (document.getElementById("rubricDescriptionInput") as HTMLTextAreaElement)?.value || ""
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
                 categoryIds.push(pickedCategories[categoryIndex]!["category_id"]);
@@ -85,6 +85,13 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             const nameError = rubricName === "" ? "Missing New Rubric Name." : "";
             const descError = rubricDescription === "" ? "Missing New Rubric Description." : "";
             const categoryError = categoryIds.length === 0 ? "Missing categories, at least one category must be selected." : "";
+
+            if (this.state.addCustomRubric === false && rubricId == null) {
+                this.setState({
+                    errorMessage: "Cannot update rubric: no rubric was selected."
+                });
+                return;
+            }
 
             if (nameError || descError || categoryError) {
                 this.setState({
@@ -198,17 +205,16 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
     };
 
     componentDidMount() {
-        var navbar = this.props.navbar;
-        var addCustomRubric = navbar.state.addCustomRubric;
-        
+        const navbar = this.props.navbar;
+        const addCustomRubric = navbar.state.addCustomRubric;
+        const rubricId = this.props.rubricId ?? navbar.state.selectedRubricId;
+
         this.setState({
             addCustomRubric: addCustomRubric
         });
 
-        var rubricId = navbar.rubricId;
-        if (addCustomRubric === false) {
+        if (addCustomRubric === false && rubricId != null) {
             genericResourceGET(`/category?rubric_id=${rubricId}`, "categories", this);
-
             genericResourceGET(`/rubric?rubric_id=${rubricId}`, "rubrics", this);
         }
     }

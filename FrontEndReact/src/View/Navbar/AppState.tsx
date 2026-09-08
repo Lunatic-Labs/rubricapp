@@ -119,6 +119,7 @@ interface AppStateState {
     successMessage: string | null;
     successMessageTimeout: ReturnType<typeof setTimeout> | undefined;
     addCustomRubric: boolean | null;
+    selectedRubricId: number | null;
     jumpToSection: string | null;
     skipInstructions?: boolean;
     isLoaded?: boolean | null;
@@ -136,6 +137,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setAddCourseTabWithCourse!: (courses: CourseType[], courseId: number | null, tab: string) => void;
     setCoursesTabWithUser!: (users: UserType[], userId: number) => void;
     setAddCustomRubric!: (addCustomRubric: boolean | null) => void;
+    setSelectedRubricId!: (rubricId: number | null) => void;
     setAddTeamTabWithTeam!: (teams: TeamType[], teamId: number, users: UserType[], tab: string, addTeamAction: string | null) => void;
     setAddTeamTabWithUsers!: (users: UserType[]) => void;
     setAddUserTabWithUser!: (users: UserType[], userId: number) => void;
@@ -196,6 +198,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
             successMessageTimeout: undefined,
 
             addCustomRubric: null,
+            selectedRubricId: null,
             jumpToSection: null,
 
             isLoaded: null,
@@ -570,10 +573,16 @@ class AppState extends Component<AppStateProps, AppStateState> {
          */
 
         this.setAddCustomRubric = (addCustomRubric: boolean | null) => {
-
-            this.setState({
+            this.setState((prevState) => ({
                 activeTab: "AddCustomRubric",
-                addCustomRubric: addCustomRubric
+                addCustomRubric: addCustomRubric,
+                selectedRubricId: addCustomRubric === true ? null : prevState.selectedRubricId
+            }));
+        }
+
+        this.setSelectedRubricId = (rubricId: number | null) => {
+            this.setState({
+                selectedRubricId: rubricId
             });
         }
 
