@@ -123,7 +123,7 @@ server {
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
     location = /api {
-        return 301 /api/;
+        return 308 /api/;
     }
 
     location /api/ {
@@ -147,7 +147,7 @@ server {
     server_name $DOMAIN;
 
     location = /api {
-        return 301 /api/;
+        return 308 /api/;
     }
 
     location /api/ {
