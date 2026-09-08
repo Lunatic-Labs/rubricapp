@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ViewAssessmentTasks from './ViewAssessmentTasks';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseRoleNames, parseRubricNames } from '../../../../utility';
+import { genericResourceGET, parseRubricNames } from '../../../../utility';
 import AdminAddAssessmentTask from '../../Add/AddTask/AdminAddAssessmentTask';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
@@ -20,7 +20,6 @@ interface AdminViewAssessmentTaskState {
     errorMessage: string | null;
     isLoaded: boolean;
     assessmentTasks: AssessmentTask[] | null;
-    roles: { role_id: string; role_name: string }[] | null;
     rubrics: Rubric[] | null;
     teams?: Team[] | null;
     isViewingAsStudent: boolean;
@@ -35,7 +34,6 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
             errorMessage: null,         //Stores API error messages
             isLoaded: false,            // Loading state true when all API calls complete
             assessmentTasks: null,      //Array of assessment tasks for the course
-            roles: null,                //Array of system role definitions
             rubrics: null,               // Array of all available rubrics
             isViewingAsStudent: false  // Add this state
         }
@@ -66,14 +64,7 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
             `/assessment_task?course_id=${navbar.state.chosenCourse["course_id"]}`, 
             "assessment_tasks", this, {dest: "assessmentTasks"}); //Maps to state.assessmentTasks
             
-        //API Call 3 Fetches all system roles
-        //Get /role
-        genericResourceGET(
-            `/role?`,
-            'roles', 
-            this
-        );
-        //API call 4: fetch rubrics (all default + user's custom rubrics for this course)
+        //API call 3: fetch rubrics (all default + user's custom rubrics for this course)
         genericResourceGET(`/rubric?all=${true}&course_id=${chosenCourse["course_id"]}`, 'rubrics', this);
         
         // Set the viewing mode in state
@@ -89,7 +80,6 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
             errorMessage,
             isLoaded,
             assessmentTasks,
-            roles,
             rubrics,
             teams,
             isViewingAsStudent  // Get from state
@@ -100,8 +90,7 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
         //Process and attach data to navbar for child components
         navbar.adminViewAssessmentTask = {};
         navbar.adminViewAssessmentTask.assessmentTasks = assessmentTasks;
-        //Parse roles: [{role_id: 1, role_name: "Instructor"}] -> {1: "Instructor"}
-        navbar.adminViewAssessmentTask.roleNames = roles ? parseRoleNames(roles) : [];
+        navbar.adminViewAssessmentTask.roleNames = navbar.state.roleNameMap ? navbar.state.roleNameMap : {};
         //Parse rubrics: [{rubric_id: 1, rubric_name: "Project Rubric"}] -> {1: "Project Rubric"}
         navbar.adminViewAssessmentTask.rubricNames = rubrics ? parseRubricNames(rubrics) : [];
 
@@ -120,7 +109,7 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
             //Shows while waiting for all API calls to complete
             //Checks ALL required data exists before proceeding
 
-        } else if (!isLoaded || !assessmentTasks || !roles || !rubrics || !teams) {
+        } else if (!isLoaded || !assessmentTasks || !rubrics || !teams || !navbar.state.roles || !navbar.state.roleNameMap) {
             return(
                 <Loading />
             )
