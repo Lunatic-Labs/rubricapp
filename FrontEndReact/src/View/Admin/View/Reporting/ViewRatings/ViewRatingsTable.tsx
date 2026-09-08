@@ -143,7 +143,7 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
       {
         field: 'name',
         headerName: nameLabel,
-        flex: 1,
+        width: 160,
       },
     ];
 
@@ -152,7 +152,7 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
       columns.push({
         field: cat['category_name'],
         headerName: cat['category_name'],
-        flex: 1,
+        width: 160,
       });
       return cat;
     });
@@ -162,7 +162,7 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
       columns.splice(1, 0, {
         field: 'feedback_time_lag',
         headerName: 'Feedback Time Lag',
-        flex: 1,
+        width: 180,
         renderCell: (params) => {
           const viewed = !!params.value;
           const notified = params.row.notification_sent;
@@ -186,7 +186,7 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
       columns.push({
         field: 'feedback_info',
         headerName: 'Feedback Information',
-        flex: 1,
+        width: 220,
         sortable: false,
         renderCell: (params) => {
           const value = params.value;

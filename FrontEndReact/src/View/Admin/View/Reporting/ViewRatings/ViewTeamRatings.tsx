@@ -30,44 +30,44 @@ class ViewTeamRatings extends Component<ViewTeamRatingsProps> {
       {
         field: "team_name",
         headerName: "Team Name",
-        flex: 1,
+        width: 160,
       },
       {
         field: "Identifying the Goal",
         headerName: "Identifying the Goal",
-        flex: 1,
+        width: 200,
       },
       {
         field: "Evaluating",
         headerName: "Evaluating",
-        flex: 1,
+        width: 150,
       },
       {
         field: "Analyzing",
         headerName: "Analyzing",
-        flex: 1,
+        width: 150,
       },
       {
         field: "Synthesizing",
         headerName: "Synthesizing",
-        flex: 1,
+        width: 150,
       },
       {
         field: "Forming Arguments (Structure)",
         headerName: "Forming Arguments (Structure)",
-        flex: 1,
+        width: 220,
       },
       {
         field: "Forming Arguments (Validity)",
         headerName: "Forming Arguments (Validity)",
-        flex: 1,
+        width: 220,
         align: "center",
         headerAlign: "center",
       },
       {
         field: "Feedback Information",
         headerName: "Feedback Information",
-        flex: 1,
+        width: 220,
         align: "center",
         headerAlign: "center",
       }

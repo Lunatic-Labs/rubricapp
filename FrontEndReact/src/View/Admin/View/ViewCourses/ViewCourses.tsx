@@ -31,7 +31,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "course_name",
         headerName: "Course Name",
-        flex: 25,
+        width: 250,
         renderCell: (params) => (
           <Typography
             sx={{fontSize: "1.6rem"}}
@@ -44,22 +44,22 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "course_number",
         headerName: "Course Number",
-        flex: 15,
+        width: 150,
       },
       {
         field: "term",
         headerName: "Term",
-        flex: 10,
+        width: 100,
       },
       {
         field: "year",
         headerName: "Year",
-        flex: 7,
+        width: 80,
       },
       {
         field: "use_tas",
         headerName: "Use T.A's",
-        flex: 6,
+        width: 80,
         renderCell: (params) => (
           <>{ params.value===null ? "N/A" : (params.value ? "Yes" : "No") }</>
         )
@@ -67,7 +67,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "use_fixed_teams",
         headerName: "Fixed Teams",
-        flex: 7,
+        width: 80,
         renderCell: (params) => (
           <>{params.value===null ? "N/A": (params.value ? "Yes":"No")}</>
         )
@@ -83,7 +83,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
           // and are either a TA/Instructor or Student in the course!
           field: "edit_action",
           headerName: "EDIT",
-          flex: 10,
+          width: 100,
           filterable: false,
           align: "center",
           headerAlign: "center",
@@ -110,7 +110,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "view_action",
         headerName: "VIEW",
-        flex: 10,
+        width: 100,
         filterable: false,
         align: "center",
         headerAlign: "center",

@@ -160,7 +160,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
             {
                 field: "assessment_task_id",
                 headerName: "Assessment Task",
-                flex: 1,
+                width: 180,
                 renderCell: () => (
                     <Typography variant="body2" align="left">
                         {chosenAssessmentTask ? chosenAssessmentTask["assessment_task_name"] : "N/A"}
@@ -170,7 +170,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
             {
                 field: "team_name",
                 headerName: "Team Name",
-                flex: 1,
+                width: 150,
                 renderCell: (params) => (
                     <Typography variant="body2" align="left">
                         {params.value ? params.value : "N/A"}
@@ -180,7 +180,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
             {
                 field: "completed_by",
                 headerName: "Assessor",
-                flex: 1,
+                width: 150,
                 renderCell: (params) => (
                     <Typography variant="body2" align="left">
                         {userNames && params.value ? userNames[params.value] : "N/A"}
@@ -190,7 +190,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
             {
                 field: "initial_time",
                 headerName: "Initial Time",
-                flex: 1,
+                width: 160,
                 renderCell: (params) => {
                     const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                     return (
@@ -203,7 +203,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
             {
                 field: "last_update",
                 headerName: "Last Updated",
-                flex: 1,
+                width: 160,
                 renderCell: (params) => {
                     const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
                     return (
@@ -216,7 +216,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
             {
                 field: "completed_assessment_id",
                 headerName: "See More Details",
-                flex: 1,
+                width: 180,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -253,7 +253,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
             {
                 field: "notify_action",
                 headerName: "Notify",
-                flex: 1,
+                width: 110,
                 sortable: false,
                 filterable: false,
                 align: "center",

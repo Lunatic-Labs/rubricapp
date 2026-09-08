@@ -17,12 +17,14 @@ const columns: GridColDef[] = [
   {
     field: "first_name",    // the field of the row object to read
     headerName: "First Name",  // what is displayed as the column label
-    flex: 1,                // proportional width (or use `width` for a fixed px value)
+    width: 150,             // fixed px width; CustomDataTable strips `flex`
+                            // so columns don't stretch to fill the container
+                            // and instead scroll horizontally when they overflow
   },
   {
     field: "last_name",
     headerName: "Last Name",
-    flex: 1,
+    width: 150,
   },
 ];
 

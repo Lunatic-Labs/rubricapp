@@ -361,7 +361,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "assessment_task_name",
                 headerName: "Task Name",
-                width: 117,
+                width: 200,
                 renderCell: (params) => (
                     <>
                         {params.value ? params.value : "N/A"}
@@ -389,7 +389,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "role_id",
                 headerName: "Completed By",
-                width: 80,
+                width: 140,
                 renderCell: (params) => (
                     <>
                         {roleNames && params.value ? roleNames[params.value] : "N/A"}
@@ -399,7 +399,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "rubric_id",
                 headerName: "Rubric Used",
-                width: 117,
+                width: 160,
                 renderCell: (params) => (
                     <>
                         {rubricNames && params.value ? rubricNames[params.value] : "N/A"}
@@ -443,7 +443,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "unit_of_assessment",
                 headerName: "Team?",
-                width: 80,
+                width: 90,
                 renderCell: (params) => (
                     <>
                         {params.value ? "Yes" : "No"}
@@ -454,7 +454,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 {
                     field: "publish_action",
                     headerName: "Publish",
-                    width: 70,
+                    width: 90,
                     sortable: false,
                     filterable: false,
                     align: "center",
@@ -486,7 +486,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 {
                     field: "lock_action",
                     headerName: "Lock",
-                    width: 70,
+                    width: 90,
                     sortable: false,
                     filterable: false,
                     align: "center",
@@ -518,7 +518,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 {
                     field: "edit_action",
                     headerName: "Edit",
-                    width: 70,
+                    width: 90,
                     sortable: false,
                     filterable: false,
                     align: "center",
@@ -565,7 +565,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "view_action",
                 headerName: "View",
-                width: 70,
+                width: 90,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -586,7 +586,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "todo_action",
                 headerName: "To Do",
-                width: 80,
+                width: 120,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -640,7 +640,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "notify_action",
                 headerName: "Notify",
-                width: 70,
+                width: 110,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -678,7 +678,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                     data={sortedAssessmentTasks}
                     columns={columns}
                     getRowId={(row) => row.assessment_task_id}
-                    height="50vh"
+                    height="70vh"
                 />
             </>
         )

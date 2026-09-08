@@ -34,17 +34,17 @@ class TeamMembers extends Component<TeamMembersProps>{
       {
         field: "first_name",
         headerName: "First Name",
-        flex: 1,
+        width: 150,
       },
       {
         field: "last_name",
         headerName: "Last Name",
-        flex: 1,
+        width: 150,
       },
       {
         field: "email",
         headerName: "Email",
-        flex: 1,
+        width: 200,
       }
     ];
 

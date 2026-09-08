@@ -93,17 +93,17 @@ class ViewUsers extends Component<ViewUsersProps> {
       {
         field: "first_name",
         headerName: "First Name",
-        flex: 20,
+        width: 150,
       },
       {
         field: "last_name",
         headerName: "Last Name",
-        flex: 20,
+        width: 150,
       },
       {
         field: "email",
         headerName: "Email",
-        flex: 40,
+        width: 260,
       }];
 
     if (!navbar.props.isSuperAdmin) {
@@ -111,7 +111,7 @@ class ViewUsers extends Component<ViewUsersProps> {
         {
           field: "role_id",
           headerName: "Role",
-          flex: 10,
+          width: 110,
           renderCell: (params) => (
             <p>{roleNames[params.value]}</p>
           )
@@ -124,13 +124,13 @@ class ViewUsers extends Component<ViewUsersProps> {
         {
           field: "lms_id",
           headerName: "LMS ID",
-          flex: 10,
+          width: 110,
         }
       );
       columns.push({
         field: "view_action",
         headerName: "View",
-        flex: 10,
+        width: 90,
         filterable: false,
         align: "center",
         headerAlign: "center",
@@ -168,7 +168,7 @@ class ViewUsers extends Component<ViewUsersProps> {
       columns.push({
         field: "edit_action",
         headerName: "Edit",
-        flex: 10,
+        width: 90,
         filterable: false,
         align: "center",
         headerAlign: "center",
@@ -193,7 +193,7 @@ class ViewUsers extends Component<ViewUsersProps> {
     columns.push({
       field: "delete_action",
       headerName: "Delete",
-      flex: 10,
+      width: 90,
       filterable: false,
       align: "center",
       headerAlign: "center",

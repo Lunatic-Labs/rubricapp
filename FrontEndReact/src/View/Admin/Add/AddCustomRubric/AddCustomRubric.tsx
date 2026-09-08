@@ -221,7 +221,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             {
                 field: "category_name",
                 headerName: "Category",
-                flex: 1,
+                width: 200,
                 align: "center",
                 headerAlign: "center",
                 renderCell: (params) => <p>{params.value}</p>,
@@ -229,7 +229,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             {
                 field: "rubric_name",
                 headerName: "Rubric",
-                flex: 1,
+                width: 200,
                 align: "center",
                 headerAlign: "center",
                 renderCell: (params) => <p>{params.value}</p>,
