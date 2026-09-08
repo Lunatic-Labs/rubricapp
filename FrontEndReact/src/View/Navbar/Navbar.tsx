@@ -36,7 +36,9 @@ import Settings from '@mui/icons-material/Settings';
  */
 
 interface ButtonAppBarProps {
-    userName?: string;
+    // `| undefined` is required under exactOptionalPropertyTypes: AppState passes
+    // this through from its own optional userName prop.
+    userName?: string | undefined;
     setNewTab: (tab: string) => void;
     logout: () => void;
 }
