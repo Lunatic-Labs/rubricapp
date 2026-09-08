@@ -37,7 +37,8 @@ def create_rubric(rubric):
     new_rubric = Rubric(
         rubric_name=rubric["rubric_name"],
         rubric_description=rubric["rubric_description"],
-        owner=rubric["owner"]
+        owner=rubric["owner"],
+        course_id=rubric.get("course_id")
     )
     db.session.add(new_rubric)
     db.session.commit()

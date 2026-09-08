@@ -73,8 +73,8 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
             'roles', 
             this
         );
-        //API call 4: fetch rubrics (all default + user's custom)
-        genericResourceGET(`/rubric?all=${true}`, 'rubrics', this);
+        //API call 4: fetch rubrics (all default + user's custom rubrics for this course)
+        genericResourceGET(`/rubric?all=${true}&course_id=${chosenCourse["course_id"]}`, 'rubrics', this);
         
         // Set the viewing mode in state
         this.setState({ isViewingAsStudent });

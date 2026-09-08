@@ -34,7 +34,13 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
     }
 
     componentDidMount() {
-        genericResourceGET(`/rubric?custom=${true}&include_courses=${true}`, "rubrics", this);
+        // Custom rubrics are scoped to the course they were created in and
+        // visible only to their creator (the backend filters by user_id,
+        // which genericResourceGET appends automatically).
+        var chosenCourse = this.props.navbar.state.chosenCourse;
+        var courseScope = chosenCourse ? `&course_id=${chosenCourse["course_id"]}` : "";
+
+        genericResourceGET(`/rubric?custom=${true}&include_courses=${true}${courseScope}`, "rubrics", this);
 
         genericResourceGET(`/category?custom=${true}`, "categories", this);
     }

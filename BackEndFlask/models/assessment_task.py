@@ -124,6 +124,7 @@ def load_demo_admin_assessment_task():
     list_of_assessment_tasks = [
         {    # Assessment Task 1
             "assessment_task_name": "Critical Thinking Assessment",
+            "course_id": 1,
             "comment": "An example comment",
             "create_team_password": "at_cta",
             "due_date": "2027-04-25T08:30:00",
@@ -140,6 +141,7 @@ def load_demo_admin_assessment_task():
         },
         {    # Assessment Task 2
             "assessment_task_name": "Formal Communication Assessment",
+            "course_id": 1,
             "comment": None,
             "create_team_password": "at_fca",
             "due_date": "2025-12-25T13:00:00",
@@ -156,6 +158,7 @@ def load_demo_admin_assessment_task():
         },
         {      # Assessment Task 3
             "assessment_task_name": "Information Processing Assessment",
+            "course_id": 1,
             "comment": None,
             "create_team_password": "at_ipa",
             "due_date": "2027-02-14T08:00:00",
@@ -172,6 +175,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 4
             "assessment_task_name": "Interpersonal Communication",
+            "course_id": 1,
             "comment": None,
             "create_team_password": "at_ic",
             "due_date": "2025-12-25T09:30:00",
@@ -188,6 +192,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 5
             "assessment_task_name": "Management Assessment",
+            "course_id": 1,
             "comment": None,
             "create_team_password": "at_ma",
             "due_date": "2025-12-25T13:20:00",
@@ -204,6 +209,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 6
             "assessment_task_name": "Problem Solving Assessment",
+            "course_id": 1,
             "comment": None,
             "create_team_password": "at_psa",
             "due_date": "2025-12-25T10:00:00",
@@ -220,6 +226,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 7
             "assessment_task_name": "Teamwork Assessment",
+            "course_id": 1,
             "comment": None,
             "create_team_password": "at_ta",
             "due_date": "2025-12-25T09:30:00",
@@ -236,6 +243,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 8
             "assessment_task_name": "Critical Thinking Assessment 2",
+            "course_id": 2,
             "comment": "sadfasdfasdfasdfasdfasdfasdfasdfasdf",
             "create_team_password": "",
             "due_date": "2026-01-30T21:00:24",
@@ -252,6 +260,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 9
             "assessment_task_name": "AAAAAAAAAAAA",
+            "course_id": 2,
             "comment": "t",
             "create_team_password": "",
             "due_date": "2026-01-28T21:25:20.216000",
@@ -268,6 +277,7 @@ def load_demo_admin_assessment_task():
         },
         {  # Assessment Task 10
             "assessment_task_name": "CCCCCCCCCCCCC",
+            "course_id": 2,
             "comment": "asdasdassdasdasd",
             "create_team_password": "",
             "due_date": "2026-01-30T15:10:18.708000",
@@ -284,6 +294,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 11
             "assessment_task_name": "DDDDDDDDDDDDDD",
+            "course_id": 2,
             "comment": "s",
             "create_team_password": "",
             "due_date": "2026-01-30T15:12:16.247000",
@@ -300,6 +311,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 12
             "assessment_task_name": "Student 1",
+            "course_id": 3,
             "comment": "Henry",
             "create_team_password": "",
             "due_date": "2026-02-05T17:01:10.164000",
@@ -316,6 +328,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 13
             "assessment_task_name": "Student 2 Individ",
+            "course_id": 3,
             "comment": "asdfasdfasdf",
             "create_team_password": "",
             "due_date": "2026-02-05T17:06:49.746000",
@@ -332,6 +345,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 14
             "assessment_task_name": "UI 1",
+            "course_id": 2,
             "comment": "sdfgsdfgsdfg",
             "create_team_password": "",
             "due_date": "2025-12-25T17:09:44.900000",
@@ -348,6 +362,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 15
             "assessment_task_name": "UI 2",
+            "course_id": 2,
             "comment": "wertwertwertwertwert",
             "create_team_password": "asdf",
             "due_date": "2025-12-25T17:10:06.960000",
@@ -364,6 +379,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 16
             "assessment_task_name": "Calc 1",
+            "course_id": 3,
             "comment": "xcvbxcvbxcvbxcvbxcvb",
             "create_team_password": "",
             "due_date": "2025-12-25T17:10:48.660000",
@@ -380,6 +396,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 17
             "assessment_task_name": "Calc 2",
+            "course_id": 3,
             "comment": "vbmvbmvbnm",
             "create_team_password": "",
             "due_date": "2025-12-25T17:11:05.896000",
@@ -396,6 +413,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 18
             "assessment_task_name": "Phys 1",
+            "course_id": 4,
             "comment": "tyiutyuityiu",
             "create_team_password": "",
             "due_date": "2025-12-25T17:11:26.842000",
@@ -412,6 +430,7 @@ def load_demo_admin_assessment_task():
         },
         {   # Assessment Task 19
             "assessment_task_name": "Phys 2",
+            "course_id": 4,
             "comment": "zxcvzxcvzxcv",
             "create_team_password": "",
             "due_date": "2025-12-25T17:11:44.486000",
@@ -431,7 +450,7 @@ def load_demo_admin_assessment_task():
     for assessment in list_of_assessment_tasks:
         create_assessment_task({
             "assessment_task_name": assessment["assessment_task_name"],
-            "course_id": 1,
+            "course_id": assessment["course_id"],
             "due_date": assessment["due_date"],
             "time_zone": assessment["time_zone"],
             "rubric_id": assessment["rubric_id"],

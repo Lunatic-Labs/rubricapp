@@ -323,7 +323,8 @@ def test_add_rubric(flask_app_mock, sample_token, auth_header, client):
             rubric_payload = {
                 "rubric_name": "Integration Test Rubric",
                 "rubric_description": "A rubric for integration testing.",
-                "owner": result["user_id"], 
+                "owner": result["user_id"],
+                "course_id": result["course_id"],
             }
             cat = sample_category()
         
@@ -348,6 +349,7 @@ def test_add_rubric(flask_app_mock, sample_token, auth_header, client):
             assert rslt[0]["rubric_id"] is not None
             assert rslt[0]["rubric_name"] == "Integration Test Rubric"
             assert rslt[0]["rubric_description"] == rubric_payload["rubric_description"]
+            assert rslt[0]["course_id"] == result["course_id"]
 
         finally:
             # Clean up
@@ -739,7 +741,7 @@ def test_delete_rubric_raises_exception(flask_app_mock, sample_token, auth_heade
                 f"/api/rubric?rubric_id=999&user_id={result["user_id"]}",
                 headers=auth_header(token)
             )
-            
+
             data = response.get_json()
             print("data: ", data)
             assert response.status_code == 400
@@ -755,4 +757,197 @@ def test_delete_rubric_raises_exception(flask_app_mock, sample_token, auth_heade
             try:
                 delete_one_admin_course(result)
             except Exception as e:
-                print(f"Cleanup skipped: {e}")  
+                print(f"Cleanup skipped: {e}")
+
+
+def test_custom_rubrics_not_visible_to_other_admins(
+        flask_app_mock,
+        sample_token,
+        auth_header,
+        client
+):
+    """Normal admins can only see the custom rubrics they created themselves."""
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(True)
+            other_admin = create_user(sample_user(
+                email="rubricotheradmin@example.com",
+                role_id=3
+            ))
+            cat = sample_category()
+            rubric = sample_rubric(result["user_id"])
+
+            create_rubric_category({
+                "rubric_id": rubric.rubric_id,
+                "category_id": cat.category_id,
+            })
+
+            # The creator sees their own rubric.
+            token = sample_token(user_id=result["user_id"])
+            response = client.get(
+                f"/api/rubric?custom=true&user_id={result["user_id"]}",
+                headers=auth_header(token)
+            )
+
+            data = response.get_json()
+            assert response.status_code == 200
+            assert data["success"] is True
+
+            results = data["content"]["rubrics"][0]
+            assert any(r["rubric_id"] == rubric.rubric_id for r in results)
+
+            # Another admin does not see it.
+            other_token = sample_token(user_id=other_admin.user_id)
+            response = client.get(
+                f"/api/rubric?custom=true&user_id={other_admin.user_id}",
+                headers=auth_header(other_token)
+            )
+
+            data = response.get_json()
+            assert response.status_code == 200
+            assert data["success"] is True
+
+            results = data["content"]["rubrics"][0]
+            assert not any(r["rubric_id"] == rubric.rubric_id for r in results)
+
+        finally:
+            # Cleanup
+            try:
+                RubricCategory.query.delete()
+                Category.query.delete()
+                Rubric.query.delete()
+                delete_user(other_admin.user_id)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_super_admin_sees_all_custom_rubrics(
+        flask_app_mock,
+        sample_token,
+        auth_header,
+        client
+):
+    """The super admin (user_id 1) sees the custom rubrics of all users under them."""
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(True)
+            cat = sample_category()
+            rubric = sample_rubric(result["user_id"])
+
+            create_rubric_category({
+                "rubric_id": rubric.rubric_id,
+                "category_id": cat.category_id,
+            })
+
+            token = sample_token(user_id=1)
+            response = client.get(
+                f"/api/rubric?custom=true&user_id=1",
+                headers=auth_header(token)
+            )
+
+            data = response.get_json()
+            assert response.status_code == 200
+            assert data["success"] is True
+
+            results = data["content"]["rubrics"][0]
+            assert any(r["rubric_id"] == rubric.rubric_id for r in results)
+
+        finally:
+            # Cleanup
+            try:
+                RubricCategory.query.delete()
+                Category.query.delete()
+                Rubric.query.delete()
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_course_rubrics_owned_by_super_admin_and_course_admin(
+        flask_app_mock,
+        sample_token,
+        auth_header,
+        client
+):
+    """
+    Rubrics for a course are those owned by user_id 1 (defaults) and by the
+    admin of the course. A normal admin who is not the course admin does not
+    see the course admin's rubrics.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            load_existing_rubrics()
+            load_existing_categories()
+
+            result = create_one_admin_course(True)
+            other_admin = create_user(sample_user(
+                email="rubricotheradmin@example.com",
+                role_id=3
+            ))
+            cat = sample_category()
+            course_admin_rubric = sample_rubric(result["user_id"])
+            other_rubric = sample_rubric(
+                other_admin.user_id,
+                rbric_name="Other Admin Rubric"
+            )
+
+            create_rubric_category({
+                "rubric_id": course_admin_rubric.rubric_id,
+                "category_id": cat.category_id,
+            })
+            create_rubric_category({
+                "rubric_id": other_rubric.rubric_id,
+                "category_id": cat.category_id,
+            })
+
+            # The course admin sees the defaults and their own rubric, but
+            # not the other admin's rubric.
+            token = sample_token(user_id=result["user_id"])
+            response = client.get(
+                f"/api/rubric?all=true&course_id={result["course_id"]}&user_id={result["user_id"]}",
+                headers=auth_header(token)
+            )
+
+            data = response.get_json()
+            assert response.status_code == 200
+            assert data["success"] is True
+
+            results = data["content"]["rubrics"][0]
+            assert any(r["rubric_id"] == course_admin_rubric.rubric_id for r in results)
+            assert any(r["rubric_name"] == "Experimenting" for r in results)  # default rubric
+            assert not any(r["rubric_id"] == other_rubric.rubric_id for r in results)
+
+            # The super admin scoped to the course sees the defaults and the
+            # course admin's rubrics, but not the other admin's rubric.
+            super_token = sample_token(user_id=1)
+            response = client.get(
+                f"/api/rubric?all=true&course_id={result["course_id"]}&user_id=1",
+                headers=auth_header(super_token)
+            )
+
+            data = response.get_json()
+            assert response.status_code == 200
+            assert data["success"] is True
+
+            results = data["content"]["rubrics"][0]
+            assert any(r["rubric_id"] == course_admin_rubric.rubric_id for r in results)
+            assert any(r["rubric_name"] == "Experimenting" for r in results)  # default rubric
+            assert not any(r["rubric_id"] == other_rubric.rubric_id for r in results)
+
+        finally:
+            # Cleanup
+            try:
+                RubricCategory.query.delete()
+                Category.query.delete()
+                Rubric.query.delete()
+                delete_user(other_admin.user_id)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")

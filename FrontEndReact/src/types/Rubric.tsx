@@ -6,6 +6,8 @@ export interface Rubric {
     rubric_name: string
     /** Description of the rubric. */
     rubric_description: string
+    /** ID of the course the rubric was created in (null for legacy rubrics). */
+    course_id?: number | null
     /** Map of category name to category data, ordered by index. */
     category_json: Record<string, { index: number; observable_characteristics: string[]; suggestions: string[] }>
     category_rating_observable_characteristics_suggestions_json: Record<string, unknown>

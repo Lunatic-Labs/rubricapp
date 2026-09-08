@@ -7,7 +7,7 @@ from datetime import datetime, timezone
 """
     Role(role_id, role_name)
     User(user_id, first_name, last_name, email, password, lms_id, consent, owner_id, has_set_password, reset_code, is_admin)
-    Rubric(rubric_id, rubric_name, rubric_description, owner)
+    Rubric(rubric_id, rubric_name, rubric_description, owner, course_id)
     Category(category_id, category_name)
     RubricCategory(rubric_category_id, rubric_id, category_id)
     ObservableCharacteristics(observable_characteristics_id, category_id, observable_characteristics_text)
@@ -56,6 +56,9 @@ class Rubric(db.Model):
     rubric_name = db.Column(db.String(100))
     rubric_description = db.Column(db.Text, nullable=True)
     owner = db.Column(db.Integer, ForeignKey(User.user_id), nullable=True)
+    # Course the rubric was created in. NULL for rubrics created before
+    # course scoping was introduced (visible only to their creator).
+    course_id = db.Column(db.Integer, ForeignKey("Course.course_id"), nullable=True)
 
 class Category(db.Model):
     __tablename__ = "Category"
