@@ -4,8 +4,11 @@ import "@testing-library/jest-dom";
 import { clickElementWithAriaLabel } from "../../../testUtilities";
 import ReportingMainHeader from "../ReportingHeader";
 
-function makeNavbar() {
+function makeNavbar(isSuperAdmin = false) {
     return {
+        // AppState receives isSuperAdmin as a prop, and passes itself down as the
+        // navbar, so the report tabs read the flag from here.
+        props: { isSuperAdmin },
         state: {
             chosenCourse: {
                 course_name: "Comparative Programming Languages",
@@ -43,4 +46,20 @@ test("ReportingHeader.test.tsx Test 3: clicking a report tab should call setTab 
     clickElementWithAriaLabel("ratingAndFeedbackTab");
 
     expect(setTab).toHaveBeenCalledWith("Ratings and Feedback");
+});
+
+test("ReportingHeader.test.tsx Test 4: should hide the Ratings and Feedback tab from a super admin", () => {
+    render(<ReportingMainHeader navbar={makeNavbar(true)} setTab={jest.fn()} activeTab="Assessment Status" />);
+
+    expect(screen.queryByLabelText("ratingAndFeedbackTab")).not.toBeInTheDocument();
+});
+
+test("ReportingHeader.test.tsx Test 5: should keep the back button for a super admin", () => {
+    const navbar = makeNavbar(true);
+
+    render(<ReportingMainHeader navbar={navbar} setTab={jest.fn()} activeTab="Assessment Status" />);
+
+    clickElementWithAriaLabel("mainHeaderBackButton");
+
+    expect(navbar.confirmCreateResource).toHaveBeenCalledWith("User", 0);
 });
