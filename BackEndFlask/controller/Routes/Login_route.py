@@ -70,8 +70,10 @@ def set_new_password():
 
         return create_good_response(f"Successfully set new password for user {user.user_id}!", 201, "password")
 
-    except Exception as e:
-        return create_bad_response(f"{e}", "password", 400)
+    except (MissingException, InvalidCredentialsException) as e:
+        return create_bad_response(str(e), "password", 400)
+    except Exception:
+        return create_bad_response("Unable to set new password", "password", 400)
 
 
 @bp.route('/password/change', methods = ['PUT'])
