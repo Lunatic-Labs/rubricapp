@@ -11,7 +11,13 @@ function makeNavbar(isReadOnly: boolean) {
 // ObservableCharacteristic's componentDidUpdate re-syncs `checked` from props, so a
 // realistic click round-trip needs a parent that actually feeds the updated
 // characteristics string back in, the way the real caller does.
-function ObservableCharacteristicHarness({ autosave }: { autosave: () => void }) {
+function ObservableCharacteristicHarness({
+    autosave,
+    onSetObservableCharacteristics,
+}: {
+    autosave: () => void;
+    onSetObservableCharacteristics?: (newData: string) => void;
+}) {
     const [observableCharacteristics, setObservableCharacteristics] = useState(["0", "0", "0"]);
 
     return (
@@ -20,7 +26,10 @@ function ObservableCharacteristicHarness({ autosave }: { autosave: () => void })
             id={1}
             observableCharacteristics={observableCharacteristics}
             observableCharacteristic="Communicates clearly"
-            setObservableCharacteristics={(newData) => setObservableCharacteristics(newData.split(""))}
+            setObservableCharacteristics={(newData) => {
+                onSetObservableCharacteristics?.(newData);
+                setObservableCharacteristics(newData.split(""));
+            }}
             autosave={autosave}
         />
     );
