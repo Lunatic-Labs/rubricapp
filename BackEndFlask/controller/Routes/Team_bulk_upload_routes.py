@@ -26,6 +26,7 @@ from controller.security.CustomDecorators import (
 @admin_check()
 @limiter.limit("1 per 3 seconds")
 def upload_team_csv():
+    directory = None
     try:
         file = request.files['csv_file']
         if not file:
@@ -47,8 +48,6 @@ def upload_team_csv():
 
             team_bulk_upload(file_path, user_id, course_id)
 
-            shutil.rmtree(directory)
-
             return create_good_response([], 200, "team")
 
         else:
@@ -56,3 +55,6 @@ def upload_team_csv():
 
     except Exception as e:
         return create_bad_response(f"Error bulk uploading team: {str(e)}", "team", 400)
+    finally:
+        if directory:
+            shutil.rmtree(directory, ignore_errors=True)
