@@ -117,7 +117,7 @@ def test_set_new_password_missing_credentials(flask_app_mock, client):
         assert response.status_code == 400
         data = response.get_json()
         assert data['success'] == False
-        assert "error" in data or "An error occurred" in str(data)
+        assert data["message"] == "An error occurred: Missing Email or Code"
 
 
 def test_set_new_password_with_invalid_credentials(flask_app_mock, client):
@@ -247,7 +247,7 @@ def test_send_reset_code(flask_app_mock, client):
 
             data = response.get_json()
             msg = data["content"]["reset_code"][0]
-            assert f"Successfully sent reset code to {user.email}!" in msg
+            assert msg == "Successfully sent reset code!"
         
         finally:
             # Clean up
@@ -303,7 +303,7 @@ def test_check_reset_code(flask_app_mock, client):
 
             data = response.get_json()
             msg = data["content"]["reset_code"][0]
-            assert f"Successfully matched passed in code with stored code for email: {user.email}!" in msg
+            assert msg == "Successfully validated reset code!"
         
         finally:
             # Clean up
