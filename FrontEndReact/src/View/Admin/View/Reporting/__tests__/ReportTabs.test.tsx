@@ -30,7 +30,7 @@ test("ReportTabs.test.tsx Test 3: clicking the Export Graph Comparison tab shoul
     expect(setTab).toHaveBeenCalledWith("Export Graph Comparison");
 });
 
-test("ReportTabs.test.tsx Test 4: should select the tab matching the given activeTab prop", () => {
+test("ReportTabs.test.tsx Test 4: should initialize the selected tab index from the activeTab prop", () => {
     render(<TabManager navbar={{}} activeTab="Teams" setTab={jest.fn()} />);
 
     expect(screen.getByLabelText("ratingAndFeedbackTab")).toHaveAttribute("aria-selected", "true");
