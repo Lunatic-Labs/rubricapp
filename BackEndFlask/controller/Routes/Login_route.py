@@ -51,8 +51,11 @@ def set_new_password():
     try:
         email, password, code = request.json.get('email'), request.json.get('password'), request.json.get('code')
 
-        if is_any_variable_in_array_missing([email, password, code]):
-            raise MissingException(["Email", "Password", "Code"])
+        if is_any_variable_in_array_missing([password]):
+            raise MissingException(["Password"])
+
+        if is_any_variable_in_array_missing([email, code]):
+            raise MissingException(["Email", "Code"])
 
         user = get_user_by_email(email)
 

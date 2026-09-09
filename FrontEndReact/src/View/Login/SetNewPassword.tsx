@@ -185,7 +185,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                 // Forgot-password flow: a reset code was confirmed by ValidateReset.
                 if (!email) {
                     this.setState({
-                        errorMessage: "An error occurred: Missing Email or Password or Code"
+                        errorMessage: "An error occurred: Missing Email or Code"
                     });
 
                     return;

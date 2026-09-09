@@ -117,7 +117,7 @@ def test_set_new_password_missing_credentials(flask_app_mock, client):
         assert response.status_code == 400
         data = response.get_json()
         assert data['success'] == False
-        assert "error" in data or "An error occurred" in str(data)
+        assert data["message"] == "An error occurred: Missing Email or Code"
 
 
 def test_set_new_password_with_invalid_credentials(flask_app_mock, client):
