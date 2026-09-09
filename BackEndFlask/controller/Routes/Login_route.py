@@ -52,15 +52,15 @@ def set_new_password():
         email, password, code = request.json.get('email'), request.json.get('password'), request.json.get('code')
 
         if is_any_variable_in_array_missing([password]):
-            raise MissingException(["Password"])
+            return create_bad_response("Missing Password", "password", 400)
 
         if is_any_variable_in_array_missing([email, code]):
-            raise MissingException(["Email", "Code"])
+            return create_bad_response("Missing Email or Code", "password", 400)
 
         user = get_user_by_email(email)
 
         if user is None or user.reset_code is None or not check_password_hash(user.reset_code, code):
-            raise InvalidCredentialsException
+            return create_bad_response("Invalid Credentials", "password", 400)
 
         update_password(user.user_id, password)
 
@@ -70,8 +70,6 @@ def set_new_password():
 
         return create_good_response(f"Successfully set new password for user {user.user_id}!", 201, "password")
 
-    except (MissingException, InvalidCredentialsException) as e:
-        return create_bad_response(str(e), "password", 400)
     except Exception:
         return create_bad_response("Unable to set new password", "password", 400)
 
@@ -122,7 +120,7 @@ def send_reset_code():
 
         send_reset_code_email(email, code)
 
-        return create_good_response(f"Successfully sent reset code to {email}!", 201, "reset_code")
+        return create_good_response("Successfully sent reset code!", 201, "reset_code")
 
     except Exception as e:
         return create_bad_response(f"{e}", "reset_code", 400)
@@ -141,7 +139,7 @@ def check_reset_code():
         if user is None or user.reset_code is None or not check_password_hash(user.reset_code, code):
             raise InvalidCredentialsException
 
-        return create_good_response(f"Successfully matched passed in code with stored code for email: {email}!", 200, 'reset_code')
+        return create_good_response("Successfully validated reset code!", 200, 'reset_code')
 
     except Exception as e:
         return create_bad_response(f"{e}", "reset_code", 400)

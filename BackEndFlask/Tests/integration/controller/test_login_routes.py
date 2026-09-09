@@ -247,7 +247,7 @@ def test_send_reset_code(flask_app_mock, client):
 
             data = response.get_json()
             msg = data["content"]["reset_code"][0]
-            assert f"Successfully sent reset code to {user.email}!" in msg
+            assert msg == "Successfully sent reset code!"
         
         finally:
             # Clean up
@@ -303,7 +303,7 @@ def test_check_reset_code(flask_app_mock, client):
 
             data = response.get_json()
             msg = data["content"]["reset_code"][0]
-            assert f"Successfully matched passed in code with stored code for email: {user.email}!" in msg
+            assert msg == "Successfully validated reset code!"
         
         finally:
             # Clean up
