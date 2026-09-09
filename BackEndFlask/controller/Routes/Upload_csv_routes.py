@@ -1,6 +1,8 @@
 import os
 import json
+import uuid
 import shutil
+import tempfile
 import pandas as pd
 from io import BytesIO
 from flask import request
@@ -20,11 +22,14 @@ from controller.security.CustomDecorators import (
 @AuthCheck()
 @admin_check()
 def student_bulk_upload_csv():
+    directory = None
     try:
         file = request.files['csv_file']
-        directory = os.path.join(os.getcwd(), "Test")
-        os.makedirs(directory, exist_ok=True)
-        file_path = os.path.join(directory, file.filename)
+        directory = tempfile.mkdtemp()
+        extension = os.path.splitext(file.filename)
+        if (extension[1] != ".csv" and extension[1] != ".xlsx"):
+            raise Exception("Wrong format")
+        file_path = os.path.join(directory, uuid.uuid4().hex + extension[1])
         file.save(file_path)
 
         if(request.args and request.args.get("course_id") and request.args.get("owner_id")):
@@ -40,7 +45,6 @@ def student_bulk_upload_csv():
             if result != "Upload Successful!":
                 return create_bad_response("An error occurred bulkuploading Students!", "studentbulkupload", 400)
 
-            shutil.rmtree(directory)
             file.seek(0,0)
             file_data = file.read()
             df = pd.read_csv(BytesIO(file_data))
@@ -52,3 +56,6 @@ def student_bulk_upload_csv():
 
     except:
         return create_bad_response("No file selected", "studentbulkupload", 400)
+    finally:
+        if directory:
+            shutil.rmtree(directory, ignore_errors=True)
