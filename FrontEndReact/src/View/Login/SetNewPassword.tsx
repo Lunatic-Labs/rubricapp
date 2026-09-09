@@ -5,7 +5,6 @@ import Login from './Login';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { apiUrl } from '../../App';
 import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
@@ -191,7 +190,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                     return;
                 }
 
-                submission = submitPasswordChange(apiUrl, email, pass1, code);
+                submission = submitPasswordChange(email, pass1, code);
 
             } else {
                 // First-login / already-authenticated flow (e.g. Login.tsx when has_set_password

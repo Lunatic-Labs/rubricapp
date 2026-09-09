@@ -4,13 +4,13 @@ import ErrorMessage from '../Error/ErrorMessage';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { apiUrl } from '../../App';
 import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Email, AccountCircle } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 import {
     validatePasswordField,
+    submitAuthenticatedPasswordChange,
     testPasswordStrength,
     getPasswordStrengthIcon,
     generatePasswordStrengthColors,
@@ -276,20 +276,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
             return;
         }
 
-        fetch(
-            apiUrl + "/password/change",
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Authorization": "Bearer " + accessToken,
-                },
-                body: JSON.stringify({
-                    password: pass1,
-                }),
-            }
-        )
-            .then(res => res.json())
+        submitAuthenticatedPasswordChange(this, pass1)
             .then(
                 (result) => {
                     if (result['success']) {
@@ -299,7 +286,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                         });
                     } else {
                         this.setState({
-                            errorMessage: result['message']
+                            errorMessage: result['message'] ?? "Unable to change your password. Please try again."
                         });
                     }
                 }
@@ -307,7 +294,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
             .catch(
                 (error) => {
                     this.setState({
-                        errorMessage: error
+                        errorMessage: String(error)
                     });
                 }
             );

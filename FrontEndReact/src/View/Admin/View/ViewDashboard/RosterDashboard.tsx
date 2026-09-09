@@ -4,7 +4,7 @@ import AdminViewUsers from '../ViewUsers/AdminViewUsers';
 import MainHeader from '../../../Components/MainHeader';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import Cookies from 'universal-cookie';
-import { apiUrl } from '../../../../App';
+import { genericResourceGET } from '../../../../utility';
 
 interface RosterDashboardProps {
     navbar: any;
@@ -97,22 +97,24 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                     sessionStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
                                     console.log('Admin credentials saved');
                                     
-                                    // Get test student token
-                                    const response = await fetch(`${apiUrl}/courses/${courseId}/test_student_token`, {
-                                        method: 'GET',
-                                        headers: {
-                                            'Authorization': `Bearer ${cookies.get('access_token')}`,
-                                            'Content-Type': 'application/json'
-                                        }
-                                    });
-                                                                       
-                                    if (!response.ok) {
-                                        const errorData = await response.json();
-                                        console.error('Error response:', errorData);
-                                        throw new Error(errorData.error || 'Failed to get test student token');
+                                    // Get test student token. This endpoint is @jwt_required, so
+                                    // it goes through genericResourceGET to pick up the silent
+                                    // access-token refresh the other authenticated calls get.
+                                    // rawResponse is needed because it answers with a bare
+                                    // {success, user, access_token} rather than the usual
+                                    // {content: {...}} envelope the helper knows how to unwrap.
+                                    const data = await genericResourceGET(
+                                        `/courses/${courseId}/test_student_token`,
+                                        "test_student_token",
+                                        this,
+                                        { rawResponse: true }
+                                    );
+
+                                    if (!data || !data.success) {
+                                        console.error('Error response:', data);
+                                        throw new Error(data?.error || data?.errorMessage || 'Failed to get test student token');
                                     }
-                                    
-                                    const data = await response.json();
+
                                     console.log('Test student data received:', data);
 
                                     if (data.access_token && data.user) {  // Check for data

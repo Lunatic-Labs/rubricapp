@@ -1,6 +1,12 @@
 import { Component as ReactComponent } from 'react';
 import { MAX_PASSWORD_LENGTH } from '../Constants/password';
-import { genericResourcePUT } from '../utility';
+import {
+    genericResourcePUT,
+    unauthenticatedResourceGET,
+    unauthenticatedResourcePOST,
+    unauthenticatedResourcePUT,
+    ApiResponse
+} from '../utility';
 
 /**
  * Password strength levels
@@ -213,30 +219,50 @@ export function validatePasswordReset(password: string, confirmationPassword: st
 }
 
 /**
- * Submits a forgot-password reset request to the backend API
- * @param apiUrl - The base API URL
+ * Asks the backend to mail a reset code to the given address. First step of the
+ * forgot-password flow, so the caller is logged out and this goes through the
+ * unauthenticated helpers rather than genericResource*.
+ * @param email - The address to send the code to
+ * @returns Promise with the API response
+ */
+export async function requestPasswordResetCode(email: string): Promise<ApiResponse> {
+    return await unauthenticatedResourceGET(
+        `/reset_code?email=${encodeURIComponent(email)}`
+    );
+}
+
+/**
+ * Checks a reset code the user typed in against the one the backend mailed them. Second step
+ * of the forgot-password flow. The backend takes both arguments from the query string here,
+ * so there is no request body.
+ * @param email - The address the code was sent to
+ * @param code - The six-digit code the user entered
+ * @returns Promise with the API response
+ */
+export async function validatePasswordResetCode(email: string, code: string): Promise<ApiResponse> {
+    return await unauthenticatedResourcePOST(
+        `/reset_code?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`
+    );
+}
+
+/**
+ * Submits a forgot-password reset request to the backend API. Final step of the flow, so the
+ * caller is still logged out; the reset code validated in the previous step is what authorizes
+ * the change.
  * @param email - The user's email address
  * @param password - The new password
  * @param code - The reset code sent to the user's email and confirmed in the previous step
  * @returns Promise with the API response
  */
-export async function submitPasswordChange(apiUrl: string, email: string, password: string, code: string): Promise<any> {
-    const response = await fetch(
-        apiUrl + "/password",
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-                code: code,
-            }),
-        }
+export async function submitPasswordChange(email: string, password: string, code: string): Promise<ApiResponse> {
+    return await unauthenticatedResourcePUT(
+        "/password",
+        JSON.stringify({
+            email: email,
+            password: password,
+            code: code,
+        })
     );
-
-    return await response.json();
 }
 
 /**
