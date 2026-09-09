@@ -10,7 +10,7 @@ Backend coverage needs a real MySQL + Redis instance (the integration test fixtu
 provision and drop real databases — nothing here is mocked). Frontend coverage needs a
 live backend for the many components that fetch data on mount; without one, most of
 that code never executes and the coverage numbers come out badly deflated (we saw
-~15% deflate to ~35% once a real backend was reachable).
+coverage jump from ~15% to ~35% once a real backend was reachable).
 
 ## Prerequisites
 
