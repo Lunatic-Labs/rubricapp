@@ -70,6 +70,7 @@ class AdminAddCustomRubric extends Component<AdminAddCustomRubricProps, AdminAdd
             return (
                 <AddCustomRubric
                     navbar={this.props.navbar}
+                    rubricId={this.props.navbar.state.selectedRubricId}
                     rubrics={rubrics}
                     categories={categories}
                     chosenCategoryJson={parseCategoriesToContained(categories)}

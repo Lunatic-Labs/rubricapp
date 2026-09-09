@@ -69,6 +69,7 @@ def test_get_one_assessment_task_by_assessment_task_id(
                 print(f"Cleanup skipped: {e}")
 
 
+
 def test_get_assessment_tasks_by_course_and_role_ids(
         flask_app_mock,
         client,
@@ -807,6 +808,124 @@ def test_copy_course_assessments_raises_exception(
         finally:
             # Clean up
             try:
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_verify_team_password_success(flask_app_mock, client, sample_token, auth_header):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload["create_team_password"] = "team-secret"
+            task = create_assessment_task(payload)
+            token = sample_token(user_id=result["user_id"])
+
+            response = client.post(
+                f"/api/verify_team_password?user_id={result['user_id']}",
+                headers=auth_header(token),
+                json={"assessment_task_id": task.assessment_task_id, "password": "team-secret"},
+            )
+
+            data = response.get_json()
+            assert response.status_code == 200
+            assert data["success"] is True
+            assert data["content"]["assessment_tasks"][0]["message"] == "Password is correct."
+        finally:
+            try:
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_verify_team_password_wrong_password(flask_app_mock, client, sample_token, auth_header):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload["create_team_password"] = "team-secret"
+            task = create_assessment_task(payload)
+            token = sample_token(user_id=result["user_id"])
+
+            response = client.post(
+                f"/api/verify_team_password?user_id={result['user_id']}",
+                headers=auth_header(token),
+                json={"assessment_task_id": task.assessment_task_id, "password": "wrong-secret"},
+            )
+
+            data = response.get_json()
+            assert response.status_code == 400
+            assert data["success"] is False
+            assert "Incorrect password." in data["message"]
+        finally:
+            try:
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_verify_team_password_missing_fields(flask_app_mock, client, sample_token, auth_header):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            token = sample_token(user_id=result["user_id"])
+
+            response = client.post(
+                f"/api/verify_team_password?user_id={result['user_id']}",
+                headers=auth_header(token),
+                json={"assessment_task_id": 1},
+            )
+
+            data = response.get_json()
+            assert response.status_code == 400
+            assert data["success"] is False
+            assert "Missing Information" in data["message"]
+        finally:
+            try:
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_verify_team_password_no_password_set(flask_app_mock, client, sample_token, auth_header):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            rubric = sample_rubric(result["user_id"])
+            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload["create_team_password"] = ""
+            task = create_assessment_task(payload)
+            token = sample_token(user_id=result["user_id"])
+
+            response = client.post(
+                f"/api/verify_team_password?user_id={result['user_id']}",
+                headers=auth_header(token),
+                json={"assessment_task_id": task.assessment_task_id, "password": "anything"},
+            )
+
+            data = response.get_json()
+            assert response.status_code == 400
+            assert data["success"] is False
+            assert "No team switch password set for this assessment task." in data["message"]
+        finally:
+            try:
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
                 delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")

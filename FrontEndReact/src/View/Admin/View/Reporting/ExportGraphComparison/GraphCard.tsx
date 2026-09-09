@@ -32,6 +32,21 @@ interface GraphCardProps {
   onSelect: (graphId: string) => void;
 }
 
+/**
+ * Row shape for the horizontal bar charts. The characteristics and improvements
+ * graphs carry different source fields, so they are unified here into a single
+ * element type; without it chartData is a union of two array types and recharts
+ * infers its BarChart generic from only the first one.
+ * The charts themselves read only `label` and `percentage`.
+ */
+type GraphBarDatum = {
+  label: string;
+  number: number;
+  percentage: number;
+  characteristic?: string;
+  improvement?: string;
+};
+
 const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }) => {
   const cardRef = useRef<HTMLDivElement>(null);
   const [isVisible, setIsVisible] = useState(false);
@@ -82,7 +97,7 @@ const GraphCard: React.FC<GraphCardProps> = ({ graphItem, isSelected, onSelect }
   }, [graphItem.assessment_task_name, graphItem.team_name, graphItem.student_name, graphItem.due_date, graphItem.total_assessments]);
 
   // Memoize data transformations for horizontal bar charts
-  const chartData = useMemo(() => {
+  const chartData = useMemo<GraphBarDatum[] | null>(() => {
     const { graph_type, graph_data } = graphItem;
     if (graph_type === 'characteristics' && 'characteristics' in graph_data) {
       return graph_data.characteristics.map((item) => ({
