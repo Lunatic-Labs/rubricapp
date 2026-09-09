@@ -41,7 +41,6 @@ def upload_team_csv():
             user_id = int(request.args.get("user_id"))        
 
             directory = tempfile.mkdtemp()
-            os.makedirs(directory, exist_ok=True)
             unique_filename = uuid.uuid4().hex + extension[1]
             file_path = os.path.join(directory, unique_filename)
             file.save(file_path)
