@@ -203,13 +203,13 @@
   color: var(--text-color-secondary);
   font-size: 0.85rem;
   position: relative;
-  padding: 8px;
+  padding: 8px 8px 8px 20px;
 }
 
 .graph-card-checkbox {
   position: absolute;
-  top: 8px;
-  right: 8px;
+  top: 4px;
+  left: 4px;
 }
 
 /* Graph Card Info */

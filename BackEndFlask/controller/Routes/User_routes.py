@@ -133,7 +133,7 @@ def get_all_users():
             return create_good_response(users_schema.dump(all_users), 200, "users")
 
         if(request.args and request.args.get("user_id")):
-            uid = request.args.get("uid")
+            uid = request.args.get("uid") or request.args.get("user_id") # fixes infinite loading loop on settings
 
             if uid:
                 user = get_user(uid)  # Trigger an error if not exists.
@@ -187,6 +187,13 @@ def get_all_team_members():
             user_id=request.args.get("user_id")
 
             team_members, team_id = get_team_members(user_id, course_id)
+
+            if team_id is None:
+                return create_warning_response(
+                    "User is not assigned to a team in this course.",
+                    "team_members",
+                    404,
+                )
 
             result = {}
 
@@ -267,7 +274,7 @@ def add_user():
                     "role_id": request.json["role_id"]
                 })
 
-                return create_good_response(user_schema.dump(user_exists), 200, "users")
+                return create_good_response(user_schema.dump(new_user), 200, "users")
 
         new_user = create_user(request.json)
 

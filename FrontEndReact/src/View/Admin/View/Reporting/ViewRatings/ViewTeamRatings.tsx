@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MUIDataTable from 'mui-datatables';
+import MUIDataTable from '../../../../../LibAdapters/MUIDataTable';
 
 interface ViewTeamRatingsProps {
     navbar: any;

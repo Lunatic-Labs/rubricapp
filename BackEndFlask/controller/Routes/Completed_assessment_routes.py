@@ -4,6 +4,8 @@ from controller import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
 from models.assessment_task import get_assessment_task
+from enums.http_status_codes import HttpStatus
+from procedures.studentDashboard import call_procedure_FilterStudentAssessmentTasks
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check,
@@ -25,7 +27,7 @@ from models.completed_assessment import (
 )
 
 from models.queries import (
-    get_completed_assessment_by_ta_user_id,
+    get_completed_assessments_for_tas_by_course_id,
     get_completed_assessment_with_team_name,
     get_completed_assessment_by_user_id,
     get_completed_assessment_with_user_name,
@@ -150,7 +152,7 @@ def get_all_completed_assessments():
 
             user_id = request.args.get("user_id")
 
-            completed_assessments_task_by_user = get_completed_assessment_by_ta_user_id(course_id, user_id)
+            completed_assessments_task_by_user = get_completed_assessments_for_tas_by_course_id(course_id)
 
             return create_good_response(completed_assessment_schemas.dump(completed_assessments_task_by_user), 200, "completed_assessments")
 
@@ -216,6 +218,38 @@ def get_all_completed_assessments():
 
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving all completed assessments: {e}", "completed_assessments", 400)
+
+@bp.route("/student_dashboard_assessments", methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_student_dashboard_assessments():
+    """ Returns all valid AssessmentTask+CompletedAssessmentTask unions for their 
+    student dashboard.
+
+    Args:
+        user_id (int): user id the ATs and CATs should belong to.
+        course_id (int): course id the ATs and CATs should belong to.
+
+    Returns: 
+        AssessmentTask+CompletedAssessmentTask union rows.
+    """
+    try:
+        user_id = int(request.args.get("user_id"))
+        course_id = int(request.args.get("course_id"))
+        assessments = call_procedure_FilterStudentAssessmentTasks(user_id, course_id)
+        assessments = fusions_schema.dump(assessments)
+        return create_good_response(
+            assessments, 
+            HttpStatus.OK.value, 
+            "userFilteredAts"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
+            "userFilteredAts",
+            HttpStatus.BAD_REQUEST.value,
+        )
 
 @bp.route('/completed_assessment_by_team_or_user', methods = ['GET'])
 @jwt_required()
@@ -295,10 +329,10 @@ def update_completed_assessment():
     except Exception as e:
         return create_bad_response(f"An error occurred replacing completed_assessment {e}", "completed_assessments", 400)
 
-#----------------------------------------
+# ----------------------------------------
 # gets the average of all completed
 # assessment task into an array
-#----------------------------------------
+# ----------------------------------------
 @bp.route('/average', methods=['GET'])
 @jwt_required()
 @bad_token_check()
@@ -338,3 +372,37 @@ class CompletedAssessmentSchema(ma.Schema):
 
 completed_assessment_schema = CompletedAssessmentSchema()
 completed_assessment_schemas = CompletedAssessmentSchema(many=True)
+
+class AssessmentTaskCompleteAssessmentFusionSchema(ma.Schema):
+    completed_assessment_id = fields.Integer()
+    assessment_task_id      = fields.Integer()
+    completed_by            = fields.Integer()
+    team_id                 = fields.Integer()
+    team_name               = fields.String()
+    user_id                 = fields.Integer()
+    first_name              = fields.String()
+    last_name               = fields.String()
+    initial_time            = fields.DateTime()
+    done                    = fields.Boolean()
+    last_update             = fields.DateTime()
+    rating_observable_characteristics_suggestions_data = fields.Raw()
+    completed_count         = fields.Integer()
+    assessment_task_name = fields.String()
+    course_id            = fields.Integer()
+    rubric_id            = fields.Integer()
+    role_id              = fields.Integer()
+    due_date             = fields.DateTime()
+    time_zone            = fields.String()
+    show_suggestions     = fields.Boolean()
+    show_ratings         = fields.Boolean()
+    unit_of_assessment   = fields.Boolean()
+    create_team_password = fields.String()
+    comment              = fields.String()
+    number_of_teams      = fields.Integer()
+    max_team_size        = fields.Integer()
+    notification_sent    = fields.DateTime()
+    locked               = fields.Boolean()
+    published            = fields.Boolean()
+
+fusion_schema = AssessmentTaskCompleteAssessmentFusionSchema()
+fusions_schema = AssessmentTaskCompleteAssessmentFusionSchema(many=True)

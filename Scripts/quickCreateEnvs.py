@@ -45,11 +45,11 @@ def main():
     
     if not frontend_env.exists():
         frontend_env.write_text(
-            "REACT_APP_API_URL=http://127.0.0.1:5000/api\n"
-            "REACT_APP_SUPER_ADMIN_PASSWORD=@super_admin_password123\n"
-            "REACT_APP_DEMO_ADMIN_PASSWORD=demo_admin\n"
-            "REACT_APP_DEMO_TA_INSTRUCTOR_PASSWORD=demo_ta\n"
-            "REACT_APP_DEMO_STUDENT_PASSWORD=demo_student\n"
+            "VITE_API_URL=http://127.0.0.1:5000/api\n"
+            "VITE_SUPER_ADMIN_PASSWORD=@super_admin_password123\n"
+            "VITE_DEMO_ADMIN_PASSWORD=demo_admin\n"
+            "VITE_DEMO_TA_INSTRUCTOR_PASSWORD=demo_ta\n"
+            "VITE_DEMO_STUDENT_PASSWORD=demo_student\n"
         )
 
     if not backend_env.exists():

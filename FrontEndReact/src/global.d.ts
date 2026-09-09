@@ -1,4 +1,4 @@
-/// <reference types="react" />
+/// <reference types="vite/client" />
 
 // Image imports
 declare module '*.png' {
