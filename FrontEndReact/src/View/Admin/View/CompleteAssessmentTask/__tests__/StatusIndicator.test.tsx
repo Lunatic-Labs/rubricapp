@@ -7,7 +7,7 @@ test("StatusIndicator.test.tsx Test 1: NOT_STARTED should render a single gray o
     const { container } = render(<StatusIndicator status={StatusIndicatorState.NOT_STARTED} />);
 
     const svg = container.querySelector("svg");
-    expect(svg).toHaveStyle({ color: "rgb(128, 128, 128)" });
+    expect(svg).toHaveStyle({ color: "gray" });
     expect(container.querySelectorAll("circle")).toHaveLength(1);
 });
 
