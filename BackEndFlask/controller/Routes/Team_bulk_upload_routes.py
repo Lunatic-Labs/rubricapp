@@ -4,6 +4,7 @@ import json
 import shutil
 import pandas as pd
 from io import BytesIO
+import tempfile
 from flask import request
 from controller import bp
 # from Functions import team_import
@@ -37,11 +38,11 @@ def upload_team_csv():
 
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
-            user_id = int(request.args.get("user_id"))          
+            user_id = int(request.args.get("user_id"))        
 
-            directory = os.path.join(os.getcwd(), "Test")
+            directory = tempfile.mkdtemp()
             os.makedirs(directory, exist_ok=True)
-            unique_filename = extension[0] + uuid.uuid4().hex + extension[1]
+            unique_filename = uuid.uuid4().hex + extension[1]
             file_path = os.path.join(directory, unique_filename)
             file.save(file_path)
 
