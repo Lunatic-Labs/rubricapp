@@ -24,7 +24,7 @@ import { User } from '../../../../types/User';
  * 
  * Conditional Rendering:
  * - if navbar.state.user or navbar.state.addUser is set, renders AdminAddUser component.
- * - else, renders ViewUsers component with fetched users and roles.
+ * - else, renders ViewUsers component with fetched users and role names from navbar.state.roleNameMap.
  */
 
 interface AdminViewUsersProps {
