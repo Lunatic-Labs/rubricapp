@@ -1,4 +1,5 @@
 import { Component as ReactComponent } from 'react';
+import Cookies from 'universal-cookie';
 import { MAX_PASSWORD_LENGTH } from '../Constants/password';
 import {
     genericResourcePUT,
@@ -271,16 +272,34 @@ export async function submitPasswordChange(email: string, password: string, code
  * involved, identity comes from the JWT. Routed through genericResourcePUT so an expired
  * access token gets silently refreshed and the request retried, same as other authenticated
  * calls in the app.
+ *
+ * Changing a password invalidates every token issued for the account beforehand, including the
+ * pair this caller is holding. The backend therefore returns a replacement pair, which is stored
+ * here so the session survives the change. Without this the next authenticated request would be
+ * refused and the user would be bounced to the login screen.
+ *
  * @param component - The calling component (its access/refresh token cookies are used, and
  * its setState is called on a hard auth failure)
  * @param password - The new password
- * @returns Promise with the API response
+ * @returns Promise with the API response, or undefined when the helper hits an unrecoverable
+ * auth failure and reloads the page
  */
-export async function submitAuthenticatedPasswordChange(component: ReactComponent<any, any>, password: string): Promise<any> {
-    return await genericResourcePUT(
+export async function submitAuthenticatedPasswordChange(component: ReactComponent<any, any>, password: string): Promise<ApiResponse | undefined> {
+    const result: ApiResponse | undefined = await genericResourcePUT(
         "/password/change",
         component,
         JSON.stringify({ password }),
         { rawResponse: true }
     );
+
+    const tokens = result?.headers;
+
+    if (result?.success && tokens?.['access_token'] && tokens?.['refresh_token']) {
+        const cookies = new Cookies();
+
+        cookies.set('access_token', tokens['access_token'], { sameSite: 'strict' });
+        cookies.set('refresh_token', tokens['refresh_token'], { sameSite: 'strict' });
+    }
+
+    return result;
 }

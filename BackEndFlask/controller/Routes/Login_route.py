@@ -7,11 +7,23 @@ from werkzeug.security import check_password_hash, generate_password_hash
 from controller.security.utility import create_new_tokens, revoke_tokens
 from controller.security.CustomDecorators import bad_token_check
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from models.user import update_password, has_changed_password, set_reset_code
+from models.user import (
+    update_password,
+    has_changed_password,
+    set_reset_code,
+    reset_code_is_expired,
+    invalidate_issued_tokens
+)
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
 from controller.Routes.RouteExceptions import MissingException, InvalidCredentialsException
+from datetime import datetime, timedelta, timezone
 
+
+# How long a mailed reset code stays usable. Short enough that a code sitting in
+# an old inbox is not a standing key to the account, long enough to survive mail
+# delivery and someone walking back to their desk.
+RESET_CODE_LIFETIME = timedelta(minutes=15)
 
 
 @bp.route('/login', methods=['POST'])
@@ -59,7 +71,7 @@ def set_new_password():
 
         user = get_user_by_email(email)
 
-        if user is None or user.reset_code is None or not check_password_hash(user.reset_code, code):
+        if user is None or reset_code_is_expired(user) or not check_password_hash(user.reset_code, code):
             return create_bad_response("Invalid Credentials", "password", 400)
 
         update_password(user.user_id, password)
@@ -67,6 +79,10 @@ def set_new_password():
         has_changed_password(user.user_id, True)
 
         set_reset_code(user.user_id, None)
+
+        # Whoever prompted this reset may already hold a live session. Retire
+        # every token issued so far, so the reset actually locks them out.
+        invalidate_issued_tokens(user.user_id)
 
         return create_good_response(f"Successfully set new password for user {user.user_id}!", 201, "password")
 
@@ -83,18 +99,34 @@ def change_password():
         password = request.json.get('password')
 
         if is_any_variable_in_array_missing([password]):
-            raise MissingException(["Password"])
+            return create_bad_response("Missing Password", "password", 400)
 
         user = get_user(int(get_jwt_identity()))
+
+        if user is None:
+            return create_bad_response("Invalid Credentials", "password", 400)
 
         update_password(user.user_id, password)
 
         has_changed_password(user.user_id, True)
 
-        return create_good_response(f"Successfully set new password for user {user.user_id}!", 201, "password")
+        # Same reasoning as the reset path: any other session for this account
+        # stops working. The caller keeps working because the pair handed back
+        # below is minted against the new generation.
+        invalidate_issued_tokens(user.user_id)
 
-    except Exception as e:
-        return create_bad_response(f"{e}", "password", 400)
+        access_token, refresh_token = create_new_tokens(user.user_id)
+
+        return create_good_response(
+            f"Successfully set new password for user {user.user_id}!",
+            201,
+            "password",
+            access_token,
+            refresh_token
+        )
+
+    except Exception:
+        return create_bad_response("Unable to set new password", "password", 400)
 
 
 @bp.route('/reset_code', methods = ['GET'])
@@ -116,7 +148,11 @@ def send_reset_code():
 
         print("             reset_code:", code)
 
-        set_reset_code(user.user_id, generate_password_hash(code))
+        set_reset_code(
+            user.user_id,
+            generate_password_hash(code),
+            datetime.now(timezone.utc) + RESET_CODE_LIFETIME
+        )
 
         send_reset_code_email(email, code)
 
@@ -136,7 +172,7 @@ def check_reset_code():
 
         user = get_user_by_email(email)
 
-        if user is None or user.reset_code is None or not check_password_hash(user.reset_code, code):
+        if user is None or reset_code_is_expired(user) or not check_password_hash(user.reset_code, code):
             raise InvalidCredentialsException
 
         return create_good_response("Successfully validated reset code!", 200, 'reset_code')

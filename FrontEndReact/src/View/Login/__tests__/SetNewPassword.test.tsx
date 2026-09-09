@@ -1,6 +1,7 @@
-import { test } from "@jest/globals";
+import { test, describe, expect, afterEach, jest } from "@jest/globals";
 import { render, waitFor } from "@testing-library/react";
 import "@testing-library/jest-dom";
+import Cookies from "universal-cookie";
 import SetNewPassword from "../SetNewPassword";
 
 import {
@@ -164,5 +165,99 @@ test("SetNewPassword.test.tsx Test 11: should display a session-expired error wh
 
     await waitFor(() => {
         expectElementWithAriaLabelToHaveErrorMessage(ema, "Your session has expired. Please log in again.");
+    });
+});
+
+// Tests 1-11 all cover refusals. The two below cover the other half: a change
+// the backend accepts. Both stub the network, because the forgot-password path
+// needs a reset code that only reaches the user by email, and the authenticated
+// path needs a session this suite has no way to establish.
+describe("SetNewPassword success paths", () => {
+    const originalFetch = global.fetch;
+
+    const jsonResponse = (body: any) => Promise.resolve({
+        ok: true,
+        status: 200,
+        headers: { get: () => "application/json" },
+        json: () => Promise.resolve(body)
+    });
+
+    afterEach(() => {
+        if (originalFetch) { global.fetch = originalFetch; }
+
+        const cookies = new Cookies();
+
+        cookies.remove('access_token');
+        cookies.remove('refresh_token');
+        cookies.remove('user');
+    });
+
+    test("SetNewPassword.test.tsx Test 12: should return to the login form when a reset code is accepted", async () => {
+        global.fetch = jest.fn(() => jsonResponse({
+            success: true,
+            content: { password: ["Successfully set new password for user 1!"] }
+        })) as any;
+
+        render(<SetNewPassword email={"demostudent5@skillbuilder.edu"} code={"123456"} />);
+
+        changeElementWithAriaLabelWithInput(snpi, "Abcdefg1@");
+
+        changeElementWithAriaLabelWithInput(sncpi, "Abcdefg1@");
+
+        clickElementWithAriaLabel(snpb);
+
+        await waitFor(() => {
+            expectElementWithAriaLabelToBeInDocument("loginForm");
+        });
+
+        const requestedUrl = String((global.fetch as jest.Mock).mock.calls[0][0]);
+
+        expect(requestedUrl).toContain("/password");
+    });
+
+    test("SetNewPassword.test.tsx Test 13: should store the replacement tokens the backend returns on an authenticated change", async () => {
+        const cookies = new Cookies();
+
+        cookies.set('access_token', 'stale_access_token', { sameSite: 'strict' });
+        cookies.set('refresh_token', 'stale_refresh_token', { sameSite: 'strict' });
+        cookies.set('user', { user_id: 1 }, { sameSite: 'strict' });
+
+        // A successful change renders the logged-in app, which immediately loads
+        // its own resources. Those are answered with a plain failure so they stay
+        // out of the way of what this test is actually asserting.
+        global.fetch = jest.fn((url: any) => {
+            if (String(url).includes("/password/change")) {
+                return jsonResponse({
+                    success: true,
+                    content: { password: ["Successfully set new password for user 1!"] },
+                    headers: {
+                        access_token: "replacement_access_token",
+                        refresh_token: "replacement_refresh_token"
+                    }
+                });
+            }
+
+            return jsonResponse({ success: false, message: "not mocked" });
+        }) as any;
+
+        render(<SetNewPassword email={"demostudent5@skillbuilder.edu"} />);
+
+        changeElementWithAriaLabelWithInput(snpi, "Abcdefg1@");
+
+        changeElementWithAriaLabelWithInput(sncpi, "Abcdefg1@");
+
+        clickElementWithAriaLabel(snpb);
+
+        // Changing a password retires the caller's own tokens, so the session
+        // only survives if the replacements are stored.
+        await waitFor(() => {
+            expect(cookies.get('access_token')).toBe("replacement_access_token");
+        });
+
+        expect(cookies.get('refresh_token')).toBe("replacement_refresh_token");
+
+        const requestedUrl = String((global.fetch as jest.Mock).mock.calls[0][0]);
+
+        expect(requestedUrl).toContain("/password/change");
     });
 });

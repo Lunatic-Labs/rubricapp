@@ -211,6 +211,13 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
 
             submission
                 .then((result: any) => {
+                    // The shared fetch helper resolves to undefined when it hits an
+                    // unrecoverable auth failure; it has already cleared the session and
+                    // started reloading, so there is nothing left to report.
+                    if (result === undefined) {
+                        return;
+                    }
+
                     if(result['success']) {
                         this.setState({
                             isPasswordSet: true

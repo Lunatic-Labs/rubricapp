@@ -1,4 +1,5 @@
 import pytest
+from datetime import datetime, timedelta, timezone
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from models.feedback import *
@@ -80,7 +81,11 @@ def test_set_new_password(flask_app_mock, client):
             user = create_user(user_data)
 
             reset_code = "password?123"
-            set_reset_code(user.user_id, generate_password_hash(reset_code))
+            set_reset_code(
+                user.user_id,
+                generate_password_hash(reset_code),
+                datetime.now(timezone.utc) + timedelta(minutes=15)
+            )
 
             response = client.put(
                 "/api/password",
@@ -133,6 +138,220 @@ def test_set_new_password_with_invalid_credentials(flask_app_mock, client):
         data = response.get_json()
         assert data['success'] == False
         assert "error" in data or "An error occurred" in str(data)
+
+
+# The three tests below cover the vulnerability this endpoint was hardened
+# against. The invalid-credentials test above only exercises the unknown-email
+# branch, so on its own it would still pass against the vulnerable version.
+def test_set_new_password_rejects_reset_for_user_who_requested_none(flask_app_mock, client):
+    """The original attack: a real account, no code ever requested, password replaced anyway."""
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+
+            assert user.reset_code is None
+
+            response = client.put(
+                "/api/password",
+                json={"email": user.email, "password": "attacker_password", "code": "000000"}
+            )
+
+            assert response.status_code == 400
+            assert response.get_json()['success'] is False
+
+            reloaded_user = get_user_by_email(user.email)
+            assert check_password_hash(reloaded_user.password, "password123")
+            assert not check_password_hash(reloaded_user.password, "attacker_password")
+
+        finally:
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_set_new_password_rejects_wrong_code(flask_app_mock, client):
+    """A code is outstanding, but the one supplied does not match it."""
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+            set_reset_code(
+                user.user_id,
+                generate_password_hash("realcode"),
+                datetime.now(timezone.utc) + timedelta(minutes=15)
+            )
+
+            response = client.put(
+                "/api/password",
+                json={"email": user.email, "password": "attacker_password", "code": "wrongcode"}
+            )
+
+            assert response.status_code == 400
+            assert response.get_json()['success'] is False
+
+            reloaded_user = get_user_by_email(user.email)
+            assert check_password_hash(reloaded_user.password, "password123")
+
+            # A failed attempt must not burn the real code.
+            assert reloaded_user.reset_code is not None
+
+        finally:
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_set_new_password_rejects_expired_code(flask_app_mock, client):
+    """The right code, offered after its lifetime has run out."""
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+            set_reset_code(
+                user.user_id,
+                generate_password_hash("realcode"),
+                datetime.now(timezone.utc) - timedelta(minutes=1)
+            )
+
+            response = client.put(
+                "/api/password",
+                json={"email": user.email, "password": "attacker_password", "code": "realcode"}
+            )
+
+            assert response.status_code == 400
+            assert response.get_json()['success'] is False
+
+            reloaded_user = get_user_by_email(user.email)
+            assert check_password_hash(reloaded_user.password, "password123")
+
+        finally:
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_set_new_password_invalidates_existing_sessions(flask_app_mock, auth_header, client):
+    """A reset locks out whoever was already holding a session for the account."""
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+
+            login_response = client.post(
+                "/api/login",
+                json={"email": user.email, "password": "password123"}
+            )
+            stolen_token = login_response.get_json()["headers"]["access_token"]
+
+            # The session works before the reset.
+            assert client.put(
+                "/api/password/change",
+                json={"password": "some_other_password"},
+                headers=auth_header(stolen_token)
+            ).status_code == 201
+
+            set_reset_code(
+                user.user_id,
+                generate_password_hash("realcode"),
+                datetime.now(timezone.utc) + timedelta(minutes=15)
+            )
+
+            assert client.put(
+                "/api/password",
+                json={"email": user.email, "password": "recovered_password", "code": "realcode"}
+            ).status_code == 201
+
+            # And is refused afterwards.
+            response = client.put(
+                "/api/password/change",
+                json={"password": "attacker_password"},
+                headers=auth_header(stolen_token)
+            )
+
+            assert response.status_code != 201
+            assert response.get_json().get('success') is not True
+
+            reloaded_user = get_user_by_email(user.email)
+            assert check_password_hash(reloaded_user.password, "recovered_password")
+
+        finally:
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_change_password_returns_usable_replacement_tokens(flask_app_mock, auth_header, client):
+    """Changing a password invalidates the caller's own pair, so a fresh one comes back."""
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+
+            login_response = client.post(
+                "/api/login",
+                json={"email": user.email, "password": "password123"}
+            )
+            original_token = login_response.get_json()["headers"]["access_token"]
+
+            change_response = client.put(
+                "/api/password/change",
+                json={"password": "newpassword456"},
+                headers=auth_header(original_token)
+            )
+
+            assert change_response.status_code == 201
+
+            replacement_token = change_response.get_json()["headers"]["access_token"]
+            assert replacement_token
+
+            # The replacement is accepted.
+            assert client.put(
+                "/api/password/change",
+                json={"password": "newpassword789"},
+                headers=auth_header(replacement_token)
+            ).status_code == 201
+
+        finally:
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_check_reset_code_rejects_expired_code(flask_app_mock, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            user = create_user(sample_user())
+            set_reset_code(
+                user.user_id,
+                generate_password_hash("realcode"),
+                datetime.now(timezone.utc) - timedelta(minutes=1)
+            )
+
+            response = client.post(
+                f"/api/reset_code?email={user.email}&code=realcode"
+            )
+
+            assert response.status_code == 400
+            assert response.get_json()['success'] is False
+
+        finally:
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
 
 
 def test_change_password(flask_app_mock, auth_header, client):
@@ -293,7 +512,7 @@ def test_check_reset_code(flask_app_mock, client):
             user = create_user(sample_user())
 
             hash = generate_password_hash("password?123")
-            set_reset_code(user.user_id, hash)
+            set_reset_code(user.user_id, hash, datetime.now(timezone.utc) + timedelta(minutes=15))
 
             response = client.post(
                 f"/api/reset_code?email={user.email}&code=password?123"

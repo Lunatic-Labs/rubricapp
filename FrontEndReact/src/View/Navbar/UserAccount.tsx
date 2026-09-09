@@ -279,6 +279,13 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
         submitAuthenticatedPasswordChange(this, pass1)
             .then(
                 (result) => {
+                    // The shared fetch helper resolves to undefined when it hits an
+                    // unrecoverable auth failure; it has already cleared the session and
+                    // started reloading, so there is nothing left to report.
+                    if (result === undefined) {
+                        return;
+                    }
+
                     if (result['success']) {
                         this.setState({
                             resetPasswordDialogOpen: false
