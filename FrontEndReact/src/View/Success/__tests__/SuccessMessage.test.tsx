@@ -12,7 +12,9 @@ test("SuccessMessage.test.tsx Test 1: should render the success alert with the g
 });
 
 test("SuccessMessage.test.tsx Test 2: should render a different message when props change", () => {
-    render(<SuccessMessage successMessage="User updated successfully" />);
+    const { rerender } = render(<SuccessMessage successMessage="Course added successfully" />);
+    expect(screen.getByLabelText("successMessageAlert")).toHaveTextContent("Course added successfully");
 
+    rerender(<SuccessMessage successMessage="User updated successfully" />);
     expect(screen.getByLabelText("successMessageAlert")).toHaveTextContent("User updated successfully");
 });
