@@ -45,7 +45,7 @@ class Logout extends Component<LogoutProps> {
 
     render() {
         return(
-            <MenuItem aria-label='logoutButton' onClick={this.handleLogout}>
+            <MenuItem aria-label='logoutButton' data-testid='logout-button' onClick={this.handleLogout}>
                 <ListItemIcon>
                     <LogoutIcon sx={{color:"#757575"}} fontSize="small" />
                 </ListItemIcon>

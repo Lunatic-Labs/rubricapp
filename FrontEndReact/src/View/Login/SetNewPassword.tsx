@@ -221,8 +221,8 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                     <Box role="form" className="form-position">
                         <Box className="card-style">
                             <FormControl className="form-spacing">
-                                <form aria-label="setNewPasswordFormLabel">
-                                    <Typography variant="h4" component="div" aria-label="setNewPasswordTitle"
+                                <form data-testid="set-new-password-form">
+                                    <Typography variant="h4" component="div" data-testid="set-new-password-title"
                                         sx={{
                                             fontFeatureSettings: "'clig' off, 'liga' off",
                                             fontFamily: "Roboto",
@@ -253,7 +253,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                             helperText={errors.password}
                                             onChange={this.handleChange}
                                             inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
-                                            aria-label="setNewPasswordInput"
+                                            data-testid="set-new-password-input"
                                             sx={{
                                                 '& .MuiInputBase-input': {
                                                     color: errors.password ? 'var(--error-color)' : 'var(--text-color)',
@@ -368,7 +368,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                         helperText={errors.confirmationPassword}
                                         onChange={this.handleChange}
                                         inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1}}          // the maximum character length of confirmationPassword has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
-                                        aria-label="setNewPasswordConfirmInput"
+                                        data-testid="set-new-password-confirm-input"
                                     />
 
                                     <Box sx={{ display: "flex" , flexDirection: "row", justifyContent: "right", gap: "20px" }}>
@@ -378,7 +378,7 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                                                 type="button"
                                                 variant="contained"
                                                 className="primary-color"
-                                                aria-label="setNewPasswordButton"
+                                                data-testid="set-new-password-button"
                                             >
                                                 Set Password
                                             </Button>
