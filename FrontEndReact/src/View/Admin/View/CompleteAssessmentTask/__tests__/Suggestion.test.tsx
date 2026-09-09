@@ -11,7 +11,13 @@ function makeNavbar(isReadOnly: boolean) {
 // Suggestion's componentDidUpdate re-syncs `checked` from props.suggestions, so a
 // realistic click round-trip needs a parent that actually feeds the updated
 // suggestions string back in, the way the real caller does.
-function SuggestionHarness({ autosave }: { autosave: () => void }) {
+function SuggestionHarness({
+    autosave,
+    onSetSuggestions,
+}: {
+    autosave: () => void;
+    onSetSuggestions?: (newData: string) => void;
+}) {
     const [suggestions, setSuggestions] = useState(["0", "0", "0"]);
 
     return (
@@ -20,7 +26,10 @@ function SuggestionHarness({ autosave }: { autosave: () => void }) {
             id={1}
             suggestions={suggestions}
             suggestion="Add more examples"
-            setSuggestions={(newData) => setSuggestions(newData.split(""))}
+            setSuggestions={(newData) => {
+                onSetSuggestions?.(newData);
+                setSuggestions(newData.split(""));
+            }}
             autosave={autosave}
         />
     );
