@@ -200,6 +200,52 @@ WantedBy=multi-user.target
     copytruncate
 }
 "
+
+    # CloudWatch Logs agent config: ships the app's rotated log files to
+    # CloudWatch so they survive past this one instance's disk. Auth comes
+    # from the EC2 instance's IAM role (see configure_cloudwatch_agent),
+    # not a key stored here. all.log is already one JSON object per line
+    # (see BackEndFlask/models/logger.py), which CloudWatch Logs Insights
+    # parses natively - no multi-line/format config needed. Retention (90
+    # days) matches LOG_RETENTION_DAYS in BackEndFlask/models/logger.py.
+    CLOUDWATCH_AGENT_CONFIG='{
+  "agent": {
+    "run_as_user": "root"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/all.log",
+            "log_group_name": "/rubricapp/backend/app",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/gunicorn-access.log",
+            "log_group_name": "/rubricapp/backend/gunicorn-access",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/gunicorn-error.log",
+            "log_group_name": "/rubricapp/backend/gunicorn-error",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/FrontEndReact/frontend.log",
+            "log_group_name": "/rubricapp/frontend",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          }
+        ]
+      }
+    }
+  }
+}
+'
 }
 # ===================
 # MORE UTIL FUNCTIONS
@@ -598,6 +644,40 @@ function configure_logrotate() {
     log "done"
 }
 
+# Installs and configures the CloudWatch Logs agent so the app's log
+# files (BackEndFlask/logs/all.log, gunicorn-access.log,
+# gunicorn-error.log, FrontEndReact/frontend.log) get shipped off this
+# instance instead of only living on its local disk.
+function configure_cloudwatch_agent() {
+    log "configuring CloudWatch Logs agent"
+
+    # The agent installs and starts fine without an IAM role attached,
+    # it just silently fails to ship anything - warn instead of
+    # discovering that later in the CloudWatch console.
+    if ! curl -s -m 2 http://169.254.169.254/latest/meta-data/iam/security-credentials/ | grep -q .; then
+        log "WARNING: no IAM role detected on this instance."
+        log "WARNING: attach one with the CloudWatchAgentServerPolicy (or equivalent"
+        log "WARNING: logs:CreateLogGroup/CreateLogStream/PutLogEvents/DescribeLogStreams"
+        log "WARNING: permissions), or the agent will run but never ship logs."
+    fi
+
+    if ! command -v amazon-cloudwatch-agent-ctl &> /dev/null; then
+        local deb_path
+        deb_path="$(mktemp --suffix=.deb)"
+        curl -s -o "$deb_path" https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+        sudo dpkg -i -E "$deb_path"
+        rm -f "$deb_path"
+    fi
+
+    echo "$CLOUDWATCH_AGENT_CONFIG" | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /dev/null
+
+    sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+        -a fetch-config -m ec2 -s \
+        -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+
+    log "done"
+}
+
 # Sets up the root of the project, namely
 # in /home/$USER/$PROD_NAME/. All project
 # files will be stored here, including the
@@ -702,6 +782,7 @@ function configure() {
     configure_ssl
     configure_gunicorn
     configure_logrotate
+    configure_cloudwatch_agent
     configure_nginx
     configure_ufw
 }
@@ -710,6 +791,7 @@ function configure_no_ssl() {
     assure_proj_dir
     configure_gunicorn
     configure_logrotate
+    configure_cloudwatch_agent
     configure_nginx_no_ssl
     configure_ufw
 }
