@@ -4,6 +4,7 @@ import { Box, Typography, Switch, FormControlLabel } from "@mui/material";
 import Cookies from "universal-cookie";
 import { genericResourcePUT, genericResourceGET } from "../../utility";
 import Loading from "../Loading/Loading";
+import { logger } from "../../logger";
 
 // 'mode' refers to the darkmode classlist in the SBStyles.css, by adding 'mode' to the
 // document body, the darkmode css will be applied.
@@ -81,7 +82,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
             }
           })
           .catch((error) => {
-            console.error("Error fetching user data:", error);
+            logger.error("Error fetching user data:", error);
             // Fallback to user object
             this.setState(
               {
@@ -102,7 +103,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
       }
     } else {
       // Cookie does not exist - handle accordingly (e.g., redirect to login)
-      console.log("User cookie not found");
+      logger.debug("User cookie not found");
     }
 
     
@@ -147,7 +148,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
         }
       })
       .catch((error) => {
-        console.error("Error updating dark mode:", error);
+        logger.error("Error updating dark mode:", error);
         // Revert on error
         this.setState({ darkMode: !newDarkMode });
         if (!newDarkMode) {

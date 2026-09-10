@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
+import { logger } from '../../logger';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
@@ -776,7 +777,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     }
                 }
             }).catch(error => {
-                console.error("Error fetching user data:", error);
+                logger.error("Error fetching user data:", error);
                 // Fallback: use dark mode from cookie user object
                 const darkMode = user["user_dark_mode"] || false;
                 this.setState({ darkMode }, () => {
@@ -799,7 +800,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 });
             }
         }).catch(error => {
-            console.error("Error fetching roles:", error);
+            logger.error("Error fetching roles:", error);
         });
     }
 

@@ -2,6 +2,7 @@ import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
 import { genericResourceGET, genericResourcePOST} from '../../../../utility';
+import { logger } from '../../../../logger';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import Cookies from 'universal-cookie';
@@ -119,7 +120,7 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
                 checkins: checkinData,
             });
         }).catch(error => {
-            console.warn(error);
+            logger.warn(error instanceof Error ? error.message : String(error), error);
         });
     }
 
