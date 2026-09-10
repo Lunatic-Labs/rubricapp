@@ -86,6 +86,8 @@ import { genericResourceGET, parseRoleNames } from '../../utility';
  * @property {string|null} state.jumpToSection - Used in Complete Assessment to auto-scroll to a specific section.
  *
  * @property {Object[]|null} state.roles - All roles in the system, fetched once via GET /role on mount (not scoped to a course).
+ *      Written by genericResourceGET itself (it assigns the response to the state key named by its `resource` argument),
+ *      not by the .then() below. Nothing currently reads it; consumers use state.roleNameMap instead.
  * @property {Object|null} state.roleNameMap - role_id -> role_name lookup derived from state.roles, exposed app-wide via navbar.state.roleNameMap.
  */
 
@@ -93,7 +95,9 @@ interface AppStateProps {
     isSuperAdmin?: boolean;
     isAdmin?: boolean;
     userName?: string;
-    logout?: () => void;
+    // Required: ButtonAppBar's logout is non-optional, and the only render site
+    // (Login) always supplies it.
+    logout: () => void;
 }
 
 interface AppStateState {
@@ -792,10 +796,11 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
         // Fetch all roles once on mount so any screen can read role names
         // via navbar.state.roleNameMap without its own /role fetch.
+        // genericResourceGET already sets state.roles from the response, so only the
+        // derived lookup needs to be set here.
         genericResourceGET(`/role`, "roles", this).then(result => {
             if (result !== undefined && result["roles"] != null) {
                 this.setState({
-                    roles: result["roles"],
                     roleNameMap: parseRoleNames(result["roles"])
                 });
             }
@@ -1000,7 +1005,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <StudentDashboard
                             navbar={this}
-                            chosenCourse={this.state.chosenCourse}
                         />
                     </Box>
                 }
@@ -1022,8 +1026,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     <Box className="page-spacing">
                         <StudentTeamMembers
                             navbar={this}
-                            team={this.state.team}
-                            chosenCourse={this.state.chosenCourse}
                         />
 
                         <Button
@@ -1141,8 +1143,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <StudentConfirmCurrentTeam
                             navbar={this}
-                            students={this.state.users}
-                            chosenCourse={this.state.chosenCourse}
                         />
                     </Box>
                 }

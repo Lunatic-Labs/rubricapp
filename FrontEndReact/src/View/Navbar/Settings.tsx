@@ -12,21 +12,12 @@ import { logger } from "../../logger";
 // currently settings has only one option and that is to toggle darkmode, more options
 // will be added later as the app grows.
 
-// Define interfaces for type safety
-interface UserData {
-  user_id: string;
-  user_dark_mode: boolean;
-}
-
 interface SettingsState {
-  isLoaded: boolean | null;
-  errorMessage: string | null;
-  user: string | null;
   darkMode: boolean;
 }
 
 interface SettingsProps {
-  navbar?: any;
+  navbar: any;
 }
 
 class Settings extends Component<SettingsProps, SettingsState> {
@@ -34,10 +25,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
     super(props);
 
     this.state = {
-      isLoaded: null,
-      errorMessage: null,
-      user: null,
-      darkMode: false, // darkmode is not nullable, the deafult state is false
+      darkMode: props.navbar?.state?.darkMode ?? false,
     };
   }
 
@@ -116,7 +104,11 @@ class Settings extends Component<SettingsProps, SettingsState> {
   // any other 'changes' on the page.
   handleChange = (): void => {
     const newDarkMode = !this.state.darkMode; // take the users current prefernace and invert it
-    const user_id = this.state["user"];
+
+    // AppState doesn't keep user_id in shared state so we still read it from the cookie here
+    const cookies = new Cookies();
+    const cookieUser = cookies.get("user");
+    const user_id = cookieUser ? cookieUser["user_id"] : undefined;
 
     let promise: Promise<any>; // promise that data will be provided later
 
@@ -125,26 +117,25 @@ class Settings extends Component<SettingsProps, SettingsState> {
       user_dark_mode: newDarkMode,
     });
 
-    // Set the state (the updated darkmode preferance which will be put into the backend later.
     this.setState({
       darkMode: newDarkMode,
     });
 
-    // Toggle dark mode class on body (darkmode will now be applied).
     if (newDarkMode) {
       document.body.classList.add("mode");
     } else {
       document.body.classList.remove("mode");
     }
 
-    // Put the new preferance for darkmode into the user backend.
     promise = genericResourcePUT(`/user_settings`, this, body);
 
     promise
       .then((result) => {
         if (result !== undefined && result.errorMessage === null) {
-          // Update the state
-          this.setState({ darkMode: newDarkMode }); // warning to not mutate state directly
+          this.setState({ darkMode: newDarkMode });
+          if (this.props.navbar?.setState) {
+            this.props.navbar.setState({ darkMode: newDarkMode });
+          }
         }
       })
       .catch((error) => {
@@ -160,11 +151,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
   };
 
   render() {
-    const { isLoaded, user, darkMode } = this.state;
-
-    if (!isLoaded || !user) {
-      return <Loading />;
-    }
+    const { darkMode } = this.state;
 
     return (
       <>
@@ -177,40 +164,38 @@ class Settings extends Component<SettingsProps, SettingsState> {
             Settings
           </Typography>
         </Box>
-        {user && (
-          <Box className="card-spacing">
-            <Box className="form-position">
-              <Box className="card-style">
+        <Box className="card-spacing">
+          <Box className="form-position">
+            <Box className="card-style">
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  gap: "20px",
+                  width: "100%",
+                }}
+              >
+                <Typography variant="h6" sx={{ fontWeight: "600" }}>
+                  Appearance
+                </Typography>
                 <Box
-                  sx={{
-                    display: "flex",
-                    flexDirection: "column",
-                    gap: "20px",
-                    width: "100%",
-                  }}
+                  sx={{ display: "flex", alignItems: "center", gap: "10px" }}
                 >
-                  <Typography variant="h6" sx={{ fontWeight: "600" }}>
-                    Appearance
-                  </Typography>
-                  <Box
-                    sx={{ display: "flex", alignItems: "center", gap: "10px" }}
-                  >
-                    <FormControlLabel
-                      control={
-                        <Switch
-                          checked={darkMode}
-                          onChange={this.handleChange}
-                          aria-label="toggle dark mode"
-                        />
-                      }
-                      label="Dark Mode"
-                    />
-                  </Box>
+                  <FormControlLabel
+                    control={
+                      <Switch
+                        checked={darkMode}
+                        onChange={this.handleChange}
+                        aria-label="toggle dark mode"
+                      />
+                    }
+                    label="Dark Mode"
+                  />
                 </Box>
               </Box>
             </Box>
           </Box>
-        )}
+        </Box>
       </>
     );
   }

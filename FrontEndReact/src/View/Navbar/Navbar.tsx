@@ -25,7 +25,8 @@ import Settings from '@mui/icons-material/Settings';
  * 
  * @function ButtonAppBar
  * @param {Object} props - The properties passed to this navigation component.
- * @param {string} props.userName - The name of the currently logged-in user, displayed in the navigation bar.
+ * @param {string | undefined} [props.userName] - Optional. The name of the currently logged-in user, displayed in the
+ *  navigation bar. May be explicitly undefined: AppState passes through its own optional userName prop.
  * @param {function} props.setNewTab - A callback used for in-app navigation. Triggered when the user selects:
  *  - "My account"
  *  - "Privacy Policy"
@@ -36,7 +37,9 @@ import Settings from '@mui/icons-material/Settings';
  */
 
 interface ButtonAppBarProps {
-    userName?: string;
+    // `| undefined` is required under exactOptionalPropertyTypes: AppState passes
+    // this through from its own optional userName prop.
+    userName?: string | undefined;
     setNewTab: (tab: string) => void;
     logout: () => void;
 }
