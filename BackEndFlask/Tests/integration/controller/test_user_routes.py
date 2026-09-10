@@ -116,7 +116,7 @@ def test_get_all_teams_users(flask_app_mock, sample_token, auth_header, client):
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?team_ids={team1.team_id},{team2.team_id}&user_id={result["user_id"]}",
+                f"/api/user?team_ids={team1.team_id},{team2.team_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -185,7 +185,7 @@ def test_get_all_team_users_with_course_and_team_ids(flask_app_mock, sample_toke
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?team_id={team1.team_id}&course_id={result['course_id']}&assign=true&user_id={result["user_id"]}",
+                f"/api/user?team_id={team1.team_id}&course_id={result['course_id']}&assign=true&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -246,7 +246,7 @@ def test_get_all_non_team_users_with_course_and_team_ids(flask_app_mock, sample_
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?team_id={team1.team_id}&course_id={result['course_id']}&user_id={result["user_id"]}",
+                f"/api/user?team_id={team1.team_id}&course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -292,7 +292,7 @@ def test_get_all_users_with_course_and_role_ids(flask_app_mock, sample_token, au
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?course_id={result['course_id']}&role_id=5&user_id={result["user_id"]}",
+                f"/api/user?course_id={result['course_id']}&role_id=5&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -333,7 +333,7 @@ def test_get_all_users_with_course_id(flask_app_mock, sample_token, auth_header,
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?course_id={result['course_id']}&user_id={result["user_id"]}",
+                f"/api/user?course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -373,7 +373,7 @@ def test_get_all_user_info(flask_app_mock, sample_token, auth_header, client):
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?uid={user.user_id}&user_id={result["user_id"]}",
+                f"/api/user?uid={user.user_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -477,7 +477,7 @@ def test_get_all_users(flask_app_mock, sample_token, auth_header, client):
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/user?user_id={result["user_id"]}",
+                f"/api/user?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -577,7 +577,7 @@ def test_get_all_team_members_with_course_and_observer_ids(flask_app_mock, sampl
             token = sample_token(user_id=result["user_id"])
 
             response = client.get(
-                f"/api/team_members?course_id={result['course_id']}&observer_id={result["user_id"]}&user_id={result["user_id"]}",
+                f"/api/team_members?course_id={result['course_id']}&observer_id={result['user_id']}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -774,7 +774,7 @@ def test_add_user_to_team(flask_app_mock, sample_token, auth_header, client):
             token = sample_token(user_id=result["user_id"])
 
             response = client.post(
-                f"/api/user?team_id={team.team_id}&user_ids={users[0].user_id},{users[1].user_id},{users[2].user_id}&user_id={result["user_id"]}",
+                f"/api/user?team_id={team.team_id}&user_ids={users[0].user_id},{users[1].user_id},{users[2].user_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -1038,7 +1038,7 @@ def test_update_user_role_to_ta(flask_app_mock, sample_token, auth_header, clien
             token = sample_token(user_id=result["user_id"])
 
             response = client.put(
-                f"/api/user?uid={users[1].user_id}&course_id={result["course_id"]}&user_id={result["user_id"]}",
+                f"/api/user?uid={users[1].user_id}&course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "role_id": 4,
@@ -1152,7 +1152,7 @@ def test_remove_users_from_team(flask_app_mock, sample_token, auth_header, clien
             token = sample_token(user_id=result["user_id"])
 
             response = client.put(
-                f"/api/user?team_id={team.team_id}&user_ids={users[0].user_id},{users[1].user_id}&user_id={result["user_id"]}",
+                f"/api/user?team_id={team.team_id}&user_ids={users[0].user_id},{users[1].user_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -1206,7 +1206,7 @@ def test_update_user_to_admin_with_new_email(
             token = sample_token(user_id=result["user_id"])
 
             response = client.put(
-                f"/api/user?uid={ta[0].user_id}&new_email=testnewadmin@example.com&owner_id={result["user_id"]}&user_id={result["user_id"]}",
+                f"/api/user?uid={ta[0].user_id}&new_email=testnewadmin@example.com&owner_id={result['user_id']}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=replaced_ta_data
             )
