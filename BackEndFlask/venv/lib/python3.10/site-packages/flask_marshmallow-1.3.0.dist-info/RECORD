@@ -1,0 +1,17 @@
+flask_marshmallow-1.3.0.dist-info/INSTALLER,sha256=zuuue4knoyJ-UwPPXg8fezS7VCrXJQrAP7zeNuwvFQg,4
+flask_marshmallow-1.3.0.dist-info/LICENSE,sha256=kGtdkFHkJhRMsXOtkRZnuOvQWpxYTCwmwTWzKj7RIAE,1064
+flask_marshmallow-1.3.0.dist-info/METADATA,sha256=R-Z0GAkzvbVQyAeS105faz5qmyYt1F_3CotHUwEdR6k,5177
+flask_marshmallow-1.3.0.dist-info/RECORD,,
+flask_marshmallow-1.3.0.dist-info/REQUESTED,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+flask_marshmallow-1.3.0.dist-info/WHEEL,sha256=CpUCUxeHQbRN5UGRQHYRJorO5Af-Qy_fHMctcQ8DSGI,82
+flask_marshmallow/__init__.py,sha256=koKpA3E3MtgQ8SomgVv0pVHoYkgPDqVoFbEby4Dswd0,3871
+flask_marshmallow/__pycache__/__init__.cpython-310.pyc,,
+flask_marshmallow/__pycache__/fields.cpython-310.pyc,,
+flask_marshmallow/__pycache__/schema.cpython-310.pyc,,
+flask_marshmallow/__pycache__/sqla.cpython-310.pyc,,
+flask_marshmallow/__pycache__/validate.cpython-310.pyc,,
+flask_marshmallow/fields.py,sha256=gKFJuIpo6jYCBe3WpeDrvhP1EUozakx3WXYisQGubf0,7869
+flask_marshmallow/py.typed,sha256=47DEQpj8HBSa-_TImW-5JCeuQeRkm5NMpJWZG3hSuFU,0
+flask_marshmallow/schema.py,sha256=qC6jF_peb8WvQAJpe14MQaLmqRahAReoP7GKcC4nNfI,1436
+flask_marshmallow/sqla.py,sha256=RXiV5EZwg8g3XWN5ZsqOK3xrhmZ5FlgeVmzwDExC1LU,3984
+flask_marshmallow/validate.py,sha256=MNFcCBHwSEkfZGadr7WvwG6dF4aQ1s6yWYhxIk2JmWc,6812

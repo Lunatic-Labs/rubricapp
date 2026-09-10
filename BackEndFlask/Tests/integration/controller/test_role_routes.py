@@ -30,12 +30,12 @@ def test_get_all_roles_with_course_and_user_ids(
 
         try:
             result = create_one_admin_course(False)
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             token = sample_token(user_id=user[0].user_id)
 
             response = client.get(
-                f"/api/role?course_id={result["course_id"]}&user_id={user[0].user_id}",
+                f"/api/role?course_id={result['course_id']}&user_id={user[0].user_id}",
                 headers=auth_header(token)
             )
 
@@ -67,10 +67,10 @@ def test_get_all_roles(
         try:
             result = create_one_admin_course(False)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/role?user_id={result["user_id"]}",
+                f"/api/role?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -98,7 +98,7 @@ def test_post_details(flask_app_mock, sample_token, auth_header, client):
         try:
             result = create_one_admin_course(False)
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             token = sample_token(user_id=user[0].user_id)
 
@@ -136,10 +136,10 @@ def test_post_details_raises_except(
         try:
             result = create_one_admin_course(False)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/role_id?user_id={result["user_id"]}",
+                f"/api/role_id?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
