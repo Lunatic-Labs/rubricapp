@@ -8,8 +8,35 @@ interface TabManagerProps {
     activeTab: string;
     setTab: (tab: string) => void;
 }
+
+interface ReportTab {
+    // Doubles as the activeTab value: AdminReportTabs stores the label it was last
+    // handed, and picks which report to show by comparing against these same strings.
+    label: string;
+    ariaLabel: string;
+    // Ratings and Feedback is scoped to a single course, which a super admin has
+    // no place inside; admins and instructors keep it.
+    hideFromSuperAdmin?: boolean;
+}
+
+const REPORT_TABS: ReportTab[] = [
+    { label: "Assessment Status", ariaLabel: "assessmentStatusTab" },
+    { label: "Ratings and Feedback", ariaLabel: "ratingAndFeedbackTab", hideFromSuperAdmin: true },
+    { label: "Export Graph Comparison", ariaLabel: "exportGraphComparisonTab" },
+];
+
 export default function TabManager(props: TabManagerProps) {
-  var idTab = props.activeTab==="Users"? 0 : (props.activeTab==="Teams" ? 1 : (props.activeTab==="AssessmentTasks") ? 2 : 0);
+  // AppState takes isSuperAdmin as a prop, so that is where the flag lives on the
+  // navbar it hands down.
+  const isSuperAdmin = Boolean(props.navbar?.props?.isSuperAdmin);
+
+  const visibleTabs = REPORT_TABS.filter(tab => !(tab.hideFromSuperAdmin && isSuperAdmin));
+
+  // Derived from the visible tabs rather than a fixed position, so hiding one does
+  // not leave the selection pointing at its neighbour or past the end of the list.
+  // An activeTab naming no visible tab falls back to the first, which is also what
+  // a super admin gets for the tab they cannot see.
+  const idTab = Math.max(0, visibleTabs.findIndex(tab => tab.label === props.activeTab));
 
   const [value, setValue] = React.useState(idTab);
 
@@ -39,37 +66,19 @@ export default function TabManager(props: TabManagerProps) {
             },
           }}
       >
-        <Tab
-          label="Assessment Status"
-
-          onClick={() => {
-            props.setTab("Assessment Status");
-          }}
-
-          aria-label='assessmentStatusTab'
-        />
-        { 
-          !props.navbar.props.isSuperAdmin &&
+        {visibleTabs.map(tab => (
           <Tab
-          label="Ratings and Feedback"
+            key={tab.ariaLabel}
 
-          onClick={() => {
-            props.setTab("Ratings and Feedback");
-          }}
+            label={tab.label}
 
-          aria-label='ratingAndFeedbackTab'
+            onClick={() => {
+              props.setTab(tab.label);
+            }}
+
+            aria-label={tab.ariaLabel}
           />
-        }
-
-        <Tab
-          label="Export Graph Comparison"
-
-          onClick={() => {
-            props.setTab("Export Graph Comparison");
-          }}
-
-          aria-label='exportGraphComparisonTab'
-        />
+        ))}
 
         {/* wip */}
         {/* <Tab

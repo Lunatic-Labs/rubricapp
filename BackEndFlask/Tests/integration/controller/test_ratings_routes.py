@@ -35,10 +35,10 @@ def test_get_ratings_with_team(flask_app_mock, sample_token, auth_header, client
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            task = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
-            team1 = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
-            team2 = sample_team("Omega", result["user_id"], result["course_id"], task.assessment_task_id)
+            rubric = sample_rubric(result['user_id'])
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
+            team1 = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            team2 = sample_team("Omega", result['user_id'], result['course_id'], task.assessment_task_id)
 
             #for i in range(2):
                 #sample_team_user(team.team_id, users[i].user_id)
@@ -48,7 +48,7 @@ def test_get_ratings_with_team(flask_app_mock, sample_token, auth_header, client
                 task.assessment_task_id, 
                 team_id=team1.team_id, 
                 rating=accurately["3"], 
-                c_by=result["user_id"],
+                c_by=result['user_id'],
                 last_update="2025-11-15T12:00:00"
             ))
             comp2 = create_completed_assessment(sample_completed_assessment( 
@@ -56,13 +56,13 @@ def test_get_ratings_with_team(flask_app_mock, sample_token, auth_header, client
                 task.assessment_task_id, 
                 team_id=team2.team_id, 
                 rating=accurately["1"], 
-                c_by=result["user_id"],
+                c_by=result['user_id'],
                 last_update="2025-11-22T12:00:00"
             ))
             sample_feedback(comp1.completed_assessment_id, team_id=team1.team_id)
             sample_feedback(comp2.completed_assessment_id, team_id=team2.team_id)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/rating?assessment_task_id={task.assessment_task_id}&team_id={team1.team_id}&user_id={result['user_id']}",
@@ -103,12 +103,12 @@ def test_get_ratings_with_team_and_not_ratings(flask_app_mock, sample_token, aut
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            team = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/rating?assessment_task_id={task.assessment_task_id}&team_id={team.team_id}&user_id={result['user_id']}",
@@ -138,29 +138,29 @@ def test_get_ratings_with_users(flask_app_mock, sample_token, auth_header, clien
 
         try:
             result = create_one_admin_course(False)
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
             comp1 = create_completed_assessment(sample_completed_assessment(
                 users[0].user_id,
                 task.assessment_task_id, 
                 rating=accurately["3"], 
-                c_by=result["user_id"],
+                c_by=result['user_id'],
                 last_update="2025-11-15T12:00:00"
             ))
             comp2 = create_completed_assessment(sample_completed_assessment( 
                 users[1].user_id,
                 task.assessment_task_id, 
                 rating=accurately["1"], 
-                c_by=result["user_id"],
+                c_by=result['user_id'],
                 last_update="2025-11-22T12:00:00"
             ))
             sample_feedback(comp1.completed_assessment_id, user_id=users[0].user_id)
             sample_feedback(comp2.completed_assessment_id, user_id=users[1].user_id)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/rating?assessment_task_id={task.assessment_task_id}&team_id=0&user_id={result['user_id']}",
@@ -171,7 +171,7 @@ def test_get_ratings_with_users(flask_app_mock, sample_token, auth_header, clien
             assert response.status_code == 200
 
             results = data["content"]["ratings"][0]
-            students = get_users_by_owner_id(result["user_id"])
+            students = get_users_by_owner_id(result['user_id'])
             print(results)
             assert len(results) == 2
             assert any(r["last_name"] == students[0].last_name for r in results)
@@ -199,11 +199,11 @@ def test_get_ratings_with_not_team_and_ratings(flask_app_mock, sample_token, aut
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/rating?assessment_task_id={task.assessment_task_id}&team_id=0&user_id={result['user_id']}",
@@ -233,7 +233,7 @@ def test_get_ratings_raises_exception(flask_app_mock, sample_token, auth_header,
         try:
             result = create_one_admin_course(False)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/rating?user_id={result['user_id']}",
@@ -259,17 +259,17 @@ def test_student_view_feedback_with_team(flask_app_mock, sample_token, auth_head
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
-            team = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
             comp = create_completed_assessment(sample_completed_assessment(
                 None,
                 task.assessment_task_id, 
                 team_id=team.team_id,
                 rating=accurately["3"], 
-                c_by=result["user_id"],
+                c_by=result['user_id'],
                 last_update="2025-11-15T12:00:00"
             ))
             
@@ -280,7 +280,7 @@ def test_student_view_feedback_with_team(flask_app_mock, sample_token, auth_head
                 "feedback_time": "2025-11-22T12:00:00",
             }
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
                 f"/api/rating?team_id={team.team_id}&user_id={result['user_id']}",
@@ -318,16 +318,16 @@ def test_student_view_feedback_with_user(flask_app_mock, sample_token, auth_head
 
         try:
             result = create_one_admin_course(False)
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
             comp = create_completed_assessment(sample_completed_assessment(
                 user[0].user_id,
                 task.assessment_task_id, 
                 rating=accurately["3"], 
-                c_by=result["user_id"],
+                c_by=result['user_id'],
                 last_update="2025-11-15T12:00:00"
             ))
             
@@ -338,7 +338,7 @@ def test_student_view_feedback_with_user(flask_app_mock, sample_token, auth_head
                 "feedback_time": "2025-11-22T12:00:00",
             }
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
                 f"/api/rating?team_id=0&user_id={result['user_id']}",
@@ -376,23 +376,23 @@ def test_student_view_feedback_with_existing_feedback(flask_app_mock, sample_tok
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
-            team = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
             comp = create_completed_assessment(sample_completed_assessment(
                 None,
                 task.assessment_task_id, 
                 team_id=team.team_id,
                 rating=accurately["3"], 
-                c_by=result["user_id"],
+                c_by=result['user_id'],
                 last_update="2025-11-15T12:00:00"
             ))
             
             sample_feedback(comp.completed_assessment_id, team_id=team.team_id)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
                 f"/api/rating?team_id={team.team_id}&user_id={result['user_id']}",
@@ -425,7 +425,7 @@ def test_student_view_feedback_raises_exception(flask_app_mock, sample_token, au
         try:
             result = create_one_admin_course(False)
     
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
                 f"/api/rating?user_id={result['user_id']}",
