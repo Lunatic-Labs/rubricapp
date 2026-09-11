@@ -44,6 +44,8 @@ class User(db.Model):
     owner_id = db.Column(db.Integer, ForeignKey("User.user_id"), nullable=True)
     has_set_password = db.Column(db.Boolean, nullable=False)
     reset_code = db.Column(db.String(256), nullable=True)          # reset_code has been changed from 'text to 'string', and now has a 256 character limit.
+    reset_code_expires_at = db.Column(DateTime(timezone=True), nullable=True)   # When the reset_code stops being accepted. Null means no code is outstanding.
+    password_version = db.Column(db.Integer, nullable=False, server_default='0', default=0)  # Bumped whenever the password changes. Tokens carry the value they were minted under, so older ones stop being accepted.
     is_admin = db.Column(db.Boolean, nullable=False)
     last_update = db.Column(DateTime(timezone=True), nullable=True)
     user_dark_mode = db.Column(db.Boolean, nullable=False, default=False)

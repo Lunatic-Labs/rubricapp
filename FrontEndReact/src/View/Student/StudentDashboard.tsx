@@ -5,7 +5,7 @@ import TAViewTeams from './View/TAViewTeams';
 import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentViewAssessmentTask';
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip , Cell} from 'recharts';
 import { Box, Typography, Button, Alert, CircularProgress } from '@mui/material';
-import { genericResourceGET, parseRubricNames } from '../../utility';
+import { genericResourceGET, unauthenticatedResourcePOST, parseRubricNames } from '../../utility';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks';
 import Loading from '../Loading/Loading';
 import Cookies from 'universal-cookie';
@@ -13,7 +13,6 @@ import { ROLE } from '../../Enums/Role';
 import { AssessmentTask } from '../../types/AssessmentTask';
 import { CompleteAssessmentTask } from '../../types/CompleteAssessmentTask';
 import { Rubric } from '../../types/Rubric';
-const apiUrl = import.meta.env.VITE_API_URL;
 
 // StudentDashboard is used for both students and TAs.
 // StudentDashboard component is a parent component that renders the StudentViewAssessmentTask,
@@ -391,18 +390,15 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             const adminCredentials = JSON.parse(adminCredentialsStr);
 
             try {
-                // Blacklist test student tokens
-                await fetch(`${apiUrl}/api/logout?user_id=${adminCredentials.user.user_id}`, {
-                    method: 'POST',
-                    headers: {
-                        'Authorization': `Bearer ${cookies.get('access_token')}`,
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({ 
+                // Blacklist test student tokens. The helper prepends apiUrl, which already ends
+                // in /api; the hand-built URL here added a second one and always 404'd.
+                await unauthenticatedResourcePOST(
+                    `/logout?user_id=${encodeURIComponent(String(adminCredentials.user.user_id))}`,
+                    JSON.stringify({
                         access_token: cookies.get('access_token'),
                         refresh_token: cookies.get('refresh_token')
                     })
-                });
+                );
             } catch (logoutError) {
                 console.error('Failed to blacklist test student tokens:', logoutError);
             }

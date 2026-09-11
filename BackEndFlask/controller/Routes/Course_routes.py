@@ -5,7 +5,8 @@ from controller.Route_response import create_good_response, create_bad_response
 from flask_jwt_extended import jwt_required, get_jwt_identity, create_access_token, create_refresh_token
 
 from core import db
-from models.user import User
+from models.user import User, get_password_version
+from controller.security.utility import password_version_claims
 from models.user_course import UserCourse, get_user_course
 from models.course import Course, get_course
 
@@ -197,12 +198,11 @@ def generate_secure_password(length=12):
 # Endpooint: get_test_student_token
 # This code creates or retrieves the test student information for a course.
 # Used for: "View as Student" feature.
+@bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
+@jwt_required()
 @bad_token_check()
 @AuthCheck()
 @admin_check()
-# In the get_test_student_token function, change both occurrences of role_id=5 to role_id=6:
-@bp.route('/courses/<int:course_id>/test_student_token', methods=['GET'])
-@jwt_required()
 def get_test_student_token(course_id):
     try:
         admin_id = get_jwt_identity()
@@ -286,8 +286,12 @@ def get_test_student_token(course_id):
         
         # Create tokens (rest of the code remains the same)
         try:
-            access_token = create_access_token(identity=str(test_student.user_id))
-            refresh_token = create_refresh_token(identity=str(test_student.user_id))
+            # Stamped with the test student's password generation, same as any
+            # other token, so the check on authenticated routes accepts them.
+            claims = password_version_claims(get_password_version(test_student.user_id))
+
+            access_token = create_access_token(identity=str(test_student.user_id), additional_claims=claims)
+            refresh_token = create_refresh_token(identity=str(test_student.user_id), additional_claims=claims)
         except Exception as token_error:
             return jsonify({
                 "success": False,

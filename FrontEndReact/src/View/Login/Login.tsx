@@ -5,11 +5,11 @@ import Cookies from 'universal-cookie';
 import AppState from '../Navbar/AppState';
 import SetNewPassword from './SetNewPassword';
 import ValidateReset from './ValidateReset';
-import { apiUrl } from '../../App';
 import { Grid, Button, Link, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import Loading from '../Loading/Loading';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
+import { unauthenticatedResourcePOST } from '../../utility';
 
 /**
  * Creates an instance of the login component.
@@ -144,31 +144,29 @@ class Login extends Component<{}, LoginState> {
                 });
 
             } else {
-                fetch(
-                    apiUrl + "/login",
-                    {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                        },
-                        body: JSON.stringify({
-                            email: email,
-                            password: password,
-                        }),
-                    }
+                // Logging in is what produces the tokens, so there are none to send yet and
+                // this cannot use the genericResource* helpers.
+                unauthenticatedResourcePOST(
+                    "/login",
+                    JSON.stringify({
+                        email: email,
+                        password: password,
+                    })
                 )
-                    .then(res => res.json())
                     .then(
                         (result) => {
-                            if (result["success"]) {
-                                this.cookies.set('access_token', result['headers']['access_token'], { sameSite: 'strict' });
-                                this.cookies.set('refresh_token', result['headers']['refresh_token'], { sameSite: 'strict' });
-                                this.cookies.set('user', result['content']['login'][0], { sameSite: 'strict' });
+                            const tokens = result['headers'];
+                            const user = result['content']?.['login']?.[0];
+
+                            if (result["success"] && tokens && user) {
+                                this.cookies.set('access_token', tokens['access_token'], { sameSite: 'strict' });
+                                this.cookies.set('refresh_token', tokens['refresh_token'], { sameSite: 'strict' });
+                                this.cookies.set('user', user, { sameSite: 'strict' });
 
                                 this.setState(() => ({
                                     isLoaded: true,
                                     loggedIn: true,
-                                    hasSetPassword: result['content']['login'][0]['has_set_password']
+                                    hasSetPassword: user['has_set_password']
                                 }));
 
                             } else {
@@ -178,7 +176,7 @@ class Login extends Component<{}, LoginState> {
 
                                 this.setState(() => ({
                                     isLoaded: true,
-                                    errorMessage: result["message"]
+                                    errorMessage: result["message"] ?? "Unable to log in. Please try again."
                                 }));
                             }
                         },

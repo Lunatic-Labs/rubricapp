@@ -10,30 +10,50 @@ app = Flask(__name__)
 # ----------------------
 # create_tokens tests
 # ----------------------
+# get_password_version is stubbed alongside the token factories: it reads the
+# user's current password generation from the database, and these tests run
+# without one.
+@patch("controller.security.utility.get_password_version", return_value=0)
 @patch("controller.security.utility.create_access_token")
 @patch("controller.security.utility.create_refresh_token")
-def test_create_tokens_new_refresh(mock_refresh, mock_access):
+def test_create_tokens_new_refresh(mock_refresh, mock_access, mock_version):
     mock_access.return_value = "access_token_mock"
     mock_refresh.return_value = "refresh_token_mock"
 
     with app.test_request_context("/?refresh_token="):  # no refresh_token provided
         jwt, refresh = create_new_tokens(123)
-    
+
     assert jwt == "access_token_mock"
     assert refresh == "refresh_token_mock"
     mock_access.assert_called_once()
     mock_refresh.assert_called_once()
 
+@patch("controller.security.utility.get_password_version", return_value=0)
 @patch("controller.security.utility.create_access_token")
-def test_create_tokens_existing_refresh(mock_access):
+def test_create_tokens_existing_refresh(mock_access, mock_version):
     mock_access.return_value = "access_token_mock"
 
     with app.test_request_context("/?refresh_token=existing_refresh"):
         jwt, refresh = create_new_tokens(123)
-    
+
     assert jwt == "access_token_mock"
     assert refresh == "existing_refresh"
     mock_access.assert_called_once()
+
+
+@patch("controller.security.utility.get_password_version", return_value=7)
+@patch("controller.security.utility.create_access_token")
+@patch("controller.security.utility.create_refresh_token")
+def test_create_tokens_stamps_password_version(mock_refresh, mock_access, mock_version):
+    """Both tokens must carry the generation, or a reset cannot retire them."""
+    mock_access.return_value = "access_token_mock"
+    mock_refresh.return_value = "refresh_token_mock"
+
+    with app.test_request_context("/?refresh_token="):
+        create_new_tokens(123)
+
+    assert mock_access.call_args.kwargs["additional_claims"] == {"pv": 7}
+    assert mock_refresh.call_args.kwargs["additional_claims"] == {"pv": 7}
 
 # ----------------------
 # revoke_tokens tests

@@ -1,6 +1,6 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
-import { apiUrl } from '../../App';
+import { unauthenticatedResourcePOST } from '../../utility';
 import { MenuItem, ListItemIcon} from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
 
@@ -22,19 +22,20 @@ class Logout extends Component<LogoutProps> {
         const refreshToken: string|undefined = cookies.get('refresh_token');
         const userId: number|undefined = cookies.get('user')?.['user_id'] ?? undefined;
 
-        fetch(
-            apiUrl + `/logout?user_id=${userId}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    access_token: accessToken,
-                    refresh_token: refreshToken,
-                }),
-            }
-        ).finally(() => {
+        // The backend takes the tokens to blacklist from the body rather than from an
+        // Authorization header, so /logout carries no @jwt_required and this belongs on the
+        // unauthenticated helper. Routing it through genericResourcePOST would also let the
+        // token-refresh machinery fire mid-logout, which is the last thing wanted here.
+        unauthenticatedResourcePOST(
+            `/logout?user_id=${encodeURIComponent(String(userId))}`,
+            JSON.stringify({
+                access_token: accessToken,
+                refresh_token: refreshToken,
+            })
+        ).catch(() => {
+            // A failed blacklist call must not strand the user in a logged-in UI; the local
+            // session is cleared below either way.
+        }).finally(() => {
             cookies.remove('access_token');
             cookies.remove('refresh_token');
             cookies.remove('user');

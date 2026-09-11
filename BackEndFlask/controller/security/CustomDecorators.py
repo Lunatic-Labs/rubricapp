@@ -1,12 +1,13 @@
 from flask import request, current_app
 from functools import wraps
-from .utility  import to_int
+from .utility  import to_int, PASSWORD_VERSION_CLAIM
 from .blacklist import is_token_blacklisted
-from typing     import Callable 
+from typing     import Callable
 from enums.roles import Roles
 from models.queries import is_admin_by_user_id, is_super_admin_by_user_id
+from models.user import get_password_version
 from models.user_course import get_role_from_usercourse_by_userid_courseid
-from flask_jwt_extended import decode_token, get_jwt_identity
+from flask_jwt_extended import decode_token, get_jwt, get_jwt_identity
 from flask_jwt_extended.exceptions import (
     NoAuthorizationError,
     InvalidQueryParamError
@@ -35,9 +36,31 @@ def bad_token_check() -> any:
         @wraps(fn)
         def decorator(*args):
             verify_against_blacklist()
+            verify_token_matches_password_version()
             return current_app.ensure_sync(fn)(*args)
         return decorator
     return wrapper
+
+# Rejects tokens minted before the owner last changed their password.
+#
+# The Redis blacklist can only refuse token strings we were handed back, which
+# covers a deliberate logout. A password reset has to refuse sessions nobody
+# handed us, so every token carries the password generation it was minted under
+# and anything behind the user's current generation is refused here.
+#
+# Raises NoAuthorizationError('Token revoked'), which the frontend already
+# treats as unrecoverable, so the browser clears its cookies and returns to the
+# login screen rather than retrying.
+def verify_token_matches_password_version() -> None:
+    claims = get_jwt()
+    current_version = get_password_version(to_int(claims.get('sub'), 'user_id'))
+
+    # Tokens issued before this claim existed carry no value and belong to
+    # generation 0, which is where users who have never reset a password sit.
+    token_version = claims.get(PASSWORD_VERSION_CLAIM, 0)
+
+    if token_version != current_version:
+        raise NoAuthorizationError('Token revoked')
 
 # Checks if a token obtained from the request headers is present in the blacklist, and raises a NoAuthorizationError exception if it is, otherwise it returns None.
 def verify_against_blacklist() -> any:

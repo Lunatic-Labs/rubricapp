@@ -1,4 +1,13 @@
+import { Component as ReactComponent } from 'react';
+import Cookies from 'universal-cookie';
 import { MAX_PASSWORD_LENGTH } from '../Constants/password';
+import {
+    genericResourcePUT,
+    unauthenticatedResourceGET,
+    unauthenticatedResourcePOST,
+    unauthenticatedResourcePUT,
+    ApiResponse
+} from '../utility';
 
 /**
  * Password strength levels
@@ -211,26 +220,86 @@ export function validatePasswordReset(password: string, confirmationPassword: st
 }
 
 /**
- * Submits a password change request to the backend API
- * @param apiUrl - The base API URL
- * @param email - The user's email address
- * @param password - The new password
+ * Asks the backend to mail a reset code to the given address. First step of the
+ * forgot-password flow, so the caller is logged out and this goes through the
+ * unauthenticated helpers rather than genericResource*.
+ * @param email - The address to send the code to
  * @returns Promise with the API response
  */
-export async function submitPasswordChange(apiUrl: string, email: string, password: string): Promise<any> {
-    const response = await fetch(
-        apiUrl + "/password",
-        {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({
-                email: email,
-                password: password,
-            }),
-        }
+export async function requestPasswordResetCode(email: string): Promise<ApiResponse> {
+    return await unauthenticatedResourceGET(
+        `/reset_code?email=${encodeURIComponent(email)}`
+    );
+}
+
+/**
+ * Checks a reset code the user typed in against the one the backend mailed them. Second step
+ * of the forgot-password flow. The backend takes both arguments from the query string here,
+ * so there is no request body.
+ * @param email - The address the code was sent to
+ * @param code - The six-digit code the user entered
+ * @returns Promise with the API response
+ */
+export async function validatePasswordResetCode(email: string, code: string): Promise<ApiResponse> {
+    return await unauthenticatedResourcePOST(
+        `/reset_code?email=${encodeURIComponent(email)}&code=${encodeURIComponent(code)}`
+    );
+}
+
+/**
+ * Submits a forgot-password reset request to the backend API. Final step of the flow, so the
+ * caller is still logged out; the reset code validated in the previous step is what authorizes
+ * the change.
+ * @param email - The user's email address
+ * @param password - The new password
+ * @param code - The reset code sent to the user's email and confirmed in the previous step
+ * @returns Promise with the API response
+ */
+export async function submitPasswordChange(email: string, password: string, code: string): Promise<ApiResponse> {
+    return await unauthenticatedResourcePUT(
+        "/password",
+        JSON.stringify({
+            email: email,
+            password: password,
+            code: code,
+        })
+    );
+}
+
+/**
+ * Submits an authenticated password change for an already-logged-in user (e.g. first-login
+ * password setup, or a user changing their password from account settings) — no reset code
+ * involved, identity comes from the JWT. Routed through genericResourcePUT so an expired
+ * access token gets silently refreshed and the request retried, same as other authenticated
+ * calls in the app.
+ *
+ * Changing a password invalidates every token issued for the account beforehand, including the
+ * pair this caller is holding. The backend therefore returns a replacement pair, which is stored
+ * here so the session survives the change. Without this the next authenticated request would be
+ * refused and the user would be bounced to the login screen.
+ *
+ * @param component - The calling component (its access/refresh token cookies are used, and
+ * its setState is called on a hard auth failure)
+ * @param password - The new password
+ * @returns Promise with the API response, or undefined when the helper hits an unrecoverable
+ * auth failure and reloads the page
+ */
+export async function submitAuthenticatedPasswordChange(component: ReactComponent<any, any>, password: string): Promise<ApiResponse | undefined> {
+    const result: ApiResponse | undefined = await genericResourcePUT(
+        "/password/change",
+        component,
+        JSON.stringify({ password }),
+        { rawResponse: true }
     );
 
-    return await response.json();
+    const tokens = result?.headers;
+
+    if (result?.success && tokens?.['access_token'] && tokens?.['refresh_token']) {
+        const cookies = new Cookies();
+
+        cookies.set('access_token', tokens['access_token'], { sameSite: 'strict' });
+        cookies.set('refresh_token', tokens['refresh_token'], { sameSite: 'strict' });
+    }
+
+    return result;
 }
