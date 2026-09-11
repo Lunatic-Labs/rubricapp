@@ -28,6 +28,10 @@ class Settings extends Component<SettingsProps, SettingsState> {
   }
 
   componentDidMount() {
+    // AppState now owns fetching/holding the user's dark mode preference
+    // (see SKIL-800) and passes it down as props.navbar.state.darkMode,
+    // which the constructor above already seeded this.state.darkMode from —
+    // no independent fetch needed here anymore.
     if (this.state.darkMode) {
       document.body.classList.add("mode");
     } else {
@@ -71,20 +75,26 @@ class Settings extends Component<SettingsProps, SettingsState> {
       .then((result) => {
         if (result !== undefined && result.errorMessage === null) {
           this.setState({ darkMode: newDarkMode });
+          // Keep AppState's copy of darkMode in sync since it's now the
+          // shared source of truth other components read from (SKIL-800).
           if (this.props.navbar?.setState) {
             this.props.navbar.setState({ darkMode: newDarkMode });
           }
-        }
-      })
-      .catch((error) => {
-        console.error("Error updating dark mode:", error);
-        this.setState({ darkMode: !newDarkMode });
-        if (!newDarkMode) {
-          document.body.classList.add("mode");
         } else {
-          document.body.classList.remove("mode");
+          // Network failures now resolve through this same branch (instead of
+          // rejecting) with an errorMessage set, so this covers both server
+          // and network errors — revert the optimistic update.
+          console.error("Error updating dark mode:", result?.errorMessage);
+          this.setState({ darkMode: !newDarkMode });
+          if (!newDarkMode) {
+            document.body.classList.add("mode");
+          } else {
+            document.body.classList.remove("mode");
+          }
         }
       });
+      // No .catch() needed: genericResourcePUT resolves (never rejects) on
+      // both network and server failures — see utility.ts.
   };
 
   render() {
