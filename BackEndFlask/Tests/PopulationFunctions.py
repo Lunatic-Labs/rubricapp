@@ -110,9 +110,9 @@ def create_one_admin_course(use_tas):
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_course(result):
-    user = delete_user(result["user_id"])
-    course = delete_course(result["course_id"])
-    user_course = delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    user = delete_user(result['user_id'])
+    course = delete_course(result['course_id'])
+    user_course = delete_user_course_by_user_id_course_id(result['user_id'], result['course_id'])
 
 # delete_all_users_user_courses()
 #   - takes one parameter:
@@ -281,17 +281,17 @@ def create_two_admin_two_ta_student_course(use_tas=True, skip_ta_unenroll=False,
 #       - unless an error occurs
 #           - returns the error message
 def delete_one_admin_ta_student_course(result, use_tas=True):
-    delete_user(result["user_id"])
+    delete_user(result['user_id'])
     if use_tas:
-        delete_user(result["observer_id"])
+        delete_user(result['observer_id'])
 
-    delete_user(result["admin_id"])
-    delete_course(result["course_id"])
+    delete_user(result['admin_id'])
+    delete_course(result['course_id'])
     
-    delete_user_course_by_user_id_course_id(result["user_id"], result["course_id"])
+    delete_user_course_by_user_id_course_id(result['user_id'], result['course_id'])
     
     if use_tas:
-        delete_user_course_by_user_id_course_id(result["observer_id"], result["course_id"])
+        delete_user_course_by_user_id_course_id(result['observer_id'], result['course_id'])
 
 # create_users()
 #   - takes four parameters:
@@ -383,15 +383,15 @@ def user_is_only_assigned_to_teams(user, teams):
     return is_assigned
 
 def delete_test_data(result):
-    test_users = get_users_by_owner_id(result["user_id"])
-    test_teams = get_team_by_course_id(result["course_id"])
+    test_users = get_users_by_owner_id(result['user_id'])
+    test_teams = get_team_by_course_id(result['course_id'])
     for team in test_teams:
         team_users = get_team_users_by_team_id(team.team_id)
         for team_user in team_users:
             delete_team_user(team_user.team_user_id)
         delete_team(team.team_id)
     for user in test_users:
-        user_course = get_user_course_by_user_id_and_course_id(user.user_id, result["course_id"])
+        user_course = get_user_course_by_user_id_and_course_id(user.user_id, result['course_id'])
         if user_course is not None:
             delete_user_course(user_course.user_course_id)
         delete_user(user.user_id)
