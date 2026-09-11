@@ -37,7 +37,7 @@ test("ReportTabs.test.tsx Test 3: clicking the Export Graph Comparison tab shoul
 });
 
 test("ReportTabs.test.tsx Test 4: should initialize the selected tab index from the activeTab prop", () => {
-    render(<TabManager navbar={makeNavbar()} activeTab="Teams" setTab={jest.fn()} />);
+    render(<TabManager navbar={makeNavbar()} activeTab="Ratings and Feedback" setTab={jest.fn()} />);
 
     expect(screen.getByLabelText("ratingAndFeedbackTab")).toHaveAttribute("aria-selected", "true");
 });
