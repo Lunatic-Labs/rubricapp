@@ -2,8 +2,9 @@ from flask import request, current_app
 from functools import wraps
 from .utility  import to_int
 from .blacklist import is_token_blacklisted
-from typing     import Callable 
+from typing     import Callable
 from enums.roles import Roles
+from models.logger import logger
 from models.queries import is_admin_by_user_id, is_super_admin_by_user_id
 from models.user_course import get_role_from_usercourse_by_userid_courseid
 from flask_jwt_extended import decode_token, get_jwt_identity
@@ -48,12 +49,14 @@ def verify_against_blacklist() -> any:
             redis_feature = True
             raise NoAuthorizationError('BlackListed')
     except Exception as e:
+        logger.warning(f"Blacklist check denied request: user_id={request.args.get('user_id')}, path={request.path}, reason={e}")
         course_redis_out(e)
         course_redis_out("\nI am: Verify_against_blacklist.")
         course_redis_out("\nI failed a to connect to a redis instance for tokens.\n")
         course_redis_out(redis_feature)
         course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
         raise e
+    logger.info(f"Blacklist check passed: user_id={request.args.get('user_id')}, path={request.path}")
     return
 
 # Another decorator to verify the user_id is also the same in the token
@@ -69,11 +72,14 @@ def AuthCheck(refresh: bool = False):
 # Another decorator that checks if the user_id from the request matches the decoded id from the token, and raises an exception if they don't match.
 def verify_token(refresh: bool):
     id = request.args.get("user_id")
-    if not id: raise InvalidQueryParamError("Missing user_id")
+    if not id:
+        logger.warning(f"AuthCheck denied: missing user_id query param, path={request.path}")
+        raise InvalidQueryParamError("Missing user_id")
     token = request.headers.get('Authorization').split()[1]
     try:
         decoded_id = int(decode_token(token)['sub'])
     except Exception as e:
+        logger.warning(f"AuthCheck denied: could not decode token, path={request.path}, reason={e}")
         course_redis_out(e)
         course_redis_out("\nI am: verify_token")
         course_redis_out("\nI failed to decode the token and see if it was valid\n")
@@ -81,7 +87,10 @@ def verify_token(refresh: bool):
         course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
         raise NoAuthorizationError("No Authorization")
     id = to_int(id, "user_id")
-    if id == decoded_id : return
+    if id == decoded_id:
+        logger.info(f"AuthCheck passed: user_id={id}, path={request.path}")
+        return
+    logger.warning(f"AuthCheck denied: user_id mismatch, claimed={id}, token_identity={decoded_id}, path={request.path}")
     course_redis_out("\n I am: verify_token")
     course_redis_out("\nI do not match the id recived to the token id.\n")
     course_redis_out(f"ID mismatch: {id} vs {decoded_id}")
@@ -120,13 +129,18 @@ def verify_admin(refresh: bool) -> None:
             course_redis_out("\nI saw the user was not an admin in the db\n")
             course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
+        logger.info(f"admin_check passed: user_id={decoded_id}, path={request.path}")
+    except NoAuthorizationError:
+        logger.warning(f"admin_check denied: user_id={decoded_id}, reason=not an admin, path={request.path}")
+        raise
     except Exception as e:
+        logger.warning(f"admin_check denied: path={request.path}, reason={e}")
         course_redis_out(e)
         course_redis_out("\nI am: verify_admin")
         course_redis_out("\nIf the other inner function is not present then i failed to decode.")
         course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
         raise NoAuthorizationError("No Authorization")
-    
+
 def privilege_check(desired_privilege_level: list[Roles], refresh: bool = False) -> Callable:
     """
     Description:
@@ -163,7 +177,13 @@ def sufficent_privilege(desired_privilege_level: list[Roles], refresh: bool) -> 
             course_redis_out("\nI saw the user was not of appropriate auth in the db\n")
             course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
+        logger.info(f"privilege_check passed: user_id={decoded_id}, course_id={course_id}, role={course_role}, path={request.path}")
+    except NoAuthorizationError:
+        required = [r.name for r in desired_privilege_level]
+        logger.warning(f"privilege_check denied: user_id={decoded_id}, course_id={course_id}, role={course_role}, required={required}, path={request.path}")
+        raise
     except Exception as e:
+        logger.warning(f"privilege_check denied: path={request.path}, reason={e}")
         course_redis_out(e)
         course_redis_out("\nI am: verify_admin")
         course_redis_out("\nIf the other inner function is not present then i failed to decode.")
@@ -203,9 +223,12 @@ def verify_super_admin(refresh: bool) -> None:
             course_redis_out("\nI saw the user was not the super admin\n")
             course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
+        logger.info(f"super_admin_check passed: user_id={decoded_id}, path={request.path}")
     except NoAuthorizationError:
+        logger.warning(f"super_admin_check denied: user_id={decoded_id}, reason=not the super admin, path={request.path}")
         raise
     except Exception as e:
+        logger.warning(f"super_admin_check denied: path={request.path}, reason={e}")
         course_redis_out(e)
         course_redis_out("\nI am: verify_super_admin")
         course_redis_out("\nI failed to get the JWT identity.\n")

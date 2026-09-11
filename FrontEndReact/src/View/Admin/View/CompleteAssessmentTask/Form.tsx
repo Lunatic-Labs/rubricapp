@@ -7,6 +7,7 @@ import Tabs, { tabsClasses } from '@mui/material/Tabs';
 import UnitOfAssessmentTab from './UnitOfAssessmentTab';
 import StatusIndicator, { StatusIndicatorState } from './StatusIndicator';
 import { genericResourcePOST, genericResourcePUT, debounce } from '../../../../utility';
+import { logger } from '../../../../logger';
 import Cookies from 'universal-cookie';
 import Alert from '@mui/material/Alert';
 import { getUnitCategoryStatus } from './cat_utils';
@@ -308,7 +309,7 @@ class Form extends Component<FormProps, FormState> {
                     );
                 }
             }).catch(error => {
-                console.error('Error:', error);
+                logger.error('Error:', error);
             });
             
             setTimeout(() => {

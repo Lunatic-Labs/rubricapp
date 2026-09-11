@@ -3,6 +3,7 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import Button from "@mui/material/Button";
 import { genericResourcePOST } from "../../../../utility";
+import { logger } from "../../../../logger";
 import { Rubric } from '../../../../types/Rubric';
 
 interface ViewAssessmentTaskInstructionsProps {
@@ -69,7 +70,7 @@ class ViewAssessmentTaskInstructions extends Component<
             const completedAssessmentId = completedAssessment?.completed_assessment_id;
 
             if (!completedAssessmentId) {
-                console.error("Completed assessment ID not found");
+                logger.error("Completed assessment ID not found");
                 navbar?.setNewTab("ViewStudentCompleteAssessmentTask");
                 return;
             }
@@ -88,7 +89,7 @@ class ViewAssessmentTaskInstructions extends Component<
                 })
             );
         } catch (error) {
-            console.error("Error recording feedback view:", error);
+            logger.error("Error recording feedback view:", error);
         }
 
         navbar?.setNewTab("ViewStudentCompleteAssessmentTask");
