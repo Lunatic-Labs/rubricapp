@@ -10,19 +10,19 @@ interface TabManagerProps {
 }
 
 interface ReportTab {
+    // Doubles as the activeTab value: AdminReportTabs stores the label it was last
+    // handed, and picks which report to show by comparing against these same strings.
     label: string;
     ariaLabel: string;
-    // The activeTab value that selects this tab when the reporting view opens.
-    selectedBy: string;
     // Ratings and Feedback is scoped to a single course, which a super admin has
     // no place inside; admins and instructors keep it.
     hideFromSuperAdmin?: boolean;
 }
 
 const REPORT_TABS: ReportTab[] = [
-    { label: "Assessment Status", ariaLabel: "assessmentStatusTab", selectedBy: "Users" },
-    { label: "Ratings and Feedback", ariaLabel: "ratingAndFeedbackTab", selectedBy: "Teams", hideFromSuperAdmin: true },
-    { label: "Export Graph Comparison", ariaLabel: "exportGraphComparisonTab", selectedBy: "AssessmentTasks" },
+    { label: "Assessment Status", ariaLabel: "assessmentStatusTab" },
+    { label: "Ratings and Feedback", ariaLabel: "ratingAndFeedbackTab", hideFromSuperAdmin: true },
+    { label: "Export Graph Comparison", ariaLabel: "exportGraphComparisonTab" },
 ];
 
 export default function TabManager(props: TabManagerProps) {
@@ -34,9 +34,9 @@ export default function TabManager(props: TabManagerProps) {
 
   // Derived from the visible tabs rather than a fixed position, so hiding one does
   // not leave the selection pointing at its neighbour or past the end of the list.
-  // An activeTab with no tab of its own falls back to the first, which is also what
+  // An activeTab naming no visible tab falls back to the first, which is also what
   // a super admin gets for the tab they cannot see.
-  const idTab = Math.max(0, visibleTabs.findIndex(tab => tab.selectedBy === props.activeTab));
+  const idTab = Math.max(0, visibleTabs.findIndex(tab => tab.label === props.activeTab));
 
   const [value, setValue] = React.useState(idTab);
 
