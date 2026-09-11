@@ -62,7 +62,7 @@ test("ReportTabs.test.tsx Test 7: should keep Export Graph Comparison selectable
     // Removing a tab shifts the ones after it. Selecting by position rather than by
     // tab would land a super admin on the wrong one here.
     const setTab = jest.fn();
-    render(<TabManager navbar={makeNavbar(true)} activeTab="AssessmentTasks" setTab={setTab} />);
+    render(<TabManager navbar={makeNavbar(true)} activeTab="Export Graph Comparison" setTab={setTab} />);
 
     expect(screen.getByLabelText("exportGraphComparisonTab")).toHaveAttribute("aria-selected", "true");
 
@@ -72,7 +72,16 @@ test("ReportTabs.test.tsx Test 7: should keep Export Graph Comparison selectable
 });
 
 test("ReportTabs.test.tsx Test 8: should fall back to the first tab when a super admin arrives on the hidden one", () => {
-    render(<TabManager navbar={makeNavbar(true)} activeTab="Teams" setTab={jest.fn()} />);
+    render(<TabManager navbar={makeNavbar(true)} activeTab="Ratings and Feedback" setTab={jest.fn()} />);
+
+    expect(screen.getByLabelText("assessmentStatusTab")).toHaveAttribute("aria-selected", "true");
+});
+
+test("ReportTabs.test.tsx Test 9: should fall back to the first tab when activeTab names no tab", () => {
+    // Guards the lookup itself. Matching used to be against a separate set of
+    // strings that nothing ever passed, so every view silently opened on the first
+    // tab; a miss now means a genuinely unknown value, not a routine one.
+    render(<TabManager navbar={makeNavbar()} activeTab="Improvement" setTab={jest.fn()} />);
 
     expect(screen.getByLabelText("assessmentStatusTab")).toHaveAttribute("aria-selected", "true");
 });
