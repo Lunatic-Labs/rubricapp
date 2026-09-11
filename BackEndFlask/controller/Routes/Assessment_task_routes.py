@@ -396,10 +396,11 @@ def verify_team_password():
         else:
             return create_bad_response ("Incorrect password.",
                                          "assessment_tasks", 400)
-    except Exception as e:
+    except Exception:
         return create_bad_response(
-            f"An error occurred verifying the team password: {e}",
-             "assessment_tasks", 400
+            "Unexpected error verifying the team password.",
+            "assessment_tasks",
+            500,
         )
 
 
