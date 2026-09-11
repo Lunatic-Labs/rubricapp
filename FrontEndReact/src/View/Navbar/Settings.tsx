@@ -2,8 +2,7 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Box, Typography, Switch, FormControlLabel } from "@mui/material";
 import Cookies from "universal-cookie";
-import { genericResourcePUT, genericResourceGET } from "../../utility";
-import Loading from "../Loading/Loading";
+import { genericResourcePUT, genericResourceGET, User } from "../../utility";
 import { logger } from "../../logger";
 
 // 'mode' refers to the darkmode classlist in the SBStyles.css, by adding 'mode' to the
@@ -14,6 +13,8 @@ import { logger } from "../../logger";
 
 interface SettingsState {
   darkMode: boolean;
+  isLoaded?: boolean;
+  user?: any;
 }
 
 interface SettingsProps {
@@ -40,7 +41,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
       
       if (user !== null) {
         let promise: Promise<any>; // promise is used because we do not yet have the 'data' from the backend
-        let userData: UserData; // promise tells the app that it will recieve data
+        let userData: User; // promise tells the app that it will recieve data
 
         // get all the neccessary resources from the backend, the 'user' from the 'users' array.
         promise = genericResourceGET(`/user`, "users", this);
