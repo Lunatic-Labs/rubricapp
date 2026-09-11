@@ -300,11 +300,11 @@ def test_delete_user_with_completed_assessment_fails(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id, c_by=user[0].user_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id, c_by=user[0].user_id)
             comp = create_completed_assessment(data)
 
             with pytest.raises(ValueError, match="associated tasks"):

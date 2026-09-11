@@ -20,10 +20,10 @@ def test_create_completed_assessment(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
             assert comp.completed_assessment_id is not None
@@ -47,12 +47,12 @@ def test_get_completed_assessments(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            users = create_users(result["course_id"], result["user_id"], 5)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            users = create_users(result['course_id'], result['user_id'], 5)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
             for i in range(1, 14):
-                payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+                payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
                 task = create_assessment_task(payload)
-            team = sample_team("Team Alpha", result["user_id"], result["course_id"], task.assessment_task_id) 
+            team = sample_team("Team Alpha", result['user_id'], result['course_id'], task.assessment_task_id) 
             load_demo_completed_assessment()
 
             all_comps = get_completed_assessments()
@@ -79,15 +79,15 @@ def test_get_completed_assessment_valid(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
             results = get_completed_assessment(comp.completed_assessment_id)
             assert results.completed_assessment_id == comp.completed_assessment_id
-            assert results.user_id == result["user_id"]
+            assert results.user_id == result['user_id']
         
         finally:
             # Clean up
@@ -113,16 +113,16 @@ def test_get_completed_assessment_by_course_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
-            results = get_completed_assessment_by_course_id(result["course_id"])
+            results = get_completed_assessment_by_course_id(result['course_id'])
             assert len(results) == 1
             assert any(r.completed_assessment_id == comp.completed_assessment_id for r in results)
-            assert any(r.user_id == result["user_id"] for r in results)
+            assert any(r.user_id == result['user_id'] for r in results)
         
         finally:
             # Clean up
@@ -141,15 +141,15 @@ def test_get_completed_assessment_by_count(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            users = create_users(result["course_id"], result["user_id"], 3)
+            users = create_users(result['course_id'], result['user_id'], 3)
             user_id = []
             for user in users:
                 user_id.append(user.user_id)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id, c_by=result["user_id"])
-            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id, c_by=result["user_id"])
+            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id, c_by=result['user_id'])
+            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id, c_by=result['user_id'])
             comp1 = create_completed_assessment(data1)
             comp2 = create_completed_assessment(data2)
 
@@ -177,15 +177,15 @@ def test_get_completed_assessments_by_task_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            users = create_users(result["course_id"], result["user_id"], 3)
+            users = create_users(result['course_id'], result['user_id'], 3)
             user_id = []
             for user in users:
                 user_id.append(user.user_id)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id, c_by=result["user_id"])
-            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id, c_by=result["user_id"])
+            data1 = sample_completed_assessment(user_id[0], task.assessment_task_id, c_by=result['user_id'])
+            data2 = sample_completed_assessment(user_id[1], task.assessment_task_id, c_by=result['user_id'])
             comp1 = create_completed_assessment(data1)
             comp2 = create_completed_assessment(data2)
 
@@ -193,7 +193,7 @@ def test_get_completed_assessments_by_task_id(flask_app_mock):
             assert all(r.assessment_task_id == comp1.assessment_task_id for r in results)
             assert any(r.user_id == user_id[0] for r in results)
             assert any(r.user_id == user_id[1] for r in results)
-            assert all(r.completed_by == result["user_id"] for r in results)
+            assert all(r.completed_by == result['user_id'] for r in results)
             assert len(results) == 2
 
         finally:
@@ -216,17 +216,17 @@ def test_completed_assessment_exists(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            team = sample_team("Team Omega", result["user_id"], result["course_id"], task.assessment_task_id)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id, team.team_id)
+            team = sample_team("Team Omega", result['user_id'], result['course_id'], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id, team.team_id)
             comp = create_completed_assessment(data)
 
-            results1 = completed_assessment_exists(None, task.assessment_task_id, result["user_id"])
+            results1 = completed_assessment_exists(None, task.assessment_task_id, result['user_id'])
             results2 = completed_assessment_exists(team.team_id, task.assessment_task_id, -1)
             assert results1.completed_assessment_id == comp.completed_assessment_id
-            assert results1.user_id == result["user_id"]
+            assert results1.user_id == result['user_id']
             assert results2.completed_assessment_id == comp.completed_assessment_id
 
         finally:
@@ -247,18 +247,18 @@ def test_completed_assessment_team_or_user_exists(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            team = sample_team("Team Alpha", result["user_id"], result["course_id"], task.assessment_task_id) 
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id, team.team_id)
+            team = sample_team("Team Alpha", result['user_id'], result['course_id'], task.assessment_task_id) 
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id, team.team_id)
             comp = create_completed_assessment(data)
             results1 = completed_assessment_team_or_user_exists(team.team_id)
-            results2 = completed_assessment_team_or_user_exists(None, result["user_id"])
+            results2 = completed_assessment_team_or_user_exists(None, result['user_id'])
             results3 = completed_assessment_team_or_user_exists()
 
             assert any(r.completed_assessment_id == comp.completed_assessment_id for r in results1)
-            assert any(r.user_id == result["user_id"] for r in results2)
+            assert any(r.user_id == result['user_id'] for r in results2)
             assert any(r.team_id == team.team_id for r in results1)
             assert len(results3) == 0
 
@@ -306,10 +306,10 @@ def test_delete_completed_assessment_tasks_sqlalchemy_error(flask_app_mock):
         
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
             
             db.session.add(comp)
@@ -340,10 +340,10 @@ def test_toggle_lock_status(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
             original = comp.locked
@@ -368,10 +368,10 @@ def test_make_complete_assessment_locked_and_unlocked(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
             locked = make_complete_assessment_locked(comp.completed_assessment_id)
@@ -398,10 +398,10 @@ def test_delete_completed_assessment_tasks(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
             results = delete_completed_assessment_tasks(comp.completed_assessment_id)
@@ -427,19 +427,19 @@ def test_replace_completed_assessment(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
-            payload2 = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload2 = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             payload2["assessment_task_name"] = "Updated Task Name"
             task2 = create_assessment_task(payload2)
             new_data = {
                 "assessment_task_id": task2.assessment_task_id,
                 "team_id": None,
-                "user_id": result["user_id"],
+                "user_id": result['user_id'],
                 "rating_observable_characteristics_suggestions_data": {"Updated": {}},
                 "done": False
             }
@@ -448,7 +448,7 @@ def test_replace_completed_assessment(flask_app_mock):
             assert replaced.done is False
             assert "Updated" in replaced.rating_observable_characteristics_suggestions_data
             assert replaced.assessment_task_id == task2.assessment_task_id
-            assert replaced.user_id == result["user_id"]
+            assert replaced.user_id == result['user_id']
             assert replaced.team_id is None
 
         finally:
@@ -469,23 +469,23 @@ def test_get_completed_assessment_by_user_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp1 = create_completed_assessment(sample_completed_assessment(
                 users[0].user_id, 
                 task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 users[1].user_id, 
                 task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
 
-            results = get_completed_assessment_by_user_id(result["course_id"], users[0].user_id)
+            results = get_completed_assessment_by_user_id(result['course_id'], users[0].user_id)
             assert len(results) == 1
             assert all(r.completed_assessment_id == comp1.completed_assessment_id for r in results)
             assert all(r.user_id == users[0].user_id for r in results)
@@ -510,14 +510,14 @@ def test_get_completed_assessment_by_ta_user_id(flask_app_mock):
 
         try:
             result = create_one_admin_ta_student_course()
-            user = get_users_by_course_id_and_role_id(result["course_id"], 4)
+            user = get_users_by_course_id_and_role_id(result['course_id'], 4)
             rubric = sample_rubric(user[0].user_id, "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             data = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
 
-            results = get_completed_assessments_for_tas_by_course_id(result["course_id"])
+            results = get_completed_assessments_for_tas_by_course_id(result['course_id'])
             assert all(r.completed_assessment_id == comp.completed_assessment_id for r in results)
             assert all(r.user_id == user[0].user_id for r in results)
 
@@ -539,10 +539,10 @@ def test_get_completed_assessment_with_user_name(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
             results = get_completed_assessment_with_user_name(comp.assessment_task_id)
@@ -566,16 +566,16 @@ def test_get_completed_assessment_with_team_name(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            team = sample_team("Team Alpha", result["user_id"], result["course_id"], task.assessment_task_id) 
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id, team.team_id)
+            team = sample_team("Team Alpha", result['user_id'], result['course_id'], task.assessment_task_id) 
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id, team.team_id)
             comp = create_completed_assessment(data)
 
             results = get_completed_assessment_with_team_name(comp.assessment_task_id)
             assert results[0].team_name == "Team Alpha"
-            assert results[0].completed_by == result["user_id"]
+            assert results[0].completed_by == result['user_id']
 
         finally:
             # Clean up
@@ -595,15 +595,15 @@ def test_get_course_total_students(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            users = create_users(result["course_id"], result["user_id"], number_of_users=5)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=5)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
 
             task = create_assessment_task(payload)
             data = sample_completed_assessment(users[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
 
-            assert get_course_total_students(result["course_id"], task.assessment_task_id) == 4
+            assert get_course_total_students(result['course_id'], task.assessment_task_id) == 4
         
         finally:
             # Clean up
@@ -624,15 +624,15 @@ def test_get_individual_ratings(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            data1 = sample_completed_assessment(users[0].user_id, task.assessment_task_id,c_by=result["user_id"])
+            data1 = sample_completed_assessment(users[0].user_id, task.assessment_task_id,c_by=result['user_id'])
             comp1 = create_completed_assessment(data1)
 
-            data2 = sample_completed_assessment(users[1].user_id, task.assessment_task_id, rating=completely["3"],c_by=result["user_id"])
+            data2 = sample_completed_assessment(users[1].user_id, task.assessment_task_id, rating=completely["3"],c_by=result['user_id'])
             comp2 = create_completed_assessment(data2)
 
             results = get_individual_ratings(task.assessment_task_id)
@@ -660,21 +660,21 @@ def test_get_students_for_emailing(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            users = create_users(result["course_id"], result["user_id"], number_of_users=6)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=6)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            team = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
 
             for i in range(2):
                 sample_team_user(team.team_id, users[i].user_id)
             
             data = []
-            data.append(sample_completed_assessment(users[0].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result["user_id"]))
-            data.append(sample_completed_assessment(users[1].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result["user_id"]))
-            data.append(sample_completed_assessment(users[2].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["0"], c_by=result["user_id"]))
-            data.append(sample_completed_assessment(users[3].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result["user_id"]))
-            data.append(sample_completed_assessment(users[4].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["5"], c_by=result["user_id"]))
+            data.append(sample_completed_assessment(users[0].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result['user_id']))
+            data.append(sample_completed_assessment(users[1].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result['user_id']))
+            data.append(sample_completed_assessment(users[2].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["0"], c_by=result['user_id']))
+            data.append(sample_completed_assessment(users[3].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result['user_id']))
+            data.append(sample_completed_assessment(users[4].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["5"], c_by=result['user_id']))
 
             comp = []
             for i in range(5):

@@ -50,15 +50,15 @@ def test_create_feedback(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
-            fb = sample_feedback(comp.completed_assessment_id, result["user_id"])
+            fb = sample_feedback(comp.completed_assessment_id, result['user_id'])
             assert fb.feedback_id is not None
-            assert fb.user_id == result["user_id"]
+            assert fb.user_id == result['user_id']
             assert isinstance(fb.feedback_time, datetime)
 
             # Confirm exists in DB
@@ -70,7 +70,7 @@ def test_create_feedback(flask_app_mock):
             # Clean up
             if result:
                 try:
-                    delete_feedback_by_user_id_completed_assessment_id(result["user_id"], comp.completed_assessment_id)
+                    delete_feedback_by_user_id_completed_assessment_id(result['user_id'], comp.completed_assessment_id)
                     delete_completed_assessment_tasks(comp.completed_assessment_id)
                     delete_one_admin_course(result)
                     delete_assessment_task(task.assessment_task_id)
@@ -87,11 +87,11 @@ def test_get_feedback_returns_all(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            users = create_users(result["course_id"], result["user_id"], number_of_users=5)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            users = create_users(result['course_id'], result['user_id'], number_of_users=5)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            team = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
 
             fb = []
             for i in range(4):
@@ -127,13 +127,13 @@ def test_get_feedback_by_completed_assessment_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_completed_assessment(result["user_id"], task.assessment_task_id)
+            data = sample_completed_assessment(result['user_id'], task.assessment_task_id)
             comp = create_completed_assessment(data)
 
-            fb = sample_feedback(comp.completed_assessment_id, result["user_id"])
+            fb = sample_feedback(comp.completed_assessment_id, result['user_id'])
             results = get_feedback_by_completed_assessment_id(comp.completed_assessment_id)
             assert len(results) == 1
             assert results[0].feedback_id == fb.feedback_id
@@ -142,7 +142,7 @@ def test_get_feedback_by_completed_assessment_id(flask_app_mock):
             # Clean up
             if result:
                 try:
-                    delete_feedback_by_user_id_completed_assessment_id(result["user_id"], comp.completed_assessment_id)
+                    delete_feedback_by_user_id_completed_assessment_id(result['user_id'], comp.completed_assessment_id)
                     delete_completed_assessment_tasks(comp.completed_assessment_id)
                     delete_one_admin_course(result)
                     delete_assessment_task(task.assessment_task_id)
@@ -157,9 +157,9 @@ def test_get_feedback_by_user_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             data = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
@@ -189,9 +189,9 @@ def test_get_feedback_by_user_id_and_completed_assessment_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             data = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
@@ -222,9 +222,9 @@ def test_get_feedback_per_id_valid(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             data = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
@@ -260,9 +260,9 @@ def test_check_feedback_exists(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             data = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
@@ -293,9 +293,9 @@ def test_replace_feedback_updates_record(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             data1 = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
@@ -350,9 +350,9 @@ def test_delete_feedback_by_user_id_completed_assessment_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             data = sample_completed_assessment(user[0].user_id, task.assessment_task_id)
             comp = create_completed_assessment(data)
@@ -383,7 +383,7 @@ def test_load_demo_feedback(flask_app_mock):
             result = create_one_admin_course(True)
             load_demo_ta_instructor()
             load_demo_user_course_ta_instructor()
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
             payload = build_sample_task_payload(1, rubric.rubric_id, role_id=4)
             task = create_assessment_task(payload)
             data = sample_completed_assessment(3, task.assessment_task_id)
