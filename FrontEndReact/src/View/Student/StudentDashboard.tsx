@@ -520,7 +520,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                                 variant="body1"
                                 sx={{
                                     fontWeight: 'bold',
-                                    color: 'var(--card-text)'
+                                    color: '#2196f3'
                                 }}
                             >
                                 Viewing as Test Student
@@ -528,7 +528,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                             <Typography
                                 variant="body2"
                                 sx={{
-                                    color: '#2196f3'
+                                    color: 'var(--card-text)'
                                 }}
                             >
                                 ID: {user.user_id} | Email: {user.email}
