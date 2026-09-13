@@ -466,10 +466,8 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const innerGridStyle = {
           borderRadius: '1px',
           height: '100%',
-          border: "#7F7F7F", 
           padding: 0,
-          margin: 0,
-          boxShadow: "0.3em 0.3em 1em #d6d6d6"
+          margin: 0
         };
 
         const innerDivClassName = 'd-flex flex-column p-3 w-100 justify-content-center align-items-center';
@@ -478,32 +476,33 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             <>
                 {/* Switch Back Alert - Only shows when viewing as test student */}
                 {isViewingAsStudent && (
-                    <Alert 
+                    <Alert
                         severity="info"
-                        sx={{ 
+                        sx={{
                             mb: 3,
                             mx: 2,
                             alignItems: 'center',
-                            backgroundColor: '#e3f2fd',  // Light blue background
+                            backgroundColor: 'var(--card-bg)',
+                            border: '1px solid var(--border-color)',
                             '& .MuiAlert-icon': {
                                 color: '#2196f3'  // Blue icon
                             }
                         }}
                         action={
-                            <Button 
+                            <Button
                                 color="primary"
                                 size="small"
                                 variant="outlined"
                                 disabled={isSwitchingBack}  // Disable during switch
                                 onClick={this.handleSwitchBack}
                                 startIcon={isSwitchingBack ? <CircularProgress size={16} color="inherit" /> : null}
-                                sx={{ 
+                                sx={{
                                     fontWeight: 'bold',
                                     borderColor: '#2196f3',  // Blue border
                                     color: '#2196f3',  // Blue text
-                                    backgroundColor: 'white',
+                                    backgroundColor: 'var(--card-bg)',
                                     '&:hover': {
-                                        backgroundColor: '#f5f5f5',
+                                        backgroundColor: 'rgba(33, 150, 243, 0.08)',
                                         borderColor: '#1976d2'
                                     },
                                     '&:disabled': {
@@ -517,19 +516,19 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         }
                     >
                         <Box>
-                            <Typography 
-                                variant="body1" 
-                                sx={{ 
+                            <Typography
+                                variant="body1"
+                                sx={{
                                     fontWeight: 'bold',
-                                    color: '#1565c0'  // Darker blue for title
+                                    color: 'var(--card-text)'
                                 }}
                             >
                                 Viewing as Test Student
                             </Typography>
-                            <Typography 
+                            <Typography
                                 variant="body2"
-                                sx={{ 
-                                    color: '#424242'  // Dark gray for details
+                                sx={{
+                                    color: '#2196f3'
                                 }}
                             >
                                 ID: {user.user_id} | Email: {user.email}
@@ -636,7 +635,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     </Box>
 
                     {
-                      <div className={innerDivClassName} style={{ ...innerGridStyle, minHeight: '300px' }}>
+                      <div className={`reporting-card ${innerDivClassName}`} style={{ ...innerGridStyle, minHeight: '300px' }}>
                         <h6 style={{ margin: 0, padding: '1px', lineHeight: 1 }}>
                           <u>Completed Task Average Over Time</u>
                         </h6>
