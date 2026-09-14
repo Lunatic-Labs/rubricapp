@@ -1,5 +1,5 @@
 import React, { Component } from "react";
-import { Alert, Box, Typography } from "@mui/material";
+import { Alert, Box, FormControlLabel, Switch, Typography } from "@mui/material";
 import CustomDataTable from "../../../Components/CustomDataTable";
 import Loading from "../../../Loading/Loading";
 import { genericResourceGET } from "../../../../utility";
@@ -8,6 +8,7 @@ interface AdminLoginActivityState {
   admin_login_activity: any[];
   errorMessage: string | null;
   isLoaded: boolean;
+  showUtc: boolean;
 }
 
 class AdminLoginActivity extends Component<{}, AdminLoginActivityState> {
@@ -15,6 +16,7 @@ class AdminLoginActivity extends Component<{}, AdminLoginActivityState> {
     admin_login_activity: [],
     errorMessage: null,
     isLoaded: false,
+    showUtc: false,
   };
 
   componentDidMount() {
@@ -26,10 +28,18 @@ class AdminLoginActivity extends Component<{}, AdminLoginActivityState> {
       return "Never";
     }
 
+    const hasTimezone = lastLoginAt.endsWith("Z") || /[+-]\d{2}:\d{2}$/.test(lastLoginAt);
+    const timestamp = new Date(hasTimezone ? lastLoginAt : `${lastLoginAt}Z`);
+
     return new Intl.DateTimeFormat(undefined, {
-      dateStyle: "medium",
-      timeStyle: "short",
-    }).format(new Date(lastLoginAt));
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "2-digit",
+      timeZone: this.state.showUtc ? "UTC" : undefined,
+      timeZoneName: "short",
+    }).format(timestamp);
   };
 
   render() {
@@ -57,9 +67,21 @@ class AdminLoginActivity extends Component<{}, AdminLoginActivityState> {
 
     return (
       <Box>
-        <Typography aria-label="adminLoginActivityTitle" sx={{ fontWeight: "700", mb: 2 }} variant="h5">
-          Admin Login Activity
-        </Typography>
+        <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 2 }}>
+          <Typography aria-label="adminLoginActivityTitle" sx={{ fontWeight: "700" }} variant="h5">
+            Admin Login Activity
+          </Typography>
+          <FormControlLabel
+            control={
+              <Switch
+                checked={this.state.showUtc}
+                onChange={(event) => this.setState({ showUtc: event.target.checked })}
+                inputProps={{ "aria-label": "Show login times in UTC" }}
+              />
+            }
+            label={this.state.showUtc ? "UTC" : "Local time"}
+          />
+        </Box>
         <CustomDataTable
           data={this.state.admin_login_activity}
           columns={columns}
