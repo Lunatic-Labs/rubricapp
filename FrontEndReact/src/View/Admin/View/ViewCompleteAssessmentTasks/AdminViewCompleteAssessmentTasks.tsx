@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import ViewCompleteTeamAssessmentTasks from "./ViewCompleteTeamAssessmentTasks";
 import ViewCompleteIndividualAssessmentTasks from "./ViewCompleteIndividualAssessmentTasks";
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseUserNames, parseRoleNames } from '../../../../utility';
+import { genericResourceGET, parseUserNames } from '../../../../utility';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
@@ -16,7 +16,6 @@ interface AdminViewCompleteAssessmentTasksState {
     errorMessage: string | null;
     isLoaded: boolean;
     completedAssessments: CompleteAssessmentTask[] | null;
-    roles: { role_id: string; role_name: string }[] | null;
     users: User[] | null;
 }
 
@@ -31,7 +30,6 @@ class AdminViewCompleteAssessmentTasks extends Component<
             errorMessage: null,
             isLoaded: false,
             completedAssessments: null,
-            roles: null,
             users: null,
         };
     }
@@ -60,8 +58,6 @@ class AdminViewCompleteAssessmentTasks extends Component<
             );
         }
 
-        genericResourceGET(`/role`, 'roles', this as any);
-
         if (chosenCourse) {
             genericResourceGET(
                 `/user?course_id=${chosenCourse["course_id"]}`,
@@ -72,7 +68,7 @@ class AdminViewCompleteAssessmentTasks extends Component<
     }
 
     render() {
-        const { errorMessage, isLoaded, completedAssessments, roles, users } = this.state;
+        const { errorMessage, isLoaded, completedAssessments, users } = this.state;
 
         const navbar = this.props.navbar;
         const unitOfAssessment = navbar.state.chosenAssessmentTask["unit_of_assessment"];
@@ -80,7 +76,7 @@ class AdminViewCompleteAssessmentTasks extends Component<
         // Keep existing app pattern: store parsed lookups on navbar for children to use
         navbar.adminViewCompleteAssessmentTasks = {};
         navbar.adminViewCompleteAssessmentTasks.completeAssessmentTasks = completedAssessments;
-        navbar.adminViewCompleteAssessmentTasks.roleNames = roles ? parseRoleNames(roles) : [];
+        navbar.adminViewCompleteAssessmentTasks.roleNames = navbar.state.roleNameMap ? navbar.state.roleNameMap : {};
         navbar.adminViewCompleteAssessmentTasks.userNames = users ? parseUserNames(users as any) : [];
 
         if (errorMessage) {
@@ -91,7 +87,7 @@ class AdminViewCompleteAssessmentTasks extends Component<
             );
         }
 
-        if (!isLoaded || !completedAssessments || !roles || !users) {
+        if (!isLoaded || !completedAssessments || !users || !navbar.state.roleNameMap) {
             return <Loading />;
         }
 

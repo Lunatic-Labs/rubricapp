@@ -127,7 +127,7 @@ def load_existing_categories():
         [15, "Presenting evidence", "Listed the evidence required to support the claim.", completely],
         [15, "Forming an argument from evidence", "Constructed a logically sound argument with reasoning that explains how the evidence supports the claim.", completely],
         [15, "Critiquing arguments", "Engaged in argumentation by critically evaluating competing arguments.", completely],
-        [15, "Engaging in diabolical argumentation", "Engaged in verbal argumentation by articulating one’s argument and questioning competing ones.", completely],
+        [15, "Engaging in dialogical argumentation", "Engaged in verbal argumentation by articulating one’s argument and questioning competing ones.", completely],
         # (Latest update is June 17, 2025) Disseminating findings Categories 1-10
         [16, "Obtaining information", "Collected relevant information from multiple sources of scientific knowledge such as books, journal articles, technical databases, etc.", completely],
         [16, "Evaluating information", "Critically evaluated the reliability of the obtained information.", completely],
@@ -515,7 +515,7 @@ def load_existing_observable_characteristics():
         [63, "Refined one’s own argument in the light of contradictory evidence (usually from peers)."],
         [63, "Reached an evidence-based conclusion based on the merits of all the arguments presented."],
         [63, "None"],
-        # Engaging in diabolical argumentation Observable characteristics 1-5
+        # Engaging in dialogical argumentation Observable characteristics 1-5
         [64, "Articulated logically sound argument to justify one’s claims."],
         [64, "Clarified their argument when requested."],
         [64, "Responded adequately to the questions and challenges posed."],
