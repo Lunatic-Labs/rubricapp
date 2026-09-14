@@ -2,7 +2,8 @@ import React, { Component } from "react";
 import "bootstrap/dist/css/bootstrap.css";
 import { Box, Typography, Switch, FormControlLabel } from "@mui/material";
 import Cookies from "universal-cookie";
-import { genericResourcePUT } from "../../utility";
+import { genericResourcePUT, genericResourceGET, User } from "../../utility";
+import { logger } from "../../logger";
 
 // 'mode' refers to the darkmode classlist in the SBStyles.css, by adding 'mode' to the
 // document body, the darkmode css will be applied.
@@ -12,6 +13,8 @@ import { genericResourcePUT } from "../../utility";
 
 interface SettingsState {
   darkMode: boolean;
+  isLoaded?: boolean;
+  user?: any;
 }
 
 interface SettingsProps {
@@ -28,11 +31,71 @@ class Settings extends Component<SettingsProps, SettingsState> {
   }
 
   componentDidMount() {
-    if (this.state.darkMode) {
-      document.body.classList.add("mode");
+    const cookies = new Cookies();
+    //const user = cookies.get("user");
+
+    // Check if the "user" cookie exists
+    if (cookies.get("user") !== undefined) {
+      // Cookie exists - proceed with your logic
+      const user = cookies.get("user");
+      
+      if (user !== null) {
+        let promise: Promise<any>; // promise is used because we do not yet have the 'data' from the backend
+        let userData: User; // promise tells the app that it will recieve data
+
+        // get all the neccessary resources from the backend, the 'user' from the 'users' array.
+        promise = genericResourceGET(`/user`, "users", this);
+
+        promise
+          .then((result) => {
+            if (result !== undefined && result["users"] !== null) {
+              userData = result["users"];
+
+              // user data is now set by the result for 'users' and the state is changed
+              // to match the users preferance (false or true).
+              this.setState(
+                {
+                  isLoaded: true,
+                  user: userData["user_id"],
+                  darkMode: userData["user_dark_mode"],
+                },
+                () => {
+                  // This callback runs AFTER state is updated
+                  if (this.state.darkMode) {
+                    document.body.classList.add("mode");
+                  } else {
+                    document.body.classList.remove("mode");
+                  }
+                }
+              );
+            }
+          })
+          .catch((error) => {
+            logger.error("Error fetching user data:", error);
+            // Fallback to user object
+            this.setState(
+              {
+                isLoaded: false,
+                user: user,
+                darkMode: user["user_dark_mode"] || false,
+              },
+              () => {
+                // Apply dark mode in callback
+                if (this.state.darkMode) {
+                  document.body.classList.add("mode");
+                } else {
+                  document.body.classList.remove("mode");
+                }
+              }
+            );
+          });
+      }
     } else {
-      document.body.classList.remove("mode");
+      // Cookie does not exist - handle accordingly (e.g., redirect to login)
+      logger.debug("User cookie not found");
     }
+
+    
   }
 
   // will handle any changes within the change, currently only used for detecting if user
@@ -77,7 +140,8 @@ class Settings extends Component<SettingsProps, SettingsState> {
         }
       })
       .catch((error) => {
-        console.error("Error updating dark mode:", error);
+        logger.error("Error updating dark mode:", error);
+        // Revert on error
         this.setState({ darkMode: !newDarkMode });
         if (!newDarkMode) {
           document.body.classList.add("mode");

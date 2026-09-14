@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../../../../Error/ErrorMessage';
 import Loading from '../../../../Loading/Loading';
 import { genericResourceGET } from '../../../../../utility';
+import { logger } from '../../../../../logger';
 import { Box, Button, Chip, Collapse, Snackbar, Alert, CircularProgress } from '@mui/material';
 import html2canvas from 'html2canvas';
 import jsPDF from 'jspdf';
@@ -339,7 +340,7 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
 
       this.setState({ graphItems, isLoaded: true });
     } catch (error) {
-      console.error('Error generating graph items:', error);
+      logger.error('Error generating graph items:', error);
       this.setState({
         errorMessage: 'Failed to load graph data. Please try again.',
         isLoaded: true,
@@ -569,7 +570,7 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
         this.showToast('No graph cards found to export. Try scrolling through the graphs first.', 'warning');
       }
     } catch (error) {
-      console.error('Error exporting PDFs:', error);
+      logger.error('Error exporting PDFs:', error);
       this.showToast('Export failed. Please try again.', 'error');
     } finally {
       this.setState({ exporting: false });

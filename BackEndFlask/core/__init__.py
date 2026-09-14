@@ -1,12 +1,14 @@
 import sys
 import os
 import re
+import time
+import uuid
 import redis
 import subprocess
 
 from dotenv import load_dotenv
 
-from flask import Flask
+from flask import Flask, g, request
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_migrate import Migrate
@@ -17,6 +19,10 @@ from flask_limiter.util import get_remote_address
 
 #from models.tests import testing
 from models.logger import Logger
+from models.log_context import (
+    set_request_id, reset_request_id, get_request_id,
+    set_user_id, reset_user_id,
+)
 
 from sendgrid import SendGridAPIClient
 
@@ -156,6 +162,32 @@ class Config:
     testing_mode = False
 
 config = Config()
+
+@app.before_request
+def _assign_request_context() -> None:
+    """
+    Tags every request with a request_id (reused from an inbound
+    X-Request-ID header if the caller sent one, so a client-reported
+    error can later be correlated back to the backend request that
+    caused it) and the user_id query param already used throughout the
+    app, so every log line emitted while handling this request carries
+    both automatically.
+    """
+    g.request_id_token = set_request_id(request.headers.get('X-Request-ID', str(uuid.uuid4())))
+    g.user_id_token = set_user_id(request.args.get('user_id'))
+    g.request_start_time = time.monotonic()
+
+@app.after_request
+def _log_request_summary(response):
+    duration_ms = round((time.monotonic() - g.request_start_time) * 1000, 2)
+    response.headers['X-Request-ID'] = get_request_id()
+    config.logger.info(f"{request.method} {request.path} -> {response.status_code} ({duration_ms} ms)")
+    return response
+
+@app.teardown_request
+def _clear_request_context(exception=None) -> None:
+    reset_request_id(g.request_id_token)
+    reset_user_id(g.user_id_token)
 
 # Setting up SendGrid email service.
 sendgrid_client = None
