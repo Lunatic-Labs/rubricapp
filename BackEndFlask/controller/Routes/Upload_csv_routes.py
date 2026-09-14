@@ -54,8 +54,8 @@ def student_bulk_upload_csv():
 
         return create_bad_response("Unsuccessfully uploaded a .csv file! Missing course_id or owner_id", "studentbulkupload", 400)
 
-    except:
-        return create_bad_response("No file selected", "studentbulkupload", 400)
+    except Exception as e:
+        return create_bad_response(str(e), "studentbulkupload", 400)
     finally:
         if directory:
             shutil.rmtree(directory, ignore_errors=True)
