@@ -87,7 +87,7 @@ class AdminViewCompleteAssessmentTasks extends Component<
             );
         }
 
-        if (!isLoaded || !completedAssessments || !users || !navbar.state.roles || !navbar.state.roleNameMap) {
+        if (!isLoaded || !completedAssessments || !users || !navbar.state.roleNameMap) {
             return <Loading />;
         }
 
