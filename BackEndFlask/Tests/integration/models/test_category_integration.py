@@ -110,7 +110,7 @@ def test_get_categories_per_rubric(flask_app_mock):
         try:
             cat = sample_category()
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
             rc = create_rubric_category({
                 "rubric_id": rubric.rubric_id,
@@ -140,7 +140,7 @@ def test_delete_rubric_categories_by_rubric_id(flask_app_mock):
         try:    
             cat = sample_category()
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
             create_rubric_category({
                 "rubric_id": rubric.rubric_id,
                 "category_id": cat.category_id,
@@ -173,13 +173,13 @@ def test_get_categories_returns_joined_data(flask_app_mock):
         try:    
             cat = sample_category()
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
             create_rubric_category({
                 "rubric_id": rubric.rubric_id,
                 "category_id": cat.category_id,
             })
         
-            result = get_categories(result["user_id"])
+            result = get_categories(result['user_id'])
             assert any("Critical Thinking" in row.category_name for row in result)
 
         finally:
@@ -212,8 +212,8 @@ def test_get_categories_for_user_id(flask_app_mock):
         try:
             cat = sample_category()
             result = create_one_admin_course(True)
-            rubric1 = sample_rubric(result["user_id"], "Mathematical thinking")
-            rubric2 = sample_rubric(result["user_id"], "Analyzing data")
+            rubric1 = sample_rubric(result['user_id'], "Mathematical thinking")
+            rubric2 = sample_rubric(result['user_id'], "Analyzing data")
 
             rc1 = create_rubric_category({
                 "rubric_id": rubric1.rubric_id,
@@ -224,7 +224,7 @@ def test_get_categories_for_user_id(flask_app_mock):
                 "category_id": cat.category_id,
             })
 
-            results = get_categories_for_user_id(result["user_id"])
+            results = get_categories_for_user_id(result['user_id'])
             assert len(results) == 2
             assert results[0].category_name == "Critical Thinking"
             assert any("Analyzing data" in row.rubric_name for row in results)
