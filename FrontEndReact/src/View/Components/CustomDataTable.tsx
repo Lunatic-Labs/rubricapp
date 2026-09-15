@@ -27,6 +27,11 @@ interface CustomDataTableProps {
   options?: Partial<DataGridProps>;
 }
 
+// Numbered from 1 like the old :nth-of-type selectors, so the first row on
+// each page is still the "odd" color.
+const ODD_ROW_CLASS = 'CustomDataTable-oddRow';
+const EVEN_ROW_CLASS = 'CustomDataTable-evenRow';
+
 const customTheme = createTheme({
   spacing: 4,
   components: {
@@ -76,14 +81,17 @@ const customTheme = createTheme({
           wordBreak: 'break-word',
           lineHeight: '0.3',
         },
+        // Striping keys off classes set in getRowClassName (below) rather than
+        // :nth-of-type — the grid virtualizes rows, so a row's DOM position
+        // shifts as rows scroll out of view and the colors would flip.
         row: {
-          '&:nth-of-type(even)': {
+          [`&.${EVEN_ROW_CLASS}`]: {
             backgroundColor: 'var(--light_grey_ADA)',
             '&:hover': {
               backgroundColor: 'var(--light_grey_hover)',
             },
           },
-          '&:nth-of-type(odd)': {
+          [`&.${ODD_ROW_CLASS}`]: {
             backgroundColor: 'var(--table-odd-row)',
             '&:hover': {
               backgroundColor: 'var(--table-odd-row-hover)',
@@ -334,6 +342,13 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: 
     ...options,
     slots: { ...defaultOptions.slots, ...options?.slots },
     slotProps: { ...defaultOptions.slotProps, ...options?.slotProps },
+    // Stripe by the row's index within the current page, which stays stable
+    // while scrolling; any page-supplied class names are kept alongside.
+    getRowClassName: (params) => {
+      const stripeClass = params.indexRelativeToCurrentPage % 2 === 0 ? ODD_ROW_CLASS : EVEN_ROW_CLASS;
+      const extraClass = options?.getRowClassName?.(params);
+      return extraClass ? `${stripeClass} ${extraClass}` : stripeClass;
+    },
   };
 
   // MUI's native `flex` always grows from a flex-basis of 0 (it distributes
