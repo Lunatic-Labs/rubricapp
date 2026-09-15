@@ -794,7 +794,7 @@ def test_custom_rubrics_not_visible_to_other_admins(
             )
             data = response.get_json()
             assert response.status_code == 200
-            rslt = data["content"]["rubrics"]
+            rslt = data["content"]["rubrics"][0]
             assert len(rslt) == 1
             assert rslt[0]["rubric_id"] == rubric.rubric_id
 
@@ -806,7 +806,7 @@ def test_custom_rubrics_not_visible_to_other_admins(
             )
             data = response.get_json()
             assert response.status_code == 200
-            rslt = data["content"]["rubrics"]
+            rslt = data["content"]["rubrics"][0]
             assert len(rslt) == 0
 
         finally:
@@ -847,7 +847,7 @@ def test_super_admin_sees_all_custom_rubrics(
             )
             data = response.get_json()
             assert response.status_code == 200
-            rslt = data["content"]["rubrics"]
+            rslt = data["content"]["rubrics"][0]
             assert len(rslt) == 1
             assert rslt[0]["rubric_id"] == rubric.rubric_id
 
@@ -918,7 +918,7 @@ def test_course_rubrics_owned_by_super_admin_and_course_admin(
             )
             data = response.get_json()
             assert response.status_code == 200
-            rslt = data["content"]["rubrics"]
+            rslt = data["content"]["rubrics"][0]
             rubric_ids = [r["rubric_id"] for r in rslt]
             assert course_rubric.rubric_id in rubric_ids
             assert other_rubric.rubric_id not in rubric_ids
@@ -933,7 +933,7 @@ def test_course_rubrics_owned_by_super_admin_and_course_admin(
             )
             data = response.get_json()
             assert response.status_code == 200
-            rslt = data["content"]["rubrics"]
+            rslt = data["content"]["rubrics"][0]
             rubric_ids = [r["rubric_id"] for r in rslt]
             assert course_rubric.rubric_id in rubric_ids
             assert other_rubric.rubric_id not in rubric_ids
