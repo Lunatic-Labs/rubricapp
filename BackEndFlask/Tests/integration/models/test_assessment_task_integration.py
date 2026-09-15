@@ -19,8 +19,8 @@ def test_create_and_get_assessment_task(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             assert task.assessment_task_id is not None
@@ -55,8 +55,8 @@ def test_replace_assessment_task_updates_fields(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             updated = dict(payload)
@@ -83,8 +83,8 @@ def test_replace_assessment_task_invalid_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             updated = dict(payload)
             updated["assessment_task_name"] = "Updated Name"
             updated["due_date"] = "2026-02-02T09:30:00"
@@ -109,8 +109,8 @@ def test_toggle_lock_and_published_status(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             toggled = toggle_lock_status(task.assessment_task_id)
@@ -138,7 +138,7 @@ def test_get_all_assessment_tasks(flask_app_mock):
 
             # Creating multiple rubrics to satisfy foreign key constraints
             for rid in range(1, 18): 
-                r = sample_rubric(result["user_id"], f"Test rubric{rid}")
+                r = sample_rubric(result['user_id'], f"Test rubric{rid}")
                 db.session.add(r)
             db.session.commit()
 
@@ -150,7 +150,7 @@ def test_get_all_assessment_tasks(flask_app_mock):
             assert any(t.assessment_task_name == "Critical Thinking Assessment" for t in tasks)
 
             # Test getting assessment tasks by course_id
-            tasks_2 =  get_assessment_tasks_by_course_id(result["course_id"])
+            tasks_2 =  get_assessment_tasks_by_course_id(result['course_id'])
             names = [t.assessment_task_name for t in tasks_2]
             assert "Formal Communication Assessment" in names
             assert "Teamwork Assessment" in names
@@ -180,16 +180,16 @@ def test_get_assessment_tasks_by_team_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             # Create demo teams
             team = create_team({
                 "team_name": "Integration Test Team",
-                "observer_id": result["user_id"],
+                "observer_id": result['user_id'],
                 "date_created": "10/10/2025",
-                "course_id": result["course_id"],
+                "course_id": result['course_id'],
                 "assessment_task_id": task.assessment_task_id,
             })
 
@@ -215,8 +215,8 @@ def test_toggle_notification_sent_to_true(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             date_str = "2026-03-01T08:00:00.000Z"
@@ -239,9 +239,9 @@ def test_delete_assessment_task_removes_record(flask_app_mock):
         cleanup_test_users(db.session)
 
         result = create_one_admin_course(False)
-        rubric = sample_rubric(result["user_id"])
+        rubric = sample_rubric(result['user_id'])
 
-        payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+        payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
         task = create_assessment_task(payload)
 
         result = delete_assessment_task(task.assessment_task_id)
@@ -264,9 +264,9 @@ def test_delete_assessment_task_raises_sqlalchemy_error(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             with patch("models.assessment_task.db.session.delete", side_effect=SQLAlchemyError("DB Error")):
@@ -297,12 +297,12 @@ def test_get_course_from_at(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
 
             task = create_assessment_task(payload)
             rslt = get_course_from_at(task.assessment_task_id)
-            assert rslt[0] == result["course_id"]
+            assert rslt[0] == result['course_id']
 
         finally:
             # Clean up
@@ -356,8 +356,8 @@ def test_get_course_name_by_at_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
 
             task = create_assessment_task(payload)
 

@@ -79,15 +79,15 @@ def test_get_all_courses_with_course_id(
 
         try:
             result = create_one_admin_course(False)
-            users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=4)
 
-            team1 = sample_team("Alpha", result["user_id"], result["course_id"])
-            team2 = sample_team("Alpha", result["user_id"], result["course_id"])
+            team1 = sample_team("Alpha", result['user_id'], result['course_id'])
+            team2 = sample_team("Alpha", result['user_id'], result['course_id'])
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/course?course_id={result["course_id"]}&user_id={result["user_id"]}",
+                f"/api/course?course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -197,10 +197,10 @@ def test_get_all_courses_raises_exception(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/course?admin_id=999&user_id={result["user_id"]}",
+                f"/api/course?admin_id=999&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -229,10 +229,10 @@ def test_one_course_with_course_id(
         try:
             result = create_one_admin_course(False)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/one_course?course_id={result["course_id"]}&user_id={result["user_id"]}",
+                f"/api/one_course?course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -241,7 +241,7 @@ def test_one_course_with_course_id(
 
             rslt = data['content']['courses']
             assert len(rslt) == 1
-            assert rslt[0]["course_id"] == result["course_id"]
+            assert rslt[0]["course_id"] == result['course_id']
             assert rslt[0]["course_number"] == "CRS001"
         
         finally:
@@ -264,10 +264,10 @@ def test_one_course_with_not_course_id_raises_exception(
         try:
             result = create_one_admin_course(False)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/one_course?user_id={result["user_id"]}",
+                f"/api/one_course?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -364,10 +364,10 @@ def test_update_course_with_course_id(
             teacher = create_user(sample_user(email="testteacher@example.com", role_id=3))
             payload = sample_course(teacher.user_id, course_number="Math01")
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/course?course_id={result["course_id"]}&user_id={result["user_id"]}",
+                f"/api/course?course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=payload
             )
@@ -378,14 +378,14 @@ def test_update_course_with_course_id(
 
             updated = data['content']['courses']
             assert len(updated) == 1
-            assert updated[0]["course_id"] == result["course_id"]
+            assert updated[0]["course_id"] == result['course_id']
             assert updated[0]["course_number"] == "Math01"
             assert updated[0]["admin_id"] == teacher.user_id
 
         finally:
             # Clean up
             try:
-                delete_course(result["course_id"])
+                delete_course(result['course_id'])
                 delete_user(teacher.user_id)
             except Exception as e:
                  print(f"Cleanup skipped: {e}")

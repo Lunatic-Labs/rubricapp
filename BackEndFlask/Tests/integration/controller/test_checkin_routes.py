@@ -24,14 +24,14 @@ def test_update_checkin_user(flask_app_mock, client, sample_token, auth_header):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            task = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             team1 = sample_team(
                 "Alpha", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
 
@@ -42,8 +42,8 @@ def test_update_checkin_user(flask_app_mock, client, sample_token, auth_header):
             ))
             team2 = sample_team(
                 "Omega", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             token = sample_token(user_id=user[0].user_id)
@@ -85,14 +85,14 @@ def test_create_checkin_user(flask_app_mock, client, sample_token, auth_header):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            task = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             team = sample_team(
                 "Alpha", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
 
@@ -131,7 +131,7 @@ def test_checkin_user_raises_exception(flask_app_mock, client, sample_token, aut
 
         try:
             result = create_one_admin_course(True)
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             token = sample_token(user_id=user[0].user_id)
 
@@ -165,20 +165,20 @@ def test_get_check_ins_with_user_id_and_course_id(
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            task = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
     
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             team1 = sample_team(
                 "Alpha", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             team2 = sample_team(
                 "Omega", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
 
@@ -196,7 +196,7 @@ def test_get_check_ins_with_user_id_and_course_id(
             token = sample_token(user_id=user[0].user_id)
 
             response = client.get(
-                f"/api/checkin?course_id={result["course_id"]}&user_id={user[0].user_id}",
+                f"/api/checkin?course_id={result['course_id']}&user_id={user[0].user_id}",
                 headers=auth_header(token)
             )
 
@@ -235,20 +235,20 @@ def test_get_check_ins_with_assessment_task_id(
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            task = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
     
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             team1 = sample_team(
                 "Alpha", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             team2 = sample_team(
                 "Omega", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
 
@@ -301,7 +301,7 @@ def test_check_in_raises_exception(flask_app_mock, client, sample_token, auth_he
 
         try:
             result = create_one_admin_course(True)
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             token = sample_token(user_id=user[0].user_id)
 

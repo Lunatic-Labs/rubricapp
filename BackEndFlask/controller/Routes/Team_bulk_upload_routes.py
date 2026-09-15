@@ -4,6 +4,7 @@ import json
 import shutil
 import pandas as pd
 from io import BytesIO
+import tempfile
 from flask import request
 from controller import bp
 # from Functions import team_import
@@ -25,6 +26,7 @@ from controller.security.CustomDecorators import (
 @admin_check()
 @limiter.limit("1 per 3 seconds")
 def upload_team_csv():
+    directory = None
     try:
         file = request.files['csv_file']
         if not file:
@@ -37,17 +39,14 @@ def upload_team_csv():
 
         if request.args.get("course_id"):
             course_id = int(request.args.get("course_id"))
-            user_id = int(request.args.get("user_id"))          
+            user_id = int(request.args.get("user_id"))        
 
-            directory = os.path.join(os.getcwd(), "Test")
-            os.makedirs(directory, exist_ok=True)
-            unique_filename = extension[0] + uuid.uuid4().hex + extension[1]
+            directory = tempfile.mkdtemp()
+            unique_filename = uuid.uuid4().hex + extension[1]
             file_path = os.path.join(directory, unique_filename)
             file.save(file_path)
 
             team_bulk_upload(file_path, user_id, course_id)
-
-            shutil.rmtree(directory)
 
             return create_good_response([], 200, "team")
 
@@ -56,3 +55,6 @@ def upload_team_csv():
 
     except Exception as e:
         return create_bad_response(f"Error bulk uploading team: {str(e)}", "team", 400)
+    finally:
+        if directory:
+            shutil.rmtree(directory, ignore_errors=True)
