@@ -719,19 +719,18 @@ def get_all_checkins_for_student_for_course(user_id, course_id):
 def get_rubrics_and_total_categories(user_id):
     """
     Description:
-    Gets all of the default and custom rubrics with
-    corresponding total categories for the given user
-    logged in.
+    Gets all of the default rubrics plus the custom rubrics
+    created by the given user, with corresponding total
+    categories.
 
     Parameters:
     user_id: int (The id of a user)
     """
-    user = get_user(user_id)
-
     all_rubrics_and_total_categories = db.session.query(
         Rubric.rubric_id,
         Rubric.rubric_name,
         Rubric.rubric_description,
+        Rubric.course_id,
         sqlalchemy.func.count(Category.category_id).label('category_total')
     ).join(
         RubricCategory, Rubric.rubric_id == RubricCategory.rubric_id
@@ -740,35 +739,57 @@ def get_rubrics_and_total_categories(user_id):
     ).filter(
         or_(
             Rubric.owner == 1,
-            or_(
-                Rubric.owner == user_id,
-                Rubric.owner == user.owner_id
-            )
+            Rubric.owner == user_id
         )
     ).group_by(
         Rubric.rubric_id
     ).all()
-    
+
     return all_rubrics_and_total_categories
 
 
 @error_log
-def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
+def get_course_admin_id(course_id):
     """
     Description:
-    Gets all of the custom rubrics with
-    corresponding total categories for the given user
-    logged in. Optionally, if get_all is true, then
-    the default rubrics are also returned.
+    Returns the user_id of the admin of the given course,
+    or None if the course does not exist.
 
     Parameters:
-    user_id: int (The id of a user)
+    course_id: int (The id of a course)
+    """
+    row = db.session.query(Course.admin_id).filter(
+        Course.course_id == course_id
+    ).first()
+
+    return row[0] if row else None
+
+
+@error_log
+def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False, course_id=None):
+    """
+    Description:
+    Gets custom rubrics with corresponding total categories
+    according to the rubric visibility rules:
+      - Rubrics for a course are those owned by the super admin
+        (user_id 1, the default rubrics) and by the admin of that course.
+      - The super admin can see all rubrics of the users under them.
+      - Normal admins can only see their own rubrics (plus defaults).
+
+    If get_all is true, the default rubrics (owner == 1) are
+    included in the result. When course_id is given, custom rubrics
+    are limited to those designated for that course.
+
+    Parameters:
+    user_id: int (The id of the user making the request)
     get_all: bool (Whether to get default rubrics with custom rubrics)
+    course_id: int (The id of a course to scope rubrics to)
     """
     all_rubrics_and_total_categories = db.session.query(
         Rubric.rubric_id,
         Rubric.rubric_name,
         Rubric.rubric_description,
+        Rubric.course_id,
         sqlalchemy.func.count(Category.category_id).label('category_total')
     ).join(
         RubricCategory, Rubric.rubric_id == RubricCategory.rubric_id
@@ -776,23 +797,40 @@ def get_rubrics_and_total_categories_for_user_id(user_id, get_all=False):
         Category, RubricCategory.category_id == Category.category_id
     )
 
-    # Include rubrics owned by the user and rubrics owned by the user's owner (other admins
-    # within the same organization). If get_all is True, also include the default rubrics
-    # (owner == 1).
-    user = get_user(user_id)
-    owner_id = user.owner_id
-
-    if get_all:
-        all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
-            or_(
-                Rubric.owner == 1,
-                Rubric.owner == user_id,
-                Rubric.owner == owner_id
+    # Determine which custom rubrics (non-default) this user may see.
+    # The super admin sees everything; scoped to a course, that means the
+    # rubrics owned by that course's admin. Normal admins see only the
+    # rubrics they created themselves. When a course is given, custom
+    # rubrics must also be designated for that course.
+    if is_super_admin_by_user_id(user_id):
+        course_admin_id = get_course_admin_id(course_id) if course_id else None
+        if course_admin_id and course_id:
+            custom_filter = and_(
+                Rubric.owner == course_admin_id,
+                Rubric.course_id == course_id
             )
+        else:
+            custom_filter = Rubric.owner == course_admin_id if course_admin_id else None
+    elif course_id:
+        custom_filter = and_(
+            Rubric.owner == user_id,
+            Rubric.course_id == course_id
         )
     else:
+        custom_filter = Rubric.owner == user_id
+
+    if get_all:
+        if custom_filter is not None:
+            all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
+                or_(
+                    Rubric.owner == 1,
+                    custom_filter
+                )
+            )
+        # else: the super admin without a course scope sees every rubric.
+    elif custom_filter is not None:
         all_rubrics_and_total_categories = all_rubrics_and_total_categories.filter(
-            Rubric.owner == user_id
+            custom_filter
         )
 
     all_rubrics_and_total_categories = all_rubrics_and_total_categories.group_by(
@@ -813,11 +851,8 @@ def get_categories_for_user_id(user_id):
     Parameters:
     user_id = int (The id of a user)
     """
-    # Include categories for rubrics owned by the user and by the user's owner
-    # (so admins under the same owner can see each other's custom rubric categories).
-    user = get_user(user_id)
-    owner_id = user.owner_id
-
+    # Custom rubric categories are visible only to the user who created the
+    # rubric; the super admin sees the categories of every custom rubric.
     all_custom_category_ids = db.session.query(
         Category.category_id,
         Category.category_name,
@@ -832,12 +867,14 @@ def get_categories_for_user_id(user_id):
     ).join(
         Rubric,
         Rubric.rubric_id == RubricCategory.rubric_id
-    ).filter(
-        or_(
-            Rubric.owner == user_id,
-            Rubric.owner == owner_id
+    )
+
+    if not is_super_admin_by_user_id(user_id):
+        all_custom_category_ids = all_custom_category_ids.filter(
+            Rubric.owner == user_id
         )
-    ).subquery()
+
+    all_custom_category_ids = all_custom_category_ids.subquery()
 
     all_default_categories = db.session.query(
         Category.category_id,
