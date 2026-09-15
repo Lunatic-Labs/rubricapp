@@ -41,12 +41,14 @@ class ViewTeamsTA extends Component<ViewTeamsTAProps> {
       {
         field: "teamName",
         headerName: "Team Name",
-        width: 230,
+        minWidth: 230,
+        flex: 1,
       },
       {
         field: "studentNames",
         headerName: "Team Member Names",
-        width: 230,
+        minWidth: 230,
+        flex: 1,
         renderCell: (params) => (
           <p className="pt-3">{params.value}</p>
         )

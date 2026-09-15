@@ -93,17 +93,20 @@ class ViewUsers extends Component<ViewUsersProps> {
       {
         field: "first_name",
         headerName: "First Name",
-        width: 150,
+        minWidth: 150,
+        flex: 1,
       },
       {
         field: "last_name",
         headerName: "Last Name",
-        width: 150,
+        minWidth: 150,
+        flex: 1,
       },
       {
         field: "email",
         headerName: "Email",
-        width: 260,
+        minWidth: 440,
+        flex: 1,
       }];
 
     if (!navbar.props.isSuperAdmin) {
@@ -111,7 +114,8 @@ class ViewUsers extends Component<ViewUsersProps> {
         {
           field: "role_id",
           headerName: "Role",
-          width: 110,
+          minWidth: 160,
+          flex: 1,
           renderCell: (params) => (
             <p>{roleNames[params.value]}</p>
           )
@@ -124,13 +128,15 @@ class ViewUsers extends Component<ViewUsersProps> {
         {
           field: "lms_id",
           headerName: "LMS ID",
-          width: 110,
+          minWidth: 110,
+          flex: 1,
         }
       );
       columns.push({
         field: "view_action",
         headerName: "View",
-        width: 90,
+        minWidth: 90,
+        flex: 1,
         filterable: false,
         align: "center",
         headerAlign: "center",
@@ -168,7 +174,8 @@ class ViewUsers extends Component<ViewUsersProps> {
       columns.push({
         field: "edit_action",
         headerName: "Edit",
-        width: 90,
+        minWidth: 90,
+        flex: 1,
         filterable: false,
         align: "center",
         headerAlign: "center",
@@ -193,7 +200,8 @@ class ViewUsers extends Component<ViewUsersProps> {
     columns.push({
       field: "delete_action",
       headerName: "Delete",
-      width: 90,
+      minWidth: 90,
+      flex: 1,
       filterable: false,
       align: "center",
       headerAlign: "center",
@@ -224,7 +232,7 @@ class ViewUsers extends Component<ViewUsersProps> {
         data={users ? users : []}
         columns={columns}
         getRowId={(row) => row.user_id}
-        height="50vh"
+        height="60vh"
       />
     )
   }

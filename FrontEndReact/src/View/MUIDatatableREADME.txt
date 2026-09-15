@@ -17,14 +17,17 @@ const columns: GridColDef[] = [
   {
     field: "first_name",    // the field of the row object to read
     headerName: "First Name",  // what is displayed as the column label
-    width: 150,             // fixed px width; CustomDataTable strips `flex`
-                            // so columns don't stretch to fill the container
-                            // and instead scroll horizontally when they overflow
+    minWidth: 150,          // floor width in px; below this the table
+    flex: 1,                // scrolls horizontally instead of shrinking further.
+                            // `flex` distributes any extra space beyond the sum
+                            // of every column's minWidth, proportional to each
+                            // column's own flex value (1 here = same rate for all).
   },
   {
     field: "last_name",
     headerName: "Last Name",
-    width: 150,
+    minWidth: 150,
+    flex: 1,
   },
 ];
 

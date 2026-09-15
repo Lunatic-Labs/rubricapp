@@ -221,17 +221,19 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             {
                 field: "category_name",
                 headerName: "Category",
-                width: 200,
-                align: "center",
-                headerAlign: "center",
+                minWidth: 200,
+                flex: 1,
+                align: "left",
+                headerAlign: "left",
                 renderCell: (params) => <p>{params.value}</p>,
             },
             {
                 field: "rubric_name",
                 headerName: "Rubric",
-                width: 200,
-                align: "center",
-                headerAlign: "center",
+                minWidth: 200,
+                flex: 1,
+                align: "left",
+                headerAlign: "left",
                 renderCell: (params) => <p>{params.value}</p>,
             },
         ];
@@ -445,7 +447,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 data={pickedCategories}
                                 columns={categoryTableColumns}
                                 getRowId={(row) => row.category_id}
-                                height="21rem"
+                                height="22rem"
                             />
                         </Grid>
 

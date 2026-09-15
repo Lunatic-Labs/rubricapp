@@ -16,6 +16,7 @@ import {
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
   useGridApiContext,
+  useGridApiRef,
 } from '@mui/x-data-grid';
 
 interface CustomDataTableProps {
@@ -34,27 +35,46 @@ const customTheme = createTheme({
         root: {
           border: 'none',
           boxShadow: '0 0 0.3em var(--box-shadow)',
+          // v7 paints the header container (and the scrollbar filler beside it)
+          // from this variable, so set it to keep the header a solid blue.
+          '--DataGrid-containerBackground': 'var(--table-header)',
         },
         columnHeaders: {
-          backgroundColor: 'var(--table-toolbar)',
+          backgroundColor: 'var(--table-header)',
         },
         columnHeader: {
           fontSize: '1.2rem',
           padding: '.01rem .3rem',
           color: 'var(--table-text)',
+          backgroundColor: 'var(--table-header)',
         },
         columnHeaderTitle: {
           color: 'var(--table-text)',
+          whiteSpace: 'normal',
+          lineHeight: '1.2',
+          overflow: 'visible',
+          textOverflow: 'clip',
+        },
+        columnHeaderTitleContainer: {
+          overflow: 'visible',
+        },
+        columnHeaderTitleContainerContent: {
+          overflow: 'visible',
+        },
+        // Columns aren't resizable (see disableColumnResize below), so the
+        // separator is purely decorative — drop it for a solid header bar.
+        columnSeparator: {
+          display: 'none',
         },
         cell: {
           fontSize: '1.5rem',
-          padding: '.3rem',
+          padding: '0 .3rem',
           display: 'flex',
           alignItems: 'center',
           color: 'var(--table-text)',
           whiteSpace: 'normal',
           wordBreak: 'break-word',
-          lineHeight: '1.3',
+          lineHeight: '0.3',
         },
         row: {
           '&:nth-of-type(even)': {
@@ -287,7 +307,9 @@ const CustomToolbar = () => {
 };
 
 const TOOLBAR_HEIGHT = 52;
-const COLUMN_HEADER_HEIGHT = 40;
+// Tall enough for a wrapped two-line header title (see columnHeaderTitle's
+// whiteSpace: 'normal' override above) plus the header cell's padding.
+const COLUMN_HEADER_HEIGHT = 56;
 const FOOTER_HEIGHT = 52;
 const ROW_HEIGHT_ESTIMATE = 44;
 const EMPTY_STATE_HEIGHT = 120;
@@ -314,15 +336,44 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: 
     slotProps: { ...defaultOptions.slotProps, ...options?.slotProps },
   };
 
+  // MUI's native `flex` always grows from a flex-basis of 0 (it distributes
+  // the *entire* available width by flex ratio, then clamps any column that
+  // falls under its own minWidth back to that minWidth and redistributes
+  // among the rest). With columns that have different minWidths, that makes
+  // the smallest-floor column soak up all the extra space alone until the
+  // shared per-column share catches up to the next-smallest column's floor,
+  // and so on — a "waterfilling" effect, not everyone growing together.
+  // To make every column grow by the same amount as soon as the table is
+  // wider than the sum of all minWidths, minWidth is used as the flex-basis
+  // ourselves: each column's rendered width is computed as
+  // `minWidth + (flex / totalFlex) * extraSpace`, using the grid's own
+  // measured available width (so it matches what the native algorithm would
+  // have used, scrollbar and all), and handed to the DataGrid as a plain
+  // `width` — `flex` itself is stripped so the native algorithm never runs.
+  const apiRef = useGridApiRef();
+  const [availableWidth, setAvailableWidth] = React.useState(0);
+  const updateAvailableWidth = React.useCallback(() => {
+    setAvailableWidth(apiRef.current.getRootDimensions?.()?.viewportInnerSize.width ?? 0);
+  }, [apiRef]);
+  // `onResize` alone would leave columns pinned at minWidth for one extra
+  // render (until the grid's first debounced resize event fires), so also
+  // grab the dimensions as soon as they're available after mount.
+  React.useEffect(() => {
+    updateAvailableWidth();
+  }, [updateAvailableWidth]);
+
   // Column-level menus (sort/filter/hide) are dropped in favor of the single
   // search box + Filters button in the toolbar above, so sorting stays on
-  // header click but the per-column "..." menu no longer shows. `flex` is
-  // also dropped so columns keep their fixed width instead of stretching to
-  // fill the container, matching the old mui-datatables behavior where an
-  // overflowing set of columns scrolled horizontally rather than shrinking.
+  // header click but the per-column "..." menu no longer shows.
+  const totalFlex = columns.reduce((sum, column) => sum + (column.flex && column.flex > 0 ? column.flex : 0), 0);
+  const totalMinWidth = columns.reduce((sum, column) => sum + (column.flex && column.flex > 0 ? (column.minWidth ?? 0) : (column.width ?? column.minWidth ?? 0)), 0);
+  const extraSpace = Math.max(0, availableWidth - totalMinWidth);
   const columnsWithoutMenu = columns.map(({ flex, ...column }) => ({
     disableColumnMenu: true,
     ...column,
+    ...(flex && flex > 0 && totalFlex > 0
+      ? { width: (column.minWidth ?? 0) + (flex / totalFlex) * extraSpace }
+      : {}),
   }));
 
   // The DataGrid needs an explicit pixel/vh/etc. height (unlike the old
@@ -349,6 +400,8 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: 
           columns={columnsWithoutMenu}
           getRowId={getRowId}
           {...gridOptions}
+          apiRef={apiRef}
+          onResize={updateAvailableWidth}
         />
       </Box>
     </ThemeProvider>

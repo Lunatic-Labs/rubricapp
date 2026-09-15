@@ -31,17 +31,20 @@ class ViewTeamMembers extends Component<ViewTeamMembersProps>{
       {
         field: "first_name",
         headerName: "First Name",
-        width: 300,
+        minWidth: 300,
+        flex: 1,
       },
       {
         field: "last_name",
         headerName: "Last Name",
-        width: 300,
+        minWidth: 300,
+        flex: 1,
       },
       {
         field: "email",
         headerName: "Email",
-        width: 300,
+        minWidth: 300,
+        flex: 1,
       }
     ];
 

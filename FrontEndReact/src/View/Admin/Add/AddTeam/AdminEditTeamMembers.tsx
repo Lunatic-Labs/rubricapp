@@ -105,17 +105,20 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
             {
                 field: "first_name",
                 headerName: "First Name",
-                width: 300,
+                minWidth: 120,
+                flex: 1,
             },
             {
                 field: "last_name",
                 headerName: "Last Name",
-                width: 300,
+                minWidth: 120,
+                flex: 1,
             },
             {
               field: "team_name",
               headerName: "Current Team",
-              width: 300,
+              minWidth: 120,
+              flex: 1,
               renderCell: (params) => (
                 <>{params.value ? params.value : "No team assigned"}</>
               )
@@ -123,12 +126,14 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
             {
                 field: "email",
                 headerName: "Email",
-                width: 300,
+                minWidth: 400,
+                flex: 1,
             },
             {
                 field: "user_id",
                 headerName: this.props.addTeamAction,
-                width: 130,
+                minWidth: 130,
+                flex: 1,
                 sortable: false,
                 align: "center",
                 headerAlign: "center",
@@ -181,7 +186,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
                     data={this.state.users ? this.state.users : []}
                     columns={columns}
                     getRowId={(row) => row.user_id}
-                    height="500px"
+                    height="800px"
                 />
             </div>
         );

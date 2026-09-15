@@ -39,12 +39,14 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
             {
                 field: "assessment_task_name",
                 headerName: "Task Name",
-                width: 250,
+                minWidth: 250,
+                flex: 1,
             },
             {
                 field: "initial_time",
                 headerName: "Initial Time",
-                width: 150,
+                minWidth: 150,
+                flex: 1,
                 renderCell: (params) => {
                     const atId = params.row.assessment_task_id;
                     const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
@@ -59,7 +61,8 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
             {
                 field: "last_update",
                 headerName: "Last Update",
-                width: 150,
+                minWidth: 150,
+                flex: 1,
                 renderCell: (params) => {
                     const atId = params.row.assessment_task_id;
                     const chosenAT = assessmentTasks.find((at: AssessmentTask) => at.assessment_task_id === atId);
@@ -74,7 +77,8 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
             {
                 field: "assessment_task_id",
                 headerName: "Unit of Assessment",
-                width: 170,
+                minWidth: 170,
+                flex: 1,
                 renderCell: (params) => {
                     const chosenAT = assessmentTasks.find((at) => at.assessment_task_id === params.value);
                     if (!chosenAT) {
@@ -86,7 +90,8 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
             {
                 field: "completed_by_role",
                 headerName: "Completed By",
-                width: 140,
+                minWidth: 140,
+                flex: 1,
                 renderCell: (params) => {
                     const atId = params.row.assessment_task_id;
                     const at = assessmentTasks.find((at) => at.assessment_task_id === atId);
@@ -97,7 +102,8 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
             {
                 field: "view_action",
                 headerName: "View",
-                width: 100,
+                minWidth: 100,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",

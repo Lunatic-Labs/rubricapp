@@ -71,12 +71,14 @@ class ViewTeams extends Component<ViewTeamsProps> {
       {
         field: "team_name",
         headerName: "Team Name",
-        width: 180,
+        minWidth: 180,
+        flex: 1,
       },
       {
         field: "observer_id",
         headerName: "Observer Name",
-        width: 200,
+        minWidth: 200,
+        flex: 1,
         renderCell: (params) => {
           return params.value === chosenCourse["admin_id"] ? (
             <p> Admin </p>
@@ -88,7 +90,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
       {
         field: "date_created",
         headerName: "Date Created",
-        width: 150,
+        minWidth: 150,
+        flex: 1,
         renderCell: (params) => {
           const date: string = params.value;
           var year = "";
@@ -116,7 +119,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
       {
         field: "edit_action",
         headerName: "Edit",
-        width: 90,
+        minWidth: 90,
+        flex: 1,
         sortable: false,
         filterable: false,
         align: "center",
@@ -138,7 +142,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
       {
         field: "delete_action",
         headerName: "Delete",
-        width: 90,
+        minWidth: 90,
+        flex: 1,
         sortable: false,
         filterable: false,
         align: "center",
@@ -164,7 +169,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
       {
         field: "view_members_action",
         headerName: "View Team Members",
-        width: 170,
+        minWidth: 170,
+        flex: 1,
         sortable: false,
         filterable: false,
         align: "center",

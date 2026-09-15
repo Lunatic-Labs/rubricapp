@@ -42,12 +42,14 @@ class ViewTeams extends Component<ViewTeamsProps> {
             {
                 field: "team_name",
                 headerName: "Team Name",
-                width: 230,
+                minWidth: 230,
+                flex: 1,
             },
             {
                 field: "observer_id",
                 headerName: navbar.state.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
-                width: 230,
+                minWidth: 230,
+                flex: 1,
                 renderCell: (params) => (
                     <p className="pt-3">{users[params.value]}</p>
                 )
@@ -55,7 +57,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
             {
                 field: "team_users",
                 headerName: "Members",
-                width: 230,
+                minWidth: 230,
+                flex: 1,
                 renderCell: (params) => (
                     <>{params.value + " "}</>
                 )
@@ -63,7 +66,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
             {
                 field: "date_created",
                 headerName: "Date Created",
-                width: 160,
+                minWidth: 160,
+                flex: 1,
                 renderCell: (params) => {
                     let dateCreatedString = getHumanReadableDueDate(params.value);
 

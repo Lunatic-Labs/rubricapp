@@ -31,7 +31,8 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "course_name",
         headerName: "Course Name",
-        width: 250,
+        minWidth: 250,
+        flex: 1,
         renderCell: (params) => (
           <Typography
             sx={{fontSize: "1.6rem"}}
@@ -44,22 +45,26 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "course_number",
         headerName: "Course Number",
-        width: 150,
+        minWidth: 150,
+        flex: 1,
       },
       {
         field: "term",
         headerName: "Term",
-        width: 100,
+        minWidth: 100,
+        flex: 1,
       },
       {
         field: "year",
         headerName: "Year",
-        width: 80,
+        minWidth: 80,
+        flex: 1,
       },
       {
         field: "use_tas",
         headerName: "Use T.A's",
-        width: 80,
+        minWidth: 80,
+        flex: 1,
         renderCell: (params) => (
           <>{ params.value===null ? "N/A" : (params.value ? "Yes" : "No") }</>
         )
@@ -67,7 +72,8 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "use_fixed_teams",
         headerName: "Fixed Teams",
-        width: 80,
+        minWidth: 80,
+        flex: 1,
         renderCell: (params) => (
           <>{params.value===null ? "N/A": (params.value ? "Yes":"No")}</>
         )
@@ -83,7 +89,8 @@ class ViewCourses extends Component<ViewCoursesProps> {
           // and are either a TA/Instructor or Student in the course!
           field: "edit_action",
           headerName: "EDIT",
-          width: 100,
+          minWidth: 100,
+          flex: 1,
           filterable: false,
           align: "center",
           headerAlign: "center",
@@ -110,7 +117,8 @@ class ViewCourses extends Component<ViewCoursesProps> {
       {
         field: "view_action",
         headerName: "VIEW",
-        width: 100,
+        minWidth: 100,
+        flex: 1,
         filterable: false,
         align: "center",
         headerAlign: "center",
@@ -200,7 +208,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
               data={activeCourses}
               columns={columns}
               getRowId={(row) => row.course_id}
-              height="35vh"
+              height="50vh"
             />
           </Box>
         </Box>
@@ -225,7 +233,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
                 data={inactiveCourses}
                 columns={columns}
                 getRowId={(row) => row.course_id}
-                height="35vh"
+                height="50vh"
               />
             </Box>
           </Box>

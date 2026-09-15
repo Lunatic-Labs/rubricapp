@@ -361,7 +361,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "assessment_task_name",
                 headerName: "Task Name",
-                width: 200,
+                minWidth: 200,
+                flex: 1,
                 renderCell: (params) => (
                     <>
                         {params.value ? params.value : "N/A"}
@@ -371,7 +372,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "assessment_task_id",
                 headerName: "Due Date",
-                width: 160,
+                minWidth: 160,
+                flex: 1,
                 renderCell: (params) => {
                     const assessmentTaskId = params.value;
                     let dueDateString = getHumanReadableDueDate(
@@ -389,7 +391,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "role_id",
                 headerName: "Completed By",
-                width: 140,
+                minWidth: 140,
+                flex: 1,
                 renderCell: (params) => (
                     <>
                         {roleNames && params.value ? roleNames[params.value] : "N/A"}
@@ -399,7 +402,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "rubric_id",
                 headerName: "Rubric Used",
-                width: 160,
+                minWidth: 160,
+                flex: 1,
                 renderCell: (params) => (
                     <>
                         {rubricNames && params.value ? rubricNames[params.value] : "N/A"}
@@ -443,7 +447,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "unit_of_assessment",
                 headerName: "Team?",
-                width: 90,
+                minWidth: 90,
+                flex: 1,
                 renderCell: (params) => (
                     <>
                         {params.value ? "Yes" : "No"}
@@ -454,7 +459,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 {
                     field: "publish_action",
                     headerName: "Publish",
-                    width: 90,
+                    minWidth: 90,
+                    flex: 1,
                     sortable: false,
                     filterable: false,
                     align: "center",
@@ -486,7 +492,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 {
                     field: "lock_action",
                     headerName: "Lock",
-                    width: 90,
+                    minWidth: 90,
+                    flex: 1,
                     sortable: false,
                     filterable: false,
                     align: "center",
@@ -518,7 +525,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                 {
                     field: "edit_action",
                     headerName: "Edit",
-                    width: 90,
+                    minWidth: 90,
+                    flex: 1,
                     sortable: false,
                     filterable: false,
                     align: "center",
@@ -565,7 +573,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "view_action",
                 headerName: "View",
-                width: 90,
+                minWidth: 90,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -586,7 +595,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "todo_action",
                 headerName: "To Do",
-                width: 120,
+                minWidth: 120,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -640,7 +650,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
             {
                 field: "notify_action",
                 headerName: "Notify",
-                width: 110,
+                minWidth: 110,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -678,7 +689,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                     data={sortedAssessmentTasks}
                     columns={columns}
                     getRowId={(row) => row.assessment_task_id}
-                    height="70vh"
+                    height="75vh"
                 />
             </>
         )

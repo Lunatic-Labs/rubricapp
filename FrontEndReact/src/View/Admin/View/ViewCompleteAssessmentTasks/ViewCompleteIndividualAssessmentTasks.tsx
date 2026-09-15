@@ -238,7 +238,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "assessment_task_id",
                 headerName: "Assessment Task",
-                width: 180,
+                minWidth: 180,
+                flex: 1,
                 //Custom rendering: Shows assessment name instead of ID
                 renderCell: () => {
                     return (
@@ -252,7 +253,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "last_name",
                 headerName: "Student Name",
-                width: 150,
+                minWidth: 150,
+                flex: 1,
                 // custom rendering shows last name or N/A if missing
                 renderCell: (params) => {
                     return (
@@ -266,7 +268,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "completed_by",
                 headerName: "Assessor",
-                width: 150,
+                minWidth: 150,
+                flex: 1,
                 // Custom rendering Maps user ID to readable name
                 renderCell: (params) => {
                     return (
@@ -280,7 +283,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "initial_time",
                 headerName: "Initial Time",
-                width: 160,
+                minWidth: 160,
+                flex: 1,
                 // custom rendering converts timestamp to human-readable format in course timezone
                 renderCell: (params) => {
                     const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
@@ -296,7 +300,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "last_update",
                 headerName: "Last Updated",
-                width: 160,
+                minWidth: 160,
+                flex: 1,
                 // custom rendering: converts timezone to human readable
                 renderCell: (params) => {
                     const timeZone = chosenAssessmentTask ? chosenAssessmentTask.time_zone : "";
@@ -312,7 +317,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "completed_assessment_id",
                 headerName: "Lock",
-                width: 90,
+                minWidth: 90,
+                flex: 1,
                 renderCell: (params) => {
                     const completedAssessmentId = params.value;
                     const task = completedAssessmentTasks.find((task: any) => task["completed_assessment_id"] === completedAssessmentId);
@@ -342,7 +348,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "see_more_action",
                 headerName: "See More Details",
-                width: 180,
+                minWidth: 180,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",
@@ -380,7 +387,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
             {
                 field: "notify_action",
                 headerName: "Notify",
-                width: 110,
+                minWidth: 110,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",

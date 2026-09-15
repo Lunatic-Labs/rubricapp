@@ -254,12 +254,14 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
               {
                 field: "subject",
                 headerName: "Subject",
-                width: 220,
+                minWidth: 220,
+                flex: 1,
               },
               {
                 field: "message",
                 headerName: "Message",
-                width: 340,
+                minWidth: 340,
+                flex: 1,
                 renderCell: (params) => {
                   if (!params.value) return '';
                   return (
@@ -272,7 +274,8 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
               {
                 field: "sent_at",
                 headerName: "Sent At",
-                width: 160,
+                minWidth: 160,
+                flex: 1,
                 renderCell: (params) => {
                   if (!params.value) return '';
                   return <>{new Date(params.value).toLocaleString()}</>;
@@ -281,7 +284,8 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
               {
                 field: "delete_action",
                 headerName: "Delete",
-                width: 90,
+                minWidth: 90,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",

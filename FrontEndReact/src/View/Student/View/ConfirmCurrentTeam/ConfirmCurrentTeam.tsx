@@ -143,21 +143,24 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 			{
 				field: "first_name",
 				headerName: "First Name",
-				width: 150,
+				minWidth: 150,
+				flex: 1,
 				align: "center",
 				headerAlign: "center",
 			},
 			{
 				field: "last_name",
 				headerName: "Last Name",
-				width: 150,
+				minWidth: 150,
+				flex: 1,
 				align: "center",
 				headerAlign: "center",
 			},
 			{
 				field: "email",
 				headerName: "Email",
-				width: 200,
+				minWidth: 200,
+				flex: 1,
 			},
 		];
 

@@ -166,12 +166,14 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
             {
                 field: "assessment_task_name",
                 headerName: "Task Name",
-                width: 300,
+                minWidth: 300,
+                flex: 1,
             },
             {
                 field: "unit_of_assessment",
                 headerName: "Unit of Assessment",
-                width: 270,
+                minWidth: 270,
+                flex: 1,
                 renderCell: (params) => (
                     <p className='mt-3'>
                         {params.value ? "Team" : "Individual"}
@@ -181,7 +183,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
             {
                 field: "due_date",
                 headerName: "Due Date",
-                width: 170,
+                minWidth: 170,
+                flex: 1,
                 renderCell: (params) => {
                     let dueDateString = getHumanReadableDueDate(params.value);
 
@@ -195,7 +198,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
             {
                 field: "rubric_id",
                 headerName: "Rubric Used",
-                width: 270,
+                minWidth: 270,
+                flex: 1,
                 renderCell: (params) => (
                     <p className='mt-3'>
                         {this.props.rubricNames ? this.props.rubricNames[params.value]:""}
@@ -205,7 +209,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
             {
                 field: "assessment_task_id",
                 headerName: "TO DO",
-                width: 140,
+                minWidth: 140,
+                flex: 1,
                 sortable: false,
                 filterable: false,
                 align: "center",
