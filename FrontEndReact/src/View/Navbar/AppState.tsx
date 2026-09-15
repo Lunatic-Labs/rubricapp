@@ -33,6 +33,7 @@ import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCus
 import UserAccount from './UserAccount';
 import PrivacyPolicy from './PrivacyPolicy';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
+import AdminLoginActivity from '../Admin/View/ViewUsers/AdminLoginActivity';
 import { AssessmentTask as AssessmentTaskType } from '../../types/AssessmentTask';
 import { CompleteAssessmentTask as CompleteAssessmentTaskType } from '../../types/CompleteAssessmentTask';
 import { Course as CourseType } from '../../types/Course';
@@ -858,6 +859,19 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                     >
                                         View Notifications
                                     </Button>
+                                    <Button
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                activeTab: "AdminLoginActivity",
+                                                user: null,
+                                                addUser: null
+                                            });
+                                        }}
+                                    >
+                                        View Login Activity
+                                    </Button>
                                 </div>
                             </Box>
                         </div>
@@ -1246,6 +1260,15 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <ViewNotification
                             navbar={this}
                         />
+                    </Box>
+                }
+                {this.state.activeTab==="AdminLoginActivity" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"SuperAdminUsers"}
+                        />
+                        <AdminLoginActivity />
                     </Box>
                 }
             </Box>
