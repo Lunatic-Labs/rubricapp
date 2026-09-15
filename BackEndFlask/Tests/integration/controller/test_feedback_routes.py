@@ -31,15 +31,15 @@ def test_create_new_feedback(flask_app_mock, sample_token, auth_header, client):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             comp = create_completed_assessment(sample_completed_assessment(
                 user[0].user_id, 
                 task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
 
             feedback_data = {
@@ -49,10 +49,10 @@ def test_create_new_feedback(flask_app_mock, sample_token, auth_header, client):
                 "feedback_time": datetime.now(timezone.utc),
             }
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
-                f"/api/feedback?user_id={result["user_id"]}",
+                f"/api/feedback?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=feedback_data
             )
@@ -85,15 +85,15 @@ def test_create_new_feedback_with_existing_feedback(flask_app_mock, sample_token
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             comp = create_completed_assessment(sample_completed_assessment(
                 user[0].user_id, 
                 task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
 
             feedback_data = {
@@ -103,10 +103,10 @@ def test_create_new_feedback_with_existing_feedback(flask_app_mock, sample_token
 
             sample_feedback(comp.completed_assessment_id, user_id=user[0].user_id)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
-                f"/api/feedback?user_id={result["user_id"]}",
+                f"/api/feedback?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=feedback_data
             )
@@ -137,10 +137,10 @@ def test_create_new_feedback_raises_exception(flask_app_mock, sample_token, auth
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
-                f"/api/feedback?user_id={result["user_id"]}",
+                f"/api/feedback?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 

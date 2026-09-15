@@ -40,7 +40,8 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
     }
 
      //Fetches all necessary data when component first loads
-     //API 4 calls made: Fetches teams for the course, fetch assessment tasks for the course, fetch all system roles, fetch all rubrics
+     //API 3 calls made: fetch teams for the course, fetch assessment tasks for the course, fetch all rubrics
+     //Role names are not fetched here; they come from the navbar's cached navbar.state.roleNameMap
 
     componentDidMount() {
         //Extract data from props       
@@ -109,7 +110,7 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
             //Shows while waiting for all API calls to complete
             //Checks ALL required data exists before proceeding
 
-        } else if (!isLoaded || !assessmentTasks || !rubrics || !teams || !navbar.state.roles || !navbar.state.roleNameMap) {
+        } else if (!isLoaded || !assessmentTasks || !rubrics || !teams || !navbar.state.roleNameMap) {
             return(
                 <Loading />
             )
