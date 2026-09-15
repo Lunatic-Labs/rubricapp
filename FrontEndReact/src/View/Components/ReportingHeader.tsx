@@ -1,6 +1,5 @@
 import CourseInfo from "./CourseInfo";
 import { Box } from "@mui/material";
-import BackButtonResource from "./BackButtonResource";
 import TabManager from "../Admin/View/Reporting/ReportTabs";
 
 interface ReportingMainHeaderProps {
@@ -16,10 +15,6 @@ export default function ReportingMainHeader (props: ReportingMainHeaderProps) {
 
     return (
         <>
-            <BackButtonResource
-                navbar={navbar}
-                tabSelected={"User"}
-            />
             <Box className="content-spacing">
                 <CourseInfo
                     courseTitle={chosenCourse["course_name"]}
