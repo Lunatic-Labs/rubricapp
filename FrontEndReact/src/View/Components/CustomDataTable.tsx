@@ -272,7 +272,13 @@ const CustomToolbar = () => {
     <GridToolbarContainer>
       <GridToolbarQuickFilter />
       <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
-        <GridToolbarFilterButton />
+        <GridToolbarFilterButton
+          slotProps={{
+            // Without label text, the startIcon's own right margin would
+            // otherwise leave the icon looking off-center in the button.
+            button: { sx: { minWidth: 'unset', '& .MuiButton-startIcon': { margin: 0 } } },
+          }}
+        />
         <IconButton
           size="small"
           aria-label="more table options"
@@ -334,6 +340,12 @@ const defaultOptions: Partial<DataGridProps> = {
   slots: {
     toolbar: CustomToolbar,
   },
+  // The filter button's label text is blanked out so only its icon (and
+  // active-filter-count badge) shows in the toolbar; its tooltip and
+  // aria-label still say "Filters" for accessibility.
+  localeText: {
+    toolbarFilters: '',
+  },
 };
 
 const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: CustomDataTableProps) => {
@@ -342,6 +354,7 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: 
     ...options,
     slots: { ...defaultOptions.slots, ...options?.slots },
     slotProps: { ...defaultOptions.slotProps, ...options?.slotProps },
+    localeText: { ...defaultOptions.localeText, ...options?.localeText },
     // Stripe by the row's index within the current page, which stays stable
     // while scrolling; any page-supplied class names are kept alongside.
     getRowClassName: (params) => {
