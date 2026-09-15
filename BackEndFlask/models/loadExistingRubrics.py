@@ -4,8 +4,15 @@ from models.observable_characteristics import create_observable_characteristic
 from models.suggestions import create_suggestion
 from models.rubric_categories import create_rubric_category
 from models.ratings_numbers import *
+from core import db
+from models.schemas import Course
 
 def load_existing_rubrics():
+    # Seed the rubrics into course 1 when it exists. Default rubrics
+    # (owner == 1) are visible in every course regardless, so this only
+    # records where they were seeded; fresh databases without any course
+    # yet leave course_id NULL.
+    seeded_course_id = 1 if db.session.get(Course, 1) else None
     rubrics = [
         # (Latest update is June 7, 2022) Critical Thinking
         ["Critical Thinking", "Forming an argument or reaching a conclusion supported with evidence by evaluating, analyzing, and/or synthesizing relevant information."],
@@ -45,6 +52,7 @@ def load_existing_rubrics():
         r["rubric_name"] = rubric[0]
         r["rubric_description"] = rubric[1]
         r["owner"] = 1
+        r["course_id"] = seeded_course_id
         create_rubric(r)
 
 def load_existing_categories():

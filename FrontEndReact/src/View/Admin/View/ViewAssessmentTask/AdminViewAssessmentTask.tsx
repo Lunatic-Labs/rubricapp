@@ -66,7 +66,7 @@ class AdminViewAssessmentTask extends Component<AdminViewAssessmentTaskProps, Ad
             "assessment_tasks", this, {dest: "assessmentTasks"}); //Maps to state.assessmentTasks
             
         //API call 3: fetch all available rubrics
-        genericResourceGET(`/rubric?all=${true}`, 'rubrics', this);
+        genericResourceGET(`/rubric?all=${true}&course_id=${chosenCourse["course_id"]}`, 'rubrics', this);
         
         // Set the viewing mode in state
         this.setState({ isViewingAsStudent });
