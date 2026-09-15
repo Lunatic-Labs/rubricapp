@@ -260,6 +260,14 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
         columns={columns}
         getRowId={(row) => row._row_id}
         height="70%"
+        options={{
+          // Slightly smaller than CustomDataTable's shared defaults
+          // (1.5rem cell / 1.2rem header), scoped to just this table.
+          sx: {
+            '& .MuiDataGrid-cell': { fontSize: '1rem' },
+            '& .MuiDataGrid-columnHeaderTitle': { fontSize: '1rem' },
+          },
+        }}
       />
     );
   }

@@ -1,21 +1,13 @@
 import React from 'react';
-import { Box, createTheme, Divider, IconButton, ListItemIcon, ListItemText, Menu, MenuItem, ThemeProvider } from '@mui/material';
-import MoreVertIcon from '@mui/icons-material/MoreVert';
+import { Box, createTheme, ThemeProvider } from '@mui/material';
 import ViewColumnIcon from '@mui/icons-material/ViewColumn';
-import DensitySmallIcon from '@mui/icons-material/DensitySmall';
-import DensityMediumIcon from '@mui/icons-material/DensityMedium';
-import DensityLargeIcon from '@mui/icons-material/DensityLarge';
-import FileDownloadIcon from '@mui/icons-material/FileDownload';
-import PrintIcon from '@mui/icons-material/Print';
 import {
   DataGrid,
   DataGridProps,
   GridColDef,
-  GridPreferencePanelsValue,
   GridToolbarContainer,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
-  useGridApiContext,
   useGridApiRef,
 } from '@mui/x-data-grid';
 
@@ -256,18 +248,9 @@ const customTheme = createTheme({
   },
 });
 
-// Search box + Filters button on the left; Columns/Density/Export are
-// combined into a single dropdown menu instead of separate toolbar buttons.
+// Search box on the left; Filters button pushed to the right. The "..." menu
+// that used to sit next to Filters (density + CSV/print export) is gone.
 const CustomToolbar = () => {
-  const apiRef = useGridApiContext();
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
-
-  const closeMenu = () => setAnchorEl(null);
-  const runAndClose = (action: () => void) => () => {
-    action();
-    closeMenu();
-  };
-
   return (
     <GridToolbarContainer>
       <GridToolbarQuickFilter />
@@ -279,43 +262,7 @@ const CustomToolbar = () => {
             button: { sx: { minWidth: 'unset', '& .MuiButton-startIcon': { margin: 0 } } },
           }}
         />
-        <IconButton
-          size="small"
-          aria-label="more table options"
-          onClick={(event) => setAnchorEl(event.currentTarget)}
-        >
-          <MoreVertIcon />
-        </IconButton>
       </Box>
-      <Menu
-        anchorEl={anchorEl}
-        open={Boolean(anchorEl)}
-        onClose={closeMenu}
-        anchorOrigin={{ vertical: 'bottom', horizontal: 'right' }}
-        transformOrigin={{ vertical: 'top', horizontal: 'right' }}
-      >
-        <MenuItem onClick={runAndClose(() => apiRef.current.setDensity('compact'))}>
-          <ListItemIcon><DensitySmallIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Compact density</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={runAndClose(() => apiRef.current.setDensity('standard'))}>
-          <ListItemIcon><DensityMediumIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Standard density</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={runAndClose(() => apiRef.current.setDensity('comfortable'))}>
-          <ListItemIcon><DensityLargeIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Comfortable density</ListItemText>
-        </MenuItem>
-        <Divider />
-        <MenuItem onClick={runAndClose(() => apiRef.current.exportDataAsCsv())}>
-          <ListItemIcon><FileDownloadIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Download as CSV</ListItemText>
-        </MenuItem>
-        <MenuItem onClick={runAndClose(() => apiRef.current.exportDataAsPrint())}>
-          <ListItemIcon><PrintIcon fontSize="small" /></ListItemIcon>
-          <ListItemText>Print</ListItemText>
-        </MenuItem>
-      </Menu>
     </GridToolbarContainer>
   );
 };

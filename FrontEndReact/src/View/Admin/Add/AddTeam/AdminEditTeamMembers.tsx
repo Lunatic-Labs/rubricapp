@@ -117,7 +117,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
             {
               field: "team_name",
               headerName: "Current Team",
-              minWidth: 120,
+              minWidth: 200,
               flex: 1,
               renderCell: (params) => (
                 <>{params.value ? params.value : "No team assigned"}</>
