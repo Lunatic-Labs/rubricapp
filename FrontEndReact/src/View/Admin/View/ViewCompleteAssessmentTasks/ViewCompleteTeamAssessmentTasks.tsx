@@ -340,7 +340,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                         data={completedAssessmentTasks ? completedAssessmentTasks : []}
                         columns={columns}
                         getRowId={(row) => row.completed_assessment_id}
-                        height="21rem"
+                        height="40vh"
                     />
                 </Box>
             </Box>

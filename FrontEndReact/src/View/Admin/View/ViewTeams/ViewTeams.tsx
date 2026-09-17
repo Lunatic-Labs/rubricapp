@@ -196,7 +196,7 @@ class ViewTeams extends Component<ViewTeamsProps> {
         data={teams ? teams : []}
         columns={columns}
         getRowId={(row) => row.team_id}
-        height="75vh"
+        height="60vh"
       />
     );
   }

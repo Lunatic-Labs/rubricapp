@@ -337,6 +337,19 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: 
     updateAvailableWidth();
   }, [updateAvailableWidth]);
 
+  // `getRowHeight: 'auto'` measures each row from its actual content, so the
+  // real total row height can land above or below ROW_HEIGHT_ESTIMATE below
+  // (e.g. a cell that wraps to two lines). That mismatch is most visible with
+  // few rows, where the static estimate — rather than the vh cap — decides
+  // the container's height. Track the grid's own measured content height so
+  // the container can correct itself once real rows have been laid out.
+  const [measuredRowsHeight, setMeasuredRowsHeight] = React.useState<number | null>(null);
+  React.useEffect(() => {
+    return apiRef.current.subscribeEvent('virtualScrollerContentSizeChange', (params) => {
+      setMeasuredRowsHeight(params.contentHeight);
+    });
+  }, [apiRef]);
+
   // Column-level menus (sort/filter/hide) are dropped in favor of the single
   // search box + Filters button in the toolbar above, so sorting stays on
   // header click but the per-column "..." menu no longer shows.
@@ -361,11 +374,9 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: 
   // (vh, %, rem, px) each page passes for `height`.
   const pageSize = gridOptions.initialState?.pagination?.paginationModel?.pageSize ?? 10;
   const rowsShown = Math.min(data.length, pageSize);
-  const estimatedContentHeight =
-    TOOLBAR_HEIGHT +
-    COLUMN_HEADER_HEIGHT +
-    FOOTER_HEIGHT +
-    (data.length === 0 ? EMPTY_STATE_HEIGHT : rowsShown * ROW_HEIGHT_ESTIMATE);
+  const rowsHeight =
+    data.length === 0 ? EMPTY_STATE_HEIGHT : measuredRowsHeight ?? rowsShown * ROW_HEIGHT_ESTIMATE;
+  const estimatedContentHeight = TOOLBAR_HEIGHT + COLUMN_HEADER_HEIGHT + FOOTER_HEIGHT + rowsHeight;
 
   return (
     <ThemeProvider theme={customTheme}>
