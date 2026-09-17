@@ -421,7 +421,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                 <Box className="form-position">
                     <Box className="card-style">
                         <FormControl className="form-spacing">
-                            <Typography id="addTaskTitle" variant="h5" aria-label={editAssessmentTask ? 'adminEditAssessmentTaskTitle' : 'adminAddAssessmentTaskTitle'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+                            <Typography id="addTaskTitle" variant="h5" data-testid={editAssessmentTask ? 'admin-edit-assessment-task-title' : 'admin-add-assessment-task-title'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
 
                             <Box className="form-input">
                                 <TextField
@@ -464,7 +464,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         },
                                     }}
                                     inputProps={{ maxLength: 50 }}
-                                    aria-label="addAssessmentTaskName"
+                                    data-testid="add-assessment-task-name"
                                 />
                                 <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
                                     <FormControl id="formSelectRubric"
@@ -515,7 +515,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                     },
                                                 },
                                             }}
-                                            aria-label="addAssessmentRubricDropdown"
+                                            SelectDisplayProps={{ "data-testid": "add-assessment-rubric-dropdown" } as React.HTMLAttributes<HTMLDivElement>}
                                         >
                                             {rubricOptions}
                                         </Select>
@@ -571,9 +571,9 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         }}
                                         onChange={this.handleTeams}
                                     >
-                                        <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
+                                        <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" data-testid="add-assessment-invididual-assessment-radio-option"/>
 
-                                        <FormControlLabel value={true} control={<Radio />} label="Team Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
+                                        <FormControlLabel value={true} control={<Radio />} label="Team Assessment" data-testid="add-assessment-group-assessment-radio-option" />
                                     </RadioGroup>
                                 </FormControl>
 
@@ -887,7 +887,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
                                                 required
                                                 style={{width: "200px"}}
-                                                aria-label="addAssessmentTimezoneDropdown"
+                                                SelectDisplayProps={{ "data-testid": "add-assessment-timezone-dropdown" } as React.HTMLAttributes<HTMLDivElement>}
                                             >
                                                 <MenuItem value={"America/New_York"} aria-label="addAssessmentEasternRadioOption">Eastern Time</MenuItem>
 
@@ -943,7 +943,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         },
                                     }}
                                     inputProps={{ maxLength: 20 }}
-                                    aria-label="addAssessmentTeamPassword"
+                                    data-testid="add-assessment-team-password"
                                 />
 
                                 }
@@ -990,13 +990,13 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                             },
                                         },
                                     }}
-                                    aria-label="addAssessmentNotes"
+                                    data-testid="add-assessment-notes"
                                 />
 
                                 <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
                                     <Button
                                         onClick={() => { confirmCreateResource("AssessmentTask"); }}
-                                        aria-label="adminAddAssessmentCancelButton"
+                                        data-testid="admin-add-assessment-cancel-button"
                                         className="button-colors"
                                         sx={{
                                             color: 'var(--button-text)',
@@ -1013,7 +1013,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         className="primary-color"
                                         variant="contained"
                                         onClick={this.handleSubmit}
-                                        aria-label="addAssessmentCreateOrUpdateButton"
+                                        data-testid="add-assessment-create-or-update-button"
                                         sx={{
                                             color: 'var(--button-text)',
                                             '&:hover': {

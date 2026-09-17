@@ -4,186 +4,186 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel,
-    expectElementWithAriaLabelToHaveErrorMessage
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId,
+    expectElementWithTestIdToHaveErrorMessage
 } from "../../../../../testUtilities";
 
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var at = "assessmentTab";
-var adt = "assessmentDashboardTitle";
-var atb = "addTaskButton";
-var aaatt = "adminAddAssessmentTaskTitle";
-var aaacb = "adminAddAssessmentCancelButton"
-var aagaro = "addAssessmentGroupAssessmentRadioOption";
-var aaiaro = "addAssessmentInvididualAssessmentRadioOption";
-var aatp = "addAssessmentTeamPassword";
-var aacoub = "addAssessmentCreateOrUpdateButton";
-var aatn = "addAssessmentTaskName";
-var aard = "addAssessmentRubricDropdown";
-var aatd = "addAssessmentTimezoneDropdown";
-var aan = "addAssessmentNotes";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var rt = "roster-title";
+var at = "assessment-tab";
+var adt = "assessment-dashboard-title";
+var atb = "add-task-button";
+var aaatt = "admin-add-assessment-task-title";
+var aaacb = "admin-add-assessment-cancel-button"
+var aagaro = "add-assessment-group-assessment-radio-option";
+var aaiaro = "add-assessment-invididual-assessment-radio-option";
+var aatp = "add-assessment-team-password";
+var aacoub = "add-assessment-create-or-update-button";
+var aatn = "add-assessment-task-name";
+var aard = "add-assessment-rubric-dropdown";
+var aatd = "add-assessment-timezone-dropdown";
+var aan = "add-assessment-notes";
 test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminAddAssessmentTask.test.tsx Test 1: Should render the Add Assessment Task Form given the Add Task button is clicked", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(atb);
+    clickElementWithTestId(atb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithTestIdToBeInDocument(aaatt);
     });
 });
 test("AdminAddAssessmentTask.test.tsx Test 2: Should render the Assessment dashboard if the cancel button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
     
-    clickElementWithAriaLabel(atb);
+    clickElementWithTestId(atb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithTestIdToBeInDocument(aaatt);
     });
 
-    clickElementWithAriaLabel(aaacb);
+    clickElementWithTestId(aaacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     },{ timeout: 3000 });
 });
 test("AdminAddAssessmentTask.test.tsx Test 3: Should render the Password text field if the Team Assessment option is clicked for Unit of Assessment", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
     
-    clickElementWithAriaLabel(atb);
+    clickElementWithTestId(atb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithTestIdToBeInDocument(aaatt);
     });
 
-    clickElementWithAriaLabel(aagaro);
+    clickElementWithTestId(aagaro);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aatp);
+        expectElementWithTestIdToBeInDocument(aatp);
     });
 });
 test("AdminAddAssessmentTask.test.tsx Test 4: Should provide a HelperText error when Task Name is left empty", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(atb);
+    clickElementWithTestId(atb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithTestIdToBeInDocument(aaatt);
     });
 
-    clickElementWithAriaLabel(aacoub);
+    clickElementWithTestId(aacoub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(aatn, "Task Name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(aatn, "Task Name cannot be empty");
     });
 });
 test("AdminAddAssessmentTask.test.tsx Test 5: Should return back to the Assessment View page if all valid information is provided and the Add Assessment button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(atb);
+    clickElementWithTestId(atb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithTestIdToBeInDocument(aaatt);
     });
 
-    clickElementWithAriaLabel(aatn);
+    clickElementWithTestId(aatn);
 
     // The backend has no assessment-task-delete endpoint, so this test can't
     // clean up after itself; a unique name per run keeps repeat runs from
@@ -193,23 +193,23 @@ test("AdminAddAssessmentTask.test.tsx Test 5: Should return back to the Assessme
     var taskName = `Make a class ${Date.now()}`;
 
     await waitFor(() => {
-        changeElementWithAriaLabelWithInput(aatn, taskName);
+        changeElementWithTestIdWithInput(aatn, taskName);
     });
 
     await waitFor(() => {
-        clickElementWithAriaLabel(aard);
+        clickElementWithTestId(aard);
     
-        clickFirstElementWithAriaLabel(aaiaro);
+        clickFirstElementWithTestId(aaiaro);
     
-        clickElementWithAriaLabel(aatd);
+        clickElementWithTestId(aatd);
     },{ timeout: 3000 });
 
     
     await waitFor(() => {
-        changeElementWithAriaLabelWithInput(aan, "Good luck!");
+        changeElementWithTestIdWithInput(aan, "Good luck!");
     });
     
-    clickElementWithAriaLabel(aacoub);
+    clickElementWithTestId(aacoub);
 });
 
 
@@ -217,31 +217,31 @@ test("AdminAddAssessmentTask.test.tsx Test 5: Should return back to the Assessme
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
 
-//     clickElementWithAriaLabel(atb);
+//     clickElementWithTestId(atb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(aaatt);
+//         expectElementWithTestIdToBeInDocument(aaatt);
 //     });
 
-//     clickElementWithAriaLabel(aacoub);
+//     clickElementWithTestId(aacoub);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToHaveErrorMessage(aatd, "Time Zone cannot be empty");
+//         expectElementWithTestIdToHaveErrorMessage(aatd, "Time Zone cannot be empty");
 //     });
 // });
 
@@ -250,61 +250,61 @@ test("AdminAddAssessmentTask.test.tsx Test 5: Should return back to the Assessme
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
 
-//     clickElementWithAriaLabel(atb);
+//     clickElementWithTestId(atb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(aaatt);
+//         expectElementWithTestIdToBeInDocument(aaatt);
 //     });
 
-//     clickElementWithAriaLabel(aacoub);
+//     clickElementWithTestId(aacoub);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToHaveErrorMessage(aard, "Rubric cannot be empty");
+//         expectElementWithTestIdToHaveErrorMessage(aard, "Rubric cannot be empty");
 //     });
 // });
 test("AdminAddAssessmentTask.test.tsx Test 8: Should provide a HelperText error when Instructions to Students/TA's is left empty", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(atb);
+    clickElementWithTestId(atb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithTestIdToBeInDocument(aaatt);
     });
 
-    clickElementWithAriaLabel(aacoub);
+    clickElementWithTestId(aacoub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(aan, "Assessment Notes cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(aan, "Assessment Notes cannot be empty");
     });
 });

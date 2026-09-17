@@ -827,7 +827,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
-                            <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
+                            <Typography data-testid="super-admin-title" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
                             <Box>
@@ -986,7 +986,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Teams" &&
-                    <Box className="page-spacing" aria-label="teamDashboard">
+                    <Box className="page-spacing" data-testid="team-dashboard">
                         <TeamDashboard
                             navbar={this}
                         />
@@ -1045,7 +1045,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="AssessmentTasks" &&
-                    <Box className="page-spacing" aria-label="assessmentDashboard">
+                    <Box className="page-spacing" data-testid="assessment-dashboard">
                         <AssessmentDashboard
                             navbar={this}
                         />
@@ -1173,7 +1173,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Reporting" &&
-                    <Box className="page-spacing" aria-label="reportingDashboard">
+                    <Box className="page-spacing" data-testid="reporting-dashboard">
                         <BackButtonResource
                             navbar={this}
                             tabSelected={this.props.isSuperAdmin ? "AssessmentTask" : "User"}

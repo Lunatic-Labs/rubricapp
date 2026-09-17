@@ -5,111 +5,111 @@ import Cookies from "universal-cookie";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId
 } from "../../../../../testUtilities";
 
 
-var lf = "loginForm";
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var eub = "editUserButton";
-var eut = "editUserTitle";
-var sbub = "studentBulkUploadButton";
-var abut = "adminBulkUploadTitle";
-var aub = "addUserButton";
-var auf = "addUserForm";
-var sat = "superAdminTitle";
+var lf = "login-form";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var rt = "roster-title";
+var eub = "edit-user-button";
+var eut = "edit-user-title";
+var sbub = "student-bulk-upload-button";
+var abut = "admin-bulk-upload-title";
+var aub = "add-user-button";
+var auf = "add-user-form";
+var sat = "super-admin-title";
 test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminViewUsers.test.tsx Test 1: should render Login Form component", () => {
     render(<Login />);
 
-    expectElementWithAriaLabelToBeInDocument(lf);
+    expectElementWithTestIdToBeInDocument(lf);
 });
 test("AdminViewUsers.test.tsx Test 2: Should show roster page of the users for admin view using demo admin credentials", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 });
 test("AdminViewUsers.test.tsx Test 3: Should show Edit User Form when clicking the Edit Icon for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(eub);
+        clickFirstElementWithTestId(eub);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(eut);
+        expectElementWithTestIdToBeInDocument(eut);
     });
 });
 test("AdminViewUsers.test.tsx Test 4: Should show Student Bulk Upload Form when clicking the Student Bulk Upload Button for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(sbub);
+    clickElementWithTestId(sbub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(abut);
+        expectElementWithTestIdToBeInDocument(abut);
     });
 });
 test("AdminViewUsers.test.tsx Test 5: Should show Add User Form when clicking the Add User Button for admin view using demo admin credentials", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(auf);
+        expectElementWithTestIdToBeInDocument(auf);
     });
 });
 test("AdminViewUsers.test.tsx Test 6: Should show Edit User Form when clicking the Edit Icon for super admin view using super admin credentials (SKIL-795 regression)", async () => {
@@ -124,24 +124,24 @@ test("AdminViewUsers.test.tsx Test 6: Should show Edit User Form when clicking t
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(lf);
+        expectElementWithTestIdToBeInDocument(lf);
     });
 
-    changeElementWithAriaLabelWithInput(ei, "superadminuser01@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "superadminuser01@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.SUPER_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.SUPER_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(sat);
+        expectElementWithTestIdToBeInDocument(sat);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(eub);
+        clickFirstElementWithTestId(eub);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(eut);
+        expectElementWithTestIdToBeInDocument(eut);
     });
 });

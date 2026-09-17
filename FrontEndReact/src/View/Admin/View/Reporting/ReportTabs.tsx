@@ -11,7 +11,7 @@ interface TabManagerProps {
 
 interface ReportTab {
     label: string;
-    ariaLabel: string;
+    testId: string;
     // The activeTab value that selects this tab when the reporting view opens.
     selectedBy: string;
     // Ratings and Feedback is scoped to a single course, which a super admin has
@@ -20,9 +20,9 @@ interface ReportTab {
 }
 
 const REPORT_TABS: ReportTab[] = [
-    { label: "Assessment Status", ariaLabel: "assessmentStatusTab", selectedBy: "Users" },
-    { label: "Ratings and Feedback", ariaLabel: "ratingAndFeedbackTab", selectedBy: "Teams", hideFromSuperAdmin: true },
-    { label: "Export Graph Comparison", ariaLabel: "exportGraphComparisonTab", selectedBy: "AssessmentTasks" },
+    { label: "Assessment Status", testId: "assessment-status-tab", selectedBy: "Users" },
+    { label: "Ratings and Feedback", testId: "rating-and-feedback-tab", selectedBy: "Teams", hideFromSuperAdmin: true },
+    { label: "Export Graph Comparison", testId: "export-graph-comparison-tab", selectedBy: "AssessmentTasks" },
 ];
 
 export default function TabManager(props: TabManagerProps) {
@@ -68,7 +68,7 @@ export default function TabManager(props: TabManagerProps) {
       >
         {visibleTabs.map(tab => (
           <Tab
-            key={tab.ariaLabel}
+            key={tab.testId}
 
             label={tab.label}
 
@@ -76,7 +76,7 @@ export default function TabManager(props: TabManagerProps) {
               props.setTab(tab.label);
             }}
 
-            aria-label={tab.ariaLabel}
+            data-testid={tab.testId}
           />
         ))}
 

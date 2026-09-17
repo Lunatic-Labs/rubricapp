@@ -4,8 +4,6 @@ import "@testing-library/jest-dom";
 import Login from "../Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
     clickElementWithTestId,
     expectElementWithTestIdToBeInDocument,
     expectElementWithTestIdToHaveErrorMessage,
@@ -17,10 +15,10 @@ var lb = "login-submit-button";
 var ei = "login-email-input";
 var pi = "login-password-input";
 var ema = "error-message-alert";
-var sat = "superAdminTitle";
-var ad = "accountDropdown";
+var sat = "super-admin-title";
+var ad = "account-dropdown";
 var lob = "logout-button";
-var ct = "coursesTitle";
+var ct = "courses-title";
 var fpb = "reset-password-button";
 var vrt = "validate-reset-title";
 
@@ -114,10 +112,10 @@ test("Login.test.tsx Test 7: Should show users page for super admin view using s
     clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(sat);
+        expectElementWithTestIdToBeInDocument(sat);
     });
 
-    clickElementWithAriaLabel(ad);
+    clickElementWithTestId(ad);
 
     clickElementWithTestId(lob);
 
@@ -135,10 +133,10 @@ test("Login.test.tsx Test 8: Should show courses page for admin view using demo 
     clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ad);
+    clickElementWithTestId(ad);
 
     clickElementWithTestId(lob);
 
@@ -156,10 +154,10 @@ test("Login.test.tsx Test 9: Should show courses page for ta/instructor view usi
     clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ad);
+    clickElementWithTestId(ad);
 
     clickElementWithTestId(lob);
 
@@ -177,10 +175,10 @@ test("Login.test.tsx Test 10: Should show courses page for student view using de
     clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ad);
+    clickElementWithTestId(ad);
 
     clickElementWithTestId(lob);
 

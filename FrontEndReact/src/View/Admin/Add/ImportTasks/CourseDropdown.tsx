@@ -87,7 +87,7 @@ componentDidMount() {
               label='Select a Course'
               value={this.state.selectedCourse}
               onChange={this.handleCourseChange}
-              aria-label="adminImportAssessmentCourseDropdown"
+              SelectDisplayProps={{ "data-testid": "admin-import-assessment-course-dropdown" } as React.HTMLAttributes<HTMLDivElement>}
               MenuProps={{
                 PaperProps: {
                   

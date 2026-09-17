@@ -5,10 +5,10 @@ import { render, waitFor, screen, fireEvent, cleanup } from "@testing-library/re
 import { beforeEach, afterEach, afterAll, test, describe, jest } from "@jest/globals";
 import Cookies from 'universal-cookie';
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    clickFirstElementWithAriaLabel,
-    changeElementWithAriaLabelWithInput
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    clickFirstElementWithTestId,
+    changeElementWithTestIdWithInput
 } from "../../../testUtilities";
 import Login from "../../Login/Login";
 
@@ -47,13 +47,13 @@ Object.defineProperty(window, 'sessionStorage', { value: sessionStorageMock });
 window.alert = jest.fn();
 
 // Aria Labels
-const lf = "loginForm";
-const lb = "loginButton";
-const ei = "emailInput";
-const pi = "passwordInput";
-const ct = "coursesTitle";
-const vcib = "viewCourseIconButton";
-const vasb = "viewAsStudentButton";
+const lf = "login-form";
+const lb = "login-submit-button";
+const ei = "login-email-input";
+const pi = "login-password-input";
+const ct = "courses-title";
+const vcib = "view-course-icon-button";
+const vasb = "view-as-student-button";
 
 jest.setTimeout(30000);
 
@@ -409,25 +409,25 @@ describe("View as Student Feature Tests", () => {
         render(<Login />);
 
         await waitFor(() => {
-            expectElementWithAriaLabelToBeInDocument(lf);
+            expectElementWithTestIdToBeInDocument(lf);
         });
     });
 
     // =========================================================================
     // Test 2: Admin login -> courses page
-    // Uses changeElementWithAriaLabelWithInput to properly target the <input>
+    // Uses changeElementWithTestIdWithInput to properly target the <input>
     // inside MUI TextField wrappers (avoids "no value setter" error)
     // =========================================================================
     test("ViewAsStudent.test.js Test 2: Should login as admin and see courses page", async () => {
         const cookies = setupMockCookies('unauth');
         render(<Login />);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(lf); });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(lf); });
 
-        changeElementWithAriaLabelWithInput(ei, 'demoadmin02@skillbuilder.edu');
-        changeElementWithAriaLabelWithInput(pi, mockDemoAdminPassword);
+        changeElementWithTestIdWithInput(ei, 'demoadmin02@skillbuilder.edu');
+        changeElementWithTestIdWithInput(pi, mockDemoAdminPassword);
 
-        clickElementWithAriaLabel(lb);
+        clickElementWithTestId(lb);
 
         await waitFor(() => {
             expect(cookies.set).toHaveBeenCalledWith(
@@ -438,7 +438,7 @@ describe("View as Student Feature Tests", () => {
         });
 
         await waitFor(() => {
-            expectElementWithAriaLabelToBeInDocument(ct);
+            expectElementWithTestIdToBeInDocument(ct);
         }, { timeout: 10000 });
     });
 
@@ -449,11 +449,11 @@ describe("View as Student Feature Tests", () => {
         setupMockCookies('admin');
         render(<Login />);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(ct); }, { timeout: 10000 });
 
-        clickFirstElementWithAriaLabel(vcib);
+        clickFirstElementWithTestId(vcib);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(vasb); }, { timeout: 10000 });
     });
 
     // =========================================================================
@@ -463,13 +463,13 @@ describe("View as Student Feature Tests", () => {
         setupMockCookies('admin');
         render(<Login />);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(ct); }, { timeout: 10000 });
 
-        clickFirstElementWithAriaLabel(vcib);
+        clickFirstElementWithTestId(vcib);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(vasb); }, { timeout: 10000 });
 
-        clickElementWithAriaLabel(vasb);
+        clickElementWithTestId(vasb);
 
         await waitFor(() => {
             expect(global.fetch).toHaveBeenCalledWith(
@@ -506,10 +506,10 @@ describe("View as Student Feature Tests", () => {
 
         // Wait for the courses to load before checking for the banner
         await waitFor(() => { 
-            expectElementWithAriaLabelToBeInDocument(ct); 
+            expectElementWithTestIdToBeInDocument(ct); 
         }, { timeout: 10000 });
 
-        clickFirstElementWithAriaLabel(vcib);
+        clickFirstElementWithTestId(vcib);
 
         // Wait for the student view to load and the banner to appear
         await waitFor(() => {
@@ -531,9 +531,9 @@ describe("View as Student Feature Tests", () => {
 
         render(<Login />);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(ct); }, { timeout: 10000 });
 
-        clickFirstElementWithAriaLabel(vcib);
+        clickFirstElementWithTestId(vcib);
 
         const restoreBtn = await screen.findByText(/Switch Back to Admin/i, {}, { timeout: 10000 });
         fireEvent.click(restoreBtn);
@@ -571,13 +571,13 @@ describe("View as Student Feature Tests", () => {
 
         render(<Login />);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(ct); }, { timeout: 10000 });
 
-        clickFirstElementWithAriaLabel(vcib);
+        clickFirstElementWithTestId(vcib);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(vasb); }, { timeout: 10000 });
 
-        clickElementWithAriaLabel(vasb);
+        clickElementWithTestId(vasb);
 
         await waitFor(() => {
             expect(window.alert).toHaveBeenCalledWith(expect.stringContaining("Failed"));
@@ -593,13 +593,13 @@ describe("View as Student Feature Tests", () => {
         setupMockCookies('admin');
         render(<Login />);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(ct); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(ct); }, { timeout: 10000 });
 
-        clickFirstElementWithAriaLabel(vcib);
+        clickFirstElementWithTestId(vcib);
 
-        await waitFor(() => { expectElementWithAriaLabelToBeInDocument(vasb); }, { timeout: 10000 });
+        await waitFor(() => { expectElementWithTestIdToBeInDocument(vasb); }, { timeout: 10000 });
 
-        const viewAsStudentBtn = screen.getByLabelText(vasb);
+        const viewAsStudentBtn = screen.getByTestId(vasb);
         expect(viewAsStudentBtn).not.toBeDisabled();
 
         fireEvent.click(viewAsStudentBtn);

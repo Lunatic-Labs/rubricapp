@@ -4,182 +4,182 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel,
-    expectElementWithAriaLabelToHaveErrorMessage
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId,
+    expectElementWithTestIdToHaveErrorMessage
 } from "../../../../../testUtilities";
 
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var mhbb = "mainHeaderBackButton";
-var tt = "teamsTab";
-var rt = "rosterTitle";
-var td = "teamDashboard";
-var aatb = "adminAddTeamButton";
-var aatt = "adminAddTeamTitle";
-var catb = "cancelAddTeamButton";
-var aosatb = "addOrSaveAddTeamButton";
-var atf = "addTeamForm";
-var utni = "userTeamNameInput";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var mhbb = "main-header-back-button";
+var tt = "teams-tab";
+var rt = "roster-title";
+var td = "team-dashboard";
+var aatb = "admin-add-team-button";
+var aatt = "admin-add-team-title";
+var catb = "cancel-add-team-button";
+var aosatb = "add-or-save-add-team-button";
+var atf = "add-team-form";
+var utni = "user-team-name-input";
 test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminAddTeam.test.tsx Test 1: Should render the TeamDashboard", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 });
 test("AdminAddTeam.test.tsx Test 2: Should render the Add Team page if the adminAddTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
     
     await waitFor(() => {
-        clickElementWithAriaLabel(aatb);
+        clickElementWithTestId(aatb);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aatt);
+        expectElementWithTestIdToBeInDocument(aatt);
     });
 });
 test("AdminAddTeam.test.tsx Test 3: Should render the teams dashboard if the back button on the Add Team page is clicked", async () => {
     render(<Login/>);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickElementWithAriaLabel(aatb);
+        clickElementWithTestId(aatb);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aatt);
+        expectElementWithTestIdToBeInDocument(aatt);
     });
 
-    clickElementWithAriaLabel(mhbb);
+    clickElementWithTestId(mhbb);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 });
 test("AdminAddTeam.test.tsx Test 4: Should render the teams dashboard if the cancel button on the Add Team page is clicked", async () => {
     render(<Login/>);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
     
     await waitFor(() => {
-        clickElementWithAriaLabel(aatb);
+        clickElementWithTestId(aatb);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aatt);
+        expectElementWithTestIdToBeInDocument(aatt);
     });
 
-    clickElementWithAriaLabel(catb);
+    clickElementWithTestId(catb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 });
 test("AdminAddTeam.test.tsx Test 5: HelperText errors should show for Team Name text field when no information is filled", async () => {
     render(<Login/>);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickElementWithAriaLabel(aatb);
+        clickElementWithTestId(aatb);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aatt);
+        expectElementWithTestIdToBeInDocument(aatt);
     });
 
-    clickElementWithAriaLabel(aosatb);
+    clickElementWithTestId(aosatb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(atf);
+        expectElementWithTestIdToBeInDocument(atf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(utni,"Team name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(utni,"Team name cannot be empty");
     });
 });

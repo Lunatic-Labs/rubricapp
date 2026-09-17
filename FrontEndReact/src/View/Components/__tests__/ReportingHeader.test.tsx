@@ -1,7 +1,9 @@
 import { test, expect, jest } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { clickElementWithAriaLabel } from "../../../testUtilities";
+import {
+    clickElementWithTestId
+} from "../../../testUtilities";
 import ReportingMainHeader from "../ReportingHeader";
 
 function makeNavbar(isSuperAdmin = false) {
@@ -25,7 +27,7 @@ test("ReportingHeader.test.tsx Test 1: should render the chosen course's info an
     render(<ReportingMainHeader navbar={makeNavbar()} setTab={jest.fn()} activeTab="Assessment Status" />);
 
     expect(screen.getByText("Comparative Programming Languages")).toBeInTheDocument();
-    expect(screen.getByLabelText("assessmentStatusTab")).toBeInTheDocument();
+    expect(screen.getByTestId("assessment-status-tab")).toBeInTheDocument();
 });
 
 test("ReportingHeader.test.tsx Test 2: clicking the back button should call confirmCreateResource with the Users tab", () => {
@@ -33,7 +35,7 @@ test("ReportingHeader.test.tsx Test 2: clicking the back button should call conf
 
     render(<ReportingMainHeader navbar={navbar} setTab={jest.fn()} activeTab="Assessment Status" />);
 
-    clickElementWithAriaLabel("mainHeaderBackButton");
+    clickElementWithTestId("main-header-back-button");
 
     expect(navbar.confirmCreateResource).toHaveBeenCalledWith("User", 0);
 });
@@ -43,7 +45,7 @@ test("ReportingHeader.test.tsx Test 3: clicking a report tab should call setTab 
 
     render(<ReportingMainHeader navbar={makeNavbar()} setTab={setTab} activeTab="Assessment Status" />);
 
-    clickElementWithAriaLabel("ratingAndFeedbackTab");
+    clickElementWithTestId("rating-and-feedback-tab");
 
     expect(setTab).toHaveBeenCalledWith("Ratings and Feedback");
 });
@@ -51,7 +53,7 @@ test("ReportingHeader.test.tsx Test 3: clicking a report tab should call setTab 
 test("ReportingHeader.test.tsx Test 4: should hide the Ratings and Feedback tab from a super admin", () => {
     render(<ReportingMainHeader navbar={makeNavbar(true)} setTab={jest.fn()} activeTab="Assessment Status" />);
 
-    expect(screen.queryByLabelText("ratingAndFeedbackTab")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("rating-and-feedback-tab")).not.toBeInTheDocument();
 });
 
 test("ReportingHeader.test.tsx Test 5: should keep the back button for a super admin", () => {
@@ -59,7 +61,7 @@ test("ReportingHeader.test.tsx Test 5: should keep the back button for a super a
 
     render(<ReportingMainHeader navbar={navbar} setTab={jest.fn()} activeTab="Assessment Status" />);
 
-    clickElementWithAriaLabel("mainHeaderBackButton");
+    clickElementWithTestId("main-header-back-button");
 
     expect(navbar.confirmCreateResource).toHaveBeenCalledWith("User", 0);
 });

@@ -547,7 +547,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         alignSelf: "stretch"
                     }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="my-assessment-tasks-title">
                                 My Assessment Tasks
                             </Typography>
                         </Box>
@@ -573,7 +573,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         alignSelf: "stretch"
                     }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="completed-assessment-tasks-title">
                                 Completed Assessments
                             </Typography>
                         </Box>
@@ -599,7 +599,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     alignSelf: "stretch"
                 }}>
                     <Box sx={{ width: "100%" }} className="content-spacing">
-                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
+                        <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="my-teams-title">
                             My Teams
                         </Typography>
                     </Box>

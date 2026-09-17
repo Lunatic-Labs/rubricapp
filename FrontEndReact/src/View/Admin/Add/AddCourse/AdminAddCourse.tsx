@@ -295,8 +295,8 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                 <Box className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
-                            <FormControl className="form-spacing" aria-label="addCourseForm">
-                                <Typography id="addCourseTitle" variant="h5" aria-label="addCourseTitle">
+                            <FormControl className="form-spacing" data-testid="add-course-form">
+                                <Typography id="addCourseTitle" variant="h5" data-testid="add-course-title">
                                     {editCourse ? "Edit Course" : "Add Course"}
                                 </Typography>
 
@@ -342,7 +342,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                             },
                                         }}
                                         inputProps={{ maxLength: 50 }}
-                                        aria-label="courseNameInput"
+                                        data-testid="course-name-input"
                                     />
 
                                     <TextField
@@ -386,7 +386,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                             },
                                         }}
                                         inputProps={{ maxLength: 20 }}
-                                        aria-label="courseNumberInput"
+                                        data-testid="course-number-input"
                                     />
 
                                     <TextField
@@ -430,7 +430,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                             },
                                         }}
                                         inputProps={{ maxLength: 20 }}
-                                        aria-label="courseTermInput"
+                                        data-testid="course-term-input"
                                     />
                     
                                     <TextField
@@ -473,7 +473,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                                 },
                                             },
                                         }}
-                                        aria-label="courseYearInput"
+                                        data-testid="course-year-input"
                                     />
 
                                     <FormControl
@@ -625,7 +625,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
 
                                             id=""
                                             className=""
-                                            aria-label="cancelAddCourseButton"
+                                            data-testid="cancel-add-course-button"
                                         >
                                             Cancel
                                         </Button>
@@ -635,7 +635,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                             id="createCourse"
                                             className="primary-color"
                                             variant="contained"
-                                            aria-label="addOrSaveAddCourseButton"
+                                            data-testid="add-or-save-add-course-button"
                                         >
                                             {editCourse ? "Save" : "Add Course"}
                                         </Button>

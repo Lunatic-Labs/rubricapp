@@ -73,10 +73,10 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                 </DialogContent>
 
                 <DialogActions>
-                    <Button autoFocus onClick={props.handleDialog} aria-label="addMessagePromptCancelButton">
+                    <Button autoFocus onClick={props.handleDialog} data-testid="add-message-prompt-cancel-button">
                         Cancel
                     </Button>
-                    {/* <Button variant="contained" autoFocus onClick={props.sendNotification} aria-label="addMessagePromptSendNotificationButton">
+                    {/* <Button variant="contained" autoFocus onClick={props.sendNotification} data-testid="add-message-prompt-send-notification-button">
                         Send Message
                     </Button> */}
                     <Button 
@@ -84,7 +84,7 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                         onClick={() => {
                             props.sendNotification(); 
                         }} 
-                        aria-label="addMessagePromptSendNotificationButton"
+                        data-testid="add-message-prompt-send-notification-button"
                     >
                         Send Message
                     </Button>
