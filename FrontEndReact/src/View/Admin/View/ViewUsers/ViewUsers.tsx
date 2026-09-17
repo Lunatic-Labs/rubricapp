@@ -170,33 +170,31 @@ class ViewUsers extends Component<ViewUsersProps> {
  *   - Buttons are hidden if the userId matches the logged-in user and the user is an admin.
  *
  */
-    if (!navbar.props.isSuperAdmin) {
-      columns.push({
-        field: "edit_action",
-        headerName: "Edit",
-        minWidth: 90,
-        flex: 1,
-        filterable: false,
-        align: "center",
-        headerAlign: "center",
-        renderCell: (params) => {
-          const userId = params.row.user_id;
-          var cookies = new Cookies();
-          return (
-            <IconButton id={"viewUsersEditButton" + userId}
-              size="small"
-              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
-              onClick={() => {
-                setAddUserTabWithUser(users, userId);
-              }}
-              aria-label="editUserButton"
-            >
-              <EditIcon sx={{ color: "black" }} />
-            </IconButton>
-          )
-        },
-      });
-    }
+    columns.push({
+      field: "edit_action",
+      headerName: "Edit",
+      minWidth: 90,
+      flex: 1,
+      filterable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        const userId = params.row.user_id;
+        var cookies = new Cookies();
+        return (
+          <IconButton id={"viewUsersEditButton" + userId}
+            size="small"
+            hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+            onClick={() => {
+              setAddUserTabWithUser(users, userId);
+            }}
+            aria-label="editUserButton"
+          >
+            <EditIcon sx={{ color: "black" }} />
+          </IconButton>
+        )
+      },
+    });
     columns.push({
       field: "delete_action",
       headerName: "Delete",
