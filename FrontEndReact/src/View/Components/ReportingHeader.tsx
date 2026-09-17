@@ -1,6 +1,5 @@
 import CourseInfo from "./CourseInfo";
 import { Box } from "@mui/material";
-import BackButtonResource from "./BackButtonResource";
 import TabManager from "../Admin/View/Reporting/ReportTabs";
 
 interface ReportingMainHeaderProps {
@@ -15,24 +14,21 @@ export default function ReportingMainHeader (props: ReportingMainHeaderProps) {
     var chosenCourse = state.chosenCourse;
 
     return (
-        <>
-            <BackButtonResource
-                navbar={navbar}
-                tabSelected={"User"}
+        // AppState already renders a BackButtonResource above this header for
+        // the Reporting tab (and picks the correct target for a super admin,
+        // which "User" below never was) - a second one here duplicated it.
+        <Box className="content-spacing">
+            <CourseInfo
+                courseTitle={chosenCourse["course_name"]}
+                courseNumber={chosenCourse["course_number"]}
+                courseTerm={chosenCourse["term"]}
+                courseYear={chosenCourse["year"]}
             />
-            <Box className="content-spacing">
-                <CourseInfo
-                    courseTitle={chosenCourse["course_name"]}
-                    courseNumber={chosenCourse["course_number"]}
-                    courseTerm={chosenCourse["term"]}
-                    courseYear={chosenCourse["year"]}
-                />
-                <TabManager
-                    setTab={props.setTab}
-                    activeTab={props.activeTab}
-                    navbar={navbar}
-                />
-            </Box>
-        </>
+            <TabManager
+                setTab={props.setTab}
+                activeTab={props.activeTab}
+                navbar={navbar}
+            />
+        </Box>
     )
 }
