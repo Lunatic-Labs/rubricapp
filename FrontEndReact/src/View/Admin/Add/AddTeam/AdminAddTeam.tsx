@@ -269,7 +269,8 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                     aria-label="userTeamNameInput"
                                 />
 
-                                <FormControl error={!!errors.observerId} required fullWidth 
+                                <FormControl error={!!errors.observerId} required fullWidth
+                                    className="text-box-colors"
                                     sx={{
                                         mb: 3,
                                         "& .MuiInputBase-root": {
@@ -281,17 +282,24 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                         },
                                         "& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline":
                                         {
-                                            borderColor: "#ffffff",
+                                            borderColor: "var(--textbox-border-hover)",
+                                        },
+                                        "& .MuiOutlinedInput-root.Mui-error:hover .MuiOutlinedInput-notchedOutline":
+                                        {
+                                            borderColor: "var(--textbox-error)",
                                         },
                                         "& .MuiInputLabel-root": {
                                         color: "var(--dropdown-label)",
+                                        "&.Mui-error": {
+                                            color: "var(--textbox-error)",
+                                        },
                                         },
                                         "& .MuiSelect-icon": {
                                         color: "var(--dropdown-icon)",
                                         },
                                     }}
                                 >
-                                    <InputLabel className={errors.observerId ? "errorSelect" : ""} id="Observer">Observer</InputLabel>
+                                    <InputLabel id="Observer">Observer</InputLabel>
 
                                     <Select
                                         id="Observer"

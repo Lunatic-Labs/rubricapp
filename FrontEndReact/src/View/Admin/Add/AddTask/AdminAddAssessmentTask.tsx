@@ -468,6 +468,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                 />
                                 <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
                                     <FormControl id="formSelectRubric"
+                                        className="text-box-colors"
                                         sx={{width: '38%', height: '100%', "& .MuiInputBase-root": {
                                             backgroundColor: "var(--dropdown-bg)",
                                             color: "var(--dropdown-text)",
@@ -479,8 +480,15 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                             {
                                                 borderColor: "var(--textbox-border-hover)",
                                             },
+                                            "& .MuiOutlinedInput-root.Mui-error:hover .MuiOutlinedInput-notchedOutline":
+                                            {
+                                                borderColor: "var(--textbox-error)",
+                                            },
                                             "& .MuiInputLabel-root": {
                                             color: "var(--dropdown-label)",
+                                            "&.Mui-error": {
+                                                color: "var(--textbox-error)",
+                                            },
                                             },
                                             "& .MuiSelect-icon": {
                                             color: "var(--dropdown-icon)",

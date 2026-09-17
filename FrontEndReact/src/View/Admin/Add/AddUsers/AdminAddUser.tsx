@@ -625,7 +625,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                       error={!!errors.role}
                       required
                       fullWidth
-                      
+                      className="text-box-colors"
                       sx={{
                         mb: 3,
                         "& .MuiInputBase-root": {
@@ -639,15 +639,22 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                           {
                             borderColor: "var(--textbox-border-hover)",
                           },
+                        "& .MuiOutlinedInput-root.Mui-error:hover .MuiOutlinedInput-notchedOutline":
+                          {
+                            borderColor: "var(--textbox-error)",
+                          },
                         "& .MuiInputLabel-root": {
                           color: "var(--dropdown-label)",
+                          "&.Mui-error": {
+                            color: "var(--textbox-error)",
+                          },
                         },
                         "& .MuiSelect-icon": {
                           color: "var(--dropdown-icon)",
                         },
                       }}
                   >
-                      <InputLabel className={errors.role ? "errorSelect" : ""}>
+                      <InputLabel>
                         Role
                       </InputLabel>
 
