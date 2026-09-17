@@ -1,5 +1,7 @@
 /// <reference types="vite/client" />
 
+import type {} from '@mui/x-data-grid/themeAugmentation';
+
 // Image imports
 declare module '*.png' {
   const value: string;
@@ -31,5 +33,3 @@ declare module '*.css' {
   const content: { [className: string]: string };
   export default content;
 }
-
-import type {} from '@mui/x-data-grid/themeAugmentation';
