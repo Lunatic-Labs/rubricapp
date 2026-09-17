@@ -1,6 +1,5 @@
 import React from 'react';
 import { Box, createTheme, ThemeProvider } from '@mui/material';
-import ViewColumnIcon from '@mui/icons-material/ViewColumn';
 import {
   DataGrid,
   DataGridProps,
