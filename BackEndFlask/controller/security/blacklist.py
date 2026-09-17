@@ -4,6 +4,7 @@ import subprocess
 from core import app, red
 from flask_jwt_extended import decode_token
 from jwt.exceptions import ExpiredSignatureError
+from models.logger import logger
 import os
 
 # Starts a Redis server as a subprocess using the subprocess.Popen function
@@ -19,9 +20,14 @@ def is_token_blacklisted(token: str) -> bool:
         found = red.get(token)
         return True if found else False
     except ConnectionError:
-        print('connection error')
-    except:
-        print('key error')
+        # Fails open (treats the token as not blacklisted) rather than
+        # locking every user out when Redis is unreachable, but that's a
+        # real security-relevant degradation worth an error-level log.
+        logger.error("Blacklist check failed: could not reach Redis; treating token as not blacklisted (fail-open)")
+        return False
+    except Exception as e:
+        logger.error(f"Blacklist check failed: {e}; treating token as not blacklisted (fail-open)")
+        return False
 
 def blacklist_token(token: str) -> None:
     with app.app_context():

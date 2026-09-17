@@ -3,6 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import ErrorMessage from '../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames } from '../../../utility';
+import { logger } from '../../../logger';
 import Loading from '../../Loading/Loading';
 import { Team } from '../../../types/Team';
 import { User } from '../../../types/User';
@@ -98,7 +99,7 @@ class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeams
             });
             this.props.updateUserTeamsIds(newTeams);
         }).catch(error => {
-            console.error("Error fetching/parsing teams data:", error);
+            logger.error("Error fetching/parsing teams data:", error);
         }); //This requires future adjusting
 
         var url = (
