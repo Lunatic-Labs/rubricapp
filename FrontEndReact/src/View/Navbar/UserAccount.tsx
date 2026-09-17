@@ -4,13 +4,13 @@ import ErrorMessage from '../Error/ErrorMessage';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton, Dialog, DialogContent, DialogTitle } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { apiUrl } from '../../App';
 import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Email, AccountCircle } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 import {
     validatePasswordField,
+    submitAuthenticatedPasswordChange,
     testPasswordStrength,
     getPasswordStrengthIcon,
     generatePasswordStrengthColors,
@@ -217,9 +217,17 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
     // both check that character length does not exceed 20
     setPassword() {
         const cookies = new Cookies();
-        const user = cookies.get('user');
+        const accessToken = cookies.get('access_token');
         var pass1 = this.state.password;
         var pass2 = this.state.confirmationPassword;
+
+        if (!accessToken) {
+            this.setState({
+                errorMessage: "Your session has expired. Please log in again."
+            });
+
+            return;
+        }
 
         if (pass1 === '') {
             this.setState({
@@ -268,22 +276,16 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
             return;
         }
 
-        fetch(
-            apiUrl + "/password",
-            {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email: user.email,
-                    password: pass1,
-                }),
-            }
-        )
-            .then(res => res.json())
+        submitAuthenticatedPasswordChange(this, pass1)
             .then(
                 (result) => {
+                    // The shared fetch helper resolves to undefined when it hits an
+                    // unrecoverable auth failure; it has already cleared the session and
+                    // started reloading, so there is nothing left to report.
+                    if (result === undefined) {
+                        return;
+                    }
+
                     if (result['success']) {
                         this.setState({
                             resetPasswordDialogOpen: false
@@ -291,7 +293,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                         });
                     } else {
                         this.setState({
-                            errorMessage: result['message']
+                            errorMessage: result['message'] ?? "Unable to change your password. Please try again."
                         });
                     }
                 }
@@ -299,7 +301,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
             .catch(
                 (error) => {
                     this.setState({
-                        errorMessage: error
+                        errorMessage: String(error)
                     });
                 }
             );
