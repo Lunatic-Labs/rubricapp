@@ -39,11 +39,11 @@ def test_get_one_assessment_task_by_assessment_task_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/assessment_task?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
@@ -81,18 +81,18 @@ def test_get_assessment_tasks_by_course_and_role_ids(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
 
-            payload1 = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload1 = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task1 = create_assessment_task(payload1)
-            payload2 = build_sample_task_payload(result["course_id"], rubric.rubric_id, task_name="Integration Test 2")
+            payload2 = build_sample_task_payload(result['course_id'], rubric.rubric_id, task_name="Integration Test 2")
             task2 = create_assessment_task(payload2)
 
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/assessment_task?course_id={result["course_id"]}&role_id=5&user_id={result['user_id']}",
+                f"/api/assessment_task?course_id={result['course_id']}&role_id=5&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             
@@ -124,14 +124,14 @@ def test_get_assessment_tasks_by_course(flask_app_mock, client, sample_token, au
         
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
 
-            payload1 = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload1 = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task1 = create_assessment_task(payload1)
-            payload2 = build_sample_task_payload(result["course_id"], rubric.rubric_id, task_name="Integration Test 2")
+            payload2 = build_sample_task_payload(result['course_id'], rubric.rubric_id, task_name="Integration Test 2")
             task2 = create_assessment_task(payload2)
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/assessment_task?course_id={result['course_id']}&user_id={result['user_id']}",
@@ -232,16 +232,16 @@ def test_get_assessment_tasks_by_role_id(
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
 
-            task1 = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
-            task2 = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id, task_name="Integration Test 2"))
-            task3 = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id, role_id=4, task_name="Integration Test 3"))
+            task1 = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
+            task2 = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id, task_name="Integration Test 2"))
+            task3 = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id, role_id=4, task_name="Integration Test 3"))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/assessment_task?role_id=5&user_id={result["user_id"]}",
+                f"/api/assessment_task?role_id=5&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             
@@ -279,33 +279,33 @@ def test_get_assessment_tasks_by_team_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             payload["due_date"] = "2024-01-01T12:00:00"
             task1 = create_assessment_task(payload)
             task2 = create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id, 
                 task_name="Integration Test 2"
             ))
             team = sample_team(
                 "Alpha", 
-                result["user_id"], 
-                result["course_id"], 
+                result['user_id'], 
+                result['course_id'], 
                 assessment_task_id=task2.assessment_task_id
             )
             task3 = create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id, 
                 role_id=4, 
                 task_name="Integration Test 3"
             ))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/assessment_task?team_id={team.team_id}&user_id={result["user_id"]}",
+                f"/api/assessment_task?team_id={team.team_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -343,7 +343,7 @@ def test_get_assessment_tasks_raises_exception(
         cleanup_test_users(db.session)
         try:
             result = create_one_admin_course(False)
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/assessment_task?course_id=999&user_id={result['user_id']}",
@@ -370,10 +370,10 @@ def test_add_assessment_task(flask_app_mock, client, sample_token, auth_header):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
                 f"/api/assessment_task?user_id={result['user_id']}",
@@ -388,7 +388,7 @@ def test_add_assessment_task(flask_app_mock, client, sample_token, auth_header):
             assert task['assessment_task_name'] == payload["assessment_task_name"]
             assert task['course_id'] == result['course_id']
             assert task["rubric_id"] == rubric.rubric_id
-            assert task["course_id"] == result["course_id"]
+            assert task["course_id"] == result['course_id']
             
         finally:
             # Clean up
@@ -411,7 +411,7 @@ def test_add_assessment_raises_exception(
 
         try:
             result = create_one_admin_course(False)
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
                 f"/api/assessment_task?user_id={result['user_id']}",
@@ -439,17 +439,17 @@ def test_update_assessment_task(flask_app_mock, client,sample_token, auth_header
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             replaced = build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 2"
             )
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
                 f"/api/assessment_task?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
@@ -479,16 +479,16 @@ def test_update_assessment_task_with_notification(flask_app_mock, client, sample
         
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
-            students = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            students = create_users(result['course_id'], result['user_id'], number_of_users=3)
          
             team = sample_team(
                 "Test Team",
-                result["user_id"],
-                result["course_id"],
+                result['user_id'],
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             print(f"team id: {team.team_id}")
@@ -500,14 +500,14 @@ def test_update_assessment_task_with_notification(flask_app_mock, client, sample
                 task.assessment_task_id,
                 team_id=team.team_id,
                 rating=completely["3"],
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 students[1].user_id,
                 task.assessment_task_id,
                 team_id=team.team_id,
                 rating=completely["5"],
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
             notification_data = {
@@ -515,7 +515,7 @@ def test_update_assessment_task_with_notification(flask_app_mock, client, sample
                 "notification_message": "Your feedback is ready to view!"
             }
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.put(
                 f"/api/assessment_task?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}&notification=true",
@@ -559,7 +559,7 @@ def test_update_assessment_raises_exception(
 
         try:
             result = create_one_admin_course(False)
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             notification_data = {
                 "notification_date": "2026-03-01T08:00:00.000Z",
@@ -592,11 +592,11 @@ def test_toggle_lock_status_route(flask_app_mock, client, sample_token, auth_hea
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
                 f"/api/assessment_task_toggle_lock?assessmentTaskId={task.assessment_task_id}&user_id={result['user_id']}",
@@ -635,7 +635,7 @@ def test_toggle_lock_status_route_raises_exception(
         try:
             result = create_one_admin_course(False)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
                 f"/api/assessment_task_toggle_lock?assessmentTaskId=999&user_id={result['user_id']}",
@@ -666,11 +666,11 @@ def test_toggle_published_status_route(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
                 f"/api/assessment_task_toggle_published?assessmentTaskId={task.assessment_task_id}&user_id={result['user_id']}",
@@ -709,7 +709,7 @@ def test_toggle_published_status_route_raises_exception(
         try:
             result = create_one_admin_course(False)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
                 f"/api/assessment_task_toggle_published?assessmentTaskId=999&user_id={result['user_id']}",
@@ -735,24 +735,24 @@ def test_copy_course_assessments(flask_app_mock, client, sample_token, auth_head
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
             task1 = create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id
             ))
             task2 = create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assesment 2"
             ))
 
-            new_course = create_course(sample_course(result["user_id"]))
+            new_course = create_course(sample_course(result['user_id']))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
-                f"/api/assessment_task_copy?source_course_id={result["course_id"]}&destination_course_id={new_course.course_id}&user_id={result['user_id']}",
+                f"/api/assessment_task_copy?source_course_id={result['course_id']}&destination_course_id={new_course.course_id}&user_id={result['user_id']}",
                 headers=auth_header(token),
             )
 
@@ -793,7 +793,7 @@ def test_copy_course_assessments_raises_exception(
         try:
             result = create_one_admin_course(False)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
                 f"/api/assessment_task_copy?source_course_id=999&destination_course_id=888&user_id={result['user_id']}",
