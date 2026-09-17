@@ -16,7 +16,7 @@ import ResizeObserver from 'resize-observer-polyfill';
 import { TextEncoder, TextDecoder } from 'util';
 Object.assign(global, { TextEncoder, TextDecoder });
 
-// jsdom doesn't implement ResizeObserver; MUI components (date pickers, mui-datatables) need it.
+// jsdom doesn't implement ResizeObserver; MUI components (date pickers, x-data-grid) need it.
 global.ResizeObserver = ResizeObserver;
 
 // jsdom doesn't implement matchMedia; MUI's useMediaQuery needs it.
