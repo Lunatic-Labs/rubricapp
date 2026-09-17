@@ -325,6 +325,7 @@ def _verify_information(teams: list[TBUTeam]):
 
 # First function called by the team bulk upload route.
 def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
+    is_xlsx: bool|None = None
     try:
         is_xlsx = filepath.endswith('.xlsx')
         is_valid_extension = is_xlsx or filepath.endswith('.csv')
@@ -351,6 +352,10 @@ def team_bulk_upload(filepath: str, owner_id: int, course_id: int):
         for team in teams:
             __create_team(team, owner_id, course_id)
 
+        delete_xlsx(filepath, is_xlsx)
+
         return "Success"
     except Exception as e:
+        if is_xlsx is not None:
+            delete_xlsx(filepath, is_xlsx)
         raise e

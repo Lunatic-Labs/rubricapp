@@ -30,8 +30,8 @@ def test_get_team_users_returns_all(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             u1 = sample_team_user(team.team_id, users[0].user_id)
             u2 = sample_team_user(team.team_id, users[1].user_id)
 
@@ -58,8 +58,8 @@ def test_get_team_user_returns_correct_user(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             u = sample_team_user(team.team_id, user[0].user_id)
 
@@ -90,8 +90,8 @@ def test_get_team_user_by_user_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
     
             u = sample_team_user(team.team_id, user[0].user_id)
 
@@ -122,8 +122,8 @@ def test_get_team_user_recently_added(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             u1 = sample_team_user(team.team_id, users[0].user_id)
             u2 = sample_team_user(team.team_id, users[1].user_id)
 
@@ -148,9 +148,9 @@ def test_get_team_users_by_team_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team1 = sample_team("Ataboy", result["user_id"], result["course_id"])
-            team2 = sample_team("Bison", result["user_id"], result["course_id"])
-            users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+            team1 = sample_team("Ataboy", result['user_id'], result['course_id'])
+            team2 = sample_team("Bison", result['user_id'], result['course_id'])
+            users = create_users(result['course_id'], result['user_id'], number_of_users=4)
 
             u1 = sample_team_user(team1.team_id, users[0].user_id)
             u2 = sample_team_user(team1.team_id, users[1].user_id)
@@ -180,9 +180,9 @@ def test_get_team_members(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team1 = sample_team("Ataboy", result["user_id"], result["course_id"])
-            team2 = sample_team("Bison", result["user_id"], result["course_id"])
-            users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+            team1 = sample_team("Ataboy", result['user_id'], result['course_id'])
+            team2 = sample_team("Bison", result['user_id'], result['course_id'])
+            users = create_users(result['course_id'], result['user_id'], number_of_users=4)
             u1 = sample_team_user(team1.team_id, users[0].user_id)
             u2 = sample_team_user(team1.team_id, users[1].user_id)
             u3 = sample_team_user(team2.team_id, users[2].user_id)
@@ -217,8 +217,8 @@ def test_create_team_user(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             u = sample_team_user(team.team_id, user[0].user_id)
             assert u.team_id == team.team_id
@@ -245,9 +245,9 @@ def test_replace_team_user(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team1 = sample_team("Ataboy", result["user_id"], result["course_id"])
-            team2 = sample_team("Bison", result["user_id"], result["course_id"])
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            team1 = sample_team("Ataboy", result['user_id'], result['course_id'])
+            team2 = sample_team("Bison", result['user_id'], result['course_id'])
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
 
             original = sample_team_user(team1.team_id, users[0].user_id)
 
@@ -280,8 +280,8 @@ def test_delete_team_user(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             u = sample_team_user(team.team_id, user[0].user_id)
 
@@ -305,8 +305,8 @@ def test_delete_team_user_by_user_id_and_team_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
 
             u = sample_team_user(team.team_id, user[0].user_id)
 
@@ -330,13 +330,13 @@ def test_load_demo_team_user(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
             load_demo_admin()
             load_demo_student()
 
             load_demo_team_user()
 
-            results = get_team_users(result["course_id"], team.team_id)
+            results = get_team_users(result['course_id'], team.team_id)
             assert len(results) == 3
             assert {u.user_id for u in results} == {4, 5, 6}
 
@@ -356,8 +356,8 @@ def test_remove_user_from_team(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("Ataboy", result["user_id"], result["course_id"])
-            users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+            team = sample_team("Ataboy", result['user_id'], result['course_id'])
+            users = create_users(result['course_id'], result['user_id'], number_of_users=4)
            
             for i in range(3):
                 sample_team_user(team.team_id, users[i].user_id)

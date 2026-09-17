@@ -112,6 +112,21 @@ function removeAuthData() {
   }
 }
 
+function interpretNonJsonResponse(response: Response): string {
+  switch (response.status) {
+    case HTTP_STATUS.TOO_MANY_REQUESTS:
+      return "Too many requests were sent in a short period. Please wait a few seconds and try again.";
+    case HTTP_STATUS.CONTENT_TOO_LARGE:
+      return "The uploaded file is too large.";
+    case HTTP_STATUS.BAD_GATEWAY:
+    case HTTP_STATUS.SERVICE_UNAVAILABLE:
+    case HTTP_STATUS.GATEWAY_TIMEOUT:
+      return "The server is temporarily unavailable. Please try again shortly.";
+    default:
+      return `Unexpected server error (status ${response.status}). Please try again.`;
+  }
+}
+
 async function genericResourceFetch(
   fetchURL: string,
   resource: string | null,
@@ -171,7 +186,16 @@ async function genericResourceFetch(
     throw error;
   }
 
-  const result: ApiResponse = await response.json();
+  let result: ApiResponse;
+  try {
+    result = await response.json();
+  } catch {
+    result = {
+      success: false,
+      status: response.status,
+      message: interpretNonJsonResponse(response),
+    };
+  }
 
   if (result.success){
     const state: any = {

@@ -355,6 +355,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                     <Button
                                         id="createTeam"
                                         variant="contained"
+                                        className="white-text-button"
 
                                         onClick={this.handleSubmit}
 
