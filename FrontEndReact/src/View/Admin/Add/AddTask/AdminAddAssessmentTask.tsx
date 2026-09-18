@@ -571,7 +571,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         }}
                                         onChange={this.handleTeams}
                                     >
-                                        <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" data-testid="add-assessment-invididual-assessment-radio-option"/>
+                                        <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" data-testid="add-assessment-individual-assessment-radio-option"/>
 
                                         <FormControlLabel value={true} control={<Radio />} label="Team Assessment" data-testid="add-assessment-group-assessment-radio-option" />
                                     </RadioGroup>

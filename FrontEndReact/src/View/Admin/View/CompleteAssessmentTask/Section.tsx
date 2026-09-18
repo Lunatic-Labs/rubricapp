@@ -119,7 +119,7 @@ class Section extends Component<SectionProps> {
 
         return (
             <Box id="rating">
-                <Box className="assessment-task-spacing" data-testid="ratings-section">
+                <Box className="assessment-task-spacing">
                     <FormControl>
                         <Box className="assessment-card" data-testid="ratings-section">
                             <h4>Ratings</h4>
