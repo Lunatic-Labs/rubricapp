@@ -375,7 +375,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
                                             userId,
                                         );
                                     }}
-                                    aria-label="assessmentIndividualSeeMoreDetailsButtons"
+                                    aria-label="View assessment details" data-testid="assessment-individual-see-more-details-buttons"
                                 >
                                     <VisibilityIcon sx={{color:"black"}}/>
                                 </IconButton>
@@ -460,7 +460,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
                 </Box>
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedIndividualRubricsTitle"> Completed Rubrics</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="view-completed-individual-rubrics-title"> Completed Rubrics</Typography>
 
           <Box>
             <ResponsiveNotification
@@ -499,7 +499,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
                     onClick={() => this.handleDialog(false, null)}
                     isOutlined={false}
                     disabled={notificationSent}
-                    aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
+                    data-testid="view-completed-assessment-individual-send-notification-button"
                     />
                 </span>
             </Tooltip>

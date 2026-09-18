@@ -4,167 +4,167 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId
 } from "../../../../../testUtilities";
 
-var lf = "loginForm";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var tt = "teamsTab";
-var td = "teamDashboard";
-var abub = "adminBulkUploadButton";
-var abut = "adminBulkUploadTitle";
-var aatb = "adminAddTeamButton";
-var aatt = "adminAddTeamTitle";
-var etib = "editTeamIconButton";
-var aett = "adminEditTeamTitle";
-var vtib = "viewTeamsIconButton";
-var avtmt = "adminViewTeamMembersTitle";
-var lb = "loginButton";
+var lf = "login-form";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var rt = "roster-title";
+var tt = "teams-tab";
+var td = "team-dashboard";
+var abub = "admin-bulk-upload-button";
+var abut = "admin-bulk-upload-title";
+var aatb = "admin-add-team-button";
+var aatt = "admin-add-team-title";
+var etib = "edit-team-icon-button";
+var aett = "admin-edit-team-title";
+var vtib = "view-teams-icon-button";
+var avtmt = "admin-view-team-members-title";
+var lb = "login-submit-button";
 test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminViewTeams.test.tsx Test 1: Should render Login Form component", () => {
     render(<Login />);
 
-    expectElementWithAriaLabelToBeInDocument(lf);
+    expectElementWithTestIdToBeInDocument(lf);
 });
 test("AdminViewTeams.test.tsx Test 2: Should render the Team Dashboard in Admin View",  async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 });
 test("AdminViewTeams.test.tsx Test 3: Should render the Team Bulk Upload page given the Team Bulk Upload Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickElementWithAriaLabel(abub);
+        clickElementWithTestId(abub);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(abut);
+        expectElementWithTestIdToBeInDocument(abut);
     });
 });
 test("AdminViewTeams.test.tsx Test 4: Should render the Add Team Form given the Add Team Button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickElementWithAriaLabel(aatb);
+        clickElementWithTestId(aatb);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aatt);
+        expectElementWithTestIdToBeInDocument(aatt);
     });
 });
 test("AdminViewTeams.test.tsx Test 5: Should render the Edit Team Form given the Edit Icon is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(etib);
+        clickFirstElementWithTestId(etib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aett);
+        expectElementWithTestIdToBeInDocument(aett);
     });
 });
 test("AdminViewTeams.test.tsx Test 6: Should render the Team Name page given the View Team Members button is clicked on Admin View.",  async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-            clickFirstElementWithAriaLabel(vtib);
+            clickFirstElementWithTestId(vtib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
 });

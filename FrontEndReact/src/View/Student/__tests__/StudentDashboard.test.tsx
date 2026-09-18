@@ -4,10 +4,10 @@ import "@testing-library/jest-dom";
 // import Login from "../../Login/Login";
 
 // import {
-//     clickElementWithAriaLabel,
-//     expectElementWithAriaLabelToBeInDocument,
-//     changeElementWithAriaLabelWithInput,
-//     clickFirstElementWithAriaLabel
+//     clickElementWithTestId,
+//     expectElementWithTestIdToBeInDocument,
+//     changeElementWithTestIdWithInput,
+//     clickFirstElementWithTestId
 // } from "../../../testUtilities";
 
 // import {
@@ -16,18 +16,18 @@ import "@testing-library/jest-dom";
 
 
 
-// var lb = "loginButton";
-// var ei = "emailInput";
-// var pi = "passwordInput";
-// var ct = "coursesTitle";
-// var vcib = "viewCourseIconButton";
-// var matt = "myAssessmentTasksTitle";
-// var catt = "completedAssessmentTasksTitle";
-// var mtt = "myTeamsTitle";
-// var satb = "startAssessmentTasksButton";
-// var vatit = "viewAssessmentTaskInstructionsTitle";
-// var catvib = "completedAssessmentTasksViewIconButton";
-// var mhbb = "mainHeaderBackButton";
+// var lb = "login-submit-button";
+// var ei = "login-email-input";
+// var pi = "login-password-input";
+// var ct = "courses-title";
+// var vcib = "view-course-icon-button";
+// var matt = "my-assessment-tasks-title";
+// var catt = "completed-assessment-tasks-title";
+// var mtt = "my-teams-title";
+// var satb = "start-assessment-tasks-button";
+// var vatit = "view-assessment-task-instructions-title";
+// var catvib = "completed-assessment-tasks-view-icon-button";
+// var mhbb = "main-header-back-button";
 test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
@@ -36,25 +36,25 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // test("StudentDashboard.test.tsx Test 1: Should render assessment tasks, completed assessments and team tables if valid Student information is input to login", async () => {
 //     render(<Login />);
 
-//     changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
+//     changeElementWithTestIdWithInput(ei, "demostudent4@skillbuilder.edu");
 
-//     changeElementWithAriaLabelWithInput(pi, demoStudentPassword + "4");
+//     changeElementWithTestIdWithInput(pi, demoStudentPassword + "4");
 
-//     clickElementWithAriaLabel(lb);
+//     clickElementWithTestId(lb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(matt);
+//         expectElementWithTestIdToBeInDocument(matt);
 
-//         expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithTestIdToBeInDocument(catt);
 
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 //     });
 // });
@@ -64,26 +64,26 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(matt);
+//         expectElementWithTestIdToBeInDocument(matt);
 
-//         expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithTestIdToBeInDocument(catt);
 
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 
-//         clickFirstElementWithAriaLabel(satb);
+//         clickFirstElementWithTestId(satb);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(vatit);
+//             expectElementWithTestIdToBeInDocument(vatit);
 //         }, 3000);
 //     });
 // });
@@ -93,26 +93,26 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(matt);
+//         expectElementWithTestIdToBeInDocument(matt);
 
-//         expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithTestIdToBeInDocument(catt);
 
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             clickFirstElementWithAriaLabel(catvib);
+//             clickFirstElementWithTestId(catvib);
 
-//             expectElementWithAriaLabelToBeInDocument(vatit);
+//             expectElementWithTestIdToBeInDocument(vatit);
 //         }, 3000);
 //     });
 // });
@@ -122,26 +122,26 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(matt);
+//         expectElementWithTestIdToBeInDocument(matt);
 
-//         expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithTestIdToBeInDocument(catt);
 
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 //     });
 
-//     clickElementWithAriaLabel(mhbb);
+//     clickElementWithTestId(mhbb);
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//            expectElementWithAriaLabelToBeInDocument(ct);
+//            expectElementWithTestIdToBeInDocument(ct);
 //         }, 3000);
 //     });
 
@@ -152,38 +152,38 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(matt);
+//         expectElementWithTestIdToBeInDocument(matt);
 
-//         expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithTestIdToBeInDocument(catt);
 
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 
-//         clickFirstElementWithAriaLabel(satb);
+//         clickFirstElementWithTestId(satb);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(vatit);
+//             expectElementWithTestIdToBeInDocument(vatit);
 //         }, 3000);
 //     });
 
-//     clickElementWithAriaLabel(mhbb);
+//     clickElementWithTestId(mhbb);
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(matt);
+//             expectElementWithTestIdToBeInDocument(matt);
 
-//             expectElementWithAriaLabelToBeInDocument(catt);
+//             expectElementWithTestIdToBeInDocument(catt);
 
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 //     });
 // });
@@ -193,38 +193,38 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(matt);
+//         expectElementWithTestIdToBeInDocument(matt);
 
-//         expectElementWithAriaLabelToBeInDocument(catt);
+//         expectElementWithTestIdToBeInDocument(catt);
 
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             clickFirstElementWithAriaLabel(catvib);
+//             clickFirstElementWithTestId(catvib);
 
-//             expectElementWithAriaLabelToBeInDocument(vatit);
+//             expectElementWithTestIdToBeInDocument(vatit);
 //         }, 3000);
 //     });
 
-//     clickElementWithAriaLabel(mhbb);
+//     clickElementWithTestId(mhbb);
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(matt);
+//             expectElementWithTestIdToBeInDocument(matt);
 
-//             expectElementWithAriaLabelToBeInDocument(catt);
+//             expectElementWithTestIdToBeInDocument(catt);
 
-//             expectElementWithAriaLabelToBeInDocument(mtt);
+//             expectElementWithTestIdToBeInDocument(mtt);
 //         }, 3000);
 //     });
 // });

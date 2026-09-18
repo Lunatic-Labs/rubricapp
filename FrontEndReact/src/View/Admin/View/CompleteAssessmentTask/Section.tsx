@@ -119,9 +119,9 @@ class Section extends Component<SectionProps> {
 
         return (
             <Box id="rating">
-                <Box className="assessment-task-spacing" aria-label="ratingsSection">
+                <Box className="assessment-task-spacing">
                     <FormControl>
-                        <Box className="assessment-card" aria-label="ratingsSection">
+                        <Box className="assessment-card" data-testid="ratings-section">
                             <h4>Ratings</h4>
 
                             {categoryDescription}
@@ -137,7 +137,7 @@ class Section extends Component<SectionProps> {
                             </Box>
                         </Box>
 
-                        <Box className="assessment-card" aria-label="observableCharacteristicsSection">
+                        <Box className="assessment-card" data-testid="observable-characteristics-section">
                             <h4>Observable Characteristics</h4>
 
                             <Box className="checkbox-spacing">
@@ -146,7 +146,7 @@ class Section extends Component<SectionProps> {
                         </Box>
 
                         {this.props.navbar.state.chosenAssessmentTask["show_suggestions"] &&
-                            <Box className="assessment-card" aria-label="suggestionsForImprovementSection">
+                            <Box className="assessment-card" data-testid="suggestions-for-improvement-section">
                                 <h4>Suggestions For Improvement</h4>
 
                                 <Box className="checkbox-spacing">
@@ -155,7 +155,7 @@ class Section extends Component<SectionProps> {
                             </Box>
                         }
 
-                        <Box className="assessment-card" aria-label="commentBoxSection">
+                        <Box className="assessment-card" data-testid="comment-box-section">
                             <Box><h4>Comment Box</h4></Box>
                             <TextArea
                                 navbar={this.props.navbar}

@@ -4,137 +4,137 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId
 } from "../../../../../testUtilities";
 
-var lf = "loginForm";
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ad = "accountDropdown";
-var lob = "logoutButton";
-var ct = "coursesTitle";
-var ac = "addCourse";
-var act = "addCourseTitle";
-var ecib = "editCourseIconButton";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
+var lf = "login-form";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ad = "account-dropdown";
+var lob = "logout-button";
+var ct = "courses-title";
+var ac = "add-course";
+var act = "add-course-title";
+var ecib = "edit-course-icon-button";
+var vcib = "view-course-icon-button";
+var rt = "roster-title";
 test("NOTE: Tests 1-7 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminViewCourses.test.tsx Test 1: Should render Login Form component", () => {
     render(<Login />);
 
-    expectElementWithAriaLabelToBeInDocument(lf);
+    expectElementWithTestIdToBeInDocument(lf);
 });
 test("AdminViewCourses.test.tsx Test 2: Should show courses page for admin view using demo admin credentials", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ad);
+    clickElementWithTestId(ad);
 
-    clickElementWithAriaLabel(lob);
+    clickElementWithTestId(lob);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(lf);
+        expectElementWithTestIdToBeInDocument(lf);
     });
 });
 test("AdminViewCourses.test.tsx Test 3: Should show courses page for ta/instructor view using demo ta/instructor credentials", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demotainstructor03@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demotainstructor03@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_TA_INSTRUCTOR_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_TA_INSTRUCTOR_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ad);
+    clickElementWithTestId(ad);
 
-    clickElementWithAriaLabel(lob);
+    clickElementWithTestId(lob);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(lf);
+        expectElementWithTestIdToBeInDocument(lf);
     });
 });
 test("AdminViewCourses.test.tsx Test 4: Should show courses page for student view using demo student credentials", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demostudent4@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demostudent4@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_STUDENT_PASSWORD + "4");
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_STUDENT_PASSWORD + "4");
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ad);
+    clickElementWithTestId(ad);
 
-    clickElementWithAriaLabel(lob);
+    clickElementWithTestId(lob);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(lf);
+        expectElementWithTestIdToBeInDocument(lf);
     });
 });
 test("AdminViewCourses.test.tsx Test 5: Should show add course page for admin view using demo admin credentials and clicking add course button", async () =>{
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 });
 test("AdminViewCourses.test.tsx Test 6: Should show edit course page for admin view using demo admin credentials and clicking edit course button", async () =>{
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(ecib);
+    clickFirstElementWithTestId(ecib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 });
 test("AdminViewCourses.test.tsx Test 7: Should show view course page for admin view using demo admin credentials and clicking view course button", async () =>{
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 });
