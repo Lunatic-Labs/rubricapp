@@ -13,16 +13,16 @@ interface ReportTab {
     // Doubles as the activeTab value: AdminReportTabs stores the label it was last
     // handed, and picks which report to show by comparing against these same strings.
     label: string;
-    ariaLabel: string;
+    testId: string;
     // Ratings and Feedback is scoped to a single course, which a super admin has
     // no place inside; admins and instructors keep it.
     hideFromSuperAdmin?: boolean;
 }
 
 const REPORT_TABS: ReportTab[] = [
-    { label: "Assessment Status", ariaLabel: "assessmentStatusTab" },
-    { label: "Ratings and Feedback", ariaLabel: "ratingAndFeedbackTab", hideFromSuperAdmin: true },
-    { label: "Export Graph Comparison", ariaLabel: "exportGraphComparisonTab" },
+    { label: "Assessment Status", testId: "assessment-status-tab" },
+    { label: "Ratings and Feedback", testId: "rating-and-feedback-tab", hideFromSuperAdmin: true },
+    { label: "Export Graph Comparison", testId: "export-graph-comparison-tab" },
 ];
 
 export default function TabManager(props: TabManagerProps) {
@@ -68,7 +68,7 @@ export default function TabManager(props: TabManagerProps) {
       >
         {visibleTabs.map(tab => (
           <Tab
-            key={tab.ariaLabel}
+            key={tab.testId}
 
             label={tab.label}
 
@@ -76,7 +76,7 @@ export default function TabManager(props: TabManagerProps) {
               props.setTab(tab.label);
             }}
 
-            aria-label={tab.ariaLabel}
+            data-testid={tab.testId}
           />
         ))}
 

@@ -125,7 +125,7 @@ class ViewAssessmentTaskInstructions extends Component<
                         paddingTop: "1rem",
                         fontWeight: "700",
                     }}
-                    aria-label="viewAssessmentTaskInstructionsTitle"
+                    data-testid="view-assessment-task-instructions-title"
                 >
                     {assessmentTaskName}
                 </h2>
@@ -225,7 +225,7 @@ class ViewAssessmentTaskInstructions extends Component<
                                         marginBottom: "0.5rem",
                                     }}
                                     onClick={this.handleContinueClick}
-                                    aria-label="viewAssessmentTaskInstructionsContinueButton"
+                                    data-testid="view-assessment-task-instructions-continue-button"
                                 >
                                     Complete rubric
                                 </Button>

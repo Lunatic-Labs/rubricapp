@@ -84,7 +84,7 @@ export default function BasicTabs (props: BasicTabsProps){
             }}
 
             label="Roster"
-            aria-label="rosterTab"
+            data-testid="roster-tab"
             />
           }
           
@@ -96,7 +96,7 @@ export default function BasicTabs (props: BasicTabsProps){
             }}
 
             label="Teams"
-            aria-label="teamsTab"
+            data-testid="teams-tab"
           />
         }  
 
@@ -106,7 +106,7 @@ export default function BasicTabs (props: BasicTabsProps){
             }}
 
             label="Assessment Task"
-            aria-label="assessmentTab"
+            data-testid="assessment-tab"
           />
 
         {!navbar.props.isSuperAdmin && 
@@ -116,7 +116,7 @@ export default function BasicTabs (props: BasicTabsProps){
             }}
 
             label="Reporting"
-            aria-label="reportingTab"
+            data-testid="reporting-tab"
           />
         }
         

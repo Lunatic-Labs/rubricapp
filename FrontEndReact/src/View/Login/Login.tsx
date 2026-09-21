@@ -313,7 +313,7 @@ class Login extends Component<{}, LoginState> {
                         <Box role="form" className="form-position">
                             <Box className="card-style">
                                 <FormControl className="form-spacing">
-                                    <form aria-label='loginForm' onKeyDown={this.keyPress}>
+                                    <form data-testid='login-form' onKeyDown={this.keyPress}>
                                         <Typography variant="h6" component="div"
                                             sx={{
                                                 color: "#2E8BEF",
@@ -345,7 +345,7 @@ class Login extends Component<{}, LoginState> {
                                                 value={email}
                                                 onChange={this.handleChange}
                                                 onKeyDown={this.keyPress}
-                                                aria-label="emailInput"
+                                                data-testid="login-email-input"
                                                 sx={{
                                                     '& .MuiInputBase-input': {
                                                         color: 'var(--text-color)',
@@ -412,7 +412,7 @@ class Login extends Component<{}, LoginState> {
                                                         color: 'var(--error-color)',
                                                     },
                                                 }}
-                                                aria-label="passwordInput"
+                                                data-testid="login-password-input"
                                                 inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of MAX_PASSWORD_LENGTH password has been changed to 21, this accounts for browsers handling characters differently
                                                 InputProps={{
                                                     endAdornment: (
@@ -435,7 +435,7 @@ class Login extends Component<{}, LoginState> {
                                                         href="#"
                                                         sx={{ color: "#2E8BEF" }}
                                                         onClick={this.resetPassword}
-                                                        aria-label='resetPasswordButton'
+                                                        data-testid='reset-password-button'
                                                     >
                                                         Forgot password?
                                                     </Link>
@@ -449,7 +449,7 @@ class Login extends Component<{}, LoginState> {
                                                 variant="contained"
                                                 className='primary-color'
                                                 sx={{ mt: 2, mb: 2 }}
-                                                aria-label="loginButton"
+                                                data-testid="login-submit-button"
                                             >
                                                 Sign In
                                             </Button>

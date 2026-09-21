@@ -1,31 +1,31 @@
 import { test, expect } from "@jest/globals";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    expectElementWithAriaLabelToHaveErrorMessage,
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    expectElementWithTestIdToHaveErrorMessage,
     selectComboBoxMenuItem
 } from "../../../../../testUtilities";
 
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var ac = "addCourse";
-var act = "addCourseTitle";
-var cacb = "cancelAddCourseButton";
-var aosacb = "addOrSaveAddCourseButton";
-var acf = "addCourseForm";
-var cnami = "courseNameInput";
-var cnumi = "courseNumberInput";
-var cti = "courseTermInput";
-var cyi = "courseYearInput";
-var vcd = "viewCourseDiv";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var ac = "add-course";
+var act = "add-course-title";
+var cacb = "cancel-add-course-button";
+var aosacb = "add-or-save-add-course-button";
+var acf = "add-course-form";
+var cnami = "course-name-input";
+var cnumi = "course-number-input";
+var cti = "course-term-input";
+var cyi = "course-year-input";
+var vcd = "view-course-div";
 var ctzd = "Time Zone";
 test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
@@ -33,245 +33,245 @@ test("NOTE: Tests 1-11 will not pass if Demo Data is not loaded!", () => {
 test("AdminAddCourse.test.tsx Test 1: Should render the AdminAddCourse component given the Add Course button is clicked", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 });
 test("AdminAddCourse.test.tsx Test 2: Should render the course table if the cancel button on the Add Course page is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    clickElementWithAriaLabel(cacb);
+    clickElementWithTestId(cacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 });
 test("AdminAddCourse.test.tsx Test 3: HelperText errors should show for each text field when no information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cnami, "Course Name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cnami, "Course Name cannot be empty");
 
-        expectElementWithAriaLabelToHaveErrorMessage(cnumi, "Course Number cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cnumi, "Course Number cannot be empty");
 
-        expectElementWithAriaLabelToHaveErrorMessage(cti, "Term cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cti, "Term cannot be empty");
 
-        expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cyi, "Year cannot be empty");
     });
 });
 test("AdminAddCourse.test.tsx Test 4: HelperText error should show for the addCourseName text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+    changeElementWithTestIdWithInput(cnumi, "CS3423");
 
-    changeElementWithAriaLabelWithInput(cti, "Fall");
+    changeElementWithTestIdWithInput(cti, "Fall");
 
-    changeElementWithAriaLabelWithInput(cyi, "2025");
+    changeElementWithTestIdWithInput(cyi, "2025");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cnami, "Course Name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cnami, "Course Name cannot be empty");
     });
 });
 test("AdminAddCourse.test.tsx Test 5: HelperText error should show for the addCourseNumber text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+    changeElementWithTestIdWithInput(cnami, "Object Oriented Programming");
 
-    changeElementWithAriaLabelWithInput(cti, "Fall");
+    changeElementWithTestIdWithInput(cti, "Fall");
 
-    changeElementWithAriaLabelWithInput(cyi, "2025");
+    changeElementWithTestIdWithInput(cyi, "2025");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cnumi, "Course Number cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cnumi, "Course Number cannot be empty");
     });
 });
 test("AdminAddCourse.test.tsx Test 6: HelperText error should show for the addCourseTerm text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+    changeElementWithTestIdWithInput(cnami, "Object Oriented Programming");
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+    changeElementWithTestIdWithInput(cnumi, "CS3423");
 
-    changeElementWithAriaLabelWithInput(cyi, "2025");
+    changeElementWithTestIdWithInput(cyi, "2025");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cti, "Term cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cti, "Term cannot be empty");
     });
 });
 test("AdminAddCourse.test.tsx Test 7: HelperText error should show for the addCourseYear text field when it is left blank while all other information is filled", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+    changeElementWithTestIdWithInput(cnami, "Object Oriented Programming");
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+    changeElementWithTestIdWithInput(cnumi, "CS3423");
 
-    changeElementWithAriaLabelWithInput(cti, "Fall");
+    changeElementWithTestIdWithInput(cti, "Fall");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(cyi, "Year cannot be empty");
     });
 });
 test("AdminAddCourse.test.tsx Test 8: HelperText error should show for the addCourseYear text field when input is less than 2023", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+    changeElementWithTestIdWithInput(cnami, "Object Oriented Programming");
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+    changeElementWithTestIdWithInput(cnumi, "CS3423");
 
-    changeElementWithAriaLabelWithInput(cti, "Fall");
+    changeElementWithTestIdWithInput(cti, "Fall");
 
-    changeElementWithAriaLabelWithInput(cyi, "1");
+    changeElementWithTestIdWithInput(cyi, "1");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year should be at least 2023 or later");
+        expectElementWithTestIdToHaveErrorMessage(cyi, "Year should be at least 2023 or later");
     });
 });
 test("AdminAddCourse.test.tsx Test 9: HelperText error should show for the addCourseYear text field when input is not a numeric value", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+    changeElementWithTestIdWithInput(cnami, "Object Oriented Programming");
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+    changeElementWithTestIdWithInput(cnumi, "CS3423");
 
-    changeElementWithAriaLabelWithInput(cti, "Fall");
+    changeElementWithTestIdWithInput(cti, "Fall");
 
-    changeElementWithAriaLabelWithInput(cyi, "A");
+    changeElementWithTestIdWithInput(cyi, "A");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year must be a numeric value");
+        expectElementWithTestIdToHaveErrorMessage(cyi, "Year must be a numeric value");
     });
 });
 test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the Add Course button should redirect you to course view page, and should contain the new course you just added", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
     // The backend has no course-delete endpoint, so this test can't clean up
@@ -279,56 +279,56 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
     // with a course an earlier run already created.
     var courseName = `Comparative Programming Languages ${Date.now()}`;
 
-    changeElementWithAriaLabelWithInput(cnami, courseName);
+    changeElementWithTestIdWithInput(cnami, courseName);
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3713");
+    changeElementWithTestIdWithInput(cnumi, "CS3713");
 
-    changeElementWithAriaLabelWithInput(cti, "Fall");
+    changeElementWithTestIdWithInput(cti, "Fall");
 
-    changeElementWithAriaLabelWithInput(cyi, "2024");
+    changeElementWithTestIdWithInput(cyi, "2024");
 
     await selectComboBoxMenuItem(ctzd, "Central Time");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vcd);
+        expectElementWithTestIdToBeInDocument(vcd);
     });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(courseName);
+        expect(screen.getByText(courseName)).toBeInTheDocument();
     });
 });
 test("AdminAddCourse.test.tsx Test 11: HelperText errors should show for the addCourseYear text field when the input year is not numeric", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 
-    changeElementWithAriaLabelWithInput(cnami, "Object Oriented Programming");
+    changeElementWithTestIdWithInput(cnami, "Object Oriented Programming");
 
-    changeElementWithAriaLabelWithInput(cnumi, "CS3423");
+    changeElementWithTestIdWithInput(cnumi, "CS3423");
 
-    changeElementWithAriaLabelWithInput(cti, "A");
+    changeElementWithTestIdWithInput(cti, "A");
 
-    changeElementWithAriaLabelWithInput(cyi, "A");
+    changeElementWithTestIdWithInput(cyi, "A");
 
-    clickElementWithAriaLabel(aosacb);
+    clickElementWithTestId(aosacb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acf);
+        expectElementWithTestIdToBeInDocument(acf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(cyi, "Year must be a numeric value");
+        expectElementWithTestIdToHaveErrorMessage(cyi, "Year must be a numeric value");
     });
 });

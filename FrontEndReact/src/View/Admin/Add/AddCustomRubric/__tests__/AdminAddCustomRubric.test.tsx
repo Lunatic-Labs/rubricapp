@@ -4,34 +4,34 @@ import "@testing-library/jest-dom";
 // import Login from "../../../../Login/Login";
 
 // import {
-//     clickElementWithAriaLabel,
-//     expectElementWithAriaLabelToBeInDocument,
-//     changeElementWithAriaLabelWithInput,
-//     expectElementWithAriaLabelToHaveErrorMessage,
-//     clickFirstElementWithAriaLabel
+//     clickElementWithTestId,
+//     expectElementWithTestIdToBeInDocument,
+//     changeElementWithTestIdWithInput,
+//     expectElementWithTestIdToHaveErrorMessage,
+//     clickFirstElementWithTestId
 // } from "../../../../../testUtilities";
 
 
-// var lb = "loginButton";
-// var ei = "emailInput";
-// var pi = "passwordInput";
-// var ct = "coursesTitle";
-// var vcib = "viewCourseIconButton";
-// var rt = "rosterTitle";
-// var at = "assessmentTab";
-// var adt = "assessmentDashboardTitle";
-// var mhbb = "mainHeaderBackButton";
-// var cyrcrb = "customizeYourRubricCreateRubricButton";
-// var cyrrn = "customizeYourRubricRubricName";
-// var cyrrd = "customizeYourRubricRubricDescription";
-// var rci = "rubricCategoryIcon";
-// var rcn = "rubricCategoryNames";
-// var rncb = "rubricNamesCheckBox";
-// var ysc = "yourSelectedCategories";
-// var vmcrb = "viewMyCustomRubricsButton";
-// var mcrt = "addCustomRubricTitle";
-// var acrb = "addCustomRubricButton";
-// var acyrt = "addCustomizeYourRubricTitle";
+// var lb = "login-submit-button";
+// var ei = "login-email-input";
+// var pi = "login-password-input";
+// var ct = "courses-title";
+// var vcib = "view-course-icon-button";
+// var rt = "roster-title";
+// var at = "assessment-tab";
+// var adt = "assessment-dashboard-title";
+// var mhbb = "main-header-back-button";
+// var cyrcrb = "customize-your-rubric-create-rubric-button";
+// var cyrrn = "customize-your-rubric-rubric-name";
+// var cyrrd = "customize-your-rubric-rubric-description";
+// var rci = "rubric-category-icon";
+// var rcn = "rubric-category-names";
+// var rncb = "rubric-names-check-box";
+// var ysc = "your-selected-categories";
+// var vmcrb = "view-my-custom-rubrics-button";
+// var mcrt = "add-custom-rubric-title";
+// var acrb = "add-custom-rubric-button";
+// var acyrt = "add-customize-your-rubric-title";
 test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
@@ -43,40 +43,40 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 // test("AdminAddCustomRubric.test.tsx Test 1: Should render the Customize Your Rubric page given the Add Custom Rubric button is clicked.", async () => {
 //     render(<Login />);
 
-//     changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+//     changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-//     changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+//     changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-//     clickElementWithAriaLabel(lb);
+//     clickElementWithTestId(lb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
 
-//     clickElementWithAriaLabel(vmcrb);
+//     clickElementWithTestId(vmcrb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(mcrt);
+//         expectElementWithTestIdToBeInDocument(mcrt);
 //     });
 
 //     await waitFor(() => {
-//         clickElementWithAriaLabel(mcracrb);
+//         clickElementWithTestId(mcracrb);
 //     },{ timeout: 3000 });
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acyrt);
+//         expectElementWithTestIdToBeInDocument(acyrt);
 //     });
 // });
 
@@ -85,35 +85,35 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
 
-//     clickElementWithAriaLabel(vmcrb);
+//     clickElementWithTestId(vmcrb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acrt);
+//         expectElementWithTestIdToBeInDocument(acrt);
 //     });
     
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acyrt);
+//         expectElementWithTestIdToBeInDocument(acyrt);
 //     });
 
-//     clickElementWithAriaLabel(mhbb);
+//     clickElementWithTestId(mhbb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acrt);
+//         expectElementWithTestIdToBeInDocument(acrt);
 //     });
 // });
 
@@ -122,50 +122,50 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
     
-//     clickElementWithAriaLabel(vmcrb);
+//     clickElementWithTestId(vmcrb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acrt);
+//         expectElementWithTestIdToBeInDocument(acrt);
 
 //         setTimeout(() => {
-//             clickElementWithAriaLabel(acrb);
+//             clickElementWithTestId(acrb);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(acyrt);
+//             expectElementWithTestIdToBeInDocument(acyrt);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(cyrrd,"Must follow the rules");
+//             expectElementWithTestIdToBeInDocument(cyrrd,"Must follow the rules");
 
-//             expectElementWithAriaLabelToBeInDocument(rncb,"Open-Minded");
+//             expectElementWithTestIdToBeInDocument(rncb,"Open-Minded");
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             clickElementWithAriaLabel(cyrcrb);
+//             clickElementWithTestId(cyrcrb);
 
-//             expectElementWithAriaLabelToHaveErrorMessage(cyrrn,"Missing New Rubric Name.");
+//             expectElementWithTestIdToHaveErrorMessage(cyrrn,"Missing New Rubric Name.");
 //         }, 3000);
 //     });
 // });
@@ -175,50 +175,50 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
 
-//     clickElementWithAriaLabel(vmcrb);
+//     clickElementWithTestId(vmcrb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acrt);
+//         expectElementWithTestIdToBeInDocument(acrt);
 
 //         setTimeout(() => {
-//             clickElementWithAriaLabel(acrb);
+//             clickElementWithTestId(acrb);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(acyrt);
+//             expectElementWithTestIdToBeInDocument(acyrt);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(cyrrn,"Canvas Creation");
+//             expectElementWithTestIdToBeInDocument(cyrrn,"Canvas Creation");
 
-//             expectElementWithAriaLabelToBeInDocument(rncb,"Open-Minded");
+//             expectElementWithTestIdToBeInDocument(rncb,"Open-Minded");
 //         }, 3000);
 //     });
     
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             clickElementWithAriaLabel(cyrcrb);
+//             clickElementWithTestId(cyrcrb);
 
-//             expectElementWithAriaLabelToHaveErrorMessage(cyrrd,"Missing New Rubric Description.");
+//             expectElementWithTestIdToHaveErrorMessage(cyrrd,"Missing New Rubric Description.");
 //         }, 3000);
 //     });
 // });
@@ -228,54 +228,54 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
 
-//     clickElementWithAriaLabel(vmcrb);
+//     clickElementWithTestId(vmcrb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acrt);
+//         expectElementWithTestIdToBeInDocument(acrt);
 
 //         setTimeout(() => {
-//             clickElementWithAriaLabel(acrb);
+//             clickElementWithTestId(acrb);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(acyrt);
+//             expectElementWithTestIdToBeInDocument(acyrt);
 //         }, 3000);
 //     });
     
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             clickFirstElementWithAriaLabel(rci);
+//             clickFirstElementWithTestId(rci);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(rcn);
+//             expectElementWithTestIdToBeInDocument(rcn);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             clickFirstElementWithAriaLabel(rncb);
+//             clickFirstElementWithTestId(rncb);
 
-//             expectElementWithAriaLabelToBeInDocument(ysc);
+//             expectElementWithTestIdToBeInDocument(ysc);
 //         }, 3000);
 //     });
 // });
@@ -285,50 +285,50 @@ test("NOTE: Tests 1-6 will not pass if Demo Data is not loaded!", () => {
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(at);
+//     clickElementWithTestId(at);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(adt);
+//         expectElementWithTestIdToBeInDocument(adt);
 //     });
 
-//     clickElementWithAriaLabel(vmcrb);
+//     clickElementWithTestId(vmcrb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(acrt);
+//         expectElementWithTestIdToBeInDocument(acrt);
 
 //         setTimeout(() => {
-//             clickElementWithAriaLabel(acrb);
+//             clickElementWithTestId(acrb);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(acyrt);
+//             expectElementWithTestIdToBeInDocument(acyrt);
 //         }, 3000);
 //     });
 
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             expectElementWithAriaLabelToBeInDocument(cyrrn,"Canvas Creation");
+//             expectElementWithTestIdToBeInDocument(cyrrn,"Canvas Creation");
 
-//             expectElementWithAriaLabelToBeInDocument(cyrrd,"Must follow the rules");
+//             expectElementWithTestIdToBeInDocument(cyrrd,"Must follow the rules");
 //         }, 3000);
 //     });
     
 //     await waitFor(() => {
 //         setTimeout(() => {
-//             clickElementWithAriaLabel(cyrcrb);
+//             clickElementWithTestId(cyrcrb);
 
-//             expectElementWithAriaLabelToHaveErrorMessage(rncb,"At least one category must be selected");
+//             expectElementWithTestIdToHaveErrorMessage(rncb,"At least one category must be selected");
 //         }, 3000);
 //     });
 // });

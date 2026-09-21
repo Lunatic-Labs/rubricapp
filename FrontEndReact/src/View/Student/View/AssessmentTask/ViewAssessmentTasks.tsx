@@ -330,7 +330,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                                         navbar.setAssessmentTaskInstructions(assessmentTasks, atId, relevantCAT);
                                     }}
 
-                                    aria-label="startAssessmentTasksButton"
+                                    data-testid="start-assessment-tasks-button"
                                 >
                                     START
                                 </Button>

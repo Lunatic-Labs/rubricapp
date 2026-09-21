@@ -108,7 +108,7 @@ class AdminViewTeamMembers extends Component<AdminViewTeamMembersProps, AdminVie
             return(
                 <div className='container'>
                     <div className='d-flex justify-content-between align-items-center'>
-                        <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="adminViewTeamMembersTitle"> 
+                        <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="admin-view-team-members-title"> 
                             {team["team_name"]}
                         </Typography>
                         <div className='d-flex justify-content-end gap-3'>
@@ -130,7 +130,7 @@ class AdminViewTeamMembers extends Component<AdminViewTeamMembersProps, AdminVie
                                         "Add"
                                     );
                                 }}
-                                aria-label='addMemberButton'
+                                data-testid="add-member-button"
                             >
                                 Add Member
                             </Button>
@@ -152,7 +152,7 @@ class AdminViewTeamMembers extends Component<AdminViewTeamMembersProps, AdminVie
                                         "Remove"
                                     );
                                 }}
-                                aria-label='removeMemberButton'
+                                data-testid="remove-member-button"
                             >
                                 Remove Member
                             </Button>
