@@ -7,6 +7,7 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import Cookies from 'universal-cookie';
 import { genericResourceDELETE } from "../../../../utility";
+import { GridColDef } from '@mui/x-data-grid';
 /**
  * Creates an instance of the ViewUsers component.
  * Displays a table of users with options to edit and delete.
@@ -88,74 +89,59 @@ class ViewUsers extends Component<ViewUsersProps> {
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
     var setCoursesTabWithUser = navbar.setCoursesTabWithUser;
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "first_name",
-        label: "First Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width: "20%" } },
-          setCellProps: () => { return { width: "20%" } },
-        }
+        field: "first_name",
+        headerName: "First Name",
+        minWidth: 150,
+        flex: 1,
       },
       {
-        name: "last_name",
-        label: "Last Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width: "20%" } },
-          setCellProps: () => { return { width: "20%" } },
-        }
+        field: "last_name",
+        headerName: "Last Name",
+        minWidth: 150,
+        flex: 1,
       },
       {
-        name: "email",
-        label: "Email",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width: "40%" } },
-          setCellProps: () => { return { width: "40%" } },
-        }
+        field: "email",
+        headerName: "Email",
+        minWidth: 440,
+        flex: 1,
       }];
 
     if (!navbar.props.isSuperAdmin) {
       columns.push(
         {
-          name: "role_id",
-          label: "Role",
-          options: {
-            filter: true,
-            setCellHeaderProps: () => { return { width: "10%" } },
-            setCellProps: () => { return { width: "10%" } },
-            customBodyRender: (roleId: number) => {
-              return (
-                <p>{roleNames[roleId]}</p>
-              )
-            }
-          }
-        } as any
+          field: "role_id",
+          headerName: "Role",
+          minWidth: 160,
+          flex: 1,
+          renderCell: (params) => (
+            <p>{roleNames[params.value]}</p>
+          )
+        }
       );
     }
 
     if (navbar.props.isSuperAdmin) {
       columns.push(
         {
-          name: "lms_id",
-          label: "LMS ID",
-          options: {
-            filter: true,
-            setCellHeaderProps: () => { return { width: "10%" } },
-            setCellProps: () => { return { width: "10%" } },
-          }
-        } as any
+          field: "lms_id",
+          headerName: "LMS ID",
+          minWidth: 110,
+          flex: 1,
+        }
       );
       columns.push({
-      name: "user_id",
-      label: "View",
-      options: {
-        filter: false,
-        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: number) => {
+        field: "view_action",
+        headerName: "View",
+        minWidth: 90,
+        flex: 1,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const userId = params.row.user_id;
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersViewButton" + userId}
@@ -170,8 +156,7 @@ class ViewUsers extends Component<ViewUsersProps> {
             </IconButton>
           )
         },
-      },
-    } as any);
+      });
     }
 /**
  * Edit and Delete Buttons:
@@ -183,78 +168,69 @@ class ViewUsers extends Component<ViewUsersProps> {
  *   - Calls deleteUser method to perform deletion.
  * - Permissions:
  *   - Buttons are hidden if the userId matches the logged-in user and the user is an admin.
- * 
+ *
  */
     columns.push({
-      name: "user_id",
-      label: "Edit",
-      options: {
-        filter: false,
-        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: number) => {
-          var cookies = new Cookies();
-          return (
-            <IconButton id={"viewUsersEditButton" + userId}
-              size="small"
-              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
-              onClick={() => {
-                setAddUserTabWithUser(users, userId);
-              }}
-              aria-label="editUserButton"
-            >
-              <EditIcon sx={{ color: "black" }} />
-            </IconButton>
-          )
-        },
+      field: "edit_action",
+      headerName: "Edit",
+      minWidth: 90,
+      flex: 1,
+      filterable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        const userId = params.row.user_id;
+        var cookies = new Cookies();
+        return (
+          <IconButton id={"viewUsersEditButton" + userId}
+            size="small"
+            hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+            onClick={() => {
+              setAddUserTabWithUser(users, userId);
+            }}
+            aria-label="editUserButton"
+          >
+            <EditIcon sx={{ color: "black" }} />
+          </IconButton>
+        )
       },
-    } as any);
+    });
     columns.push({
-      name: "user_id",
-      label: "Delete",
-      options: {
-        filter: false,
-        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: number) => {
-          var cookies = new Cookies();
-          return (
-            <IconButton id={"viewUsersDeleteButton" + userId}
-              size="small"
-              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
-              onClick={() => {
-                if (
-                  window.confirm("Are you sure you want to delete this user?")
-                ) {
-                  this.deleteUser(userId)
-                }
-              }}
-              aria-label="deleteUserButton"
-            >
-              <DeleteIcon sx={{ color: "black" }} />
-            </IconButton>
-          )
-        },
+      field: "delete_action",
+      headerName: "Delete",
+      minWidth: 90,
+      flex: 1,
+      filterable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        const userId = params.row.user_id;
+        var cookies = new Cookies();
+        return (
+          <IconButton id={"viewUsersDeleteButton" + userId}
+            size="small"
+            hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+            onClick={() => {
+              if (
+                window.confirm("Are you sure you want to delete this user?")
+              ) {
+                this.deleteUser(userId)
+              }
+            }}
+            aria-label="deleteUserButton"
+          >
+            <DeleteIcon sx={{ color: "black" }} />
+          </IconButton>
+        )
       },
-    } as any);
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "50vh",
-      //setRowProps: () => { return { padding: "none" } },
-    };
+    });
 
     return (
       <CustomDataTable
         data={users ? users : []}
         columns={columns}
-        options={options}
+        getRowId={(row) => row.user_id}
+        height="60vh"
       />
     )
   }
