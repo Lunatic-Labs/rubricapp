@@ -97,6 +97,8 @@ const customTheme = createTheme({
           fontSize: "1rem",
           backgroundColor: "var(--table-toolbar)",
           color: "var(--table-text)",
+          width: "100%",
+          tableLayout: "fixed",
         },
       },
     },
@@ -224,7 +226,7 @@ MuiTablePagination: {
 );
 
 const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
-  const isMobile = useMediaQuery('(max-width:100%)');
+  const isMobile = useMediaQuery('(max-width:600px)');
   const defaultOptions = {
     rowStyle: { height: 4 },
     responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard",

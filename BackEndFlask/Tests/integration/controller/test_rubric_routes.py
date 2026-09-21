@@ -48,7 +48,7 @@ def test_get_all_rubrics_with_rubric_id(
             )
             sug1 = sample_suggestion(cat1.category_id, "Be more concise")
             sug2 = sample_suggestion(cat2.category_id, "Reflect on the investigation's purpose.")
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
             create_rubric_category({
                 "rubric_id": rubric.rubric_id,
@@ -59,10 +59,10 @@ def test_get_all_rubrics_with_rubric_id(
                 "category_id": cat2.category_id,
             })
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result["user_id"]}",
+                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -163,9 +163,9 @@ def test_get_all_custom_rubrics_with_user_id(
             result = create_one_admin_course(True)
             cat1 = sample_category()
             cat2 = sample_category(cat_name="Analytical Thinking", rating=accurately)
-            rubric1 = sample_rubric(result["user_id"])
+            rubric1 = sample_rubric(result['user_id'])
             rubric2 = sample_rubric(
-                result["user_id"],
+                result['user_id'],
                 rbric_name="Integration Test Rubric 2"
             )
 
@@ -182,10 +182,10 @@ def test_get_all_custom_rubrics_with_user_id(
                 "category_id": cat2.category_id,
             })
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/rubric?custom=true&user_id={result["user_id"]}",
+                f"/api/rubric?custom=true&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -231,9 +231,9 @@ def test_get_all_custom_and_default_rubrics_with_user_id(
             result = create_one_admin_course(True)
             cat1 = sample_category()
             cat2 = sample_category(cat_name="Analytical Thinking", rating=accurately)
-            rubric1 = sample_rubric(result["user_id"])
+            rubric1 = sample_rubric(result['user_id'])
             rubric2 = sample_rubric(
-                result["user_id"],
+                result['user_id'],
                 rbric_name="Integration Test Rubric 2"
             )
 
@@ -250,10 +250,10 @@ def test_get_all_custom_and_default_rubrics_with_user_id(
                 "category_id": cat2.category_id,
             })
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/rubric?all=true&user_id={result["user_id"]}",
+                f"/api/rubric?all=true&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -294,7 +294,7 @@ def test_get_all_rubrics_raises_exception(flask_app_mock, sample_token, auth_hea
         try:
             result = create_one_admin_course(False)
     
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/rubric?rubric_id=999&user_id={result['user_id']}",
@@ -323,14 +323,14 @@ def test_add_rubric(flask_app_mock, sample_token, auth_header, client):
             rubric_payload = {
                 "rubric_name": "Integration Test Rubric",
                 "rubric_description": "A rubric for integration testing.",
-                "owner": result["user_id"], 
+                "owner": result['user_id'], 
             }
             cat = sample_category()
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
-                f"/api/rubric?user_id={result["user_id"]}",
+                f"/api/rubric?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "rubric": rubric_payload,
@@ -365,7 +365,7 @@ def test_add_rubric_raises_exception(flask_app_mock, sample_token, auth_header, 
         try:
             result = create_one_admin_course(False)
     
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
                 f"/api/rubric?user_id={result['user_id']}",
@@ -398,7 +398,7 @@ def test_get_all_categories_with_rubric_id(
             result = create_one_admin_course(False)
             cat1 = sample_category()
             cat2 = sample_category(cat_name="Analytical Thinking", rating=accurately)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
             create_rubric_category({
                 "rubric_id": rubric.rubric_id,
@@ -409,10 +409,10 @@ def test_get_all_categories_with_rubric_id(
                 "category_id": cat2.category_id,
             })
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/category?rubric_id={rubric.rubric_id}&user_id={result["user_id"]}",
+                f"/api/category?rubric_id={rubric.rubric_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -452,10 +452,10 @@ def test_get_all_categories_by_default(
             load_existing_rubrics()
             load_existing_categories()
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/category?user_id={result["user_id"]}",
+                f"/api/category?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -496,7 +496,7 @@ def test_get_all_custom_categories(
             result = create_one_admin_course(False)
             cat1 = sample_category()
             cat2 = sample_category(cat_name="Analytical Thinking", rating=accurately)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
             create_rubric_category({
                 "rubric_id": rubric.rubric_id,
@@ -507,10 +507,10 @@ def test_get_all_custom_categories(
                 "category_id": cat2.category_id,
             })
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/category?custom=true&user_id={result["user_id"]}",
+                f"/api/category?custom=true&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -542,7 +542,7 @@ def test_get_all_categories_raises_exception(flask_app_mock, sample_token, auth_
         try:
             result = create_one_admin_course(False)
     
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
                 f"/api/category?rubric_id=99&user_id={result['user_id']}",
@@ -573,18 +573,18 @@ def test_edit_rubric_with_not_categories_in_data(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
             rubric_payload = {
                 "rubric_name": "Integration Test Rubric 2",
                 "rubric_description": "A rubric for integration testing 2.",
-                "owner": result["user_id"], 
+                "owner": result['user_id'], 
             }
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result["user_id"]}",
+                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "rubric": rubric_payload
@@ -622,7 +622,7 @@ def test_edit_rubric_with_not_categories_in_data(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
             cat = sample_category()
             create_rubric_category({
@@ -633,13 +633,13 @@ def test_edit_rubric_with_not_categories_in_data(
             rubric_payload = {
                 "rubric_name": "Integration Test Rubric 2",
                 "rubric_description": "A rubric for integration testing 2.",
-                "owner": result["user_id"], 
+                "owner": result['user_id'], 
             }
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result["user_id"]}",
+                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "rubric": rubric_payload,
@@ -673,7 +673,7 @@ def test_edit_rubric_raises_exception(flask_app_mock, sample_token, auth_header,
         try:
             result = create_one_admin_course(False)
     
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.put(
                 f"/api/rubric?rubric_id=99&user_id={result['user_id']}",
@@ -700,12 +700,12 @@ def test_delete_rubric(flask_app_mock, sample_token, auth_header, client):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.delete(
-                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result["user_id"]}",
+                f"/api/rubric?rubric_id={rubric.rubric_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -731,12 +731,12 @@ def test_delete_rubric_raises_exception(flask_app_mock, sample_token, auth_heade
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.delete(
-                f"/api/rubric?rubric_id=999&user_id={result["user_id"]}",
+                f"/api/rubric?rubric_id=999&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             

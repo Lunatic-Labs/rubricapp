@@ -215,7 +215,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
 
                     <Button
                         id="saveTeam"
-                        className="mt-3 mb-3"
+                        className="mt-3 mb-3 white-text-button"
 
                         style={{
                             backgroundColor: "#2E8BEF",
