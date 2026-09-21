@@ -11,7 +11,7 @@ interface FetchOptions {
   isRetry?: boolean;
 }
 
-interface ApiResponse {
+export interface ApiResponse {
   success: boolean;
   status?: number;
   content?: Record<string, any>;
@@ -88,6 +88,81 @@ export async function genericResourceDELETE(
   return await genericResourceFetch(fetchURL, null, component, "DELETE", body ?? null, restOptions);
 }
 
+
+/*
+ * The unauthenticatedResource* helpers below serve endpoints the backend intentionally leaves
+ * public, i.e. those without an @jwt_required guard. Today that is the whole forgot-password
+ * flow: /reset_code and /password. The caller there is by definition logged out, and the
+ * emailed reset code is what authorizes the request instead of a token.
+ *
+ * The genericResource* helpers cannot serve those callers. They return "Not authenticated"
+ * without ever reaching the network when the auth cookies are absent, and createApiRequestUrl
+ * appends a user_id read off the user cookie, which a logged-out caller does not have.
+ *
+ * Unlike the authenticated helpers these touch no component state, so the caller owns error
+ * display and gets the parsed body back rather than a state object.
+ */
+
+export async function unauthenticatedResourceGET(
+  fetchURL: string
+): Promise<ApiResponse> {
+  return await unauthenticatedResourceFetch(fetchURL, "GET", null);
+}
+
+export async function unauthenticatedResourcePOST(
+  fetchURL: string,
+  body: string | null = null
+): Promise<ApiResponse> {
+  return await unauthenticatedResourceFetch(fetchURL, "POST", body);
+}
+
+export async function unauthenticatedResourcePUT(
+  fetchURL: string,
+  body: string
+): Promise<ApiResponse> {
+  return await unauthenticatedResourceFetch(fetchURL, "PUT", body);
+}
+
+/**
+ * @param fetchURL - Path appended to apiUrl, e.g. "/password". Any interpolated values must
+ * already be escaped by the caller.
+ * @param type - HTTP method.
+ * @param body - Serialized JSON request body, or null for the endpoints that carry their
+ * arguments in the query string.
+ * @returns The parsed response body.
+ */
+async function unauthenticatedResourceFetch(
+  fetchURL: string,
+  type: string,
+  body: string | null
+): Promise<ApiResponse> {
+  const fetchInit: RequestInit = {
+    method: type
+  };
+
+  if (body !== null) {
+    fetchInit.headers = {"Content-Type": "application/json"};
+    fetchInit.body = body;
+  }
+
+  const response = await fetch(apiUrl + fetchURL, fetchInit);
+
+  // A rate limit or a proxy failure answers with an HTML page, and response.json() would
+  // then reject with an opaque "Unexpected token '<'". Report the status instead. Only act
+  // when the header is actually readable: test doubles for Response routinely omit headers,
+  // and treating that as a non-JSON body would fail every mocked call.
+  const contentType = response.headers?.get("Content-Type") ?? null;
+
+  if (contentType !== null && !contentType.includes("application/json")) {
+    return {
+      success: false,
+      status: response.status,
+      message: `Server error (${response.status}). Please try again later.`
+    };
+  }
+
+  return await response.json() as ApiResponse;
+}
 
 function createApiRequestUrl(fetchURL: string, cookies: Cookies): string {
   const user = cookies.get('user') as User;
