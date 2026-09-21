@@ -48,6 +48,7 @@ interface CollapsableRubricCategoryTableProps {
     showEditButton?: boolean;
     selectedCategories?: Category[];
     navbar?: any;
+    courseMap?: { [courseId: number]: string };
 }
 
 const CollapsableRubricCategoryTable = ({
@@ -57,7 +58,8 @@ const CollapsableRubricCategoryTable = ({
   readOnly,
   showEditButton,
   selectedCategories,
-  navbar
+  navbar,
+  courseMap
 }: CollapsableRubricCategoryTableProps) => {
 
   // NOTE: Manage whether the rubric was clicked or not
@@ -113,6 +115,7 @@ const CollapsableRubricCategoryTable = ({
           <TableHead>
             <TableRow>
               <TableCell>Rubric</TableCell>
+              {courseMap && <TableCell>Course</TableCell>}
             </TableRow>
           </TableHead>
           <TableBody>
@@ -177,6 +180,13 @@ const CollapsableRubricCategoryTable = ({
                       )}
                     </div>
                   </TableCell>
+                  {courseMap &&
+                    <TableCell aria-label="rubricCourseName">
+                      {rubric.course_id != null
+                        ? (courseMap[rubric.course_id] ?? `Course ${rubric.course_id}`)
+                        : "No course"}
+                    </TableCell>
+                  }
                 </TableRow>
                 <TableRow>
                   <TableCell
