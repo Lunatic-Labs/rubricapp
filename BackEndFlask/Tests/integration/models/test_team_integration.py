@@ -34,6 +34,7 @@ from models.completed_assessment import (
 )
 from models.rubric import delete_rubric_by_id
 from models.feedback import delete_feedback_by_user_id_completed_assessment_id
+from models.checkin import create_checkin, delete_checkins_over_team_count
 
 
 def test_create_team(flask_app_mock):
@@ -424,6 +425,16 @@ def test_get_team_by_course_id_and_observer_id(flask_app_mock):
 
 
 def test_get_team_ratings(flask_app_mock):
+    """
+    A real team submission is ONE CompletedAssessment per team (user_id=None,
+    team_id set) - not one per member, which is what this test used to model.
+    That shape happened to make the pre-fix query "work" by accident, since it
+    (wrongly) read team_id from CompletedAssessment.user_id; it doesn't match
+    how the app actually creates team submissions (see unit.tsx's Team class,
+    which sends user_id: -1). This models the real shape: team membership via
+    TeamUser, per-member feedback view status via each member's own Feedback
+    row, only one of the two members having viewed theirs.
+    """
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
 
@@ -437,27 +448,23 @@ def test_get_team_ratings(flask_app_mock):
 
             for i in range(2):
                 sample_team_user(team.team_id, users[i].user_id)
-            
-            data1 = sample_completed_assessment(users[0].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result['user_id'])
-            comp1 = create_completed_assessment(data1)
-            data2 = sample_completed_assessment(users[1].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result['user_id'])
-            comp2 = create_completed_assessment(data2)
-            fb1 = sample_feedback(comp1.completed_assessment_id, users[0].user_id)
-            fb2 = sample_feedback(comp2.completed_assessment_id, users[1].user_id)
+
+            data = sample_completed_assessment(None, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result['user_id'])
+            comp = create_completed_assessment(data)
+            fb1 = sample_feedback(comp.completed_assessment_id, users[0].user_id, team_id=team.team_id)
 
             results = get_team_ratings(task.assessment_task_id)
             assert len(results) == 2
             assert all(r.team_id == team.team_id for r in results)
-            assert any(r.rating_observable_characteristics_suggestions_data == "With some errors" for r in results)
-            assert any(r.feedback_id == fb1.feedback_id for r in results)
-        
+            assert {r[9] for r in results} == {users[0].user_id, users[1].user_id}
+            assert any(r.feedback_id == fb1.feedback_id and r[9] == users[0].user_id for r in results)
+            assert any(r.feedback_id is None and r[9] == users[1].user_id for r in results)
+
         finally:
             # Clean up
             try:
-                delete_feedback_by_user_id_completed_assessment_id(users[0].user_id, comp1.completed_assessment_id)
-                delete_feedback_by_user_id_completed_assessment_id(users[1].user_id, comp2.completed_assessment_id)
-                delete_completed_assessment_tasks(comp1.completed_assessment_id)
-                delete_completed_assessment_tasks(comp2.completed_assessment_id)
+                delete_feedback_by_user_id_completed_assessment_id(users[0].user_id, comp.completed_assessment_id)
+                delete_completed_assessment_tasks(comp.completed_assessment_id)
                 TeamUser.query.delete()
                 delete_team(team.team_id)
                 delete_assessment_task(task.assessment_task_id)
@@ -466,4 +473,49 @@ def test_get_team_ratings(flask_app_mock):
                 delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
-                
+
+
+def test_get_team_ratings_adhoc_team(flask_app_mock):
+    """
+    Ad hoc teams (use_fixed_teams=False) track membership via Checkin, not
+    TeamUser - a course never creates TeamUser rows for them. get_team_ratings
+    has to source members from both, or ad hoc team assessments silently show
+    no members at all even though fixed-team ones look fine.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            # create_users(..., number_of_users=N) returns N - 1 users (range(1, N)),
+            # so ask for 3 to reliably get the 2 this test needs - matches the pattern
+            # test_get_team_ratings above already relies on.
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
+            task = create_assessment_task(payload)
+            team = sample_team("AdhocAlpha", result['user_id'], result['course_id'], task.assessment_task_id)
+
+            for user in users[:2]:
+                create_checkin(sample_checkin(task.assessment_task_id, user.user_id, team_number=team.team_id))
+
+            data = sample_completed_assessment(None, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result['user_id'])
+            comp = create_completed_assessment(data)
+
+            results = get_team_ratings(task.assessment_task_id)
+            assert len(results) == 2
+            assert {r[9] for r in results} == {users[0].user_id, users[1].user_id}
+            assert all(r.feedback_id is None for r in results)
+
+        finally:
+            # Clean up
+            try:
+                delete_completed_assessment_tasks(comp.completed_assessment_id)
+                delete_checkins_over_team_count(task.assessment_task_id, 0)
+                delete_team(team.team_id)
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
