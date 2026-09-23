@@ -1,15 +1,30 @@
 import { SymbolView } from 'expo-symbols';
 import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, Alert, FlatList, Pressable, RefreshControl, StyleSheet } from 'react-native';
+import {
+  ActivityIndicator,
+  Alert,
+  FlatList,
+  type LayoutChangeEvent,
+  Pressable,
+  RefreshControl,
+  StyleSheet,
+  View,
+} from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 import { type AdminUser, deleteUser, listUsers } from '@/api/users';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, Spacing } from '@/constants/theme';
+import { BottomTabInset, Primary, Spacing } from '@/constants/theme';
 import { useSession } from '@/context/session';
 import { useApi } from '@/hooks/use-api';
 import { useTheme } from '@/hooks/use-theme';
+
+// Rows have a fixed height so the list box's height can be floored to a whole
+// number of rows below — otherwise the last row at the bottom edge gets cut
+// off mid-row instead of either fully showing or fully scrolling out of view.
+const ROW_HEIGHT = 84;
+const ROW_UNIT = ROW_HEIGHT + Spacing.two; // row height + inter-row gap
 
 export default function UsersScreen() {
   const theme = useTheme();
@@ -19,6 +34,15 @@ export default function UsersScreen() {
   const [users, setUsers] = useState<AdminUser[] | null>(null);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [boxHeight, setBoxHeight] = useState<number | null>(null);
+
+  // Floors the box to a whole number of rows, so the last row is either
+  // fully visible or fully scrolled away — never cut off mid-row.
+  const handleAreaLayout = (event: LayoutChangeEvent) => {
+    const available = event.nativeEvent.layout.height;
+    const rows = Math.max(1, Math.floor((available - Spacing.two) / ROW_UNIT));
+    setBoxHeight(rows * ROW_UNIT + Spacing.two);
+  };
 
   const load = useCallback(async () => {
     const result = await listUsers(request, !!session?.user.isSuperAdmin);
@@ -63,29 +87,34 @@ export default function UsersScreen() {
 
   return (
     <ThemedView style={styles.flex}>
-      <SafeAreaView style={styles.flex} edges={['top', 'left', 'right']}>
-        <ThemedText type="subtitle" style={styles.header}>
+      <SafeAreaView style={styles.flex} edges={['top', 'left', 'right', 'bottom']}>
+        <ThemedText type="subtitle" style={[styles.header, { color: Primary }]}>
           Users
         </ThemedText>
 
+        <View style={styles.listArea} onLayout={handleAreaLayout}>
+        {boxHeight == null ? null : (
+        <ThemedView style={[styles.listBox, { height: boxHeight, borderColor: theme.border }]}>
         {users === null && !errorMessage ? (
-          <ThemedView style={styles.centered}>
+          <View style={styles.centered}>
             <ActivityIndicator color={theme.text} />
-          </ThemedView>
+          </View>
         ) : errorMessage ? (
-          <ThemedView style={styles.centered}>
+          <View style={styles.centered}>
             <ThemedText themeColor="error" style={styles.centerText}>
               {errorMessage}
             </ThemedText>
             <Pressable onPress={load} style={styles.retryButton}>
               <ThemedText type="linkPrimary">Retry</ThemedText>
             </Pressable>
-          </ThemedView>
+          </View>
         ) : (
           <FlatList
             data={users}
             keyExtractor={(user) => String(user.user_id)}
             contentContainerStyle={styles.listContent}
+            snapToInterval={ROW_UNIT}
+            decelerationRate="fast"
             refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
             ListEmptyComponent={
               <ThemedView style={styles.centered}>
@@ -94,7 +123,7 @@ export default function UsersScreen() {
             }
             renderItem={({ item }) => (
               <ThemedView type="backgroundElement" style={styles.row}>
-                <ThemedView style={styles.rowInfo}>
+                <View style={styles.rowInfo}>
                   <ThemedText type="smallBold">
                     {item.first_name} {item.last_name}
                   </ThemedText>
@@ -106,9 +135,9 @@ export default function UsersScreen() {
                       LMS ID: {item.lms_id}
                     </ThemedText>
                   )}
-                </ThemedView>
+                </View>
 
-                <ThemedView style={styles.rowActions}>
+                <View style={styles.rowActions}>
                   <Pressable
                     onPress={() => notBuiltYet('View user')}
                     style={styles.actionButton}
@@ -139,11 +168,14 @@ export default function UsersScreen() {
                       size={20}
                     />
                   </Pressable>
-                </ThemedView>
+                </View>
               </ThemedView>
             )}
           />
         )}
+        </ThemedView>
+        )}
+        </View>
       </SafeAreaView>
     </ThemedView>
   );
@@ -171,17 +203,28 @@ const styles = StyleSheet.create({
   retryButton: {
     padding: Spacing.two,
   },
+  listArea: {
+    flex: 1,
+    marginHorizontal: Spacing.three,
+    marginTop: Spacing.two,
+    marginBottom: BottomTabInset + Spacing.one,
+  },
+  listBox: {
+    borderRadius: Spacing.three,
+    borderWidth: StyleSheet.hairlineWidth,
+    overflow: 'hidden',
+  },
   listContent: {
-    paddingHorizontal: Spacing.three,
-    paddingBottom: BottomTabInset + Spacing.three,
+    padding: Spacing.two,
     gap: Spacing.two,
   },
   row: {
+    height: ROW_HEIGHT,
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: Spacing.two,
-    padding: Spacing.three,
+    paddingHorizontal: Spacing.three,
     gap: Spacing.two,
   },
   rowInfo: {

@@ -1,6 +1,5 @@
-import { DarkTheme, DefaultTheme, Stack, ThemeProvider } from 'expo-router';
+import { DefaultTheme, Stack, ThemeProvider } from 'expo-router';
 import * as SplashScreen from 'expo-splash-screen';
-import { useColorScheme } from 'react-native';
 
 import { AnimatedSplashOverlay } from '@/components/animated-icon';
 import { SessionProvider, useSession } from '@/context/session';
@@ -16,7 +15,6 @@ export default function RootLayout() {
 }
 
 function RootNavigator() {
-  const colorScheme = useColorScheme();
   const { isLoading, session } = useSession();
 
   if (isLoading) {
@@ -24,7 +22,8 @@ function RootNavigator() {
   }
 
   return (
-    <ThemeProvider value={colorScheme === 'dark' ? DarkTheme : DefaultTheme}>
+    // Always the light theme — branding stays blue/white regardless of OS dark mode.
+    <ThemeProvider value={DefaultTheme}>
       <AnimatedSplashOverlay />
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Protected guard={!!session}>

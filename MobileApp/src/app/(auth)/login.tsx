@@ -9,6 +9,7 @@ import {
   StyleSheet,
   TextInput,
   type TextInput as TextInputType,
+  View,
 } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
@@ -118,7 +119,7 @@ export default function LoginScreen() {
             <ThemedText type="smallBold" style={styles.label}>
               Password
             </ThemedText>
-            <ThemedView style={styles.passwordRow}>
+            <View style={styles.passwordRow}>
               <TextInput
                 ref={passwordInputRef}
                 value={password}
@@ -158,7 +159,7 @@ export default function LoginScreen() {
                   size={20}
                 />
               </Pressable>
-            </ThemedView>
+            </View>
             {!!errors.password && (
               <ThemedText type="small" themeColor="error">
                 {errors.password}
