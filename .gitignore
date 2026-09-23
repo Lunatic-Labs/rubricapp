@@ -38,6 +38,7 @@ Backup[ ]of[ ]*.numbers/
 .vscode/launch.json
 **/package-lock.json
 !FrontEndReact/package-lock.json
+!MobileApp/package-lock.json
 BackEndFlask/logs/all.log
 BackEndFlask/models/hidden.py
 BackEndFlask/oauth2_creds.json
@@ -49,6 +50,8 @@ FrontEndReact/.env.production
 .vscode
 package.json
 package-lock.json
+!MobileApp/package.json
+!MobileApp/package-lock.json
 
 # Nginx configuration files
 /etc/nginx/sites-available/*
