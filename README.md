@@ -17,7 +17,7 @@ If you choose to run the application using Docker, then Docker will be the only 
     * Python(v3.12 or higher) - Handles backend server logic.
 * **Database/Caching**:
     * Redis(v5.2.1) - Handles session management and rate limiting.
-    * MySQL(v8.0) - Manages the application's data.
+    * MySQL(v8.4) - Manages the application's data.
 * **Package Managers**:
     * pip for Python backend.
     * npm for Node.js frontend.
