@@ -16,7 +16,7 @@ on:
 jobs:
   setup_envs:
     timeout-minutes: 5
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     outputs:
       mysql_user: ${{ steps.export-mysql.outputs.mysql_user }}
       mysql_password: ${{ steps.export-mysql.outputs.mysql_password }}
@@ -49,7 +49,7 @@ jobs:
 
   install_frontEnd_dependencies:
     timeout-minutes: 5
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -68,7 +68,7 @@ jobs:
 
   install_backend_dependencies:
     timeout-minutes: 5
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     steps:
       - name: Checkout code
         uses: actions/checkout@v6
@@ -89,7 +89,7 @@ jobs:
 
   lint_frontend:
     timeout-minutes: 5
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: install_frontEnd_dependencies
     steps: 
       - name: Checkout code
@@ -114,7 +114,7 @@ jobs:
 
   tests:
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [setup_envs, install_backend_dependencies, install_frontEnd_dependencies]
     strategy:
       fail-fast: true
@@ -278,7 +278,7 @@ jobs:
 
   monitor_workflow:
     timeout-minutes: 10
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-24.04
     needs: [lint_frontend]
     if: failure()
     steps:
