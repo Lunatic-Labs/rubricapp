@@ -67,33 +67,24 @@ def get_all_courses():
             return create_good_response(student_count, 200, "course_count")
 
         if not user_id:
-            print("ERROR: user_id is required")
             return create_bad_response("user_id is required", "courses", 400)
-        
+
         try:
             user_id = int(user_id)
-            print(f"Converted user_id to int: {user_id}")
-            
+
             user = db.session.get(User, user_id)
 
             if not user:
-                print(f"ERROR: User {user_id} not found in database")
                 return create_bad_response(f"User {user_id} not found", "courses", 404)
-            
-            print(f"Found user: {user.email}")
-            
+
             # Check if this is a test student
             if user.email and user.email.startswith("teststudent"):
-                print(f"This is a test student - handling specially")
-                
                 # Get enrollments for test student
                 enrollments = UserCourse.query.filter_by(
                     user_id=user_id,
                     active=True
                 ).all()
-                
-                print(f"Found {len(enrollments)} enrollments for test student")
-                
+
                 courses_data = []
                 for enrollment in enrollments:
                     course = db.session.get(Course, enrollment.course_id)
@@ -113,34 +104,18 @@ def get_all_courses():
                             "UserCourse_active": enrollment.active
                         }
                         courses_data.append(course_dict)
-                        print(f"Added course: {course.course_name} (ID: {course.course_id})")
-                
-                print(f"Returning {len(courses_data)} courses for test student")
+
                 return create_good_response(courses_data, 200, "courses")
-            
+
             # Normal user - use existing function
-            print(f"Normal user, calling get_courses_by_user_courses_by_user_id")
-            
             all_courses = get_courses_by_user_courses_by_user_id(user_id)
-            
-            if all_courses is None:
-                print("No courses found, check that the backend is working properly.")
-            else:
-                print(f"Found {len(all_courses)} courses")
-            
+
             return create_good_response(courses_schema.dump(all_courses), 200, "courses")
-            
+
         except Exception as e:
-            print(f"ERROR processing user_id {user_id}: {str(e)}")
-            import traceback
-            print(f"Traceback:\n{traceback.format_exc()}")
-            
             return create_bad_response(f"Error processing user {user_id}: {str(e)}", "courses", 422)
 
     except Exception as e:
-        print(f"UNEXPECTED ERROR in get_all_courses: {str(e)}")
-        import traceback
-        print(f"Traceback:\n{traceback.format_exc()}")
         return create_bad_response(f"An error occurred fetching all courses: {e}", "courses", 500)
 
 
@@ -234,7 +209,6 @@ def get_test_student_token(course_id):
         course = get_course(course_id)
         
         if not course:
-            print(f"Course {course_id} not found!")
             return jsonify({
                 "success": False,
                 "error": f"Course {course_id} not found"
@@ -244,8 +218,6 @@ def get_test_student_token(course_id):
         test_student = User.query.filter_by(email=test_email).first()
         
         if not test_student:
-            print(f"Test student not found, creating one...")
-            
             try:
                 #comment 
                 # Create test student
@@ -317,7 +289,6 @@ def get_test_student_token(course_id):
             access_token = create_access_token(identity=str(test_student.user_id))
             refresh_token = create_refresh_token(identity=str(test_student.user_id))
         except Exception as token_error:
-            print(f"Error creating tokens: {str(token_error)}")
             return jsonify({
                 "success": False,
                 "error": f"Failed to create tokens: {str(token_error)}"
@@ -344,11 +315,6 @@ def get_test_student_token(course_id):
         return jsonify(response_data), 200
         
     except Exception as e:
-        print(f"!!! UNEXPECTED ERROR in get_test_student_token: {str(e)}")
-        print(f"Error type: {type(e).__name__}")
-        import traceback
-        print(f"Traceback: {traceback.format_exc()}")
-        
         db.session.rollback()
         return jsonify({
             "success": False,

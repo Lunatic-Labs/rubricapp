@@ -3,7 +3,7 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewUsers from './ViewUsers';
 import AdminAddUser from '../../Add/AddUsers/AdminAddUser';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET, parseRoleNames } from '../../../../utility';
+import { genericResourceGET } from '../../../../utility';
 import { Box } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 import SuccessMessage from '../../../Success/SuccessMessage';
@@ -19,13 +19,12 @@ import { User } from '../../../../types/User';
  * @property {string|null} state.errorMessage - The error message to display if an error occurs during data fetching.
  * @property {boolean} state.isLoaded - Indicates whether the data has been loaded.
  * @property {Array|null} state.users - The list of users in the course or system.
- * @property {Array|null} state.roles - The list of roles available in the system.
  * @property {number} state.prevUsersLength - The previous length of the users array for comparison.
  * @property {string|null} state.successMessage - The success message to display after successful operations.
  * 
  * Conditional Rendering:
  * - if navbar.state.user or navbar.state.addUser is set, renders AdminAddUser component.
- * - else, renders ViewUsers component with fetched users and roles.
+ * - else, renders ViewUsers component with fetched users and role names from navbar.state.roleNameMap.
  */
 
 interface AdminViewUsersProps {
@@ -36,7 +35,6 @@ interface AdminViewUsersState {
     errorMessage: string | null;
     isLoaded: boolean;
     users: User[] | null;
-    roles: { role_id: string; role_name: string }[] | null;
     prevUsersLength: number;
     successMessage: string | null;
 }
@@ -49,13 +47,12 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
             errorMessage: null,
             isLoaded: false,
             users: null,
-            roles: null,
             prevUsersLength: 0,
             successMessage: null
         }
     }
     /**
-     * @method fetchData - Fetches users and roles data from the server.
+     * @method fetchData - Fetches users data from the server.
      * 
      * == USER DATA FETCHING ==
      * API Endpoint: /user
@@ -69,20 +66,6 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
      * ADMIN/INSTRUCTOR:
      * @param {string} course_id - The ID of the course to fetch users for.
      *      - Data fetched: All users enrolled in the specified course.
-     * 
-     * == ROLE DATA FETCHING ==
-     * API Endpoint: /role
-     * HTTP Method: GET
-     * 
-     * Parameters:
-     * None
-     * 
-     * Response:
-     * - List of roles available in the system.
-     * 
-     * TODO: Optimizations
-     * - Optimize data fetching to reduce redundant calls.
-     * - the roles data could be cached if it doesn't change often.
      * 
      */
     fetchData = () => {
@@ -98,8 +81,6 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
                 "users", this);
         }
 
-        genericResourceGET(
-            "/role?", "roles", this); 
     }
     /**
      * @method componentDidMount - Lifecycle method called when the component is mounted.
@@ -152,7 +133,6 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
             errorMessage,
             isLoaded,
             users,
-            roles,
             successMessage
         } = this.state;
 
@@ -163,7 +143,7 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
 
     navbar.adminViewUsers = {};
     navbar.adminViewUsers.users = users ? users : [];
-    navbar.adminViewUsers.roleNames = roles ? parseRoleNames(roles) : [];
+    navbar.adminViewUsers.roleNames = state.roleNameMap ? state.roleNameMap : {};
 
         if (errorMessage) {
             return(
@@ -174,7 +154,7 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
                 </div>
             )
 
-        } else if (!isLoaded || !users || !roles) {
+        } else if (!isLoaded || !users || !state.roleNameMap) {
             return(
                 <Loading />
             )

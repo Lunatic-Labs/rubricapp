@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import MUIDataTable from 'mui-datatables';
+import MUIDataTable from '../../../../../LibAdapters/MUIDataTable';
 import { parseAssessmentIndividualOrTeam } from '../../../../../utility';
 import { AssessmentTask } from '../../../../../types/AssessmentTask';
 import { Category } from '../../../../../types/Category';

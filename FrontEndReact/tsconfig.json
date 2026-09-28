@@ -1,28 +1,29 @@
 {
   "compilerOptions": {
-    "ignoreDeprecations": "5.0",
-    "module": "esnext",
-    "target": "esnext",
-    "lib": ["esnext", "dom", "dom.iterable"],
-    "types": ["jest", "@testing-library/jest-dom"],  // ← remove /extend-expect
-    
-    "sourceMap": true,
-    "declaration": true,
-    "declarationMap": true,
-    
+    "target": "ES2020",
+    "useDefineForClassFields": true,
+    "lib": ["ES2020", "DOM", "DOM.Iterable"],
+
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+
+    "jsx": "react-jsx",
+
+    "strict": true,
+    "skipLibCheck": true,
     "noUncheckedIndexedAccess": true,
     "exactOptionalPropertyTypes": true,
-    
-    "strict": true,
-    "jsx": "react-jsx",
-    "isolatedModules": false,
-    "skipLibCheck": true,
+
     "esModuleInterop": true,
+    "allowSyntheticDefaultImports": true,
     "resolveJsonModule": true,
-    "moduleResolution": "bundler",
+    "isolatedModules": true,
+
     "forceConsistentCasingInFileNames": true,
-    "allowSyntheticDefaultImports": true 
+
+    "types": [
+      "vite/client"
+    ]
   },
-  "include": ["src", "src/**/*.d.ts"],
-  "exclude": ["node_modules"]
+  "include": ["src"]
 }

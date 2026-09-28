@@ -232,7 +232,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps> {
                     customBodyRender: (atId: number) => {
                         let at = assessmentTasks.find((at: AssessmentTask) => at["assessment_task_id"] === atId)!;
                         let filledByStudent = at!.role_id === 5;
-                        
+
                         // Check if user is switching teams (already checked in)
                         const isSwitchingTeams = this.props.checkin.indexOf(atId) !== -1;
 

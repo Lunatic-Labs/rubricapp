@@ -9,6 +9,8 @@ from models.team   import get_team
 from models.role   import get_role
 from controller.Route_response import *
 from models.user_course import get_user_courses_by_user_id
+from models.assessment_task import get_assessment_task, get_valid_ta_tasks_via_course
+from enums.http_status_codes import HttpStatus
 
 from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import (
@@ -41,8 +43,8 @@ from models.queries import (
     get_students_by_team_id,
     get_assessment_task_by_course_id_and_role_id
 )
-
-
+# for constant-time string comparison
+import hmac
 
 # /assessment_task GET retrieves all assessment tasks
 # Supported individual filters:
@@ -173,7 +175,34 @@ def get_one_assessment_task():
             f"An error occurred retrieving one assessment tasks: {e}", "assessment_task", 400
         )
 
+@bp.route("/ta_filtered_assessments", methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_ta_filtered_assessments():
+    """Returns all valid ta assessment tasks.
 
+    Args:
+        course_id (int): Course to find the assessment tasks in.
+
+    Returns:
+        Json Assessment Tasks.
+    """
+    try:
+        course_id = int(request.args.get("course_id"))
+        assesssments = get_valid_ta_tasks_via_course(course_id)
+        assesssments = assessment_tasks_schema.dump(assesssments)
+        return create_good_response(
+            assesssments,
+            HttpStatus.OK.value,
+            "userFilteredAts",
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving the filtered assessments and completed assessments: {e}",
+            "userFilteredAts",
+            HttpStatus.BAD_REQUEST.value,
+        )
 
 # /assessment_task POST creates an assessment task with the requested json!
 @bp.route('/assessment_task', methods = ['POST'])
@@ -339,6 +368,40 @@ def copy_course_assessments():
             f"An error occurred copying course assessments {e}", "assessment_tasks", 400
         )
 
+
+@bp.route("/verify_team_password", methods = ['POST'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def verify_team_password():
+    try:
+        data = request.get_json()
+
+        if not data or 'password' not in data or 'assessment_task_id' not in data:
+            return create_bad_response ("Missing Information: password or assessment_task_id", "assessment_tasks", 400)
+        
+        assessment_task_id = data.get('assessment_task_id')
+        entered_password = data.get('password')
+        if not isinstance(entered_password, str):
+            return create_bad_response("Password must be a string.", "assessment_tasks", 400)
+        assessment_task_instance = get_assessment_task(assessment_task_id)
+        correct_password = assessment_task_instance.create_team_password
+
+        if not correct_password:
+            return create_bad_response ("No team switch password set for this assessment task.", 
+                                        "assessment_tasks", 400)
+        if hmac.compare_digest(entered_password, correct_password):
+            return create_good_response({"message": "Password is correct."},
+                                         200, "assessment_tasks")
+        else:
+            return create_bad_response ("Incorrect password.",
+                                         "assessment_tasks", 400)
+    except Exception:
+        return create_bad_response(
+            "Unexpected error verifying the team password.",
+            "assessment_tasks",
+            500,
+        )
 
 
 class AssessmentTaskSchema(ma.Schema):

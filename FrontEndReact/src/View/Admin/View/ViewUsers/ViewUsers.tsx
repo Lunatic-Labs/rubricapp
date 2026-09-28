@@ -185,32 +185,30 @@ class ViewUsers extends Component<ViewUsersProps> {
  *   - Buttons are hidden if the userId matches the logged-in user and the user is an admin.
  * 
  */
-    if (!navbar.props.isSuperAdmin) {
-      columns.push({
-        name: "user_id",
-        label: "Edit",
-        options: {
-          filter: false,
-          setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-          setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-          customBodyRender: (userId: number) => {
-            var cookies = new Cookies();
-            return (
-              <IconButton id={"viewUsersEditButton" + userId}
-                size="small"
-                hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
-                onClick={() => {
-                  setAddUserTabWithUser(users, userId);
-                }}
-                aria-label="editUserButton"
-              >
-                <EditIcon sx={{ color: "black" }} />
-              </IconButton>
-            )
-          },
+    columns.push({
+      name: "user_id",
+      label: "Edit",
+      options: {
+        filter: false,
+        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
+        customBodyRender: (userId: number) => {
+          var cookies = new Cookies();
+          return (
+            <IconButton id={"viewUsersEditButton" + userId}
+              size="small"
+              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+              onClick={() => {
+                setAddUserTabWithUser(users, userId);
+              }}
+              aria-label="editUserButton"
+            >
+              <EditIcon sx={{ color: "black" }} />
+            </IconButton>
+          )
         },
-      } as any);
-    }
+      },
+    } as any);
     columns.push({
       name: "user_id",
       label: "Delete",

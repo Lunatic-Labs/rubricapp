@@ -69,3 +69,5 @@ node_modules
 
 endpoint-viz/*.html
 endpoint-viz/.env
+
+.venv

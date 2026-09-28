@@ -8,6 +8,7 @@ from models.team_user import (
     create_team_user,
     replace_team_user
 )
+from enums.roles import Roles
 
 from models.user import (
     get_user
@@ -1154,14 +1155,13 @@ def get_completed_assessment_by_user_id(course_id, user_id):
     return final_result.all()
 
 @error_log
-def get_completed_assessment_by_ta_user_id(course_id, user_id):
+def get_completed_assessments_for_tas_by_course_id(course_id):
     """
     Description:
-    Gets all of the completed assessments by
-    the given user in the given course.
+    Gets all of the completed assessments for a Ta 
+    in the given course.
 
     Parameters: 
-    user_id: int (The id of the current logged student user)
     course_id: int (The id of given course)
     """
     complete_assessments = db.session.query(
@@ -1178,13 +1178,14 @@ def get_completed_assessment_by_ta_user_id(course_id, user_id):
         AssessmentTask.assessment_task_name,
         AssessmentTask.rubric_id,
         AssessmentTask.unit_of_assessment
-    ).filter(
-        CompletedAssessment.completed_by == user_id,
     ).join(
         AssessmentTask,
         AssessmentTask.assessment_task_id == CompletedAssessment.assessment_task_id
     ).filter(
-        AssessmentTask.course_id == course_id
+        and_(
+            AssessmentTask.course_id == course_id,
+            AssessmentTask.role_id == Roles.TA_INSTRUCTOR.value,
+        )
     ).all()
 
     return complete_assessments

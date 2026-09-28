@@ -8,6 +8,7 @@ from Functions import genericImport
 from io import StringIO, BytesIO
 import os
 import shutil
+import tempfile
 from controller.Route_response import create_bad_response, create_good_response
 from flask_jwt_extended import jwt_required
 import uuid
@@ -25,6 +26,7 @@ from controller.security.CustomDecorators import (
 @admin_check()
 @limiter.limit("1 per 3 seconds")
 def upload_CSV():
+    directory = None
     try:
         file = request.files['csv_file']
 
@@ -41,17 +43,14 @@ def upload_CSV():
 
             user_id = int(request.args.get("user_id"))
 
-            directory = os.path.join(os.getcwd(), "Test-" + uuid.uuid4().hex)
+            directory = tempfile.mkdtemp()
 
-            os.makedirs(directory, exist_ok=True)
-
-            file_path = os.path.join(directory, file.filename)
+            unique_filename = uuid.uuid4().hex + extension[1]
+            file_path = os.path.join(directory, unique_filename)
 
             file.save(file_path)
 
             genericImport.generic_csv_to_db(file_path, user_id, course_id)
-
-            shutil.rmtree(directory)
 
             return create_good_response([], 200, "users")
 
@@ -62,3 +61,6 @@ def upload_CSV():
 
     except Exception as e:
         return create_bad_response(f"An error occurred while uploading csv file: {str(e)}", "users", 400)
+    finally:
+        if directory:
+            shutil.rmtree(directory, ignore_errors=True)

@@ -1,7 +1,8 @@
 import React from 'react';
 import { createTheme, ThemeProvider } from '@mui/material';
-import MUIDataTable from 'mui-datatables';
+//import MUIDataTable from 'mui-datatables';
 import { useMediaQuery } from '@mui/material';
+import MUIDataTable from "../../LibAdapters/MUIDataTable";
 
 interface CustomDataTableProps {
     data: object[];
@@ -96,6 +97,8 @@ const customTheme = createTheme({
           fontSize: "1rem",
           backgroundColor: "var(--table-toolbar)",
           color: "var(--table-text)",
+          width: "100%",
+          tableLayout: "fixed",
         },
       },
     },
@@ -223,7 +226,7 @@ MuiTablePagination: {
 );
 
 const CustomDataTable = ({ data, columns, options }: CustomDataTableProps) => {
-  const isMobile = useMediaQuery('(max-width:100%)');
+  const isMobile = useMediaQuery('(max-width:600px)');
   const defaultOptions = {
     rowStyle: { height: 4 },
     responsive: (isMobile ? "vertical" : "standard") as "vertical" | "standard",

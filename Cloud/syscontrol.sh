@@ -56,6 +56,7 @@ PROD_NAME="RUBRICAPP_PRODUCTION"
 VENV_DIR="/home/$USER/$PROD_NAME/rubricapp-env"
 PROJ_DIR="/home/$USER/$PROD_NAME/rubricapp"
 SERVICE_NAME="rubricapp.service"
+REDIS_LIMITER_SERVICE_NAME="redis-limiter.service"
 # =====================================================
 
 
@@ -97,30 +98,17 @@ function prompt_domain() {
 # Called after prompt_domain so $DOMAIN is set.
 # All configs are built here so they are ready
 # to be written to disk by the configure functions.
-# Port 5000 SSL Proxy to Gunicorn
+# Backend is proxied under /api/ on the SAME port/origin as the
+# frontend (443, or 80 for no-ssl) so that clients never need to reach
+# a second, non-standard port. Networks that only allow outbound 80/443
+# (common on campus/corporate/guest wifi) would otherwise silently drop
+# requests to a dedicated backend port, surfacing to users as a bare
+# "TypeError: Failed to fetch" with nothing in the server logs.
 # =====================================================
 function build_configs() {
-    # Combined SSL config — backend on port 5000, frontend on port 443
+    # Combined SSL config — frontend and /api both served on port 443
     # Used by configure_nginx (--configure)
     NGINX_SSL_CONFIG="server {
-    listen 5000 ssl;
-    server_name $DOMAIN;
-
-    ssl_certificate /etc/letsencrypt/live/$DOMAIN/fullchain.pem;
-    ssl_certificate_key /etc/letsencrypt/live/$DOMAIN/privkey.pem;
-    include /etc/letsencrypt/options-ssl-nginx.conf;
-    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
-
-    location / {
-        proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
-        proxy_set_header Host \$host;
-        proxy_set_header X-Real-IP \$remote_addr;
-        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
-        proxy_set_header X-Forwarded-Proto \$scheme;
-    }
-}
-
-server {
     listen 80;
     server_name $DOMAIN;
     return 301 https://\$host\$request_uri;
@@ -135,41 +123,53 @@ server {
     include /etc/letsencrypt/options-ssl-nginx.conf;
     ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
 
-    location / {
-        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
-        try_files \$uri /index.html;
+    location = /api {
+        return 404;
     }
-}"
 
-    # Combined no-SSL config — backend on port 5000, frontend on port 80
-    # Used by configure_nginx_no_ssl (--configure-no-ssl)
-    NGINX_NO_SSL_CONFIG="server {
-    listen 80;
-    server_name $DOMAIN;
-
-    location / {
-        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/build;
-        try_files \$uri /index.html;
-    }
-}
-
-server {
-    listen 5000;
-    server_name $DOMAIN;
-
-    location / {
+    location /api/ {
         proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
         proxy_set_header Host \$host;
         proxy_set_header X-Real-IP \$remote_addr;
         proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
         proxy_set_header X-Forwarded-Proto \$scheme;
     }
+
+    location / {
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/dist;
+        try_files \$uri /index.html;
+    }
+}"
+
+    # Combined no-SSL config — frontend and /api both served on port 80
+    # Used by configure_nginx_no_ssl (--configure-no-ssl)
+    NGINX_NO_SSL_CONFIG="server {
+    listen 80;
+    server_name $DOMAIN;
+
+    location = /api {
+        return 404;
+    }
+
+    location /api/ {
+        proxy_pass http://unix:/home/$USER/RUBRICAPP_PRODUCTION/rubricapp/BackEndFlask/rubricapp.sock;
+        proxy_set_header Host \$host;
+        proxy_set_header X-Real-IP \$remote_addr;
+        proxy_set_header X-Forwarded-For \$proxy_add_x_forwarded_for;
+        proxy_set_header X-Forwarded-Proto \$scheme;
+    }
+
+    location / {
+        root /home/$USER/RUBRICAPP_PRODUCTION/rubricapp/FrontEndReact/dist;
+        try_files \$uri /index.html;
+    }
 }"
 
     # Gunicorn systemd service config
     GUNICORN_CONFIG="[Unit]
 Description=Gunicorn instance to serve rubricapp
-After=network.target
+After=network.target $REDIS_LIMITER_SERVICE_NAME redis-server.service
+Wants=$REDIS_LIMITER_SERVICE_NAME redis-server.service
 
 [Service]
 User=$USER
@@ -243,8 +243,14 @@ function show_status() {
     log "redis-server.service"
     systemctl status redis-server.service --no-pager || true
 
+    log "$REDIS_LIMITER_SERVICE_NAME"
+    systemctl status "$REDIS_LIMITER_SERVICE_NAME" --no-pager || true
+
     echo ""
     echo "===Port Usage==="
+
+    log "port 6380"
+    lsof -i :6380 || true
 
     log "port 5001"
     lsof -i :5001 || true
@@ -270,6 +276,7 @@ function kill_procs() {
     log "killing all processes/services"
 
     sudo systemctl stop redis-server.service 2>/dev/null || true
+    sudo systemctl stop "$REDIS_LIMITER_SERVICE_NAME" 2>/dev/null || true
     sudo systemctl stop rubricapp.service 2>/dev/null || true
     sudo systemctl stop nginx.service 2>/dev/null || true
 
@@ -368,7 +375,7 @@ function configure_venv() {
     log "done"
 }
 
-# Installs NVM, Nodejs v20.11.1, serve and npm packages
+# Installs NVM, Nodejs v24.19.0, serve and npm packages
 function install_npm_deps() {
     log "installing npm dependencies"
 
@@ -381,8 +388,8 @@ function install_npm_deps() {
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
 
-    nvm install 20.11.1
-    nvm use 20.11.1
+    nvm install 24.19.0
+    nvm use 24.19.0
 
     # Install serve globally without sudo so it installs under NVM's node
     # Using sudo here would install under system node, not NVM node
@@ -551,8 +558,6 @@ function configure_ufw() {
     sudo ufw allow ssh
     sudo ufw allow 80/tcp
     sudo ufw allow 443/tcp
-    sudo ufw allow 5000/tcp
-    sudo ufw allow 3000/tcp
     sudo ufw status verbose
     log "done"
 }
@@ -566,6 +571,37 @@ function configure_gunicorn() {
 
     echo -e "$GUNICORN_CONFIG" | sudo tee "/etc/systemd/system/$SERVICE_NAME" > /dev/null
     sudo chmod 644 /etc/systemd/system/rubricapp.service
+
+    log "done"
+}
+
+# Writes the systemd unit for the second Redis instance used by
+# flask-limiter (port 6380, see core/__init__.py). The default
+# redis-server.service only listens on 6379, so this one is separate.
+# Rate limit counters are disposable, so nothing is persisted to disk.
+# Safe to run repeatedly, and needs no domain, so --serve calls it.
+function configure_redis_limiter() {
+    log "configuring redis-limiter"
+
+    sudo tee "/etc/systemd/system/$REDIS_LIMITER_SERVICE_NAME" > /dev/null <<'EOF'
+[Unit]
+Description=Redis instance for flask-limiter (port 6380)
+After=network.target
+
+[Service]
+User=redis
+Group=redis
+StateDirectory=redis-limiter
+WorkingDirectory=/var/lib/redis-limiter
+ExecStart=/usr/bin/redis-server --port 6380 --bind 127.0.0.1 --save "" --appendonly no
+Restart=always
+NoNewPrivileges=true
+PrivateTmp=true
+
+[Install]
+WantedBy=multi-user.target
+EOF
+    sudo chmod 644 "/etc/systemd/system/$REDIS_LIMITER_SERVICE_NAME"
 
     log "done"
 }
@@ -609,6 +645,11 @@ function serve_rubricapp() {
     log "starting redis-server"
     sudo systemctl enable --now redis-server.service
 
+    log "starting redis-limiter"
+    configure_redis_limiter
+    sudo systemctl daemon-reload
+    sudo systemctl enable --now "$REDIS_LIMITER_SERVICE_NAME"
+
     log "starting gunicorn"
     sudo systemctl daemon-reload
     sudo systemctl enable --now rubricapp.service
@@ -627,7 +668,7 @@ function serve_rubricapp() {
     export NVM_DIR="$HOME/.nvm"
     [ -s "$NVM_DIR/nvm.sh" ] && . "$NVM_DIR/nvm.sh"
     [ -s "$NVM_DIR/bash_completion" ] && . "$NVM_DIR/bash_completion"
-    nvm use 20.11.1
+    nvm use 24.19.0
 
     # Frontend build
     log "building front-end"
@@ -639,7 +680,7 @@ function serve_rubricapp() {
     # Logs go to frontend.log for debugging
     log "starting front-end"
     cd "$PROJ_DIR/FrontEndReact"
-    nohup npm start &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
+    nohup npm run preview &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
     cd - >/dev/null 2>&1 || true
 
     log "done"
