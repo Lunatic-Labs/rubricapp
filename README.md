@@ -290,7 +290,7 @@ Run this and follow the on-screen instructions.
 #### Local Testing (without Docker)
 
 Before running tests locally, you need to set up your environment:
-1. **MySQL Setup**: Install and configure MySQL on your local machine
+1. **MySQL Setup**: Install and configure MySQL(v8.4) on your local machine
 2. **Database Configuration**: 
    - Create a MySQL user matching `MYSQL_USER` in `BackEndFlask/.env`
    - Set the password to match `MYSQL_PASSWORD` in `BackEndFlask/.env`
