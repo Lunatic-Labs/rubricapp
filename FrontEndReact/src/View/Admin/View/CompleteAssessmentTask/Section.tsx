@@ -121,7 +121,7 @@ class Section extends Component<SectionProps> {
             <Box id="rating">
                 <Box className="assessment-task-spacing">
                     <FormControl>
-                        <Box className="assessment-card" data-testid="ratings-section">
+                        <Box className="assessment-card" data-testid="ratings-section-card">
                             <h4>Ratings</h4>
 
                             {categoryDescription}
