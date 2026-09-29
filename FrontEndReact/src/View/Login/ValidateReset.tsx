@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import ErrorMessage from '../Error/ErrorMessage';
-import { apiUrl } from '../../App';
 import SetNewPassword from './SetNewPassword';
 import Login from './Login';
 import { Button, TextField, FormControl, Box, Typography } from '@mui/material';
 import { MuiOtpInput } from 'mui-one-time-password-input';
+import {
+    requestPasswordResetCode,
+    validatePasswordResetCode
+} from '../../utils/passwordUtils';
 
 interface ValidateResetState {
     activeTab: string;
@@ -56,9 +59,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 return;  // Add return to prevent API call
 
             } else {
-                fetch(apiUrl + `/reset_code?email=${email}`)
-
-                .then(res => res.json())
+                requestPasswordResetCode(email)
 
                 .then(
                     (result) => {
@@ -68,7 +69,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                             });
                         } else {
                             this.setState({
-                                errorMessage: result['message']
+                                errorMessage: result['message'] ?? null
                             });
                         }
                     }
@@ -93,12 +94,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 });
 
             } else {
-                fetch(
-                    apiUrl + `/reset_code?email=${email}&code=${code}`,
-                    { method: 'POST' }
-                )
-
-                .then(res => res.json())
+                validatePasswordResetCode(email, code)
 
                 .then(
                     (result) => {
@@ -108,7 +104,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                             });
                         } else {
                             this.setState({
-                                errorMessage: result['message']
+                                errorMessage: result['message'] ?? null
                             });
                         }
                     }
@@ -374,6 +370,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
             return (
                 <SetNewPassword
                     email={email}
+                    code={code}
                 />
             );
         }

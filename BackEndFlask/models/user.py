@@ -1,6 +1,6 @@
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timezone
 from models.schemas import User, UserCourse, CompletedAssessment, Course
 from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
@@ -172,12 +172,78 @@ def update_password(user_id, password) -> str:
 
 
 @error_log
-def set_reset_code(user_id, code_hash):
+def set_reset_code(user_id, code_hash, expires_at=None):
+    """
+    Stores a hashed reset code and the moment it stops being accepted.
+
+    Passing None for code_hash clears an outstanding code, and the expiry is
+    cleared with it so a stale timestamp can never outlive the code it guarded.
+    """
     user = User.query.filter_by(user_id=user_id).first()
 
     setattr(user, 'reset_code', code_hash)
+    setattr(user, 'reset_code_expires_at', expires_at if code_hash is not None else None)
 
     db.session.commit()
+
+
+@error_log
+def reset_code_is_expired(user):
+    """
+    Reports whether the user's outstanding reset code is too old to accept.
+
+    A code stored before this column existed has no expiry recorded. Those are
+    treated as expired rather than eternal, so the upgrade cannot leave an
+    unbounded code in circulation.
+    """
+    if user.reset_code is None:
+        return True
+
+    if user.reset_code_expires_at is None:
+        return True
+
+    expires_at = user.reset_code_expires_at
+
+    # MySQL hands back naive datetimes even for timezone-aware columns.
+    if expires_at.tzinfo is None:
+        expires_at = expires_at.replace(tzinfo=timezone.utc)
+
+    return datetime.now(timezone.utc) >= expires_at
+
+
+@error_log
+def get_password_version(user_id):
+    """Returns the token generation currently valid for this user."""
+    user = User.query.filter_by(user_id=user_id).first()
+
+    if user is None:
+        return 0
+
+    return user.password_version or 0
+
+
+@error_log
+def invalidate_issued_tokens(user_id):
+    """
+    Retires every token already issued for this user and returns the new
+    generation number.
+
+    Called when a password changes, so a session an attacker still holds cannot
+    survive the reset that was meant to lock them out.
+
+    A counter rather than a timestamp: a JWT records its issue time only to the
+    second, so a time-based cutoff cannot tell an old token from the replacement
+    minted in the same second.
+    """
+    user = User.query.filter_by(user_id=user_id).first()
+
+    next_version = (user.password_version or 0) + 1
+
+    setattr(user, 'password_version', next_version)
+
+    db.session.commit()
+
+    return next_version
 
 
 @error_log

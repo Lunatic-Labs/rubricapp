@@ -5,12 +5,13 @@ import Login from './Login';
 import { Button, TextField, FormControl, Box, Typography, InputAdornment, IconButton } from '@mui/material';
 import ErrorOutlineIcon from '@mui/icons-material/ErrorOutline';
 import CheckIcon from '@mui/icons-material/Check';
-import { apiUrl } from '../../App';
+import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
 import {
     validatePasswordField,
     submitPasswordChange,
+    submitAuthenticatedPasswordChange,
     testPasswordStrength,
     getPasswordStrengthIcon,
     generatePasswordStrengthColors,
@@ -19,6 +20,7 @@ import {
 
 interface SetNewPasswordProps {
     readonly email: string;
+    readonly code?: string;
 }
 
 interface SetNewPasswordState {
@@ -174,9 +176,48 @@ class SetNewPassword extends Component<SetNewPasswordProps, SetNewPasswordState>
                 return;
             }
 
-            // Use shared password submission utility
-            (submitPasswordChange as any)(apiUrl, this.props.email, pass1)
+            const { email, code } = this.props;
+
+            var submission: Promise<any>;
+
+            if (code) {
+                // Forgot-password flow: a reset code was confirmed by ValidateReset.
+                if (!email) {
+                    this.setState({
+                        errorMessage: "An error occurred: Missing Email or Code"
+                    });
+
+                    return;
+                }
+
+                submission = submitPasswordChange(email, pass1, code);
+
+            } else {
+                // First-login / already-authenticated flow (e.g. Login.tsx when has_set_password
+                // is false): no reset code exists, so identity comes from the JWT instead.
+                const cookies = new Cookies();
+                const accessToken = cookies.get('access_token');
+
+                if (!accessToken) {
+                    this.setState({
+                        errorMessage: "Your session has expired. Please log in again."
+                    });
+
+                    return;
+                }
+
+                submission = submitAuthenticatedPasswordChange(this, pass1);
+            }
+
+            submission
                 .then((result: any) => {
+                    // The shared fetch helper resolves to undefined when it hits an
+                    // unrecoverable auth failure; it has already cleared the session and
+                    // started reloading, so there is nothing left to report.
+                    if (result === undefined) {
+                        return;
+                    }
+
                     if(result['success']) {
                         this.setState({
                             isPasswordSet: true
