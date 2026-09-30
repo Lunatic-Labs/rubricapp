@@ -649,12 +649,35 @@ def get_team_ratings(assessment_task_id):
         6: User.first_name
         7: User.last_name
         8: CompletedAssessment.completed_by (user_id of the assessor)
-        9: TeamUser.user_id (user_id of this team member)
+        9: this team member's user_id
     Rating_routes.py groups these rows by team_id and builds the per-team
     "students" array, coloring names red/green based on whether lag_time
-    is present. completed_by vs TeamUser.user_id lets the route mark
-    which team member submitted the assessment (is_assessor).
+    is present. completed_by vs column 9 lets the route mark which team
+    member submitted the assessment (is_assessor).
+
+    Team membership is unified across fixed teams (TeamUser) and ad hoc
+    teams (Checkin, scoped to this assessment task, since ad hoc team
+    membership is only tracked per-AT) - either kind of team can be the
+    subject of a team assessment, and only TeamUser previously being
+    joined here meant ad hoc teams never surfaced any members at all.
+    The member join is a LEFT OUTER JOIN so a team with a real submission
+    but no enumerable members (TeamUser/Checkin rows) still produces one
+    row with the team/rating data and NULL member fields, rather than
+    disappearing from the results entirely.
     """
+    team_members = union(
+        db.session.query(
+            TeamUser.team_id.label('team_id'),
+            TeamUser.user_id.label('user_id'),
+        ),
+        db.session.query(
+            Checkin.team_number.label('team_id'),
+            Checkin.user_id.label('user_id'),
+        ).filter(
+            Checkin.assessment_task_id == assessment_task_id,
+        ),
+    ).subquery()
+
     return (
         db.session.query(
             Team.team_id,
@@ -666,7 +689,7 @@ def get_team_ratings(assessment_task_id):
             User.first_name,
             User.last_name,
             CompletedAssessment.completed_by,
-            CompletedAssessment.user_id,
+            team_members.c.user_id,
         )
         .select_from(CompletedAssessment)
         .join(
@@ -674,15 +697,19 @@ def get_team_ratings(assessment_task_id):
             CompletedAssessment.team_id == Team.team_id,
         )
         .outerjoin(
+            team_members,
+            team_members.c.team_id == Team.team_id,
+        )
+        .outerjoin(
             User,
-            User.user_id == CompletedAssessment.user_id,
+            User.user_id == team_members.c.user_id,
         )
         .outerjoin(
             Feedback,
             and_(
                 Feedback.completed_assessment_id
                 == CompletedAssessment.completed_assessment_id,
-                Feedback.user_id == CompletedAssessment.user_id,
+                Feedback.user_id == team_members.c.user_id,
             ),
         )
         .filter(
