@@ -61,7 +61,7 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                             textAlign: "left",
                             fontWeight: "bold",
                         }}
-                        aria-label="addCustomRubricTitle"
+                        data-testid="add-custom-rubric-title"
                     >
                         My Custom Rubrics
                     </h2>
@@ -71,7 +71,7 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                         onClick={() => {
                             this.props.navbar.setAddCustomRubric(true);
                         }}
-                        aria-label="myCustomRubricsAddCustomRubricButton"
+                        data-testid="my-custom-rubrics-add-custom-rubric-button"
                     />
                 </div>
                 <hr style={{ border: 0, borderTop: "1px solid #787878", margin: 0 }} />

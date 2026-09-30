@@ -43,7 +43,7 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                 />
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label='assessmentDashboardTitle'>Assessment Tasks</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="assessment-dashboard-title">Assessment Tasks</Typography>
 
                     <Box sx={{display:"flex", gap:"20px"}}>
                         {/**
@@ -58,7 +58,7 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
 
                             // TODO: Update Jest Tests to click on this new aria-label
                             // aria-label='customRubricButton'
-                            aria-label='viewMyCustomRubricsButton'
+                            data-testid="view-my-custom-rubrics-button"
                         >
                             My Custom Rubrics
                         </Button>
@@ -73,7 +73,7 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                                 onClick={() => {
                                     setNewTab("ImportAssessmentTasks");
                                 }}
-                                aria-label='importAssessmentButton'
+                                data-testid="import-assessment-button"
                         >
                             Import Tasks
                         </Button>
@@ -87,7 +87,7 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                                 onClick={() => {
                                     setNewTab("AddTask");
                                 }}
-                                aria-label='addTaskButton'
+                                data-testid="add-task-button"
                         >   
                             Add Task
                         </Button>

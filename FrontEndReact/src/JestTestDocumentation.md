@@ -2,28 +2,38 @@ This document will talk about the implementation and functionality of Jest Tests
 
 # What to know
 
-Our testing utilities are contained in `testUtilities.js`
+Our testing utilities are contained in `testUtilities.ts`
 
-`aria-label` - is an attribute that defines a string value that can be used to name an element,
-as long as the element's role does not prohibit naming. It is useful for our tests to find and
-interact with specific elements.
+`data-testid` - is an attribute that exists only so tests can find and interact with specific elements.
+Tests select elements by `data-testid` rather than `aria-label`: `aria-label` is read aloud by screen
+readers, so it should hold a human-readable name (e.g. "Edit course"), not a test hook like `editCourseIconButton`.
+
+When adding a test hook to a component, use a kebab-case `data-testid` (e.g. `data-testid="courses-title"`).
+For MUI `Select` components, pass it through `SelectDisplayProps` so it lands on the clickable combobox element.
 
 Here is what the following functions do:
 
-`clickElementWithAriaLabel()` - Finds an element by its `aria-label` and clicks on it. If multiple elements 
-have the same `aria-label`, it only clicks the first one found.
+`clickElementWithTestId()` - Finds an element by its `data-testid` and clicks on it.
 
-`clickFirstElementWithAriaLabel()` - Finds all elements with the given `aria-label` and clicks on the first one.
+`clickFirstElementWithTestId()` - Finds all elements with the given `data-testid` and clicks on the first one.
 
-`expectElementWithAriaLabelToBeInDocument()` - Checks if an element with the given `aria-label` exists on the web page.
+`clickFirstEnabledElementWithTestId()` - Finds all elements with the given `data-testid` and clicks on the first one that is not disabled.
 
-`expectElementWithAriaLabelToHaveErrorMessage()` - Checks if an element with the given `aria-label` contains an 
+`expectElementWithTestIdToBeInDocument()` - Checks if an element with the given `data-testid` exists on the web page.
+
+`expectEnabledElementWithTestIdToExist()` - Checks that at least one element with the given `data-testid` is not disabled.
+
+`expectElementWithTestIdToHaveErrorMessage()` - Checks if an element with the given `data-testid` contains an
 error message matching the provided text.
 
-`changeElementWithAriaLabelWithInput()` - Enters text into a field identified by its `aria-label`.
+`changeElementWithTestIdWithInput()` - Enters text into a field identified by its `data-testid`.
 
-`changeElementWithAriaLabelWithCode()` - Enters a sequence of characters (such as a code) into multiple 
-input fields identified by the same `aria-label`.
+`changeElementWithTestIdWithCode()` - Enters a sequence of characters (such as a code) into the multiple
+input fields inside the element identified by the `data-testid`.
+
+`selectDropdownOptionWithTestId()` - Opens the dropdown identified by its `data-testid` and picks the option with the given text.
+
+`selectComboBoxMenuItem()` - Opens the combobox with the given accessible name (its visible label) and picks the option with the given text.
 
 # Testing functions we use from React Testing Library
 
@@ -35,14 +45,14 @@ In some of the test files, you will see that you can pass options to `waitFor`, 
 
 1. You will need to run Docker for jest tests to work so make sure Docker is running successfully before proceeding to the next step. Otherwise, tests will not be able to run successfully.
 
-2. In the `FrontEndReact` directory, locate the `.env` and change the `REACT_APP_API_URL` port 
+2. In the `FrontEndReact` directory, locate the `.env` and change the `VITE_API_URL` port
 to 5050. Make sure to change it back to 5000 after you finish running tests/make any
 implementation changes.
 
 3. After you have docker running, open up a new terminal and change your directory to `FrontEndReact`
 
 4. Run the following command in the `FrontEndReact` directory:
-    `npm test examplefile.test.js`
+    `npm test examplefile.test.tsx`
 
 5. The tests should successfully run and display the results of the tests that are ran.
 
@@ -50,44 +60,44 @@ implementation changes.
 
 To get an idea on how jest tests works, I am going to walk through an example.
 
-Here is test 1 for `AdminAddCourse.test.js`
+Here is test 1 for `AdminAddCourse.test.tsx`
 
 ```javascript
-test("AdminAddCourse.test.js Test 1: Should render the AdminAddCourse component given the Add Course button is clicked", async () => {
+test("AdminAddCourse.test.tsx Test 1: Should render the AdminAddCourse component given the Add Course button is clicked", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, demoAdminPassword);
+    changeElementWithTestIdWithInput(pi, demoAdminPassword);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(ac);
+    clickElementWithTestId(ac);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(act);
+        expectElementWithTestIdToBeInDocument(act);
     });
 });
 ```
 
-To see more information on where the variables are declared, refer to `AdminAddCourse.test.js`.
+To see more information on where the variables are declared, refer to `AdminAddCourse.test.tsx`.
 
 Step to step explanation:
 
 `render(<Login />)` - It renders the login component to begin the test.
 
-`changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu")` - Enters the provided email into the input field identified by the `aria-label` stored in `ei`.
+`changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu")` - Enters the provided email into the input field identified by the `data-testid` stored in `ei`.
 
-`changeElementWithAriaLabelWithInput(pi, demoAdminPassword)` - Enters the admin password into the input field identified by the `aria-label` stored in `pi`.
+`changeElementWithTestIdWithInput(pi, demoAdminPassword)` - Enters the admin password into the input field identified by the `data-testid` stored in `pi`.
 
-`clickElementWithAriaLabel(lb)` - Clicks the button identified by the `aria-label` stored in `lb` (Login button).
+`clickElementWithTestId(lb)` - Clicks the button identified by the `data-testid` stored in `lb` (Login button).
 
-`expectElementWithAriaLabelToBeInDocument(ct)` - Waits until the element with `aria-label` stored in `ct` is present on the page, then verifies it exists. (Course Title)
+`expectElementWithTestIdToBeInDocument(ct)` - Waits until the element with `data-testid` stored in `ct` is present on the page, then verifies it exists. (Course Title)
 
-`clickElementWithAriaLabel(ac)` - Clicks the button identified by the `aria-label` stored in `ac` (Add Course button).
+`clickElementWithTestId(ac)` - Clicks the button identified by the `data-testid` stored in `ac` (Add Course button).
 
-`expectElementWithAriaLabelToBeInDocument(act)` - Waits until the element with `aria-label` stored in `act` is present on the page, then verifies it exists. (Add Course Title)
+`expectElementWithTestIdToBeInDocument(act)` - Waits until the element with `data-testid` stored in `act` is present on the page, then verifies it exists. (Add Course Title)

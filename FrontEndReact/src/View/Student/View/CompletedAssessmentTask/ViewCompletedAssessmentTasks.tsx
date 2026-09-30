@@ -168,7 +168,7 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                                   { readOnly: true, skipInstructions: true }
                               );
                                       }}
-                                    aria-label="completedAssessmentTasksViewIconButton"
+                                    aria-label="View completed assessment" data-testid="completed-assessment-tasks-view-icon-button"
                                 >
                                     <VisibilityIcon sx={{color:"black"}} />
                                 </IconButton>

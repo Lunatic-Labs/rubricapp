@@ -219,8 +219,8 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
             <Box style={{ marginTop: "5rem" }} className="card-spacing">
                 <Box className="form-position">
                     <Box className="card-style">
-                        <FormControl className="form-spacing" aria-label="addTeamForm">
-                            <Typography id="addTeamTitle" variant="h5" aria-label={this.state.editTeam ? "adminEditTeamTitle" : "adminAddTeamTitle"}>
+                        <FormControl className="form-spacing" data-testid="add-team-form">
+                            <Typography id="addTeamTitle" variant="h5" data-testid={this.state.editTeam ? "admin-edit-team-title" : "admin-add-team-title"}>
                                 {this.state.editTeam ? "Edit Team" : "Add Team"}
                             </Typography>
 
@@ -266,7 +266,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                     },
                                     }}
                                     inputProps={{ maxLength: 50 }}
-                                    aria-label="userTeamNameInput"
+                                    data-testid="user-team-name-input"
                                 />
 
                                 <FormControl error={!!errors.observerId} required fullWidth 
@@ -347,7 +347,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                                 addTeam: null,
                                             });
                                         }}
-                                        aria-label="cancelAddTeamButton"
+                                        data-testid="cancel-add-team-button"
                                     >
                                         Cancel
                                     </Button>
@@ -359,7 +359,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
 
                                         onClick={this.handleSubmit}
 
-                                        aria-label="addOrSaveAddTeamButton"
+                                        data-testid="add-or-save-add-team-button"
                                     >
                                         {this.state.editTeam ? "Save" : "Add Team"}
                                     </Button>

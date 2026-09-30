@@ -206,7 +206,7 @@ class AdminViewRatings extends Component<AdminViewRatingsProps, AdminViewRatings
     } else {
       return(
         <>
-          <Box aria-label="adminViewRatingsBox">
+          <Box data-testid="admin-view-ratings-box">
             <Box display="flex" alignItems="center" justifyContent="space-between">
               <ViewRatingsHeader
                 navbar={this.props.navbar}

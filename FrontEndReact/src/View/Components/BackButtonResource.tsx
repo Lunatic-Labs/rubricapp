@@ -38,7 +38,7 @@ export default function BackButtonResource (props: BackButtonResourceProps){
           }}
           variant="contained"
           startIcon={<ArrowBackIcon/>}
-          aria-label="mainHeaderBackButton"
+          data-testid="main-header-back-button"
         >
           Back
         </ColorButton>

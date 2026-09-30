@@ -148,7 +148,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
-                            <FormControl className='form-spacing' aria-label="validateResetForm">
+                            <FormControl className='form-spacing' data-testid="validate-reset-form">
                                 <Box>
                                     <Typography
                                         variant="h4"
@@ -165,7 +165,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                             textAlign:"center"
                                         }}
 
-                                        aria-label='validateResetTitle'
+                                        data-testid='validate-reset-title'
                                     >
                                         Validate Reset
                                     </Typography>
@@ -185,7 +185,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                             error={!!this.state.errors.email}
                                             helperText={this.state.errors.email}
                                             onChange={this.handleChange}
-                                            aria-label='validateResetEmailInput'
+                                            data-testid='validate-reset-email-input'
                                             sx={{
                                                 '& .MuiInputBase-input': {
                                                     color: this.state.errors.email ? 'var(--error-color)' : 'var(--text-color)',
@@ -227,7 +227,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                                 });
                                             }}
 
-                                            aria-label="validateResetBackButton"
+                                            data-testid="validate-reset-back-button"
                                         >
                                             Back
                                         </Button>
@@ -239,7 +239,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                             type="button"
                                             variant="contained"
                                             className="primary-color"
-                                            aria-label="validateResetConfirmButton"
+                                            data-testid="validate-reset-confirm-button"
                                         >
                                             Confirm
                                         </Button>
@@ -262,7 +262,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 <Box sx={{ justifyContent:"center", minHeight:"100vh", width:"100%" }} className="card-spacing">
                     <Box className="form-position">
                         <Box className="card-style">
-                            <FormControl className='form-spacing' aria-label='enterCodeForm'>
+                            <FormControl className='form-spacing' data-testid='enter-code-form'>
                                 <Box>
                                     <Typography variant="h4" component="div"
                                         sx={{
@@ -310,7 +310,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                         }
 
                                         length={6}
-                                        aria-label='sendCodeInput'
+                                        data-testid='send-code-input'
                                         className='text-box-colors'
                                         sx={{
                                             '& .MuiOutlinedInput-root': {
@@ -346,7 +346,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                                 });
                                             }}
 
-                                            aria-label="sendCodeBackButton"
+                                            data-testid="send-code-back-button"
                                         >
                                             Back
                                         </Button>
@@ -358,7 +358,7 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                                             type="button"
                                             variant="contained"
                                             className="primary-color"
-                                            aria-label='verifyCodeButton'
+                                            data-testid='verify-code-button'
                                         >
                                             Verify
                                         </Button>

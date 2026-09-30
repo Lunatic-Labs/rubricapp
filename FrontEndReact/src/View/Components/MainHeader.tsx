@@ -18,7 +18,7 @@ export default function MainHeader (props: MainHeaderProps) {
                 navbar={navbar}
                 tabSelected={"Course"}
             />
-            <Box className="content-spacing" aria-label="viewCourseMainHeader">
+            <Box className="content-spacing" data-testid="view-course-main-header">
                 <CourseInfo
                     courseTitle={chosenCourse["course_name"]} 
                     courseNumber={chosenCourse["course_number"]}

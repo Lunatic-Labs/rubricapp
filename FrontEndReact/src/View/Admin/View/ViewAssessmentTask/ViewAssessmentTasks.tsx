@@ -288,7 +288,8 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                     <ReactTag
                         id=""
                         disabled={!atLeastOneCAT}
-                        aria-label='viewCompletedAssessmentIconButton'
+                        aria-label={typeof cellCfg?.content === "string" ? undefined : "View completed assessments"}
+                        data-testid='view-completed-assessment-icon-button'
                         variant={cellCfg?.variant}
                         className={cellCfg?.className}
                         onClick={() => {
@@ -571,7 +572,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                                     rubricNames
                                                 )
                                             }}
-                                            aria-label='editAssessmentIconButton'
+                                            aria-label="Edit assessment task" data-testid="edit-assessment-icon-button"
                                         >
                                             <EditIcon sx={{ color: "black" }} />
                                         </IconButton>
@@ -630,7 +631,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                                 className='primary-color'
                                                 variant='contained'
                                                 disabled
-                                                aria-label="startAssessmentTasksButton"
+                                                data-testid="start-assessment-tasks-button"
                                             >
                                                 START
                                             </Button>
@@ -654,7 +655,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                     onClick={() => {
                                         navbar.setAssessmentTaskInstructions(sortedAssessmentTasks, atId);
                                     }}
-                                    aria-label='startAssessmentTasksButton'
+                                    data-testid="start-assessment-tasks-button"
                                 >
                                     START
                                 </Button>

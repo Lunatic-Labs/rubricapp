@@ -9,6 +9,7 @@ interface CustomButtonProps {
   position?: any;
   disabled?: boolean;
   'aria-label'?: string;
+  'data-testid'?: string;
 }
 
 const CustomButton = ({
@@ -18,7 +19,8 @@ const CustomButton = ({
   isOutlined,
   position,
   disabled,
-  'aria-label': ariaLabel
+  'aria-label': ariaLabel,
+  'data-testid': testId
 }: CustomButtonProps) => {
   // Default styles for the button
   const defaultStyle = {
@@ -43,6 +45,7 @@ const CustomButton = ({
         style={buttonStyle}
         disabled={disabled ?? false}
         aria-label={ariaLabel}
+        data-testid={testId}
       >
         {label}
     	</Button>

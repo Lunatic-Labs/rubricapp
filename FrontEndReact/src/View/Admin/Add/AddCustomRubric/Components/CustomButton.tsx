@@ -7,6 +7,7 @@ interface CustomButtonProps {
     style?: React.CSSProperties;
     isOutlined?: boolean;
     position?: React.CSSProperties['position'];
+    'data-testid'?: string;
 }
 
 const CustomButton = ({
@@ -14,7 +15,8 @@ const CustomButton = ({
   onClick,
   style,
   isOutlined,
-  position
+  position,
+  'data-testid': testId
 }: CustomButtonProps) => {
 
   // Default styles for the button
@@ -35,6 +37,7 @@ const CustomButton = ({
         onClick={onClick}
         style={buttonStyle}
         className={isOutlined ? '' : 'white-text-button'}
+        data-testid={testId}
       >
         {label}
       </Button>

@@ -201,7 +201,7 @@ class ViewUsers extends Component<ViewUsersProps> {
               onClick={() => {
                 setAddUserTabWithUser(users, userId);
               }}
-              aria-label="editUserButton"
+              aria-label="Edit user" data-testid="edit-user-button"
             >
               <EditIcon sx={{ color: "black" }} />
             </IconButton>

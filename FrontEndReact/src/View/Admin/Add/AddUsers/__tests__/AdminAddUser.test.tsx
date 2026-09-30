@@ -4,271 +4,271 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    expectElementWithAriaLabelToHaveErrorMessage,
-    clickFirstElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    expectElementWithTestIdToHaveErrorMessage,
+    clickFirstElementWithTestId
 } from "../../../../../testUtilities";
 
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var aub = "addUserButton";
-var aut = "addUserTitle";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var mhbb = "mainHeaderBackButton";
-var caub = "cancelAddUserButton";
-var aosaub = "addOrSaveAddUserButton";
-var auf = "addUserForm";
-var ufni = "userFirstNameInput";
-var ulni = "userLastNameInput";
-var ueai = "userEmailAddressInput";
-// var aurdd= "addUserRoleDropDown";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var aub = "add-user-button";
+var aut = "add-user-title";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var rt = "roster-title";
+var mhbb = "main-header-back-button";
+var caub = "cancel-add-user-button";
+var aosaub = "add-or-save-add-user-button";
+var auf = "add-user-form";
+var ufni = "user-first-name-input";
+var ulni = "user-last-name-input";
+var ueai = "user-email-address-input";
+// var aurdd= "add-user-role-drop-down";
 test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminAddUser.test.tsx Test 1: Should render the AdminAddUser component given the Add User button is clicked.", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 });
 test("AdminAddUser.test.tsx Test 2: Should render the roster dashboard if the back button on the Add User page is clicked.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 
-    clickElementWithAriaLabel(mhbb);
+    clickElementWithTestId(mhbb);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 });
 test("AdminAddUser.test.tsx Test 3: Should render the roster dashboard if the cancel button on the Add User page is clicked.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 
-    clickElementWithAriaLabel(caub);
+    clickElementWithTestId(caub);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     },{ timeout: 3000 });
 });
 test("AdminAddUser.test.tsx Test 4: HelperText errors should show for each text field when no information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 
-    clickElementWithAriaLabel(aosaub);
+    clickElementWithTestId(aosaub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(auf);
+        expectElementWithTestIdToBeInDocument(auf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(ufni,"First name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ufni,"First name cannot be empty");
 
-        expectElementWithAriaLabelToHaveErrorMessage(ulni,"Last name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ulni,"Last name cannot be empty");
 
-        expectElementWithAriaLabelToHaveErrorMessage(ueai,"Email cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ueai,"Email cannot be empty");
     });
 });
 test("AdminAddUser.test.tsx Test 5: HelperText error should show for the firstName text field when it is left blank while all other information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 
     await waitFor(() => {
-        changeElementWithAriaLabelWithInput(ulni,"Anderson");
+        changeElementWithTestIdWithInput(ulni,"Anderson");
     
-        changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
+        changeElementWithTestIdWithInput(ueai,"ebanderson@mail.lipscomb.edu");
     });
 
-    clickElementWithAriaLabel(aosaub);
+    clickElementWithTestId(aosaub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(auf);
+        expectElementWithTestIdToBeInDocument(auf);
     
-        expectElementWithAriaLabelToHaveErrorMessage(ufni,"First name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ufni,"First name cannot be empty");
     });
 });
 test("AdminAddUser.test.tsx Test 6: HelperText error should show for the LastName text field when it is left blank while all other information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 
     await waitFor(() => {
-        changeElementWithAriaLabelWithInput(ufni,"Elliot");
+        changeElementWithTestIdWithInput(ufni,"Elliot");
     
-        changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu");
+        changeElementWithTestIdWithInput(ueai,"ebanderson@mail.lipscomb.edu");
     });
 
-    clickElementWithAriaLabel(aosaub);
+    clickElementWithTestId(aosaub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(auf);
+        expectElementWithTestIdToBeInDocument(auf);
     
-        expectElementWithAriaLabelToHaveErrorMessage(ulni,"Last name cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ulni,"Last name cannot be empty");
     });
 });
 test("AdminAddUser.test.tsx Test 7: HelperText error should show for the Email Address text field when it is left blank while all other information is filled.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 
     await waitFor(() => {
-        changeElementWithAriaLabelWithInput(ufni,"Elliot");
+        changeElementWithTestIdWithInput(ufni,"Elliot");
     
-        changeElementWithAriaLabelWithInput(ulni,"Anderson");
+        changeElementWithTestIdWithInput(ulni,"Anderson");
     });
 
-    clickElementWithAriaLabel(aosaub);
+    clickElementWithTestId(aosaub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(auf);
+        expectElementWithTestIdToBeInDocument(auf);
     
-        expectElementWithAriaLabelToHaveErrorMessage(ueai,"Email cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ueai,"Email cannot be empty");
     });
 });
 test("AdminAddUser.test.tsx Test 8: HelperText error should show for the Email Address text field when the input is invalid.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(aub);
+    clickElementWithTestId(aub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aut);
+        expectElementWithTestIdToBeInDocument(aut);
     });
 
     await waitFor(() => {
-        changeElementWithAriaLabelWithInput(ufni,"Elliot");
+        changeElementWithTestIdWithInput(ufni,"Elliot");
 
-        changeElementWithAriaLabelWithInput(ulni,"Anderson");
+        changeElementWithTestIdWithInput(ulni,"Anderson");
 
-        changeElementWithAriaLabelWithInput(ueai,"ebanderson")
+        changeElementWithTestIdWithInput(ueai,"ebanderson")
     });
 
-    clickElementWithAriaLabel(aosaub);
+    clickElementWithTestId(aosaub);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(auf);
+        expectElementWithTestIdToBeInDocument(auf);
     
-        expectElementWithAriaLabelToHaveErrorMessage(ueai,"Please enter a valid email address");
+        expectElementWithTestIdToHaveErrorMessage(ueai,"Please enter a valid email address");
     });
 });
 
@@ -277,34 +277,34 @@ test("AdminAddUser.test.tsx Test 8: HelperText error should show for the Email A
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(aub);
+//     clickElementWithTestId(aub);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(aut);
+//         expectElementWithTestIdToBeInDocument(aut);
 //     });
 
 //     await waitFor(() => {
-//         changeElementWithAriaLabelWithInput(ufni,"Elliot");
+//         changeElementWithTestIdWithInput(ufni,"Elliot");
 
-//         changeElementWithAriaLabelWithInput(ulni,"Anderson");
+//         changeElementWithTestIdWithInput(ulni,"Anderson");
 
-//         changeElementWithAriaLabelWithInput(ueai,"ebanderson@mail.lipscomb.edu")
+//         changeElementWithTestIdWithInput(ueai,"ebanderson@mail.lipscomb.edu")
 //     });
 
-//     clickElementWithAriaLabel(aosaub);
+//     clickElementWithTestId(aosaub);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(auf);
+//         expectElementWithTestIdToBeInDocument(auf);
     
-//         expectElementWithAriaLabelToHaveErrorMessage(aurdd,"Role cannot be empty");
+//         expectElementWithTestIdToHaveErrorMessage(aurdd,"Role cannot be empty");
 //     });
 // });

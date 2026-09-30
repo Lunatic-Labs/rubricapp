@@ -38,7 +38,6 @@ class ViewCourses extends Component<ViewCoursesProps> {
             return(
               <Typography
                 sx={{fontSize: "1.6rem"}}
-                aria-label={ courseName }
               >
                 { courseName }
               </Typography>
@@ -119,7 +118,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
             customBodyRender: (courseId: any) => {
               return (
                 <IconButton id={courseId}
-                role = "img" aria-label='editCourseIconButton'
+                role = "img" aria-label="Edit course" data-testid="edit-course-icon-button"
                   className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
                   onClick={() => {
                     if(courseRoles[courseId]===3) {
@@ -146,7 +145,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
           customBodyRender: (courseId: any) => {
             return (
                 <IconButton id={courseId}
-                role = "img" aria-label="viewCourseIconButton"
+                role = "img" aria-label="View course" data-testid="view-course-icon-button"
               onClick={() => {
                 // Allegedly the 2 lines below are a "fix" but I have been unable to determine for what
                 //    navbar.setState({ user: null, addUser: null });
@@ -185,7 +184,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
     const inactiveCourses = courses ? courses.filter((course: any) => !course.active) : [];
 
     return (
-      <Box aria-label="viewCourseDiv">
+      <Box data-testid="view-course-div">
         <Box className="page-spacing">
           <Box sx={{
             display: "flex",

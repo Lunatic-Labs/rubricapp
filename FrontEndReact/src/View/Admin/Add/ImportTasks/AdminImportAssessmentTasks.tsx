@@ -154,7 +154,7 @@ class AdminImportAssessmentTask extends Component<AdminImportAssessmentTaskProps
                     <Box className="form-position">
                         <Box className="card-style">
                             <Box className='form-spacing'>
-                                <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5" aria-label='adminImportAssessmentTasksTitle'> Import Assessment Tasks </Typography>
+                                <Typography id="importAssessmentTasksTitle" sx={{mb: 3}} variant="h5" data-testid="admin-import-assessment-tasks-title"> Import Assessment Tasks </Typography>
 
                                 <Box className="form-input">
                                     <Box sx={{mb: 3}}>
@@ -170,7 +170,7 @@ class AdminImportAssessmentTask extends Component<AdminImportAssessmentTaskProps
                                              * - fetches available courses and allows selection.
                                              * - calls setSelectedCourse on selection.
                                              */}
-                                            <FormControl error={!!errors.courseToImportTasksFrom} required fullWidth sx={{mb: 3}} aria-label="adminImportAssessmentCourseSelect" >
+                                            <FormControl error={!!errors.courseToImportTasksFrom} required fullWidth sx={{mb: 3}} data-testid="admin-import-assessment-course-select" >
                                                 <CourseDropdown
                                                     id="courseSelected"
                                                     setSelectedCourse={this.setSelectedCourse}
@@ -194,7 +194,7 @@ class AdminImportAssessmentTask extends Component<AdminImportAssessmentTaskProps
                                                 navbar.confirmCreateResource("AssessmentTask");
                                             }}
 
-                                            aria-label="adminImportAssessmentTaskCancelButton"
+                                            data-testid="admin-import-assessment-task-cancel-button"
                                         >
                                             Cancel
                                         </Button>
@@ -211,7 +211,7 @@ class AdminImportAssessmentTask extends Component<AdminImportAssessmentTaskProps
                                                 this.handleImportTasks();
                                             }}
 
-                                            aria-label="adminImportAssessmentTasksSubmitButton"
+                                            data-testid="admin-import-assessment-tasks-submit-button"
                                         >
                                             Import Tasks
                                         </Button>
