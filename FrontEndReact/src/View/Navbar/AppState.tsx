@@ -156,6 +156,18 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setSuccessMessage!: (message: string | null) => void;
     setViewCompleteAssessmentTaskTabWithAssessmentTask!: (completedAssessmentTasks: CompleteAssessmentTaskType[] | null, completedAssessmentId: number | null, chosenAssessmentTask: AssessmentTaskType | null, jumpId?: string | null) => void;
     setViewAssessmentDashboardwithCourse!: (courseId: number, courses: CourseType[]) => void;
+
+    // This app has a single client-side route ('/') driven entirely by
+    // component state (activeTab) - nothing ever calls history.pushState, so
+    // the browser has no in-app entry for the Back button to land on. Without
+    // this guard, pressing Back takes the user to whatever preceded this tab's
+    // history (often a blank page), with no way back into the app short of
+    // reloading. Re-pushing the current URL on every popstate keeps the user
+    // on the current view instead.
+    private trapBrowserBackNavigation = (): void => {
+        window.history.pushState(null, '', window.location.href);
+    };
+
     constructor(props: AppStateProps) {
         super(props);
         
@@ -806,6 +818,14 @@ class AppState extends Component<AppStateProps, AppStateState> {
         }).catch(error => {
             console.error("Error fetching roles:", error);
         });
+
+        // See trapBrowserBackNavigation above for why this is here.
+        window.history.pushState(null, '', window.location.href);
+        window.addEventListener('popstate', this.trapBrowserBackNavigation);
+    }
+
+    componentWillUnmount() {
+        window.removeEventListener('popstate', this.trapBrowserBackNavigation);
     }
 
     render() {
