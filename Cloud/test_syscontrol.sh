@@ -76,7 +76,7 @@ assert_contains "logrotate config is written to /etc/logrotate.d/rubricapp" \
 
 echo "wiring"
 block_contains "logrotate is declared as a dependency" \
-    "^ DEPS=" "mysql-server'" "logrotate"
+    "^[[:space:]]*DEPS=" "mysql-server'" "logrotate"
 assert_contains "configure_logrotate is defined" \
     "function configure_logrotate() {"
 block_contains "configure() calls configure_logrotate" \
