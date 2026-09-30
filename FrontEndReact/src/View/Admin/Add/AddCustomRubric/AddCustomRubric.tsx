@@ -1,6 +1,6 @@
 import React from "react";
 import Cookies from "universal-cookie";
-import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material";
+import { Grid, IconButton, TextField, Tooltip, FormControl, InputLabel, Select, MenuItem, SelectChangeEvent } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import CustomButton from "./Components/CustomButton";
 import ErrorMessage from "../../../Error/ErrorMessage";
@@ -14,6 +14,7 @@ import Loading from '../../../Loading/Loading';
 import FormHelperText from '@mui/material/FormHelperText';
 import { Rubric } from "../../../../types/Rubric";
 import { Category } from "../../../../types/Category";
+import { Course } from "../../../../types/Course";
 
 interface AddCustomRubricProps {
     navbar: any;
@@ -35,10 +36,14 @@ interface AddCustomRubricState {
     defaultRubrics: Rubric[];
     allCategories: Category[];
     rubrics: Rubric | null;
+    courses: Course[] | null;
+    courseId: string;
+    courseManuallySet: boolean;
     errors: {
         rubricName: string;
         rubricDescription: string;
         rubricCategories: string;
+        rubricCourse: string;
     };
 }
 
@@ -46,6 +51,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
     handleCreateRubric: (pickedCategories: Category[]) => void;
     handleDeleteRubric: (rubricId: number) => Promise<void>;
     toggleHelp: () => void;
+    handleCourseChange: (event: SelectChangeEvent<string>) => void;
     constructor(props: AddCustomRubricProps) {
         super(props);
 
@@ -58,11 +64,15 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             defaultRubrics: this.props.rubrics,
             allCategories: this.props.categories,
             rubrics: null,
+            courses: null,
+            courseId: "",
+            courseManuallySet: false,
 
             errors: {
                 rubricName: '',
                 rubricDescription: '',
                 rubricCategories: '',
+                rubricCourse: '',
             }
         };
 
@@ -72,11 +82,20 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             });
         };
 
+        this.handleCourseChange = (event: SelectChangeEvent<string>) => {
+            this.setState({
+                courseId: event.target.value,
+                courseManuallySet: true,
+                errors: { ...this.state.errors, rubricCourse: "" }
+            });
+        };
+
         this.handleCreateRubric = (pickedCategories: Category[]) => {
             const rubricId = this.props.rubricId ?? this.props.navbar.state.selectedRubricId;
             const categoryIds: number[] = [];
             const rubricName = (document.getElementById("rubricNameInput") as HTMLInputElement)?.value || ""
             const rubricDescription = (document.getElementById("rubricDescriptionInput") as HTMLTextAreaElement)?.value || ""
+            const courseId = this.state.courseId;
 
             for (var categoryIndex = 0; categoryIndex < pickedCategories.length; categoryIndex++) {
                 categoryIds.push(pickedCategories[categoryIndex]!["category_id"]);
@@ -85,6 +104,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             const nameError = rubricName === "" ? "Missing New Rubric Name." : "";
             const descError = rubricDescription === "" ? "Missing New Rubric Description." : "";
             const categoryError = categoryIds.length === 0 ? "Missing categories, at least one category must be selected." : "";
+            const courseError = courseId === "" ? "Missing course selection." : "";
 
             if (this.state.addCustomRubric === false && rubricId == null) {
                 this.setState({
@@ -93,19 +113,20 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                 return;
             }
 
-            if (nameError || descError || categoryError) {
+            if (nameError || descError || categoryError || courseError) {
                 this.setState({
                     errors: {
                         rubricName: nameError,
                         rubricDescription: descError,
                         rubricCategories: categoryError,
+                        rubricCourse: courseError,
                     }
                 });
                 return;
             }
 
             this.setState({
-                errors: { rubricName: "", rubricDescription: "", rubricCategories: "" }
+                errors: { rubricName: "", rubricDescription: "", rubricCategories: "", rubricCourse: "" }
             });
 
             var cookies = new Cookies();
@@ -119,6 +140,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             rubric_name: rubricName,
                             rubric_description: rubricDescription,
                             owner: cookies.get("user")["user_id"],
+                            course_id: Number(courseId),
                         },
                         categories: categoryIds,
                     }),
@@ -132,6 +154,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             rubric_name: rubricName,
                             rubric_description: rubricDescription,
                             owner: cookies.get("user")["user_id"],
+                            course_id: Number(courseId),
                         },
                         categories: categoryIds,
                     }),
@@ -213,14 +236,44 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
             addCustomRubric: addCustomRubric
         });
 
+        // Fetch the courses the rubric can be assigned to (same pattern as AdminViewCourses).
+        if (navbar.props.isSuperAdmin) {
+            genericResourceGET(`/course?admin_id=${navbar.state.user.user_id}`, "courses", this);
+        } else {
+            genericResourceGET(`/course`, "courses", this);
+        }
+
         if (addCustomRubric === false && rubricId != null) {
             genericResourceGET(`/category?rubric_id=${rubricId}`, "categories", this);
             genericResourceGET(`/rubric?rubric_id=${rubricId}`, "rubrics", this);
         }
     }
 
+    componentDidUpdate() {
+        // Preselect the course: when creating, the course the admin navigated
+        // here from; when editing, the course the rubric is already assigned
+        // to (only once the rubric's data has loaded — no fallback to the
+        // navigated-from course). Never overrides a manual selection.
+        const { courseId, courses, rubrics, courseManuallySet, addCustomRubric } = this.state;
+
+        if (!courseManuallySet && courses) {
+            const navbar = this.props.navbar;
+
+            let preselect = "";
+            if (addCustomRubric) {
+                preselect = navbar.state.chosenCourse ? String(navbar.state.chosenCourse["course_id"]) : "";
+            } else if (rubrics?.course_id != null) {
+                preselect = String(rubrics.course_id);
+            }
+
+            if (preselect && preselect !== courseId && courses.some((course: Course) => String(course.course_id) === preselect)) {
+                this.setState({ courseId: preselect });
+            }
+        }
+    }
+
     render() {
-        const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics } = this.state;
+        const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics, courses } = this.state;
 
         const categoryTableColumns = [
             {
@@ -343,7 +396,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             width: "100%",
                         }}
                     >
-                        <Grid style={{ width: "48.25%" }}>
+                        <Grid style={{ width: "31.5%" }}>
                             <TextField
                                 required
                                 defaultValue={this.state.addCustomRubric ? "" : rubrics?.rubric_name}
@@ -386,7 +439,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             />
                         </Grid>
 
-                        <Grid style={{ width: "48.5%" }}>
+                        <Grid style={{ width: "31.5%" }}>
                             <TextField
                                 required
                                 defaultValue={this.state.addCustomRubric ? "" : rubrics?.rubric_description}
@@ -428,6 +481,83 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 }}
                                 aria-label="customizeYourRubricRubricDescription"
                             />
+                        </Grid>
+
+                        <Grid style={{ width: "31.5%" }}>
+                            <FormControl
+                                required
+                                fullWidth
+                                error={!!errors.rubricCourse}
+                                sx={{
+                                    mb: 3,
+                                    '& .MuiOutlinedInput-root': {
+                                        backgroundColor: 'var(--dropdown-bg)',
+                                        color: 'var(--dropdown-text)',
+                                        '& fieldset': {
+                                            borderColor: 'var(--dropdown-border)',
+                                        },
+                                        '&:hover fieldset': {
+                                            borderColor: 'var(--dropdown-border)',
+                                        },
+                                        '&.Mui-focused fieldset': {
+                                            borderColor: 'var(--dropdown-border)',
+                                        },
+                                        '&.Mui-error fieldset': {
+                                            borderColor: 'var(--textbox-error)',
+                                        },
+                                    },
+                                    '& .MuiInputLabel-root': {
+                                        color: 'var(--dropdown-label)',
+                                        '&.Mui-focused': {
+                                            color: 'var(--dropdown-border)',
+                                        },
+                                        '&.Mui-error': {
+                                            color: 'var(--textbox-error)',
+                                        },
+                                    },
+                                }}
+                            >
+                                <InputLabel id="rubricCourseLabel">Course</InputLabel>
+                                <Select
+                                    required
+                                    labelId="rubricCourseLabel"
+                                    id="rubricCourseInput"
+                                    label="Course"
+                                    value={this.state.courseId}
+                                    onChange={this.handleCourseChange}
+                                    aria-label="customizeYourRubricCourseDropdown"
+                                    MenuProps={{
+                                        PaperProps: {
+                                            sx: {
+                                                backgroundColor: 'var(--dropdown-bg)',
+                                                color: 'var(--dropdown-text)',
+                                                '& .MuiMenuItem-root': {
+                                                    '&:hover': {
+                                                        backgroundColor: 'var(--dropdown-hover)',
+                                                    },
+                                                    '&.Mui-selected': {
+                                                        backgroundColor: 'var(--dropdown-selected)',
+                                                        '&:hover': {
+                                                            backgroundColor: 'var(--dropdown-selected)',
+                                                        },
+                                                    },
+                                                },
+                                            },
+                                        },
+                                    }}
+                                >
+                                    {courses && courses.map((course: Course) => (
+                                        <MenuItem
+                                            key={course.course_id}
+                                            value={String(course.course_id)}
+                                            aria-label="customizeYourRubricCourseChoice"
+                                        >
+                                            {course.course_name}
+                                        </MenuItem>
+                                    ))}
+                                </Select>
+                                <FormHelperText>{errors.rubricCourse}</FormHelperText>
+                            </FormControl>
                         </Grid>
                     </Grid>
 

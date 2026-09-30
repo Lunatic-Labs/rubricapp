@@ -92,13 +92,21 @@ def get_all_rubrics():
 
         get_user(user_id)   # Triggers an error if not exists
 
+        # Optional course scope: limits custom rubrics to the ones designated
+        # for the given course (defaults stay unscoped).
+        course_id = request.args.get("course_id")
+
         rubrics = get_rubrics_and_total_categories(1)   # Get default rubrics only!
 
         if request.args.get("custom"):
-            rubrics = get_rubrics_and_total_categories_for_user_id(user_id) # Get rubrics created by logged in user!
-        
+            rubrics = get_rubrics_and_total_categories_for_user_id(
+                user_id, course_id=int(course_id) if course_id else None
+            ) # Get rubrics created by logged in user!
+
         if request.args.get("all"):
-            rubrics = get_rubrics_and_total_categories_for_user_id(user_id, True)   # Get default rubrics and rubrics created by the loggin user!
+            rubrics = get_rubrics_and_total_categories_for_user_id(
+                user_id, True, course_id=int(course_id) if course_id else None
+            )   # Get default rubrics and rubrics created by the loggin user!
 
         return create_good_response(rubrics_schema.dump(rubrics), 200, "rubrics")
 
@@ -119,8 +127,9 @@ def add_rubric():
     # {
     #   rubric: {
     #        rubric_name: "",
-    #        rubric_description: "", 
-    #        owner: 1
+    #        rubric_description: "",
+    #        owner: 1,
+    #        course_id: 2
     #   },
     #   categories: [1, 2, 3, 4]
     # }
@@ -179,6 +188,9 @@ def edit_rubric():
 
             rubric.rubric_name = data["rubric"].get('rubric_name', rubric.rubric_name)
             rubric.rubric_description = data["rubric"].get('rubric_description', rubric.rubric_description)
+
+            if 'course_id' in data["rubric"]:
+                rubric.course_id = data["rubric"]["course_id"]
 
             if 'categories' in data:
                 
@@ -262,6 +274,7 @@ class RubricSchema(Schema):
     rubric_description = fields.String()
     category_total     = fields.Integer()
     owner              = fields.Integer()
+    course_id          = fields.Integer(allow_none=True)
 
     categories = fields.Nested(CategorySchema, many=True)
 
