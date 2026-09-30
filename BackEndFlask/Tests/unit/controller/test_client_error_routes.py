@@ -1,13 +1,26 @@
 import pytest
 from unittest.mock import patch
-from core import app
+from core import app, limiter
 from enums.http_status_codes import HttpStatus
 from constants.ClientError import (
+    MAX_BODY_BYTES,
     MAX_MESSAGE_LENGTH,
     MAX_STACK_LENGTH,
     DEFAULT_LEVEL,
 )
 from controller.Routes.ClientError_routes import report_client_error
+
+
+@pytest.fixture(autouse=True)
+def limiter_disabled():
+    """Most of these tests care about what the handler does, not about
+    the rate limit, and each one would otherwise spend quota that leaks
+    into the next. The limit itself is covered by
+    test_rate_limit_rejects_a_flood_from_one_address, which re-enables it."""
+    was_enabled = limiter.enabled
+    limiter.enabled = False
+    yield
+    limiter.enabled = was_enabled
 
 
 @pytest.fixture
@@ -116,3 +129,96 @@ def test_logging_failure_returns_bad_request_without_leaking_details(mock_client
     assert status == HttpStatus.BAD_REQUEST.value
     assert "secret internals" not in response["message"]
     mock_client_logger.exception.assert_called_once()
+
+
+# ---------------------------------------------------------------------------
+# Flood protection: this route is unauthenticated, so the rate limit and
+# body cap are the only things bounding what one host can write.
+# ---------------------------------------------------------------------------
+
+def test_oversized_body_is_refused_without_being_parsed(mock_client_logger):
+    """The per-field caps only apply after parsing, so the body cap is
+    what stops a huge payload from being parsed at all."""
+    with app.test_request_context(
+        "/api/client-error",
+        method="POST",
+        data="x" * (MAX_BODY_BYTES + 1),
+        content_type="application/json",
+    ):
+        response, status = report_client_error()
+
+    assert status == HttpStatus.CONTENT_TOO_LARGE.value
+    assert "too large" in response["message"]
+    mock_client_logger.error.assert_not_called()
+
+
+def test_body_at_the_cap_is_still_accepted(mock_client_logger):
+    """The cap is a ceiling, not a trigger - a legitimate report carrying
+    a long stack trace must still get through."""
+    body = '{"message": "' + "x" * (MAX_BODY_BYTES - 100) + '"}'
+    assert len(body) <= MAX_BODY_BYTES
+
+    with app.test_request_context(
+        "/api/client-error", method="POST", data=body, content_type="application/json"
+    ):
+        _, status = report_client_error()
+
+    assert status == HttpStatus.OK.value
+    mock_client_logger.error.assert_called_once()
+
+
+def test_rate_limit_rejects_a_flood_from_one_address():
+    """
+    A public collector has to bound how much one host can write. Runs
+    through the test client rather than calling the view directly,
+    because the limit is enforced by the decorator.
+
+    Note this exercises the in-memory fallback, since the limiter's Redis
+    isn't up in a unit-test run - which is itself worth having covered
+    (see in_memory_fallback_enabled in core/__init__.py). Each test uses
+    its own client address so counters can't leak between them, rather
+    than calling limiter.reset(), which would need that Redis.
+    """
+    limiter.enabled = True
+
+    client = app.test_client()
+    payload = {"level": "error", "message": "flood"}
+
+    with patch("controller.Routes.ClientError_routes.client_logger"):
+        statuses = [
+            client.post(
+                "/api/client-error",
+                json=payload,
+                environ_overrides={"REMOTE_ADDR": "203.0.113.7"},
+            ).status_code
+            for _ in range(25)
+        ]
+
+    assert statuses[0] == HttpStatus.OK.value
+    assert HttpStatus.TOO_MANY_REQUESTS.value in statuses
+    # 20 per minute is the tighter of the two configured limits.
+    assert statuses.count(HttpStatus.OK.value) == 20
+
+
+def test_rate_limit_is_keyed_per_address():
+    """One noisy host must not silence reports from everyone else."""
+    limiter.enabled = True
+
+    client = app.test_client()
+    payload = {"level": "error", "message": "x"}
+
+    with patch("controller.Routes.ClientError_routes.client_logger"):
+        for _ in range(25):
+            client.post(
+                "/api/client-error",
+                json=payload,
+                environ_overrides={"REMOTE_ADDR": "203.0.113.99"},
+            )
+
+        other = client.post(
+            "/api/client-error",
+            json=payload,
+            environ_overrides={"REMOTE_ADDR": "198.51.100.4"},
+        )
+
+    assert other.status_code == HttpStatus.OK.value

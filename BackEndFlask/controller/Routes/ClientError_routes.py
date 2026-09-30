@@ -1,9 +1,12 @@
 from flask import request
 from controller import bp
 from controller.Route_response import create_good_response, create_bad_response
+from core import limiter
 from enums.http_status_codes import HttpStatus
 from models.logger import client_logger
 from constants.ClientError import (
+    RATE_LIMIT,
+    MAX_BODY_BYTES,
     MAX_LEVEL_LENGTH,
     MAX_USER_ID_LENGTH,
     MAX_URL_LENGTH,
@@ -17,10 +20,23 @@ from constants.ClientError import (
 # Deliberately has no @jwt_required()/AuthCheck() etc: the whole point is
 # to capture frontend errors that can happen before login, during login,
 # or after a token has already expired, so it must work regardless of
-# auth state.
+# auth state. Being unauthenticated is also why it needs the rate limit
+# and body cap below - they're what keeps an open collector from being
+# usable to fill the disk or bury real failures.
 @bp.route('/client-error', methods=['POST'])
+@limiter.limit(RATE_LIMIT)
 def report_client_error():
     try:
+        # Checked before request.json so an oversized body is refused
+        # rather than parsed. Content-Length can be absent (a chunked
+        # request), in which case the field caps are the only bound.
+        if request.content_length is not None and request.content_length > MAX_BODY_BYTES:
+            return create_bad_response(
+                "Request body too large.",
+                "client_error",
+                HttpStatus.CONTENT_TOO_LARGE.value
+            )
+
         data = request.json or {}
 
         field = lambda name, limit: str(data.get(name) or "")[:limit]

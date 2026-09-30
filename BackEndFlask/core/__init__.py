@@ -147,11 +147,18 @@ red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
 
 # Settting up the request rater limiter.
+# in_memory_fallback_enabled keeps limited routes serving when the
+# limiter's Redis is unreachable, still enforcing the limit with
+# per-worker in-process counters instead of refusing every request.
+# Without it the limiter is fail-closed: a limiter outage takes the
+# routes down with it, which matters most for /client-error, whose whole
+# job is to keep working while other things are broken.
 limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=None,
     storage_uri= "redis://"+ str(redis_limiter) + ":6380/0",
+    in_memory_fallback_enabled=True,
 )
 
 # This gets set in wsgi.py/run.py depending on if we
