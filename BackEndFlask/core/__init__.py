@@ -7,7 +7,6 @@ import subprocess
 from dotenv import load_dotenv
 
 from flask import Flask
-from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_migrate import Migrate
 from flask_jwt_extended import JWTManager
@@ -94,11 +93,8 @@ app.config['CORS_HEADERS'] = 'Content-Type'
 app.config['SECRET_KEY'] = os.getenv('SECRET_KEY', 'default_secret_key_rubricapp_dev_only')
 app.config['JSON_SORT_KEYS'] = False
 
-# Enabling CORS.
-CORS(app)
-
-# Enable the CORS logger.
-#logging.getLogger('flask_cors').level = logging.DEBUG
+# CORS is configured on the API blueprint itself (see controller/__init__.py),
+# scoped to /api/* with an explicit allowed origin rather than a wildcard here.
 
 # Initialize JWT.
 jwt = JWTManager(app)
