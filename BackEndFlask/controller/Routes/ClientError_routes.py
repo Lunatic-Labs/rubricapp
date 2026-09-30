@@ -27,7 +27,7 @@ def report_client_error():
             "Frontend error reported: "
             f"level={_field(data, 'level', 20) or 'error'}, "
             f"url={_field(data, 'url', MAX_SHORT_FIELD)}, "
-            f"client_request_id={_field(data, 'request_id', 100)}, "
+            f"user_id={_field(data, 'user_id', 100)}, "
             f"message={_field(data, 'message', MAX_MESSAGE_LENGTH)}, "
             f"extra={_field(data, 'extra', MAX_STACK_LENGTH)}"
         )
