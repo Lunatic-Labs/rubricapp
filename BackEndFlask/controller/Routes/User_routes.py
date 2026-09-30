@@ -11,7 +11,7 @@ from Functions.threads import (
 
 from controller.security.CustomDecorators import(
     AuthCheck, bad_token_check,
-    admin_check
+    admin_check, super_admin_check
 )
 
 from models.role import (
@@ -67,6 +67,26 @@ from models.queries import (
     remove_user_from_team
 )
 from models.completed_assessment import completed_assessment_team_or_user_exists
+
+
+@bp.route('/admin_login_activity', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def get_admin_login_activity():
+    try:
+        return create_good_response(
+            users_schema.dump(get_user_admins()),
+            200,
+            "admin_login_activity"
+        )
+    except Exception as e:
+        return create_bad_response(
+            f"An error occurred retrieving admin login activity: {e}",
+            "admin_login_activity",
+            400
+        )
 
 
 
@@ -434,6 +454,7 @@ class UserSchema(ma.Schema):
     role_id     = fields.Integer()
     user_dark_mode  = fields.Boolean()
     last_update = fields.DateTime()
+    last_login_at = fields.DateTime()
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)

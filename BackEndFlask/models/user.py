@@ -1,6 +1,6 @@
 from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
-from datetime import datetime
+from datetime import datetime, timezone
 from models.schemas import User, UserCourse, CompletedAssessment, Course
 from sqlalchemy import and_, or_
 from sqlalchemy.exc import IntegrityError
@@ -94,7 +94,8 @@ def get_user_admins():
        User.email,
        User.lms_id,
        User.consent,
-       User.owner_id
+       User.owner_id,
+       User.last_login_at
    ).filter_by(
        is_admin=True
    ).all()
@@ -155,6 +156,17 @@ def has_changed_password(user_id: int, status: bool) -> None:  # marks a user as
 
     setattr(user, 'has_set_password', status)
 
+    db.session.commit()
+
+
+@error_log
+def record_login(user_id: int) -> None:
+    user = User.query.filter_by(user_id=user_id).first()
+
+    if user is None:
+        raise InvalidUserID(user_id)
+
+    user.last_login_at = datetime.now(timezone.utc)
     db.session.commit()
 
 

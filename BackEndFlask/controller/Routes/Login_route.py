@@ -5,7 +5,7 @@ from controller.Route_response import *
 from models.user import get_user_by_email, get_user_password
 from werkzeug.security import check_password_hash, generate_password_hash
 from controller.security.utility import create_new_tokens, revoke_tokens
-from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email
+from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email, record_login
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
 from controller.Routes.RouteExceptions import MissingException, InvalidCredentialsException
@@ -24,6 +24,8 @@ def login():
 
         if user is None or not check_password_hash(get_user_password(user.user_id), password):
             raise InvalidCredentialsException
+
+        record_login(user.user_id)
 
         JSON = {
             "email": email,
