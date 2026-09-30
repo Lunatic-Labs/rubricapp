@@ -11,7 +11,7 @@ function stringifyExtra(extra: unknown): string {
   if (extra instanceof Error) return extra.stack || extra.message;
   if (typeof extra === 'string') return extra;
   try {
-    return JSON.stringify(extra);
+    return JSON.stringify(extra) ?? String(extra);
   } catch {
     return String(extra);
   }
