@@ -33,5 +33,6 @@ def report_client_error():
         )
 
         return create_good_response({}, 200, "client_error")
-    except Exception as e:
-        return create_bad_response(f"An error occurred logging a client error: {e}", "client_error", 400)
+    except Exception:
+        logger.exception("Failed to log frontend client error report")
+        return create_bad_response("An error occurred while processing the request.", "client_error", 400)
