@@ -179,15 +179,31 @@ def _assign_request_context() -> None:
 
 @app.after_request
 def _log_request_summary(response):
-    duration_ms = round((time.monotonic() - g.request_start_time) * 1000, 2)
-    response.headers['X-Request-ID'] = get_request_id()
-    config.logger.info(f"{request.method} {request.path} -> {response.status_code} ({duration_ms} ms)")
+    # Flask still runs this when _assign_request_context didn't (an
+    # earlier before_request short-circuited or raised), so nothing here
+    # may assume the context was assigned.
+    start_time = g.get('request_start_time')
+    duration = f"{round((time.monotonic() - start_time) * 1000, 2)} ms" if start_time else "unknown duration"
+    request_id = get_request_id()
+
+    if request_id:
+        response.headers['X-Request-ID'] = request_id
+
+    config.logger.info(f"{request.method} {request.path} -> {response.status_code} ({duration})")
     return response
 
 @app.teardown_request
 def _clear_request_context(exception=None) -> None:
-    reset_request_id(g.request_id_token)
-    reset_user_id(g.user_id_token)
+    # Same caveat as _log_request_summary: a token only exists if
+    # _assign_request_context got far enough to set it.
+    request_id_token = g.get('request_id_token')
+    user_id_token = g.get('user_id_token')
+
+    if request_id_token:
+        reset_request_id(request_id_token)
+
+    if user_id_token:
+        reset_user_id(user_id_token)
 
 # Setting up SendGrid email service.
 sendgrid_client = None

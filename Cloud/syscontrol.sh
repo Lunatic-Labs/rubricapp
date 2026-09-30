@@ -184,13 +184,22 @@ ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.s
 WantedBy=multi-user.target
 "
 
-    # logrotate config for gunicorn's access/error logs. Gunicorn has no
-    # built-in rotation of its own (unlike the app's models/logger.py,
-    # which rotates itself via TimedRotatingFileHandler), so this is
-    # handled at the OS level instead. copytruncate avoids needing to
-    # signal gunicorn to reopen its log files after rotation. Retention
-    # (90 days) matches LOG_RETENTION_DAYS in BackEndFlask/models/logger.py.
-    LOGROTATE_CONFIG="$PROJ_DIR/BackEndFlask/logs/gunicorn-access.log $PROJ_DIR/BackEndFlask/logs/gunicorn-error.log {
+    # logrotate config for every log file the backend writes: gunicorn's
+    # access/error logs and the app's own logs from
+    # BackEndFlask/models/logger.py. Neither rotates itself - gunicorn has
+    # no built-in rotation, and the app deliberately doesn't rotate
+    # in-process because gunicorn's several workers all hold the same file
+    # open and would race at the rollover (see the Logger docstring). This
+    # is the single coordinated rotator for all of them. copytruncate
+    # truncates in place instead of renaming, so neither gunicorn nor any
+    # worker needs to be signalled to reopen its file descriptor.
+    # Retention (90 days) matches LOG_RETENTION_DAYS in
+    # BackEndFlask/models/logger.py.
+    LOGROTATE_CONFIG="$PROJ_DIR/BackEndFlask/logs/gunicorn-access.log
+$PROJ_DIR/BackEndFlask/logs/gunicorn-error.log
+$PROJ_DIR/BackEndFlask/logs/all.log
+$PROJ_DIR/BackEndFlask/logs/client_errors.log
+$PROJ_DIR/BackEndFlask/logs/security.log {
     daily
     rotate 90
     compress
@@ -219,6 +228,18 @@ WantedBy=multi-user.target
           {
             "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/all.log",
             "log_group_name": "/rubricapp/backend/app",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/client_errors.log",
+            "log_group_name": "/rubricapp/backend/client-errors",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/security.log",
+            "log_group_name": "/rubricapp/backend/security",
             "log_stream_name": "{instance_id}",
             "retention_in_days": 90
           },
@@ -633,10 +654,11 @@ function configure_gunicorn() {
     log "done"
 }
 
-# Configures logrotate to rotate gunicorn's access/error logs, which
-# gunicorn itself never rotates or trims.
+# Configures logrotate to rotate every backend log file: gunicorn's
+# access/error logs and the app's own logs, none of which rotate or trim
+# themselves (see LOGROTATE_CONFIG in build_configs).
 function configure_logrotate() {
-    log "configuring logrotate for gunicorn logs"
+    log "configuring logrotate for gunicorn and app logs"
 
     echo -e "$LOGROTATE_CONFIG" | sudo tee "/etc/logrotate.d/rubricapp" > /dev/null
     sudo chmod 644 /etc/logrotate.d/rubricapp
@@ -644,17 +666,44 @@ function configure_logrotate() {
     log "done"
 }
 
+# Reports whether this instance has an IAM role attached, printing the
+# role name if so. Tries IMDSv2 (token-authenticated) first and falls
+# back to IMDSv1, because an instance configured to *require* IMDSv2
+# answers an unauthenticated metadata request with 401 even when a role
+# is attached - probing v1 alone would report "no role" on exactly the
+# instances that are configured most strictly.
+function instance_iam_role() {
+    local token role
+
+    token="$(curl -s -m 2 -X PUT http://169.254.169.254/latest/api/token \
+        -H 'X-aws-ec2-metadata-token-ttl-seconds: 60' 2>/dev/null)"
+
+    if [ -n "$token" ]; then
+        role="$(curl -s -m 2 http://169.254.169.254/latest/meta-data/iam/security-credentials/ \
+            -H "X-aws-ec2-metadata-token: $token" 2>/dev/null)"
+    else
+        role="$(curl -s -m 2 http://169.254.169.254/latest/meta-data/iam/security-credentials/ 2>/dev/null)"
+    fi
+
+    # A missing role is a 404 body, not an empty one, so an HTML/error
+    # body must not be mistaken for a role name.
+    case "$role" in
+        ''|*'<'*|*'404'*|*'Not Found'*) return 1 ;;
+        *) echo "$role" ;;
+    esac
+}
+
 # Installs and configures the CloudWatch Logs agent so the app's log
-# files (BackEndFlask/logs/all.log, gunicorn-access.log,
-# gunicorn-error.log, FrontEndReact/frontend.log) get shipped off this
-# instance instead of only living on its local disk.
+# files (BackEndFlask/logs/all.log, client_errors.log, security.log,
+# gunicorn-access.log, gunicorn-error.log, FrontEndReact/frontend.log)
+# get shipped off this instance instead of only living on its local disk.
 function configure_cloudwatch_agent() {
     log "configuring CloudWatch Logs agent"
 
     # The agent installs and starts fine without an IAM role attached,
     # it just silently fails to ship anything - warn instead of
     # discovering that later in the CloudWatch console.
-    if ! curl -s -m 2 http://169.254.169.254/latest/meta-data/iam/security-credentials/ | grep -q .; then
+    if ! instance_iam_role > /dev/null; then
         log "WARNING: no IAM role detected on this instance."
         log "WARNING: attach one with the CloudWatchAgentServerPolicy (or equivalent"
         log "WARNING: logs:CreateLogGroup/CreateLogStream/PutLogEvents/DescribeLogStreams"

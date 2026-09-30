@@ -67,9 +67,19 @@ assert_contains "logrotate targets the gunicorn access log" \
     '$PROJ_DIR/BackEndFlask/logs/gunicorn-access.log'
 assert_contains "logrotate targets the gunicorn error log" \
     '$PROJ_DIR/BackEndFlask/logs/gunicorn-error.log'
+# The app's own logs are rotated here too: models/logger.py deliberately
+# uses a plain FileHandler, because gunicorn's several workers all hold
+# the same file open and an in-process rotating handler would race at the
+# rollover. logrotate is the single coordinated rotator for all of them.
+assert_contains "logrotate targets the app log (all.log)" \
+    '$PROJ_DIR/BackEndFlask/logs/all.log'
+assert_contains "logrotate targets the client error log" \
+    '$PROJ_DIR/BackEndFlask/logs/client_errors.log'
+assert_contains "logrotate targets the security log" \
+    '$PROJ_DIR/BackEndFlask/logs/security.log'
 assert_contains "logrotate retention matches LOG_RETENTION_DAYS (90) in models/logger.py" \
     "rotate 90"
-assert_contains "logrotate uses copytruncate (no gunicorn signal/pidfile needed)" \
+assert_contains "logrotate uses copytruncate (no gunicorn/worker signal needed)" \
     "copytruncate"
 assert_contains "logrotate config is written to /etc/logrotate.d/rubricapp" \
     "/etc/logrotate.d/rubricapp"
@@ -94,6 +104,10 @@ echo "CloudWatch Logs agent config"
 # actually verifying this block.
 assert_contains "app log (all.log) is shipped" \
     "'\"\$PROJ_DIR\"'/BackEndFlask/logs/all.log"
+assert_contains "client error log is shipped" \
+    "'\"\$PROJ_DIR\"'/BackEndFlask/logs/client_errors.log"
+assert_contains "security log is shipped" \
+    "'\"\$PROJ_DIR\"'/BackEndFlask/logs/security.log"
 assert_contains "gunicorn access log is shipped" \
     "'\"\$PROJ_DIR\"'/BackEndFlask/logs/gunicorn-access.log"
 assert_contains "gunicorn error log is shipped" \
@@ -106,6 +120,22 @@ assert_contains "agent config is written to the standard amazon-cloudwatch-agent
     "/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json"
 assert_contains "warns when no IAM role is attached, rather than failing silently" \
     "no IAM role detected"
+
+echo "IAM role probe"
+# An instance that requires IMDSv2 answers an unauthenticated metadata
+# request with 401 even when a role IS attached, so probing v1 alone
+# would warn "no IAM role" on exactly the most strictly configured
+# instances.
+assert_contains "IAM role probe is factored out of configure_cloudwatch_agent" \
+    "function instance_iam_role() {"
+block_contains "IAM role probe requests an IMDSv2 token" \
+    "^function instance_iam_role() {" "^}" "latest/api/token"
+block_contains "IAM role probe sends the IMDSv2 token on the metadata request" \
+    "^function instance_iam_role() {" "^}" "X-aws-ec2-metadata-token:"
+block_contains "IAM role probe still falls back to IMDSv1" \
+    "^function instance_iam_role() {" "^}" 'role="$(curl -s -m 2 http://169.254.169.254/latest/meta-data/iam/security-credentials/ 2>/dev/null)"'
+block_contains "configure_cloudwatch_agent uses the probe rather than curl directly" \
+    "^function configure_cloudwatch_agent() {" "^}" "instance_iam_role"
 
 echo "CloudWatch Logs wiring"
 assert_contains "configure_cloudwatch_agent is defined" \

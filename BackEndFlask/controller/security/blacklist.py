@@ -1,11 +1,17 @@
 import math
 import time
 import subprocess
+from redis.exceptions import RedisError
 from core import app, red
 from flask_jwt_extended import decode_token
 from jwt.exceptions import ExpiredSignatureError
-from models.logger import logger
+from models.logger import security_logger
 import os
+
+# Whether an unreachable blacklist lets tokens through (True) or rejects
+# them (False). Failing open keeps a Redis outage from locking every user
+# out, at the cost of honouring tokens that may have been revoked.
+FAIL_OPEN = True
 
 # Starts a Redis server as a subprocess using the subprocess.Popen function
 # Redirects the standard output and standard error streams to subprocess.DEVNULL to get rid of them
@@ -14,20 +20,30 @@ def start_redis() -> None:
         'redis-server',
     )
 
-# Checks if a given token exists in a Redis database and returns True if it is blacklisted
 def is_token_blacklisted(token: str) -> bool:
+    """
+    Description:
+    Reports whether `token` has been blacklisted in Redis.
+
+    When Redis cannot answer, the outcome is FAIL_OPEN rather than an
+    exception: a security-relevant degradation, so it is logged at error
+    level.
+
+    Parameters:
+    token: str: The encoded JWT to look up.
+
+    Returns:
+    True if the token is blacklisted, False if it is not, and not
+    FAIL_OPEN if the blacklist is unreachable.
+    """
     try:
-        found = red.get(token)
-        return True if found else False
-    except ConnectionError:
-        # Fails open (treats the token as not blacklisted) rather than
-        # locking every user out when Redis is unreachable, but that's a
-        # real security-relevant degradation worth an error-level log.
-        logger.error("Blacklist check failed: could not reach Redis; treating token as not blacklisted (fail-open)")
-        return False
+        return bool(red.get(token))
+    except RedisError as e:
+        security_logger.error(f"Blacklist check unavailable, Redis error: {e}; fail-open={FAIL_OPEN}")
+        return not FAIL_OPEN
     except Exception as e:
-        logger.error(f"Blacklist check failed: {e}; treating token as not blacklisted (fail-open)")
-        return False
+        security_logger.error(f"Blacklist check unavailable, unexpected error: {e}; fail-open={FAIL_OPEN}")
+        return not FAIL_OPEN
 
 def blacklist_token(token: str) -> None:
     with app.app_context():

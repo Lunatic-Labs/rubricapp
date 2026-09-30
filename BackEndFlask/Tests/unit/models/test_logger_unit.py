@@ -34,8 +34,7 @@ def test_logger_creates_default_file(tmp_path, monkeypatch):
     """Logger should create default file if not provided."""
     logs_dir = tmp_path / "logs"
     logs_dir.mkdir()
-    monkeypatch.setattr("models.logger.os.path.dirname", lambda _: str(tmp_path))
-    monkeypatch.setattr("models.logger.os.path.abspath", lambda p: os.path.join(tmp_path, "logs", "all.log"))
+    monkeypatch.setattr("models.logger.LOG_DIR", str(logs_dir))
 
     log = Logger("test_logger")
     assert any(isinstance(h, logging.FileHandler) for h in log.logger.handlers)
@@ -82,18 +81,24 @@ def test_password_reset_logs_correct_format(temp_log_file):
     assert "Name: John Doe" in content
     assert "Email: john@example.com" in content
 
-def test_logger_uses_timed_rotation_with_90_day_retention(temp_log_file):
-    """Log files should rotate daily and keep 90 days of backups."""
-    from logging.handlers import TimedRotatingFileHandler
+def test_logger_does_not_rotate_in_process(temp_log_file):
+    """
+    Rotation must be left to logrotate (see the Logger docstring and
+    LOGROTATE_CONFIG in Cloud/syscontrol.sh). Gunicorn's workers all hold
+    the same file open, so any in-process rotating handler would race at
+    the rollover and split or drop records.
+    """
+    from logging.handlers import BaseRotatingHandler
 
     log = Logger("test_logger_rotation", logfile=temp_log_file)
 
-    rotating_handlers = [
-        h for h in log.logger.handlers if isinstance(h, TimedRotatingFileHandler)
+    file_handlers = [
+        h for h in log.logger.handlers if isinstance(h, logging.FileHandler)
     ]
-    assert len(rotating_handlers) == 1
-    assert rotating_handlers[0].when.upper() == "MIDNIGHT"
-    assert rotating_handlers[0].backupCount == 90
+    assert len(file_handlers) == 1
+    assert not isinstance(file_handlers[0], BaseRotatingHandler)
+    # Appending rather than truncating is what makes copytruncate safe.
+    assert file_handlers[0].mode == "a"
 
 
 # ---------------------------------------------------------------------------

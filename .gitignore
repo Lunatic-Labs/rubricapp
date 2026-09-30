@@ -40,6 +40,10 @@ Backup[ ]of[ ]*.numbers/
 !FrontEndReact/package-lock.json
 BackEndFlask/logs/all.log
 BackEndFlask/logs/all.log.*
+BackEndFlask/logs/client_errors.log
+BackEndFlask/logs/client_errors.log.*
+BackEndFlask/logs/security.log
+BackEndFlask/logs/security.log.*
 BackEndFlask/models/hidden.py
 BackEndFlask/oauth2_creds.json
 BackEndFlask/logs/all.log
