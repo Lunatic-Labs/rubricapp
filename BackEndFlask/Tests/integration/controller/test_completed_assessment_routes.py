@@ -30,18 +30,18 @@ def test_toggle_complete_assessment_lock_status(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             comp = create_completed_assessment(sample_completed_assessment(
                 user_id=user[0].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.put(
                 f"/api/completed_assessment_toggle_lock?completed_assessment_id={comp.completed_assessment_id}&locked=true&user_id={result['user_id']}",
@@ -82,10 +82,10 @@ def test_toggle_complete_assessment_lock_status_raises_exception(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/completed_assessment_toggle_lock?user_id={result["user_id"]}",
+                f"/api/completed_assessment_toggle_lock?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -108,18 +108,18 @@ def test_lock_complete_assessment(flask_app_mock, sample_token, auth_header, cli
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             comp = create_completed_assessment(sample_completed_assessment(
                 user_id=user[0].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.put(
                 f"/api/completed_assessment_lock?completed_assessment_id={comp.completed_assessment_id}&user_id={result['user_id']}",
@@ -160,10 +160,10 @@ def test_lock_complete_assessment_raises_exception(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/completed_assessment_lock?user_id={result["user_id"]}",
+                f"/api/completed_assessment_lock?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -186,19 +186,19 @@ def test_unlock_complete_assessment(flask_app_mock, sample_token, auth_header, c
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=2)
             comp = create_completed_assessment(sample_completed_assessment(
                 user_id=user[0].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             lock_individual_assessment(comp.completed_assessment_id)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
                 f"/api/completed_assessment_unlock?completed_assessment_id={comp.completed_assessment_id}&user_id={result['user_id']}",
@@ -239,10 +239,10 @@ def test_lunlock_complete_assessment_raises_exception(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/completed_assessment_unlock?user_id={result["user_id"]}",
+                f"/api/completed_assessment_unlock?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -270,10 +270,10 @@ def test_lock_complete_assessment_raises_exception(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/completed_assessment_lock?user_id={result["user_id"]}",
+                f"/api/completed_assessment_lock?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -301,42 +301,42 @@ def test_get_all_completed_assessments_with_course_id_and_only_course(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
             task = []
-            task.append(create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id)))
+            task.append(create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id)))
             task.append(create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 2"
             )))
             task.append(create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 3"
             )))
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp = []
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task[0].assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task[0].assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task[1].assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/completed_assessment?course_id={result["course_id"]}&user_id={result['user_id']}&only_course=true",
+                f"/api/completed_assessment?course_id={result['course_id']}&user_id={result['user_id']}&only_course=true",
                 headers=auth_header(token)
             )
             
@@ -378,22 +378,22 @@ def test_get_all_completed_assessments_with_course_id_and_role_id(
 
         try:
             result = create_one_admin_course(True)
-            ta = create_users(result["course_id"], result["user_id"], number_of_users=2, role_id=4)
+            ta = create_users(result['course_id'], result['user_id'], number_of_users=2, role_id=4)
             rubric = sample_rubric(ta[0].user_id, "Critical Thinking")
             task = []
-            task.append(create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id)))
+            task.append(create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id)))
             task.append(create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 2"
             )))
             task.append(create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 3"
             )))
 
-            user = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            user = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp = []
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=user[0].user_id,
@@ -413,13 +413,13 @@ def test_get_all_completed_assessments_with_course_id_and_role_id(
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=user[0].user_id,
                 task_id=task[2].assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
 
             token = sample_token(user_id=ta[0].user_id)
             
             response = client.get(
-                f"/api/completed_assessment?course_id={result["course_id"]}&role_id={4}&user_id={ta[0].user_id}",
+                f"/api/completed_assessment?course_id={result['course_id']}&role_id={4}&user_id={ta[0].user_id}",
                 headers=auth_header(token)
             )
             
@@ -467,42 +467,42 @@ def test_get_all_completed_assessments_with_course_id_and_assessment_task_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
             task = []
-            task.append(create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id)))
+            task.append(create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id)))
             task.append(create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 2"
             )))
             task.append(create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 3"
             )))
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp = []
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task[0].assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task[0].assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
             comp.append(create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task[1].assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/completed_assessment?course_id={result["course_id"]}&user_id={result['user_id']}&assessment_id={task[0].assessment_task_id}",
+                f"/api/completed_assessment?course_id={result['course_id']}&user_id={result['user_id']}&assessment_id={task[0].assessment_task_id}",
                 headers=auth_header(token)
             )
             
@@ -538,36 +538,36 @@ def test_get_all_completed_assessments_with_course_id_and_user_id(
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            task1 = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            task1 = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
             task2 = create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 2"
             ))
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp = []
             comp.append(create_completed_assessment(sample_completed_assessment(
                 users[0].user_id, 
                 task1.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
             comp.append(create_completed_assessment(sample_completed_assessment(
                 users[1].user_id, 
                 task1.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
             comp.append(create_completed_assessment(sample_completed_assessment(
                 users[0].user_id, 
                 task2.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )))
 
             token = sample_token(user_id=users[0].user_id)
 
             response = client.get(
-                f"/api/completed_assessment?course_id={result["course_id"]}&user_id={users[0].user_id}",
+                f"/api/completed_assessment?course_id={result['course_id']}&user_id={users[0].user_id}",
                 headers=auth_header(token)
             )
             
@@ -608,21 +608,21 @@ def test_get_all_completed_assessments_with_assessment_task_id_and_team(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             team1 = sample_team(
                 "Alpha", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             team2 = sample_team(
                 "Omega", 
-                result["user_id"], 
-                result["course_id"],
+                result['user_id'], 
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             tu1 = sample_team_user(team1.team_id, users[0].user_id)
@@ -632,19 +632,19 @@ def test_get_all_completed_assessments_with_assessment_task_id_and_team(
                 user_id=users[0].user_id,
                 task_id=task.assessment_task_id,
                 team_id=team1.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task.assessment_task_id,
                 team_id=team2.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}&unit=team",
+                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}&unit=team",
                 headers=auth_header(token)
             )
             
@@ -688,26 +688,26 @@ def test_get_all_completed_assessments_with_assessment_task_id_and_not_team(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp1 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}&unit=noteam",
+                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}&unit=noteam",
                 headers=auth_header(token)
             )
             
@@ -747,26 +747,26 @@ def test_get_all_completed_assessments_with_assessment_task_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp1 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}",
+                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             
@@ -807,26 +807,26 @@ def test_get_all_completed_assessments_with_completed_assessment_task_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp1 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/completed_assessment?completed_assessment_task_id={comp1.completed_assessment_id}&user_id={result["user_id"]}",
+                f"/api/completed_assessment?completed_assessment_task_id={comp1.completed_assessment_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             
@@ -864,26 +864,26 @@ def test_get_all_completed_assessments(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             comp1 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task.assessment_task_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.get(
-                f"/api/completed_assessment?user_id={result["user_id"]}",
+                f"/api/completed_assessment?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
             
@@ -924,10 +924,10 @@ def test_get_all_completed_assessments_with_assessment_task_id_raises_exception(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/completed_assessment?assessment_task_id=999&user_id={result["user_id"]}&unit=team",
+                f"/api/completed_assessment?assessment_task_id=999&user_id={result['user_id']}&unit=team",
                 headers=auth_header(token)
             )
 
@@ -955,38 +955,38 @@ def test_get_completed_assessment_by_team_or_user_id_with_team(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            task1 = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            task1 = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
             task2 = create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 2"
             ))
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             team = sample_team(
                 "Alpha",
-                result["user_id"],
-                result["course_id"],
+                result['user_id'],
+                result['course_id'],
                 assessment_task_id=task1.assessment_task_id
             )
             comp = create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task1.assessment_task_id,
                 team_id=team.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp1 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task2.assessment_task_id,
                 team_id=team.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
         
             response = client.get(
-                f"/api/completed_assessment_by_team_or_user?completed_assessment_id={comp.completed_assessment_id}&user_id={result["user_id"]}&unit=team&team_id={team.team_id}",
+                f"/api/completed_assessment_by_team_or_user?completed_assessment_id={comp.completed_assessment_id}&user_id={result['user_id']}&unit=team&team_id={team.team_id}",
                 headers=auth_header(token)
             )
             
@@ -1028,38 +1028,38 @@ def test_get_completed_assessment_by_team_or_user_id_with_user(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            task1 = create_assessment_task(build_sample_task_payload(result["course_id"], rubric.rubric_id))
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            task1 = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
             task2 = create_assessment_task(build_sample_task_payload(
-                result["course_id"], 
+                result['course_id'], 
                 rubric.rubric_id,
                 task_name="Integration Test Assessment 2"
             ))
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
             team = sample_team(
                 "Alpha",
-                result["user_id"],
-                result["course_id"],
+                result['user_id'],
+                result['course_id'],
                 assessment_task_id=task1.assessment_task_id
             )
             comp = create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task1.assessment_task_id,
                 team_id=team.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp1 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[1].user_id,
                 task_id=task2.assessment_task_id,
                 team_id=team.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             comp2 = create_completed_assessment(sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task2.assessment_task_id,
                 team_id=team.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             
             token = sample_token(user_id=users[0].user_id)
@@ -1108,10 +1108,10 @@ def test_get_completed_assessment_by_team_or_user_id_with_not_comp_ass_id(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/completed_assessment_by_team_or_user?user_id={result["user_id"]}",
+                f"/api/completed_assessment_by_team_or_user?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -1140,10 +1140,10 @@ def test_get_completed_assessment_by_team_or_user_id_with_not_team_and_user(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/completed_assessment_by_team_or_user?completed_assessment_id=999&user_id={result["user_id"]}",
+                f"/api/completed_assessment_by_team_or_user?completed_assessment_id=999&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -1171,35 +1171,35 @@ def test_replaced_completed_assessment_with_team_id_and_not_user_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=2)
             team = sample_team(
                 "Alpha",
-                result["user_id"],
-                result["course_id"],
+                result['user_id'],
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             comp = create_completed_assessment(sample_completed_assessment(
                 user_id=None,
                 task_id=task.assessment_task_id,
                 team_id=team.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             payload = sample_completed_assessment(
                 user_id=-1,
                 task_id=task.assessment_task_id,
                 team_id=team.team_id,
                 rating=completely["3"],
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
-                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}",
+                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=payload
             )
@@ -1239,22 +1239,22 @@ def test_add_completed_assessment_with_user_id_and_not_team_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=2)
             payload = sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task.assessment_task_id,
                 team_id=-1,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.post(
-                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}",
+                f"/api/completed_assessment?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=payload
             )
@@ -1296,10 +1296,10 @@ def test_add_completed_assessment_with_assessment_task_id_raises_exception(
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
-                f"/api/completed_assessment?user_id={result["user_id"]}",
+                f"/api/completed_assessment?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -1327,35 +1327,35 @@ def test_update_completed_assessment_with_comp_ass_id_team_id_and_not_user_id(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=2)
             team = sample_team(
                 "Alpha",
-                result["user_id"],
-                result["course_id"],
+                result['user_id'],
+                result['course_id'],
                 assessment_task_id=task.assessment_task_id
             )
             comp = create_completed_assessment(sample_completed_assessment(
                 user_id=None,
                 task_id=task.assessment_task_id,
                 team_id=team.team_id,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
             payload = sample_completed_assessment(
                 user_id=-1,
                 task_id=task.assessment_task_id,
                 team_id=team.team_id,
                 rating=completely["3"],
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.put(
-                f"/api/completed_assessment?completed_assessment_id={comp.completed_assessment_id}&user_id={result["user_id"]}",
+                f"/api/completed_assessment?completed_assessment_id={comp.completed_assessment_id}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=payload
             )
@@ -1395,22 +1395,22 @@ def test_update_completed_assessment_with_user_id_and_not_comp_ass_id_and_team_i
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
-            users = create_users(result["course_id"], result["user_id"], number_of_users=2)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=2)
             payload = sample_completed_assessment(
                 user_id=users[0].user_id,
                 task_id=task.assessment_task_id,
                 team_id=-1,
-                c_by=result["user_id"]
+                c_by=result['user_id']
             )
             
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
             
             response = client.put(
-                f"/api/completed_assessment?user_id={result["user_id"]}",
+                f"/api/completed_assessment?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=payload
             )
@@ -1452,10 +1452,10 @@ def test_update_completed_assessment_with_not_completed_assessment_id_raises_exc
         try:
             result = create_one_admin_course(True)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/completed_assessment?user_id={result["user_id"]}",
+                f"/api/completed_assessment?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 

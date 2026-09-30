@@ -33,15 +33,15 @@ def test_create_checkin(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_checkin(task.assessment_task_id, result["user_id"])
+            data = sample_checkin(task.assessment_task_id, result['user_id'])
 
             checkin = create_checkin(data)
             assert checkin.assessment_task_id == task.assessment_task_id
             assert checkin.team_number == 1
-            assert checkin.user_id == result["user_id"]
+            assert checkin.user_id == result['user_id']
             assert isinstance(checkin.time, datetime)
         
         finally:
@@ -62,13 +62,13 @@ def test_already_checked_in_true(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_checkin(task.assessment_task_id, result["user_id"])
+            data = sample_checkin(task.assessment_task_id, result['user_id'])
             create_checkin(data)
 
-            assert already_checked_in(result["user_id"], task.assessment_task_id) is True
+            assert already_checked_in(result['user_id'], task.assessment_task_id) is True
         
         finally:
             # Clean up
@@ -92,13 +92,13 @@ def test_update_checkin(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            data = sample_checkin(task.assessment_task_id, result["user_id"], team_number=7)
+            data = sample_checkin(task.assessment_task_id, result['user_id'], team_number=7)
             checkin = create_checkin(data)
 
-            update_checkin({"assessment_task_id": task.assessment_task_id, "user_id": result["user_id"], "team_number": 1})
+            update_checkin({"assessment_task_id": task.assessment_task_id, "user_id": result['user_id'], "team_number": 1})
             updated = get_checkins_by_assessment(task.assessment_task_id)
             assert len(updated) == 1
             assert updated[0].team_number == 1
@@ -121,12 +121,12 @@ def test_get_checkins_by_assessment(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            users = create_users(result["course_id"], result["user_id"], 3)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            users = create_users(result['course_id'], result['user_id'], 3)
             user_id = []
             for user in users:
                 user_id.append(user.user_id)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             create_checkin(sample_checkin(task.assessment_task_id, user_id[0], 1))
             create_checkin(sample_checkin(task.assessment_task_id, user_id[1], 2))
@@ -154,12 +154,12 @@ def test_delete_checkins_over_team_count(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            users = create_users(result["course_id"], result["user_id"], 7)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            users = create_users(result['course_id'], result['user_id'], 7)
             user_id = []
             for user in users:
                 user_id.append(user.user_id)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             for tnum in range(6):
                 create_checkin(sample_checkin(task.assessment_task_id, user_id[tnum], team_number=tnum+1))
@@ -186,12 +186,12 @@ def test_delete_latest_checkins_over_team_size(flask_app_mock):
         
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            users = create_users(result["course_id"], result["user_id"], 5)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            users = create_users(result['course_id'], result['user_id'], 5)
             user_id = []
             for user in users:
                 user_id.append(user.user_id)
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             # Create 4 checkins for same team, spaced 1 min apart
             for i in range(4):
@@ -232,22 +232,22 @@ def test_get_all_checkins_for_student_for_course(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Critical Thinking")
-            user = create_users(result["course_id"], result["user_id"], 2)
+            rubric = sample_rubric(result['user_id'], "Critical Thinking")
+            user = create_users(result['course_id'], result['user_id'], 2)
 
             task = []
-            payload1 = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            payload1 = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task.append(create_assessment_task(payload1))
-            payload2 = build_sample_task_payload(result["course_id"], rubric.rubric_id, task_name="Management Test Assessment")
+            payload2 = build_sample_task_payload(result['course_id'], rubric.rubric_id, task_name="Management Test Assessment")
             task.append(create_assessment_task(payload2))
-            payload3 = build_sample_task_payload(result["course_id"], rubric.rubric_id, task_name="Communication Test Assessment")
+            payload3 = build_sample_task_payload(result['course_id'], rubric.rubric_id, task_name="Communication Test Assessment")
             task.append(create_assessment_task(payload3))
 
             data = []
             for i in range(len(task)):
                 data.append(create_checkin(sample_checkin(task[i].assessment_task_id, user[0].user_id)))
 
-            checkins = get_all_checkins_for_student_for_course(user[0].user_id, result["course_id"])
+            checkins = get_all_checkins_for_student_for_course(user[0].user_id, result['course_id'])
             assert len(checkins) == 3
             assert any(c == data[0].assessment_task_id for c in checkins)
             assert any(c == data[1].assessment_task_id for c in checkins)

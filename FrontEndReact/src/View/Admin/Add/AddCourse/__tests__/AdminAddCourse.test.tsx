@@ -274,7 +274,10 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
         expectElementWithAriaLabelToBeInDocument(act);
     });
 
-    var courseName = "Comparative Programming Languages";
+    // The backend has no course-delete endpoint, so this test can't clean up
+    // after itself; a unique name per run keeps repeat runs from colliding
+    // with a course an earlier run already created.
+    var courseName = `Comparative Programming Languages ${Date.now()}`;
 
     changeElementWithAriaLabelWithInput(cnami, courseName);
 

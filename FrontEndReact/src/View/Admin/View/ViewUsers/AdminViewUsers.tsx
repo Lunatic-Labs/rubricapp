@@ -19,13 +19,12 @@ import { User } from '../../../../types/User';
  * @property {string|null} state.errorMessage - The error message to display if an error occurs during data fetching.
  * @property {boolean} state.isLoaded - Indicates whether the data has been loaded.
  * @property {Array|null} state.users - The list of users in the course or system.
- * @property {Array|null} state.roles - The list of roles available in the system.
  * @property {number} state.prevUsersLength - The previous length of the users array for comparison.
  * @property {string|null} state.successMessage - The success message to display after successful operations.
  * 
  * Conditional Rendering:
  * - if navbar.state.user or navbar.state.addUser is set, renders AdminAddUser component.
- * - else, renders ViewUsers component with fetched users and roles.
+ * - else, renders ViewUsers component with fetched users and role names from navbar.state.roleNameMap.
  */
 
 interface AdminViewUsersProps {
@@ -155,7 +154,7 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
                 </div>
             )
 
-        } else if (!isLoaded || !users || !state.roles || !state.roleNameMap) {
+        } else if (!isLoaded || !users || !state.roleNameMap) {
             return(
                 <Loading />
             )
