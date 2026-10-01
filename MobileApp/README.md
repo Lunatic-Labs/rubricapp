@@ -16,13 +16,15 @@ This is an [Expo](https://expo.dev) project created with [`create-expo-app`](htt
    npx expo start
    ```
 
-3. Point the app at your local backend
+3. (Optional) Point the app at your local backend
+
+   Testing on a physical device/simulator over LAN normally needs no setup — `src/constants/api.ts` auto-detects your machine's current IP from Expo's own dev server connection. You only need a `.env` for web testing, tunnel mode, or if the auto-detection doesn't work on your network:
 
    ```bash
    cp .env.example .env
    ```
 
-   Then edit `.env` and set `EXPO_PUBLIC_API_URL` to your machine's LAN IP (see comments in `.env.example` for how to find it). This is required to test on a physical device or simulator — `127.0.0.1` only works when testing in a web browser on the same machine as the Flask backend. `.env` is gitignored; every developer sets their own.
+   Then edit `.env` and set `EXPO_PUBLIC_API_URL` to your machine's LAN IP (see comments in `.env.example` for how to find it). `.env` is gitignored; every developer sets their own.
 
 In the output, you'll find options to open the app in a
 
