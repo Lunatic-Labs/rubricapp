@@ -28,6 +28,11 @@ function RootNavigator() {
       <Stack screenOptions={{ headerShown: false }}>
         <Stack.Protected guard={!!session}>
           <Stack.Screen name="(tabs)" />
+          <Stack.Screen name="user-courses" options={{ headerShown: true }} />
+          <Stack.Screen name="edit-user" options={{ headerShown: true }} />
+          <Stack.Screen name="send-notification" options={{ headerShown: true }} />
+          <Stack.Screen name="add-user" options={{ headerShown: true }} />
+          <Stack.Screen name="course-assessment-tasks" options={{ headerShown: true }} />
         </Stack.Protected>
 
         <Stack.Protected guard={!session}>

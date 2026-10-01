@@ -39,3 +39,63 @@ export async function deleteUser(request: Request, userId: number): Promise<ApiR
   }
   return { ok: true, data: undefined };
 }
+
+export interface UpdateUserInput {
+  firstName: string;
+  lastName: string;
+  email: string;
+  lmsId: string | null;
+}
+
+// SuperAdmin editing an existing admin user — role_id is always 3 (Admin),
+// mirroring AdminAddUser.tsx's SuperAdmin edit path exactly.
+export async function updateUser(
+  request: Request,
+  targetUserId: number | string,
+  ownerId: number | string,
+  input: UpdateUserInput
+): Promise<ApiResult<AdminUser>> {
+  const result = await request(`/user?uid=${targetUserId}`, {
+    method: 'PUT',
+    body: {
+      first_name: input.firstName,
+      last_name: input.lastName,
+      email: input.email,
+      lms_id: input.lmsId,
+      consent: null,
+      owner_id: ownerId,
+      role_id: 3,
+    },
+  });
+  if (!result.ok) {
+    return result;
+  }
+  const user: AdminUser = result.data?.content?.users?.[0];
+  return { ok: true, data: user };
+}
+
+// SuperAdmin creating a new admin user — role_id is always 3 (Admin),
+// mirroring AdminAddUser.tsx's SuperAdmin create path (POST /user, no query params).
+export async function createUser(
+  request: Request,
+  ownerId: number | string,
+  input: UpdateUserInput
+): Promise<ApiResult<AdminUser>> {
+  const result = await request('/user', {
+    method: 'POST',
+    body: {
+      first_name: input.firstName,
+      last_name: input.lastName,
+      email: input.email,
+      lms_id: input.lmsId,
+      consent: null,
+      owner_id: ownerId,
+      role_id: 3,
+    },
+  });
+  if (!result.ok) {
+    return result;
+  }
+  const user: AdminUser = result.data?.content?.users?.[0];
+  return { ok: true, data: user };
+}

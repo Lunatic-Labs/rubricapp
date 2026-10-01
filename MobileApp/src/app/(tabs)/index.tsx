@@ -1,5 +1,6 @@
+import { router, useFocusEffect } from 'expo-router';
 import { SymbolView } from 'expo-symbols';
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback, useState } from 'react';
 import {
   ActivityIndicator,
   Alert,
@@ -54,9 +55,11 @@ export default function UsersScreen() {
     }
   }, [request, session]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   const onRefresh = async () => {
     setIsRefreshing(true);
@@ -82,15 +85,21 @@ export default function UsersScreen() {
     ]);
   };
 
-  const notBuiltYet = (feature: string) =>
-    Alert.alert(feature, 'This screen has not been built yet.');
-
   return (
     <ThemedView style={styles.flex}>
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right', 'bottom']}>
         <ThemedText type="subtitle" style={[styles.header, { color: Primary }]}>
           Users
         </ThemedText>
+
+        <Pressable
+          onPress={() => router.push('/add-user')}
+          style={({ pressed }) => [styles.addButton, { backgroundColor: Primary, opacity: pressed ? 0.8 : 1 }]}
+          aria-label="addUserButton">
+          <ThemedText type="smallBold" style={styles.addLabel}>
+            Add User
+          </ThemedText>
+        </Pressable>
 
         <View style={styles.listArea} onLayout={handleAreaLayout}>
         {boxHeight == null ? null : (
@@ -139,7 +148,12 @@ export default function UsersScreen() {
 
                 <View style={styles.rowActions}>
                   <Pressable
-                    onPress={() => notBuiltYet('View user')}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/user-courses',
+                        params: { userId: String(item.user_id), userName: `${item.first_name} ${item.last_name}` },
+                      })
+                    }
                     style={styles.actionButton}
                     aria-label={`viewUsersViewButton${item.user_id}`}>
                     <SymbolView
@@ -149,7 +163,18 @@ export default function UsersScreen() {
                     />
                   </Pressable>
                   <Pressable
-                    onPress={() => notBuiltYet('Edit user')}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/edit-user',
+                        params: {
+                          userId: String(item.user_id),
+                          firstName: item.first_name,
+                          lastName: item.last_name,
+                          email: item.email,
+                          lmsId: item.lms_id != null ? String(item.lms_id) : '',
+                        },
+                      })
+                    }
                     style={styles.actionButton}
                     aria-label={`viewUsersEditButton${item.user_id}`}>
                     <SymbolView
@@ -203,10 +228,20 @@ const styles = StyleSheet.create({
   retryButton: {
     padding: Spacing.two,
   },
+  addButton: {
+    marginHorizontal: Spacing.three,
+    marginBottom: Spacing.two,
+    paddingVertical: Spacing.three,
+    borderRadius: Spacing.two,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  addLabel: {
+    color: '#ffffff',
+  },
   listArea: {
     flex: 1,
     marginHorizontal: Spacing.three,
-    marginTop: Spacing.two,
     marginBottom: BottomTabInset + Spacing.one,
   },
   listBox: {

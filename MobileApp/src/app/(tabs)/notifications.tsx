@@ -1,8 +1,9 @@
-import { useCallback, useEffect, useState } from 'react';
-import { ActivityIndicator, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
+import { router, useFocusEffect } from 'expo-router';
+import { useCallback, useState } from 'react';
+import { ActivityIndicator, Alert, FlatList, Pressable, RefreshControl, StyleSheet, View } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-import { type AdminNotification, listAdminNotifications } from '@/api/notifications';
+import { type AdminNotification, deleteAdminNotification, listAdminNotifications } from '@/api/notifications';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
 import { BottomTabInset, Primary, Spacing } from '@/constants/theme';
@@ -29,9 +30,11 @@ export default function NotificationsScreen() {
     }
   }, [request, session]);
 
-  useEffect(() => {
-    load();
-  }, [load]);
+  useFocusEffect(
+    useCallback(() => {
+      load();
+    }, [load])
+  );
 
   const onRefresh = async () => {
     setIsRefreshing(true);
@@ -39,54 +42,98 @@ export default function NotificationsScreen() {
     setIsRefreshing(false);
   };
 
+  const handleDelete = (notification: AdminNotification) => {
+    Alert.alert('Delete notification', `Delete "${notification.subject}"? This cannot be undone.`, [
+      { text: 'Cancel', style: 'cancel' },
+      {
+        text: 'Delete',
+        style: 'destructive',
+        onPress: async () => {
+          const result = await deleteAdminNotification(request, notification.admin_notification_id);
+          if (result.ok) {
+            load();
+          } else {
+            Alert.alert('Could not delete notification', result.errorMessage);
+          }
+        },
+      },
+    ]);
+  };
+
   return (
     <ThemedView style={styles.flex}>
       <SafeAreaView style={styles.flex} edges={['top', 'left', 'right', 'bottom']}>
         <ThemedText type="subtitle" style={[styles.header, { color: Primary }]}>
-          Notifications
+          View Notifications
         </ThemedText>
 
+        <Pressable
+          onPress={() => router.push('/send-notification')}
+          style={({ pressed }) => [styles.sendButton, { backgroundColor: Primary, opacity: pressed ? 0.8 : 1 }]}
+          aria-label="sendNewMessageButton">
+          <ThemedText type="smallBold" style={styles.sendLabel}>
+            Send New Message
+          </ThemedText>
+        </Pressable>
+
         <ThemedView style={[styles.listBox, { borderColor: theme.border }]}>
-        {notifications === null && !errorMessage ? (
-          <View style={styles.centered}>
-            <ActivityIndicator color={theme.text} />
-          </View>
-        ) : errorMessage ? (
-          <View style={styles.centered}>
-            <ThemedText themeColor="error" style={styles.centerText}>
-              {errorMessage}
-            </ThemedText>
-            <Pressable onPress={load} style={styles.retryButton}>
-              <ThemedText type="linkPrimary">Retry</ThemedText>
-            </Pressable>
-          </View>
-        ) : (
-          <FlatList
-            data={notifications}
-            keyExtractor={(item) => String(item.admin_notification_id)}
-            contentContainerStyle={styles.listContent}
-            refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
-            ListEmptyComponent={
-              <ThemedView style={styles.centered}>
-                <ThemedText themeColor="textSecondary">No notifications yet.</ThemedText>
-              </ThemedView>
-            }
-            renderItem={({ item }) => (
-              <ThemedView type="backgroundElement" style={styles.card}>
-                <ThemedText type="smallBold">{item.subject}</ThemedText>
-                <ThemedText type="small" themeColor="textSecondary">
-                  {item.message}
-                </ThemedText>
-                <ThemedText type="code" themeColor="textSecondary">
-                  {new Date(item.sent_at).toLocaleString()}
-                </ThemedText>
-              </ThemedView>
-            )}
-          />
-        )}
+          {notifications === null && !errorMessage ? (
+            <View style={styles.centered}>
+              <ActivityIndicator color={theme.text} />
+            </View>
+          ) : errorMessage ? (
+            <View style={styles.centered}>
+              <ThemedText themeColor="error" style={styles.centerText}>
+                {errorMessage}
+              </ThemedText>
+              <Pressable onPress={load} style={styles.retryButton}>
+                <ThemedText type="linkPrimary">Retry</ThemedText>
+              </Pressable>
+            </View>
+          ) : (
+            <FlatList
+              data={notifications}
+              keyExtractor={(item) => String(item.admin_notification_id)}
+              contentContainerStyle={styles.listContent}
+              refreshControl={<RefreshControl refreshing={isRefreshing} onRefresh={onRefresh} />}
+              ListEmptyComponent={
+                <ThemedView style={styles.centered}>
+                  <ThemedText themeColor="textSecondary">No notifications yet.</ThemedText>
+                </ThemedView>
+              }
+              renderItem={({ item }) => (
+                <ThemedView type="backgroundElement" style={styles.card}>
+                  <InfoRow label="Subject" value={item.subject} />
+                  <InfoRow label="Message" value={item.message} />
+                  <InfoRow label="Sent At" value={new Date(item.sent_at).toLocaleString()} />
+                  <Pressable
+                    onPress={() => handleDelete(item)}
+                    style={styles.deleteRow}
+                    aria-label={`deleteNotification${item.admin_notification_id}`}>
+                    <ThemedText type="smallBold" themeColor="error">
+                      Delete
+                    </ThemedText>
+                  </Pressable>
+                </ThemedView>
+              )}
+            />
+          )}
         </ThemedView>
       </SafeAreaView>
     </ThemedView>
+  );
+}
+
+function InfoRow({ label, value }: { label: string; value: string }) {
+  return (
+    <View style={styles.infoRow}>
+      <ThemedText type="small" themeColor="textSecondary" style={styles.infoLabel}>
+        {label}
+      </ThemedText>
+      <ThemedText type="small" style={styles.infoValue}>
+        {value}
+      </ThemedText>
+    </View>
   );
 }
 
@@ -98,6 +145,17 @@ const styles = StyleSheet.create({
     paddingHorizontal: Spacing.four,
     paddingTop: Spacing.three,
     paddingBottom: Spacing.two,
+  },
+  sendButton: {
+    marginHorizontal: Spacing.three,
+    marginBottom: Spacing.two,
+    paddingVertical: Spacing.three,
+    borderRadius: Spacing.two,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  sendLabel: {
+    color: '#ffffff',
   },
   centered: {
     flex: 1,
@@ -115,7 +173,6 @@ const styles = StyleSheet.create({
   listBox: {
     flex: 1,
     marginHorizontal: Spacing.three,
-    marginTop: Spacing.two,
     marginBottom: BottomTabInset + Spacing.one,
     borderRadius: Spacing.three,
     borderWidth: StyleSheet.hairlineWidth,
@@ -129,5 +186,22 @@ const styles = StyleSheet.create({
     borderRadius: Spacing.two,
     padding: Spacing.three,
     gap: Spacing.half,
+  },
+  infoRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    gap: Spacing.three,
+  },
+  infoLabel: {
+    flex: 1,
+  },
+  infoValue: {
+    flex: 2,
+    textAlign: 'right',
+  },
+  deleteRow: {
+    alignSelf: 'flex-end',
+    marginTop: Spacing.one,
+    padding: Spacing.one,
   },
 });

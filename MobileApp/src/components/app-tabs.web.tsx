@@ -23,7 +23,7 @@ export default function AppTabs() {
       <TabList asChild>
         <CustomTabList>
           <TabTrigger name="users" href="/" asChild>
-            <TabButton>Add Users</TabButton>
+            <TabButton>Users</TabButton>
           </TabTrigger>
           <TabTrigger name="notifications" href="/notifications" asChild>
             <TabButton>Notifications</TabButton>

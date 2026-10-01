@@ -28,3 +28,32 @@ export async function listAdminNotifications(
   const notifications: AdminNotification[] = result.data?.content?.admin_notifications?.[0] ?? [];
   return { ok: true, data: notifications };
 }
+
+export async function sendAdminNotification(
+  request: Request,
+  subject: string,
+  message: string
+): Promise<ApiResult<void>> {
+  const result = await request('/send_admin_notification', {
+    method: 'POST',
+    body: { subject, message },
+  });
+  if (!result.ok) {
+    return result;
+  }
+  return { ok: true, data: undefined };
+}
+
+export async function deleteAdminNotification(
+  request: Request,
+  notificationId: number
+): Promise<ApiResult<void>> {
+  const result = await request('/admin_notifications', {
+    method: 'DELETE',
+    body: { notification_ids: [notificationId] },
+  });
+  if (!result.ok) {
+    return result;
+  }
+  return { ok: true, data: undefined };
+}
