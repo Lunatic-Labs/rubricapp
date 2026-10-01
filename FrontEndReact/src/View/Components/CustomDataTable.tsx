@@ -70,7 +70,7 @@ const customTheme = createTheme({
           color: 'var(--table-text)',
           whiteSpace: 'normal',
           wordBreak: 'break-word',
-          lineHeight: '0.3',
+          lineHeight: '1.2',
         },
         // Striping keys off classes set in getRowClassName (below) rather than
         // :nth-of-type — the grid virtualizes rows, so a row's DOM position
