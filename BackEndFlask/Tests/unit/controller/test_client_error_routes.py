@@ -1,4 +1,5 @@
 import pytest
+import uuid
 from unittest.mock import patch
 from core import app, limiter
 from enums.http_status_codes import HttpStatus
@@ -136,6 +137,23 @@ def test_logging_failure_returns_bad_request_without_leaking_details(mock_client
 # body cap are the only things bounding what one host can write.
 # ---------------------------------------------------------------------------
 
+def _unique_addr():
+    """
+    A client address no other test run has used.
+
+    The limiter's counters live in Redis when it's reachable (the docker
+    stack) and in per-process memory when it isn't (a bare local run), so
+    a fixed address would carry quota over between runs in the first case
+    and not the second - passing locally and failing in the container
+    within the same minute. Deriving the address per call makes these
+    tests independent of which backend is in play and of anything that
+    ran before them, without needing limiter.reset() (which requires the
+    Redis that may not be there).
+    """
+    h = uuid.uuid4().hex
+    return "2001:db8:" + ":".join(h[i:i + 4] for i in range(0, 24, 4))
+
+
 def test_oversized_body_is_refused_without_being_parsed(mock_client_logger):
     """The per-field caps only apply after parsing, so the body cap is
     what stops a huge payload from being parsed at all."""
@@ -183,13 +201,14 @@ def test_rate_limit_rejects_a_flood_from_one_address():
 
     client = app.test_client()
     payload = {"level": "error", "message": "flood"}
+    addr = _unique_addr()
 
     with patch("controller.Routes.ClientError_routes.client_logger"):
         statuses = [
             client.post(
                 "/api/client-error",
                 json=payload,
-                environ_overrides={"REMOTE_ADDR": "203.0.113.7"},
+                environ_overrides={"REMOTE_ADDR": addr},
             ).status_code
             for _ in range(25)
         ]
@@ -206,19 +225,20 @@ def test_rate_limit_is_keyed_per_address():
 
     client = app.test_client()
     payload = {"level": "error", "message": "x"}
+    flooder, bystander = _unique_addr(), _unique_addr()
 
     with patch("controller.Routes.ClientError_routes.client_logger"):
         for _ in range(25):
             client.post(
                 "/api/client-error",
                 json=payload,
-                environ_overrides={"REMOTE_ADDR": "203.0.113.99"},
+                environ_overrides={"REMOTE_ADDR": flooder},
             )
 
         other = client.post(
             "/api/client-error",
             json=payload,
-            environ_overrides={"REMOTE_ADDR": "198.51.100.4"},
+            environ_overrides={"REMOTE_ADDR": bystander},
         )
 
     assert other.status_code == HttpStatus.OK.value
