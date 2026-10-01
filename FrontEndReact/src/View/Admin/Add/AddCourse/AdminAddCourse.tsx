@@ -480,7 +480,29 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                         fullWidth
                                         required
                                         error={!!errors.timeZone}
-                                        sx={{ mb: 3 }}
+                                        className="text-box-colors"
+                                        sx={{
+                                            mb: 3,
+                                            '& .MuiInputBase-root': {
+                                                backgroundColor: 'var(--dropdown-bg)',
+                                                color: 'var(--dropdown-text)',
+                                            },
+                                            '& .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'var(--dropdown-border)',
+                                            },
+                                            '& .MuiOutlinedInput-root:hover .MuiOutlinedInput-notchedOutline': {
+                                                borderColor: 'var(--textbox-border-hover)',
+                                            },
+                                            '& .MuiInputLabel-root': {
+                                                color: 'var(--dropdown-label)',
+                                                '&.Mui-error': {
+                                                    color: 'var(--textbox-error)',
+                                                },
+                                            },
+                                            '& .MuiSelect-icon': {
+                                                color: 'var(--dropdown-icon)',
+                                            },
+                                        }}
                                     >
                                         <InputLabel id="timeZoneLabel">Time Zone</InputLabel>
                                         <Select
@@ -490,6 +512,25 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                             label="Time Zone"
                                             onChange={(event: any) => {
                                                 this.setState({ timeZone: event.target.value });
+                                            }}
+                                            MenuProps={{
+                                                PaperProps: {
+                                                    sx: {
+                                                        backgroundColor: 'var(--dropdown-bg)',
+                                                        color: 'var(--dropdown-text)',
+                                                        '& .MuiMenuItem-root': {
+                                                            '&:hover': {
+                                                                backgroundColor: 'var(--dropdown-hover)',
+                                                            },
+                                                            '&.Mui-selected': {
+                                                                backgroundColor: 'var(--dropdown-selected)',
+                                                                '&:hover': {
+                                                                    backgroundColor: 'var(--dropdown-selected)',
+                                                                },
+                                                            },
+                                                        },
+                                                    },
+                                                },
                                             }}
                                             aria-label="courseTimeZoneDropdown"
                                         >
