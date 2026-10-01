@@ -1,5 +1,7 @@
 # Welcome to your Expo app 👋
 
+> **Status: paused.** This native Expo/React Native build is on hold while we evaluate switching to a Progressive Web App (PWA) approach instead. See `MOBILE-UI` branch history/discussion for context before resuming native work here.
+
 This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
 ## Get started
