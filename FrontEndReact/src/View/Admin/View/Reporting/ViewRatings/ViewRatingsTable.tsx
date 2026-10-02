@@ -259,7 +259,7 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
         data={allRatings}
         columns={columns}
         getRowId={(row) => row._row_id}
-        height="70%"
+        height="70vh"
         options={{
           // Slightly smaller than CustomDataTable's shared defaults
           // (1.5rem cell / 1.2rem header), scoped to just this table.

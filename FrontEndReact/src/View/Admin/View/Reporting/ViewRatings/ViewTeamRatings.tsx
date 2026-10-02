@@ -86,7 +86,7 @@ class ViewTeamRatings extends Component<ViewTeamRatingsProps> {
         data={allRatings}
         columns={columns}
         getRowId={(row) => row._row_id}
-        height="70%"
+        height="70vh"
       />
     )
   }

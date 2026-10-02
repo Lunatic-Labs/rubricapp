@@ -249,10 +249,13 @@ const customTheme = createTheme({
 
 // Search box on the left; Filters button pushed to the right. The "..." menu
 // that used to sit next to Filters (density + CSV/print export) is gone.
-const CustomToolbar = () => {
+// Pages that override the toolbar slot can wrap this and pass extra controls
+// as children, which render just after the search box.
+export const CustomToolbar = ({ children }: { children?: React.ReactNode }) => {
   return (
     <GridToolbarContainer>
       <GridToolbarQuickFilter />
+      {children}
       <Box sx={{ ml: 'auto', display: 'flex', alignItems: 'center' }}>
         <GridToolbarFilterButton
           slotProps={{

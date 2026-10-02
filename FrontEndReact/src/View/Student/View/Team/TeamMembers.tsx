@@ -56,7 +56,7 @@ class TeamMembers extends Component<TeamMembersProps>{
         data={users ? users : []}
         columns={columns}
         getRowId={(row) => row.user_id}
-        height="75%"
+        height="75vh"
       />
     )
   }

@@ -5,9 +5,9 @@ import { Box, Typography, Alert, IconButton, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
 import CustomButton from "../../../Student/View/Components/CustomButton";
 import SendMessageModal from '../../../Components/SendMessageModal';
-import CustomDataTable from "../../../Components/CustomDataTable";
+import CustomDataTable, { CustomToolbar } from "../../../Components/CustomDataTable";
 import { genericResourcePOST, genericResourceGET, genericResourceDELETE } from '../../../../utility';
-import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
+import { GridColDef, GridRowSelectionModel, ToolbarPropsOverrides } from '@mui/x-data-grid';
 
 /**
  * Creates an instance of the ViewNotification component.
@@ -32,6 +32,33 @@ import { GridColDef, GridRowSelectionModel } from '@mui/x-data-grid';
  * Use of componentDidMount if needed for fetching existing notifications.
  * 
  */
+declare module '@mui/x-data-grid' {
+  interface ToolbarPropsOverrides {
+    selectedIds?: GridRowSelectionModel;
+    onDeleteSelected?: (ids: GridRowSelectionModel) => void;
+  }
+}
+
+// The shared search + Filters toolbar, plus a selection count and bulk delete
+// once any rows are checked. Defined at module level (with the selection
+// passed in through slotProps) so the grid doesn't remount it on every render.
+const NotificationsToolbar = ({ selectedIds = [], onDeleteSelected }: ToolbarPropsOverrides) => (
+  <CustomToolbar>
+    {selectedIds.length > 0 && (
+      <Box sx={{ display: "flex", alignItems: "center", gap: "8px", padding: "0 16px" }}>
+        <Typography variant="body2" sx={{ color: "text.secondary" }}>
+          {selectedIds.length} selected
+        </Typography>
+        <Tooltip title="Delete Selected">
+          <IconButton onClick={() => onDeleteSelected?.(selectedIds)}>
+            <DeleteIcon sx={{ color: "black" }} />
+          </IconButton>
+        </Tooltip>
+      </Box>
+    )}
+  </CustomToolbar>
+);
+
 interface ViewNotificationProps {
     navbar: any;
 }
@@ -315,25 +342,12 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
               },
               pageSizeOptions: [10, 25, 50],
               slots: {
-                toolbar: () => {
-                  const selectedIds = this.state.selectedRows;
-                  if (!selectedIds || selectedIds.length === 0) return null;
-                  return (
-                    <Box sx={{ display: "flex", alignItems: "center", gap: "8px", padding: "0 16px" }}>
-                      <Typography variant="body2" sx={{ color: "text.secondary" }}>
-                        {selectedIds.length} selected
-                      </Typography>
-                      <Tooltip title="Delete Selected">
-                        <IconButton
-                          onClick={() => {
-                            this.handleDeleteSelected(selectedIds);
-                          }}
-                        >
-                          <DeleteIcon sx={{ color: "black" }} />
-                        </IconButton>
-                      </Tooltip>
-                    </Box>
-                  );
+                toolbar: NotificationsToolbar,
+              },
+              slotProps: {
+                toolbar: {
+                  selectedIds: this.state.selectedRows,
+                  onDeleteSelected: this.handleDeleteSelected,
                 },
               },
             }}
