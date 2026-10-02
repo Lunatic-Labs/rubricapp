@@ -15,6 +15,7 @@ interface CustomDataTableProps {
   columns: GridColDef[];
   getRowId: (row: any) => string | number;
   height?: string;
+  toolbarVisible?: boolean;
   options?: Partial<DataGridProps>;
 }
 
@@ -277,7 +278,8 @@ const FOOTER_HEIGHT = 52;
 const ROW_HEIGHT_ESTIMATE = 44;
 const EMPTY_STATE_HEIGHT = 120;
 
-const defaultOptions: Partial<DataGridProps> = {
+const defaultOptions = {
+  showToolbar: true,
   disableRowSelectionOnClick: true,
   pageSizeOptions: [10, 25, 50],
   initialState: {
@@ -297,7 +299,7 @@ const defaultOptions: Partial<DataGridProps> = {
   },
 };
 
-const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: CustomDataTableProps) => {
+const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisible, options }: CustomDataTableProps) => {
   const gridOptions: Partial<DataGridProps> = {
     ...defaultOptions,
     ...options,
@@ -378,7 +380,8 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", options }: 
   const rowsShown = Math.min(data.length, pageSize);
   const rowsHeight =
     data.length === 0 ? EMPTY_STATE_HEIGHT : measuredRowsHeight ?? rowsShown * ROW_HEIGHT_ESTIMATE;
-  const estimatedContentHeight = TOOLBAR_HEIGHT + COLUMN_HEADER_HEIGHT + FOOTER_HEIGHT + rowsHeight;
+  const estimatedToolbarHeight = gridOptions.showToolbar !== false && toolbarVisible !== false ? TOOLBAR_HEIGHT : 0;
+  const estimatedContentHeight = estimatedToolbarHeight + COLUMN_HEADER_HEIGHT + FOOTER_HEIGHT + rowsHeight;
 
   return (
     <ThemeProvider theme={customTheme}>
