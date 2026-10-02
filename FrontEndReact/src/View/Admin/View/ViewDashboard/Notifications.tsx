@@ -250,6 +250,7 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
             data={this.state.admin_notifications}
             getRowId={(row) => row.admin_notification_id}
             height="400px"
+            toolbarVisible={this.state.selectedRows.length > 0}
             columns={[
               {
                 field: "subject",
