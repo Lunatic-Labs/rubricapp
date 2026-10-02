@@ -274,7 +274,7 @@ const FOOTER_HEIGHT = 52;
 const ROW_HEIGHT_ESTIMATE = 44;
 const EMPTY_STATE_HEIGHT = 120;
 
-const defaultOptions: Partial<DataGridProps> = {
+  showToolbar: true,
   disableRowSelectionOnClick: true,
   pageSizeOptions: [10, 25, 50],
   initialState: {
