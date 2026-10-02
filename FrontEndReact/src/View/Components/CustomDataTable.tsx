@@ -380,8 +380,7 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   const rowsShown = Math.min(data.length, pageSize);
   const rowsHeight =
     data.length === 0 ? EMPTY_STATE_HEIGHT : measuredRowsHeight ?? rowsShown * ROW_HEIGHT_ESTIMATE;
-  const estimatedToolbarHeight = gridOptions.showToolbar !== false && toolbarVisible !== false ? TOOLBAR_HEIGHT : 0;
-  const estimatedContentHeight = estimatedToolbarHeight + COLUMN_HEADER_HEIGHT + FOOTER_HEIGHT + rowsHeight;
+const estimatedToolbarHeight = gridOptions.showToolbar !== false ? TOOLBAR_HEIGHT : 0;
 
   return (
     <ThemeProvider theme={customTheme}>
