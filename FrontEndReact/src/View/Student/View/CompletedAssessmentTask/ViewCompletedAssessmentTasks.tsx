@@ -92,6 +92,8 @@ class ViewCompletedAssessmentTasks extends Component<ViewCompletedAssessmentTask
                 headerName: "Completed By",
                 minWidth: 140,
                 flex: 1,
+                sortable: false,
+                filterable: false,
                 renderCell: (params) => {
                     const atId = params.row.assessment_task_id;
                     const at = assessmentTasks.find((at) => at.assessment_task_id === atId);
