@@ -3,6 +3,7 @@ from marshmallow import fields
 from controller  import bp
 from controller.Route_response import *
 from flask_jwt_extended import jwt_required
+from enums.http_status_codes import HttpStatus
 from Functions.threads import (
     spawn_thread,
     validate_pending_emails,
@@ -396,6 +397,34 @@ def delete_selected_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
+
+@bp.route('/admin_user/promote', methods = ["PUT"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def admin_premote_student_to_admin():
+    try:
+        user_id_to_modify = int(request.args.get("target_user_id"))
+        make_admin(user_id_to_modify)
+        return create_good_response(["success"], HttpStatus.OK.value, "auth_change")
+
+    except Exception as e:
+        return create_bad_response(f"Promotion failed: {e}", "auth_change", HttpStatus.BAD_REQUEST.value)
+
+@bp.route('/admin_user/demote', methods = ["PUT"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def admin_demote_student_to_admin():
+    try:
+        user_id_to_modify = int(request.args.get("target_user_id"))
+        unmake_admin(user_id_to_modify)
+        return create_good_response(["success"], HttpStatus.OK.value, "auth_change")
+
+    except Exception as e:
+        return create_bad_response(f"Demotion failed: {e}", "auth_change", HttpStatus.BAD_REQUEST.value)
 
 # new route for user to 'put' things into the back-end.
 # currently used only for user settings, additional use might
