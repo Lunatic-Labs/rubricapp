@@ -116,7 +116,7 @@ class AdminViewTeamMembers extends Component<AdminViewTeamMembersProps, AdminVie
                              * @button Add Member - Button to add a new member to the team.
                              */}
                             <Button
-                                className='mt-3 mb-3 btn btn-primary'
+                                className='mt-3 mb-3 btn btn-primary white-text-button'
                                 style={{
                                     backgroundColor: "#2E8BEF",
                                     color: "white"
@@ -138,7 +138,7 @@ class AdminViewTeamMembers extends Component<AdminViewTeamMembersProps, AdminVie
                                  * @button Remove Member - Button to remove an existing member from the team.
                                  */}
                             <Button
-                                className='mt-3 mb-3 btn btn-primary'
+                                className='mt-3 mb-3 btn btn-primary white-text-button'
                                 style={{
                                     backgroundColor: "#2E8BEF",
                                     color: "white"
