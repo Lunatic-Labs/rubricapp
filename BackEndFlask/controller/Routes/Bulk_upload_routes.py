@@ -59,8 +59,8 @@ def upload_CSV():
 
             return response, response.get("status")
 
-    except Exception as e:
-        return create_bad_response(f"An error occurred while uploading csv file: {str(e)}", "users", 400)
+    except Exception:
+        return create_bad_response("An error occurred while uploading csv file.", "users", 400)
     finally:
         if directory:
             shutil.rmtree(directory, ignore_errors=True)
