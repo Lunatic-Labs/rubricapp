@@ -186,6 +186,17 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
         Promise.all(completedPromises),
       ]);
 
+      // genericResourceGET resolves (rather than rejects) on a network or
+      // JSON-parse failure, returning a state object with no `success` field.
+      // Route that through the catch below so users see the friendly message
+      // instead of the raw fetch error; "Not authenticated" keeps its own text.
+      const fetchFailed = [...rubricResults, ...completedResults].some(
+        (result) => result && result.success === undefined && result.errorMessage !== 'Not authenticated'
+      );
+      if (fetchFailed) {
+        throw new Error('Failed to fetch graph data');
+      }
+
       // Build rubric map: rubric_id -> rubric data (with category_json)
       const rubricMap: Record<number, Rubric> = {};
       rubricResults.forEach((result) => {
