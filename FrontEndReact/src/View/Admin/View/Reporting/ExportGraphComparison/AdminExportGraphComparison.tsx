@@ -187,12 +187,9 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
       ]);
 
       // genericResourceGET resolves (rather than rejects) on a network or
-      // JSON-parse failure, returning a state object with no `success` field.
-      // Route that through the catch below so users see the friendly message
-      // instead of the raw fetch error; "Not authenticated" keeps its own text.
-      const fetchFailed = [...rubricResults, ...completedResults].some(
-        (result) => result && result.success === undefined && result.errorMessage !== 'Not authenticated'
-      );
+      // JSON-parse failure. Route that through the catch below so users see
+      // the friendly message instead of the raw fetch error.
+      const fetchFailed = [...rubricResults, ...completedResults].some((result) => result?.fetchFailed);
       if (fetchFailed) {
         throw new Error('Failed to fetch graph data');
       }

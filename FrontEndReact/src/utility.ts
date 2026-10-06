@@ -153,7 +153,10 @@ async function genericResourceFetch(
 
   // try block covers both network failures (fetch throws) and a response body
   // that isn't valid JSON (response.json() throws) — either way we resolve
-  // (don't reject) so callers only need a single .then() handler.
+  // (don't reject) so callers only need a single .then() handler. The resolved
+  // value carries `fetchFailed: true` so callers can tell this apart from an
+  // error the server reported and show their own wording; it's kept out of
+  // component state, where it would go stale after the next successful request.
   try {
     const fetchInit: RequestInit = {
       method: type,
@@ -173,7 +176,7 @@ async function genericResourceFetch(
     };
 
     component.setState(state);
-    return state;
+    return { ...state, fetchFailed: true };
   }
 
   if (result.success){

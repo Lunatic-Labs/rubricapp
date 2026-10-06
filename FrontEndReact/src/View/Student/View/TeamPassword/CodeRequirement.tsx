@@ -63,6 +63,13 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 				if (result !== undefined && result.errorMessage === null) {
 					this.props.navbar.setState({ teamSwitchPassword: enteredPassword });
 					this.props.navbar.setNewTab("SelectTeam");
+				} else if (result?.fetchFailed) {
+					// The request never got an answer, so the password wasn't
+					// actually rejected — don't tell the student it was wrong.
+					this.setState({
+						errorMessage: null,
+						validationError: "Unable to check the password right now. Please try again."
+					})
 				} else {
 					// Bad response from the server (wrong password, etc.): stay on this
 					// screen so the student can retry, instead of falling into the

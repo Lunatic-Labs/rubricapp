@@ -70,7 +70,7 @@ test("genericResourceFetch Test 3: resolves (does not reject) with an errorMessa
   // .then() (no .catch()), so a reject meant an unhandled promise rejection
   // on every real network failure. It must resolve instead.
   await expect(genericResourcePUT("/some_endpoint", component, JSON.stringify({})))
-    .resolves.toEqual({ isLoaded: true, errorMessage: "Failed to fetch" });
+    .resolves.toEqual({ isLoaded: true, errorMessage: "Failed to fetch", fetchFailed: true });
 
   expect(component.setState).toHaveBeenCalledWith({
     isLoaded: true,
@@ -106,5 +106,22 @@ test("genericResourceFetch Test 5: resolves (does not reject) when the response 
   expect(result).toEqual({
     isLoaded: true,
     errorMessage: "Unexpected token < in JSON at position 0",
+    fetchFailed: true,
   });
+});
+
+test("genericResourceFetch Test 6: only fetch failures are flagged with fetchFailed", async () => {
+  (global.fetch as jest.Mock).mockResolvedValue({
+    status: 400,
+    json: async () => ({ success: false, message: "ValueError: email already in use" }),
+  });
+
+  const component = makeComponent();
+  const result = await genericResourcePUT("/some_endpoint", component, JSON.stringify({}));
+
+  expect(result.fetchFailed).toBeUndefined();
+  // The flag is never written into component state.
+  for (const [state] of component.setState.mock.calls) {
+    expect(state).not.toHaveProperty("fetchFailed");
+  }
 });
