@@ -65,30 +65,30 @@ class ViewAssessmentTaskInstructions extends Component<
         const state = navbar?.state;
         const completedAssessment = state?.chosenCompleteAssessmentTask;
 
-        try {
-            const completedAssessmentId = completedAssessment?.completed_assessment_id;
+        const completedAssessmentId = completedAssessment?.completed_assessment_id;
 
-            if (!completedAssessmentId) {
-                console.error("Completed assessment ID not found");
-                navbar?.setNewTab("ViewStudentCompleteAssessmentTask");
-                return;
-            }
+        if (!completedAssessmentId) {
+            console.error("Completed assessment ID not found");
+            navbar?.setNewTab("ViewStudentCompleteAssessmentTask");
+            return;
+        }
 
-            const teamId = completedAssessment?.team_id ?? null;
+        const teamId = completedAssessment?.team_id ?? null;
 
-            // Hit the /rating endpoint so we can track when the student views feedback.
-            await genericResourcePOST(
-                "/rating",
-                this,
-                JSON.stringify({
-                    completed_assessment_id: completedAssessmentId,
-                    // For individual assessments this will be null and the backend
-                    // will go down the non-team branch.
-                    team_id: teamId,
-                })
-            );
-        } catch (error) {
-            console.error("Error recording feedback view:", error);
+        // Hit the /rating endpoint so we can track when the student views feedback.
+        const result = await genericResourcePOST(
+            "/rating",
+            this,
+            JSON.stringify({
+                completed_assessment_id: completedAssessmentId,
+                // For individual assessments this will be null and the backend
+                // will go down the non-team branch.
+                team_id: teamId,
+            })
+        );
+
+        if (result?.errorMessage) {
+            console.error("Error recording feedback view:", result.errorMessage);
         }
 
         navbar?.setNewTab("ViewStudentCompleteAssessmentTask");

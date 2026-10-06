@@ -92,14 +92,16 @@ class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeams
         genericResourceGET(
             `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${adhocMode}`, "teams", this
         ).then(data =>{
+            if (!data?.teams) {
+                console.error("Error fetching teams data:", data?.errorMessage);
+                return;
+            }
             let newTeams: number[] = [];
             data.teams.forEach((team: Team) => {
                 newTeams.push(team.team_id);
             });
             this.props.updateUserTeamsIds(newTeams);
-        }).catch(error => {
-            console.error("Error fetching/parsing teams data:", error);
-        }); //This requires future adjusting
+        });
 
         var url = (
             chosenCourse["use_tas"] ?

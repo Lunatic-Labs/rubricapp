@@ -114,12 +114,14 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
             `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&course_id=${courseId}`,
             'checkin', this
         ).then(data => {
+            if (!data?.checkin) {
+                console.warn(data?.errorMessage);
+                return;
+            }
             let checkinData = new CheckinsTracker(data['checkin']);
             this.setState({
                 checkins: checkinData,
             });
-        }).catch(error => {
-            console.warn(error);
         });
     }
 

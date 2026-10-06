@@ -345,13 +345,8 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                     date_created: `${month}/${date}/${year}`,
                                     active_until: null,
                                 });
-                                genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body).catch(
-                                    error =>{
-                                        return;
-                                    });
+                                genericResourcePOST(`/team?course_id=${chosenCourse.course_id}`, this, body);
                             }
-                        }).catch(error => {
-                            return;
                         });
                     }
                 }
