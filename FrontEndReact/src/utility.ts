@@ -167,6 +167,11 @@ async function genericResourceFetch(
   let result: ApiResponse;
 
   // Network failures resolve here so callers only need a single .then() handler.
+  // The resolved value carries `fetchFailed: true` so callers can tell "no reply
+  // at all" apart from an error the server sent and show their own wording. It's
+  // kept out of component state, where it would go stale after the next success.
+  // (A reply that isn't JSON is not a fetch failure: it's handled below as a
+  // server error with a status-based message.)
   try {
     const fetchInit: RequestInit = {
       method: type,

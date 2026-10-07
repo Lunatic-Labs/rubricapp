@@ -350,8 +350,8 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
     if (promise) {
         promise
   .then((result) => {
-    // Request never reached the server (or its reply was unreadable):
-    // show a retry message rather than the raw fetch error.
+    // Request never reached the server: show a retry message rather than
+    // the raw fetch error.
     if (result?.fetchFailed) {
       this.setState({
         errorMessage: "Unable to save right now. Please try again.",

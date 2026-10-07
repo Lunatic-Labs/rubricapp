@@ -186,9 +186,9 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
         Promise.all(completedPromises),
       ]);
 
-      // genericResourceGET resolves (rather than rejects) on a network or
-      // JSON-parse failure. Route that through the catch below so users see
-      // the friendly message instead of the raw fetch error.
+      // genericResourceGET resolves (rather than rejects) on a network
+      // failure. Route that through the catch below so users see the
+      // friendly message instead of the raw fetch error.
       const fetchFailed = [...rubricResults, ...completedResults].some((result) => result?.fetchFailed);
       if (fetchFailed) {
         throw new Error('Failed to fetch graph data');

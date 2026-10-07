@@ -90,9 +90,10 @@ test("genericResourceFetch Test 4: resolves with 'Not authenticated' when auth c
   expect(global.fetch).not.toHaveBeenCalled();
 });
 
-test("genericResourceFetch Test 5: resolves (does not reject) when the response body isn't valid JSON", async () => {
+test("genericResourceFetch Test 5: resolves (does not reject) with a status-based message when the response body isn't valid JSON", async () => {
   // fetch can succeed while response.json() still throws (e.g. a proxy/502
   // page, or a truncated body) — that must resolve too, not just fetch() itself.
+  // The server did answer, so it's reported as a server error, not fetchFailed.
   (global.fetch as any).mockResolvedValue({
     status: 502,
     json: async () => {
@@ -105,8 +106,7 @@ test("genericResourceFetch Test 5: resolves (does not reject) when the response 
 
   expect(result).toEqual({
     isLoaded: true,
-    errorMessage: "Unexpected token < in JSON at position 0",
-    fetchFailed: true,
+    errorMessage: "The server is temporarily unavailable. Please try again shortly.",
   });
 });
 
