@@ -112,6 +112,21 @@ function removeAuthData() {
   }
 }
 
+function interpretNonJsonResponse(response: Response): string {
+  switch (response.status) {
+    case HTTP_STATUS.TOO_MANY_REQUESTS:
+      return "Too many requests were sent in a short period. Please wait a few seconds and try again.";
+    case HTTP_STATUS.CONTENT_TOO_LARGE:
+      return "The uploaded file is too large.";
+    case HTTP_STATUS.BAD_GATEWAY:
+    case HTTP_STATUS.SERVICE_UNAVAILABLE:
+    case HTTP_STATUS.GATEWAY_TIMEOUT:
+      return "The server is temporarily unavailable. Please try again shortly.";
+    default:
+      return `Unexpected server error (status ${response.status}). Please try again.`;
+  }
+}
+
 async function genericResourceFetch(
   fetchURL: string,
   resource: string | null,
@@ -151,12 +166,7 @@ async function genericResourceFetch(
   let response: Response;
   let result: ApiResponse;
 
-  // try block covers both network failures (fetch throws) and a response body
-  // that isn't valid JSON (response.json() throws) — either way we resolve
-  // (don't reject) so callers only need a single .then() handler. The resolved
-  // value carries `fetchFailed: true` so callers can tell this apart from an
-  // error the server reported and show their own wording; it's kept out of
-  // component state, where it would go stale after the next successful request.
+  // Network failures resolve here so callers only need a single .then() handler.
   try {
     const fetchInit: RequestInit = {
       method: type,
@@ -168,7 +178,6 @@ async function genericResourceFetch(
     }
 
     response = await fetch(url, fetchInit);
-    result = await response.json();
   } catch(error){
     const state: any = {
       isLoaded: true,
@@ -179,6 +188,15 @@ async function genericResourceFetch(
     return { ...state, fetchFailed: true };
   }
 
+  try {
+    result = await response.json();
+  } catch {
+    result = {
+      success: false,
+      status: response.status,
+      message: interpretNonJsonResponse(response),
+    };
+  }
   if (result.success){
     const state: any = {
       isLoaded: true,
@@ -570,7 +588,6 @@ export function setTestStudentCookies(data: TestStudentCredentials) {
 }
 
 export default modules;
-
 
 
 

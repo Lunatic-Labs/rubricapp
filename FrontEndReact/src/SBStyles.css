@@ -869,6 +869,15 @@ body.mode .app-container {
   min-width: 600px !important;
 }
 
+/* ...but don't force that min-width on real small-screen touch devices
+   (e.g. iPhone 12 Pro / XR) - there it just causes the table (and its
+   pagination footer) to overflow and get clipped instead of stacking. */
+@media (max-width: 599px) and (pointer: coarse) {
+  .MuiTable-root {
+    min-width: 0 !important;
+  }
+}
+
 .MuiTableContainer-root {
   overflow-x: auto !important;
 }
