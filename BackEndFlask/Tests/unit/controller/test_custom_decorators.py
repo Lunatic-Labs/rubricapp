@@ -74,24 +74,23 @@ def test_verify_against_blacklist_raises_when_blacklisted(mock_logger):
     mock_logger.debug.assert_not_called()
 
 
-def test_verify_against_blacklist_exception_logging_path(mock_logger):
+def test_verify_against_blacklist_exception_logging_path(mock_logger, tmp_path, monkeypatch):
     """
-    Covers lines 46–54 (error logging branch)
-    Ensures the 'except' block triggers correctly.
+    A denied check is logged as a warning, and nothing is written to disk
+    beside the logger: an old debug helper used to append request tokens to
+    redis_course_issue.txt in the working directory.
     """
     app = Flask(__name__)
+    monkeypatch.chdir(tmp_path)
 
     # Simulate missing Authorization header → triggers exception
     with create_request(app, headers={}):
-        with patch("controller.security.CustomDecorators.course_redis_out") as log_mock:
-            with pytest.raises(Exception):
-                verify_against_blacklist()
-
-            # Ensure logging was triggered
-            assert log_mock.call_count > 0
+        with pytest.raises(Exception):
+            verify_against_blacklist()
 
     mock_logger.warning.assert_called_once()
     assert "Blacklist check denied" in mock_logger.warning.call_args[0][0]
+    assert list(tmp_path.iterdir()) == []
 
 
 def test_verify_token_success(mock_logger):
