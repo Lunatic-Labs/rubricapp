@@ -35,12 +35,12 @@ def test_create_user_course_creates_record(flask_app_mock):
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
             uc = create_user_course(data)
 
             assert uc.user_course_id is not None
             assert uc.user_id == user.user_id
-            assert uc.course_id == result["course_id"]
+            assert uc.course_id == result['course_id']
             assert uc.role_id == 5
             assert uc.active is True
 
@@ -103,7 +103,7 @@ def test_get_user_course_by_valid_id(flask_app_mock):
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
 
             uc = create_user_course(data)
             results = get_user_course(uc.course_id)
@@ -134,7 +134,7 @@ def test_get_user_course_user_id(flask_app_mock):
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
 
             uc = create_user_course(data)
             query = get_user_course_user_id(uc.user_course_id)
@@ -144,7 +144,7 @@ def test_get_user_course_user_id(flask_app_mock):
             # Clean up
             if result:
                 try:
-                    delete_user_course(result["course_id"])
+                    delete_user_course(result['course_id'])
                     delete_user(user.user_id)
                     delete_one_admin_course(result)
                 except Exception as e:
@@ -197,10 +197,10 @@ def test_get_user_courses_by_user_id_and_course_id(flask_app_mock):
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
 
             uc = create_user_course(data)
-            query = get_user_courses_by_user_id_and_course_id(user.user_id, result["course_id"])
+            query = get_user_courses_by_user_id_and_course_id(user.user_id, result['course_id'])
             assert len(query) == 1
             assert query[0].course_id == uc.course_id
         
@@ -208,7 +208,7 @@ def test_get_user_courses_by_user_id_and_course_id(flask_app_mock):
             # Clean up
             if result:
                 try:
-                    delete_user_course(result["course_id"])
+                    delete_user_course(result['course_id'])
                     delete_user(user.user_id)
                     delete_one_admin_course(result)
                 except Exception as e:
@@ -268,7 +268,7 @@ def test_replace_role_id_given_user_id_and_course_id_updates_role(flask_app_mock
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
 
             uc = create_user_course(data)
             updated = replace_role_id_given_user_id_and_course_id(user.user_id, uc.course_id, role_id=4)
@@ -300,7 +300,7 @@ def test_set_active_and_inactive_status(flask_app_mock):
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
 
             uc = create_user_course(data)
 
@@ -333,7 +333,7 @@ def test_delete_user_course_by_user_id_course_id(flask_app_mock):
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
 
             uc = create_user_course(data)
             delete_user_course_by_user_id_course_id(user.user_id, uc.course_id)
@@ -358,7 +358,7 @@ def test_delete_user_course_by_id(flask_app_mock):
             result = create_one_admin_course(False)
             user_data = sample_user()
             user = create_user(user_data)
-            data = sample_user_course(user.user_id, result["course_id"])
+            data = sample_user_course(user.user_id, result['course_id'])
 
             uc = create_user_course(data)
             delete_user_course(uc.course_id)
@@ -381,23 +381,23 @@ def test_get_user_course_student_count(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            student1_data = sample_user(owner_id=result["user_id"])
+            student1_data = sample_user(owner_id=result['user_id'])
             student1 = create_user(student1_data)
-            student2_data = sample_user(email="student2@example.com", owner_id=result["user_id"])
+            student2_data = sample_user(email="student2@example.com", owner_id=result['user_id'])
             student2 = create_user(student2_data)
             ta_data = sample_user(email="ta1@example.com", role_id=4)
             ta = create_user(ta_data)
 
-            data1 = sample_user_course(student1.user_id, result["course_id"])
-            data2 = sample_user_course(student2.user_id, result["course_id"])
-            data3 = sample_user_course(ta.user_id, result["course_id"], role_id=4)
+            data1 = sample_user_course(student1.user_id, result['course_id'])
+            data2 = sample_user_course(student2.user_id, result['course_id'])
+            data3 = sample_user_course(ta.user_id, result['course_id'], role_id=4)
 
             # Add students and others
             uc1 = create_user_course(data1)
             uc2 = create_user_course(data2)
             uc3 = create_user_course(data3) # TA role
 
-            count = get_user_course_student_count_by_course_id(result["course_id"])
+            count = get_user_course_student_count_by_course_id(result['course_id'])
             assert count == 2
 
         finally:
@@ -420,11 +420,11 @@ def test_get_users_by_role_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            users = create_users(result["course_id"], result["user_id"], number_of_users=5)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=5)
 
             results = get_users_by_role_id(5)
             assert len(results) == 4
-            assert all(r.owner_id == result["user_id"] for r in results)
+            assert all(r.owner_id == result['user_id'] for r in results)
 
         finally:
             # Clean up

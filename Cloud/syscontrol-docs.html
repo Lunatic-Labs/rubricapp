@@ -291,6 +291,7 @@ Same as <code>--configure</code>.</p>
 <ol>
   <li>Kills any existing processes</li>
   <li>Starts <code>redis-server</code></li>
+  <li>Writes and starts <code>redis-limiter.service</code>, a second Redis on port <code>6380</code> used by flask-limiter for rate limiting</li>
   <li>Starts the Gunicorn backend (<code>rubricapp.service</code>)</li>
   <li>Starts and reloads Nginx</li>
   <li>Builds the React frontend (<code>npm run build</code>)</li>
@@ -332,8 +333,9 @@ Same as <code>--configure</code>.</p>
   <li><code>nginx.service</code></li>
   <li><code>rubricapp.service</code> (Gunicorn backend)</li>
   <li><code>redis-server.service</code></li>
+  <li><code>redis-limiter.service</code> (rate limiter Redis)</li>
 </ul>
-<p>Ports checked: <code>5001</code>, <code>5000</code>, <code>3000</code>, <code>80</code></p>
+<p>Ports checked: <code>6380</code>, <code>5001</code>, <code>5000</code>, <code>3000</code>, <code>80</code></p>
 
 <!-- KILL -->
 <h3 id="kill"><span class="section-number-3">4.10</span> Kill</h3>
@@ -347,6 +349,7 @@ Same as <code>--configure</code>.</p>
 <p>Services stopped in order:</p>
 <ul>
   <li><code>redis-server.service</code></li>
+  <li><code>redis-limiter.service</code></li>
   <li><code>rubricapp.service</code></li>
   <li><code>nginx.service</code></li>
 </ul>

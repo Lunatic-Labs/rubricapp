@@ -165,11 +165,14 @@ class AdminViewAssessmentStatus extends Component<AdminViewAssessmentStatusProps
                     downloadedAssessment: "aggregates",
                     chosenCategoryId: categoryName,
                 });
+            } else {
+                // Covers server errors and network errors alike (genericResourceGET
+                // resolves for both). Clear any stale csvCreation so componentDidUpdate
+                // doesn't re-trigger a download using leftover data from a prior call.
+                this.setState({
+                    csvCreation: null,
+                });
             }
-        }).catch(() => {
-            this.setState({
-                csvCreation: null,
-            });
         });
     }
 

@@ -3,7 +3,8 @@ import 'bootstrap/dist/css/bootstrap.css';
 import { Box, TextField, Alert } from '@mui/material';
 import CustomButton from '../Components/CustomButton';
 import ErrorMessage from '../../../Error/ErrorMessage';
-import { genericResourceGET } from '../../../../utility';
+import { genericResourceGET, genericResourcePOST } from '../../../../utility';
+import { HTTP_STATUS } from '../../../../Enums/HttpStatusCodes';
 import Loading from '../../../Loading/Loading';
 import { AssessmentTask } from '../../../../types/AssessmentTask';
 
@@ -29,9 +30,9 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 		};
 	}
 
-	submitPasscode = () => {
+	submitPasscode = async () => {
 		const enteredPassword = this.state.password;
-		const correctPassword = this.state.assessmentTasks!["create_team_password"];
+
 		this.setState({
 			validationError: null
 		});
@@ -43,16 +44,56 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 			return;
 		}
 
-		if (enteredPassword !== correctPassword) {
+		const body = {
+			password: enteredPassword,
+			assessment_task_id: this.props.navbar.state.chosenAssessmentTask["assessment_task_id"]
+
+		};
+
+		try {
+			
+			let promise;
+
+			// rawResponse so the HTTP status is available: the backend rejects a
+			// wrong password with a 400, which must not be confused with the
+			// server being unreachable or erroring.
+			promise = genericResourcePOST(
+				'/verify_team_password',
+				this,
+				JSON.stringify(body),
+				{ rawResponse: true }
+			);
+
+			promise.then(result => {
+				if (result?.success) {
+					this.props.navbar.setState({ teamSwitchPassword: enteredPassword });
+					this.props.navbar.setNewTab("SelectTeam");
+				} else if (result?.status === HTTP_STATUS.BAD_REQUEST) {
+					// Password rejected: stay on this screen so the student can retry,
+					// instead of falling into the generic <ErrorMessage> dead-end that
+					// genericResourcePOST's own setState({ errorMessage }) would
+					// otherwise trigger.
+					this.setState({
+						errorMessage: null,
+						validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
+					})
+				} else {
+					// No answer, an unreadable reply, or a server-side failure: the
+					// password wasn't actually rejected, so don't say it was wrong.
+					this.setState({
+						errorMessage: null,
+						validationError: "Unable to check the password right now. Please try again."
+					})
+				}
+			});
+
+		} catch (error) {
 			this.setState({
+				errorMessage: null,
 				validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
 			});
-			return;
 		}
-		this.props.navbar.setState({
-			teamSwitchPassword: enteredPassword
-		});
-		this.props.navbar.setNewTab("SelectTeam");
+
 	}
 
 	handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {

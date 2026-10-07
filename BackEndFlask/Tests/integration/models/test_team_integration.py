@@ -42,11 +42,11 @@ def test_create_team(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            team = sample_team("TeamX", result["user_id"], result["course_id"])
+            team = sample_team("TeamX", result['user_id'], result['course_id'])
             
             assert team.team_name == "TeamX"
-            assert team.observer_id == result["user_id"]
-            assert team.course_id == result["course_id"]
+            assert team.observer_id == result['user_id']
+            assert team.course_id == result['course_id']
             assert team.active_until is None
             assert isinstance(team.date_created, date)
 
@@ -66,7 +66,7 @@ def test_get_team(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            created = sample_team("Alpha", result["user_id"], result["course_id"])
+            created = sample_team("Alpha", result['user_id'], result['course_id'])
     
             fetched = get_team(created.team_id)
             assert fetched.team_name == "Alpha"
@@ -94,7 +94,7 @@ def test_get_team_name_by_name(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            created = sample_team("SearchableTeam", result["user_id"], result["course_id"])
+            created = sample_team("SearchableTeam", result['user_id'], result['course_id'])
         
             found = get_team_name_by_name("SearchableTeam")
             assert found is not None
@@ -115,8 +115,8 @@ def test_get_teams_only_active(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            t1 = sample_team("Active1", result["user_id"], result["course_id"])
-            t2 = sample_team("Active2", result["user_id"], result["course_id"])
+            t1 = sample_team("Active1", result['user_id'], result['course_id'])
+            t2 = sample_team("Active2", result['user_id'], result['course_id'])
     
             deactivate_team(t1.team_id)
 
@@ -175,10 +175,10 @@ def test_get_team_count_by_course_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            t1 = sample_team("T1", result["user_id"], result["course_id"])
-            t2 = sample_team("T2", result["user_id"], result["course_id"])
+            t1 = sample_team("T1", result['user_id'], result['course_id'])
+            t2 = sample_team("T2", result['user_id'], result['course_id'])
 
-            assert get_team_count_by_course_id(result["course_id"]) == 2
+            assert get_team_count_by_course_id(result['course_id']) == 2
 
         finally:
             # Clean up
@@ -196,12 +196,12 @@ def test_get_team_by_team_name_and_course_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            tA = sample_team("GroupA", result["user_id"], result["course_id"])
+            tA = sample_team("GroupA", result['user_id'], result['course_id'])
             
-            rslt = get_team_by_team_name_and_course_id("GroupA", result["course_id"])
+            rslt = get_team_by_team_name_and_course_id("GroupA", result['course_id'])
             assert rslt is not None
             assert rslt.team_name == "GroupA"
-            assert rslt.course_id == result["course_id"]
+            assert rslt.course_id == result['course_id']
         
         finally:
             # Clean up
@@ -251,9 +251,9 @@ def test_get_last_created_team_team_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            t1 = sample_team("X1", result["user_id"], result["course_id"])
-            t2 = sample_team("X2", result["user_id"], result["course_id"])
-            t3 = sample_team("X3", result["user_id"], result["course_id"])
+            t1 = sample_team("X1", result['user_id'], result['course_id'])
+            t2 = sample_team("X2", result['user_id'], result['course_id'])
+            t3 = sample_team("X3", result['user_id'], result['course_id'])
 
             assert get_last_created_team_team_id() == t3.team_id
         
@@ -274,7 +274,7 @@ def test_team_is_active(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            t = sample_team("ActiveTeam", result["user_id"], result["course_id"])
+            t = sample_team("ActiveTeam", result['user_id'], result['course_id'])
             assert team_is_active(t.team_id) is True
 
             deactivate_team(t.team_id)
@@ -301,7 +301,7 @@ def test_deactivate_team(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            t = sample_team("ToDeactivate", result["user_id"], result["course_id"])
+            t = sample_team("ToDeactivate", result['user_id'], result['course_id'])
             assert t.active_until is None
 
             updated = deactivate_team(t.team_id)
@@ -323,17 +323,17 @@ def test_replace_team(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            t = sample_team("OldName", result["user_id"], result["course_id"])
+            t = sample_team("OldName", result['user_id'], result['course_id'])
 
             new_data = {
                 "team_name": "NewName",
-                "observer_id": result["user_id"],
+                "observer_id": result['user_id'],
                 "date_created": "12/31/2024"
             }
 
             updated = replace_team(new_data, t.team_id)
             assert updated.team_name == "NewName"
-            assert updated.observer_id == result["user_id"]
+            assert updated.observer_id == result['user_id']
             assert updated.date_created == datetime(2024, 12, 31).date()
 
         finally:
@@ -357,7 +357,7 @@ def test_delete_team(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            t = sample_team("WillDelete", result["user_id"], result["course_id"])
+            t = sample_team("WillDelete", result['user_id'], result['course_id'])
 
             delete_team(t.team_id)
 
@@ -400,12 +400,12 @@ def test_get_team_by_course_id_and_observer_id(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            ta = create_users(result["course_id"], result["user_id"], number_of_users=2, role_id=4)
-            team1 = sample_team("Team 1", ta[0].user_id, result["course_id"])
-            team2 = sample_team("Team 2", ta[0].user_id, result["course_id"])
-            team3 = sample_team("Team 3", result["user_id"], result["course_id"])
+            ta = create_users(result['course_id'], result['user_id'], number_of_users=2, role_id=4)
+            team1 = sample_team("Team 1", ta[0].user_id, result['course_id'])
+            team2 = sample_team("Team 2", ta[0].user_id, result['course_id'])
+            team3 = sample_team("Team 3", result['user_id'], result['course_id'])
 
-            results = get_team_by_course_id_and_observer_id(result["course_id"], ta[0].user_id)
+            results = get_team_by_course_id_and_observer_id(result['course_id'], ta[0].user_id)
             assert len(results) == 2
             assert any(t.team_name == "Team 1" for t in results)
             assert any(t.team_name == "Team 2" for t in results)
@@ -429,18 +429,18 @@ def test_get_team_ratings(flask_app_mock):
 
         try:
             result = create_one_admin_course(False)
-            users = create_users(result["course_id"], result["user_id"], number_of_users=3)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
-            team = sample_team("Alpha", result["user_id"], result["course_id"], task.assessment_task_id)
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
 
             for i in range(2):
                 sample_team_user(team.team_id, users[i].user_id)
             
-            data1 = sample_completed_assessment(users[0].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result["user_id"])
+            data1 = sample_completed_assessment(users[0].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result['user_id'])
             comp1 = create_completed_assessment(data1)
-            data2 = sample_completed_assessment(users[1].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result["user_id"])
+            data2 = sample_completed_assessment(users[1].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result['user_id'])
             comp2 = create_completed_assessment(data2)
             fb1 = sample_feedback(comp1.completed_assessment_id, users[0].user_id)
             fb2 = sample_feedback(comp2.completed_assessment_id, users[1].user_id)

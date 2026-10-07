@@ -45,14 +45,14 @@ def test_get_all_teams_with_course_id(flask_app_mock, sample_token, auth_header,
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"]
+                    observer_id=result['user_id'],
+                    course_id=result['course_id']
                 ))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/team?course_id={result["course_id"]}&user_id={result["user_id"]}",
+                f"/api/team?course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -65,7 +65,7 @@ def test_get_all_teams_with_course_id(flask_app_mock, sample_token, auth_header,
             assert any(t["team_id"] == team[1].team_id for t in results)
             assert any(t["team_id"] == team[2].team_id for t in results)
             assert any(t["team_name"] == "Alpha" for t in results)
-            assert all(t["observer_id"] == result["user_id"] for t in results)
+            assert all(t["observer_id"] == result['user_id'] for t in results)
 
         finally:
             # Clean up
@@ -88,14 +88,14 @@ def test_get_all_teams(flask_app_mock, sample_token, auth_header, client):
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"]
+                    observer_id=result['user_id'],
+                    course_id=result['course_id']
                 ))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/team?user_id={result["user_id"]}",
+                f"/api/team?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -107,7 +107,7 @@ def test_get_all_teams(flask_app_mock, sample_token, auth_header, client):
             assert any(t["team_id"] == team[0].team_id for t in results)
             assert any(t["team_id"] == team[1].team_id for t in results)
             assert any(t["team_id"] == team[2].team_id for t in results)
-            assert all(t["observer_id"] == result["user_id"] for t in results)
+            assert all(t["observer_id"] == result['user_id'] for t in results)
 
         finally:
             # Clean up
@@ -157,10 +157,10 @@ def test_get_all_teams_by_user(flask_app_mock, sample_token, auth_header, client
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"]
+                    observer_id=result['user_id'],
+                    course_id=result['course_id']
                 ))
-            users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=4)
             sample_team_user(team_id=team[0].team_id, user_id=users[0].user_id)
             sample_team_user(team_id=team[0].team_id, user_id=users[1].user_id)
             sample_team_user(team_id=team[1].team_id, user_id=users[0].user_id)
@@ -169,7 +169,7 @@ def test_get_all_teams_by_user(flask_app_mock, sample_token, auth_header, client
             token = sample_token(user_id=users[0].user_id)
 
             response = client.get(
-                f"/api/team_by_user?course_id={result["course_id"]}&adhoc_mode=false&user_id={users[0].user_id}",
+                f"/api/team_by_user?course_id={result['course_id']}&adhoc_mode=false&user_id={users[0].user_id}",
                 headers=auth_header(token)
             )
 
@@ -183,8 +183,8 @@ def test_get_all_teams_by_user(flask_app_mock, sample_token, auth_header, client
             assert any(t["team_id"] == team[0].team_id for t in results)
             assert any(t["team_id"] == team[1].team_id for t in results)
             assert any(t["team_name"] == "Omega" for t in results)
-            assert all(t["course_id"] == result["course_id"] for t in results)
-            assert all(t["observer_id"] == result["user_id"] for t in results)
+            assert all(t["course_id"] == result['course_id'] for t in results)
+            assert all(t["observer_id"] == result['user_id'] for t in results)
 
         finally:
             # Clean up
@@ -203,8 +203,8 @@ def test_get_all_adhoc_teams_by_user(flask_app_mock, sample_token, auth_header, 
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             team_name = ["Alpha", "Omega", "Bison"]
 
@@ -212,11 +212,11 @@ def test_get_all_adhoc_teams_by_user(flask_app_mock, sample_token, auth_header, 
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"],
+                    observer_id=result['user_id'],
+                    course_id=result['course_id'],
                     assessment_task_id=task.assessment_task_id
                 ))
-            users = create_users(result["course_id"], result["user_id"], number_of_users=5)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=5)
             sample_team_user(team_id=team[0].team_id, user_id=users[0].user_id)
             sample_team_user(team_id=team[0].team_id, user_id=users[1].user_id)
             sample_team_user(team_id=team[1].team_id, user_id=users[3].user_id)
@@ -228,7 +228,7 @@ def test_get_all_adhoc_teams_by_user(flask_app_mock, sample_token, auth_header, 
             token = sample_token(user_id=users[0].user_id)
 
             response = client.get(
-                f"/api/team_by_user?course_id={result["course_id"]}&adhoc_mode=true&user_id={users[0].user_id}",
+                f"/api/team_by_user?course_id={result['course_id']}&adhoc_mode=true&user_id={users[0].user_id}",
                 headers=auth_header(token)
             )
 
@@ -242,8 +242,8 @@ def test_get_all_adhoc_teams_by_user(flask_app_mock, sample_token, auth_header, 
             assert any(t["team_id"] == team[1].team_id for t in results)
             assert any(t["team_id"] == team[2].team_id for t in results)
             assert any(t["team_name"] == "Bison" for t in results)
-            assert all(t["course_id"] == result["course_id"] for t in results)
-            assert all(t["observer_id"] == result["user_id"] for t in results)
+            assert all(t["course_id"] == result['course_id'] for t in results)
+            assert all(t["observer_id"] == result['user_id'] for t in results)
 
         finally:
             # Clean up
@@ -298,14 +298,14 @@ def test_get_all_teams_by_observer(flask_app_mock, sample_token, auth_header, cl
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"]
+                    observer_id=result['user_id'],
+                    course_id=result['course_id']
                 ))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/team_by_observer?course_id={result["course_id"]}&user_id={result["user_id"]}",
+                f"/api/team_by_observer?course_id={result['course_id']}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -317,7 +317,7 @@ def test_get_all_teams_by_observer(flask_app_mock, sample_token, auth_header, cl
             assert any(t["team_id"] == team[0].team_id for t in results)
             assert any(t["team_id"] == team[1].team_id for t in results)
             assert any(t["team_id"] == team[2].team_id for t in results)
-            assert all(t["observer_id"] == result["user_id"] for t in results)
+            assert all(t["observer_id"] == result['user_id'] for t in results)
 
         finally:
             # Clean up
@@ -363,13 +363,13 @@ def test_get_one_team(flask_app_mock, sample_token, auth_header, client):
             result = create_one_admin_course(False)
             team = sample_team(
                 team_name="Alpha",
-                observer_id=result["user_id"],
-                course_id=result["course_id"]
+                observer_id=result['user_id'],
+                course_id=result['course_id']
             )
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/one_team?team_id={team.team_id}&user_id={result["user_id"]}",
+                f"/api/one_team?team_id={team.team_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -398,10 +398,10 @@ def test_get_one_team_raises_exception(flask_app_mock, sample_token, auth_header
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/one_team?team_id=999&user_id={result["user_id"]}",
+                f"/api/one_team?team_id=999&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -424,8 +424,8 @@ def test_get_adhoc_team_data(flask_app_mock, sample_token, auth_header, client):
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             team_name = ["Team 1", "Team 2", "Team 3"]
 
@@ -433,11 +433,11 @@ def test_get_adhoc_team_data(flask_app_mock, sample_token, auth_header, client):
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"],
+                    observer_id=result['user_id'],
+                    course_id=result['course_id'],
                     assessment_task_id=task.assessment_task_id
                 ))
-            users = create_users(result["course_id"], result["user_id"], number_of_users=5)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=5)
             sample_team_user(team_id=team[0].team_id, user_id=users[0].user_id)
 
             create_checkin(sample_checkin(task.assessment_task_id, users[1].user_id, team_number=team[1].team_id))
@@ -445,10 +445,10 @@ def test_get_adhoc_team_data(flask_app_mock, sample_token, auth_header, client):
             create_checkin(sample_checkin(task.assessment_task_id, users[3].user_id, team_number=team[2].team_id))
             create_checkin(sample_checkin(task.assessment_task_id, users[0].user_id, team_number=team[1].team_id))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/team/adhoc?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}",
+                f"/api/team/adhoc?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -462,8 +462,8 @@ def test_get_adhoc_team_data(flask_app_mock, sample_token, auth_header, client):
             assert any(t["team_id"] == team[1].team_id for t in results)
             assert any(t["team_id"] == team[2].team_id for t in results)
             assert any(t["team_name"] == "Team 3" for t in results)
-            assert all(t["course_id"] == result["course_id"] for t in results)
-            assert all(t["observer_id"] == result["user_id"] for t in results)
+            assert all(t["course_id"] == result['course_id'] for t in results)
+            assert all(t["observer_id"] == result['user_id'] for t in results)
 
         finally:
             # Clean up
@@ -486,10 +486,10 @@ def test_get_adhoc_team_data_raises_exception(flask_app_mock, sample_token, auth
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/team/adhoc?user_id={result["user_id"]}",
+                f"/api/team/adhoc?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -512,8 +512,8 @@ def test_get_nonfull_adhoc_teams(flask_app_mock, sample_token, auth_header, clie
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             team_name = ["Team 1", "Team 2", "Team 3"]
 
@@ -521,11 +521,11 @@ def test_get_nonfull_adhoc_teams(flask_app_mock, sample_token, auth_header, clie
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"],
+                    observer_id=result['user_id'],
+                    course_id=result['course_id'],
                     assessment_task_id=task.assessment_task_id
                 ))
-            users = create_users(result["course_id"], result["user_id"], number_of_users=12)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=12)
             sample_team_user(team_id=team[0].team_id, user_id=users[0].user_id)
 
             for i in range(5):
@@ -535,10 +535,10 @@ def test_get_nonfull_adhoc_teams(flask_app_mock, sample_token, auth_header, clie
             for i in range(8, 11):
                 create_checkin(sample_checkin(task.assessment_task_id, users[i].user_id, team_number=team[2].team_id))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/nonfull-adhoc?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}",
+                f"/api/nonfull-adhoc?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -552,8 +552,8 @@ def test_get_nonfull_adhoc_teams(flask_app_mock, sample_token, auth_header, clie
             assert any(t["team_id"] == team[1].team_id for t in results)
             assert any(t["team_id"] == team[2].team_id for t in results)
             assert any(t["team_name"] == "Team 3" for t in results)
-            assert all(t["course_id"] == result["course_id"] for t in results)
-            assert all(t["observer_id"] == result["user_id"] for t in results)
+            assert all(t["course_id"] == result['course_id'] for t in results)
+            assert all(t["observer_id"] == result['user_id'] for t in results)
 
         finally:
             # Clean up
@@ -576,10 +576,10 @@ def test_get_nonfull_adhoc_teams_raises_exception(flask_app_mock, sample_token, 
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/nonfull-adhoc?&user_id={result["user_id"]}",
+                f"/api/nonfull-adhoc?&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -602,8 +602,8 @@ def test_get_how_many_adhoc_teams_exist(flask_app_mock, sample_token, auth_heade
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             team_name = ["Team 1", "Team 2", "Team 3"]
 
@@ -611,11 +611,11 @@ def test_get_how_many_adhoc_teams_exist(flask_app_mock, sample_token, auth_heade
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"],
+                    observer_id=result['user_id'],
+                    course_id=result['course_id'],
                     assessment_task_id=task.assessment_task_id
                 ))
-            users = create_users(result["course_id"], result["user_id"], number_of_users=5)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=5)
             sample_team_user(team_id=team[0].team_id, user_id=users[0].user_id)
 
             create_checkin(sample_checkin(task.assessment_task_id, users[1].user_id, team_number=team[1].team_id))
@@ -623,10 +623,10 @@ def test_get_how_many_adhoc_teams_exist(flask_app_mock, sample_token, auth_heade
             create_checkin(sample_checkin(task.assessment_task_id, users[3].user_id, team_number=team[2].team_id))
             create_checkin(sample_checkin(task.assessment_task_id, users[0].user_id, team_number=team[1].team_id))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/adhoc_amount?assessment_task_id={task.assessment_task_id}&user_id={result["user_id"]}",
+                f"/api/adhoc_amount?assessment_task_id={task.assessment_task_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -657,10 +657,10 @@ def test_get_howmany_adhoc_teams_exist_raises_exception(flask_app_mock, sample_t
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/adhoc_amount?&user_id={result["user_id"]}",
+                f"/api/adhoc_amount?&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -685,16 +685,16 @@ def test_add_team(flask_app_mock, sample_token, auth_header, client):
             result = create_one_admin_course(False)
             team_data = {
                 "team_name": "Alpha",
-                "observer_id": result["user_id"],
+                "observer_id": result['user_id'],
                 "date_created": datetime.now().strftime('%m/%d/%Y'),
-                "course_id": result["course_id"],
+                "course_id": result['course_id'],
                 "assessment_task_id": None
             }
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
-                f"/api/team?user_id={result["user_id"]}",
+                f"/api/team?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=team_data
             )
@@ -706,7 +706,7 @@ def test_add_team(flask_app_mock, sample_token, auth_header, client):
             assert len(rslt) == 1
             assert rslt[0]["team_id"] is not None
             assert rslt[0]["team_name"] == "Alpha"
-            assert rslt[0]["course_id"] == result["course_id"]
+            assert rslt[0]["course_id"] == result['course_id']
 
         finally:
             # Clean up
@@ -724,10 +724,10 @@ def test_add_team_raises_exception(flask_app_mock, sample_token, auth_header, cl
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.post(
-                f"/api/team?user_id={result["user_id"]}",
+                f"/api/team?user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -752,22 +752,22 @@ def test_update_team(flask_app_mock, sample_token, auth_header, client):
             result = create_one_admin_course(False)
             team = sample_team(
                 team_name="Alpha",
-                observer_id=result["user_id"],
-                course_id=result["course_id"],
+                observer_id=result['user_id'],
+                course_id=result['course_id'],
             )
 
             replaced_team_data = {
                 "team_name": "Omega",
-                "observer_id": result["user_id"],
+                "observer_id": result['user_id'],
                 "date_created": datetime.now().strftime('%m/%d/%Y'),
-                "course_id": result["course_id"],
+                "course_id": result['course_id'],
                 "assessment_task_id": None
             }
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/team?team_id={team.team_id}&user_id={result["user_id"]}",
+                f"/api/team?team_id={team.team_id}&user_id={result['user_id']}",
                 headers=auth_header(token),
                 json=replaced_team_data
             )
@@ -779,7 +779,7 @@ def test_update_team(flask_app_mock, sample_token, auth_header, client):
             assert len(rslt) == 1
             assert rslt[0]["team_id"] == team.team_id
             assert rslt[0]["team_name"] == "Omega"
-            assert rslt[0]["course_id"] == result["course_id"]
+            assert rslt[0]["course_id"] == result['course_id']
 
         finally:
             # Clean up
@@ -797,10 +797,10 @@ def test_update_team_raises_exception(flask_app_mock, sample_token, auth_header,
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/team?team_id=999&user_id={result["user_id"]}",
+                f"/api/team?team_id=999&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -828,8 +828,8 @@ def test_update_team_user_by_edit(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             team_name = ["Team 1", "Team 2", "Team 3"]
@@ -838,11 +838,11 @@ def test_update_team_user_by_edit(
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"],
+                    observer_id=result['user_id'],
+                    course_id=result['course_id'],
                     assessment_task_id=task.assessment_task_id
                 ))
-            users = create_users(result["course_id"], result["user_id"], number_of_users=7)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=7)
             for i in range(4):
                 sample_team_user(team_id=team[0].team_id, user_id=users[i].user_id)
 
@@ -851,10 +851,10 @@ def test_update_team_user_by_edit(
 
             edit_data = [users[3].user_id, users[4].user_id, users[5].user_id]
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/team_user?user_id={result["user_id"]}",
+                f"/api/team_user?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "team_id": team[0].team_id,
@@ -901,10 +901,10 @@ def test_update_team_user_by_edit_raises_exception(
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.put(
-                f"/api/team_user?team_id=999&user_id={result["user_id"]}",
+                f"/api/team_user?team_id=999&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 
@@ -927,8 +927,8 @@ def test_delete_selected_teams(flask_app_mock, sample_token, auth_header, client
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             team_name = ["Team 1", "Team 2", "Team 3"]
@@ -937,8 +937,8 @@ def test_delete_selected_teams(flask_app_mock, sample_token, auth_header, client
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"],
+                    observer_id=result['user_id'],
+                    course_id=result['course_id'],
                     assessment_task_id=task.assessment_task_id
                 ))
 
@@ -947,13 +947,13 @@ def test_delete_selected_teams(flask_app_mock, sample_token, auth_header, client
                 task_id=task.assessment_task_id,
                 team_id=team[0].team_id,
                 rating=completely["3"],
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.delete(
-                f"/api/team?user_id={result["user_id"]}",
+                f"/api/team?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "team_ids": [team[1].team_id, team[2].team_id]
@@ -996,8 +996,8 @@ def test_cannot_delete_selected_teams_with_completed_assessment(
 
         try:
             result = create_one_admin_course(False)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
 
             team_name = ["Team 1", "Team 2", "Team 3"]
@@ -1006,8 +1006,8 @@ def test_cannot_delete_selected_teams_with_completed_assessment(
             for i in range(3):
                 team.append(sample_team(
                     team_name=team_name[i],
-                    observer_id=result["user_id"],
-                    course_id=result["course_id"],
+                    observer_id=result['user_id'],
+                    course_id=result['course_id'],
                     assessment_task_id=task.assessment_task_id
                 ))
 
@@ -1016,7 +1016,7 @@ def test_cannot_delete_selected_teams_with_completed_assessment(
                 task_id=task.assessment_task_id,
                 team_id=team[0].team_id,
                 rating=completely["3"],
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
 
             create_completed_assessment(sample_completed_assessment(
@@ -1024,13 +1024,13 @@ def test_cannot_delete_selected_teams_with_completed_assessment(
                 task_id=task.assessment_task_id,
                 team_id=team[1].team_id,
                 rating=completely["5"],
-                c_by=result["user_id"]
+                c_by=result['user_id']
             ))
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.delete(
-                f"/api/team?user_id={result["user_id"]}",
+                f"/api/team?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "team_ids": [team[2].team_id, team[1].team_id]
@@ -1066,10 +1066,10 @@ def test_delete_non_existing_selected_teams_raises_exception(
         try:
             result = create_one_admin_course(False)
         
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.delete(
-                f"/api/team?user_id={result["user_id"]}",
+                f"/api/team?user_id={result['user_id']}",
                 headers=auth_header(token),
                 json={
                     "team_ids": 999
@@ -1098,17 +1098,17 @@ def test_get_all_team_users(flask_app_mock, sample_token, auth_header, client):
         
             team = sample_team(
                 team_name= "Alpha",
-                observer_id=result["user_id"],
-                course_id=result["course_id"]
+                observer_id=result['user_id'],
+                course_id=result['course_id']
             )
-            users = create_users(result["course_id"], result["user_id"], number_of_users=4)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=4)
             for i in range(3):
                 sample_team_user(team_id=team.team_id, user_id=users[i].user_id)
 
-            token = sample_token(user_id=result["user_id"])
+            token = sample_token(user_id=result['user_id'])
 
             response = client.get(
-                f"/api/get_all_team_users?course_id={result["course_id"]}&team_id={team.team_id}&user_id={result["user_id"]}",
+                f"/api/get_all_team_users?course_id={result['course_id']}&team_id={team.team_id}&user_id={result['user_id']}",
                 headers=auth_header(token)
             )
 

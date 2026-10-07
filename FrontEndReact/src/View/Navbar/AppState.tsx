@@ -85,6 +85,8 @@ import { genericResourceGET, parseRoleNames } from '../../utility';
  * @property {string|null} state.jumpToSection - Used in Complete Assessment to auto-scroll to a specific section.
  *
  * @property {Object[]|null} state.roles - All roles in the system, fetched once via GET /role on mount (not scoped to a course).
+ *      Written by genericResourceGET itself (it assigns the response to the state key named by its `resource` argument),
+ *      not by the .then() below. Nothing currently reads it; consumers use state.roleNameMap instead.
  * @property {Object|null} state.roleNameMap - role_id -> role_name lookup derived from state.roles, exposed app-wide via navbar.state.roleNameMap.
  */
 
@@ -92,7 +94,9 @@ interface AppStateProps {
     isSuperAdmin?: boolean;
     isAdmin?: boolean;
     userName?: string;
-    logout?: () => void;
+    // Required: ButtonAppBar's logout is non-optional, and the only render site
+    // (Login) always supplies it.
+    logout: () => void;
 }
 
 interface AppStateState {
@@ -749,11 +753,27 @@ class AppState extends Component<AppStateProps, AppStateState> {
         
         // if darkmode is not saved in cookies, the API will be called to check
         // the backend if the user has darkmode preferance set to 'true'
-        if (user !== null) {
+        // cookies.get returns undefined (not null) when the cookie is absent,
+        // so this must be a loose check or a missing cookie crashes user["user_id"] below.
+        if (user != null) {
             // Fetch all users to find the current user's dark mode preference.
             // IMPORTANT: We must NOT set this.state.user here — that state is reserved
             // for the edit-user flow (setAddUserTabWithUser). Setting it here causes a
             // race condition that breaks AdminAddUser (shows "Edit User" instead of "Add User").
+            // Falls back to the cookie's dark mode preference on any failure
+            // (server error or network error — genericResourceGET resolves,
+            // it does not reject, for either case).
+            const applyDarkModeFallback = () => {
+                const darkMode = user["user_dark_mode"] || false;
+                this.setState({ darkMode }, () => {
+                    if (darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
+                });
+            };
+
             genericResourceGET(
                 `/user?user_id=${user["user_id"]}`,
                 "users",
@@ -773,28 +793,23 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                 document.body.classList.remove('mode');
                             }
                         });
-                    }
-                }
-            }).catch(error => {
-                console.error("Error fetching user data:", error);
-                // Fallback: use dark mode from cookie user object
-                const darkMode = user["user_dark_mode"] || false;
-                this.setState({ darkMode }, () => {
-                    if (darkMode) {
-                        document.body.classList.add('mode');
                     } else {
-                        document.body.classList.remove('mode');
+                        applyDarkModeFallback();
                     }
-                });
+                } else {
+                    console.error("Error fetching user data:", result?.errorMessage);
+                    applyDarkModeFallback();
+                }
             });
         }
 
         // Fetch all roles once on mount so any screen can read role names
         // via navbar.state.roleNameMap without its own /role fetch.
+        // genericResourceGET already sets state.roles from the response, so only the
+        // derived lookup needs to be set here.
         genericResourceGET(`/role`, "roles", this).then(result => {
             if (result !== undefined && result["roles"] != null) {
                 this.setState({
-                    roles: result["roles"],
                     roleNameMap: parseRoleNames(result["roles"])
                 });
             }
@@ -999,7 +1014,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <StudentDashboard
                             navbar={this}
-                            chosenCourse={this.state.chosenCourse}
                         />
                     </Box>
                 }
@@ -1021,8 +1035,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     <Box className="page-spacing">
                         <StudentTeamMembers
                             navbar={this}
-                            team={this.state.team}
-                            chosenCourse={this.state.chosenCourse}
                         />
 
                         <Button
@@ -1140,8 +1152,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <StudentConfirmCurrentTeam
                             navbar={this}
-                            students={this.state.users}
-                            chosenCourse={this.state.chosenCourse}
                         />
                     </Box>
                 }

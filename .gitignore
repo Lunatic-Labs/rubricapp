@@ -39,11 +39,13 @@ Backup[ ]of[ ]*.numbers/
 **/package-lock.json
 !FrontEndReact/package-lock.json
 BackEndFlask/logs/all.log
+BackEndFlask/logs/all.log.*
 BackEndFlask/models/hidden.py
 BackEndFlask/oauth2_creds.json
 BackEndFlask/logs/all.log
 BackEndFlask/*.env*
 BackEndFlask/*.*
+!BackEndFlask/CLAUDE.md
 FrontEndReact/*.env*
 FrontEndReact/.env.production
 .vscode
@@ -69,3 +71,5 @@ node_modules
 
 endpoint-viz/*.html
 endpoint-viz/.env
+
+.venv

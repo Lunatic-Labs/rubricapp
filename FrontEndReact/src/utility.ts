@@ -112,6 +112,21 @@ function removeAuthData() {
   }
 }
 
+function interpretNonJsonResponse(response: Response): string {
+  switch (response.status) {
+    case HTTP_STATUS.TOO_MANY_REQUESTS:
+      return "Too many requests were sent in a short period. Please wait a few seconds and try again.";
+    case HTTP_STATUS.CONTENT_TOO_LARGE:
+      return "The uploaded file is too large.";
+    case HTTP_STATUS.BAD_GATEWAY:
+    case HTTP_STATUS.SERVICE_UNAVAILABLE:
+    case HTTP_STATUS.GATEWAY_TIMEOUT:
+      return "The server is temporarily unavailable. Please try again shortly.";
+    default:
+      return `Unexpected server error (status ${response.status}). Please try again.`;
+  }
+}
+
 async function genericResourceFetch(
   fetchURL: string,
   resource: string | null,
@@ -149,8 +164,14 @@ async function genericResourceFetch(
   }
 
   let response: Response;
+  let result: ApiResponse;
 
-  // try block handles network related errors.
+  // Network failures resolve here so callers only need a single .then() handler.
+  // The resolved value carries `fetchFailed: true` so callers can tell "no reply
+  // at all" apart from an error the server sent and show their own wording. It's
+  // kept out of component state, where it would go stale after the next success.
+  // (A reply that isn't JSON is not a fetch failure: it's handled below as a
+  // server error with a status-based message.)
   try {
     const fetchInit: RequestInit = {
       method: type,
@@ -163,16 +184,24 @@ async function genericResourceFetch(
 
     response = await fetch(url, fetchInit);
   } catch(error){
-    component.setState({
+    const state: any = {
       isLoaded: true,
       errorMessage: error instanceof Error ? error.message : String(error),
-    });
+    };
 
-    throw error;
+    component.setState(state);
+    return { ...state, fetchFailed: true };
   }
 
-  const result: ApiResponse = await response.json();
-
+  try {
+    result = await response.json();
+  } catch {
+    result = {
+      success: false,
+      status: response.status,
+      message: interpretNonJsonResponse(response),
+    };
+  }
   if (result.success){
     const state: any = {
       isLoaded: true,
@@ -564,7 +593,6 @@ export function setTestStudentCookies(data: TestStudentCredentials) {
 }
 
 export default modules;
-
 
 
 

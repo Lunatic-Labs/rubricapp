@@ -38,8 +38,8 @@ def test_get_rubrics_for_user_includes_owner(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"])
-            query = get_rubrics_for_user(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
+            query = get_rubrics_for_user(result['user_id'])
             
             assert any(r.rubric_id == rubric.rubric_id for r in query)
         
@@ -58,7 +58,7 @@ def test_get_rubric_valid_id_returns_rubric(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"], "Clarity")
+            rubric = sample_rubric(result['user_id'], "Clarity")
             result = get_rubric(rubric.rubric_id)
             assert result.rubric_name == "Clarity"
         
@@ -97,7 +97,7 @@ def test_replace_rubric_updates_existing(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"])
+            rubric = sample_rubric(result['user_id'])
             updated = replace_rubric(("Precision", "Updated desc"), rubric.rubric_id)
             assert updated.rubric_name == "Precision"
             assert updated.rubric_description == "Updated desc"
@@ -128,7 +128,7 @@ def test_delete_rubric_by_id_success(flask_app_mock):
             rubric_data = {
                 "rubric_name": "Temp Rubric",
                 "rubric_description": "To be deleted",
-                "owner": result["user_id"],
+                "owner": result['user_id'],
             }
             rubric = create_rubric(rubric_data)
             rubric_id = rubric.rubric_id
@@ -160,8 +160,8 @@ def test_delete_rubric_by_id_raises_if_used_in_assessment(flask_app_mock):
 
         try:
             result = create_one_admin_course(True)
-            rubric = sample_rubric(result["user_id"])
-            payload = build_sample_task_payload(result["course_id"], rubric.rubric_id)
+            rubric = sample_rubric(result['user_id'])
+            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             assessment_task = create_assessment_task(payload)
 
             # Attempt to delete rubric now should fail
