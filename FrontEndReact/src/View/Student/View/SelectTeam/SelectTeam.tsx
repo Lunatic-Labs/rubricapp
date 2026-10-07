@@ -67,11 +67,6 @@ class SelectTeam extends Component<SelectTeamProps, SelectTeamState> {
                         errorMessage: result.errorMessage
                     });
                 }
-            }).catch((error) => {
-                this.setState({
-                    error: true,
-                    errorMessage: "An error occurred while checking in. Please try again."
-                });
             });
         };
     }
