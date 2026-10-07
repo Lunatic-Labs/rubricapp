@@ -307,8 +307,6 @@ class Form extends Component<FormProps, FormState> {
                         }
                     );
                 }
-            }).catch(error => {
-                console.error('Error:', error);
             });
             
             setTimeout(() => {
