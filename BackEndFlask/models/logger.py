@@ -15,6 +15,11 @@ LOG_RETENTION_DAYS = 90
 # Directory every log file lives in: /BackEndFlask/logs
 LOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'logs'))
 
+# Lowest level written. INFO by default so routine DEBUG lines (e.g. each
+# auth decorator's "passed" line in CustomDecorators.py) don't multiply log
+# volume and CloudWatch ingestion; set LOG_LEVEL=DEBUG to see them.
+LOG_LEVEL = os.environ.get('LOG_LEVEL', 'INFO').upper()
+
 # The JSON log files this module writes (see the Logger instances at the
 # bottom). gunicorn's own access/error logs aren't included: they only
 # exist in production, where logrotate handles them.
@@ -73,7 +78,7 @@ class Logger:
                            logs/all.log, or provide a filepath.
         """
         self.logger = logging.getLogger(name)
-        self.logger.setLevel(logging.DEBUG)
+        self.logger.setLevel(LOG_LEVEL)
         formatter = JsonFormatter()
         console_handler = logging.StreamHandler()
         console_handler.setFormatter(formatter)

@@ -5,6 +5,7 @@ from .blacklist import is_token_blacklisted
 from typing     import Callable
 from enums.roles import Roles
 from models.logger import logger
+from models.log_context import set_user_id
 from models.queries import is_admin_by_user_id, is_super_admin_by_user_id
 from models.user_course import get_role_from_usercourse_by_userid_courseid
 from flask_jwt_extended import decode_token, get_jwt_identity
@@ -56,7 +57,7 @@ def verify_against_blacklist() -> any:
         course_redis_out(redis_feature)
         course_redis_out("\n++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++\n")
         raise e
-    logger.info(f"Blacklist check passed: user_id={request.args.get('user_id')}, path={request.path}")
+    logger.debug(f"Blacklist check passed: user_id={request.args.get('user_id')}, path={request.path}")
     return
 
 # Another decorator to verify the user_id is also the same in the token
@@ -88,7 +89,11 @@ def verify_token(refresh: bool):
         raise NoAuthorizationError("No Authorization")
     id = to_int(id, "user_id")
     if id == decoded_id:
-        logger.info(f"AuthCheck passed: user_id={id}, path={request.path}")
+        # Now verified, so it's safe to tag the rest of this request's log
+        # lines with it (core/__init__.py leaves it unset until here). The
+        # teardown hook's reset restores the pre-request value.
+        set_user_id(str(id))
+        logger.debug(f"AuthCheck passed: user_id={id}, path={request.path}")
         return
     logger.warning(f"AuthCheck denied: user_id mismatch, claimed={id}, token_identity={decoded_id}, path={request.path}")
     course_redis_out("\n I am: verify_token")
@@ -129,7 +134,7 @@ def verify_admin(refresh: bool) -> None:
             course_redis_out("\nI saw the user was not an admin in the db\n")
             course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
-        logger.info(f"admin_check passed: user_id={decoded_id}, path={request.path}")
+        logger.debug(f"admin_check passed: user_id={decoded_id}, path={request.path}")
     except NoAuthorizationError:
         logger.warning(f"admin_check denied: user_id={decoded_id}, reason=not an admin, path={request.path}")
         raise
@@ -177,7 +182,7 @@ def sufficent_privilege(desired_privilege_level: list[Roles], refresh: bool) -> 
             course_redis_out("\nI saw the user was not of appropriate auth in the db\n")
             course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
-        logger.info(f"privilege_check passed: user_id={decoded_id}, course_id={course_id}, role={course_role}, path={request.path}")
+        logger.debug(f"privilege_check passed: user_id={decoded_id}, course_id={course_id}, role={course_role}, path={request.path}")
     except NoAuthorizationError:
         required = [r.name for r in desired_privilege_level]
         logger.warning(f"privilege_check denied: user_id={decoded_id}, course_id={course_id}, role={course_role}, required={required}, path={request.path}")
@@ -223,7 +228,7 @@ def verify_super_admin(refresh: bool) -> None:
             course_redis_out("\nI saw the user was not the super admin\n")
             course_redis_out(decoded_id)
             raise NoAuthorizationError("No Authorization")
-        logger.info(f"super_admin_check passed: user_id={decoded_id}, path={request.path}")
+        logger.debug(f"super_admin_check passed: user_id={decoded_id}, path={request.path}")
     except NoAuthorizationError:
         logger.warning(f"super_admin_check denied: user_id={decoded_id}, reason=not the super admin, path={request.path}")
         raise

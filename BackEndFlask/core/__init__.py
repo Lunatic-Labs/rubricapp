@@ -170,18 +170,33 @@ class Config:
 
 config = Config()
 
+# Shape an inbound X-Request-ID must have to be reused. UUIDs (what this
+# app generates) fit; anything longer, empty, or with other characters is
+# replaced, so a caller can't bloat every log line or inject odd content.
+REQUEST_ID_PATTERN = re.compile(r'[A-Za-z0-9._-]{1,64}')
+
+def _inbound_request_id() -> str:
+    inbound = request.headers.get('X-Request-ID', '')
+    return inbound if REQUEST_ID_PATTERN.fullmatch(inbound) else str(uuid.uuid4())
+
 @app.before_request
 def _assign_request_context() -> None:
     """
-    Tags every request with a request_id (reused from an inbound
-    X-Request-ID header if the caller sent one, so a client-reported
-    error can later be correlated back to the backend request that
-    caused it) and the user_id query param already used throughout the
-    app, so every log line emitted while handling this request carries
-    both automatically.
+    Tags every request with a request_id so every log line emitted while
+    handling it carries the same id. A well-formed inbound X-Request-ID is
+    reused (it's caller-supplied, so it identifies a request for
+    correlation, not for trust); otherwise a fresh UUID is generated. The
+    id is echoed back in the response for the frontend to report with
+    client errors (see FrontEndReact/src/logger.ts).
+
+    user_id starts unset: the ?user_id= query param is only a claim until
+    AuthCheck verifies it against the token, which then sets it (see
+    verify_token in controller/security/CustomDecorators.py). Unverified
+    requests are logged without one, so audit queries by user_id can't be
+    pointed at someone else by editing the query string.
     """
-    g.request_id_token = set_request_id(request.headers.get('X-Request-ID', str(uuid.uuid4())))
-    g.user_id_token = set_user_id(request.args.get('user_id'))
+    g.request_id_token = set_request_id(_inbound_request_id())
+    g.user_id_token = set_user_id(None)
     g.request_start_time = time.monotonic()
 
 @app.after_request
@@ -195,6 +210,9 @@ def _log_request_summary(response):
 
     if request_id:
         response.headers['X-Request-ID'] = request_id
+        # Cross-origin JS can only read non-safelisted headers it's told
+        # about, and the frontend needs this one to report it.
+        response.headers['Access-Control-Expose-Headers'] = 'X-Request-ID'
 
     config.logger.info(f"{request.method} {request.path} -> {response.status_code} ({duration})")
     return response

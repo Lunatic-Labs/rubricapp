@@ -55,8 +55,9 @@ def test_logger_writes_to_custom_file(temp_log_file):
     ("ERROR", "error"),
     ("CRITICAL", "critical")
 ])
-def test_log_levels_write_messages(temp_log_file, level, method):
+def test_log_levels_write_messages(temp_log_file, level, method, monkeypatch):
     """Test that each level logs correctly."""
+    monkeypatch.setattr("models.logger.LOG_LEVEL", "DEBUG")
     # Ensure file exists before Logger tries to open it in r+ mode
     open(temp_log_file, "w").close()
 
@@ -244,3 +245,16 @@ def test_trim_expired_entries_keeps_open_handlers_writing_to_same_file(tmp_path,
     content = log_path.read_text()
     assert "expired" not in content
     assert "after trim" in content
+
+def test_debug_is_dropped_at_the_default_level(temp_log_file, monkeypatch):
+    """INFO is the default, so routine DEBUG lines (auth "passed" checks) aren't written."""
+    monkeypatch.setattr("models.logger.LOG_LEVEL", "INFO")
+    log = Logger("test_logger_default_level", logfile=temp_log_file)
+
+    log.debug("routine detail")
+    log.info("worth keeping")
+
+    with open(temp_log_file) as f:
+        contents = f.read()
+    assert "routine detail" not in contents
+    assert "worth keeping" in contents
