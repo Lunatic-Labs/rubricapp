@@ -2,6 +2,7 @@ import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../Components/CustomDataTable";
 import { getHumanReadableDueDate } from "../../../utility";
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * @description
@@ -37,80 +38,54 @@ class ViewTeams extends Component<ViewTeamsProps> {
         var users = this.props.users;
         var navbar = this.props.navbar;
 
-        const columns = [
+        const columns: GridColDef[] = [
             {
-                name: "team_name",
-                label: "Team Name",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"230px" } },
-                    setCellProps: () => { return { width:"230px" } },
-                }
+                field: "team_name",
+                headerName: "Team Name",
+                minWidth: 230,
+                flex: 1,
             },
             {
-                name: "observer_id",
-                label: navbar.state.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"230px" } },
-                    setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (observerId: number) => {
-                        return(
-                            <p className="pt-3">{users[observerId]}</p>
-                        )
-                    }
-                }
+                field: "observer_id",
+                headerName: navbar.state.chosenCourse["use_tas"] ? "TA Name" : "Instructor Name",
+                minWidth: 230,
+                flex: 1,
+                renderCell: (params) => (
+                    <p className="pt-3">{users[params.value]}</p>
+                )
             },
             {
-                name: "team_users",
-                label: "Members",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"230px" } },
-                    setCellProps: () => { return { width:"230px" } },
-                    customBodyRender: (user: string) => {
-                        return(
-                            <>{user + " "}</>
-                        );
-                    }
-                },
+                field: "team_users",
+                headerName: "Members",
+                minWidth: 230,
+                flex: 1,
+                renderCell: (params) => (
+                    <>{params.value + " "}</>
+                )
             },
             {
-                name: "date_created",
-                label: "Date Created",
-                options: {
-                    filter: true,
-                    setCellHeaderProps: () => { return { width:"160px" } },
-                    setCellProps: () => { return { width:"160px" } },
-                    customBodyRender: (date_created: string) => {
-                        let dateCreatedString = getHumanReadableDueDate(date_created);
+                field: "date_created",
+                headerName: "Date Created",
+                minWidth: 160,
+                flex: 1,
+                renderCell: (params) => {
+                    let dateCreatedString = getHumanReadableDueDate(params.value);
 
-                        return(
-                            <p className="pt-3">
-                                {date_created ? dateCreatedString : "N/A"}
-                            </p>
-                        )
-                    }
+                    return (
+                        <p className="pt-3">
+                            {params.value ? dateCreatedString : "N/A"}
+                        </p>
+                    )
                 }
             },
         ];
-
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            viewColumns: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "21rem"
-        };
 
         return (
             <CustomDataTable
                 data={teams ? teams : []}
                 columns={columns}
-                options={options}
+                getRowId={(row) => row.team_id}
+                height="21rem"
             />
         )
     }

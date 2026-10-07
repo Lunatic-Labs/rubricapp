@@ -350,6 +350,15 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
     if (promise) {
         promise
   .then((result) => {
+    // Request never reached the server: show a retry message rather than
+    // the raw fetch error.
+    if (result?.fetchFailed) {
+      this.setState({
+        errorMessage: "Unable to save right now. Please try again.",
+      });
+      return;
+    }
+
     if (result && result.errorMessage == null) {
       // success: ensure any old email error is cleared
       this.setState((prev: AdminAddUserState) => ({
@@ -387,11 +396,6 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
         if (result && result.errorMessage) {
           this.setState({ errorMessage: result.errorMessage });
         }
-      })
-      .catch(() => {
-        this.setState({
-          errorMessage: "Unable to save right now. Please try again.",
-        });
       });
     }
   };
