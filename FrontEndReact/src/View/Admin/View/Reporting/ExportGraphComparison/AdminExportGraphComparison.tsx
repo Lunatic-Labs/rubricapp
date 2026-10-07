@@ -186,6 +186,14 @@ class AdminExportGraphComparison extends Component<AdminExportGraphComparisonPro
         Promise.all(completedPromises),
       ]);
 
+      // genericResourceGET resolves (rather than rejects) on a network
+      // failure. Route that through the catch below so users see the
+      // friendly message instead of the raw fetch error.
+      const fetchFailed = [...rubricResults, ...completedResults].some((result) => result?.fetchFailed);
+      if (fetchFailed) {
+        throw new Error('Failed to fetch graph data');
+      }
+
       // Build rubric map: rubric_id -> rubric data (with category_json)
       const rubricMap: Record<number, Rubric> = {};
       rubricResults.forEach((result) => {

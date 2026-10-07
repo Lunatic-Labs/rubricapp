@@ -38,17 +38,39 @@ npm run dev   # vite dev server on :3000
 
 ## Tests
 
-```bash
-# Backend (from BackEndFlask/)
-python3 -m pytest Tests/                      # all
-python3 -m pytest Tests/unit -n auto           # unit, parallel (matches CI)
-python3 -m pytest Tests/integration            # integration (needs a running MySQL/Redis)
-python3 -m pytest -k "test_specific_function"  # single test by name
+Run the full suites against the `docker compose` stack, as described in `Manuals/RunningCoverageReports.md` (the source of truth for the steps below, including coverage reports). Backend integration tests need real MySQL + Redis, and most frontend tests need a live backend — without one they fail or silently skip most of the code.
 
-# Frontend (from FrontEndReact/)
-npm test                       # jest — requires the backend to be running and reachable
-npm test examplefile.test.tsx  # single file
-```
+1. **Start the stack**: `docker compose up -d`, then `docker ps` to confirm container names (usually `rubricapp-backend-1`, `rubricapp-mysql-1`, …) and `docker port rubricapp-backend-1` for the backend's host port (currently `5050`).
+
+2. **Never run pytest against the dev database.** `Tests/conftest.py` creates and drops its database around *every* test, so pointing it at `local` (the default `MYSQL_DATABASE`) wipes dev data and can crash the running containers. Use the throwaway `pytest_coverage` database instead; grant access to it once per MySQL volume:
+
+   ```bash
+   docker exec rubricapp-mysql-1 sh -c 'mysql -uroot -p"$MYSQL_ROOT_PASSWORD" -e "GRANT ALL PRIVILEGES ON pytest_coverage.* TO '"'"'skillbuilder'"'"'@'"'"'%'"'"'; FLUSH PRIVILEGES;"'
+   ```
+
+3. **Backend** (unit + integration), inside the backend container:
+
+   ```bash
+   docker exec -e MYSQL_DATABASE=pytest_coverage -e TESTING_MODE=1 -e RUBRICAPP_RUNNING_LOCALLY=0 \
+     rubricapp-backend-1 python3 -m pytest Tests/
+   # single test: append  -k "test_specific_function"
+   # coverage: `docker exec rubricapp-backend-1 pip install pytest-cov coverage` (not in
+   # requirements.txt, lost on rebuild), then add
+   #   --cov=models --cov=controller --cov=core --cov=enums --cov=constants --cov=Functions --cov-report=term-missing
+   ```
+
+4. **Frontend** (from `FrontEndReact/`), on the host:
+   - Use **Node 24** (`nvm use 24`), as CI does. Older Node fails with `ERR_REQUIRE_ESM` because `@babel/core@8` is ESM-only.
+   - Run `npm install` after switching branches. Branches can differ in dependencies (e.g. `mui-datatables` vs `@mui/x-data-grid`), and a stale `node_modules` makes suites fail with "Cannot find module".
+   - `.env`'s `VITE_API_URL` usually says port `5000`, which won't match the Docker port. Override it for the run instead of editing `.env`:
+
+   ```bash
+   CI=true VITE_API_URL=http://127.0.0.1:5050/api npx jest --watchAll=false --runInBand   # all
+   CI=true VITE_API_URL=http://127.0.0.1:5050/api npx jest path/to/File.test.tsx          # single file
+   # add --coverage for a report in FrontEndReact/coverage/lcov-report/index.html
+   ```
+
+   Use `--runInBand` for the full suite. Run in parallel, the login-driven Admin suites (`AdminAddCourse`, `AdminAddUser`, `AdminViewTeamMembers`, `AdminBulkUpload`, `AdminEditTeamMembers`, `AdminAddAssessmentTask`) overload the backend. `waitFor` then times out after its default 1s, and the failures show up as `Unable to find a label with the text of: coursesTitle` with the login form still rendered. If that error appears in a serial run, the cause is more likely missing demo data: seed it (`setupEnv.py -d`) before treating it as a regression. `ECONNREFUSED` in the output means the backend isn't reachable at `VITE_API_URL`.
 
 CI (`.github/workflows/ci.yml`) runs `pytest Tests/unit`, sharded `pytest Tests/integration` (3 shards), `npm test`, and `npx eslint --max-warnings=0 .` on the frontend. Match these locally before pushing.
 
