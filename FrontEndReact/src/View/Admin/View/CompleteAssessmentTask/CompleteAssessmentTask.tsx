@@ -2,7 +2,6 @@ import { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import Form from "./Form";
 import { genericResourceGET, genericResourcePOST} from '../../../../utility';
-import { logger } from '../../../../logger';
 import { Box } from '@mui/material';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import Cookies from 'universal-cookie';
@@ -115,12 +114,14 @@ class CompleteAssessmentTask extends Component<CompleteAssessmentTaskProps, Comp
             `/checkin_events?assessment_task_id=${chosenAssessmentTask["assessment_task_id"]}&course_id=${courseId}`,
             'checkin', this
         ).then(data => {
+            if (!data?.checkin) {
+                console.warn(data?.errorMessage);
+                return;
+            }
             let checkinData = new CheckinsTracker(data['checkin']);
             this.setState({
                 checkins: checkinData,
             });
-        }).catch(error => {
-            logger.warn(error instanceof Error ? error.message : String(error), error);
         });
     }
 

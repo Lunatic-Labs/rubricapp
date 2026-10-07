@@ -3,7 +3,6 @@ import 'bootstrap/dist/css/bootstrap.css';
 import ViewTeams from './ViewTeams';
 import ErrorMessage from '../../Error/ErrorMessage';
 import { genericResourceGET, parseUserNames } from '../../../utility';
-import { logger } from '../../../logger';
 import Loading from '../../Loading/Loading';
 import { Team } from '../../../types/Team';
 import { User } from '../../../types/User';
@@ -90,17 +89,20 @@ class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeams
         const chosenCourseId = chosenCourse["course_id"];
         const adhocMode = !chosenCourse.use_fixed_teams;
 
-        genericResourceGET(
+        const teamsRequest = genericResourceGET(
             `/team_by_user?course_id=${chosenCourseId}&adhoc_mode=${adhocMode}`, "teams", this
         ).then(data =>{
+            if (!data?.teams) {
+                console.error("Error fetching teams data:", data?.errorMessage);
+                return data;
+            }
             let newTeams: number[] = [];
             data.teams.forEach((team: Team) => {
                 newTeams.push(team.team_id);
             });
             this.props.updateUserTeamsIds(newTeams);
-        }).catch(error => {
-            logger.error("Error fetching/parsing teams data:", error);
-        }); //This requires future adjusting
+            return data;
+        });
 
         var url = (
             chosenCourse["use_tas"] ?
@@ -108,7 +110,13 @@ class StudentViewTeams extends Component<StudentViewTeamsProps, StudentViewTeams
             `/user?uid=${chosenCourse["admin_id"]}`
         );
 
-        genericResourceGET(url, "users", this);
+        const usersRequest = genericResourceGET(url, "users", this);
+        Promise.all([teamsRequest, usersRequest]).then(([teamsData, usersData]) => {
+            const errorMessage = teamsData?.errorMessage || usersData?.errorMessage;
+            if (errorMessage) {
+                this.setState({ errorMessage });
+            }
+        });
     }
 
     render() {

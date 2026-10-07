@@ -105,8 +105,7 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 	 *  - Navigates to "StudentDashboard".
 	 *
 	 * On failure:
-	 *  - Sets state.errorMessage to either the returned errorMessage
-	 *    or a generic error if the request throws.
+	 *  - Sets state.errorMessage to the returned errorMessage.
 	 */
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
@@ -128,10 +127,6 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 					errorMessage: result.errorMessage
 				});
 			}
-		}).catch((error) => {
-			this.setState({
-				errorMessage: "An error occurred while checking in. Please try again."
-			});
 		});
 	};
 

@@ -814,8 +814,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     roleNameMap: parseRoleNames(result["roles"])
                 });
             }
-        }).catch(error => {
-            logger.error("Error fetching roles:", error);
         });
     }
 
