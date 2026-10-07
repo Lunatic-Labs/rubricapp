@@ -41,7 +41,7 @@ def test_fails_open_and_logs_error_on_redis_error(mock_logger):
 
     mock_logger.error.assert_called_once()
     msg = mock_logger.error.call_args[0][0]
-    assert "Redis error" in msg
+    assert type(RedisConnectionError("")).__name__ in msg
     assert "redis unreachable" in msg
 
 
@@ -52,5 +52,5 @@ def test_fails_open_and_logs_error_on_unexpected_exception(mock_logger):
 
     mock_logger.error.assert_called_once()
     msg = mock_logger.error.call_args[0][0]
-    assert "unexpected error" in msg
+    assert "RuntimeError" in msg
     assert "boom" in msg

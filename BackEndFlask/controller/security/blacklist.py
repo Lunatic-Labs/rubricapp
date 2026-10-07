@@ -1,7 +1,6 @@
 import math
 import time
 import subprocess
-from redis.exceptions import RedisError
 from core import app, red
 from flask_jwt_extended import decode_token
 from jwt.exceptions import ExpiredSignatureError
@@ -38,11 +37,11 @@ def is_token_blacklisted(token: str) -> bool:
     """
     try:
         return bool(red.get(token))
-    except RedisError as e:
-        security_logger.error(f"Blacklist check unavailable, Redis error: {e}; fail-open={FAIL_OPEN}")
-        return not FAIL_OPEN
     except Exception as e:
-        security_logger.error(f"Blacklist check unavailable, unexpected error: {e}; fail-open={FAIL_OPEN}")
+        # One handler for RedisError and anything unexpected: both mean the
+        # blacklist can't be consulted, and the exception type in the
+        # message is enough to tell them apart.
+        security_logger.error(f"Blacklist check unavailable, {type(e).__name__}: {e}; fail-open={FAIL_OPEN}")
         return not FAIL_OPEN
 
 def blacklist_token(token: str) -> None:
