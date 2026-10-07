@@ -7,8 +7,8 @@ test("TeamMembers.test.tsx Test 1: should render a row for each team member", ()
     const navbar = {
         studentTeamMembers: {
             users: [
-                { first_name: "Ada", last_name: "Lovelace", email: "ada@example.com" },
-                { first_name: "Alan", last_name: "Turing", email: "alan@example.com" },
+                { user_id: 1, first_name: "Ada", last_name: "Lovelace", email: "ada@example.com" },
+                { user_id: 2, first_name: "Alan", last_name: "Turing", email: "alan@example.com" },
             ],
         },
     };
