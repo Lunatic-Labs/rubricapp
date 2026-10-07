@@ -196,7 +196,9 @@ WantedBy=multi-user.target
     # truncates in place instead of renaming, so neither gunicorn nor any
     # worker needs to be signalled to reopen its file descriptor.
     # Retention (90 days) matches LOG_RETENTION_DAYS in
-    # BackEndFlask/models/logger.py.
+    # BackEndFlask/models/logger.py. maxage enforces it in days: rotate 90
+    # alone counts rotations, and notifempty skips quiet days, so files
+    # could otherwise outlive 90 days.
     LOGROTATE_CONFIG="$PROJ_DIR/BackEndFlask/logs/gunicorn-access.log
 $PROJ_DIR/BackEndFlask/logs/gunicorn-error.log
 $PROJ_DIR/BackEndFlask/logs/all.log
@@ -204,6 +206,7 @@ $PROJ_DIR/BackEndFlask/logs/client_errors.log
 $PROJ_DIR/BackEndFlask/logs/security.log {
     daily
     rotate 90
+    maxage 90
     compress
     delaycompress
     missingok

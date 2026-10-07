@@ -180,3 +180,67 @@ def test_log_output_includes_exc_info_on_exception(temp_log_file):
     record = _read_json_lines(temp_log_file)[0]
     assert "exc_info" in record
     assert "ValueError: boom" in record["exc_info"]
+
+def _json_line(written_at, message):
+    return json.dumps({"timestamp": written_at.isoformat(), "level": "INFO", "message": message}) + "\n"
+
+def test_trim_expired_entries_drops_only_lines_past_retention(tmp_path, monkeypatch):
+    """Startup trim keeps recent entries, drops expired ones, in every app log."""
+    from datetime import datetime, timedelta
+    from models.logger import trim_expired_entries, APP_LOG_FILES
+
+    monkeypatch.setattr("models.logger.LOG_DIR", str(tmp_path))
+    now = datetime.now()
+
+    for name in APP_LOG_FILES:
+        (tmp_path / name).write_text(
+            _json_line(now - timedelta(days=120), "expired")
+            + _json_line(now - timedelta(days=1), "recent")
+        )
+
+    trim_expired_entries(retention_days=90)
+
+    for name in APP_LOG_FILES:
+        content = (tmp_path / name).read_text()
+        assert "expired" not in content
+        assert "recent" in content
+
+def test_trim_expired_entries_handles_legacy_lines_and_continuations(tmp_path, monkeypatch):
+    """Old plain-text lines are dated by their prefix; untimed lines follow the entry before them."""
+    from datetime import datetime, timedelta
+    from models.logger import trim_expired_entries
+
+    monkeypatch.setattr("models.logger.LOG_DIR", str(tmp_path))
+    fmt = "%Y-%m-%d %H:%M:%S"
+    old = (datetime.now() - timedelta(days=200)).strftime(fmt)
+    new = (datetime.now() - timedelta(days=2)).strftime(fmt)
+    (tmp_path / "all.log").write_text(
+        f"{old} ERROR old failure\n"
+        "Traceback line belonging to old failure\n"
+        f"{new} ERROR new failure\n"
+        "Traceback line belonging to new failure\n"
+    )
+
+    trim_expired_entries(retention_days=90)
+
+    assert (tmp_path / "all.log").read_text() == (
+        f"{new} ERROR new failure\n"
+        "Traceback line belonging to new failure\n"
+    )
+
+def test_trim_expired_entries_keeps_open_handlers_writing_to_same_file(tmp_path, monkeypatch):
+    """The file is rewritten in place, so an already-open append handler still lands in it."""
+    from datetime import datetime, timedelta
+    from models.logger import trim_expired_entries
+
+    monkeypatch.setattr("models.logger.LOG_DIR", str(tmp_path))
+    log_path = tmp_path / "all.log"
+    log_path.write_text(_json_line(datetime.now() - timedelta(days=120), "expired"))
+    log = Logger("trim_open_handler_logger", logfile=str(log_path))
+
+    trim_expired_entries(retention_days=90)
+    log.info("after trim")
+
+    content = log_path.read_text()
+    assert "expired" not in content
+    assert "after trim" in content

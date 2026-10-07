@@ -1,18 +1,24 @@
 import os
 import json
+import shutil
 import logging
-from datetime import datetime
+import tempfile
+from datetime import datetime, timedelta
 
 from models.log_context import get_request_id, get_user_id
 
-# Days of rotated logs kept before the oldest is deleted. Rotation itself
-# happens outside this process (see below), so this is the value the
-# logrotate/CloudWatch configs in Cloud/syscontrol.sh must agree with,
-# not something the logging module enforces.
+# Days of log history kept. In production, logrotate enforces this (the
+# logrotate/CloudWatch configs in Cloud/syscontrol.sh must agree with it);
+# elsewhere, trim_expired_entries() does, once at server start.
 LOG_RETENTION_DAYS = 90
 
 # Directory every log file lives in: /BackEndFlask/logs
 LOG_DIR = os.path.abspath(os.path.join(os.path.dirname(__file__), '..', 'logs'))
+
+# The JSON log files this module writes (see the Logger instances at the
+# bottom). gunicorn's own access/error logs aren't included: they only
+# exist in production, where logrotate handles them.
+APP_LOG_FILES = ('all.log', 'client_errors.log', 'security.log')
 
 
 class JsonFormatter(logging.Formatter):
@@ -52,7 +58,8 @@ class Logger:
     files with `copytruncate`, which truncates in place rather than
     renaming, so the file descriptor held here stays valid and no worker
     needs to be signalled to reopen. Retention lives there too and must
-    match LOG_RETENTION_DAYS.
+    match LOG_RETENTION_DAYS. Outside production there's no logrotate, so
+    trim_expired_entries() applies the same retention at server start.
     """
 
     def __init__(self, name: str, logfile: str|None = None):
@@ -157,6 +164,66 @@ class Logger:
                     f"Email: {email},")
         self.logger.info(log_msg)
     
+def _entry_time(line: str) -> datetime|None:
+    """
+    Description:
+    The timestamp a log line was written at: the "timestamp" field of a
+    JSON line (JsonFormatter), or the leading "YYYY-MM-DD HH:MM:SS" of a
+    line from the older plain-text format. None if the line has neither.
+    """
+    try:
+        return datetime.fromisoformat(json.loads(line)["timestamp"])
+    except (ValueError, KeyError, TypeError):
+        pass
+
+    try:
+        return datetime.strptime(line[:19], "%Y-%m-%d %H:%M:%S")
+    except ValueError:
+        return None
+
+
+def trim_expired_entries(retention_days: int = LOG_RETENTION_DAYS) -> None:
+    """
+    Description:
+    Drops entries older than `retention_days` from the app's own log
+    files. This is the retention for setups logrotate doesn't cover
+    (Docker Compose and setupEnv.py, which never run Cloud/syscontrol.sh).
+    setupEnv.py calls it once at server start, before the server process
+    exists, so it can't race any worker's writes the way per-write
+    trimming would. Production gets its retention from logrotate instead.
+
+    Each file is rewritten in place (same inode) rather than replaced,
+    so a FileHandler this process already opened in append mode stays
+    valid. A line with no timestamp of its own (e.g. a continuation of an
+    old multi-line entry) is kept or dropped along with the entry before it.
+    """
+    cutoff = datetime.now() - timedelta(days=retention_days)
+
+    for name in APP_LOG_FILES:
+        path = os.path.join(LOG_DIR, name)
+
+        if not os.path.exists(path):
+            continue
+
+        with open(path, 'r+', encoding='utf-8', errors='replace') as f, \
+                tempfile.TemporaryFile('w+', encoding='utf-8') as kept:
+            keep = False
+
+            for line in f:
+                written_at = _entry_time(line)
+
+                if written_at is not None:
+                    keep = written_at >= cutoff
+
+                if keep:
+                    kept.write(line)
+
+            kept.seek(0)
+            f.seek(0)
+            shutil.copyfileobj(kept, f)
+            f.truncate()
+
+
 # The application log. Everything the server itself decides to say.
 logger = Logger("rubricapp_logger")
 
