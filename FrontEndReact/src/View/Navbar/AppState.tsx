@@ -798,7 +798,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         applyDarkModeFallback();
                     }
                 } else {
-                    console.error("Error fetching user data:", result?.errorMessage);
+                    logger.error("Error fetching user data:", result?.errorMessage);
                     applyDarkModeFallback();
                 }
             });

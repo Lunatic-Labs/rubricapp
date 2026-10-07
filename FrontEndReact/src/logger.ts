@@ -54,15 +54,21 @@ function reportToServer(level: LogLevel, message: string, extra: unknown): void 
 }
 
 function log(level: LogLevel, message: string, extra?: unknown): void {
-  if (isDev) {
+  // debug/info are routine, high-volume, and only useful to a developer
+  // actively watching the console - no-op them outside dev rather than
+  // printing or sending every one to the backend.
+  const isProblem = level === 'warn' || level === 'error';
+
+  // warn/error always reach the console, production included: the backend
+  // report below is best-effort (rate-limited, blockable by extensions or
+  // network trouble), so the console is the record a user or support person
+  // can still see in DevTools when that report never arrives.
+  if (isDev || isProblem) {
     // eslint-disable-next-line no-console
     console[level === 'debug' ? 'log' : level](message, extra ?? '');
   }
 
-  // debug/info are routine, high-volume, and only useful to a developer
-  // actively watching the console - no-op them outside dev rather than
-  // sending every one to the backend.
-  if (level === 'warn' || level === 'error') {
+  if (isProblem) {
     reportToServer(level, message, extra);
   }
 }
