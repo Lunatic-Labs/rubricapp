@@ -17,6 +17,30 @@ function stringifyExtra(extra: unknown): string {
   }
 }
 
+// How long after a backend request fails its X-Request-ID is still attached
+// to reports. Long enough to cover the caller logging the failure (usually
+// immediately), short enough that an unrelated later error isn't tagged with it.
+const FAILED_REQUEST_WINDOW_MS = 30_000;
+
+let lastFailedRequest: { id: string; at: number } | null = null;
+
+// Called by genericResourceFetch (utility.ts) when the server answers with an
+// error, so the next report can name the request whose backend log lines
+// explain it. It's "the most recent failure in this tab", not a guaranteed
+// cause, which is why the backend logs it as failed_request_id.
+export function noteFailedRequest(requestId: string | null): void {
+  if (requestId) {
+    lastFailedRequest = { id: requestId, at: Date.now() };
+  }
+}
+
+function recentFailedRequestId(): string | undefined {
+  if (lastFailedRequest && Date.now() - lastFailedRequest.at <= FAILED_REQUEST_WINDOW_MS) {
+    return lastFailedRequest.id;
+  }
+  return undefined;
+}
+
 // Best-effort report to the backend so warnings/errors that only ever
 // happened in one user's browser still show up somewhere. Deliberately a
 // plain fetch rather than the genericResourceFetch helpers in utility.ts:
@@ -43,6 +67,7 @@ function reportToServer(level: LogLevel, message: string, extra: unknown): void 
         extra: stringifyExtra(extra),
         url: window.location.href,
         user_id: userId,
+        request_id: recentFailedRequestId(),
       }),
       keepalive: true,
     }).catch(() => {

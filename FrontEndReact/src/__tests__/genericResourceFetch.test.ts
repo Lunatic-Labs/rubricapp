@@ -1,5 +1,6 @@
 import { test, expect, jest, beforeEach } from "@jest/globals";
 import { genericResourcePUT, genericResourceGET } from "../utility";
+import { logger } from "../logger";
 
 // This suite targets the promise CONTRACT of genericResourceFetch (exercised
 // here through the exported GET/PUT wrappers): callers only attach a single
@@ -37,6 +38,7 @@ beforeEach(() => {
 
 test("genericResourceFetch Test 1: resolves with state on a successful response", async () => {
   (global.fetch as jest.Mock).mockResolvedValue({
+    headers: new Headers(),
     status: 200,
     json: async () => ({ success: true, content: {} }),
   });
@@ -50,6 +52,7 @@ test("genericResourceFetch Test 1: resolves with state on a successful response"
 
 test("genericResourceFetch Test 2: resolves (does not reject) with a parsed message on a server error", async () => {
   (global.fetch as jest.Mock).mockResolvedValue({
+    headers: new Headers(),
     status: 400,
     json: async () => ({ success: false, message: "ValueError: email already in use" }),
   });
@@ -95,6 +98,7 @@ test("genericResourceFetch Test 5: resolves (does not reject) with a status-base
   // page, or a truncated body) — that must resolve too, not just fetch() itself.
   // The server did answer, so it's reported as a server error, not fetchFailed.
   (global.fetch as any).mockResolvedValue({
+    headers: new Headers(),
     status: 502,
     json: async () => {
       throw new SyntaxError("Unexpected token < in JSON at position 0");
@@ -112,6 +116,7 @@ test("genericResourceFetch Test 5: resolves (does not reject) with a status-base
 
 test("genericResourceFetch Test 6: only fetch failures are flagged with fetchFailed", async () => {
   (global.fetch as jest.Mock).mockResolvedValue({
+    headers: new Headers(),
     status: 400,
     json: async () => ({ success: false, message: "ValueError: email already in use" }),
   });
@@ -124,4 +129,25 @@ test("genericResourceFetch Test 6: only fetch failures are flagged with fetchFai
   for (const [state] of component.setState.mock.calls) {
     expect(state).not.toHaveProperty("fetchFailed");
   }
+});
+
+test("genericResourceFetch Test 7: a server error's request id is attached to the next error report", async () => {
+  (global.fetch as jest.Mock)
+    .mockResolvedValueOnce({
+      status: 400,
+      headers: new Headers({ "X-Request-ID": "req-from-backend-123" }),
+      json: async () => ({ success: false, message: "ValueError: bad input" }),
+    })
+    .mockResolvedValue({ status: 200 });
+
+  await genericResourcePUT("/some_endpoint", makeComponent(), JSON.stringify({}));
+  logger.error("Saving failed");
+
+  const reportCall = (global.fetch as jest.Mock).mock.calls.find(
+    ([url]) => String(url).endsWith("/client-error")
+  );
+  expect(reportCall).toBeDefined();
+  const report = JSON.parse((reportCall![1] as RequestInit).body as string);
+  expect(report.request_id).toBe("req-from-backend-123");
+  expect(report.message).toBe("Saving failed");
 });

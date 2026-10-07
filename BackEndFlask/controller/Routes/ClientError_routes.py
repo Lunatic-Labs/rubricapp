@@ -1,7 +1,7 @@
 from flask import request
 from controller import bp
 from controller.Route_response import create_good_response, create_bad_response
-from core import limiter
+from core import limiter, REQUEST_ID_PATTERN
 from enums.http_status_codes import HttpStatus
 from models.logger import client_logger
 from constants.ClientError import (
@@ -27,7 +27,7 @@ from constants.ClientError import (
 @limiter.limit(RATE_LIMIT)
 def report_client_error():
     try:
-        # Checked before request.json so an oversized body is refused
+        # Checked before the JSON is parsed so an oversized body is refused
         # rather than parsed. Content-Length can be absent (a chunked
         # request), in which case the field caps are the only bound.
         if request.content_length is not None and request.content_length > MAX_BODY_BYTES:
@@ -37,9 +37,36 @@ def report_client_error():
                 HttpStatus.CONTENT_TOO_LARGE.value
             )
 
-        data = request.json or {}
+        # silent=True: a missing/wrong Content-Type or malformed JSON comes
+        # back as None instead of raising. Anything other than a JSON object
+        # is a caller mistake, not a server failure, so it gets a plain 400
+        # rather than a traceback in client_errors.log.
+        data = request.get_json(silent=True)
 
-        field = lambda name, limit: str(data.get(name) or "")[:limit]
+        if not isinstance(data, dict):
+            client_logger.warning("Rejected frontend error report: body is not a JSON object")
+            return create_bad_response(
+                "Request body must be a JSON object.",
+                "client_error",
+                HttpStatus.BAD_REQUEST.value
+            )
+
+        def field(name: str, limit: int) -> str:
+            # Only a missing/null value becomes ''; falsy values such as 0
+            # or False are real data and are kept.
+            value = data.get(name)
+            return "" if value is None else str(value)[:limit]
+
+        # The X-Request-ID of the backend request that most recently failed
+        # in the reporting tab (see FrontEndReact/src/logger.ts), so this
+        # report can be matched to that request's log lines. Client-supplied,
+        # so only a well-formed id is recorded; the pattern also caps length.
+        reported_request_id = data.get('request_id')
+        failed_request_id = (
+            reported_request_id
+            if isinstance(reported_request_id, str) and REQUEST_ID_PATTERN.fullmatch(reported_request_id)
+            else ""
+        )
 
         level = field('level', MAX_LEVEL_LENGTH).lower()
         if level not in LEVEL_TO_LOG_METHOD:
@@ -52,6 +79,7 @@ def report_client_error():
             f"level={level}, "
             f"url={field('url', MAX_URL_LENGTH)}, "
             f"user_id={field('user_id', MAX_USER_ID_LENGTH)}, "
+            f"failed_request_id={failed_request_id}, "
             f"message={field('message', MAX_MESSAGE_LENGTH)}, "
             f"extra={field('extra', MAX_STACK_LENGTH)}"
         )

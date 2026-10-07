@@ -242,3 +242,42 @@ def test_rate_limit_is_keyed_per_address():
         )
 
     assert other.status_code == HttpStatus.OK.value
+
+
+@pytest.mark.parametrize("body,content_type", [
+    ("[1, 2]", "application/json"),
+    ('"just a string"', "application/json"),
+    ("not json at all", "application/json"),
+    ('{"message": "boom"}', "text/plain"),
+])
+def test_non_object_body_is_rejected_without_a_traceback(mock_client_logger, body, content_type):
+    with app.test_request_context(
+        "/api/client-error", method="POST", data=body, content_type=content_type
+    ):
+        _, status = report_client_error()
+
+    assert status == HttpStatus.BAD_REQUEST.value
+    mock_client_logger.exception.assert_not_called()
+    mock_client_logger.warning.assert_called_once()
+
+
+def test_falsy_field_values_are_kept_not_blanked(mock_client_logger):
+    _post({"user_id": 0, "message": False})
+
+    msg = mock_client_logger.error.call_args[0][0]
+    assert "user_id=0," in msg
+    assert "message=False," in msg
+
+
+def test_well_formed_failed_request_id_is_recorded(mock_client_logger):
+    request_id = str(uuid.uuid4())
+    _post({"message": "boom", "request_id": request_id})
+
+    assert f"failed_request_id={request_id}," in mock_client_logger.error.call_args[0][0]
+
+
+@pytest.mark.parametrize("bad_id", ["has spaces", "x" * 65, "a;b", ""])
+def test_malformed_failed_request_id_is_dropped(mock_client_logger, bad_id):
+    _post({"message": "boom", "request_id": bad_id})
+
+    assert "failed_request_id=," in mock_client_logger.error.call_args[0][0]
