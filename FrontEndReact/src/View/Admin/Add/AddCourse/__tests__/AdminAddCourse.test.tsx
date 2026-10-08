@@ -1,5 +1,5 @@
 import { test, expect } from "@jest/globals";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, screen, within, fireEvent } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
@@ -299,9 +299,15 @@ test("AdminAddCourse.test.tsx Test 10: Filling in valid input and clicking the A
         expectElementWithAriaLabelToBeInDocument(vcd);
     });
 
+    // The courses table pages at 10 rows, and since courses from earlier runs
+    // can't be deleted (see above), the new one may not be on the first page.
+    // Search the Active Courses table for it, as a user would.
+    const search = within(screen.getByTestId("active-courses-table")).getByPlaceholderText("Search…");
+    fireEvent.change(search, { target: { value: courseName } });
+
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(courseName);
-    });
+    }, { timeout: 3000 });
 });
 test("AdminAddCourse.test.tsx Test 11: HelperText errors should show for the addCourseYear text field when the input year is not numeric", async () => {
     render(<Login />);
