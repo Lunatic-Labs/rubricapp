@@ -47,6 +47,9 @@ interface ViewCompletedAssessmentsCellConfig {
     setStudentAssessmentView: any,
     component: React.ComponentType<any> | keyof JSX.IntrinsicElements,
     content: React.ReactNode,
+    // Each column that uses this renderer needs its own id, or tests can't
+    // tell its control apart from the other column's in the same row.
+    testId: string,
     sx?: object,
     variant?: string,
     className?: string;
@@ -290,7 +293,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                         id=""
                         disabled={!atLeastOneCAT}
                         aria-label={typeof cellCfg?.content === "string" ? undefined : "View completed assessments"}
-                        data-testid='view-completed-assessment-icon-button'
+                        data-testid={cellCfg.testId}
                         variant={cellCfg?.variant}
                         className={cellCfg?.className}
                         onClick={() => {
@@ -590,6 +593,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                         setStudentAssessmentView: navbar.setStudentAssessmentView,
                         component: IconButton,
                         content: <VisibilityIcon sx={{ color: "rgba(0, 0, 0, 0.26)" }} />,
+                        testId: "view-completed-assessment-icon-button",
                     };
                     return this.renderViewCompletedAssessmentsCell(cellConfig);
                 }
@@ -671,6 +675,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                             navbar.setStudentAssessmentView,
                         component: Button,
                         content: "Notify",
+                        testId: "notify-completed-assessment-button",
                         sx: {
                             "&.Mui-disabled": {
                             color: "var(--export_disabled_text) !important",

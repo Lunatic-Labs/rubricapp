@@ -893,7 +893,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <AdminBulkUpload
                             navbar={this}
                             tab={this.state.activeTab}
-                            aria-label="adminBulkUpload"
                         />
                     </Box>
                 }
@@ -1108,7 +1107,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminEditTeamMembers
                             navbar={this}
-                            addTeamAction={this.state.addTeamAction!}
+                            addTeamAction={this.state.addTeamAction}
                         />
                     </Box>
                 }
@@ -1197,7 +1196,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"AssessmentTask"}
-                            aria-label="myCustomRubricsBackButton"
                         />
 
                         <AdminViewCustomRubrics
@@ -1211,7 +1209,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <UserAccount
@@ -1224,7 +1221,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <PrivacyPolicy
@@ -1237,7 +1233,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <Settings
