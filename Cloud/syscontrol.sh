@@ -186,9 +186,10 @@ ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.s
 WantedBy=multi-user.target
 "
 
-    # logrotate config for every log file the backend writes: gunicorn's
-    # access/error logs and the app's own logs from
-    # BackEndFlask/models/logger.py. Neither rotates itself - gunicorn has
+    # logrotate config for every log file the deployment writes: gunicorn's
+    # access/error logs, the app's own logs from
+    # BackEndFlask/models/logger.py, and the frontend's npm preview output
+    # (FrontEndReact/frontend.log). None rotates itself - gunicorn has
     # no built-in rotation, and the app deliberately doesn't rotate
     # in-process because gunicorn's several workers all hold the same file
     # open and would race at the rollover (see the Logger docstring). This
@@ -203,7 +204,8 @@ WantedBy=multi-user.target
 $PROJ_DIR/BackEndFlask/logs/gunicorn-error.log
 $PROJ_DIR/BackEndFlask/logs/all.log
 $PROJ_DIR/BackEndFlask/logs/client_errors.log
-$PROJ_DIR/BackEndFlask/logs/security.log {
+$PROJ_DIR/BackEndFlask/logs/security.log
+$PROJ_DIR/FrontEndReact/frontend.log {
     daily
     rotate 90
     maxage 90
@@ -841,10 +843,13 @@ function serve_rubricapp() {
     cd - >/dev/null 2>&1 || true
 
     # Start frontend as background process
-    # Logs go to frontend.log for debugging
+    # Logs go to frontend.log for debugging. Appended (>>), not truncated:
+    # logrotate's copytruncate empties the file in place, and only a writer
+    # in append mode carries on from the new end instead of its old offset
+    # (which would leave the file padded with null bytes).
     log "starting front-end"
     cd "$PROJ_DIR/FrontEndReact"
-    nohup npm run preview &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
+    nohup npm run preview >> "$PROJ_DIR/FrontEndReact/frontend.log" 2>&1 & disown
     cd - >/dev/null 2>&1 || true
 
     log "done"

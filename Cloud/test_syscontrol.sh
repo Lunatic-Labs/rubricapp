@@ -77,8 +77,14 @@ assert_contains "logrotate targets the client error log" \
     '$PROJ_DIR/BackEndFlask/logs/client_errors.log'
 assert_contains "logrotate targets the security log" \
     '$PROJ_DIR/BackEndFlask/logs/security.log'
+assert_contains "logrotate targets the frontend's npm preview log" \
+    '$PROJ_DIR/FrontEndReact/frontend.log {'
+assert_contains "frontend log is appended to (safe with copytruncate)" \
+    'nohup npm run preview >> "$PROJ_DIR/FrontEndReact/frontend.log" 2>&1'
 assert_contains "logrotate retention matches LOG_RETENTION_DAYS (90) in models/logger.py" \
     "rotate 90"
+assert_contains "logrotate retention is enforced in days, not just rotations" \
+    "maxage 90"
 assert_contains "logrotate uses copytruncate (no gunicorn/worker signal needed)" \
     "copytruncate"
 assert_contains "logrotate config is written to /etc/logrotate.d/rubricapp" \
@@ -190,6 +196,40 @@ except json.JSONDecodeError as e:
 
 print("  PASS: rendered CLOUDWATCH_AGENT_CONFIG is valid JSON")
 PYEOF
+    if [ $? -eq 0 ]; then
+        pass=$((pass + 1))
+    else
+        fail=$((fail + 1))
+    fi
+fi
+
+echo "every CloudWatch-shipped log is rotated"
+# A file shipped to CloudWatch but missing from LOGROTATE_CONFIG grows on
+# the instance's disk forever (frontend.log once did). Uses the same
+# CLOUDWATCH_AGENT_CONFIG anchors as the JSON check above.
+if [ -z "$PYTHON_BIN" ]; then
+    echo "  SKIP: no python3/python on PATH"
+else
+    SYSCONTROL_PATH="$SYSCONTROL" "$PYTHON_BIN" <<'PYEOF2'
+import json
+import os
+import sys
+
+text = open(os.environ["SYSCONTROL_PATH"], encoding="utf-8").read()
+
+start = text.index("CLOUDWATCH_AGENT_CONFIG='") + len("CLOUDWATCH_AGENT_CONFIG='")
+blob = text[start:text.index("\n'", start)].replace("'\"$PROJ_DIR\"'", "$PROJ_DIR")
+shipped = [c["file_path"] for c in json.loads(blob)["logs"]["logs_collected"]["files"]["collect_list"]]
+
+rot_start = text.index('LOGROTATE_CONFIG="') + len('LOGROTATE_CONFIG="')
+rotated = text[rot_start:text.index("{", rot_start)].split()
+
+missing = [p for p in shipped if p not in rotated]
+if missing:
+    print(f"  FAIL: shipped to CloudWatch but not rotated: {missing}")
+    sys.exit(1)
+print(f"  PASS: all {len(shipped)} CloudWatch-shipped logs are in LOGROTATE_CONFIG")
+PYEOF2
     if [ $? -eq 0 ]; then
         pass=$((pass + 1))
     else
