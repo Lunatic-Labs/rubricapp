@@ -5,6 +5,7 @@ import CustomDataTable from '../../../Components/CustomDataTable';
 import { Grid, Alert } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility';
 import { User } from '../../../../types/User';
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * @description
@@ -104,8 +105,7 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 	 *  - Navigates to "StudentDashboard".
 	 *
 	 * On failure:
-	 *  - Sets state.errorMessage to either the returned errorMessage
-	 *    or a generic error if the request throws.
+	 *  - Sets state.errorMessage to the returned errorMessage.
 	 */
 	handleConfirmClick = () => {
 		var navbar = this.props.navbar;
@@ -127,10 +127,6 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 					errorMessage: result.errorMessage
 				});
 			}
-		}).catch((error) => {
-			this.setState({
-				errorMessage: "An error occurred while checking in. Please try again."
-			});
 		});
 	};
 
@@ -138,45 +134,30 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 		const students = this.props.students;
 		const fixedTeams = this.props.navbar.state.chosenCourse["use_fixed_teams"];
 
-		const columns = [
+		const columns: GridColDef[] = [
 			{
-				name: "first_name",
-				label: "First Name",
-				options: {
-					filter: true,
-					align: 'center'
-				},
+				field: "first_name",
+				headerName: "First Name",
+				minWidth: 150,
+				flex: 1,
+				align: "center",
+				headerAlign: "center",
 			},
 			{
-				name: "last_name",
-				label: "Last Name",
-				options: {
-					filter: true,
-					align: "center"
-				},
+				field: "last_name",
+				headerName: "Last Name",
+				minWidth: 150,
+				flex: 1,
+				align: "center",
+				headerAlign: "center",
 			},
 			{
-				name: "email",
-				label: "Email",
-				options: {
-					customBodyRender: (value: string) => <div style={{ textAlign: 'left' }}>{value}</div>,
-					filter: true
-				},
+				field: "email",
+				headerName: "Email",
+				minWidth: 200,
+				flex: 1,
 			},
 		];
-
-		const options = {
-			onRowsDelete: false,
-			download: false,
-			print: false,
-			selectableRows: "none",
-			selectableRowsHeader: false,
-			responsive: "vertical",
-			tableBodyMaxHeight: "21rem",
-			search: false,
-			filter: false,
-			viewColumns: false,
-		};
 
 		// If this course is not using fixed teams, immediately route to SelectTeam instead.
 		// (No sorting or network call happens here; this is navigation only.)
@@ -221,7 +202,8 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 									<CustomDataTable
 										data={students ? students : []}
 										columns={columns}
-										options={options}
+										getRowId={(row) => row.user_id}
+										height="21rem"
 									/>
 								</>
 							}
