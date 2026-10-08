@@ -6,7 +6,7 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Typography } from "@mui/material";
-import CustomButton from "../../../Student/View/Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import { genericResourcePOST, genericResourcePUT, getHumanReadableDueDate } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";

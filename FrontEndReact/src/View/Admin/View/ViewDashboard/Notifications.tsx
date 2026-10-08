@@ -3,7 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import "../../../../SBStyles.css";
 import { Box, Typography, Alert, IconButton, Tooltip } from "@mui/material";
 import DeleteIcon from "@mui/icons-material/Delete";
-import CustomButton from "../../../Student/View/Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import SendMessageModal from '../../../Components/SendMessageModal';
 import CustomDataTable, { CustomToolbar } from "../../../Components/CustomDataTable";
 import { genericResourcePOST, genericResourceGET, genericResourceDELETE } from '../../../../utility';
@@ -247,7 +247,7 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
    return (
       <Box sx={{display:"flex", flexDirection:"column", gap: "20px", marginTop:"20px"}}>
         <Box className="subcontent-spacing">
-          <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewNotificationsTitle"> View Notifications</Typography>
+          <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="view-notifications-title"> View Notifications</Typography>
           <Box sx={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
             <SendMessageModal
               show={this.state.showDialog}
@@ -273,7 +273,7 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
               onClick={this.handleDialog}
               isOutlined={false}
               disabled={notificationSent}
-              aria-label="SendMessageButton"
+              data-testid="send-message-button"
             />
           </Box>
         </Box>
@@ -330,7 +330,8 @@ class ViewNotification extends Component<ViewNotificationProps, ViewNotification
                       <Tooltip title="Delete">
                         <IconButton
                           onClick={() => this.handleDeleteSelected([notificationId])}
-                          aria-label="DeleteNotification"
+                          aria-label="Delete notification"
+                          data-testid="delete-notification-button"
                         >
                           <DeleteIcon sx={{ color: "black" }} />
                         </IconButton>

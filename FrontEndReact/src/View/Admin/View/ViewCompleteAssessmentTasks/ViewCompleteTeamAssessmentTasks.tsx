@@ -5,7 +5,7 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import IconButton from "@mui/material/IconButton";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { Box, Typography, Tooltip } from "@mui/material";
-import CustomButton from "../../../Student/View/Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import { genericResourcePUT, genericResourcePOST, getHumanReadableDueDate } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
@@ -307,7 +307,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                 </Box>
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{ fontWeight: "700" }} variant="h5" aria-label="viewCompletedTeamRubricsTitle">
+                    <Typography sx={{ fontWeight: "700" }} variant="h5" data-testid="view-completed-team-rubrics-title">
                         Completed Rubrics
                     </Typography>
 
@@ -328,7 +328,7 @@ class ViewCompleteTeamAssessmentTasks extends Component<
                                     onClick={() => this.handleDialog(false, null)}
                                     isOutlined={false}
                                     disabled={notificationSent}
-                                    aria-label="viewCompletedAssessmentTeamSendNotificationButton"
+                                    data-testid="view-completed-assessment-team-send-notification-button"
                                 />
                             </span>
                         </Tooltip>

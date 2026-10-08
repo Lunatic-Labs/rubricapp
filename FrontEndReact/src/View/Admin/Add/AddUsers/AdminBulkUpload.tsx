@@ -180,7 +180,6 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                 {this.state.errorMessage &&
                     <ErrorMessage
                         errorMessage={String(this.state.errorMessage)}
-                        aria-label="adminBulkUploadErrorMessage"
                     />
                 }
 

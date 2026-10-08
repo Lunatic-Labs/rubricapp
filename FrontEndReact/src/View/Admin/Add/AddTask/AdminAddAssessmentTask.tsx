@@ -14,6 +14,7 @@ import RubricDescriptionsImage2 from "../../../../RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
 import { MAX_PASSWORD_LENGTH } from '../../../../Constants/password';
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { selectTestId } from "../../../../utils/selectTestId";
 
 
 interface AdminAddAssessmentTaskProps {
@@ -367,7 +368,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
         Object.keys(roleNames).map((role) => {
             if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
-                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} aria-label="addAssessmentRoleOption" />];
+                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} />];
             }
 
             return role;
@@ -378,7 +379,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
         var rubricOptions: JSX.Element[] = [];
 
         Object.keys(rubricNames).map((rubric) => {
-            rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric} aria-label="addAssessmentRubricOption">{rubricNames[rubric]}</MenuItem>];
+            rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric}>{rubricNames[rubric]}</MenuItem>];
 
             return rubric;
         });
@@ -510,7 +511,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                     },
                                                 },
                                             }}
-                                            SelectDisplayProps={{ "data-testid": "add-assessment-rubric-dropdown" } as React.HTMLAttributes<HTMLDivElement>}
+                                            SelectDisplayProps={selectTestId("add-assessment-rubric-dropdown")}
                                         >
                                             {rubricOptions}
                                         </Select>
@@ -882,15 +883,15 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
                                                 required
                                                 style={{width: "200px"}}
-                                                SelectDisplayProps={{ "data-testid": "add-assessment-timezone-dropdown" } as React.HTMLAttributes<HTMLDivElement>}
+                                                SelectDisplayProps={selectTestId("add-assessment-timezone-dropdown")}
                                             >
-                                                <MenuItem value={"America/New_York"} aria-label="addAssessmentEasternRadioOption">Eastern Time</MenuItem>
+                                                <MenuItem value={"America/New_York"}>Eastern Time</MenuItem>
 
-                                                <MenuItem value={"America/Chicago"} aria-label="addAssessmentCentralRadioOption">Central Time</MenuItem>
+                                                <MenuItem value={"America/Chicago"}>Central Time</MenuItem>
 
-                                                <MenuItem value={"America/Denver"} aria-label="addAssessmentMountainRadioOption">Mountain Time</MenuItem>
+                                                <MenuItem value={"America/Denver"}>Mountain Time</MenuItem>
 
-                                                <MenuItem value={"America/Los_Angeles"} aria-label="addAssessmentPacificRadioOption">Pacific Time</MenuItem>
+                                                <MenuItem value={"America/Los_Angeles"}>Pacific Time</MenuItem>
                                             </Select>
                                             <FormHelperText>{errors.timeZone}</FormHelperText>
                                         </FormControl>

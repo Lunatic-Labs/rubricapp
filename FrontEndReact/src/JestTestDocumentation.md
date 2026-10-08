@@ -9,7 +9,7 @@ Tests select elements by `data-testid` rather than `aria-label`: `aria-label` is
 readers, so it should hold a human-readable name (e.g. "Edit course"), not a test hook like `editCourseIconButton`.
 
 When adding a test hook to a component, use a kebab-case `data-testid` (e.g. `data-testid="courses-title"`).
-For MUI `Select` components, pass it through `SelectDisplayProps` so it lands on the clickable combobox element.
+For MUI `Select` components, pass it through `SelectDisplayProps={selectTestId("...")}` (from `utils/selectTestId.ts`) so it lands on the clickable combobox element.
 
 Here is what the following functions do:
 

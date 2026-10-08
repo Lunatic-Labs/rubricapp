@@ -159,7 +159,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
                   this.deleteTeam(teamId);
                 }
               }}
-              aria-label="deleteTeamIconButton"
+              aria-label="Delete team"
+              data-testid="delete-team-icon-button"
             >
               <DeleteIcon sx={{ color: "black" }} />
             </IconButton>

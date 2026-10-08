@@ -183,7 +183,6 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
             <div className="container">
               <SuccessMessage
                 successMessage={successMessage}
-                aria-label="adminViewTeamsSuccessMessage"
               />
             </div>
           )}
@@ -191,7 +190,6 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
             <div className="container">
               <ErrorMessage
                 errorMessage={errorMessage}
-                aria-label="adminViewTeamsErrorMessage"
               />
             </div>
           )}

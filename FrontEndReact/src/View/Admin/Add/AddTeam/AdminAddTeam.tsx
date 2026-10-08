@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 import Loading from "../../../Loading/Loading";
 import { User } from "../../../../types/User";
+import { selectTestId } from "../../../../utils/selectTestId";
 
 interface AdminAddTeamProps {
     navbar: any;
@@ -301,7 +302,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                         onChange={(event: SelectChangeEvent<string>) => this.handleSelect(event)}
                                         required
                                         error={!!errors.observerId}
-                                        aria-label="userObserverDropDown"
+                                        SelectDisplayProps={selectTestId("user-observer-drop-down")}
 
                                         MenuProps={{
                                             PaperProps: {

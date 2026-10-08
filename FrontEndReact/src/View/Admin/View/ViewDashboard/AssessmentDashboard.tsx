@@ -56,8 +56,6 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                                 this.props.navbar.setNewTab('MyCustomRubrics');
                             }}
 
-                            // TODO: Update Jest Tests to click on this new aria-label
-                            // aria-label='customRubricButton'
                             data-testid="view-my-custom-rubrics-button"
                         >
                             My Custom Rubrics

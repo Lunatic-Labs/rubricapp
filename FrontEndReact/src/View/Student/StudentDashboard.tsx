@@ -628,7 +628,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         alignSelf: "stretch"
                     }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="averageRatings">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="average-ratings">
                                 Skill Development Process
                             </Typography>
                         </Box>

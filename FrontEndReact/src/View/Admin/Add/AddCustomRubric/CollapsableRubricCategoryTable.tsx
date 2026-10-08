@@ -172,7 +172,7 @@ const CollapsableRubricCategoryTable = ({
                             minWidth: '70px',
                             color: 'white',
                           }}
-                          aria-label="myCustomRubricsEditCustomRubricButton"
+                          data-testid="my-custom-rubrics-edit-custom-rubric-button"
                         >Edit</Button>
                       )}
                     </div>

@@ -97,7 +97,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
             const courseId = params.row.course_id;
             return (
               <IconButton id={courseId}
-              role = "img" aria-label="Edit course" data-testid="edit-course-icon-button"
+              aria-label="Edit course" data-testid="edit-course-icon-button"
                 className={"editCourseButton btn btn-primary " + (courseRoles[courseId]!==3 ? "disabled" : "")}
                 onClick={() => {
                   if(courseRoles[courseId]===3) {
@@ -125,7 +125,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
           const courseId = params.row.course_id;
           return (
               <IconButton id={courseId}
-              role = "img" aria-label="View course" data-testid="view-course-icon-button"
+              aria-label="View course" data-testid="view-course-icon-button"
             onClick={() => {
               // Allegedly the 2 lines below are a "fix" but I have been unable to determine for what
               //    navbar.setState({ user: null, addUser: null });
@@ -196,7 +196,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
             }),
           }}>
             <Box sx={{ width: "100%" }} className="content-spacing">
-              <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="activeCourses">
+              <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="active-courses">
                 Active Courses
               </Typography>
             </Box>
@@ -221,7 +221,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
               alignSelf: "stretch"
             }}>
               <Box sx={{ width: "100%" }} className="content-spacing">
-                <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="inactiveCourses">
+                <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="inactive-courses">
                   Inactive Courses
                 </Typography>
               </Box>

@@ -8,6 +8,7 @@ import { genericResourceDELETE, genericResourcePOST, genericResourcePUT } from '
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select, SelectChangeEvent} from '@mui/material';
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
+import { selectTestId } from "../../../../utils/selectTestId";
 
 const MAX_LMS_ID_LENGTH = 10;
 
@@ -651,7 +652,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         },
                       }}
                   >
-                      <InputLabel className={errors.role ? "errorSelect" : ""}>
+                      <InputLabel id="Role" className={errors.role ? "errorSelect" : ""}>
                         Role
                       </InputLabel>
 
@@ -664,7 +665,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         error={!!errors.role}
                         onChange={this.handleSelect}
                         required
-                        SelectDisplayProps={{ "data-testid": "add-user-role-drop-down" } as React.HTMLAttributes<HTMLDivElement>}
+                        SelectDisplayProps={selectTestId("add-user-role-drop-down")}
                         MenuProps={{
                           PaperProps: {
                             
@@ -688,21 +689,18 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                       >
                         <MenuItem
                           value={"5"}
-                          aria-label="addUserRoleDropDownStudentOption"
                         >
                           Student
                         </MenuItem>
 
                         <MenuItem
                           value={"4"}
-                          aria-label="addUserRoleDropDownTAOrInstructorOption"
                         >
                           TA/Instructor
                         </MenuItem>
 
                         <MenuItem
                         value={"3"}
-                        aria-label="addUserRoleDropDownAdminOption"
                         >
                           Admin
                         </MenuItem>

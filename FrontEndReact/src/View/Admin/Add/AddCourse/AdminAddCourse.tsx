@@ -7,6 +7,7 @@ import { genericResourcePOST, genericResourcePUT } from "../../../../utility";
 import Cookies from "universal-cookie";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
 import { Box, Button, FormControl, FormHelperText, InputLabel, MenuItem, Select, Typography, Popover, TextField, Tooltip, IconButton, FormControlLabel, Checkbox, FormGroup, } from "@mui/material";
+import { selectTestId } from "../../../../utils/selectTestId";
 
 interface AdminAddCourseProps {
     navbar: any;
@@ -532,7 +533,7 @@ class AdminAddCourse extends Component<AdminAddCourseProps, AdminAddCourseState>
                                                     },
                                                 },
                                             }}
-                                            aria-label="courseTimeZoneDropdown"
+                                            SelectDisplayProps={selectTestId("course-time-zone-dropdown")}
                                         >
                                             <MenuItem value={"America/New_York"}>Eastern Time</MenuItem>
                                             <MenuItem value={"America/Chicago"}>Central Time</MenuItem>

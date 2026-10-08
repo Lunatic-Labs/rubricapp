@@ -2,7 +2,7 @@ import React from "react";
 import Cookies from "universal-cookie";
 import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import CustomButton from "./Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericResourceDELETE } from "../../../../utility";
 import CustomDataTable from "../../../Components/CustomDataTable";
@@ -294,7 +294,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                     <CustomButton
                                         label="Delete Rubric"
                                         isOutlined={false}
-                                        aria-label="customizeYourRubricDeleteRubricButton"
+                                        data-testid="customize-your-rubric-delete-rubric-button"
                                         onClick={() => {
                                             this.handleDeleteRubric(rubrics!.rubric_id);
                                         }}
@@ -433,7 +433,6 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                     rubrics={defaultRubrics}
                                     onCategorySelect={this.handleCategorySelect}
                                     selectedCategories={pickedCategories}
-                                    aria-label="customizeYourRubricRubricCategoryTable"
                                     readOnly={false}
                             />
 

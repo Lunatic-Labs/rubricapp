@@ -150,7 +150,8 @@ class ViewUsers extends Component<ViewUsersProps> {
               onClick={() => {
                 setCoursesTabWithUser(users, userId);
               }}
-              aria-label="viewUserButton"
+              aria-label="View user"
+              data-testid="view-user-button"
             >
               <Visibility />
             </IconButton>
@@ -217,7 +218,8 @@ class ViewUsers extends Component<ViewUsersProps> {
                 this.deleteUser(userId)
               }
             }}
-            aria-label="deleteUserButton"
+            aria-label="Delete user"
+            data-testid="delete-user-button"
           >
             <DeleteIcon sx={{ color: "black" }} />
           </IconButton>

@@ -48,7 +48,7 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                         required
                         fullWidth
                         sx={{ mb: 2 }}
-                        aria-label="sendNotificationSubjectInput"
+                        data-testid="send-notification-subject-input"
                     />
                 </DialogContent>
 
@@ -68,7 +68,7 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                         minRows={3}
                         maxRows={8}
                         sx={{ mb: 2 }}
-                        aria-label="sendNotificationMessageInput"
+                        data-testid="send-notification-message-input"
                     />
                 </DialogContent>
 
