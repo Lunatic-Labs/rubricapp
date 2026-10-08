@@ -22,6 +22,7 @@ from controller.Routes import Feedback_routes
 from controller.Routes import Refresh_route
 from controller.Routes import Csv_routes
 from controller.Routes import notification_routes
+from controller.Routes import ClientError_routes
 from controller.security import utility
 from controller.security import CustomDecorators
 from controller.security import blacklist

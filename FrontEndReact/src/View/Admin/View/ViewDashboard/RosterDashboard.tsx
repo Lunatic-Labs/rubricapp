@@ -5,6 +5,7 @@ import MainHeader from '../../../Components/MainHeader';
 import { Box, Typography, Button, CircularProgress } from '@mui/material';
 import Cookies from 'universal-cookie';
 import { apiUrl } from '../../../../App';
+import { logger } from '../../../../logger';
 
 interface RosterDashboardProps {
     navbar: any;
@@ -85,7 +86,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                 
                                 // Set switching flag
                                 this.setState({ isSwitchingToStudent: true });
-                                console.log('Starting switch to student view for course:', courseId);
+                                logger.debug('Starting switch to student view for course:', courseId);
                                 
                                 try {
                                     // Save admin credentials FIRST
@@ -95,7 +96,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                         refresh_token: cookies.get('refresh_token')
                                     };
                                     sessionStorage.setItem('adminCredentials', JSON.stringify(adminCredentials));
-                                    console.log('Admin credentials saved');
+                                    logger.debug('Admin credentials saved');
                                     
                                     // Get test student token
                                     const response = await fetch(`${apiUrl}/courses/${courseId}/test_student_token`, {
@@ -108,12 +109,12 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                                                        
                                     if (!response.ok) {
                                         const errorData = await response.json();
-                                        console.error('Error response:', errorData);
+                                        logger.error('Error response:', errorData);
                                         throw new Error(errorData.error || 'Failed to get test student token');
                                     }
                                     
                                     const data = await response.json();
-                                    console.log('Test student data received:', data);
+                                    logger.debug('Test student data received:', data);
 
                                     if (data.access_token && data.user) {  // Check for data
                                         // Clear old cookies
@@ -151,18 +152,18 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                         };
                                         sessionStorage.setItem('chosenCourse', JSON.stringify(courseData));
                                         
-                                        console.log('Cookies set, reloading page...');
+                                        logger.debug('Cookies set, reloading page...');
                                         
                                         // Reload to apply changes
                                         window.location.reload();
                                         // Note: setState won't execute after reload, but that's OK
                                         
                                     } else {
-                                        console.error('Unexpected response format:', data);
+                                        logger.error('Unexpected response format:', data);
                                         throw new Error('Invalid response format from server');
                                     }
                                 } catch (error: any) {
-                                    console.error('Error switching to student view:', error);
+                                    logger.error('Error switching to student view:', error);
                                     
                                     // Restore admin credentials on error
                                     const adminCredentialsStr = sessionStorage.getItem('adminCredentials');
@@ -189,9 +190,9 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                                 sameSite: 'strict' 
                                             });
                                             
-                                            console.log('Admin credentials restored after error');
+                                            logger.debug('Admin credentials restored after error');
                                         } catch (restoreError) {
-                                            console.error('Failed to restore admin credentials:', restoreError);
+                                            logger.error('Failed to restore admin credentials:', restoreError);
                                         }
                                     }
                                     

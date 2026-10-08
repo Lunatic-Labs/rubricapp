@@ -3,6 +3,7 @@ import "bootstrap/dist/css/bootstrap.css";
 import { Box, Typography, Switch, FormControlLabel } from "@mui/material";
 import Cookies from "universal-cookie";
 import { genericResourcePUT } from "../../utility";
+import { logger } from "../../logger";
 
 // 'mode' refers to the darkmode classlist in the SBStyles.css, by adding 'mode' to the
 // document body, the darkmode css will be applied.
@@ -84,7 +85,7 @@ class Settings extends Component<SettingsProps, SettingsState> {
           // Network failures now resolve through this same branch (instead of
           // rejecting) with an errorMessage set, so this covers both server
           // and network errors — revert the optimistic update.
-          console.error("Error updating dark mode:", result?.errorMessage);
+          logger.error("Error updating dark mode:", result?.errorMessage);
           this.setState({ darkMode: !newDarkMode });
           if (!newDarkMode) {
             document.body.classList.add("mode");

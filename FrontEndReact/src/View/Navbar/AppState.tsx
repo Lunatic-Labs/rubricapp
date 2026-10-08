@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
+import { logger } from '../../logger';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
@@ -797,7 +798,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         applyDarkModeFallback();
                     }
                 } else {
-                    console.error("Error fetching user data:", result?.errorMessage);
+                    logger.error("Error fetching user data:", result?.errorMessage);
                     applyDarkModeFallback();
                 }
             });
