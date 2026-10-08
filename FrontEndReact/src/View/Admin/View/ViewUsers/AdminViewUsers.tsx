@@ -55,13 +55,13 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
      * @method fetchData - Fetches users data from the server.
      * 
      * == USER DATA FETCHING ==
-     * API Endpoint: /user
+     * API Endpoint: /admin_users or /user
      * HTTP Method: GET
      * 
-     * Parameters => Conditional
+     * Endpoint => Conditional
      * SUPER ADMIN:
-     * @param {boolean} isAdmin=True - Fetches all admin users across the system.
-     *      - Data fetched: All users with admin privileges.
+     * /admin_users - Fetches all admin users across the system, with their
+     *      last login time. Only the super admin can call it.
      * 
      * ADMIN/INSTRUCTOR:
      * @param {string} course_id - The ID of the course to fetch users for.
@@ -73,7 +73,7 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
 
         if(navbar.props.isSuperAdmin) {
             genericResourceGET(
-                `/user?isAdmin=True`, "users", this);
+                `/admin_users`, "users", this);
 
         } else {
             genericResourceGET(
