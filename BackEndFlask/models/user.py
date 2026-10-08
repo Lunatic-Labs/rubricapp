@@ -94,8 +94,7 @@ def get_user_admins():
        User.email,
        User.lms_id,
        User.consent,
-       User.owner_id,
-       User.last_login_at
+       User.owner_id
    ).filter_by(
        is_admin=True
    ).all()
@@ -103,6 +102,22 @@ def get_user_admins():
    db.session.query()
 
    return all_user_admins
+
+
+@error_log
+def get_user_admins_with_last_login():
+    return db.session.query(
+        User.user_id,
+        User.first_name,
+        User.last_name,
+        User.email,
+        User.lms_id,
+        User.consent,
+        User.owner_id,
+        User.last_login_at
+    ).filter_by(
+        is_admin=True
+    ).all()
 
 
 @error_log
@@ -167,7 +182,13 @@ def record_login(user_id: int) -> None:
         raise InvalidUserID(user_id)
 
     user.last_login_at = datetime.now(timezone.utc)
-    db.session.commit()
+
+    try:
+        db.session.commit()
+    except Exception:
+        # Leave the session usable for the rest of the login request.
+        db.session.rollback()
+        raise
 
 
 @error_log

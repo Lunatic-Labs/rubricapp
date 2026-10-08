@@ -2,6 +2,7 @@ from flask import request
 from controller  import bp
 from .User_routes import UserSchema
 from controller.Route_response import *
+from models.logger import logger
 from models.user import get_user_by_email, get_user_password
 from werkzeug.security import check_password_hash, generate_password_hash
 from controller.security.utility import create_new_tokens, revoke_tokens
@@ -25,7 +26,11 @@ def login():
         if user is None or not check_password_hash(get_user_password(user.user_id), password):
             raise InvalidCredentialsException
 
-        record_login(user.user_id)
+        try:
+            record_login(user.user_id)
+        except Exception as e:
+            # A failed timestamp write shouldn't turn a valid login into an error.
+            logger.error(f"Failed to record login time for user_id {user.user_id}: {e}")
 
         JSON = {
             "email": email,

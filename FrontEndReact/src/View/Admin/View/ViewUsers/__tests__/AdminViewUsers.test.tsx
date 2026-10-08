@@ -1,5 +1,5 @@
 import { test, expect } from "@jest/globals";
-import { render, waitFor } from "@testing-library/react";
+import { render, waitFor, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import Cookies from "universal-cookie";
 import Login from "../../../../Login/Login";
@@ -143,5 +143,26 @@ test("AdminViewUsers.test.tsx Test 6: Should show Edit User Form when clicking t
 
     await waitFor(() => {
         expectElementWithAriaLabelToBeInDocument(eut);
+    });
+});
+test("AdminViewUsers.test.tsx Test 7: Should show each admin's last login on the super admin home page and switch it to UTC", async () => {
+    // Test 6 left the super admin logged in.
+    render(<Login />);
+
+    await waitFor(() => {
+        expectElementWithAriaLabelToBeInDocument(sat);
+    });
+
+    await waitFor(() => {
+        expect(screen.getByText("Last Login")).toBeInTheDocument();
+    });
+
+    expect(screen.getByText("Local time")).toBeInTheDocument();
+
+    clickElementWithAriaLabel("Show login times in UTC");
+
+    // The super admin logged in during Test 6, so at least one row has a time.
+    await waitFor(() => {
+        expect(screen.getAllByText(/\d{4}, .+ UTC$/).length).toBeGreaterThan(0);
     });
 });

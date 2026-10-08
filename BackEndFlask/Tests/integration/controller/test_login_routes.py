@@ -4,7 +4,7 @@ from werkzeug.security import generate_password_hash
 from models.feedback import *
 from Tests.PopulationFunctions import cleanup_test_users
 from integration.integration_helpers import *
-from models.user import create_user, delete_user, set_reset_code
+from models.user import create_user, delete_user, get_user, set_reset_code
 import jwt
 
 
@@ -31,6 +31,9 @@ def test_login_success(flask_app_mock, client):
             print(result)
             assert result[0]["email"] == user.email
             assert result[0]["user_id"] == user.user_id
+
+            db.session.expire_all()
+            assert get_user(user.user_id).last_login_at is not None
              
 
         finally:
@@ -39,6 +42,33 @@ def test_login_success(flask_app_mock, client):
                 delete_user(user.user_id)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
+
+def test_login_succeeds_when_recording_login_time_fails(flask_app_mock, client, monkeypatch):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        def failing_record_login(user_id):
+            raise RuntimeError("database unavailable")
+
+        monkeypatch.setattr("controller.Routes.Login_route.record_login", failing_record_login)
+
+        try:
+            user = create_user(sample_user())
+
+            response = client.post(
+                "/api/login",
+                json={"email": user.email, "password": "password123"}
+            )
+
+            assert response.status_code == 200
+            assert response.get_json()["success"] is True
+
+        finally:
+            try:
+                delete_user(user.user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
 
 def test_login_with_missing_credentials(flask_app_mock, client):
     with flask_app_mock.app_context():

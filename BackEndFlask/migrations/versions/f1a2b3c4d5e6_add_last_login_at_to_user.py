@@ -1,7 +1,7 @@
 """Add last login timestamp to User
 
 Revision ID: f1a2b3c4d5e6
-Revises: 51ae14b2150d
+Revises: 2a30e4270988
 Create Date: 2026-09-08 00:00:00.000000
 
 """
@@ -10,7 +10,7 @@ import sqlalchemy as sa
 
 
 revision = 'f1a2b3c4d5e6'
-down_revision = '51ae14b2150d'
+down_revision = '2a30e4270988'
 branch_labels = None
 depends_on = None
 
