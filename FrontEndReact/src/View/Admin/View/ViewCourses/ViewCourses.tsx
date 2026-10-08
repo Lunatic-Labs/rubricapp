@@ -202,7 +202,7 @@ class ViewCourses extends Component<ViewCoursesProps> {
             </Box>
           </Box>
 
-          <Box>
+          <Box data-testid="active-courses-table">
             <CustomDataTable
               data={activeCourses}
               columns={columns}
