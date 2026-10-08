@@ -6,7 +6,7 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import IconButton from '@mui/material/IconButton';
 import VisibilityIcon from '@mui/icons-material/Visibility';
 import { Box, Typography } from "@mui/material";
-import CustomButton from "../../../Student/View/Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import { genericResourcePOST, genericResourcePUT, getHumanReadableDueDate } from "../../../../utility";
 import ResponsiveNotification from "../../../Components/SendNotification";
 import CourseInfo from "../../../Components/CourseInfo";
@@ -370,7 +370,8 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
                                         userId,
                                     );
                                 }}
-                                aria-label="assessmentIndividualSeeMoreDetailsButtons"
+                                aria-label="View assessment details"
+                                data-testid="assessment-individual-see-more-details-buttons"
                             >
                                 <VisibilityIcon sx={{color:"black"}}/>
                             </IconButton>
@@ -438,7 +439,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
                 </Box>
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="viewCompletedIndividualRubricsTitle"> Completed Rubrics</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="view-completed-individual-rubrics-title"> Completed Rubrics</Typography>
 
           <Box>
             <ResponsiveNotification
@@ -477,7 +478,7 @@ class ViewCompleteIndividualAssessmentTasks extends Component<ViewCompleteIndivi
                     onClick={() => this.handleDialog(false, null)}
                     isOutlined={false}
                     disabled={notificationSent}
-                    aria-label="viewCompletedAssessmentIndividualSendNotificationButton"
+                    data-testid="view-completed-assessment-individual-send-notification-button"
                     />
                 </span>
             </Tooltip>

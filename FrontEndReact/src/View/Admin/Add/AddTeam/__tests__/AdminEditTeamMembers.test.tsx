@@ -4,28 +4,28 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId
 } from "../../../../../testUtilities";
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var mhbb = "mainHeaderBackButton";
-var tt = "teamsTab";
-var rt = "rosterTitle";
-var td = "teamDashboard";
-var vtib = "viewTeamsIconButton";
-var avtmt = "adminViewTeamMembersTitle";
-var amb = "addMemberButton";
-var atmt = "AddTeamMembersTitle";
-var rmb = "removeMemberButton";
-var rtmt = "RemoveTeamMembersTitle";
-// var aetmstb = "adminEditTeamMembersSaveTeamButton";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var mhbb = "main-header-back-button";
+var tt = "teams-tab";
+var rt = "roster-title";
+var td = "team-dashboard";
+var vtib = "view-teams-icon-button";
+var avtmt = "admin-view-team-members-title";
+var amb = "add-member-button";
+var atmt = "add-team-members-title";
+var rmb = "remove-member-button";
+var rtmt = "remove-team-members-title";
+// var aetmstb = "admin-edit-team-members-save-team-button";
 // var amib = "addMemberIconButton";
 // var rmib = "removeMemberIconButton"
 test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
@@ -34,125 +34,125 @@ test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
 test("AdminEditTeamMembers.test.tsx Test 1: Should render the TeamDashboard", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 });
 test("AdminEditTeamMembers.test.tsx Test 2: Should render the View Team Members page if the adminViewTeam button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vtib);
+        clickFirstElementWithTestId(vtib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
 });
 test("AdminEditTeamMembers.test.tsx Test 3: Should render the Add Team Members page if the Add Member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vtib);
+        clickFirstElementWithTestId(vtib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
     
-    clickElementWithAriaLabel(amb);
+    clickElementWithTestId(amb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(atmt);
+        expectElementWithTestIdToBeInDocument(atmt);
     });
 });
 test("AdminEditTeamMembers.test.tsx Test 4: Should render the View Team Members page if the back button is clicked on the Add Members page", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vtib);
+        clickFirstElementWithTestId(vtib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
     
-    clickElementWithAriaLabel(amb);
+    clickElementWithTestId(amb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(atmt);
+        expectElementWithTestIdToBeInDocument(atmt);
     });
 
-    clickElementWithAriaLabel(mhbb);
+    clickElementWithTestId(mhbb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
 });
 
@@ -161,111 +161,111 @@ test("AdminEditTeamMembers.test.tsx Test 4: Should render the View Team Members 
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(tt);
+//     clickElementWithTestId(tt);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(td);
+//         expectElementWithTestIdToBeInDocument(td);
 //     });
 
 //     await waitFor(() => {
-//         clickFirstElementWithAriaLabel(vtib);
+//         clickFirstElementWithTestId(vtib);
 //     },{ timeout: 3000 });
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(avtmt);
+//         expectElementWithTestIdToBeInDocument(avtmt);
 //     });
     
-//     clickElementWithAriaLabel(amb);
+//     clickElementWithTestId(amb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(atmt);
+//         expectElementWithTestIdToBeInDocument(atmt);
 //     });
     
-//     clickElementWithAriaLabel(aetmstb);
+//     clickElementWithTestId(aetmstb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(avtmt);
+//         expectElementWithTestIdToBeInDocument(avtmt);
 //     },{ timeout: 3000 });
 // });
 test("AdminEditTeamMembers.test.tsx Test 6: Should render the Remove Team Members page if the remove member button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vtib);
+        clickFirstElementWithTestId(vtib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
     
-    clickElementWithAriaLabel(rmb);
+    clickElementWithTestId(rmb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rtmt);
+        expectElementWithTestIdToBeInDocument(rtmt);
     });
 });
 test("AdminEditTeamMembers.test.tsx Test 7: Should render the View Team Members page if the back button is clicked on the remove member page", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 
     await waitFor(() => {
-        clickFirstElementWithAriaLabel(vtib);
+        clickFirstElementWithTestId(vtib);
     },{ timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
     
-    clickElementWithAriaLabel(rmb);
+    clickElementWithTestId(rmb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rtmt);
+        expectElementWithTestIdToBeInDocument(rtmt);
     });
     
-    clickElementWithAriaLabel(mhbb);
+    clickElementWithTestId(mhbb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(avtmt);
+        expectElementWithTestIdToBeInDocument(avtmt);
     });
 });
 
@@ -274,34 +274,34 @@ test("AdminEditTeamMembers.test.tsx Test 7: Should render the View Team Members 
 //     render(<Login />);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ct);
+//         expectElementWithTestIdToBeInDocument(ct);
 //     });
 
-//     clickFirstElementWithAriaLabel(vcib);
+//     clickFirstElementWithTestId(vcib);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rt);
+//         expectElementWithTestIdToBeInDocument(rt);
 //     });
 
-//     clickElementWithAriaLabel(tt);
+//     clickElementWithTestId(tt);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(td);
+//         expectElementWithTestIdToBeInDocument(td);
 //     });
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(avtmt);
-//     });
-    
-//     clickElementWithAriaLabel(rmb);
-
-//     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(rtmt);
+//         expectElementWithTestIdToBeInDocument(avtmt);
 //     });
     
-//     clickElementWithAriaLabel(aetmstb);
+//     clickElementWithTestId(rmb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(avtmt);
+//         expectElementWithTestIdToBeInDocument(rtmt);
+//     });
+    
+//     clickElementWithTestId(aetmstb);
+
+//     await waitFor(() => {
+//         expectElementWithTestIdToBeInDocument(avtmt);
 //     },{ timeout: 3000 });
 // });

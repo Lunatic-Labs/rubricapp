@@ -14,6 +14,7 @@ import RubricDescriptionsImage2 from "../../../../RubricDetailedOverview2.png";
 import FormHelperText from '@mui/material/FormHelperText';
 import { MAX_PASSWORD_LENGTH } from '../../../../Constants/password';
 import { CompleteAssessmentTask } from '../../../../types/CompleteAssessmentTask';
+import { selectTestId } from "../../../../utils/selectTestId";
 
 
 interface AdminAddAssessmentTaskProps {
@@ -367,7 +368,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
         Object.keys(roleNames).map((role) => {
             if (roleNames[role] === "TA/Instructor" || roleNames[role] === "Student") {
-                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} aria-label="addAssessmentRoleOption" />];
+                roleOptions = [...roleOptions, <FormControlLabel value={role} control={<Radio />} label={roleNames[role]} key={role} />];
             }
 
             return role;
@@ -378,7 +379,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
         var rubricOptions: JSX.Element[] = [];
 
         Object.keys(rubricNames).map((rubric) => {
-            rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric} aria-label="addAssessmentRubricOption">{rubricNames[rubric]}</MenuItem>];
+            rubricOptions = [...rubricOptions, <MenuItem value={rubric} key={rubric}>{rubricNames[rubric]}</MenuItem>];
 
             return rubric;
         });
@@ -416,7 +417,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                 <Box className="form-position">
                     <Box className="card-style">
                         <FormControl className="form-spacing">
-                            <Typography id="addTaskTitle" variant="h5" aria-label={editAssessmentTask ? 'adminEditAssessmentTaskTitle' : 'adminAddAssessmentTaskTitle'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
+                            <Typography id="addTaskTitle" variant="h5" data-testid={editAssessmentTask ? 'admin-edit-assessment-task-title' : 'admin-add-assessment-task-title'}> {editAssessmentTask ? "Edit Assessment Task" : "Add Assessment Task"} </Typography>
 
                             <Box className="form-input">
                                 <TextField
@@ -459,7 +460,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         },
                                     }}
                                     inputProps={{ maxLength: 50 }}
-                                    aria-label="addAssessmentTaskName"
+                                    data-testid="add-assessment-task-name"
                                 />
                                 <div style={{ marginBottom: '16px', display: 'flex', flexDirection: 'row', gap: '10px', justifyContent: 'start' }}>
                                     <FormControl id="formSelectRubric"
@@ -510,7 +511,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                                     },
                                                 },
                                             }}
-                                            aria-label="addAssessmentRubricDropdown"
+                                            SelectDisplayProps={selectTestId("add-assessment-rubric-dropdown")}
                                         >
                                             {rubricOptions}
                                         </Select>
@@ -566,9 +567,9 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         }}
                                         onChange={this.handleTeams}
                                     >
-                                        <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" aria-label="addAssessmentInvididualAssessmentRadioOption"/>
+                                        <FormControlLabel value={false} control={<Radio />} label="Individual Assessment" data-testid="add-assessment-individual-assessment-radio-option"/>
 
-                                        <FormControlLabel value={true} control={<Radio />} label="Team Assessment" aria-label="addAssessmentGroupAssessmentRadioOption" />
+                                        <FormControlLabel value={true} control={<Radio />} label="Team Assessment" data-testid="add-assessment-group-assessment-radio-option" />
                                     </RadioGroup>
                                 </FormControl>
 
@@ -882,15 +883,15 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
 
                                                 required
                                                 style={{width: "200px"}}
-                                                aria-label="addAssessmentTimezoneDropdown"
+                                                SelectDisplayProps={selectTestId("add-assessment-timezone-dropdown")}
                                             >
-                                                <MenuItem value={"America/New_York"} aria-label="addAssessmentEasternRadioOption">Eastern Time</MenuItem>
+                                                <MenuItem value={"America/New_York"}>Eastern Time</MenuItem>
 
-                                                <MenuItem value={"America/Chicago"} aria-label="addAssessmentCentralRadioOption">Central Time</MenuItem>
+                                                <MenuItem value={"America/Chicago"}>Central Time</MenuItem>
 
-                                                <MenuItem value={"America/Denver"} aria-label="addAssessmentMountainRadioOption">Mountain Time</MenuItem>
+                                                <MenuItem value={"America/Denver"}>Mountain Time</MenuItem>
 
-                                                <MenuItem value={"America/Los_Angeles"} aria-label="addAssessmentPacificRadioOption">Pacific Time</MenuItem>
+                                                <MenuItem value={"America/Los_Angeles"}>Pacific Time</MenuItem>
                                             </Select>
                                             <FormHelperText>{errors.timeZone}</FormHelperText>
                                         </FormControl>
@@ -938,7 +939,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         },
                                     }}
                                     inputProps={{ maxLength: 20 }}
-                                    aria-label="addAssessmentTeamPassword"
+                                    data-testid="add-assessment-team-password"
                                 />
 
                                 }
@@ -985,13 +986,13 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                             },
                                         },
                                     }}
-                                    aria-label="addAssessmentNotes"
+                                    data-testid="add-assessment-notes"
                                 />
 
                                 <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", gap: "20px" }}>
                                     <Button
                                         onClick={() => { confirmCreateResource("AssessmentTask"); }}
-                                        aria-label="adminAddAssessmentCancelButton"
+                                        data-testid="admin-add-assessment-cancel-button"
                                         className="button-colors"
                                         sx={{
                                             color: 'var(--button-text)',
@@ -1008,7 +1009,7 @@ class AdminAddAssessmentTask extends Component<AdminAddAssessmentTaskProps, Admi
                                         className="primary-color"
                                         variant="contained"
                                         onClick={this.handleSubmit}
-                                        aria-label="addAssessmentCreateOrUpdateButton"
+                                        data-testid="add-assessment-create-or-update-button"
                                         sx={{
                                             color: 'var(--button-text)',
                                             '&:hover': {

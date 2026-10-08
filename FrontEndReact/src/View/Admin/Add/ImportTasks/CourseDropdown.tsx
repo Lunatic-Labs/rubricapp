@@ -8,6 +8,7 @@ import { genericResourceGET } from '../../../../utility';
 import { Box, SelectChangeEvent } from '@mui/material';
 import Loading from '../../../Loading/Loading';
 import { Course } from '../../../../types/Course';
+import { selectTestId } from "../../../../utils/selectTestId";
 
 interface CourseDropdownProps {
     setSelectedCourse: (newSelectedCourse: string) => void;
@@ -52,7 +53,7 @@ componentDidMount() {
     this.state.courses && this.state.courses.map((course: Course, index: number) => {
       return(
         courseChoices = [...courseChoices,
-          <MenuItem key={index} value={course["course_id"]} aria-label="adminImportAssessmentCourseChoice">
+          <MenuItem key={index} value={course["course_id"]}>
             {course["course_name"]}
           </MenuItem>
         ]
@@ -87,7 +88,7 @@ componentDidMount() {
               label='Select a Course'
               value={this.state.selectedCourse}
               onChange={this.handleCourseChange}
-              aria-label="adminImportAssessmentCourseDropdown"
+              SelectDisplayProps={selectTestId("admin-import-assessment-course-dropdown")}
               MenuProps={{
                 PaperProps: {
                   

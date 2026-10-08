@@ -2,7 +2,7 @@ import { Component } from "react";
 import { genericResourceGET } from "../../../../utility";
 import CollapsableRubricCategoryTable from "../../Add/AddCustomRubric/CollapsableRubricCategoryTable";
 import ErrorMessage from "../../../Error/ErrorMessage";
-import CustomButton from "../../Add/AddCustomRubric/Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import Loading from "../../../Loading/Loading";
 import { Rubric } from '../../../../types/Rubric';
 import { Category } from '../../../../types/Category';
@@ -61,7 +61,7 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                             textAlign: "left",
                             fontWeight: "bold",
                         }}
-                        aria-label="addCustomRubricTitle"
+                        data-testid="add-custom-rubric-title"
                     >
                         My Custom Rubrics
                     </h2>
@@ -71,7 +71,7 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                         onClick={() => {
                             this.props.navbar.setAddCustomRubric(true);
                         }}
-                        aria-label="myCustomRubricsAddCustomRubricButton"
+                        data-testid="my-custom-rubrics-add-custom-rubric-button"
                     />
                 </div>
                 <hr style={{ border: 0, borderTop: "1px solid #787878", margin: 0 }} />

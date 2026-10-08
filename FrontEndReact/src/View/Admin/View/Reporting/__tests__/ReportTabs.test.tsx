@@ -1,7 +1,9 @@
 import { test, expect, jest } from "@jest/globals";
 import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
-import { clickElementWithAriaLabel } from "../../../../../testUtilities";
+import {
+    clickElementWithTestId
+} from "../../../../../testUtilities";
 import TabManager from "../ReportTabs";
 
 // AppState receives isSuperAdmin as a prop, so the flag lives under props on the
@@ -13,16 +15,16 @@ function makeNavbar(isSuperAdmin = false) {
 test("ReportTabs.test.tsx Test 1: should render a tab for each reporting section", () => {
     render(<TabManager navbar={makeNavbar()} activeTab="Assessment Status" setTab={jest.fn()} />);
 
-    expect(screen.getByLabelText("assessmentStatusTab")).toBeInTheDocument();
-    expect(screen.getByLabelText("ratingAndFeedbackTab")).toBeInTheDocument();
-    expect(screen.getByLabelText("exportGraphComparisonTab")).toBeInTheDocument();
+    expect(screen.getByTestId("assessment-status-tab")).toBeInTheDocument();
+    expect(screen.getByTestId("rating-and-feedback-tab")).toBeInTheDocument();
+    expect(screen.getByTestId("export-graph-comparison-tab")).toBeInTheDocument();
 });
 
 test("ReportTabs.test.tsx Test 2: clicking the Ratings and Feedback tab should call setTab with the matching label", () => {
     const setTab = jest.fn();
     render(<TabManager navbar={makeNavbar()} activeTab="Assessment Status" setTab={setTab} />);
 
-    clickElementWithAriaLabel("ratingAndFeedbackTab");
+    clickElementWithTestId("rating-and-feedback-tab");
 
     expect(setTab).toHaveBeenCalledWith("Ratings and Feedback");
 });
@@ -31,7 +33,7 @@ test("ReportTabs.test.tsx Test 3: clicking the Export Graph Comparison tab shoul
     const setTab = jest.fn();
     render(<TabManager navbar={makeNavbar()} activeTab="Assessment Status" setTab={setTab} />);
 
-    clickElementWithAriaLabel("exportGraphComparisonTab");
+    clickElementWithTestId("export-graph-comparison-tab");
 
     expect(setTab).toHaveBeenCalledWith("Export Graph Comparison");
 });
@@ -39,23 +41,23 @@ test("ReportTabs.test.tsx Test 3: clicking the Export Graph Comparison tab shoul
 test("ReportTabs.test.tsx Test 4: should initialize the selected tab index from the activeTab prop", () => {
     render(<TabManager navbar={makeNavbar()} activeTab="Ratings and Feedback" setTab={jest.fn()} />);
 
-    expect(screen.getByLabelText("ratingAndFeedbackTab")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("rating-and-feedback-tab")).toHaveAttribute("aria-selected", "true");
 });
 
 test("ReportTabs.test.tsx Test 5: should hide the Ratings and Feedback tab from a super admin", () => {
     render(<TabManager navbar={makeNavbar(true)} activeTab="Assessment Status" setTab={jest.fn()} />);
 
-    expect(screen.queryByLabelText("ratingAndFeedbackTab")).not.toBeInTheDocument();
+    expect(screen.queryByTestId("rating-and-feedback-tab")).not.toBeInTheDocument();
 
     // The other two are unaffected.
-    expect(screen.getByLabelText("assessmentStatusTab")).toBeInTheDocument();
-    expect(screen.getByLabelText("exportGraphComparisonTab")).toBeInTheDocument();
+    expect(screen.getByTestId("assessment-status-tab")).toBeInTheDocument();
+    expect(screen.getByTestId("export-graph-comparison-tab")).toBeInTheDocument();
 });
 
 test("ReportTabs.test.tsx Test 6: should show the Ratings and Feedback tab to an admin", () => {
     render(<TabManager navbar={makeNavbar(false)} activeTab="Assessment Status" setTab={jest.fn()} />);
 
-    expect(screen.getByLabelText("ratingAndFeedbackTab")).toBeInTheDocument();
+    expect(screen.getByTestId("rating-and-feedback-tab")).toBeInTheDocument();
 });
 
 test("ReportTabs.test.tsx Test 7: should keep Export Graph Comparison selectable for a super admin", () => {
@@ -64,9 +66,9 @@ test("ReportTabs.test.tsx Test 7: should keep Export Graph Comparison selectable
     const setTab = jest.fn();
     render(<TabManager navbar={makeNavbar(true)} activeTab="Export Graph Comparison" setTab={setTab} />);
 
-    expect(screen.getByLabelText("exportGraphComparisonTab")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("export-graph-comparison-tab")).toHaveAttribute("aria-selected", "true");
 
-    clickElementWithAriaLabel("exportGraphComparisonTab");
+    clickElementWithTestId("export-graph-comparison-tab");
 
     expect(setTab).toHaveBeenCalledWith("Export Graph Comparison");
 });
@@ -74,7 +76,7 @@ test("ReportTabs.test.tsx Test 7: should keep Export Graph Comparison selectable
 test("ReportTabs.test.tsx Test 8: should fall back to the first tab when a super admin arrives on the hidden one", () => {
     render(<TabManager navbar={makeNavbar(true)} activeTab="Ratings and Feedback" setTab={jest.fn()} />);
 
-    expect(screen.getByLabelText("assessmentStatusTab")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("assessment-status-tab")).toHaveAttribute("aria-selected", "true");
 });
 
 test("ReportTabs.test.tsx Test 9: should fall back to the first tab when activeTab names no tab", () => {
@@ -83,5 +85,5 @@ test("ReportTabs.test.tsx Test 9: should fall back to the first tab when activeT
     // tab; a miss now means a genuinely unknown value, not a routine one.
     render(<TabManager navbar={makeNavbar()} activeTab="Improvement" setTab={jest.fn()} />);
 
-    expect(screen.getByLabelText("assessmentStatusTab")).toHaveAttribute("aria-selected", "true");
+    expect(screen.getByTestId("assessment-status-tab")).toHaveAttribute("aria-selected", "true");
 });

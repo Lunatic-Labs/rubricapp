@@ -835,7 +835,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
-                            <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
+                            <Typography data-testid="super-admin-title" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
                             <Box>
@@ -893,7 +893,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <AdminBulkUpload
                             navbar={this}
                             tab={this.state.activeTab}
-                            aria-label="adminBulkUpload"
                         />
                     </Box>
                 }
@@ -994,7 +993,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Teams" &&
-                    <Box className="page-spacing" aria-label="teamDashboard">
+                    <Box className="page-spacing" data-testid="team-dashboard">
                         <TeamDashboard
                             navbar={this}
                         />
@@ -1053,7 +1052,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="AssessmentTasks" &&
-                    <Box className="page-spacing" aria-label="assessmentDashboard">
+                    <Box className="page-spacing" data-testid="assessment-dashboard">
                         <AssessmentDashboard
                             navbar={this}
                         />
@@ -1108,7 +1107,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminEditTeamMembers
                             navbar={this}
-                            addTeamAction={this.state.addTeamAction!}
+                            addTeamAction={this.state.addTeamAction}
                         />
                     </Box>
                 }
@@ -1181,7 +1180,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Reporting" &&
-                    <Box className="page-spacing" aria-label="reportingDashboard">
+                    <Box className="page-spacing" data-testid="reporting-dashboard">
                         <BackButtonResource
                             navbar={this}
                             tabSelected={this.props.isSuperAdmin ? "AssessmentTask" : "User"}
@@ -1197,7 +1196,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"AssessmentTask"}
-                            aria-label="myCustomRubricsBackButton"
                         />
 
                         <AdminViewCustomRubrics
@@ -1211,7 +1209,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <UserAccount
@@ -1224,7 +1221,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <PrivacyPolicy
@@ -1237,7 +1233,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <Settings

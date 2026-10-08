@@ -4,182 +4,182 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    expectElementWithAriaLabelToHaveErrorMessage,
-    clickFirstElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    expectElementWithTestIdToHaveErrorMessage,
+    clickFirstElementWithTestId
 } from "../../../../../testUtilities";
 
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var iab = "importAssessmentButton";
-var aiatt = "adminImportAssessmentTasksTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var at = "assessmentTab";
-var mhbb = "mainHeaderBackButton";
-var aiatcb = "adminImportAssessmentTaskCancelButton";
-var aiatsb = "adminImportAssessmentTasksSubmitButton";
-var aiacs = "adminImportAssessmentCourseSelect";
-var aiacd = "adminImportAssessmentCourseDropdown";
-var adt = "assessmentDashboardTitle";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var iab = "import-assessment-button";
+var aiatt = "admin-import-assessment-tasks-title";
+var vcib = "view-course-icon-button";
+var rt = "roster-title";
+var at = "assessment-tab";
+var mhbb = "main-header-back-button";
+var aiatcb = "admin-import-assessment-task-cancel-button";
+var aiatsb = "admin-import-assessment-tasks-submit-button";
+var aiacs = "admin-import-assessment-course-select";
+var aiacd = "admin-import-assessment-course-dropdown";
+var adt = "assessment-dashboard-title";
 test("NOTE: Tests 1-5 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminImportAssessmentTasks.test.tsx Test 1: Should render the AdminImportAssessmentTasks component given the Import Assessments button is clicked", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
-
-    await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
-    });
-
-    clickFirstElementWithAriaLabel(vcib);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickElementWithAriaLabel(at);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(iab);
+    clickElementWithTestId(at);
+
+    await waitFor(() => {
+        expectElementWithTestIdToBeInDocument(adt);
+    });
+
+    clickElementWithTestId(iab);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aiatt);
+        expectElementWithTestIdToBeInDocument(aiatt);
     });
 });
 test("AdminImportAssessmentTasks.test.tsx Test 2: Should render the page that came before given that the Cancel button is clicked", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(iab);
+    clickElementWithTestId(iab);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aiatt);
+        expectElementWithTestIdToBeInDocument(aiatt);
     });
 
-    clickElementWithAriaLabel(aiatcb);
+    clickElementWithTestId(aiatcb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     },{ timeout: 3000 });
 });
 test("AdminImportAssessmentTasks.test.tsx Test 3: Should render the assessment dashboard title page given that the back button is clicked on the ImportAssessmentTasks page", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
     
-    clickElementWithAriaLabel(iab);
+    clickElementWithTestId(iab);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aiatt);
+        expectElementWithTestIdToBeInDocument(aiatt);
     });
 
-    clickElementWithAriaLabel(mhbb);
+    clickElementWithTestId(mhbb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 });
 test("AdminImportAssessmentTasks.test.tsx Test 4: Should render an error message on the page when no input is given", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(iab);
+    clickElementWithTestId(iab);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aiatt);
+        expectElementWithTestIdToBeInDocument(aiatt);
     });
 
-    clickElementWithAriaLabel(aiatsb);
+    clickElementWithTestId(aiatsb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(aiacs, "Missing Course to Import Tasks From");
+        expectElementWithTestIdToHaveErrorMessage(aiacs, "Missing Course to Import Tasks From");
     });
 });
 test("AdminImportAssessmentTasks.test.tsx Test 5: Should refresh and return back to Assessment Dashboard page when valid information is input and submit button is clicked", async() => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(iab);
+    clickElementWithTestId(iab);
     
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aiatt);
+        expectElementWithTestIdToBeInDocument(aiatt);
     });
 
-    clickElementWithAriaLabel(aiacd);
+    clickElementWithTestId(aiacd);
 
-    clickElementWithAriaLabel(aiatsb);
+    clickElementWithTestId(aiatsb);
 });

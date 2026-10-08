@@ -8,6 +8,7 @@ import { genericResourceDELETE, genericResourcePOST, genericResourcePUT } from '
 import { Box, Button, FormControl, Typography, TextField, MenuItem, InputLabel, Select, SelectChangeEvent} from '@mui/material';
 import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
+import { selectTestId } from "../../../../utils/selectTestId";
 
 const MAX_LMS_ID_LENGTH = 10;
 
@@ -448,7 +449,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
 
           <Box className="form-position">
             <Box className="card-style">
-              <FormControl className="form-spacing" aria-label="addUserForm">
+              <FormControl className="form-spacing" data-testid="add-user-form">
                 <Box
                   sx={{
                     display: "flex",
@@ -460,8 +461,8 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                   <Typography
                     id="addCourseTitle"
                     variant="h5"
-                    aria-label={
-                      editUser ? "editUserTitle" : "addUserTitle"
+                    data-testid={
+                      editUser ? "edit-user-title" : "add-user-title"
                     }
                   >
                     {editUser ? "Edit User" : "Add User"}{" "}
@@ -474,7 +475,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         <Button
                           id="dropUserButton"
                           onClick={this.handleDrop}
-                          aria-label="dropUserButton"
+                          data-testid="drop-user-button"
                         >
                           Drop User
                         </Button>
@@ -535,7 +536,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                                               },
                                           },
                                         }}
-                                        aria-label="userFirstNameInput"
+                                        data-testid="user-first-name-input"
                                     />
 
                                     <TextField
@@ -578,7 +579,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                                               },
                                           },
                                         }}
-                                        aria-label="userLastNameInput"
+                                        data-testid="user-last-name-input"
                                     />
 
                   <TextField
@@ -621,7 +622,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                           },
                       },
                     }}
-                    aria-label="userEmailAddressInput"
+                    data-testid="user-email-address-input"
                   />
 
                   {!navbar.props.isSuperAdmin && (
@@ -651,7 +652,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         },
                       }}
                   >
-                      <InputLabel className={errors.role ? "errorSelect" : ""}>
+                      <InputLabel id="Role" className={errors.role ? "errorSelect" : ""}>
                         Role
                       </InputLabel>
 
@@ -664,7 +665,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                         error={!!errors.role}
                         onChange={this.handleSelect}
                         required
-                        aria-label="addUserRoleDropDown"
+                        SelectDisplayProps={selectTestId("add-user-role-drop-down")}
                         MenuProps={{
                           PaperProps: {
                             
@@ -688,21 +689,18 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                       >
                         <MenuItem
                           value={"5"}
-                          aria-label="addUserRoleDropDownStudentOption"
                         >
                           Student
                         </MenuItem>
 
                         <MenuItem
                           value={"4"}
-                          aria-label="addUserRoleDropDownTAOrInstructorOption"
                         >
                           TA/Instructor
                         </MenuItem>
 
                         <MenuItem
                         value={"3"}
-                        aria-label="addUserRoleDropDownAdminOption"
                         >
                           Admin
                         </MenuItem>
@@ -786,7 +784,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                       }}
                       id=""
                       className="button-colors"
-                      aria-label="cancelAddUserButton"
+                      data-testid="cancel-add-user-button"
                       sx={{
                         color: 'var(--button-text)',
                         '&:hover': {
@@ -797,7 +795,7 @@ class AdminAddUser extends Component<AdminAddUserProps, AdminAddUserState> {
                       Cancel
                     </Button>
 
-                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained" aria-label="addOrSaveAddUserButton"
+                                        <Button onClick={this.handleSubmit} id="createUser" className="primary-color" variant="contained" data-testid="add-or-save-add-user-button"
                                             sx={{
                                                 color: 'var(--button-text)',
                                                 '&:hover': {

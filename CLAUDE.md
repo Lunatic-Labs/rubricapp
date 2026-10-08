@@ -93,5 +93,5 @@ CI (`.github/workflows/ci.yml`) runs `pytest Tests/unit`, sharded `pytest Tests/
 - `Manuals/TECHNICAL_DOCUMENTATION.md` — entry-level architecture tour.
 - `Manuals/OAuth2-instructions.md`, `Manuals/HowToChangeDBPasswords.md`, `Manuals/BACKUP_SQL_INSTRUCTIONS.md` — ops/setup procedures.
 - `BackEndFlask/Tests/TEST_PLAN.md`, `TEST_PLAN_2.md` — backend test scope/strategy.
-- `FrontEndReact/src/JestTestDocumentation.md` — how the `aria-label`-driven Jest test helpers work.
+- `FrontEndReact/src/JestTestDocumentation.md` — how the `data-testid`-driven Jest test helpers work.
 - `FrontEndReact/src/TYPES.md` — shared TypeScript type reference.

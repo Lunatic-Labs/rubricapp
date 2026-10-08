@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box, TextField, Alert } from '@mui/material';
-import CustomButton from '../Components/CustomButton';
+import CustomButton from '../../../Components/CustomButton';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility';
 import { HTTP_STATUS } from '../../../../Enums/HttpStatusCodes';
@@ -166,15 +166,14 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 								autoFocus
 								sx={{ mb: 2 }}
 								inputProps={{ maxLength: 20 }}
-								aria-label="teamPasswordInput"
+								data-testid="team-password-input"
 							/>
 
 							<CustomButton
 								label="Continue"
 								onClick={this.submitPasscode}
 								isOutlined={false} // Default button
-								position={{ top: '10px', right: '0px' }}
-								aria-label="continueWithPasswordButton"
+								data-testid="continue-with-password-button"
 							/>
 						</div>
 					</div>

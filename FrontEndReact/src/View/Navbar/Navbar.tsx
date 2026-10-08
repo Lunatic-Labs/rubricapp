@@ -91,7 +91,7 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
                 {props.userName}
             </Typography>
 
-            <Button aria-label='accountDropdown' sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
+            <Button aria-label="Open account menu" data-testid="account-dropdown" sx={{minWidth:{xs:"40px"}}} onClick={handleClick} aria-controls={open ? 'account-menu' : undefined}
               aria-haspopup="true"
               aria-expanded={open ? 'true' : undefined}>
               <img className="navbar-arrow" src={ExpandMoreFilled} alt='ExpandMoreFilled'></img>

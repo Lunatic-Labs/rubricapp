@@ -183,7 +183,6 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
             <div className="container">
               <SuccessMessage
                 successMessage={successMessage}
-                aria-label="adminViewTeamsSuccessMessage"
               />
             </div>
           )}
@@ -191,7 +190,6 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
             <div className="container">
               <ErrorMessage
                 errorMessage={errorMessage}
-                aria-label="adminViewTeamsErrorMessage"
               />
             </div>
           )}
@@ -206,7 +204,7 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
                 onClick={() => {
                   setNewTab("AdminTeamBulkUpload");
                 }}
-                aria-label="adminBulkUploadButton"
+                data-testid="admin-bulk-upload-button"
               >
                 Team Bulk Upload
               </Button>
@@ -216,7 +214,7 @@ class AdminViewTeams extends Component<AdminViewTeamsProps, AdminViewTeamsState>
                 onClick={() => {
                   setAddTeamTabWithUsers(users);
                 }}
-                aria-label="adminAddTeamButton"
+                data-testid="admin-add-team-button"
               >
                 Add Team
               </Button>

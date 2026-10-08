@@ -4,221 +4,221 @@ import "@testing-library/jest-dom";
 import Login from "../../../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel,
-    clickFirstEnabledElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId,
+    clickFirstEnabledElementWithTestId
 } from "../../../../../testUtilities";
 
 
-var lf = "loginForm";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var rt = "rosterTitle";
-var at = "assessmentTab";
-var adt = "assessmentDashboardTitle";
-var vmcrb = "viewMyCustomRubricsButton";
-var acrt = "addCustomRubricTitle";
-var iab = "importAssessmentButton";
-var aiatt = "adminImportAssessmentTasksTitle";
-var atb = "addTaskButton";
-var aaatt = "adminAddAssessmentTaskTitle";
-var eaib = "editAssessmentIconButton";
-var aeatt = "adminEditAssessmentTaskTitle";
-var vcaib = "viewCompletedAssessmentIconButton";
-var vcirt = "viewCompletedIndividualRubricsTitle";
-var satb = "startAssessmentTasksButton";
-var vatit = "viewAssessmentTaskInstructionsTitle";
-var lb = "loginButton";
+var lf = "login-form";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var rt = "roster-title";
+var at = "assessment-tab";
+var adt = "assessment-dashboard-title";
+var vmcrb = "view-my-custom-rubrics-button";
+var acrt = "add-custom-rubric-title";
+var iab = "import-assessment-button";
+var aiatt = "admin-import-assessment-tasks-title";
+var atb = "add-task-button";
+var aaatt = "admin-add-assessment-task-title";
+var eaib = "edit-assessment-icon-button";
+var aeatt = "admin-edit-assessment-task-title";
+var vcaib = "view-completed-assessment-icon-button";
+var vcirt = "view-completed-individual-rubrics-title";
+var satb = "start-assessment-tasks-button";
+var vatit = "view-assessment-task-instructions-title";
+var lb = "login-submit-button";
 test("NOTE: Tests 1-8 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("AdminViewAssessmentTask.test.tsx Test 1: Should render Login Form component.", () => {
     render(<Login />);
 
-    expectElementWithAriaLabelToBeInDocument(lf);
+    expectElementWithTestIdToBeInDocument(lf);
 });
 test("AdminViewAssessmentTask.test.tsx Test 2: Should render the Assessment Task Dashboard in Admin View.", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 });
 test("AdminViewAssessmentTask.test.tsx Test 3: Should render the My Custom Rubrics page given the My Custom Rubrics Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(vmcrb);
+    clickElementWithTestId(vmcrb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(acrt);
+        expectElementWithTestIdToBeInDocument(acrt);
     });
 });
 test("AdminViewAssessmentTask.test.tsx Test 4: Should render the Import Assessment Tasks page given the Import Tasks Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(iab);
+    clickElementWithTestId(iab);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aiatt);
+        expectElementWithTestIdToBeInDocument(aiatt);
     });
 });
 test("AdminViewAssessmentTask.test.tsx Test 5: Should render the Add Assessment Task page given the Add Task Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
-    clickElementWithAriaLabel(atb);
+    clickElementWithTestId(atb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aaatt);
+        expectElementWithTestIdToBeInDocument(aaatt);
     });
 });
 test("AdminViewAssessmentTask.test.tsx Test 6: Should render the Edit Assessment Task page given the Edit Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
     await waitFor(() => {
-        clickFirstEnabledElementWithAriaLabel(eaib);
+        clickFirstEnabledElementWithTestId(eaib);
     }, { timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(aeatt);
+        expectElementWithTestIdToBeInDocument(aeatt);
     });
 });
 test("AdminViewAssessmentTask.test.tsx Test 7: Should render the Completed Assessment Tasks page given the View Icon Button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
     await waitFor(() => {
-        clickFirstEnabledElementWithAriaLabel(vcaib);
+        clickFirstEnabledElementWithTestId(vcaib);
     }, { timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vcirt);
+        expectElementWithTestIdToBeInDocument(vcirt);
     });
 });
 test("AdminViewAssessmentTask.test.tsx Test 8: Should render the Instructions for Assessments page given the Start button is clicked on Admin View.", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(adt);
+        expectElementWithTestIdToBeInDocument(adt);
     });
 
     await waitFor(() => {
-        clickFirstEnabledElementWithAriaLabel(satb);
+        clickFirstEnabledElementWithTestId(satb);
     }, { timeout: 3000 });
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vatit);
+        expectElementWithTestIdToBeInDocument(vatit);
     });
 });

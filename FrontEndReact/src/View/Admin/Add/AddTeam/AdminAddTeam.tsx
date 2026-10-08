@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import FormHelperText from '@mui/material/FormHelperText';
 import Loading from "../../../Loading/Loading";
 import { User } from "../../../../types/User";
+import { selectTestId } from "../../../../utils/selectTestId";
 
 interface AdminAddTeamProps {
     navbar: any;
@@ -219,8 +220,8 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
             <Box style={{ marginTop: "5rem" }} className="card-spacing">
                 <Box className="form-position">
                     <Box className="card-style">
-                        <FormControl className="form-spacing" aria-label="addTeamForm">
-                            <Typography id="addTeamTitle" variant="h5" aria-label={this.state.editTeam ? "adminEditTeamTitle" : "adminAddTeamTitle"}>
+                        <FormControl className="form-spacing" data-testid="add-team-form">
+                            <Typography id="addTeamTitle" variant="h5" data-testid={this.state.editTeam ? "admin-edit-team-title" : "admin-add-team-title"}>
                                 {this.state.editTeam ? "Edit Team" : "Add Team"}
                             </Typography>
 
@@ -266,7 +267,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                     },
                                     }}
                                     inputProps={{ maxLength: 50 }}
-                                    aria-label="userTeamNameInput"
+                                    data-testid="user-team-name-input"
                                 />
 
                                 <FormControl error={!!errors.observerId} required fullWidth 
@@ -301,7 +302,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                         onChange={(event: SelectChangeEvent<string>) => this.handleSelect(event)}
                                         required
                                         error={!!errors.observerId}
-                                        aria-label="userObserverDropDown"
+                                        SelectDisplayProps={selectTestId("user-observer-drop-down")}
 
                                         MenuProps={{
                                             PaperProps: {
@@ -347,7 +348,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
                                                 addTeam: null,
                                             });
                                         }}
-                                        aria-label="cancelAddTeamButton"
+                                        data-testid="cancel-add-team-button"
                                     >
                                         Cancel
                                     </Button>
@@ -359,7 +360,7 @@ class AdminAddTeam extends Component<AdminAddTeamProps, AdminAddTeamState> {
 
                                         onClick={this.handleSubmit}
 
-                                        aria-label="addOrSaveAddTeamButton"
+                                        data-testid="add-or-save-add-team-button"
                                     >
                                         {this.state.editTeam ? "Save" : "Add Team"}
                                     </Button>

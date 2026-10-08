@@ -1,10 +1,11 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomButton from '../Components/CustomButton';
+import CustomButton from '../../../Components/CustomButton';
 import { FormControl, MenuItem, InputLabel, Select, Alert } from '@mui/material';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility';
 import { Team } from '../../../../types/Team';
 import { SelectChangeEvent } from '@mui/material/Select';
+import { selectTestId } from "../../../../utils/selectTestId";
 
 interface SelectTeamProps {
     navbar: any;
@@ -135,7 +136,7 @@ class SelectTeam extends Component<SelectTeamProps, SelectTeamState> {
                                             onChange={this.handleSelect}
                                             required
                                             sx={{ mb: 3 }}
-                                            aria-label="selectTeamDropdown"
+                                            SelectDisplayProps={selectTestId("select-team-dropdown")}
                                         >
                                             {teams.map((x) =>
                                                 <MenuItem key={x["team_id"]} value={x["team_id"]}>{x["team_name"]}</MenuItem>)
@@ -149,8 +150,7 @@ class SelectTeam extends Component<SelectTeamProps, SelectTeamState> {
                                 label="Check In"
                                 onClick={this.checkInUser}
                                 isOutlined={false} // Default button
-                                position={{ top: '10px', right: '0px' }}
-                                aria-label="checkInButton"
+                                data-testid="check-in-button"
                             />
                         </div>
                     </>

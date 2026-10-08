@@ -44,7 +44,7 @@ On a token-expiry failure, `handleTokenErrorsAndRetry` calls `refreshAccessToken
 
 - Jest + `@testing-library/react`, jsdom environment (config lives in `package.json`, not a separate jest.config file).
 - **Jest tests need the backend running and reachable** (`VITE_API_URL` pointed at it) — they exercise real login/API flows, not mocks, for most integration-style component tests.
-- Tests are driven by `aria-label` almost exclusively — see `src/JestTestDocumentation.md` and `src/testUtilities.ts` for the helpers (`clickElementWithAriaLabel`, `changeElementWithAriaLabelWithInput`, `expectElementWithAriaLabelToBeInDocument`, etc.). When adding a new interactive element that a test will need to target, give it a unique `aria-label` rather than relying on text/role queries.
+- Tests select elements by `data-testid` — see `src/JestTestDocumentation.md` and `src/testUtilities.ts` for the helpers (`clickElementWithTestId`, `changeElementWithTestIdWithInput`, `expectElementWithTestIdToBeInDocument`, etc.). When a test needs to target a new element, give it a unique kebab-case `data-testid` (e.g. `data-testid="courses-title"`); for an MUI `Select`, pass it through `SelectDisplayProps={selectTestId("...")}` (`src/utils/selectTestId.ts`) so it lands on the clickable combobox. Keep `aria-label` for what screen readers should announce: a human-readable name such as "Delete user" on icon-only controls, not a test hook. Elements with visible text (headings, labelled buttons, menu options) usually need no `aria-label` at all, since it would replace that text as their accessible name.
 - Run a single file: `npm test path/to/File.test.tsx` (from `FrontEndReact/`).
 - Lint: `npx eslint --max-warnings=0 .` — CI fails on any warning, not just errors.
 

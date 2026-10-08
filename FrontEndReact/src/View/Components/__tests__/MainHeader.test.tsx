@@ -5,188 +5,188 @@ import { ResizeObserver } from "@juggle/resize-observer";
 import Login from "../../Login/Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    changeElementWithAriaLabelWithInput,
-    clickFirstElementWithAriaLabel
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    changeElementWithTestIdWithInput,
+    clickFirstElementWithTestId
 } from "../../../testUtilities";
 
 global.ResizeObserver = ResizeObserver;
 
-var lb = "loginButton";
-var ei = "emailInput";
-var pi = "passwordInput";
-var ct = "coursesTitle";
-var vcib = "viewCourseIconButton";
-var vcmh = "viewCourseMainHeader";
-var mhbb = "mainHeaderBackButton";
-var rot = "rosterTab";
-var rt = "rosterTitle";
-var tt = "teamsTab";
-var at = "assessmentTab";
-var rept = "reportingTab";
-var td = "teamDashboard";
-var ad = "assessmentDashboard";
-var repd = "reportingDashboard";
+var lb = "login-submit-button";
+var ei = "login-email-input";
+var pi = "login-password-input";
+var ct = "courses-title";
+var vcib = "view-course-icon-button";
+var vcmh = "view-course-main-header";
+var mhbb = "main-header-back-button";
+var rot = "roster-tab";
+var rt = "roster-title";
+var tt = "teams-tab";
+var at = "assessment-tab";
+var rept = "reporting-tab";
+var td = "team-dashboard";
+var ad = "assessment-dashboard";
+var repd = "reporting-dashboard";
 test("NOTE: Tests 1-9 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("Header.test.tsx Test 1: Should render the MainHeader component given the View Course button is clicked", async () => {
     render(<Login />);
 
-    changeElementWithAriaLabelWithInput(ei, "demoadmin02@skillbuilder.edu");
+    changeElementWithTestIdWithInput(ei, "demoadmin02@skillbuilder.edu");
 
-    changeElementWithAriaLabelWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
+    changeElementWithTestIdWithInput(pi, globalThis.DEMO_ADMIN_PASSWORD);
 
-    clickElementWithAriaLabel(lb);
+    clickElementWithTestId(lb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vcmh);
+        expectElementWithTestIdToBeInDocument(vcmh);
     });
 });
 test("MainHeader.test.tsx Test 2: Clicking the back button on the MainHeader component should go to the page that came before the current (ViewCourseAdmin)", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vcmh);
+        expectElementWithTestIdToBeInDocument(vcmh);
     });
 
-    clickElementWithAriaLabel(mhbb);
+    clickElementWithTestId(mhbb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 });
 test("MainHeader.test.tsx Test 3: Clicking the view button for a given course provides the correct course title", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vcmh);
+        expectElementWithTestIdToBeInDocument(vcmh);
     });
 });
 test("MainHeader.test.tsx Test 4: Clicking a View Course button on the main page should render all four tabs", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rot);
+        expectElementWithTestIdToBeInDocument(rot);
 
-        expectElementWithAriaLabelToBeInDocument(at);
+        expectElementWithTestIdToBeInDocument(at);
 
-        expectElementWithAriaLabelToBeInDocument(tt);
+        expectElementWithTestIdToBeInDocument(tt);
 
-        expectElementWithAriaLabelToBeInDocument(rept);
+        expectElementWithTestIdToBeInDocument(rept);
     });
 });
 test("MainHeader.test.tsx Test 5: Ensure that clicking the view button for a given course will render the rosterDashboard by default", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 });
 test("MainHeader.test.tsx Test 6: Ensure that clicking the rosterTab will render the rosterDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(rot);
+    clickElementWithTestId(rot);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 });
 test("MainHeader.test.tsx Test 7: Ensure that clicking the teamTab will render the teamDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(tt);
+    clickElementWithTestId(tt);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(td);
+        expectElementWithTestIdToBeInDocument(td);
     });
 });
 test("MainHeader.test.tsx Test 8: Ensure that clicking the assessmentTab will render the assessmentDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(at);
+    clickElementWithTestId(at);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ad);
+        expectElementWithTestIdToBeInDocument(ad);
     });
 });
 test("MainHeader.test.tsx Test 9: Ensure that clicking the reportingTab will render the reportingDashboard", async () => {
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(ct);
+        expectElementWithTestIdToBeInDocument(ct);
     });
 
-    clickFirstElementWithAriaLabel(vcib);
+    clickFirstElementWithTestId(vcib);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(rt);
+        expectElementWithTestIdToBeInDocument(rt);
     });
 
-    clickElementWithAriaLabel(rept);
+    clickElementWithTestId(rept);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(repd);
+        expectElementWithTestIdToBeInDocument(repd);
     });
 });
