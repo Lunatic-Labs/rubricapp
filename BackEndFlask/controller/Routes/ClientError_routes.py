@@ -1,4 +1,6 @@
+import json
 from flask import request
+from werkzeug.exceptions import RequestEntityTooLarge
 from controller import bp
 from controller.Route_response import create_good_response, create_bad_response
 from core import limiter, REQUEST_ID_PATTERN
@@ -27,21 +29,34 @@ from constants.ClientError import (
 @limiter.limit(RATE_LIMIT)
 def report_client_error():
     try:
-        # Checked before the JSON is parsed so an oversized body is refused
-        # rather than parsed. Content-Length can be absent (a chunked
-        # request), in which case the field caps are the only bound.
-        if request.content_length is not None and request.content_length > MAX_BODY_BYTES:
+        # Werkzeug enforces max_content_length while reading, so this holds
+        # for a chunked request with no Content-Length too: it raises before
+        # reading a declared Content-Length over the limit, and stops reading
+        # an undeclared body at the limit instead of buffering all of it.
+        # The limit is one byte over the cap so that "stopped at the limit"
+        # can be told apart from "fit within the cap".
+        request.max_content_length = MAX_BODY_BYTES + 1
+
+        try:
+            raw_body = request.get_data(cache=False)
+        except RequestEntityTooLarge:
+            raw_body = None
+
+        if raw_body is None or len(raw_body) > MAX_BODY_BYTES:
             return create_bad_response(
                 "Request body too large.",
                 "client_error",
                 HttpStatus.CONTENT_TOO_LARGE.value
             )
 
-        # silent=True: a missing/wrong Content-Type or malformed JSON comes
-        # back as None instead of raising. Anything other than a JSON object
-        # is a caller mistake, not a server failure, so it gets a plain 400
-        # rather than a traceback in client_errors.log.
-        data = request.get_json(silent=True)
+        try:
+            data = json.loads(raw_body) if request.is_json else None
+        except ValueError:
+            data = None
+
+        # Anything other than a JSON object is a caller mistake, not a server
+        # failure, so it gets a plain 400 rather than a traceback in
+        # client_errors.log.
 
         if not isinstance(data, dict):
             client_logger.warning("Rejected frontend error report: body is not a JSON object")

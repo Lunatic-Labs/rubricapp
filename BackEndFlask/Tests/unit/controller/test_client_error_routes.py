@@ -170,6 +170,31 @@ def test_oversized_body_is_refused_without_being_parsed(mock_client_logger):
     mock_client_logger.error.assert_not_called()
 
 
+def test_oversized_chunked_body_without_content_length_is_refused(mock_client_logger):
+    """A chunked request carries no Content-Length, so the cap must be
+    enforced while reading the stream, not only from the declared length."""
+    import io
+    body = ('{"message": "' + "x" * (MAX_BODY_BYTES * 3) + '"}').encode()
+
+    with app.test_request_context(
+        "/api/client-error",
+        method="POST",
+        environ_overrides={
+            "wsgi.input": io.BytesIO(body),
+            "wsgi.input_terminated": True,
+            "HTTP_TRANSFER_ENCODING": "chunked",
+            "CONTENT_TYPE": "application/json",
+        },
+    ):
+        from flask import request
+        assert request.content_length is None
+        response, status = report_client_error()
+
+    assert status == HttpStatus.CONTENT_TOO_LARGE.value
+    assert "too large" in response["message"]
+    mock_client_logger.error.assert_not_called()
+
+
 def test_body_at_the_cap_is_still_accepted(mock_client_logger):
     """The cap is a ceiling, not a trigger - a legitimate report carrying
     a long stack trace must still get through."""

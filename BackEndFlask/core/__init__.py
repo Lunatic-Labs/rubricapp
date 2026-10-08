@@ -152,7 +152,10 @@ redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
 # per-worker in-process counters instead of refusing every request.
 # Without it the limiter is fail-closed: a limiter outage takes the
 # routes down with it, which matters most for /client-error, whose whole
-# job is to keep working while other things are broken.
+# job is to keep working while other things are broken. The cost: those
+# counters aren't shared, so during an outage each gunicorn worker allows
+# the full limit on its own (3 workers -> 3x RATE_LIMIT in aggregate).
+# That's still bounded, and MAX_BODY_BYTES still caps each request.
 limiter = Limiter(
     get_remote_address,
     app=app,
