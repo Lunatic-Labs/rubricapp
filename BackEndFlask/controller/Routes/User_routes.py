@@ -403,7 +403,7 @@ def delete_selected_user():
 @bad_token_check()
 @AuthCheck()
 @admin_check()
-def admin_premote_student_to_admin():
+def admin_promote_student_to_admin():
     try:
         user_id_to_modify = int(request.args.get("target_user_id"))
         make_admin(user_id_to_modify)
