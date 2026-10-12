@@ -40,6 +40,7 @@ import { Course as CourseType } from '../../types/Course';
 import { User as UserType } from '../../types/User';
 import { Team as TeamType } from '../../types/Team';
 import Settings from './Settings';
+import ScreenHistory from './screenHistory';
 import { genericResourceGET, parseRoleNames } from '../../utility';
 
 /**
@@ -133,6 +134,13 @@ interface AppStateState {
     roleNameMap: Record<string, string> | null;
 }
 
+// The part of AppState that describes which screen is showing and what it is
+// showing. Going Back restores these fields; the rest are app-wide (the success
+// toast, dark mode, the role lookup) and keep their current values.
+type ScreenState = Omit<AppStateState, 'successMessage' | 'successMessageTimeout' | 'isLoaded' | 'darkMode' | 'roles' | 'roleNameMap'>;
+
+const screenStateOf = ({ successMessage, successMessageTimeout, isLoaded, darkMode, roles, roleNameMap, ...screen }: AppStateState): ScreenState => screen;
+
 class AppState extends Component<AppStateProps, AppStateState> {
     Reset!: (listOfElements: string[]) => void;
     ViewCTwithAT!: (assessmentTasks: AssessmentTaskType[], atId: number) => void;
@@ -157,6 +165,14 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setSuccessMessage!: (message: string | null) => void;
     setViewCompleteAssessmentTaskTabWithAssessmentTask!: (completedAssessmentTasks: CompleteAssessmentTaskType[] | null, completedAssessmentId: number | null, chosenAssessmentTask: AssessmentTaskType | null, jumpId?: string | null) => void;
     setViewAssessmentDashboardwithCourse!: (courseId: number, courses: CourseType[]) => void;
+
+    // Records each screen change in browser history so Back and Forward move
+    // between screens. See screenHistory.ts.
+    private screenHistory = new ScreenHistory<ScreenState>(
+        (screen) => screen.activeTab,
+        (screen) => this.setState(screen),
+    );
+
     constructor(props: AppStateProps) {
         super(props);
         
@@ -815,6 +831,22 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 });
             }
         });
+
+        // The constructor returns without setting state when the auth cookies
+        // are missing, after starting a redirect to '/'.
+        if (this.state) {
+            this.screenHistory.start(screenStateOf(this.state));
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.state) {
+            this.screenHistory.record(screenStateOf(this.state));
+        }
+    }
+
+    componentWillUnmount() {
+        this.screenHistory.stop();
     }
 
     render() {
