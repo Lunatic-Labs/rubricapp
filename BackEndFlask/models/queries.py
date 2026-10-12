@@ -655,26 +655,56 @@ def get_team_ratings(assessment_task_id):
     is present. completed_by vs column 9 lets the route mark which team
     member submitted the assessment (is_assessor).
 
-    Team membership is unified across fixed teams (TeamUser) and ad hoc
-    teams (Checkin, scoped to this assessment task, since ad hoc team
-    membership is only tracked per-AT) - either kind of team can be the
-    subject of a team assessment, and only TeamUser previously being
-    joined here meant ad hoc teams never surfaced any members at all.
-    The member join is a LEFT OUTER JOIN so a team with a real submission
-    but no enumerable members (TeamUser/Checkin rows) still produces one
-    row with the team/rating data and NULL member fields, rather than
-    disappearing from the results entirely.
+    Team membership for this task comes from two places. A student who
+    checked in for this task (Checkin) is on the team they checked in to;
+    that covers ad hoc teams, and fixed-team students who switched teams
+    with the team password. Everyone else is on their fixed team
+    (TeamUser). Using Checkin first keeps a student who switched from
+    being listed under both teams.
+
+    Only the latest submission per team is used. A team normally has one,
+    but older data can have several, and joining members to each would
+    list every member once per submission.
+
+    The member join is a LEFT OUTER JOIN so a team with a submission but
+    no members still produces one row, with NULL member fields, rather
+    than disappearing from the results.
+
+    Feedback is matched per member. student_view_feedback records the
+    viewer's user_id even for team assessments, so a member who hasn't
+    viewed their feedback has no row of their own.
     """
+    submitting_teams = select(CompletedAssessment.team_id).where(
+        CompletedAssessment.assessment_task_id == assessment_task_id,
+        CompletedAssessment.team_id != None,
+    )
+
+    latest_submissions = (
+        select(func.max(CompletedAssessment.completed_assessment_id))
+        .where(
+            CompletedAssessment.assessment_task_id == assessment_task_id,
+            CompletedAssessment.team_id != None,
+        )
+        .group_by(CompletedAssessment.team_id)
+    )
+
+    checked_in_users = select(Checkin.user_id).where(
+        Checkin.assessment_task_id == assessment_task_id,
+    )
+
     team_members = union(
-        db.session.query(
-            TeamUser.team_id.label('team_id'),
-            TeamUser.user_id.label('user_id'),
-        ),
-        db.session.query(
+        select(
             Checkin.team_number.label('team_id'),
             Checkin.user_id.label('user_id'),
-        ).filter(
+        ).where(
             Checkin.assessment_task_id == assessment_task_id,
+        ),
+        select(
+            TeamUser.team_id.label('team_id'),
+            TeamUser.user_id.label('user_id'),
+        ).where(
+            TeamUser.team_id.in_(submitting_teams),
+            TeamUser.user_id.not_in(checked_in_users),
         ),
     ).subquery()
 
@@ -709,18 +739,11 @@ def get_team_ratings(assessment_task_id):
             and_(
                 Feedback.completed_assessment_id
                 == CompletedAssessment.completed_assessment_id,
-                or_(
-                    Feedback.user_id == team_members.c.user_id,
-                    and_(
-                        Feedback.user_id.is_(None),
-                        Feedback.team_id == CompletedAssessment.team_id,
-                    ),
-                ),
+                Feedback.user_id == team_members.c.user_id,
             ),
         )
         .filter(
-            CompletedAssessment.team_id != None,
-            CompletedAssessment.assessment_task_id == assessment_task_id,
+            CompletedAssessment.completed_assessment_id.in_(latest_submissions),
         )
         .all()
     )

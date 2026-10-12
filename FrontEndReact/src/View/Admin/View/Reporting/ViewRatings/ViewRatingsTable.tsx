@@ -81,6 +81,11 @@ class ViewRatingsTable extends Component<ViewRatingsTableProps> {
             : [ratingRow];
 
         studentsArray.forEach((student: any) => {
+          // A team with a submission but no members comes back as one row
+          // with user_id null. Keep the team's ratings, but don't list a
+          // nameless "Unknown" member for it.
+          if (student.user_id === null) return;
+
           const first = student.first_name || '';
           const last = student.last_name || '';
           const fullName = `${first} ${last}`.trim() || 'Unknown';

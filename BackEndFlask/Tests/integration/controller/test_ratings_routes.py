@@ -81,6 +81,8 @@ def test_get_ratings_with_team(flask_app_mock, sample_token, auth_header, client
             assert any(r["rating_observable_characteristics_suggestions_data"] == "Inaccurately" for r in results)
             assert any(r["team_name"] == team1.team_name for r in results)
             assert any(r["team_name"] == team2.team_name for r in results)
+            # Neither team has members, so each row carries no member.
+            assert all(r["user_id"] is None for r in results)
 
         finally:
             # Clean up
@@ -297,6 +299,8 @@ def test_student_view_feedback_with_team(flask_app_mock, sample_token, auth_head
             assert rslt[0]["completed_assessment_id"] == comp.completed_assessment_id
             assert rslt[0]["feedback_id"] is not None
             assert rslt[0]["team_id"] == team.team_id
+            # Team feedback is recorded for the student who viewed it.
+            assert rslt[0]["user_id"] == result['user_id']
             assert rslt[0]["feedback_time"] == feedback_data["feedback_time"]
         
         finally:
@@ -390,7 +394,8 @@ def test_student_view_feedback_with_existing_feedback(flask_app_mock, sample_tok
                 last_update="2025-11-15T12:00:00"
             ))
             
-            sample_feedback(comp.completed_assessment_id, team_id=team.team_id)
+            # This student has already viewed the team's feedback.
+            sample_feedback(comp.completed_assessment_id, user_id=result['user_id'], team_id=team.team_id)
             
             token = sample_token(user_id=result['user_id'])
             
