@@ -40,6 +40,7 @@ import { Course as CourseType } from '../../types/Course';
 import { User as UserType } from '../../types/User';
 import { Team as TeamType } from '../../types/Team';
 import Settings from './Settings';
+import ScreenHistory from './screenHistory';
 import { genericResourceGET, parseRoleNames } from '../../utility';
 
 /**
@@ -133,6 +134,13 @@ interface AppStateState {
     roleNameMap: Record<string, string> | null;
 }
 
+// The part of AppState that describes which screen is showing and what it is
+// showing. Going Back restores these fields; the rest are app-wide (the success
+// toast, dark mode, the role lookup) and keep their current values.
+type ScreenState = Omit<AppStateState, 'successMessage' | 'successMessageTimeout' | 'isLoaded' | 'darkMode' | 'roles' | 'roleNameMap'>;
+
+const screenStateOf = ({ successMessage, successMessageTimeout, isLoaded, darkMode, roles, roleNameMap, ...screen }: AppStateState): ScreenState => screen;
+
 class AppState extends Component<AppStateProps, AppStateState> {
     Reset!: (listOfElements: string[]) => void;
     ViewCTwithAT!: (assessmentTasks: AssessmentTaskType[], atId: number) => void;
@@ -158,16 +166,12 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setViewCompleteAssessmentTaskTabWithAssessmentTask!: (completedAssessmentTasks: CompleteAssessmentTaskType[] | null, completedAssessmentId: number | null, chosenAssessmentTask: AssessmentTaskType | null, jumpId?: string | null) => void;
     setViewAssessmentDashboardwithCourse!: (courseId: number, courses: CourseType[]) => void;
 
-    // This app has a single client-side route ('/') driven entirely by
-    // component state (activeTab) - nothing ever calls history.pushState, so
-    // the browser has no in-app entry for the Back button to land on. Without
-    // this guard, pressing Back takes the user to whatever preceded this tab's
-    // history (often a blank page), with no way back into the app short of
-    // reloading. Re-pushing the current URL on every popstate keeps the user
-    // on the current view instead.
-    private trapBrowserBackNavigation = (): void => {
-        window.history.pushState(null, '', window.location.href);
-    };
+    // Records each screen change in browser history so Back and Forward move
+    // between screens. See screenHistory.ts.
+    private screenHistory = new ScreenHistory<ScreenState>(
+        (screen) => screen.activeTab,
+        (screen) => this.setState(screen),
+    );
 
     constructor(props: AppStateProps) {
         super(props);
@@ -828,13 +832,21 @@ class AppState extends Component<AppStateProps, AppStateState> {
             }
         });
 
-        // See trapBrowserBackNavigation above for why this is here.
-        window.history.pushState(null, '', window.location.href);
-        window.addEventListener('popstate', this.trapBrowserBackNavigation);
+        // The constructor returns without setting state when the auth cookies
+        // are missing, after starting a redirect to '/'.
+        if (this.state) {
+            this.screenHistory.start(screenStateOf(this.state));
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.state) {
+            this.screenHistory.record(screenStateOf(this.state));
+        }
     }
 
     componentWillUnmount() {
-        window.removeEventListener('popstate', this.trapBrowserBackNavigation);
+        this.screenHistory.stop();
     }
 
     render() {
