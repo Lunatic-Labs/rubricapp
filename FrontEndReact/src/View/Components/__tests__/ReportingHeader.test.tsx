@@ -19,7 +19,6 @@ function makeNavbar(isSuperAdmin = false) {
                 year: 2026,
             },
         },
-        confirmCreateResource: jest.fn(),
     };
 }
 
@@ -30,17 +29,7 @@ test("ReportingHeader.test.tsx Test 1: should render the chosen course's info an
     expect(screen.getByTestId("assessment-status-tab")).toBeInTheDocument();
 });
 
-test("ReportingHeader.test.tsx Test 2: clicking the back button should call confirmCreateResource with the Users tab", () => {
-    const navbar = makeNavbar();
-
-    render(<ReportingMainHeader navbar={navbar} setTab={jest.fn()} activeTab="Assessment Status" />);
-
-    clickElementWithTestId("main-header-back-button");
-
-    expect(navbar.confirmCreateResource).toHaveBeenCalledWith("User", 0);
-});
-
-test("ReportingHeader.test.tsx Test 3: clicking a report tab should call setTab with the matching label", () => {
+test("ReportingHeader.test.tsx Test 2: clicking a report tab should call setTab with the matching label", () => {
     const setTab = jest.fn();
 
     render(<ReportingMainHeader navbar={makeNavbar()} setTab={setTab} activeTab="Assessment Status" />);
@@ -50,18 +39,22 @@ test("ReportingHeader.test.tsx Test 3: clicking a report tab should call setTab 
     expect(setTab).toHaveBeenCalledWith("Ratings and Feedback");
 });
 
-test("ReportingHeader.test.tsx Test 4: should hide the Ratings and Feedback tab from a super admin", () => {
+test("ReportingHeader.test.tsx Test 3: should hide the Ratings and Feedback tab from a super admin", () => {
     render(<ReportingMainHeader navbar={makeNavbar(true)} setTab={jest.fn()} activeTab="Assessment Status" />);
 
     expect(screen.queryByTestId("rating-and-feedback-tab")).not.toBeInTheDocument();
 });
 
-test("ReportingHeader.test.tsx Test 5: should keep the back button for a super admin", () => {
-    const navbar = makeNavbar(true);
+// AppState renders the Reporting page's back button, above this header (see
+// AppStateReportingBackButton.test.tsx). This header must not add a second one.
+test("ReportingHeader.test.tsx Test 4: should not render its own back button for an admin", () => {
+    render(<ReportingMainHeader navbar={makeNavbar()} setTab={jest.fn()} activeTab="Assessment Status" />);
 
-    render(<ReportingMainHeader navbar={navbar} setTab={jest.fn()} activeTab="Assessment Status" />);
+    expect(screen.queryByTestId("main-header-back-button")).not.toBeInTheDocument();
+});
 
-    clickElementWithTestId("main-header-back-button");
+test("ReportingHeader.test.tsx Test 5: should not render its own back button for a super admin", () => {
+    render(<ReportingMainHeader navbar={makeNavbar(true)} setTab={jest.fn()} activeTab="Assessment Status" />);
 
-    expect(navbar.confirmCreateResource).toHaveBeenCalledWith("User", 0);
+    expect(screen.queryByTestId("main-header-back-button")).not.toBeInTheDocument();
 });
