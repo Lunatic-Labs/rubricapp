@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
+import { logger } from '../../logger';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
@@ -765,11 +766,27 @@ class AppState extends Component<AppStateProps, AppStateState> {
         
         // if darkmode is not saved in cookies, the API will be called to check
         // the backend if the user has darkmode preferance set to 'true'
-        if (user !== null) {
+        // cookies.get returns undefined (not null) when the cookie is absent,
+        // so this must be a loose check or a missing cookie crashes user["user_id"] below.
+        if (user != null) {
             // Fetch all users to find the current user's dark mode preference.
             // IMPORTANT: We must NOT set this.state.user here — that state is reserved
             // for the edit-user flow (setAddUserTabWithUser). Setting it here causes a
             // race condition that breaks AdminAddUser (shows "Edit User" instead of "Add User").
+            // Falls back to the cookie's dark mode preference on any failure
+            // (server error or network error — genericResourceGET resolves,
+            // it does not reject, for either case).
+            const applyDarkModeFallback = () => {
+                const darkMode = user["user_dark_mode"] || false;
+                this.setState({ darkMode }, () => {
+                    if (darkMode) {
+                        document.body.classList.add('mode');
+                    } else {
+                        document.body.classList.remove('mode');
+                    }
+                });
+            };
+
             genericResourceGET(
                 `/user?user_id=${user["user_id"]}`,
                 "users",
@@ -789,19 +806,13 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                 document.body.classList.remove('mode');
                             }
                         });
-                    }
-                }
-            }).catch(error => {
-                console.error("Error fetching user data:", error);
-                // Fallback: use dark mode from cookie user object
-                const darkMode = user["user_dark_mode"] || false;
-                this.setState({ darkMode }, () => {
-                    if (darkMode) {
-                        document.body.classList.add('mode');
                     } else {
-                        document.body.classList.remove('mode');
+                        applyDarkModeFallback();
                     }
-                });
+                } else {
+                    logger.error("Error fetching user data:", result?.errorMessage);
+                    applyDarkModeFallback();
+                }
             });
         }
 
@@ -815,8 +826,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     roleNameMap: parseRoleNames(result["roles"])
                 });
             }
-        }).catch(error => {
-            console.error("Error fetching roles:", error);
         });
 
         // See trapBrowserBackNavigation above for why this is here.
@@ -847,7 +856,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
-                            <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
+                            <Typography data-testid="super-admin-title" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
                             <Box>
@@ -905,7 +914,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <AdminBulkUpload
                             navbar={this}
                             tab={this.state.activeTab}
-                            aria-label="adminBulkUpload"
                         />
                     </Box>
                 }
@@ -1006,7 +1014,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Teams" &&
-                    <Box className="page-spacing" aria-label="teamDashboard">
+                    <Box className="page-spacing" data-testid="team-dashboard">
                         <TeamDashboard
                             navbar={this}
                         />
@@ -1065,7 +1073,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="AssessmentTasks" &&
-                    <Box className="page-spacing" aria-label="assessmentDashboard">
+                    <Box className="page-spacing" data-testid="assessment-dashboard">
                         <AssessmentDashboard
                             navbar={this}
                         />
@@ -1120,7 +1128,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminEditTeamMembers
                             navbar={this}
-                            addTeamAction={this.state.addTeamAction!}
+                            addTeamAction={this.state.addTeamAction}
                         />
                     </Box>
                 }
@@ -1193,7 +1201,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Reporting" &&
-                    <Box className="page-spacing" aria-label="reportingDashboard">
+                    <Box className="page-spacing" data-testid="reporting-dashboard">
                         <BackButtonResource
                             navbar={this}
                             tabSelected={this.props.isSuperAdmin ? "AssessmentTask" : "User"}
@@ -1209,7 +1217,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"AssessmentTask"}
-                            aria-label="myCustomRubricsBackButton"
                         />
 
                         <AdminViewCustomRubrics
@@ -1223,7 +1230,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <UserAccount
@@ -1236,7 +1242,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <PrivacyPolicy
@@ -1249,7 +1254,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <Settings

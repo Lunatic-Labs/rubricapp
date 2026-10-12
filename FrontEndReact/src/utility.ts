@@ -4,6 +4,7 @@ import * as eventsource from "eventsource-client";
 import { Component as ReactComponent } from 'react';
 import { HTTP_STATUS } from './Enums/HttpStatusCodes';
 import { refreshAccessTokens } from './refreshLock';
+import { noteFailedRequest } from './logger';
 
 interface FetchOptions {
   dest?: string;
@@ -164,8 +165,14 @@ async function genericResourceFetch(
   }
 
   let response: Response;
+  let result: ApiResponse;
 
-  // try block handles network related errors.
+  // Network failures resolve here so callers only need a single .then() handler.
+  // The resolved value carries `fetchFailed: true` so callers can tell "no reply
+  // at all" apart from an error the server sent and show their own wording. It's
+  // kept out of component state, where it would go stale after the next success.
+  // (A reply that isn't JSON is not a fetch failure: it's handled below as a
+  // server error with a status-based message.)
   try {
     const fetchInit: RequestInit = {
       method: type,
@@ -178,15 +185,15 @@ async function genericResourceFetch(
 
     response = await fetch(url, fetchInit);
   } catch(error){
-    component.setState({
+    const state: any = {
       isLoaded: true,
       errorMessage: error instanceof Error ? error.message : String(error),
-    });
+    };
 
-    throw error;
+    component.setState(state);
+    return { ...state, fetchFailed: true };
   }
 
-  let result: ApiResponse;
   try {
     result = await response.json();
   } catch {
@@ -196,7 +203,6 @@ async function genericResourceFetch(
       message: interpretNonJsonResponse(response),
     };
   }
-
   if (result.success){
     const state: any = {
       isLoaded: true,
@@ -218,6 +224,10 @@ async function genericResourceFetch(
                                                                                         type, body, options);
       
     if (tokenErrorResult === null) {
+      // The backend echoes this request's id (core/__init__.py); remember it
+      // so a frontend error report sent soon after can be matched to this
+      // request's backend log lines.
+      noteFailedRequest(response.headers.get('X-Request-ID'));
       const parse = (msg:string) => {return msg.includes(':') ? msg.split(':').slice(1).join(':').trim() : msg}
       const state = {
         isLoaded: true,
@@ -588,7 +598,6 @@ export function setTestStudentCookies(data: TestStudentCredentials) {
 }
 
 export default modules;
-
 
 
 

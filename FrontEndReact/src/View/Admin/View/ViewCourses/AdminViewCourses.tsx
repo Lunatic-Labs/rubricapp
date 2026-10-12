@@ -78,7 +78,7 @@ class AdminViewCourses extends Component<AdminViewCoursesProps, AdminViewCourses
                       justifyContent: "space-between",
                       alignItems: "center",
                       alignSelf: "stretch"}}>
-                          <Typography aria-label='coursesTitle' sx={{fontWeight:'700'}} variant="h4">
+                          <Typography data-testid="courses-title" sx={{fontWeight:'700'}} variant="h4">
                               Courses
                           </Typography>
                   
@@ -88,7 +88,7 @@ class AdminViewCourses extends Component<AdminViewCoursesProps, AdminViewCourses
                                   onClick={() => {
                                       setAddCourseTabWithCourse([], null, "AddCourse");
                                   }}
-                                  aria-label='addCourse'
+                                  data-testid="add-course"
                               >   
                                   Add Course
                               </Button>

@@ -91,6 +91,80 @@ def test_get_all_admin_users(flask_app_mock, sample_token, auth_header, client):
         #        print(f"Cleanup skipped: {e}")
 
 
+def test_get_admin_users_includes_last_login_for_super_admin(flask_app_mock, sample_token, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            logged_in = create_user(sample_user(email="loggedin@example.com", role_id=3))
+            never_logged_in = create_user(sample_user(email="neverloggedin@example.com", role_id=3))
+            record_login(logged_in.user_id)
+
+            token = sample_token(user_id=1)
+
+            response = client.get(
+                "/api/admin_users?user_id=1",
+                headers=auth_header(token)
+            )
+
+            assert response.status_code == 200
+
+            rows = {row["user_id"]: row for row in response.get_json()["content"]["users"][0]}
+            assert rows[logged_in.user_id]["last_login_at"] is not None
+            assert rows[never_logged_in.user_id]["last_login_at"] is None
+            assert rows[logged_in.user_id]["email"] == logged_in.email
+
+        finally:
+            _safe_cleanup(
+                lambda: delete_user(logged_in.user_id),
+                lambda: delete_user(never_logged_in.user_id),
+            )
+
+
+def test_get_admin_users_rejects_non_super_admin(flask_app_mock, sample_token, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            teacher = create_user(sample_user(email="testteacher@example.com", role_id=3))
+
+            token = sample_token(user_id=teacher.user_id)
+
+            response = client.get(
+                f"/api/admin_users?user_id={teacher.user_id}",
+                headers=auth_header(token)
+            )
+
+            assert response.status_code == 401
+            assert "users" not in (response.get_json().get("content") or {})
+
+        finally:
+            _safe_cleanup(lambda: delete_user(teacher.user_id))
+
+
+def test_get_all_admin_users_does_not_expose_last_login(flask_app_mock, sample_token, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            teacher = create_user(sample_user(email="testteacher@example.com", role_id=3))
+            record_login(teacher.user_id)
+
+            token = sample_token(user_id=teacher.user_id)
+
+            response = client.get(
+                f"/api/user?isAdmin=true&user_id={teacher.user_id}",
+                headers=auth_header(token)
+            )
+
+            assert response.status_code == 200
+            for row in response.get_json()["content"]["users"][0]:
+                assert "last_login_at" not in row
+
+        finally:
+            _safe_cleanup(lambda: delete_user(teacher.user_id))
+
+
 def test_get_all_teams_users(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
