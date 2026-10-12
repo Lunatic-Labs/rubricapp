@@ -257,7 +257,9 @@ class ViewUsers extends Component<ViewUsersProps, ViewUsersState> {
                 <Switch
                   checked={this.state.showUtc}
                   onChange={(event) => this.setState({ showUtc: event.target.checked })}
-                  inputProps={{ "aria-label": "Show login times in UTC" }}
+                  // The test id goes on the input, which is what a click toggles.
+                  // inputProps' type doesn't list data-* attributes, hence the cast.
+                  inputProps={{ "aria-label": "Show login times in UTC", "data-testid": "login-time-utc-switch" } as React.InputHTMLAttributes<HTMLInputElement>}
                 />
               }
               label={this.state.showUtc ? "UTC" : "Local time"}
