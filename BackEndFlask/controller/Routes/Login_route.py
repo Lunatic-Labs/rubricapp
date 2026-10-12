@@ -26,22 +26,26 @@ def login():
         if user is None or not check_password_hash(get_user_password(user.user_id), password):
             raise InvalidCredentialsException
 
-        try:
-            record_login(user.user_id)
-        except Exception as e:
-            # A failed timestamp write shouldn't turn a valid login into an error.
-            logger.error(f"Failed to record login time for user_id {user.user_id}: {e}")
+        # Build the response before record_login: if its commit fails, the
+        # rollback expires `user`, and reading it again would hit the database.
+        user_id = user.user_id
 
         JSON = {
             "email": email,
-            "user_id": user.user_id,
-            "isSuperAdmin": user.user_id == 1,
+            "user_id": user_id,
+            "isSuperAdmin": user_id == 1,
             "isAdmin": user.is_admin,
             "has_set_password": user.has_set_password,
             "user_name": user.first_name + " " + user.last_name
         }
 
-        jwt, refresh = create_new_tokens(user.user_id)
+        try:
+            record_login(user_id)
+        except Exception as e:
+            # A failed timestamp write shouldn't turn a valid login into an error.
+            logger.error(f"Failed to record login time for user_id {user_id}: {e}")
+
+        jwt, refresh = create_new_tokens(user_id)
 
         return create_good_response(JSON, 200, "login", jwt, refresh)
 
