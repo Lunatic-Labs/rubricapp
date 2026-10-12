@@ -39,7 +39,7 @@ test("screenHistory.test.ts Test 1: start should tag the current entry without a
 
     expect(window.history.length).toBe(lengthBefore);
     expect(window.history.state).toMatchObject({ usr: null, key: "default", idx: 0 });
-    expect(window.history.state.skillBuilderScreen).toMatchObject({ index: 0 });
+    expect(window.history.state.skillBuilderScreen).toMatchObject({ id: expect.any(Number) });
 });
 
 test("screenHistory.test.ts Test 2: record should add a history entry only when the screen changes", () => {
@@ -51,7 +51,6 @@ test("screenHistory.test.ts Test 2: record should add a history entry only when 
 
     screenHistory.record({ tab: "Users" });
     expect(window.history.length).toBe(lengthBefore + 1);
-    expect(window.history.state.skillBuilderScreen).toMatchObject({ index: 1 });
 });
 
 test("screenHistory.test.ts Test 3: Back should restore the previous screen as it was last recorded", async () => {
@@ -131,4 +130,40 @@ test("screenHistory.test.ts Test 8: stop should stop restoring screens", async (
     await popped;
 
     expect(onRestore).not.toHaveBeenCalled();
+});
+
+// Back from this instance's first screen onto an entry left by an earlier one.
+async function crossIntoEarlierEntries(): Promise<void> {
+    const earlier = makeScreenHistory();
+    earlier.start({ tab: "Courses" });
+    earlier.record({ tab: "Users" });
+    earlier.stop();
+
+    screenHistory.start({ tab: "Courses" });
+    screenHistory.record({ tab: "Teams" });
+    await goBackAndExpectRestore({ tab: "Courses" });
+
+    onRestore.mockClear();
+    const popped = new Promise((resolve) => window.addEventListener("popstate", resolve, { once: true }));
+    window.history.back();
+    await popped;
+}
+
+test("screenHistory.test.ts Test 9: Back from a screen opened on an earlier instance's entry should return to the screen left", async () => {
+    await crossIntoEarlierEntries();
+
+    screenHistory.record({ tab: "Settings" });
+
+    await goBackAndExpectRestore({ tab: "Courses" });
+});
+
+test("screenHistory.test.ts Test 10: Forward from an earlier instance's entry should still restore this instance's screens", async () => {
+    await crossIntoEarlierEntries();
+
+    window.history.forward();
+    await waitFor(() => expect(onRestore).toHaveBeenCalledWith({ tab: "Courses" }));
+
+    onRestore.mockClear();
+    window.history.forward();
+    await waitFor(() => expect(onRestore).toHaveBeenCalledWith({ tab: "Teams" }));
 });
