@@ -709,7 +709,13 @@ def get_team_ratings(assessment_task_id):
             and_(
                 Feedback.completed_assessment_id
                 == CompletedAssessment.completed_assessment_id,
-                Feedback.user_id == team_members.c.user_id,
+                or_(
+                    Feedback.user_id == team_members.c.user_id,
+                    and_(
+                        Feedback.user_id.is_(None),
+                        Feedback.team_id == CompletedAssessment.team_id,
+                    ),
+                ),
             ),
         )
         .filter(
