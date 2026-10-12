@@ -1,6 +1,7 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
+import { Box, FormControlLabel, Switch } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
@@ -8,6 +9,7 @@ import CustomDataTable from "../../../Components/CustomDataTable";
 import Cookies from 'universal-cookie';
 import { genericResourceDELETE } from "../../../../utility";
 import { GridColDef } from '@mui/x-data-grid';
+import { formatLastLogin } from "../../../../utils/formatLastLogin";
 /**
  * Creates an instance of the ViewUsers component.
  * Displays a table of users with options to edit and delete.
@@ -26,6 +28,9 @@ import { GridColDef } from '@mui/x-data-grid';
  * - Users cannot delete themselves (buttons hidden when userId matches logged-in user).
  *    - Only applies when the logged-in user is an admin.
  * 
+ * Super admin view:
+ * - Adds a Last Login column, shown in the viewer's local time or in UTC via a toggle.
+ * 
  */
 
 interface ViewUsersProps {
@@ -35,7 +40,15 @@ interface ViewUsersProps {
     refreshData: () => void;
 }
 
-class ViewUsers extends Component<ViewUsersProps> {
+interface ViewUsersState {
+    showUtc: boolean;
+}
+
+class ViewUsers extends Component<ViewUsersProps, ViewUsersState> {
+  state: ViewUsersState = {
+    showUtc: false,
+  };
+
   /**
    * @method deleteUser - Deletes a user by their user ID.
    * 
@@ -133,6 +146,14 @@ class ViewUsers extends Component<ViewUsersProps> {
         }
       );
       columns.push({
+        field: "last_login_at",
+        headerName: "Last Login",
+        minWidth: 200,
+        flex: 1,
+        // Sorting uses the raw ISO value; only the display is formatted.
+        valueFormatter: (value: string | null) => formatLastLogin(value, this.state.showUtc),
+      });
+      columns.push({
         field: "view_action",
         headerName: "View",
         minWidth: 90,
@@ -226,12 +247,28 @@ class ViewUsers extends Component<ViewUsersProps> {
     });
 
     return (
-      <CustomDataTable
-        data={users ? users : []}
-        columns={columns}
-        getRowId={(row) => row.user_id}
-        height="60vh"
-      />
+      <Box>
+        {navbar.props.isSuperAdmin &&
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.showUtc}
+                  onChange={(event) => this.setState({ showUtc: event.target.checked })}
+                  inputProps={{ "aria-label": "Show login times in UTC" }}
+                />
+              }
+              label={this.state.showUtc ? "UTC" : "Local time"}
+            />
+          </Box>
+        }
+        <CustomDataTable
+          data={users ? users : []}
+          columns={columns}
+          getRowId={(row) => row.user_id}
+          height="60vh"
+        />
+      </Box>
     )
   }
 }
