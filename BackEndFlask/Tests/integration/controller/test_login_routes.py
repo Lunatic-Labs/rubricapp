@@ -4,8 +4,11 @@ from werkzeug.security import generate_password_hash
 from models.feedback import *
 from Tests.PopulationFunctions import cleanup_test_users
 from integration.integration_helpers import *
-from models.user import create_user, delete_user, set_reset_code
+from models.user import create_user, delete_user, get_user, set_reset_code
 import jwt
+from sqlalchemy import event
+from sqlalchemy.exc import OperationalError
+from sqlalchemy.orm import Session
 
 
 def test_login_success(flask_app_mock, client):
@@ -31,6 +34,9 @@ def test_login_success(flask_app_mock, client):
             print(result)
             assert result[0]["email"] == user.email
             assert result[0]["user_id"] == user.user_id
+
+            db.session.expire_all()
+            assert get_user(user.user_id).last_login_at is not None
              
 
         finally:
@@ -39,6 +45,59 @@ def test_login_success(flask_app_mock, client):
                 delete_user(user.user_id)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
+
+def test_login_succeeds_when_recording_login_time_fails(flask_app_mock, client, monkeypatch):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        user = create_user(sample_user())
+        user_id, email = user.user_id, user.email
+        expected_name = f"{user.first_name} {user.last_name}"
+
+        # Fail record_login's commit, then fail every later query too, as if
+        # the database stayed down. The rollback expires the loaded user, so
+        # the login must not read it again after record_login.
+        database_down = {"value": False}
+        real_commit = db.session.commit
+
+        def failing_commit():
+            database_down["value"] = True
+            raise OperationalError("COMMIT", {}, Exception("database unavailable"))
+
+        def refuse_queries_while_down(orm_execute_state):
+            if database_down["value"]:
+                raise OperationalError("SELECT", {}, Exception("database unavailable"))
+
+        event.listen(Session, "do_orm_execute", refuse_queries_while_down)
+        monkeypatch.setattr(db.session, "commit", failing_commit)
+
+        try:
+            response = client.post(
+                "/api/login",
+                json={"email": email, "password": "password123"}
+            )
+
+            assert response.status_code == 200
+
+            data = response.get_json()
+            assert data["success"] is True
+            result = data["content"]["login"][0]
+            assert result["user_id"] == user_id
+            assert result["email"] == email
+            assert result["user_name"] == expected_name
+            assert "access_token" in data["headers"]
+
+        finally:
+            event.remove(Session, "do_orm_execute", refuse_queries_while_down)
+            monkeypatch.setattr(db.session, "commit", real_commit)
+
+            assert get_user(user_id).last_login_at is None
+
+            try:
+                delete_user(user_id)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
 
 def test_login_with_missing_credentials(flask_app_mock, client):
     with flask_app_mock.app_context():

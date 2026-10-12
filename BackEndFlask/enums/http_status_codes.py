@@ -23,6 +23,7 @@ class HttpStatus(Enum):
     UNAUTHORIZED      = 401
     FORBIDDEN         = 403
     NOT_FOUND         = 404
+    CONTENT_TOO_LARGE = 413
     TOO_MANY_REQUESTS = 429
     # Server errors
     INTERNAL_SERVER_ERROR = 500

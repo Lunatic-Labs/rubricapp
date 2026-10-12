@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
+import { logger } from '../../../../../logger';
 import { Box, Button, CircularProgress, Collapse, Dialog, DialogTitle, DialogContent, DialogActions, IconButton, Paper, TextField } from '@mui/material';
 import ExpandLessIcon from '@mui/icons-material/ExpandLess';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
@@ -309,7 +310,7 @@ const ComparisonDrawer: React.FC<ComparisonDrawerProps> = ({
         : 'assessment-graph-comparison.pdf';
       pdf.save(filename);
     } catch (error) {
-      console.error('Error exporting PDF:', error);
+      logger.error('Error exporting PDF:', error);
     } finally {
       setExporting(false);
     }

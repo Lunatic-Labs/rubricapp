@@ -1,12 +1,15 @@
 import React, { Component } from "react"
 import 'bootstrap/dist/css/bootstrap.css';
 import IconButton from '@mui/material/IconButton';
+import { Box, FormControlLabel, Switch } from '@mui/material';
 import { Visibility } from '@mui/icons-material';
 import EditIcon from '@mui/icons-material/Edit';
 import DeleteIcon from '@mui/icons-material/Delete';
 import CustomDataTable from "../../../Components/CustomDataTable";
 import Cookies from 'universal-cookie';
 import { genericResourceDELETE } from "../../../../utility";
+import { GridColDef } from '@mui/x-data-grid';
+import { formatLastLogin } from "../../../../utils/formatLastLogin";
 /**
  * Creates an instance of the ViewUsers component.
  * Displays a table of users with options to edit and delete.
@@ -25,6 +28,9 @@ import { genericResourceDELETE } from "../../../../utility";
  * - Users cannot delete themselves (buttons hidden when userId matches logged-in user).
  *    - Only applies when the logged-in user is an admin.
  * 
+ * Super admin view:
+ * - Adds a Last Login column, shown in the viewer's local time or in UTC via a toggle.
+ * 
  */
 
 interface ViewUsersProps {
@@ -34,7 +40,15 @@ interface ViewUsersProps {
     refreshData: () => void;
 }
 
-class ViewUsers extends Component<ViewUsersProps> {
+interface ViewUsersState {
+    showUtc: boolean;
+}
+
+class ViewUsers extends Component<ViewUsersProps, ViewUsersState> {
+  state: ViewUsersState = {
+    showUtc: false,
+  };
+
   /**
    * @method deleteUser - Deletes a user by their user ID.
    * 
@@ -88,74 +102,67 @@ class ViewUsers extends Component<ViewUsersProps> {
     var setAddUserTabWithUser = navbar.setAddUserTabWithUser;
     var setCoursesTabWithUser = navbar.setCoursesTabWithUser;
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "first_name",
-        label: "First Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width: "20%" } },
-          setCellProps: () => { return { width: "20%" } },
-        }
+        field: "first_name",
+        headerName: "First Name",
+        minWidth: 150,
+        flex: 1,
       },
       {
-        name: "last_name",
-        label: "Last Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width: "20%" } },
-          setCellProps: () => { return { width: "20%" } },
-        }
+        field: "last_name",
+        headerName: "Last Name",
+        minWidth: 150,
+        flex: 1,
       },
       {
-        name: "email",
-        label: "Email",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width: "40%" } },
-          setCellProps: () => { return { width: "40%" } },
-        }
+        field: "email",
+        headerName: "Email",
+        minWidth: 440,
+        flex: 1,
       }];
 
     if (!navbar.props.isSuperAdmin) {
       columns.push(
         {
-          name: "role_id",
-          label: "Role",
-          options: {
-            filter: true,
-            setCellHeaderProps: () => { return { width: "10%" } },
-            setCellProps: () => { return { width: "10%" } },
-            customBodyRender: (roleId: number) => {
-              return (
-                <p>{roleNames[roleId]}</p>
-              )
-            }
-          }
-        } as any
+          field: "role_id",
+          headerName: "Role",
+          minWidth: 160,
+          flex: 1,
+          renderCell: (params) => (
+            <p>{roleNames[params.value]}</p>
+          )
+        }
       );
     }
 
     if (navbar.props.isSuperAdmin) {
       columns.push(
         {
-          name: "lms_id",
-          label: "LMS ID",
-          options: {
-            filter: true,
-            setCellHeaderProps: () => { return { width: "10%" } },
-            setCellProps: () => { return { width: "10%" } },
-          }
-        } as any
+          field: "lms_id",
+          headerName: "LMS ID",
+          minWidth: 110,
+          flex: 1,
+        }
       );
       columns.push({
-      name: "user_id",
-      label: "View",
-      options: {
-        filter: false,
-        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: number) => {
+        field: "last_login_at",
+        headerName: "Last Login",
+        minWidth: 200,
+        flex: 1,
+        // Sorting uses the raw ISO value; only the display is formatted.
+        valueFormatter: (value: string | null) => formatLastLogin(value, this.state.showUtc),
+      });
+      columns.push({
+        field: "view_action",
+        headerName: "View",
+        minWidth: 90,
+        flex: 1,
+        filterable: false,
+        align: "center",
+        headerAlign: "center",
+        renderCell: (params) => {
+          const userId = params.row.user_id;
           var cookies = new Cookies();
           return (
             <IconButton id={"viewUsersViewButton" + userId}
@@ -164,14 +171,14 @@ class ViewUsers extends Component<ViewUsersProps> {
               onClick={() => {
                 setCoursesTabWithUser(users, userId);
               }}
-              aria-label="viewUserButton"
+              aria-label="View user"
+              data-testid="view-user-button"
             >
               <Visibility />
             </IconButton>
           )
         },
-      },
-    } as any);
+      });
     }
 /**
  * Edit and Delete Buttons:
@@ -183,79 +190,89 @@ class ViewUsers extends Component<ViewUsersProps> {
  *   - Calls deleteUser method to perform deletion.
  * - Permissions:
  *   - Buttons are hidden if the userId matches the logged-in user and the user is an admin.
- * 
+ *
  */
     columns.push({
-      name: "user_id",
-      label: "Edit",
-      options: {
-        filter: false,
-        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: number) => {
-          var cookies = new Cookies();
-          return (
-            <IconButton id={"viewUsersEditButton" + userId}
-              size="small"
-              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
-              onClick={() => {
-                setAddUserTabWithUser(users, userId);
-              }}
-              aria-label="editUserButton"
-            >
-              <EditIcon sx={{ color: "black" }} />
-            </IconButton>
-          )
-        },
+      field: "edit_action",
+      headerName: "Edit",
+      minWidth: 90,
+      flex: 1,
+      filterable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        const userId = params.row.user_id;
+        var cookies = new Cookies();
+        return (
+          <IconButton id={"viewUsersEditButton" + userId}
+            size="small"
+            hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+            onClick={() => {
+              setAddUserTabWithUser(users, userId);
+            }}
+            aria-label="Edit user" data-testid="edit-user-button"
+          >
+            <EditIcon sx={{ color: "black" }} />
+          </IconButton>
+        )
       },
-    } as any);
+    });
     columns.push({
-      name: "user_id",
-      label: "Delete",
-      options: {
-        filter: false,
-        setCellHeaderProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        setCellProps: () => { return { align: "center", width: "10%", className: "button-column-alignment" } },
-        customBodyRender: (userId: number) => {
-          var cookies = new Cookies();
-          return (
-            <IconButton id={"viewUsersDeleteButton" + userId}
-              size="small"
-              hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
-              onClick={() => {
-                if (
-                  window.confirm("Are you sure you want to delete this user?")
-                ) {
-                  this.deleteUser(userId)
-                }
-              }}
-              aria-label="deleteUserButton"
-            >
-              <DeleteIcon sx={{ color: "black" }} />
-            </IconButton>
-          )
-        },
+      field: "delete_action",
+      headerName: "Delete",
+      minWidth: 90,
+      flex: 1,
+      filterable: false,
+      align: "center",
+      headerAlign: "center",
+      renderCell: (params) => {
+        const userId = params.row.user_id;
+        var cookies = new Cookies();
+        return (
+          <IconButton id={"viewUsersDeleteButton" + userId}
+            size="small"
+            hidden={cookies.get('user')['user_id'] === userId && navbar.props.isAdmin}
+            onClick={() => {
+              if (
+                window.confirm("Are you sure you want to delete this user?")
+              ) {
+                this.deleteUser(userId)
+              }
+            }}
+            aria-label="Delete user"
+            data-testid="delete-user-button"
+          >
+            <DeleteIcon sx={{ color: "black" }} />
+          </IconButton>
+        )
       },
-    } as any);
-
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "50vh",
-      //setRowProps: () => { return { padding: "none" } },
-    };
+    });
 
     return (
-      <CustomDataTable
-        data={users ? users : []}
-        columns={columns}
-        options={options}
-      />
+      <Box>
+        {navbar.props.isSuperAdmin &&
+          <Box sx={{ display: "flex", justifyContent: "flex-end" }}>
+            <FormControlLabel
+              control={
+                <Switch
+                  checked={this.state.showUtc}
+                  onChange={(event) => this.setState({ showUtc: event.target.checked })}
+                  // The test id goes on the input, which is what a click toggles.
+                  // inputProps' type doesn't list data-* attributes, hence the cast.
+                  inputProps={{ "aria-label": "Show login times in UTC", "data-testid": "login-time-utc-switch" } as React.InputHTMLAttributes<HTMLInputElement>}
+                />
+              }
+              label={this.state.showUtc ? "UTC" : "Local time"}
+            />
+          </Box>
+        }
+        <CustomDataTable
+          data={users ? users : []}
+          columns={columns}
+          getRowId={(row) => row.user_id}
+          height="60vh"
+        />
+      </Box>
     )
   }
 }

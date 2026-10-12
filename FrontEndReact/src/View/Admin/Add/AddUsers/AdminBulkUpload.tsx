@@ -145,16 +145,14 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                         uploadRequestStatus: REQUEST_STATE.SUCCESS,
                     });
                 } else {
+                    // Covers both server errors and network errors — genericResourcePOST
+                    // resolves (never rejects) with errorMessage set in both cases, so this
+                    // branch is what actually surfaces the message via <ErrorMessage>.
                     this.setState({
+                        errorMessage: result?.errorMessage ?? "Upload failed. Please try again.",
                         uploadRequestStatus: REQUEST_STATE.ERROR,
                     });
                 }
-            }).catch((error) => { 
-                this.setState({
-                    errorMessage: error,
-                    uploadRequestStatus: REQUEST_STATE.ERROR,
-                })
-                
             });
         }
     }
@@ -182,7 +180,6 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                 {this.state.errorMessage &&
                     <ErrorMessage
                         errorMessage={String(this.state.errorMessage)}
-                        aria-label="adminBulkUploadErrorMessage"
                     />
                 }
 
@@ -190,7 +187,7 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                     <Box className="form-position">
                         <Box className="card-style" sx={{ width: '80%' }}>
                             <Box className="form-spacing">
-                                <Typography variant="h5" aria-label='adminBulkUploadTitle'>
+                                <Typography variant="h5" data-testid="admin-bulk-upload-title">
                                     {this.props.tab === "BulkUpload" ? "Student" : "Teams"} Bulk Upload
                                 </Typography>
                                 <div className="d-flex justify-content-center flex-column align-items-center">
@@ -283,7 +280,7 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                                             className='rounded form-control'
                                             type="file"
                                             name="file"
-                                            aria-label="adminBulkUploadChooseFileButton"
+                                            aria-label="Choose file to upload" data-testid="admin-bulk-upload-choose-file-button"
                                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
                                                 this.setState({
                                                     selectedFile: e.target.files?.[0] ?? null
@@ -299,12 +296,12 @@ class AdminBulkUpload extends Component<AdminBulkUploadProps, AdminBulkUploadSta
                                                 onClick={() => {
                                                     confirmCreateResource("User")
                                                 }}
-                                                id="" className="cancel-button" aria-label="cancelAdminBulkUploadButton">   
+                                                id="" className="cancel-button" data-testid="cancel-admin-bulk-upload-button">   
                                                     Cancel
                                                 </Button>
 
                                                 <Button className='primary-color' 
-                                                    variant='contained' type="submit" aria-label="adminBulkUploadUploadFileButton"
+                                                    variant='contained' type="submit" data-testid="admin-bulk-upload-upload-file-button"
                                                     style={{ display:  isLoading ? 'none' : 'inline-flex' }}
                                                 >
                                                     Upload
