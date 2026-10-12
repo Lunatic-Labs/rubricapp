@@ -4,6 +4,7 @@ import * as eventsource from "eventsource-client";
 import { Component as ReactComponent } from 'react';
 import { HTTP_STATUS } from './Enums/HttpStatusCodes';
 import { refreshAccessTokens } from './refreshLock';
+import { noteFailedRequest } from './logger';
 
 interface FetchOptions {
   dest?: string;
@@ -223,6 +224,10 @@ async function genericResourceFetch(
                                                                                         type, body, options);
       
     if (tokenErrorResult === null) {
+      // The backend echoes this request's id (core/__init__.py); remember it
+      // so a frontend error report sent soon after can be matched to this
+      // request's backend log lines.
+      noteFailedRequest(response.headers.get('X-Request-ID'));
       const parse = (msg:string) => {return msg.includes(':') ? msg.split(':').slice(1).join(':').trim() : msg}
       const state = {
         isLoaded: true,

@@ -43,6 +43,7 @@ KILL="--kill"
       certbot
       python3-certbot-nginx
       lsof
+      logrotate
       mysql-server'
 
 # =====================================================
@@ -166,6 +167,9 @@ server {
 }"
 
     # Gunicorn systemd service config
+    # --access-logfile/--error-logfile are relative to WorkingDirectory,
+    # landing in BackEndFlask/logs/ where they're rotated by the
+    # logrotate config below (LOGROTATE_CONFIG / configure_logrotate).
     GUNICORN_CONFIG="[Unit]
 Description=Gunicorn instance to serve rubricapp
 After=network.target $REDIS_LIMITER_SERVICE_NAME redis-server.service
@@ -176,11 +180,100 @@ User=$USER
 Group=www-data
 WorkingDirectory=/home/$USER/$PROD_NAME/rubricapp/BackEndFlask
 Environment=\"PATH=$VENV_DIR/bin\"
-ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock wsgi:app
+ExecStart=$VENV_DIR/bin/gunicorn --workers 3 --umask 007 --bind unix:rubricapp.sock --access-logfile logs/gunicorn-access.log --error-logfile logs/gunicorn-error.log wsgi:app
 
 [Install]
 WantedBy=multi-user.target
 "
+
+    # logrotate config for every log file the deployment writes: gunicorn's
+    # access/error logs, the app's own logs from
+    # BackEndFlask/models/logger.py, and the frontend's npm preview output
+    # (FrontEndReact/frontend.log). None rotates itself - gunicorn has
+    # no built-in rotation, and the app deliberately doesn't rotate
+    # in-process because gunicorn's several workers all hold the same file
+    # open and would race at the rollover (see the Logger docstring). This
+    # is the single coordinated rotator for all of them. copytruncate
+    # truncates in place instead of renaming, so neither gunicorn nor any
+    # worker needs to be signalled to reopen its file descriptor.
+    # Retention (90 days) matches LOG_RETENTION_DAYS in
+    # BackEndFlask/models/logger.py. maxage enforces it in days: rotate 90
+    # alone counts rotations, and notifempty skips quiet days, so files
+    # could otherwise outlive 90 days.
+    LOGROTATE_CONFIG="$PROJ_DIR/BackEndFlask/logs/gunicorn-access.log
+$PROJ_DIR/BackEndFlask/logs/gunicorn-error.log
+$PROJ_DIR/BackEndFlask/logs/all.log
+$PROJ_DIR/BackEndFlask/logs/client_errors.log
+$PROJ_DIR/BackEndFlask/logs/security.log
+$PROJ_DIR/FrontEndReact/frontend.log {
+    daily
+    rotate 90
+    maxage 90
+    compress
+    delaycompress
+    missingok
+    notifempty
+    copytruncate
+}
+"
+
+    # CloudWatch Logs agent config: ships the app's rotated log files to
+    # CloudWatch so they survive past this one instance's disk. Auth comes
+    # from the EC2 instance's IAM role (see configure_cloudwatch_agent),
+    # not a key stored here. all.log is already one JSON object per line
+    # (see BackEndFlask/models/logger.py), which CloudWatch Logs Insights
+    # parses natively - no multi-line/format config needed. Retention (90
+    # days) matches LOG_RETENTION_DAYS in BackEndFlask/models/logger.py.
+    CLOUDWATCH_AGENT_CONFIG='{
+  "agent": {
+    "run_as_user": "root"
+  },
+  "logs": {
+    "logs_collected": {
+      "files": {
+        "collect_list": [
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/all.log",
+            "log_group_name": "/rubricapp/backend/app",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/client_errors.log",
+            "log_group_name": "/rubricapp/backend/client-errors",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/security.log",
+            "log_group_name": "/rubricapp/backend/security",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/gunicorn-access.log",
+            "log_group_name": "/rubricapp/backend/gunicorn-access",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/BackEndFlask/logs/gunicorn-error.log",
+            "log_group_name": "/rubricapp/backend/gunicorn-error",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          },
+          {
+            "file_path": "'"$PROJ_DIR"'/FrontEndReact/frontend.log",
+            "log_group_name": "/rubricapp/frontend",
+            "log_stream_name": "{instance_id}",
+            "retention_in_days": 90
+          }
+        ]
+      }
+    }
+  }
+}
+'
 }
 # ===================
 # MORE UTIL FUNCTIONS
@@ -575,6 +668,79 @@ function configure_gunicorn() {
     log "done"
 }
 
+# Configures logrotate to rotate every backend log file: gunicorn's
+# access/error logs and the app's own logs, none of which rotate or trim
+# themselves (see LOGROTATE_CONFIG in build_configs).
+function configure_logrotate() {
+    log "configuring logrotate for gunicorn and app logs"
+
+    echo -e "$LOGROTATE_CONFIG" | sudo tee "/etc/logrotate.d/rubricapp" > /dev/null
+    sudo chmod 644 /etc/logrotate.d/rubricapp
+
+    log "done"
+}
+
+# Reports whether this instance has an IAM role attached, printing the
+# role name if so. Tries IMDSv2 (token-authenticated) first and falls
+# back to IMDSv1, because an instance configured to *require* IMDSv2
+# answers an unauthenticated metadata request with 401 even when a role
+# is attached - probing v1 alone would report "no role" on exactly the
+# instances that are configured most strictly.
+function instance_iam_role() {
+    local token role
+
+    token="$(curl -s -m 2 -X PUT http://169.254.169.254/latest/api/token \
+        -H 'X-aws-ec2-metadata-token-ttl-seconds: 60' 2>/dev/null)"
+
+    if [ -n "$token" ]; then
+        role="$(curl -s -m 2 http://169.254.169.254/latest/meta-data/iam/security-credentials/ \
+            -H "X-aws-ec2-metadata-token: $token" 2>/dev/null)"
+    else
+        role="$(curl -s -m 2 http://169.254.169.254/latest/meta-data/iam/security-credentials/ 2>/dev/null)"
+    fi
+
+    # A missing role is a 404 body, not an empty one, so an HTML/error
+    # body must not be mistaken for a role name.
+    case "$role" in
+        ''|*'<'*|*'404'*|*'Not Found'*) return 1 ;;
+        *) echo "$role" ;;
+    esac
+}
+
+# Installs and configures the CloudWatch Logs agent so the app's log
+# files (BackEndFlask/logs/all.log, client_errors.log, security.log,
+# gunicorn-access.log, gunicorn-error.log, FrontEndReact/frontend.log)
+# get shipped off this instance instead of only living on its local disk.
+function configure_cloudwatch_agent() {
+    log "configuring CloudWatch Logs agent"
+
+    # The agent installs and starts fine without an IAM role attached,
+    # it just silently fails to ship anything - warn instead of
+    # discovering that later in the CloudWatch console.
+    if ! instance_iam_role > /dev/null; then
+        log "WARNING: no IAM role detected on this instance."
+        log "WARNING: attach one with the CloudWatchAgentServerPolicy (or equivalent"
+        log "WARNING: logs:CreateLogGroup/CreateLogStream/PutLogEvents/DescribeLogStreams"
+        log "WARNING: permissions), or the agent will run but never ship logs."
+    fi
+
+    if ! command -v amazon-cloudwatch-agent-ctl &> /dev/null; then
+        local deb_path
+        deb_path="$(mktemp --suffix=.deb)"
+        curl -s -o "$deb_path" https://amazoncloudwatch-agent.s3.amazonaws.com/ubuntu/amd64/latest/amazon-cloudwatch-agent.deb
+        sudo dpkg -i -E "$deb_path"
+        rm -f "$deb_path"
+    fi
+
+    echo "$CLOUDWATCH_AGENT_CONFIG" | sudo tee /opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json > /dev/null
+
+    sudo /opt/aws/amazon-cloudwatch-agent/bin/amazon-cloudwatch-agent-ctl \
+        -a fetch-config -m ec2 -s \
+        -c file:/opt/aws/amazon-cloudwatch-agent/etc/amazon-cloudwatch-agent.json
+
+    log "done"
+}
+
 # Writes the systemd unit for the second Redis instance used by
 # flask-limiter (port 6380, see core/__init__.py). The default
 # redis-server.service only listens on 6379, so this one is separate.
@@ -677,10 +843,13 @@ function serve_rubricapp() {
     cd - >/dev/null 2>&1 || true
 
     # Start frontend as background process
-    # Logs go to frontend.log for debugging
+    # Logs go to frontend.log for debugging. Appended (>>), not truncated:
+    # logrotate's copytruncate empties the file in place, and only a writer
+    # in append mode carries on from the new end instead of its old offset
+    # (which would leave the file padded with null bytes).
     log "starting front-end"
     cd "$PROJ_DIR/FrontEndReact"
-    nohup npm run preview &> "$PROJ_DIR/FrontEndReact/frontend.log" & disown
+    nohup npm run preview >> "$PROJ_DIR/FrontEndReact/frontend.log" 2>&1 & disown
     cd - >/dev/null 2>&1 || true
 
     log "done"
@@ -714,6 +883,8 @@ function configure() {
     assure_proj_dir
     configure_ssl
     configure_gunicorn
+    configure_logrotate
+    configure_cloudwatch_agent
     configure_nginx
     configure_ufw
 }
@@ -721,6 +892,8 @@ function configure() {
 function configure_no_ssl() {
     assure_proj_dir
     configure_gunicorn
+    configure_logrotate
+    configure_cloudwatch_agent
     configure_nginx_no_ssl
     configure_ufw
 }

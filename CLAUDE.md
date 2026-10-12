@@ -42,6 +42,8 @@ Run the full suites against the `docker compose` stack, as described in `Manuals
 
 1. **Start the stack**: `docker compose up -d`, then `docker ps` to confirm container names (usually `rubricapp-backend-1`, `rubricapp-mysql-1`, …) and `docker port rubricapp-backend-1` for the backend's host port (currently `5050`).
 
+   **Rebuild the backend image after pulling or switching branches**: `docker compose build backend && docker compose up -d --no-deps backend`. `compose.yml` live-mounts only `Functions/`, `controller/`, `core/`, `models/` and `Tests/`. Everything else under `BackEndFlask/` (`constants/`, `enums/`, `setupEnv.py`, `wsgi.py`, `requirements.txt`, …) is copied in at build time, so a stale image runs old copies of those. A new module there typically crashes the backend on startup with `ModuleNotFoundError`. When the backend isn't running, frontend tests fail almost across the board, stuck on the login form.
+
 2. **Never run pytest against the dev database.** `Tests/conftest.py` creates and drops its database around *every* test, so pointing it at `local` (the default `MYSQL_DATABASE`) wipes dev data and can crash the running containers. Use the throwaway `pytest_coverage` database instead; grant access to it once per MySQL volume:
 
    ```bash
