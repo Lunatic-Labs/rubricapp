@@ -150,7 +150,7 @@ test("AdminViewUsers.test.tsx Test 7: Should show each admin's last login on the
     render(<Login />);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(sat);
+        expectElementWithTestIdToBeInDocument(sat);
     });
 
     await waitFor(() => {
@@ -159,7 +159,7 @@ test("AdminViewUsers.test.tsx Test 7: Should show each admin's last login on the
 
     expect(screen.getByText("Local time")).toBeInTheDocument();
 
-    clickElementWithAriaLabel("Show login times in UTC");
+    clickElementWithTestId("login-time-utc-switch");
 
     // The super admin logged in during Test 6, so at least one row has a time.
     await waitFor(() => {
