@@ -2,7 +2,7 @@ import React from "react";
 import Cookies from "universal-cookie";
 import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import CustomButton from "./Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericResourceDELETE } from "../../../../utility";
 import CustomDataTable from "../../../Components/CustomDataTable";
@@ -285,7 +285,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 textAlign: "left",
                                 fontWeight: "bold",
                             }}
-                            aria-label="addCustomizeYourRubricTitle"
+                            data-testid="add-customize-your-rubric-title"
                         > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
                         </h2>
                         <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
@@ -294,7 +294,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                     <CustomButton
                                         label="Delete Rubric"
                                         isOutlined={false}
-                                        aria-label="customizeYourRubricDeleteRubricButton"
+                                        data-testid="customize-your-rubric-delete-rubric-button"
                                         onClick={() => {
                                             this.handleDeleteRubric(rubrics!.rubric_id);
                                         }}
@@ -307,7 +307,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 <CustomButton
                                     label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
                                     isOutlined={false}
-                                    aria-label="customizeYourRubricCreateRubricButton"
+                                    data-testid="customize-your-rubric-create-rubric-button"
                                     onClick={() => {
                                         this.handleCreateRubric(pickedCategories);
                                     }}
@@ -367,7 +367,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                         },
                                     },
                                 }}
-                                aria-label="customizeYourRubricRubricName"
+                                data-testid="customize-your-rubric-rubric-name"
                             />
                         </Grid>
 
@@ -411,7 +411,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                         },
                                     },
                                 }}
-                                aria-label="customizeYourRubricRubricDescription"
+                                data-testid="customize-your-rubric-rubric-description"
                             />
                         </Grid>
                     </Grid>
@@ -433,7 +433,6 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                     rubrics={defaultRubrics}
                                     onCategorySelect={this.handleCategorySelect}
                                     selectedCategories={pickedCategories}
-                                    aria-label="customizeYourRubricRubricCategoryTable"
                                     readOnly={false}
                             />
 
@@ -442,7 +441,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                         </Grid>
 
                         <Grid item xs={6}>
-                            <h3 className="d-flex mb-3" aria-label="yourSelectedCategories">Your Selected Categories</h3>
+                            <h3 className="d-flex mb-3" data-testid="your-selected-categories">Your Selected Categories</h3>
 
                             <CustomDataTable
                                 data={pickedCategories}

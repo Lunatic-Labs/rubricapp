@@ -12,7 +12,7 @@ class SuccessMessage extends Component<SuccessMessageProps> {
 
         return(
             <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
-                <Alert aria-label='successMessageAlert' sx={{ width: "40%", mt: 2 }} severity="success" variant="filled">
+                <Alert data-testid='success-message-alert' sx={{ width: "40%", mt: 2 }} severity="success" variant="filled">
                     { displayedMessage }
                 </Alert>
             </Box>

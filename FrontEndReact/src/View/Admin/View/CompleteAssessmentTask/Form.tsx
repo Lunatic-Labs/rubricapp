@@ -457,7 +457,7 @@ class Form extends Component<FormProps, FormState> {
                             id="formSubmitButton"
                             variant="contained"
                             color="primary"
-                            aria-label="saveButton"
+                            data-testid="save-button"
 
                             onClick={() => {
                                 this.saveUnit(this.state.currentUnitTabIndex, this.areAllCategoriesCompleted());

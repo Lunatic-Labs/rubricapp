@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomButton from '../Components/CustomButton';
+import CustomButton from '../../../Components/CustomButton';
 import AddCircleOutlineIcon from '@mui/icons-material/AddCircleOutline';
 import RemoveCircleOutlineIcon from '@mui/icons-material/RemoveCircleOutline';
 import { Grid, IconButton, Button } from '@mui/material';
@@ -194,7 +194,6 @@ class BuildTeamTable extends Component<BuildTeamTableProps, BuildTeamTableState>
                     label='Confirm Team'
                     onClick={this.handleConfirmTeamClick}
                     isOutlined={false}
-                    position={{ top: '-25px', right: '0px' }}
                   />
                 </Grid>
               </Grid>

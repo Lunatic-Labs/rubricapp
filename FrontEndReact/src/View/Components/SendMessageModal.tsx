@@ -48,7 +48,7 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                         required
                         fullWidth
                         sx={{ mb: 2 }}
-                        aria-label="sendNotificationSubjectInput"
+                        data-testid="send-notification-subject-input"
                     />
                 </DialogContent>
 
@@ -68,15 +68,15 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                         minRows={3}
                         maxRows={8}
                         sx={{ mb: 2 }}
-                        aria-label="sendNotificationMessageInput"
+                        data-testid="send-notification-message-input"
                     />
                 </DialogContent>
 
                 <DialogActions>
-                    <Button autoFocus onClick={props.handleDialog} aria-label="addMessagePromptCancelButton">
+                    <Button autoFocus onClick={props.handleDialog} data-testid="add-message-prompt-cancel-button">
                         Cancel
                     </Button>
-                    {/* <Button variant="contained" autoFocus onClick={props.sendNotification} aria-label="addMessagePromptSendNotificationButton">
+                    {/* <Button variant="contained" autoFocus onClick={props.sendNotification} data-testid="add-message-prompt-send-notification-button">
                         Send Message
                     </Button> */}
                     <Button 
@@ -84,7 +84,7 @@ export default function SendMessageModal ( props: SendMessageModalProps ) {
                         onClick={() => {
                             props.sendNotification(); 
                         }} 
-                        aria-label="addMessagePromptSendNotificationButton"
+                        data-testid="add-message-prompt-send-notification-button"
                     >
                         Send Message
                     </Button>

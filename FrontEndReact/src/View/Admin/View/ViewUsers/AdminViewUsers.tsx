@@ -167,7 +167,6 @@ class AdminViewUsers extends Component<AdminViewUsersProps, AdminViewUsersState>
                         <div className='container'>
                           <SuccessMessage 
                             successMessage={successMessage}
-                            aria-label="adminViewUsersSuccessMessage"
                           />
                         </div>
                     }

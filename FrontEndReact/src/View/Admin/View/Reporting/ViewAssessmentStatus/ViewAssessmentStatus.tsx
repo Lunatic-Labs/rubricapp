@@ -187,7 +187,7 @@ export default function ViewAssessmentStatus(props: ViewAssessmentStatusProps) {
 
   return (
     <Container>
-      <Box sx={{ maxHeight:"135vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' aria-label="viewAssessmentStatusBox" >
+      <Box sx={{ maxHeight:"135vh", display:"flex", alignItems:"center" }} className='d-flex flex-column' data-testid="view-assessment-status-box" >
         <Grid container rowSpacing={0} columnSpacing={4} style={{ width: "95vw",  }}>
         <Grid container item xs={12} spacing={2}>
             <Grid item xs={12} md={6}>

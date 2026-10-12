@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
-import CustomButton from '../Components/CustomButton';
+import CustomButton from '../../../Components/CustomButton';
 import CustomDataTable from '../../../Components/CustomDataTable';
 import { Grid, Alert } from '@mui/material';
 import { genericResourcePOST } from '../../../../utility';
@@ -217,7 +217,7 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 										label="Choose different team"
 										onClick={this.handleEditClick}
 										isOutlined={true}
-										aria-label="chooseDifferentTeamButton"
+										data-testid="choose-different-team-button"
 									/>
 								</Grid>
 								{this.props.teamId &&
@@ -226,7 +226,7 @@ class ConfirmCurrentTeamTable extends Component<ConfirmCurrentTeamTableProps, Co
 											label="Check in to this team"
 											onClick={this.handleConfirmClick}
 											isOutlined={false}
-											aria-label="checkInToTeamButton"
+											data-testid="check-in-to-team-button"
 										/>
 									</Grid>
 								}

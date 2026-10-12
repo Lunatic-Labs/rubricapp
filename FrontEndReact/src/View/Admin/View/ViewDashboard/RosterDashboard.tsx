@@ -62,7 +62,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                 />
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="rosterTitle">Roster</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="roster-title">Roster</Typography>
 
                     <Box sx={{display:"flex", gap:"20px"}}>
                         <Button
@@ -205,7 +205,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                     alert(`Failed to switch to student view: ${error.message}`);
                                 }
                             }}
-                            aria-label='viewAsStudentButton'
+                            data-testid="view-as-student-button"
                             startIcon={isSwitchingToStudent ? <CircularProgress size={20} color="inherit" /> : null}
                         >
                             {isSwitchingToStudent ? 'Switching...' : 'View as Student'}
@@ -217,7 +217,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                             onClick={() => {
                                 navbar.setNewTab("BulkUpload");
                             }}
-                            aria-label='studentBulkUploadButton'
+                            data-testid="student-bulk-upload-button"
                         >
                             Student Bulk Upload
                         </Button>
@@ -228,7 +228,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                             onClick={() => {
                                 setAddUserTabWithUser([], null);
                             }}
-                            aria-label='addUserButton'
+                            data-testid="add-user-button"
                         >
                             Add User
                         </Button>
