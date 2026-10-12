@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import { Box, TextField, Alert } from '@mui/material';
-import CustomButton from '../Components/CustomButton';
+import CustomButton from '../../../Components/CustomButton';
 import ErrorMessage from '../../../Error/ErrorMessage';
 import { genericResourceGET, genericResourcePOST } from '../../../../utility';
+import { HTTP_STATUS } from '../../../../Enums/HttpStatusCodes';
 import Loading from '../../../Loading/Loading';
 import { AssessmentTask } from '../../../../types/AssessmentTask';
 
@@ -49,38 +50,36 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 
 		};
 
-		try {
-			
-			let promise;
-
-			promise = genericResourcePOST(
-				'/verify_team_password',
-				this,
-				JSON.stringify(body)
-			);
-
-			promise.then(result => {
-				if (result !== undefined && result.errorMessage === null) {
-					this.props.navbar.setState({ teamSwitchPassword: enteredPassword });
-					this.props.navbar.setNewTab("SelectTeam");
-				} else {
-					// Bad response from the server (wrong password, etc.): stay on this
-					// screen so the student can retry, instead of falling into the
-					// generic <ErrorMessage> dead-end that genericResourcePOST's own
-					// setState({ errorMessage }) would otherwise trigger.
-					this.setState({
-						errorMessage: null,
-						validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
-					})
-				}
-			});
-
-		} catch (error) {
-			this.setState({
-				errorMessage: null,
-				validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
-			});
-		}
+		// rawResponse so the HTTP status is available: the backend rejects a
+		// wrong password with a 400, which must not be confused with the
+		// server being unreachable or erroring.
+		genericResourcePOST(
+			'/verify_team_password',
+			this,
+			JSON.stringify(body),
+			{ rawResponse: true }
+		).then(result => {
+			if (result?.success) {
+				this.props.navbar.setState({ teamSwitchPassword: enteredPassword });
+				this.props.navbar.setNewTab("SelectTeam");
+			} else if (result?.status === HTTP_STATUS.BAD_REQUEST) {
+				// Password rejected: stay on this screen so the student can retry,
+				// instead of falling into the generic <ErrorMessage> dead-end that
+				// genericResourcePOST's own setState({ errorMessage }) would
+				// otherwise trigger.
+				this.setState({
+					errorMessage: null,
+					validationError: "Incorrect password. Please contact your instructor if you need to switch teams."
+				})
+			} else {
+				// No answer, an unreadable reply, or a server-side failure: the
+				// password wasn't actually rejected, so don't say it was wrong.
+				this.setState({
+					errorMessage: null,
+					validationError: "Unable to check the password right now. Please try again."
+				})
+			}
+		});
 
 	}
 
@@ -167,15 +166,14 @@ class CodeRequirement extends Component<CodeRequirementProps, CodeRequirementSta
 								autoFocus
 								sx={{ mb: 2 }}
 								inputProps={{ maxLength: 20 }}
-								aria-label="teamPasswordInput"
+								data-testid="team-password-input"
 							/>
 
 							<CustomButton
 								label="Continue"
 								onClick={this.submitPasscode}
 								isOutlined={false} // Default button
-								position={{ top: '10px', right: '0px' }}
-								aria-label="continueWithPasswordButton"
+								data-testid="continue-with-password-button"
 							/>
 						</div>
 					</div>

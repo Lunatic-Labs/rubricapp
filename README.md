@@ -17,7 +17,7 @@ If you choose to run the application using Docker, then Docker will be the only 
     * Python(v3.12 or higher) - Handles backend server logic.
 * **Database/Caching**:
     * Redis(v5.2.1) - Handles session management and rate limiting.
-    * MySQL(v8.0) - Manages the application's data.
+    * MySQL(v8.4) - Manages the application's data.
 * **Package Managers**:
     * pip for Python backend.
     * npm for Node.js frontend.
@@ -290,7 +290,7 @@ Run this and follow the on-screen instructions.
 #### Local Testing (without Docker)
 
 Before running tests locally, you need to set up your environment:
-1. **MySQL Setup**: Install and configure MySQL on your local machine
+1. **MySQL Setup**: Install and configure MySQL(v8.4) on your local machine
 2. **Database Configuration**: 
    - Create a MySQL user matching `MYSQL_USER` in `BackEndFlask/.env`
    - Set the password to match `MYSQL_PASSWORD` in `BackEndFlask/.env`

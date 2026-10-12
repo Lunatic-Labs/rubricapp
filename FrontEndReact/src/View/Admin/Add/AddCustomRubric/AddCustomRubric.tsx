@@ -2,7 +2,7 @@ import React from "react";
 import Cookies from "universal-cookie";
 import { Grid, IconButton, TextField, Tooltip, FormControl } from "@mui/material";
 import HelpOutlineIcon from "@mui/icons-material/HelpOutline";
-import CustomButton from "./Components/CustomButton";
+import CustomButton from "../../../Components/CustomButton";
 import ErrorMessage from "../../../Error/ErrorMessage";
 import { genericResourcePOST, genericResourcePUT, genericResourceGET, genericResourceDELETE } from "../../../../utility";
 import CustomDataTable from "../../../Components/CustomDataTable";
@@ -14,6 +14,7 @@ import Loading from '../../../Loading/Loading';
 import FormHelperText from '@mui/material/FormHelperText';
 import { Rubric } from "../../../../types/Rubric";
 import { Category } from "../../../../types/Category";
+import { GridColDef } from '@mui/x-data-grid';
 
 interface AddCustomRubricProps {
     navbar: any;
@@ -222,42 +223,26 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
     render() {
         const { categories, isLoaded, isHelpOpen, errors, errorMessage, addCustomRubric, defaultRubrics, allCategories, rubrics } = this.state;
 
-        const categoryTableColumns = [
+        const categoryTableColumns: GridColDef[] = [
             {
-                name: "category_name",
-                label: "Category",
-                options: {
-                    filter: true,
-                    align: "center",
-                    customBodyRender: (categoryName: string) => {
-                        return <p>{categoryName}</p>;
-                    },
-                },
+                field: "category_name",
+                headerName: "Category",
+                minWidth: 200,
+                flex: 1,
+                align: "left",
+                headerAlign: "left",
+                renderCell: (params) => <p>{params.value}</p>,
             },
             {
-                name: "rubric_name",
-                label: "Rubric",
-                options: {
-                    align: "center",
-                    customBodyRender: (rubricName: string) => {
-                        return <p>{rubricName}</p>;
-                    },
-                },
+                field: "rubric_name",
+                headerName: "Rubric",
+                minWidth: 200,
+                flex: 1,
+                align: "left",
+                headerAlign: "left",
+                renderCell: (params) => <p>{params.value}</p>,
             },
         ];
-
-        const options = {
-            onRowsDelete: false,
-            download: false,
-            print: false,
-            selectableRows: "none",
-            selectableRowsHeader: false,
-            responsive: "vertical",
-            tableBodyMaxHeight: "21rem",
-            search: false,
-            filter: false,
-            viewColumns: false,
-        };
 
         if (errorMessage){
             return(
@@ -300,7 +285,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 textAlign: "left",
                                 fontWeight: "bold",
                             }}
-                            aria-label="addCustomizeYourRubricTitle"
+                            data-testid="add-customize-your-rubric-title"
                         > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
                         </h2>
                         <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
@@ -309,7 +294,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                     <CustomButton
                                         label="Delete Rubric"
                                         isOutlined={false}
-                                        aria-label="customizeYourRubricDeleteRubricButton"
+                                        data-testid="customize-your-rubric-delete-rubric-button"
                                         onClick={() => {
                                             this.handleDeleteRubric(rubrics!.rubric_id);
                                         }}
@@ -322,7 +307,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                 <CustomButton
                                     label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
                                     isOutlined={false}
-                                    aria-label="customizeYourRubricCreateRubricButton"
+                                    data-testid="customize-your-rubric-create-rubric-button"
                                     onClick={() => {
                                         this.handleCreateRubric(pickedCategories);
                                     }}
@@ -382,7 +367,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                         },
                                     },
                                 }}
-                                aria-label="customizeYourRubricRubricName"
+                                data-testid="customize-your-rubric-rubric-name"
                             />
                         </Grid>
 
@@ -426,7 +411,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                         },
                                     },
                                 }}
-                                aria-label="customizeYourRubricRubricDescription"
+                                data-testid="customize-your-rubric-rubric-description"
                             />
                         </Grid>
                     </Grid>
@@ -448,7 +433,6 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                                     rubrics={defaultRubrics}
                                     onCategorySelect={this.handleCategorySelect}
                                     selectedCategories={pickedCategories}
-                                    aria-label="customizeYourRubricRubricCategoryTable"
                                     readOnly={false}
                             />
 
@@ -457,12 +441,13 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                         </Grid>
 
                         <Grid item xs={6}>
-                            <h3 className="d-flex mb-3" aria-label="yourSelectedCategories">Your Selected Categories</h3>
+                            <h3 className="d-flex mb-3" data-testid="your-selected-categories">Your Selected Categories</h3>
 
                             <CustomDataTable
                                 data={pickedCategories}
                                 columns={categoryTableColumns}
-                                options={options}
+                                getRowId={(row) => row.category_id}
+                                height="22rem"
                             />
                         </Grid>
 

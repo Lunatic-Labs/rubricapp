@@ -6,6 +6,7 @@ import StudentViewAssessmentTask from '../Student/View/AssessmentTask/StudentVie
 import { BarChart, CartesianGrid, XAxis, YAxis, Bar, LabelList, ResponsiveContainer, Tooltip , Cell} from 'recharts';
 import { Box, Typography, Button, Alert, CircularProgress } from '@mui/material';
 import { genericResourceGET, parseRubricNames } from '../../utility';
+import { logger } from '../../logger';
 import StudentCompletedAssessmentTasks from './View/CompletedAssessmentTask/StudentCompletedAssessmentTasks';
 import Loading from '../Loading/Loading';
 import Cookies from 'universal-cookie';
@@ -369,10 +370,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
     handleSwitchBack = async () => {
         // Prevent multiple clicks
         if (this.state.isSwitchingBack) {
-            console.log('Already switching back, ignoring click');
+            logger.debug('Already switching back, ignoring click');
             return;
         }
-        console.log('=== SWITCHING BACK TO ADMIN ===');
+        logger.debug('=== SWITCHING BACK TO ADMIN ===');
         // Set switching flag
         this.setState({ isSwitchingBack: true });
         
@@ -380,7 +381,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
         const adminCredentialsStr = sessionStorage.getItem('adminCredentials');
         
         if (!adminCredentialsStr) {
-            console.error('No admin credentials found!');
+            logger.error('No admin credentials found!');
             alert('Admin credentials not found. Please login again.');
             this.setState({ isSwitchingBack: false });  // Reset flag
             window.location.href = '/login';
@@ -404,7 +405,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     })
                 });
             } catch (logoutError) {
-                console.error('Failed to blacklist test student tokens:', logoutError);
+                logger.error('Failed to blacklist test student tokens:', logoutError);
             }
 
             cookies.remove('access_token', { path: '/' });
@@ -427,11 +428,11 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
             sessionStorage.removeItem('adminCredentials');
             sessionStorage.removeItem('chosenCourse');
             sessionStorage.removeItem('testStudentCourse');
-            console.log('Admin cookies restored');
+            logger.debug('Admin cookies restored');
             window.location.reload();
-            console.log('Test student tokens blacklisted');
+            logger.debug('Test student tokens blacklisted');
         } catch (error) {
-            console.error('Error switching back:', error);
+            logger.error('Error switching back:', error);
             alert('Error switching back to admin view');
             this.setState({ isSwitchingBack: false });
         }
@@ -546,7 +547,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         alignSelf: "stretch"
                     }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myAssessmentTasksTitle">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="my-assessment-tasks-title">
                                 My Assessment Tasks
                             </Typography>
                         </Box>
@@ -572,7 +573,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         alignSelf: "stretch"
                     }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="completedAssessmentTasksTitle">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="completed-assessment-tasks-title">
                                 Completed Assessments
                             </Typography>
                         </Box>
@@ -598,7 +599,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     alignSelf: "stretch"
                 }}>
                     <Box sx={{ width: "100%" }} className="content-spacing">
-                        <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="myTeamsTitle">
+                        <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="my-teams-title">
                             My Teams
                         </Typography>
                     </Box>
@@ -628,7 +629,7 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                         alignSelf: "stretch"
                     }}>
                         <Box sx={{ width: "100%" }} className="content-spacing">
-                            <Typography sx={{ fontWeight: '700' }} variant="h5" aria-label="averageRatings">
+                            <Typography sx={{ fontWeight: '700' }} variant="h5" data-testid="average-ratings">
                                 Skill Development Process
                             </Typography>
                         </Box>

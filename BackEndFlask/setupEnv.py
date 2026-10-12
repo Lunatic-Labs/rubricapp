@@ -5,6 +5,7 @@ import platform
 import sys
 import os
 from core import config
+from models.logger import trim_expired_entries, LOG_RETENTION_DAYS
 import pytest 
 from dependency_check import dependency_check
 
@@ -151,6 +152,11 @@ def start_server():
                 if exit_code != 0:
                     err(f"Failed to start redis server. Exit code: {exit_code}")
                     sys.exit(1)
+
+    # No logrotate outside production (Cloud/syscontrol.sh), so apply log
+    # retention here, before the server process starts writing.
+    log(f"Trimming log entries older than {LOG_RETENTION_DAYS} days...")
+    trim_expired_entries()
 
     exit_code = os.system(f"{python_cmd} run.py")
 

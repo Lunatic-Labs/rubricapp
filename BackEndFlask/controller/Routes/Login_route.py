@@ -2,10 +2,11 @@ from flask import request
 from controller  import bp
 from .User_routes import UserSchema
 from controller.Route_response import *
+from models.logger import logger
 from models.user import get_user_by_email, get_user_password
 from werkzeug.security import check_password_hash, generate_password_hash
 from controller.security.utility import create_new_tokens, revoke_tokens
-from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email
+from models.user import update_password, has_changed_password, set_reset_code, get_user_by_email, record_login
 from models.utility import generate_random_password, send_reset_code_email
 from controller.Routes.RouteUtilities import is_any_variable_in_array_missing
 from controller.Routes.RouteExceptions import MissingException, InvalidCredentialsException
@@ -25,16 +26,26 @@ def login():
         if user is None or not check_password_hash(get_user_password(user.user_id), password):
             raise InvalidCredentialsException
 
+        # Build the response before record_login: if its commit fails, the
+        # rollback expires `user`, and reading it again would hit the database.
+        user_id = user.user_id
+
         JSON = {
             "email": email,
-            "user_id": user.user_id,
-            "isSuperAdmin": user.user_id == 1,
+            "user_id": user_id,
+            "isSuperAdmin": user_id == 1,
             "isAdmin": user.is_admin,
             "has_set_password": user.has_set_password,
             "user_name": user.first_name + " " + user.last_name
         }
 
-        jwt, refresh = create_new_tokens(user.user_id)
+        try:
+            record_login(user_id)
+        except Exception as e:
+            # A failed timestamp write shouldn't turn a valid login into an error.
+            logger.error(f"Failed to record login time for user_id {user_id}: {e}")
+
+        jwt, refresh = create_new_tokens(user_id)
 
         return create_good_response(JSON, 200, "login", jwt, refresh)
 

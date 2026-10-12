@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import 'bootstrap/dist/css/bootstrap.css';
 import CustomDataTable from "../../../Components/CustomDataTable";
+import { GridColDef } from '@mui/x-data-grid';
 
 /**
  * Creates an instance of the ViewTeamMembers component.
@@ -26,49 +27,34 @@ class ViewTeamMembers extends Component<ViewTeamMembersProps>{
     var navbar = this.props.navbar;
     var users = navbar.adminViewTeamMembers.users;
 
-    const columns = [
+    const columns: GridColDef[] = [
       {
-        name: "first_name",
-        label: "First Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"300px"}},
-          setCellProps: () => { return { width:"300px"} },
-        }
+        field: "first_name",
+        headerName: "First Name",
+        minWidth: 300,
+        flex: 1,
       },
       {
-        name: "last_name",
-        label: "Last Name",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"300px"}},
-          setCellProps: () => { return { width:"300px"} },
-        }
+        field: "last_name",
+        headerName: "Last Name",
+        minWidth: 300,
+        flex: 1,
       },
       {
-        name: "email",
-        label: "Email",
-        options: {
-          filter: true,
-          setCellHeaderProps: () => { return { width:"300px"}},
-          setCellProps: () => { return { width:"300px"} },
-        }
+        field: "email",
+        headerName: "Email",
+        minWidth: 300,
+        flex: 1,
       }
     ];
 
-    const options = {
-      onRowsDelete: false,
-      download: false,
-      print: false,
-      viewColumns: false,
-      selectableRows: "none",
-      selectableRowsHeader: false,
-      responsive: "vertical",
-      tableBodyMaxHeight: "21rem"
-    };
-
     return (
-      <CustomDataTable data={users ? users:[]} columns={columns} options={options}/>
+      <CustomDataTable
+        data={users ? users : []}
+        columns={columns}
+        getRowId={(row) => row.user_id}
+        height="21rem"
+      />
     )
   }
 }
