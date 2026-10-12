@@ -14,8 +14,8 @@ export default function ReportingMainHeader (props: ReportingMainHeaderProps) {
     var chosenCourse = state.chosenCourse;
 
     return (
-        // No back button here: AppState renders the Reporting page's, above
-        // this header, with the right target for the user's role.
+        // No back button here: AppState renders the Reporting page's button above
+        // this header with the right target for the user's role.
         <Box className="content-spacing">
             <CourseInfo
                 courseTitle={chosenCourse["course_name"]}
