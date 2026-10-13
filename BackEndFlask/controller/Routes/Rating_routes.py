@@ -231,7 +231,8 @@ def student_view_feedback():
             team_id: int | null (only for team assessments; stored as context)
             (any other feedback fields supported by create_feedback)
         - Querystring:
-            user_id (automatically appended by the frontend via cookies)
+            user_id (automatically appended by the frontend via cookies).
+            This is the viewer; a user_id in the JSON body is ignored.
     """
     try:
         payload = request.json or {}
@@ -255,14 +256,13 @@ def student_view_feedback():
         # Feedback is always recorded for the student who viewed it, team
         # assessments included, with team_id kept as context. get_team_ratings
         # reports view status per team member, so a row with no user_id would
-        # match no one.
-        body_user_id = payload.get("user_id")
-        effective_user_id = body_user_id if body_user_id is not None else user_id
-
+        # match no one. The viewer is the authenticated user_id (AuthCheck
+        # ties the query string's user_id to the token); a user_id in the body
+        # is ignored, so no one can mark another student's feedback as viewed.
         team_id = payload.get("team_id")
 
-        # Do not create duplicates for the same user/team + completed assessment
-        exists = check_feedback_exists(effective_user_id, completed_assessment_id)
+        # Do not create duplicates for the same user + completed assessment
+        exists = check_feedback_exists(user_id, completed_assessment_id)
         if exists:
             return create_bad_response(
                 "Using server's existing data as source of truth.",
@@ -271,7 +271,7 @@ def student_view_feedback():
             )
 
         feedback_data = dict(payload)
-        feedback_data["user_id"] = effective_user_id
+        feedback_data["user_id"] = user_id
         feedback_data["team_id"] = team_id if team_id is not None else None
 
         # Use provided feedback_time if available, otherwise use server time

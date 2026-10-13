@@ -342,10 +342,11 @@ def test_student_view_feedback_with_user(flask_app_mock, sample_token, auth_head
                 "feedback_time": "2025-11-22T12:00:00",
             }
 
-            token = sample_token(user_id=result['user_id'])
+            # The student views their own feedback.
+            token = sample_token(user_id=user[0].user_id)
             
             response = client.post(
-                f"/api/rating?team_id=0&user_id={result['user_id']}",
+                f"/api/rating?team_id=0&user_id={user[0].user_id}",
                 headers=auth_header(token),
                 json=feedback_data
             )
@@ -369,6 +370,60 @@ def test_student_view_feedback_with_user(flask_app_mock, sample_token, auth_head
                 delete_assessment_task(task.assessment_task_id)
                 delete_rubric_by_id(rubric.rubric_id)
                 delete_users(user)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_student_view_feedback_ignores_a_user_id_in_the_body(flask_app_mock, sample_token, auth_header, client):
+    """
+    The viewer is the authenticated user. A user_id in the body must not let
+    one student mark another student's feedback as viewed.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            viewer, other = users[0], users[1]
+            rubric = sample_rubric(result['user_id'])
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            comp = create_completed_assessment(sample_completed_assessment(
+                None,
+                task.assessment_task_id,
+                team_id=team.team_id,
+                rating=accurately["3"],
+                c_by=result['user_id'],
+                last_update="2025-11-15T12:00:00"
+            ))
+
+            token = sample_token(user_id=viewer.user_id)
+
+            response = client.post(
+                f"/api/rating?team_id={team.team_id}&user_id={viewer.user_id}",
+                headers=auth_header(token),
+                json={
+                    "completed_assessment_id": comp.completed_assessment_id,
+                    "user_id": other.user_id,
+                    "team_id": team.team_id,
+                }
+            )
+
+            assert response.status_code == 200
+            assert response.get_json()["content"]["feedbacks"][0]["user_id"] == viewer.user_id
+            assert Feedback.query.filter_by(user_id=other.user_id).count() == 0
+
+        finally:
+            # Clean up
+            try:
+                Feedback.query.delete()
+                delete_completed_assessment_tasks(comp.completed_assessment_id)
+                delete_team(team.team_id)
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
                 delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
