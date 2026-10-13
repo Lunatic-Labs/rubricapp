@@ -233,7 +233,15 @@ def create_user(user_data, validate_emails=True):
     return user_data
 
 @error_log
+def super_admin_promote_student(email:str) -> None:
+    return
+@error_log
+def super_admin_demote_admin(email:str) -> None:
+    return
+
+@error_log
 def make_admin(user_id):
+    """Note that this should only be used on the course level not by the super admin."""
     user = User.query.filter_by(user_id=user_id).first()
 
     user.is_admin = True
@@ -247,6 +255,8 @@ def make_admin(user_id):
 
 @error_log
 def unmake_admin(user_id):
+    """Note that this should only be used on the course level not by the super admin."""
+
     user = User.query.filter_by(user_id=user_id).first()
 
     roles_of_user_id = db.session.query(

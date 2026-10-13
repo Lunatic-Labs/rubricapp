@@ -12,7 +12,7 @@ from Functions.threads import (
 
 from controller.security.CustomDecorators import(
     AuthCheck, bad_token_check,
-    admin_check
+    admin_check, super_admin_check
 )
 
 from models.role import (
@@ -54,7 +54,8 @@ from models.user import(
     unmake_admin,
     delete_user,
     set_user_dark_mode,
-    get_user_by_email,
+    super_admin_demote_admin,
+    super_admin_promote_student,
 )
 
 from models.queries import (
@@ -65,10 +66,9 @@ from models.queries import (
     get_students_by_team_id,
     get_active_students_not_in_a_team,
     add_user_to_team,
-    remove_user_from_team
+    remove_user_from_team,
 )
 from models.completed_assessment import completed_assessment_team_or_user_exists
-
 
 
 @bp.route('/user', methods = ['GET'])
@@ -384,11 +384,11 @@ def delete_selected_user():
             user = get_user(user_id)
             if not user:
                 return create_bad_response("User does not exist", "users", 400)
-            
+
             associated_task = completed_assessment_team_or_user_exists(team_id=None, user_id=user_id)
             if associated_task and len(associated_task) > 0:
                 return create_bad_response("Cannot delete user with associated tasks", "users", 400)
-            
+
             try:
                 delete_user(user_id)
                 return create_good_response([], 200, "users")
@@ -398,33 +398,39 @@ def delete_selected_user():
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
-@bp.route('/admin_user/promote', methods = ["PUT"])
+
+@bp.route("/super_admin_user/promote", methods=["PUT"])
+@bp.route("/super_admin_user/demote", methods=["PUT"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
-@admin_check()
-def admin_promote_student_to_admin():
+@super_admin_check()
+def super_change_admin_status():
+    """
+    Promotes a regular user to an admin and vice versa through the global User.is_admin flag.
+
+    Args:
+        target_email (str): The user's email who will have their auth status altered.
+
+    Returns:
+        TBD
+    """
+    promoting = request.path.endswith("/promote")
+    verb = "Promotion" if promoting else "Demotion"
     try:
-        user_id_to_modify = int(request.args.get("target_user_id"))
-        make_admin(user_id_to_modify)
-        return create_good_response(["success"], HttpStatus.OK.value, "auth_change")
+        user_to_modify = str(request.args.get("target_email"))
+        (
+            super_admin_promote_student(user_to_modify)
+            if promoting
+            else super_admin_demote_admin(user_to_modify)
+        )
+        return create_good_response([], HttpStatus.OK.value,"auth_change")
 
     except Exception as e:
-        return create_bad_response(f"Promotion failed: {e}", "auth_change", HttpStatus.BAD_REQUEST.value)
+        return create_bad_response(
+            f"{verb} failed: {e}", "auth_change", HttpStatus.BAD_REQUEST.value
+        )
 
-@bp.route('/admin_user/demote', methods = ["PUT"])
-@jwt_required()
-@bad_token_check()
-@AuthCheck()
-@admin_check()
-def admin_demote_student_to_admin():
-    try:
-        user_id_to_modify = int(request.args.get("target_user_id"))
-        unmake_admin(user_id_to_modify)
-        return create_good_response(["success"], HttpStatus.OK.value, "auth_change")
-
-    except Exception as e:
-        return create_bad_response(f"Demotion failed: {e}", "auth_change", HttpStatus.BAD_REQUEST.value)
 
 # new route for user to 'put' things into the back-end.
 # currently used only for user settings, additional use might
