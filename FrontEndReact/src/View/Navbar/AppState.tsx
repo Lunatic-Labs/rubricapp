@@ -42,6 +42,7 @@ import { Team as TeamType } from '../../types/Team';
 import Settings from './Settings';
 import ScreenHistory from './screenHistory';
 import { genericResourceGET, parseRoleNames } from '../../utility';
+import ManageAdminsAccessDialog from '../Components/ManageAdminAccessDialog';
 
 /**
  * Creates an instance of the AppState component.
@@ -105,6 +106,7 @@ interface AppStateState {
     activeTab: string;
     user: UserType | null;
     addUser: boolean | null;
+    manageAdminAccessOpen: boolean;
     course: CourseType | null;
     addCourse: boolean | null;
     assessmentTask: AssessmentTaskType | null;
@@ -186,6 +188,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
         
         this.state = {
             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
+
+            manageAdminAccessOpen:false,
 
             user: null,
             addUser: null,
@@ -890,6 +894,9 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                         className="primary-color"
                                         variant='contained'
                                         onClick={() => {
+                                            this.setState({
+                                                manageAdminAccessOpen: true,
+                                            });
                                         }}
                                     >
                                         Manage Admins
@@ -912,6 +919,10 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         </div>
                         <AdminViewUsers
                             navbar={this}
+                        />
+                        <ManageAdminsAccessDialog
+                            open={this.state.manageAdminAccessOpen}
+                            onClose={() => this.setState({manageAdminAccessOpen:false})}
                         />
                     </Box>
                 }
