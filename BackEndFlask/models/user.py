@@ -2,7 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
 from models.schemas import User, UserCourse, CompletedAssessment, Course
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, update
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
@@ -233,11 +233,27 @@ def create_user(user_data, validate_emails=True):
     return user_data
 
 @error_log
-def super_admin_promote_student(email:str) -> None:
-    return
-@error_log
-def super_admin_demote_admin(email:str) -> None:
-    return
+def super_admin_alter_user_auth(target_email:str, is_admin:bool) -> None:
+    """
+    Sets the User.is_admin flag for the user with the given email.
+    Does nothing if no user corresponds to the email.
+
+    NOTE: Not course-scoped and for super admin use only.
+
+    Args:
+        target_email (str): Email of the user whose admin status will change.
+        is_admin (bool) : True promotes to admin, False demotes.
+
+    Raises:
+        SQLAlchemyError: If the update or commit fails.
+    """
+    stmt = (
+        update(User)
+        .where(User.email == target_email)
+        .values({User.is_admin : is_admin})
+    )
+    db.session.execute(stmt)
+    db.session.commit()
 
 @error_log
 def make_admin(user_id):
