@@ -660,7 +660,8 @@ def get_team_ratings(assessment_task_id):
     that covers ad hoc teams, and fixed-team students who switched teams
     with the team password. Everyone else is on their fixed team
     (TeamUser). Using Checkin first keeps a student who switched from
-    being listed under both teams.
+    being listed under both teams. is_member_of_team_for_task applies the
+    same rule to one student; keep the two in step.
 
     Only each team's most recently updated submission is used. A team
     normally has one, but older data can have several, and joining members
@@ -764,6 +765,26 @@ def get_team_ratings(assessment_task_id):
         .all()
     )
     
+@error_log
+def is_member_of_team_for_task(user_id, team_id, assessment_task_id):
+    """
+    Description:
+    Whether the user is on the given team for this assessment task, by the
+    rule get_team_ratings uses: the team they checked in to for the task,
+    or their fixed team (TeamUser) if they haven't checked in. Keep the two
+    in step.
+    """
+    checkin = Checkin.query.filter_by(
+        user_id=user_id,
+        assessment_task_id=assessment_task_id,
+    ).first()
+
+    if checkin is not None:
+        return checkin.team_number == team_id
+
+    return TeamUser.query.filter_by(user_id=user_id, team_id=team_id).first() is not None
+
+
 @error_log
 def get_all_checkins_for_student_for_course(user_id, course_id):
     """
