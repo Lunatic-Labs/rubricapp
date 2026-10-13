@@ -54,8 +54,8 @@ from models.user import(
     unmake_admin,
     delete_user,
     set_user_dark_mode,
-    super_admin_demote_admin,
-    super_admin_promote_student,
+    get_user_user_id_by_email,
+    super_admin_alter_user_auth,
 )
 
 from models.queries import (
@@ -419,13 +419,10 @@ def super_change_admin_status():
     verb = "Promotion" if promoting else "Demotion"
     try:
         user_to_modify = str(request.args.get("target_email"))
-        (
-            super_admin_promote_student(user_to_modify)
-            if promoting
-            else super_admin_demote_admin(user_to_modify)
-        )
+        #Raise InvalidUserEmail
+        get_user_user_id_by_email(user_to_modify) 
+        super_admin_alter_user_auth(user_to_modify, promoting)
         return create_good_response([], HttpStatus.OK.value,"auth_change")
-
     except Exception as e:
         return create_bad_response(
             f"{verb} failed: {e}", "auth_change", HttpStatus.BAD_REQUEST.value
