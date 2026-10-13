@@ -662,9 +662,9 @@ def get_team_ratings(assessment_task_id):
     (TeamUser). Using Checkin first keeps a student who switched from
     being listed under both teams.
 
-    Only the latest submission per team is used. A team normally has one,
-    but older data can have several, and joining members to each would
-    list every member once per submission.
+    Only each team's most recently updated submission is used. A team
+    normally has one, but older data can have several, and joining members
+    to each would list every member once per submission.
 
     The member join is a LEFT OUTER JOIN so a team with a submission but
     no members still produces one row, with NULL member fields, rather
@@ -679,13 +679,29 @@ def get_team_ratings(assessment_task_id):
         CompletedAssessment.team_id != None,
     )
 
-    latest_submissions = (
-        select(func.max(CompletedAssessment.completed_assessment_id))
+    # Latest by last_update, not by id: a submission is edited in place, so
+    # an older row can hold the most recent edit. The id breaks ties, and a
+    # NULL last_update sorts last under DESC.
+    ranked_submissions = (
+        select(
+            CompletedAssessment.completed_assessment_id,
+            func.row_number().over(
+                partition_by=CompletedAssessment.team_id,
+                order_by=(
+                    CompletedAssessment.last_update.desc(),
+                    CompletedAssessment.completed_assessment_id.desc(),
+                ),
+            ).label('submission_rank'),
+        )
         .where(
             CompletedAssessment.assessment_task_id == assessment_task_id,
             CompletedAssessment.team_id != None,
         )
-        .group_by(CompletedAssessment.team_id)
+        .subquery()
+    )
+
+    latest_submissions = select(ranked_submissions.c.completed_assessment_id).where(
+        ranked_submissions.c.submission_rank == 1,
     )
 
     checked_in_users = select(Checkin.user_id).where(

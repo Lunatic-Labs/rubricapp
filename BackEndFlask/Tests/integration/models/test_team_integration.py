@@ -451,8 +451,8 @@ class TeamRatingsData:
         self.teams.append(team)
         return team
 
-    def add_submission(self, team):
-        data = sample_completed_assessment(None, self.task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=self.result['user_id'])
+    def add_submission(self, team, last_update=None):
+        data = sample_completed_assessment(None, self.task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=self.result['user_id'], last_update=last_update)
         comp = create_completed_assessment(data)
         self.comps.append(comp)
         return comp
@@ -578,7 +578,9 @@ def test_get_team_ratings_lists_a_switched_student_only_on_their_checkin_team(fl
 def test_get_team_ratings_lists_each_member_once_when_a_team_has_two_submissions(flask_app_mock):
     """
     Joining members to every submission would list each member once per
-    submission. Only the team's latest submission is reported.
+    submission. Only the team's most recently updated submission is reported,
+    which isn't necessarily the newest row: submissions are edited in place,
+    so here the older row holds the latest edit.
     """
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
@@ -592,12 +594,13 @@ def test_get_team_ratings_lists_each_member_once_when_a_team_has_two_submissions
             for user in users[:2]:
                 sample_team_user(team.team_id, user.user_id)
 
-            made.add_submission(team)
-            latest = made.add_submission(team)
+            latest = made.add_submission(team, last_update="2026-01-02T12:00:00")
+            made.add_submission(team, last_update="2026-01-01T12:00:00")
             fb = sample_feedback(latest.completed_assessment_id, users[0].user_id, team_id=team.team_id)
 
             results = get_team_ratings(made.task.assessment_task_id)
             assert sorted(r[9] for r in results) == sorted([users[0].user_id, users[1].user_id])
+            assert all(r.last_update == latest.last_update for r in results)
             assert any(r.feedback_id == fb.feedback_id and r[9] == users[0].user_id for r in results)
 
         finally:
