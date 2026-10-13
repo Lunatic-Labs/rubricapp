@@ -2,6 +2,7 @@ from flask import request
 from marshmallow import fields
 from controller  import bp
 from controller.Route_response import *
+from models.logger import logger
 from flask_jwt_extended import jwt_required
 from enums.http_status_codes import HttpStatus
 from Functions.threads import (
@@ -46,6 +47,7 @@ from models.user import(
     get_users,
     get_user,
     get_user_admins,
+    get_user_admins_with_last_login,
     user_already_exists,
     create_user,
     get_user_password,
@@ -69,6 +71,28 @@ from models.queries import (
     remove_user_from_team,
 )
 from models.completed_assessment import completed_assessment_team_or_user_exists
+
+
+@bp.route('/admin_users', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def get_admin_users():
+    """Admin users with their last login time; only the super admin may see login times."""
+    try:
+        return create_good_response(
+            admin_users_schema.dump(get_user_admins_with_last_login()),
+            200,
+            "users"
+        )
+    except Exception as e:
+        logger.error(f"Failed to retrieve admin users: {e}")
+        return create_bad_response(
+            "An error occurred retrieving admin users.",
+            "users",
+            500
+        )
 
 
 @bp.route('/user', methods = ['GET'])
@@ -469,3 +493,11 @@ class UserSchema(ma.Schema):
 
 user_schema = UserSchema()
 users_schema = UserSchema(many=True)
+
+
+# Kept out of UserSchema so login times are only returned by the
+# super-admin-only /admin_users route.
+class AdminUserSchema(UserSchema):
+    last_login_at = fields.DateTime()
+
+admin_users_schema = AdminUserSchema(many=True)

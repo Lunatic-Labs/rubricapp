@@ -24,7 +24,8 @@ from models.completed_assessment import (
     create_completed_assessment,
     delete_completed_assessment_tasks,
 )
-from models.schemas import Feedback
+from models.schemas import Feedback, TeamUser, Checkin
+from models.checkin import create_checkin
 from models.team_user import delete_team_user
 from models.feedback import delete_feedback_by_user_id_completed_assessment_id
 
@@ -81,6 +82,8 @@ def test_get_ratings_with_team(flask_app_mock, sample_token, auth_header, client
             assert any(r["rating_observable_characteristics_suggestions_data"] == "Inaccurately" for r in results)
             assert any(r["team_name"] == team1.team_name for r in results)
             assert any(r["team_name"] == team2.team_name for r in results)
+            # Neither team has members, so each row carries no member.
+            assert all(r["user_id"] is None for r in results)
 
         finally:
             # Clean up
@@ -259,11 +262,14 @@ def test_student_view_feedback_with_team(flask_app_mock, sample_token, auth_head
 
         try:
             result = create_one_admin_course(False)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            member = users[0]
             rubric = sample_rubric(result['user_id'])
             payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
             team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            sample_team_user(team.team_id, member.user_id)
             comp = create_completed_assessment(sample_completed_assessment(
                 None,
                 task.assessment_task_id, 
@@ -280,10 +286,10 @@ def test_student_view_feedback_with_team(flask_app_mock, sample_token, auth_head
                 "feedback_time": "2025-11-22T12:00:00",
             }
 
-            token = sample_token(user_id=result['user_id'])
+            token = sample_token(user_id=member.user_id)
             
             response = client.post(
-                f"/api/rating?team_id={team.team_id}&user_id={result['user_id']}",
+                f"/api/rating?team_id={team.team_id}&user_id={member.user_id}",
                 headers=auth_header(token),
                 json=feedback_data
             )
@@ -297,6 +303,8 @@ def test_student_view_feedback_with_team(flask_app_mock, sample_token, auth_head
             assert rslt[0]["completed_assessment_id"] == comp.completed_assessment_id
             assert rslt[0]["feedback_id"] is not None
             assert rslt[0]["team_id"] == team.team_id
+            # Team feedback is recorded for the student who viewed it.
+            assert rslt[0]["user_id"] == member.user_id
             assert rslt[0]["feedback_time"] == feedback_data["feedback_time"]
         
         finally:
@@ -304,9 +312,12 @@ def test_student_view_feedback_with_team(flask_app_mock, sample_token, auth_head
             try:
                 Feedback.query.delete()
                 delete_completed_assessment_tasks(comp.completed_assessment_id)
+                TeamUser.query.filter_by(team_id=team.team_id).delete()
+                db.session.commit()
                 delete_team(team.team_id)
                 delete_assessment_task(task.assessment_task_id)
                 delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
                 delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")
@@ -338,10 +349,11 @@ def test_student_view_feedback_with_user(flask_app_mock, sample_token, auth_head
                 "feedback_time": "2025-11-22T12:00:00",
             }
 
-            token = sample_token(user_id=result['user_id'])
+            # The student views their own feedback.
+            token = sample_token(user_id=user[0].user_id)
             
             response = client.post(
-                f"/api/rating?team_id=0&user_id={result['user_id']}",
+                f"/api/rating?team_id=0&user_id={user[0].user_id}",
                 headers=auth_header(token),
                 json=feedback_data
             )
@@ -370,17 +382,233 @@ def test_student_view_feedback_with_user(flask_app_mock, sample_token, auth_head
                 print(f"Cleanup skipped: {e}")
 
 
+def test_student_view_feedback_ignores_a_user_id_in_the_body(flask_app_mock, sample_token, auth_header, client):
+    """
+    The viewer is the authenticated user. A user_id in the body must not let
+    one student mark another student's feedback as viewed.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            viewer, other = users[0], users[1]
+            rubric = sample_rubric(result['user_id'])
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            sample_team_user(team.team_id, viewer.user_id)
+            sample_team_user(team.team_id, other.user_id)
+            comp = create_completed_assessment(sample_completed_assessment(
+                None,
+                task.assessment_task_id,
+                team_id=team.team_id,
+                rating=accurately["3"],
+                c_by=result['user_id'],
+                last_update="2025-11-15T12:00:00"
+            ))
+
+            token = sample_token(user_id=viewer.user_id)
+
+            response = client.post(
+                f"/api/rating?team_id={team.team_id}&user_id={viewer.user_id}",
+                headers=auth_header(token),
+                json={
+                    "completed_assessment_id": comp.completed_assessment_id,
+                    "user_id": other.user_id,
+                    "team_id": team.team_id,
+                }
+            )
+
+            assert response.status_code == 200
+            assert response.get_json()["content"]["feedbacks"][0]["user_id"] == viewer.user_id
+            assert Feedback.query.filter_by(user_id=other.user_id).count() == 0
+
+        finally:
+            # Clean up
+            try:
+                Feedback.query.delete()
+                delete_completed_assessment_tasks(comp.completed_assessment_id)
+                TeamUser.query.filter_by(team_id=team.team_id).delete()
+                db.session.commit()
+                delete_team(team.team_id)
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def view_feedback_as(client, sample_token, auth_header, viewer_id, completed_assessment_id):
+    """POSTs a feedback view of completed_assessment_id, logged in as viewer_id."""
+    token = sample_token(user_id=viewer_id)
+    return client.post(
+        f"/api/rating?user_id={viewer_id}",
+        headers=auth_header(token),
+        json={"completed_assessment_id": completed_assessment_id},
+    )
+
+
+def test_student_view_feedback_rejects_another_students_individual_assessment(flask_app_mock, sample_token, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            owner, intruder = users[0], users[1]
+            rubric = sample_rubric(result['user_id'])
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
+            comp = create_completed_assessment(sample_completed_assessment(
+                owner.user_id,
+                task.assessment_task_id,
+                rating=accurately["3"],
+                c_by=result['user_id'],
+            ))
+
+            response = view_feedback_as(client, sample_token, auth_header, intruder.user_id, comp.completed_assessment_id)
+
+            assert response.status_code == 403
+            assert response.get_json()["success"] is False
+            assert Feedback.query.filter_by(completed_assessment_id=comp.completed_assessment_id).count() == 0
+
+        finally:
+            # Clean up
+            try:
+                Feedback.query.delete()
+                delete_completed_assessment_tasks(comp.completed_assessment_id)
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_student_view_feedback_rejects_a_team_the_student_is_not_on(flask_app_mock, sample_token, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
+            member, outsider = users[0], users[1]
+            rubric = sample_rubric(result['user_id'])
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
+            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            sample_team_user(team.team_id, member.user_id)
+            comp = create_completed_assessment(sample_completed_assessment(
+                None,
+                task.assessment_task_id,
+                team_id=team.team_id,
+                rating=accurately["3"],
+                c_by=result['user_id'],
+            ))
+
+            response = view_feedback_as(client, sample_token, auth_header, outsider.user_id, comp.completed_assessment_id)
+
+            assert response.status_code == 403
+            assert Feedback.query.filter_by(completed_assessment_id=comp.completed_assessment_id).count() == 0
+
+        finally:
+            # Clean up
+            try:
+                Feedback.query.delete()
+                delete_completed_assessment_tasks(comp.completed_assessment_id)
+                TeamUser.query.filter_by(team_id=team.team_id).delete()
+                db.session.commit()
+                delete_team(team.team_id)
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_student_view_feedback_follows_a_checkin_to_another_team(flask_app_mock, sample_token, auth_header, client):
+    """
+    Membership for a task follows the student's check-in: a student who
+    checked in to another team can view that team's feedback, and not their
+    fixed team's.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            switcher = users[0]
+            rubric = sample_rubric(result['user_id'])
+            task = create_assessment_task(build_sample_task_payload(result['course_id'], rubric.rubric_id))
+            fixed_team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            checkin_team = sample_team("Beta", result['user_id'], result['course_id'], task.assessment_task_id)
+            sample_team_user(fixed_team.team_id, switcher.user_id)
+            create_checkin(sample_checkin(task.assessment_task_id, switcher.user_id, team_number=checkin_team.team_id))
+            fixed_comp = create_completed_assessment(sample_completed_assessment(
+                None, task.assessment_task_id, team_id=fixed_team.team_id, rating=accurately["3"], c_by=result['user_id'],
+            ))
+            checkin_comp = create_completed_assessment(sample_completed_assessment(
+                None, task.assessment_task_id, team_id=checkin_team.team_id, rating=accurately["3"], c_by=result['user_id'],
+            ))
+
+            assert view_feedback_as(client, sample_token, auth_header, switcher.user_id, checkin_comp.completed_assessment_id).status_code == 200
+            assert view_feedback_as(client, sample_token, auth_header, switcher.user_id, fixed_comp.completed_assessment_id).status_code == 403
+
+        finally:
+            # Clean up
+            try:
+                Feedback.query.delete()
+                delete_completed_assessment_tasks(fixed_comp.completed_assessment_id)
+                delete_completed_assessment_tasks(checkin_comp.completed_assessment_id)
+                Checkin.query.filter_by(assessment_task_id=task.assessment_task_id).delete()
+                TeamUser.query.filter_by(team_id=fixed_team.team_id).delete()
+                db.session.commit()
+                delete_team(fixed_team.team_id)
+                delete_team(checkin_team.team_id)
+                delete_assessment_task(task.assessment_task_id)
+                delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
+def test_student_view_feedback_returns_404_for_an_unknown_assessment(flask_app_mock, sample_token, auth_header, client):
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+
+        try:
+            result = create_one_admin_course(False)
+
+            response = view_feedback_as(client, sample_token, auth_header, result['user_id'], 999999)
+
+            assert response.status_code == 404
+            assert Feedback.query.count() == 0
+
+        finally:
+            # Clean up
+            try:
+                delete_one_admin_course(result)
+            except Exception as e:
+                print(f"Cleanup skipped: {e}")
+
+
 def test_student_view_feedback_with_existing_feedback(flask_app_mock, sample_token, auth_header, client):
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
 
         try:
             result = create_one_admin_course(False)
+            users = create_users(result['course_id'], result['user_id'], number_of_users=2)
+            member = users[0]
             rubric = sample_rubric(result['user_id'])
             payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
             task = create_assessment_task(payload)
             
             team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            sample_team_user(team.team_id, member.user_id)
             comp = create_completed_assessment(sample_completed_assessment(
                 None,
                 task.assessment_task_id, 
@@ -390,12 +618,13 @@ def test_student_view_feedback_with_existing_feedback(flask_app_mock, sample_tok
                 last_update="2025-11-15T12:00:00"
             ))
             
-            sample_feedback(comp.completed_assessment_id, team_id=team.team_id)
+            # This student has already viewed the team's feedback.
+            sample_feedback(comp.completed_assessment_id, user_id=member.user_id, team_id=team.team_id)
             
-            token = sample_token(user_id=result['user_id'])
+            token = sample_token(user_id=member.user_id)
             
             response = client.post(
-                f"/api/rating?team_id={team.team_id}&user_id={result['user_id']}",
+                f"/api/rating?team_id={team.team_id}&user_id={member.user_id}",
                 headers=auth_header(token),
                 json={"completed_assessment_id": comp.completed_assessment_id}
             )
@@ -411,8 +640,12 @@ def test_student_view_feedback_with_existing_feedback(flask_app_mock, sample_tok
             try:
                 Feedback.query.delete()
                 delete_completed_assessment_tasks(comp.completed_assessment_id)
+                TeamUser.query.filter_by(team_id=team.team_id).delete()
+                db.session.commit()
+                delete_team(team.team_id)
                 delete_assessment_task(task.assessment_task_id)
                 delete_rubric_by_id(rubric.rubric_id)
+                delete_users(users)
                 delete_one_admin_course(result)
             except Exception as e:
                 print(f"Cleanup skipped: {e}")

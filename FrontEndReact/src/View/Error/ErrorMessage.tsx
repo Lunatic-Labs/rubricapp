@@ -23,7 +23,7 @@ class ErrorMessage extends Component<ErrorMessageProps> {
 
         return(
             <Box sx={{ width: "100%", display: "flex", justifyContent: "center"}}>
-                <Alert aria-label='errorMessageAlert' sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
+                <Alert data-testid='error-message-alert' sx={{ width: "40%", mt: 2, position:"absolute" }} severity="error" variant="filled">
                     { displayedMessage }
                 </Alert>
             </Box>

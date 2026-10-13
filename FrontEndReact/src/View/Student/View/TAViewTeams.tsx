@@ -121,18 +121,20 @@ class TAViewTeams extends Component<TAViewTeamsProps, TAViewTeamsState> {
         } else {
             var studentNames = {};
             type Team = {
+                team_id: number;
                 studentNames: string;
                 teamName: string;
             };
             var teams: Team[] = [];
             for (var ci = 0; ci < team_members.length; ci++) {
                 if (team_members[ci]["observer_id"] === this.state.user_id) {
-                    let names = "";  
+                    let names = "";
                     for (var i = 0; i < team_members[ci]["users"].length; i++) {
                         names += team_members[ci]["users"][i] + ", ";
                     }
                     var str_len = names.length;
                     const team: Team = {
+                        team_id: team_members[ci]["team_id"],
                         studentNames: names.substring(0, str_len-2),
                         teamName: team_members[ci]["team_name"]
                     };

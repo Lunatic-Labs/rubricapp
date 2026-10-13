@@ -4,169 +4,169 @@ import "@testing-library/jest-dom";
 import SetNewPassword from "../SetNewPassword";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    expectElementWithAriaLabelToHaveErrorMessage,
-    changeElementWithAriaLabelWithInput
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    expectElementWithTestIdToHaveErrorMessage,
+    changeElementWithTestIdWithInput
 } from "../../../testUtilities";
 
 
 
-var snpfl = "setNewPasswordFormLabel";
-var snpb = "setNewPasswordButton";
-var ema = "errorMessageAlert";
-var snpi = "setNewPasswordInput";
-var sncpi = "setNewPasswordConfirmInput";
-var lf = "loginForm";
+var snpfl = "set-new-password-form";
+var snpb = "set-new-password-button";
+var ema = "error-message-alert";
+var snpi = "set-new-password-input";
+var sncpi = "set-new-password-confirm-input";
+var lf = "login-form";
 test("NOTE: Test 11 will not pass if Demo Data is not loaded!", () => {
     expect(true).toBe(true);
 });
 test("SetNewPassword.test.tsx Test 1: should render SetNewPassword Form component", () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 });
 test("SetNewPassword.test.tsx Test 2: should display error password cannot be empty when no password or confirm password are entered", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Password cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Password cannot be empty");
     });
 });
 test("SetNewPassword.test.tsx Test 3: should display error confirm password cannot be empty when password is filled but not confirm password", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "sdfhdshajkfla");
+    changeElementWithTestIdWithInput(snpi, "sdfhdshajkfla");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Confirm Password cannot be empty");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Confirm Password cannot be empty");
     })
 });
 test("SetNewPassword.test.tsx Test 4: should display error passwords to not match", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "passwordonedoesnotmatch");
+    changeElementWithTestIdWithInput(snpi, "passwordonedoesnotmatch");
 
-    changeElementWithAriaLabelWithInput(sncpi, "passwordshouldmatch");
+    changeElementWithTestIdWithInput(sncpi, "passwordshouldmatch");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Passwords do not match");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Passwords do not match");
     });
 });
 test("SetNewPassword.test.tsx Test 5: should display error check password strength when password is less than 7 characters long", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "1234567");
+    changeElementWithTestIdWithInput(snpi, "1234567");
 
-    changeElementWithAriaLabelWithInput(sncpi, "1234567");
+    changeElementWithTestIdWithInput(sncpi, "1234567");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Please verify your password strength");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Please verify your password strength");
     });
 });
 test("SetNewPassword.test.tsx Test 6: should display error check password strength when password is 7 long and has one uppercase letter but not one lowercase letter", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "ABCDEFG");
+    changeElementWithTestIdWithInput(snpi, "ABCDEFG");
 
-    changeElementWithAriaLabelWithInput(sncpi, "ABCDEFG");
+    changeElementWithTestIdWithInput(sncpi, "ABCDEFG");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Please verify your password strength");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Please verify your password strength");
     });
 });
 test("SetNewPassword.test.tsx Test 7: should display error check password strength when password is 7 long and has one lowercase letter but not one uppercase letter", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "abcdefg");
+    changeElementWithTestIdWithInput(snpi, "abcdefg");
 
-    changeElementWithAriaLabelWithInput(sncpi, "abcdefg");
+    changeElementWithTestIdWithInput(sncpi, "abcdefg");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Please verify your password strength");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Please verify your password strength");
     });
 });
 test("SetNewPassword.test.tsx Test 8: should display error check password strength when password is 7 long, has one uppercase, and one lowercase letter but not one number", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "Abcdefg");
+    changeElementWithTestIdWithInput(snpi, "Abcdefg");
 
-    changeElementWithAriaLabelWithInput(sncpi, "Abcdefg");
+    changeElementWithTestIdWithInput(sncpi, "Abcdefg");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Please verify your password strength");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Please verify your password strength");
     });
 });
 test("SetNewPassword.test.tsx Test 9: should display error check password strength when password is 7 long, has one uppercase, one lowercase, and one number but not a special symbol", async () => {
     render(<SetNewPassword email="test@example.com" />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "Abcdefg1");
+    changeElementWithTestIdWithInput(snpi, "Abcdefg1");
 
-    changeElementWithAriaLabelWithInput(sncpi, "Abcdefg1");
+    changeElementWithTestIdWithInput(sncpi, "Abcdefg1");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "Please verify your password strength");
+        expectElementWithTestIdToHaveErrorMessage(ema, "Please verify your password strength");
     });
 });
 test("SetNewPassword.test.tsx Test 10: should display error missing email or password when email is missing but check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
     render(<SetNewPassword email={""} />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "Abcdefg1@");
+    changeElementWithTestIdWithInput(snpi, "Abcdefg1@");
 
-    changeElementWithAriaLabelWithInput(sncpi, "Abcdefg1@");
+    changeElementWithTestIdWithInput(sncpi, "Abcdefg1@");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Missing Email or Password");
+        expectElementWithTestIdToHaveErrorMessage(ema, "An error occurred: Missing Email or Password");
     });
 });
 test("SetNewPassword.test.tsx Test 11: should display login page when email is valid and check password strength is strong because the password is 7 long, has one uppercase, one lowercase, one number, and one special symbol", async () => {
     render(<SetNewPassword email={"demostudent5@skillbuilder.edu"} />);
 
-    expectElementWithAriaLabelToBeInDocument(snpfl);
+    expectElementWithTestIdToBeInDocument(snpfl);
 
-    changeElementWithAriaLabelWithInput(snpi, "Abcdefg1@");
+    changeElementWithTestIdWithInput(snpi, "Abcdefg1@");
 
-    changeElementWithAriaLabelWithInput(sncpi, "Abcdefg1@");
+    changeElementWithTestIdWithInput(sncpi, "Abcdefg1@");
 
-    clickElementWithAriaLabel(snpb);
+    clickElementWithTestId(snpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(lf);
+        expectElementWithTestIdToBeInDocument(lf);
     });
 });

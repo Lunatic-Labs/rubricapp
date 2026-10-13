@@ -4,7 +4,8 @@ from models.feedback import *
 from controller import bp
 from controller.Route_response import *
 from models.completed_assessment import *
-from models.queries import get_individual_ratings, get_team_ratings
+from models.queries import get_individual_ratings, get_team_ratings, is_member_of_team_for_task
+from enums.http_status_codes import HttpStatus
 from flask_jwt_extended import jwt_required
 
 from controller.security.CustomDecorators import (
@@ -166,6 +167,8 @@ def get_ratings():
                         "lag_time": lag_time_str,
                         "notification_sent": notification_sent_time is not None,
                         "is_assessor": is_assessor,
+                        # None when the team has a submission but no members.
+                        "user_id": team_user_id,
                     }
                 )
 
@@ -220,15 +223,17 @@ def student_view_feedback():
     """
     Description:
         Creates an entry in the Feedback table for that student and that
-        completed assessment.
+        completed assessment. The row always records the viewing student's
+        user_id, for team assessments too.
 
     Parameters (transport):
         - JSON body:
             completed_assessment_id: int
-            team_id: int | null (only for team assessments)
+            team_id: ignored; the submission's own team_id is stored
             (any other feedback fields supported by create_feedback)
         - Querystring:
-            user_id (automatically appended by the frontend via cookies)
+            user_id (automatically appended by the frontend via cookies).
+            This is the viewer; a user_id in the JSON body is ignored.
     """
     try:
         payload = request.json or {}
@@ -249,20 +254,35 @@ def student_view_feedback():
                 400,
             )
 
-        # For team assessments (team_id > 0), feedback is keyed by team not user
-        team_id_param = request.args.get("team_id")
-        is_team = team_id_param and team_id_param != "0"
+        try:
+            completed = get_completed_assessment(completed_assessment_id)
+        except InvalidCRID:
+            return create_bad_response(
+                "Completed assessment not found.",
+                "feedbacks",
+                HttpStatus.NOT_FOUND.value,
+            )
 
-        if is_team:
-            effective_user_id = None
+        # Only the submission's owner, or a member of the submitting team,
+        # can record viewing its feedback.
+        viewer_id = int(user_id)
+        if completed.team_id is not None:
+            may_view = is_member_of_team_for_task(viewer_id, completed.team_id, completed.assessment_task_id)
         else:
-            body_user_id = payload.get("user_id")
-            effective_user_id = body_user_id if body_user_id is not None else user_id
+            may_view = completed.user_id == viewer_id
 
-        team_id = payload.get("team_id")
+        if not may_view:
+            return create_bad_response(
+                "You can only record viewing your own feedback.",
+                "feedbacks",
+                HttpStatus.FORBIDDEN.value,
+            )
 
-        # Do not create duplicates for the same user/team + completed assessment
-        exists = check_feedback_exists(effective_user_id, completed_assessment_id)
+        # Taken from the submission, not the request.
+        team_id = completed.team_id
+
+        # Do not create duplicates for the same user + completed assessment
+        exists = check_feedback_exists(user_id, completed_assessment_id)
         if exists:
             return create_bad_response(
                 "Using server's existing data as source of truth.",
@@ -271,8 +291,14 @@ def student_view_feedback():
             )
 
         feedback_data = dict(payload)
-        feedback_data["user_id"] = effective_user_id
-        feedback_data["team_id"] = team_id if team_id is not None else None
+        # Feedback is always recorded for the student who viewed it, team
+        # assessments included, with team_id kept as context. get_team_ratings
+        # reports view status per team member, so a row with no user_id would
+        # match no one. The viewer is the authenticated user_id (AuthCheck
+        # ties the query string's user_id to the token); a user_id in the body
+        # is ignored, so no one can mark another student's feedback as viewed.
+        feedback_data["user_id"] = user_id
+        feedback_data["team_id"] = team_id
 
         # Use provided feedback_time if available, otherwise use server time
         if not feedback_data.get("feedback_time"):

@@ -347,7 +347,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                    
 
                     <Box className="content-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" aria-label="MyAccount">My Account</Typography>
+                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="my-account-title">My Account</Typography>
                     </Box>
                     {user && (
                         <Box>
@@ -388,7 +388,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                             <DialogTitle>Reset Password</DialogTitle>
                             <DialogContent>
                             <FormControl sx={{display:'flex', flexDirection:'column', justifyContent:'center'}}>
-                                    <form aria-label="setNewPasswordFormLabel">
+                                    <form data-testid="account-set-new-password-form">
                                         <Box>
                                             <TextField
                                                 margin="normal"
@@ -405,7 +405,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                                 helperText={errors.password}
                                                 onChange={this.handleChange}
                                                 inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}      // the maximum character length of password has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
-                                                aria-label="setNewPasswordInput"
+                                                data-testid="account-set-new-password-input"
                                                 sx={{
                                                     '& .MuiInputBase-input': {
                                                         color: 'var(--text-color)',
@@ -520,7 +520,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                             helperText={errors.confirmationPassword}
                                             onChange={this.handleChange}
                                             inputProps={{ maxLength: MAX_PASSWORD_LENGTH + 1 }}          // the maximum character length of confirmationPassword has been changed to MAX_PASSWORD_LENGTH, this accounts for browsers handling characters differently
-                                            aria-label="setNewPasswordConfirmInput"
+                                            data-testid="account-set-new-password-confirm-input"
                                         />
 
                                         <Box sx={{ display: "flex", flexDirection: "row", justifyContent: "right", gap: "20px" }}>
@@ -530,7 +530,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                                     type="button"
                                                     variant="contained"
                                                     className="primary-color"
-                                                    aria-label="setNewPasswordButton"
+                                                    data-testid="account-set-new-password-button"
                                                 >
                                                     Set Password
                                                 </Button>

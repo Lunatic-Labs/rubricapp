@@ -3,7 +3,9 @@ import { render, screen } from "@testing-library/react";
 import "@testing-library/jest-dom";
 import AssessmentTaskDropdown from "../AssessmentTaskDropdown";
 import { AssessmentTask } from "../../../types/AssessmentTask";
-import { selectComboBoxMenuItem } from "../../../testUtilities";
+import {
+    selectComboBoxMenuItem
+} from "../../../testUtilities";
 
 function makeTask(id: number, name: string): AssessmentTask {
     return { assessment_task_id: id, assessment_task_name: name } as AssessmentTask;
