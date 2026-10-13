@@ -11,6 +11,11 @@ import { Primary, Spacing } from '@/constants/theme';
 import { useApi } from '@/hooks/use-api';
 import { useTheme } from '@/hooks/use-theme';
 
+// Each block shows exactly three course cards; extra cards scroll inside it.
+const CARD_HEIGHT = 144;
+const CARD_GAP = 8;
+const BLOCK_HEIGHT = 3 * CARD_HEIGHT + 2 * CARD_GAP + 2 * 8;
+
 export default function UserCoursesScreen() {
   const { userId, userName } = useLocalSearchParams<{ userId: string; userName?: string }>();
   const theme = useTheme();
@@ -67,21 +72,24 @@ export default function UserCoursesScreen() {
 }
 
 function CourseSection({ title, courses }: { title: string; courses: Course[] }) {
+  const theme = useTheme();
   return (
     <View style={styles.section}>
-      <ThemedText type="smallBold" style={[styles.sectionTitle, { color: Primary }]}>
+      <ThemedText type="subtitle" style={[styles.sectionTitle, { color: Primary }]}>
         {title}
       </ThemedText>
-      <View style={styles.sectionList}>
-        {courses.length === 0 ? (
-          <ThemedView type="backgroundElement" style={styles.card}>
-            <ThemedText type="small" themeColor="textSecondary">
-              No {title.toLowerCase()}.
-            </ThemedText>
-          </ThemedView>
-        ) : (
-          courses.map((course) => <CourseCard key={course.course_id} course={course} />)
-        )}
+      <View style={[styles.sectionBlock, { borderColor: theme.border }]}>
+        <ScrollView style={styles.blockScroll} contentContainerStyle={styles.blockContent}>
+          {courses.length === 0 ? (
+            <ThemedView type="backgroundElement" style={[styles.card, { borderColor: theme.border }]}>
+              <ThemedText type="small" themeColor="textSecondary">
+                No {title.toLowerCase()}.
+              </ThemedText>
+            </ThemedView>
+          ) : (
+            courses.map((course) => <CourseCard key={course.course_id} course={course} />)
+          )}
+        </ScrollView>
       </View>
     </View>
   );
@@ -92,8 +100,9 @@ function CourseSection({ title, courses }: { title: string; courses: Course[] })
 // screens (mui-datatables' "vertical" responsive mode), since a literal
 // 7-column table has no room to be legible on a phone.
 function CourseCard({ course }: { course: Course }) {
+  const theme = useTheme();
   return (
-    <ThemedView type="backgroundElement" style={styles.card}>
+    <ThemedView type="backgroundElement" style={[styles.card, { borderColor: theme.border }]}>
       <InfoRow label="Course Name" value={course.course_name} />
       <InfoRow label="Course Number" value={course.course_number} />
       <InfoRow label="Term" value={course.term} />
@@ -109,11 +118,11 @@ function CourseCard({ course }: { course: Course }) {
         }
         style={styles.viewRow}
         aria-label={`viewCourse${course.course_id}`}>
-        <ThemedText type="linkPrimary">View</ThemedText>
+        <ThemedText type="linkPrimary" style={{ fontSize: 12, lineHeight: 16 }}>View</ThemedText>
         <SymbolView
           name={{ ios: 'eye', android: 'visibility', web: 'visibility' }}
           tintColor={Primary}
-          size={16}
+          size={12}
         />
       </Pressable>
     </ThemedView>
@@ -123,10 +132,10 @@ function CourseCard({ course }: { course: Course }) {
 function InfoRow({ label, value }: { label: string; value: string }) {
   return (
     <View style={styles.infoRow}>
-      <ThemedText type="small" themeColor="textSecondary" style={styles.infoLabel}>
+      <ThemedText type="small" themeColor="textSecondary" style={styles.infoLabel} numberOfLines={1}>
         {label}
       </ThemedText>
-      <ThemedText type="small" style={styles.infoValue}>
+      <ThemedText type="small" style={styles.infoValue} numberOfLines={1} ellipsizeMode="tail">
         {value}
       </ThemedText>
     </View>
@@ -152,21 +161,35 @@ const styles = StyleSheet.create({
   },
   scrollContent: {
     padding: Spacing.three,
-    gap: Spacing.four,
+    gap: Spacing.three,
   },
   section: {
     gap: Spacing.two,
   },
   sectionTitle: {
     paddingHorizontal: Spacing.one,
+    paddingBottom: Spacing.one,
   },
-  sectionList: {
-    gap: Spacing.two,
+  sectionBlock: {
+    height: BLOCK_HEIGHT,
+    borderWidth: StyleSheet.hairlineWidth,
+    borderRadius: Spacing.three,
+    overflow: 'hidden',
+  },
+  blockScroll: {
+    flex: 1,
+  },
+  blockContent: {
+    padding: Spacing.two,
+    gap: CARD_GAP,
   },
   card: {
+    height: CARD_HEIGHT,
+    justifyContent: 'center',
     borderRadius: Spacing.two,
-    padding: Spacing.three,
-    gap: Spacing.half,
+    borderWidth: StyleSheet.hairlineWidth,
+    paddingHorizontal: Spacing.three,
+    gap: 0,
   },
   infoRow: {
     flexDirection: 'row',
@@ -175,17 +198,24 @@ const styles = StyleSheet.create({
   },
   infoLabel: {
     flex: 1,
+    fontSize: 13,
+    lineHeight: 17,
   },
   infoValue: {
-    flex: 1,
+    flex: 1.6,
+    fontSize: 13,
     textAlign: 'right',
+    lineHeight: 17,
   },
   viewRow: {
+    borderWidth: 1,
+    borderColor: Primary,
+    borderRadius: Spacing.one,
+    paddingHorizontal: Spacing.one,
     flexDirection: 'row',
     alignItems: 'center',
-    gap: Spacing.one,
+    gap: 2,
     alignSelf: 'flex-end',
-    marginTop: Spacing.one,
-    padding: Spacing.one,
+    paddingVertical: 0,
   },
 });

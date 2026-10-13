@@ -16,7 +16,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { type AdminUser, deleteUser, listUsers } from '@/api/users';
 import { ThemedText } from '@/components/themed-text';
 import { ThemedView } from '@/components/themed-view';
-import { BottomTabInset, Primary, Spacing } from '@/constants/theme';
+import { Primary, Spacing } from '@/constants/theme';
 import { useSession } from '@/context/session';
 import { useApi } from '@/hooks/use-api';
 import { useTheme } from '@/hooks/use-theme';
@@ -26,6 +26,7 @@ import { useTheme } from '@/hooks/use-theme';
 // off mid-row instead of either fully showing or fully scrolling out of view.
 const ROW_HEIGHT = 84;
 const ROW_UNIT = ROW_HEIGHT + Spacing.two; // row height + inter-row gap
+const ADD_ROW_HEIGHT = 52; // reserved space below the list for the Add User button
 
 export default function UsersScreen() {
   const theme = useTheme();
@@ -41,7 +42,7 @@ export default function UsersScreen() {
   // fully visible or fully scrolled away — never cut off mid-row.
   const handleAreaLayout = (event: LayoutChangeEvent) => {
     const available = event.nativeEvent.layout.height;
-    const rows = Math.max(1, Math.floor((available - Spacing.two) / ROW_UNIT));
+    const rows = Math.max(1, Math.floor((available - Spacing.two - ADD_ROW_HEIGHT) / ROW_UNIT));
     setBoxHeight(rows * ROW_UNIT + Spacing.two);
   };
 
@@ -92,15 +93,6 @@ export default function UsersScreen() {
           Users
         </ThemedText>
 
-        <Pressable
-          onPress={() => router.push('/add-user')}
-          style={({ pressed }) => [styles.addButton, { backgroundColor: Primary, opacity: pressed ? 0.8 : 1 }]}
-          aria-label="addUserButton">
-          <ThemedText type="smallBold" style={styles.addLabel}>
-            Add User
-          </ThemedText>
-        </Pressable>
-
         <View style={styles.listArea} onLayout={handleAreaLayout}>
         {boxHeight == null ? null : (
         <ThemedView style={[styles.listBox, { height: boxHeight, borderColor: theme.border }]}>
@@ -131,7 +123,7 @@ export default function UsersScreen() {
               </ThemedView>
             }
             renderItem={({ item }) => (
-              <ThemedView type="backgroundElement" style={styles.row}>
+              <ThemedView type="backgroundElement" style={[styles.row, { borderColor: theme.border }]}>
                 <View style={styles.rowInfo}>
                   <ThemedText type="smallBold">
                     {item.first_name} {item.last_name}
@@ -200,6 +192,17 @@ export default function UsersScreen() {
         )}
         </ThemedView>
         )}
+
+          <View style={styles.addRow}>
+            <Pressable
+              onPress={() => router.push('/add-user')}
+              style={({ pressed }) => [styles.addButton, { backgroundColor: Primary, opacity: pressed ? 0.8 : 1 }]}
+              aria-label="addUserButton">
+              <ThemedText type="smallBold" style={styles.addLabel}>
+                Add User
+              </ThemedText>
+            </Pressable>
+          </View>
         </View>
       </SafeAreaView>
     </ThemedView>
@@ -228,10 +231,15 @@ const styles = StyleSheet.create({
   retryButton: {
     padding: Spacing.two,
   },
+  addRow: {
+    height: ADD_ROW_HEIGHT,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   addButton: {
-    marginHorizontal: Spacing.three,
-    marginBottom: Spacing.two,
-    paddingVertical: Spacing.three,
+    width: '55%',
+    paddingHorizontal: Spacing.four,
+    paddingVertical: Spacing.two,
     borderRadius: Spacing.two,
     alignItems: 'center',
     justifyContent: 'center',
@@ -242,7 +250,7 @@ const styles = StyleSheet.create({
   listArea: {
     flex: 1,
     marginHorizontal: Spacing.three,
-    marginBottom: BottomTabInset + Spacing.one,
+    marginBottom: Spacing.one,
   },
   listBox: {
     borderRadius: Spacing.three,
@@ -259,6 +267,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     borderRadius: Spacing.two,
+    borderWidth: StyleSheet.hairlineWidth,
     paddingHorizontal: Spacing.three,
     gap: Spacing.two,
   },

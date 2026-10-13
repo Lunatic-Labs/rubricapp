@@ -33,6 +33,10 @@ function RootNavigator() {
           <Stack.Screen name="send-notification" options={{ headerShown: true }} />
           <Stack.Screen name="add-user" options={{ headerShown: true }} />
           <Stack.Screen name="course-assessment-tasks" options={{ headerShown: true }} />
+          <Stack.Screen name="custom-rubrics" options={{ headerShown: true }} />
+          <Stack.Screen name="import-tasks" options={{ headerShown: true }} />
+          <Stack.Screen name="add-task" options={{ headerShown: true }} />
+          <Stack.Screen name="add-custom-rubric" options={{ headerShown: true }} />
         </Stack.Protected>
 
         <Stack.Protected guard={!session}>
