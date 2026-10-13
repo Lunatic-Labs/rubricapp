@@ -849,14 +849,9 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                         className="primary-color"
                                         variant='contained'
                                         onClick={() => {
-                                            this.setState({
-                                                activeTab: "ViewNotification",
-                                                user: null,
-                                                addUser: true
-                                            });
                                         }}
                                     >
-                                        Promote User
+                                        Manage Admins
                                     </Button>
                                     <Button 
                                         className="primary-color"
