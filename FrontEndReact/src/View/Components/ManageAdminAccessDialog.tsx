@@ -12,6 +12,7 @@ import { genericResourcePUT } from "../../utility";
 import Loading from "../Loading/Loading";
 import CloseIcon from "@mui/icons-material/Close";
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import ErrorIcon from '@mui/icons-material/Error';
 
 const AUTO_CLOSE_TIMER_MS = 3000;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -216,17 +217,21 @@ class ManageAdminsAccessDialog extends Component<ManageAdminsAccessDialogProps, 
     }
 
     private successView(){
+        const { changeStatusTo } = this.state;
         return (
             <DialogContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 4 }}>
                 <CheckCircleIcon color="primary" data-testid="manage-admin-access-success"/>
+                <DialogContentText>User has been {changeStatusTo === StatusChanges.Promote ? "promoted" : "demoted"}</DialogContentText>
             </DialogContent>
         );
     }
 
     private errorView(){
+        const { changeStatusTo } = this.state;
         return (
-            <DialogContent>
-                <DialogContentText>Error</DialogContentText>
+            <DialogContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 4 }}>
+                <ErrorIcon color="error" data-testid="manage-admin-access-error" />
+                <DialogContentText>Failed to {changeStatusTo.toLowerCase()} user</DialogContentText>
             </DialogContent>
         );
     }
@@ -269,7 +274,7 @@ class ManageAdminsAccessDialog extends Component<ManageAdminsAccessDialogProps, 
         return (
             <Dialog open={this.props.open} onClose={this.handleClose} fullWidth maxWidth="xs">
                 <DialogTitle sx={{ position: "relative", textAlign: "center", px: 6 }}>
-                    Manage Admin Access
+                    Manage Admins
                     <IconButton
                         aria-label="Close"
                         onClick={this.handleClose}
