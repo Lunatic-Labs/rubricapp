@@ -32,6 +32,7 @@ type EmailError = (typeof EmailErrors)[keyof typeof EmailErrors];
 interface ManageAdminsAccessDialogProps {
     open: boolean;
     onClose: () => void;
+    onSuccess:() => void;
 }
 
 interface ManageAdminsAccessDialogState {
@@ -72,11 +73,11 @@ class ManageAdminsAccessDialog extends Component<ManageAdminsAccessDialogProps, 
         const url = `/super_admin_user/${action}?target_email=${encodeURIComponent(email)}`;
 
         const result = await genericResourcePUT(url, this, "");
+        const failed = Boolean(result.errorMessage);
         this.setState({
-            requestState: result.errorMessage
-                ? REQUEST_STATE.ERROR
-                : REQUEST_STATE.SUCCESS,
+            requestState: failed ? REQUEST_STATE.ERROR : REQUEST_STATE.SUCCESS,
         });
+        if (!failed) { this.props.onSuccess(); }
     }
 
     private handleClose = () => {

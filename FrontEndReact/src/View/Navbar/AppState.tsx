@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef} from 'react';
 import Cookies from 'universal-cookie';
 import { logger } from '../../logger';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -174,6 +174,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
         (screen) => screen.activeTab,
         (screen) => this.setState(screen),
     );
+
+    private adminViewUsersRef = createRef<AdminViewUsers>();
 
     constructor(props: AppStateProps) {
         super(props);
@@ -918,11 +920,13 @@ class AppState extends Component<AppStateProps, AppStateState> {
                             </Box>
                         </div>
                         <AdminViewUsers
+                            ref={this.adminViewUsersRef}
                             navbar={this}
                         />
                         <ManageAdminsAccessDialog
                             open={this.state.manageAdminAccessOpen}
                             onClose={() => this.setState({manageAdminAccessOpen:false})}
+                            onSuccess={() => this.adminViewUsersRef.current?.fetchData()}
                         />
                     </Box>
                 }
