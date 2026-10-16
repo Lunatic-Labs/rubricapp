@@ -927,6 +927,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                             open={this.state.manageAdminAccessOpen}
                             onClose={() => this.setState({manageAdminAccessOpen:false})}
                             onSuccess={() => this.adminViewUsersRef.current?.fetchData()}
+                            onError={(message) => this.adminViewUsersRef.current?.setErrorMessage(message)}
                         />
                     </Box>
                 }

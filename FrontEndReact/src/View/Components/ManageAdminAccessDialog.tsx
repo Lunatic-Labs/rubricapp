@@ -32,7 +32,8 @@ type EmailError = (typeof EmailErrors)[keyof typeof EmailErrors];
 interface ManageAdminsAccessDialogProps {
     open: boolean;
     onClose: () => void;
-    onSuccess:() => void;
+    onSuccess: () => void;
+    onError: (message: string) => void;
 }
 
 interface ManageAdminsAccessDialogState {
@@ -77,7 +78,8 @@ class ManageAdminsAccessDialog extends Component<ManageAdminsAccessDialogProps, 
         this.setState({
             requestState: failed ? REQUEST_STATE.ERROR : REQUEST_STATE.SUCCESS,
         });
-        if (!failed) { this.props.onSuccess(); }
+        if (failed) { this.props.onError(result.errorMessage); }
+        else { this.props.onSuccess(); }
     }
 
     private handleClose = () => {
