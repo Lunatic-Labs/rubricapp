@@ -4,12 +4,14 @@
    *
 **/
 
-import { Dialog, DialogTitle, DialogContentText, TextField, DialogActions, Button } from "@mui/material";
+import { Dialog, DialogTitle, DialogContentText, TextField, DialogActions, Button, IconButton, DialogContent } from "@mui/material";
 import { Component, ChangeEvent } from "react";
-import CustomizedSwitches from "./genericIOSButton";
+import FullColorGradentPillCustomFields from "./FullGradientPill";
 import { RequestState, REQUEST_STATE } from "../../Enums/RequestState";
 import { genericResourcePUT } from "../../utility";
 import Loading from "../Loading/Loading";
+import CloseIcon from "@mui/icons-material/Close";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
 
 const AUTO_CLOSE_TIMER_MS = 3000;
 const EMAIL_REGEX = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -125,94 +127,122 @@ class ManageAdminsAccessDialog extends Component<ManageAdminsAccessDialogProps, 
         );
     }
 
-    private renderBody() {
+    private awaitUserInputView() {
         const {
             email,
             error,
-            requestState,
+            changeStatusTo,
         } = this.state;
+
+        return (
+            <>
+            {
+            //<DialogContentText sx={{ textAlign: "center" }}>
+            //    Enter the email of the user you want to change, then choose whether to
+            //    promote them to admin or remove their admin access.
+            //</DialogContentText>
+            }
+            <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
+                <TextField
+                id="email" 
+                name="email"
+                variant="outlined"
+                label="User Email"
+                className="text-box-colors"
+                fullWidth
+                value={email}
+                error={error !== EmailErrors.NoError}
+                helperText={error}
+                onChange={this.handleChange}
+                onBlur={this.handleBlur}
+                onFocus={this.handleFocus}
+                required
+                sx={{ 
+                    mb: 3,
+                    '& .MuiOutlinedInput-root': {
+                        backgroundColor: 'var(--textbox-bg)',
+                        color: 'var(--textbox-text)',
+                        '& fieldset': {
+                            borderColor: 'var(--textbox-border)',
+                        },
+                        '&:hover fieldset': {
+                            borderColor: 'var(--textbox-border-hover)',
+                        },
+                        '&.Mui-focused fieldset': {
+                            borderColor: 'var(--textbox-border-focused)',
+                        },
+                        '&.Mui-error fieldset': {
+                            borderColor: 'var(--textbox-error)',
+                        },
+                    },
+                    '& .MuiInputLabel-root': {
+                        color: 'var(--textbox-label)',
+                        '&.Mui-focused': {
+                            color: 'var(--textbox-border-focused)',
+                        },
+                        '&.Mui-error': {
+                            color: 'var(--textbox-error)',
+                        },
+                    },
+                }}
+                data-testid="manage-admin-access-email"
+            />
+            </DialogActions>
+            <DialogActions sx={{ justifyContent: "center", px: 3, pb: 5 }}>
+                <FullColorGradentPillCustomFields
+                    leftOption={StatusChanges.Demote}
+                    rightOption={StatusChanges.Promote}
+                    checked={changeStatusTo === StatusChanges.Promote}
+                    onChange={(e) => this.setState({
+                        changeStatusTo: e.target.checked ? StatusChanges.Promote : StatusChanges.Demote,
+                    })}
+                />
+            </DialogActions>
+            <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
+                <Button
+                    className="primary-color"
+                    variant='contained'
+                    onClick={this.handleClose}
+                >Cancel</Button>
+                <Button
+                    className="primary-color"
+                    variant='contained'
+                    onClick={this.handleSubmit}
+                    disabled={!this.isReadyToSend()}
+                >{this.state.changeStatusTo}</Button >
+            </DialogActions>
+            </>
+        );
+    }
+
+    private successView(){
+        return (
+            <DialogContent sx={{ display: "flex", flexDirection: "column", alignItems: "center", py: 4 }}>
+                <CheckCircleIcon color="primary" data-testid="manage-admin-access-success"/>
+            </DialogContent>
+        );
+    }
+
+    private errorView(){
+        return (
+            <DialogContent>
+                <DialogContentText>Error</DialogContentText>
+            </DialogContent>
+        );
+    }
+
+    private renderBody() {
+        const { requestState } = this.state;
 
         switch (requestState) {
             case REQUEST_STATE.LOADING:
                 return <Loading></Loading>
             case REQUEST_STATE.SUCCESS:
-                return <Button>Success</Button>;
+                return this.successView();
             case REQUEST_STATE.ERROR:
-                return <Button>Error</Button>;
+                return this.errorView();
             default:
-                return (
-                    <>
-                    <DialogTitle sx={{textAlign: "center"}}>Manage Admin Access</DialogTitle>
-                    {
-                    //<DialogContentText sx={{ textAlign: "center" }}>
-                    //    Enter the email of the user you want to change, then choose whether to
-                    //    promote them to admin or remove their admin access.
-                    //</DialogContentText>
-                    }
-                    <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
-                        <TextField
-                        id="email" 
-                        name="email"
-                        variant="outlined"
-                        label="User Email"
-                        className="text-box-colors"
-                        fullWidth
-                        value={email}
-                        error={error !== EmailErrors.NoError}
-                        helperText={error}
-                        onChange={this.handleChange}
-                        onBlur={this.handleBlur}
-                        onFocus={this.handleFocus}
-                        required
-                        sx={{ 
-                            mb: 3,
-                            '& .MuiOutlinedInput-root': {
-                                backgroundColor: 'var(--textbox-bg)',
-                                color: 'var(--textbox-text)',
-                                '& fieldset': {
-                                    borderColor: 'var(--textbox-border)',
-                                },
-                                '&:hover fieldset': {
-                                    borderColor: 'var(--textbox-border-hover)',
-                                },
-                                '&.Mui-focused fieldset': {
-                                    borderColor: 'var(--textbox-border-focused)',
-                                },
-                                '&.Mui-error fieldset': {
-                                    borderColor: 'var(--textbox-error)',
-                                },
-                            },
-                            '& .MuiInputLabel-root': {
-                                color: 'var(--textbox-label)',
-                                '&.Mui-focused': {
-                                    color: 'var(--textbox-border-focused)',
-                                },
-                                '&.Mui-error': {
-                                    color: 'var(--textbox-error)',
-                                },
-                            },
-                        }}
-                        data-testid="manage-admin-access-email"
-                    />
-                    </DialogActions>
-                    <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
-                        {CustomizedSwitches()}
-                    </DialogActions>
-                    <DialogActions sx={{ justifyContent: "space-between", px: 3, pb: 2 }}>
-                        <Button
-                            className="primary-color"
-                            variant='contained'
-                            onClick={this.handleClose}
-                        >Cancel</Button>
-                        <Button
-                            className="primary-color"
-                            variant='contained'
-                            onClick={this.handleSubmit}
-                            disabled={!this.isReadyToSend()}
-                        >{this.state.changeStatusTo}</Button >
-                    </DialogActions>
-                    </>
-                );
+                return this.awaitUserInputView();
         }
     }
 
@@ -238,6 +268,22 @@ class ManageAdminsAccessDialog extends Component<ManageAdminsAccessDialogProps, 
     render() {
         return (
             <Dialog open={this.props.open} onClose={this.handleClose} fullWidth maxWidth="xs">
+                <DialogTitle sx={{ position: "relative", textAlign: "center", px: 6 }}>
+                    Manage Admin Access
+                    <IconButton
+                        aria-label="Close"
+                        onClick={this.handleClose}
+                        data-testid="manage-admin-access-close"
+                        sx={{
+                            position: "absolute",
+                            right: (t) => t.spacing(1),
+                            top: "50%",
+                            transform: "translateY(-50%)",
+                        }}
+                    >
+                    <CloseIcon />
+                    </IconButton>
+                </DialogTitle>
                 {this.renderBody()}
             </Dialog>
         )
