@@ -9,8 +9,9 @@
  *   disabled, ...) and pass through to the Switch.
  *
  * Used by ManageAdminAccessDialog for the Demote/Promote choice.
-*/
+ */
 
+import { useId } from "react";
 import Stack from "@mui/material/Stack";
 import { styled } from "@mui/material/styles";
 import FormGroup from "@mui/material/FormGroup";
@@ -111,6 +112,8 @@ export default function FullColorGradentPillCustomFields({
 	rightOption,
 	...switchProps
 }: PillProps) {
+	const id = useId();
+
 	return (
 		<FormGroup>
 			<Stack
@@ -118,9 +121,15 @@ export default function FullColorGradentPillCustomFields({
 				spacing={1}
 				sx={{ alignItems: "center", justifyContent: "center" }}
 			>
-				<Typography>{leftOption}</Typography>
-				<FullColorGradentPill {...switchProps} />
-				<Typography>{rightOption}</Typography>
+				<Typography id={`${id}-left`}>{leftOption}</Typography>
+				<FullColorGradentPill
+					{...switchProps}
+					inputProps={{
+						"aria-labelledby": `${id}-left ${id}-right`,
+						...switchProps.inputProps,
+					}}
+				/>
+				<Typography id={`${id}-right`}>{rightOption}</Typography>
 			</Stack>
 		</FormGroup>
 	);
