@@ -1,4 +1,5 @@
-from flask import request, escape
+from flask import request
+from markupsafe import escape
 from marshmallow import fields
 from controller  import bp
 from controller.Route_response import *
