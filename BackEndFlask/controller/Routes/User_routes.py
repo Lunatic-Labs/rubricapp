@@ -1,4 +1,4 @@
-from flask import request
+from flask import request, escape
 from marshmallow import fields
 from controller  import bp
 from controller.Route_response import *
@@ -453,7 +453,7 @@ def super_change_admin_status():
         super_admin_alter_user_auth(user_to_modify, promoting)
 
         return create_good_response(
-            {"email": user_to_modify, "is_admin": promoting},
+            {"email": escape(user_to_modify), "is_admin": promoting},
             HttpStatus.OK.value,
             "auth_change",
         )
