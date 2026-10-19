@@ -38,7 +38,6 @@ class EmailAlreadyExists(Exception):
         return self.message
 
 
-
 @error_log
 def get_users():
     return User.query.all()
@@ -272,8 +271,9 @@ def create_user(user_data, validate_emails=True):
 
     return user_data
 
+
 @error_log
-def super_admin_alter_user_auth(target_email:str, is_admin:bool) -> None:
+def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
     """
     Sets the User.is_admin flag for the user with the given email.
 
@@ -288,15 +288,14 @@ def super_admin_alter_user_auth(target_email:str, is_admin:bool) -> None:
         InvalidUserEmail: The email does not exist in the system.
     """
     stmt = (
-        update(User)
-        .where(User.email == target_email)
-        .values({User.is_admin : is_admin})
+        update(User).where(User.email == target_email).values({User.is_admin: is_admin})
     )
     result = db.session.execute(stmt)
-    if (result.rowcount == 0):
+    if result.rowcount == 0:
         db.session.rollback()
         raise InvalidUserEmail(target_email)
     db.session.commit()
+
 
 @error_log
 def make_admin(user_id):

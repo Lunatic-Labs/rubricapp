@@ -422,6 +422,7 @@ def delete_selected_user():
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
+
 @bp.route("/super_admin_user/promote", methods=["PUT"])
 @bp.route("/super_admin_user/demote", methods=["PUT"])
 @jwt_required()
@@ -452,7 +453,9 @@ def super_change_admin_status():
         super_admin_alter_user_auth(user_to_modify, promoting)
 
         return create_good_response(
-            {"email": user_to_modify, "is_admin": promoting}, HttpStatus.OK.value, "auth_change"
+            {"email": user_to_modify, "is_admin": promoting},
+            HttpStatus.OK.value,
+            "auth_change",
         )
     except ValueError as e:
         return create_bad_response(str(e), "auth_change", HttpStatus.BAD_REQUEST.value)
@@ -461,8 +464,11 @@ def super_change_admin_status():
     except Exception:
         logger.exception(f"{verb} failed for target_email={user_to_modify!r}")
         return create_bad_response(
-            f"{verb} Failed. Please try again.", "auth_change", HttpStatus.INTERNAL_SERVER_ERROR.value
+            f"{verb} Failed. Please try again.",
+            "auth_change",
+            HttpStatus.INTERNAL_SERVER_ERROR.value,
         )
+
 
 # new route for user to 'put' things into the back-end.
 # currently used only for user settings, additional use might
