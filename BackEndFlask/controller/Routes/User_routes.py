@@ -32,7 +32,7 @@ from models.user_course import(
     create_user_course,
     get_user_course_by_user_id_and_course_id,
     set_active_status_of_user_to_inactive,
-    replace_role_id_given_user_id_and_course_id
+    replace_role_id_given_user_id_and_course_id,
 )
 
 from models.course import (
@@ -56,7 +56,7 @@ from models.user import(
     unmake_admin,
     delete_user,
     set_user_dark_mode,
-    get_user_user_id_by_email,
+    InvalidUserEmail,
     super_admin_alter_user_auth,
 )
 
@@ -422,7 +422,6 @@ def delete_selected_user():
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
-
 @bp.route("/super_admin_user/promote", methods=["PUT"])
 @bp.route("/super_admin_user/demote", methods=["PUT"])
 @jwt_required()
@@ -437,21 +436,33 @@ def super_change_admin_status():
         target_email (str): The user's email who will have their auth status altered.
 
     Returns:
-        TBD
+        200: auth_change: [{email: str, is_admin: bool}] with the user's new admin status.
+        400: target_email is missing or not a string.
+        404: no user has that email.
+        500: unexpected failure. The cause is in the server log only; the client gets a generic message.
     """
     promoting = request.path.endswith("/promote")
     verb = "Promotion" if promoting else "Demotion"
     try:
-        user_to_modify = str(request.args.get("target_email"))
-        #Raise InvalidUserEmail
-        get_user_user_id_by_email(user_to_modify) 
-        super_admin_alter_user_auth(user_to_modify, promoting)
-        return create_good_response([], HttpStatus.OK.value,"auth_change")
-    except Exception as e:
-        return create_bad_response(
-            f"{verb} failed: {e}", "auth_change", HttpStatus.BAD_REQUEST.value
-        )
+        user_to_modify = request.args.get("target_email")
 
+        if not isinstance(user_to_modify, str):
+            raise ValueError("A target email is required.")
+
+        super_admin_alter_user_auth(user_to_modify, promoting)
+
+        return create_good_response(
+            {"email": user_to_modify, "is_admin": promoting}, HttpStatus.OK.value, "auth_change"
+        )
+    except ValueError as e:
+        create_bad_response(str(e), "auth_change", HttpStatus.BAD_REQUEST.value)
+    except InvalidUserEmail as e:
+        create_bad_response(str(e), "auth_change", HttpStatus.NOT_FOUND.value)
+    except Exception:
+        logger.exception(f"{verb} failed for target_email={user_to_modify!r}")
+        return create_bad_response(
+            f"{verb} Failed. Please try again.", "auth_change", HttpStatus.INTERNAL_SERVER_ERROR.value
+        )
 
 # new route for user to 'put' things into the back-end.
 # currently used only for user settings, additional use might

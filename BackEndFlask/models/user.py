@@ -23,6 +23,13 @@ class InvalidUserID(Exception):
     def __str__(self):
         return self.message
 
+class InvalidUserEmail(Exception):
+    def __init__(self, email):
+        self.message = f"No user was found with email: {email}."
+
+    def __str__(self):
+        return self.message
+
 class EmailAlreadyExists(Exception):
     def __init__(self, email):
         self.message = f"Invalid email: {email}."
@@ -269,7 +276,6 @@ def create_user(user_data, validate_emails=True):
 def super_admin_alter_user_auth(target_email:str, is_admin:bool) -> None:
     """
     Sets the User.is_admin flag for the user with the given email.
-    Does nothing if no user corresponds to the email.
 
     NOTE: Not course-scoped and for super admin use only.
 
@@ -279,13 +285,17 @@ def super_admin_alter_user_auth(target_email:str, is_admin:bool) -> None:
 
     Raises:
         SQLAlchemyError: If the update or commit fails.
+        InvalidUserEmail: The email does not exist in the system.
     """
     stmt = (
         update(User)
         .where(User.email == target_email)
         .values({User.is_admin : is_admin})
     )
-    db.session.execute(stmt)
+    result = db.session.execute(stmt)
+    if (result.rowcount == 0):
+        db.session.rollback()
+        raise InvalidUserEmail(target_email)
     db.session.commit()
 
 @error_log
