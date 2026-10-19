@@ -455,9 +455,9 @@ def super_change_admin_status():
             {"email": user_to_modify, "is_admin": promoting}, HttpStatus.OK.value, "auth_change"
         )
     except ValueError as e:
-        create_bad_response(str(e), "auth_change", HttpStatus.BAD_REQUEST.value)
+        return create_bad_response(str(e), "auth_change", HttpStatus.BAD_REQUEST.value)
     except InvalidUserEmail as e:
-        create_bad_response(str(e), "auth_change", HttpStatus.NOT_FOUND.value)
+        return create_bad_response(str(e), "auth_change", HttpStatus.NOT_FOUND.value)
     except Exception:
         logger.exception(f"{verb} failed for target_email={user_to_modify!r}")
         return create_bad_response(
