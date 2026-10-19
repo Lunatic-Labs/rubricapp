@@ -101,6 +101,9 @@ class ManageAdminsAccessDialog extends Component<
 	};
 
 	private handleClose = () => {
+		if (this.state.requestState === REQUEST_STATE.LOADING) {
+			return;
+		}
 		if (this.state.autoCloseTimer) {
 			clearTimeout(this.state.autoCloseTimer);
 		}
