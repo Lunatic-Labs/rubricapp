@@ -1,5 +1,6 @@
 import { Component } from 'react';
 import Cookies from 'universal-cookie';
+import { logger } from '../../logger';
 import 'bootstrap/dist/css/bootstrap.css';
 import Button from '@mui/material/Button';
 import AdminViewUsers from '../Admin/View/ViewUsers/AdminViewUsers';
@@ -39,6 +40,7 @@ import { Course as CourseType } from '../../types/Course';
 import { User as UserType } from '../../types/User';
 import { Team as TeamType } from '../../types/Team';
 import Settings from './Settings';
+import ScreenHistory from './screenHistory';
 import { genericResourceGET, parseRoleNames } from '../../utility';
 
 /**
@@ -132,6 +134,13 @@ interface AppStateState {
     roleNameMap: Record<string, string> | null;
 }
 
+// The part of AppState that describes which screen is showing and what it is
+// showing. Going Back restores these fields; the rest are app-wide (the success
+// toast, dark mode, the role lookup) and keep their current values.
+type ScreenState = Omit<AppStateState, 'successMessage' | 'successMessageTimeout' | 'isLoaded' | 'darkMode' | 'roles' | 'roleNameMap'>;
+
+const screenStateOf = ({ successMessage, successMessageTimeout, isLoaded, darkMode, roles, roleNameMap, ...screen }: AppStateState): ScreenState => screen;
+
 class AppState extends Component<AppStateProps, AppStateState> {
     Reset!: (listOfElements: string[]) => void;
     ViewCTwithAT!: (assessmentTasks: AssessmentTaskType[], atId: number) => void;
@@ -156,6 +165,14 @@ class AppState extends Component<AppStateProps, AppStateState> {
     setSuccessMessage!: (message: string | null) => void;
     setViewCompleteAssessmentTaskTabWithAssessmentTask!: (completedAssessmentTasks: CompleteAssessmentTaskType[] | null, completedAssessmentId: number | null, chosenAssessmentTask: AssessmentTaskType | null, jumpId?: string | null) => void;
     setViewAssessmentDashboardwithCourse!: (courseId: number, courses: CourseType[]) => void;
+
+    // Records each screen change in browser history so Back and Forward move
+    // between screens. See screenHistory.ts.
+    private screenHistory = new ScreenHistory<ScreenState>(
+        (screen) => screen.activeTab,
+        (screen) => this.setState(screen),
+    );
+
     constructor(props: AppStateProps) {
         super(props);
         
@@ -797,7 +814,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         applyDarkModeFallback();
                     }
                 } else {
-                    console.error("Error fetching user data:", result?.errorMessage);
+                    logger.error("Error fetching user data:", result?.errorMessage);
                     applyDarkModeFallback();
                 }
             });
@@ -813,9 +830,23 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     roleNameMap: parseRoleNames(result["roles"])
                 });
             }
-        }).catch(error => {
-            console.error("Error fetching roles:", error);
         });
+
+        // The constructor returns without setting state when the auth cookies
+        // are missing, after starting a redirect to '/'.
+        if (this.state) {
+            this.screenHistory.start(screenStateOf(this.state));
+        }
+    }
+
+    componentDidUpdate() {
+        if (this.state) {
+            this.screenHistory.record(screenStateOf(this.state));
+        }
+    }
+
+    componentWillUnmount() {
+        this.screenHistory.stop();
     }
 
     render() {
@@ -837,7 +868,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 {this.state.activeTab==="SuperAdminUsers" &&
                     <Box className="page-spacing">
                         <div className="d-flex justify-content-between align-items-center">
-                            <Typography aria-label="superAdminTitle" sx={{fontWeight:'700'}} variant="h5"> 
+                            <Typography data-testid="super-admin-title" sx={{fontWeight:'700'}} variant="h5"> 
                                 Users
                             </Typography>
                             <Box>
@@ -895,7 +926,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <AdminBulkUpload
                             navbar={this}
                             tab={this.state.activeTab}
-                            aria-label="adminBulkUpload"
                         />
                     </Box>
                 }
@@ -996,7 +1026,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Teams" &&
-                    <Box className="page-spacing" aria-label="teamDashboard">
+                    <Box className="page-spacing" data-testid="team-dashboard">
                         <TeamDashboard
                             navbar={this}
                         />
@@ -1055,7 +1085,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="AssessmentTasks" &&
-                    <Box className="page-spacing" aria-label="assessmentDashboard">
+                    <Box className="page-spacing" data-testid="assessment-dashboard">
                         <AssessmentDashboard
                             navbar={this}
                         />
@@ -1110,7 +1140,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
 
                         <AdminEditTeamMembers
                             navbar={this}
-                            addTeamAction={this.state.addTeamAction!}
+                            addTeamAction={this.state.addTeamAction}
                         />
                     </Box>
                 }
@@ -1183,7 +1213,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 }
 
                 {this.state.activeTab==="Reporting" &&
-                    <Box className="page-spacing" aria-label="reportingDashboard">
+                    <Box className="page-spacing" data-testid="reporting-dashboard">
                         <BackButtonResource
                             navbar={this}
                             tabSelected={this.props.isSuperAdmin ? "AssessmentTask" : "User"}
@@ -1199,7 +1229,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"AssessmentTask"}
-                            aria-label="myCustomRubricsBackButton"
                         />
 
                         <AdminViewCustomRubrics
@@ -1213,7 +1242,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <UserAccount
@@ -1226,7 +1254,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <PrivacyPolicy
@@ -1239,7 +1266,6 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <BackButtonResource
                             navbar={this}
                             tabSelected={"Course"}
-                            aria-label="UserAccountBackButton"
                         />
 
                         <Settings

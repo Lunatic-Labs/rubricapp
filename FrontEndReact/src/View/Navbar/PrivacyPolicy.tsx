@@ -26,7 +26,7 @@ class PrivacyPolicy extends Component<PrivacyPolicyProps> {
                     <Box className="form-position">
                         <Box className="card-style" sx={{ width: '80%' }}>
                             <Box className="form-spacing">
-                                <Typography variant="h5" aria-label='PrivacyPolicyTitle'>
+                                <Typography variant="h5" data-testid="privacy-policy-title">
                                     Introduction
                                 </Typography>
 

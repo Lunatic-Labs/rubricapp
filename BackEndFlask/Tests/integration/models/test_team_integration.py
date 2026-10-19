@@ -2,7 +2,7 @@ import pytest
 from datetime import datetime, date
 from core import db
 from models.team import *
-from models.schemas import TeamUser, User
+from models.schemas import TeamUser, User, Checkin, Feedback
 from integration.integration_helpers import *
 from Tests.PopulationFunctions import (
     cleanup_test_users,
@@ -34,6 +34,7 @@ from models.completed_assessment import (
 )
 from models.rubric import delete_rubric_by_id
 from models.feedback import delete_feedback_by_user_id_completed_assessment_id
+from models.checkin import create_checkin, delete_checkins_over_team_count
 
 
 def test_create_team(flask_app_mock):
@@ -423,47 +424,238 @@ def test_get_team_by_course_id_and_observer_id(flask_app_mock):
 
 
 
+class TeamRatingsData:
+    """
+    What a get_team_ratings test created. Cleanup deletes only what is set
+    here, so a failure part-way through setup still cleans up what setup did
+    create, instead of stopping on a name that was never assigned.
+    """
+    def __init__(self):
+        self.result = None
+        self.users = []
+        self.rubric = None
+        self.task = None
+        self.teams = []
+        self.comps = []
+
+    def set_up_team_task(self, number_of_users=3):
+        # create_users(..., number_of_users=N) returns N - 1 users.
+        self.result = create_one_admin_course(False)
+        self.users = create_users(self.result['course_id'], self.result['user_id'], number_of_users=number_of_users)
+        self.rubric = sample_rubric(self.result['user_id'])
+        payload = build_sample_task_payload(self.result['course_id'], self.rubric.rubric_id)
+        self.task = create_assessment_task(payload)
+
+    def add_team(self, team_name):
+        team = sample_team(team_name, self.result['user_id'], self.result['course_id'], self.task.assessment_task_id)
+        self.teams.append(team)
+        return team
+
+    def add_submission(self, team, last_update=None):
+        data = sample_completed_assessment(None, self.task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=self.result['user_id'], last_update=last_update)
+        comp = create_completed_assessment(data)
+        self.comps.append(comp)
+        return comp
+
+    def clean_up(self):
+        try:
+            for comp in self.comps:
+                Feedback.query.filter_by(completed_assessment_id=comp.completed_assessment_id).delete()
+                delete_completed_assessment_tasks(comp.completed_assessment_id)
+            if self.task is not None:
+                Checkin.query.filter_by(assessment_task_id=self.task.assessment_task_id).delete()
+            for team in self.teams:
+                TeamUser.query.filter_by(team_id=team.team_id).delete()
+            db.session.commit()
+            for team in self.teams:
+                delete_team(team.team_id)
+            if self.task is not None:
+                delete_assessment_task(self.task.assessment_task_id)
+            if self.rubric is not None:
+                delete_rubric_by_id(self.rubric.rubric_id)
+            if self.users:
+                delete_users(self.users)
+            if self.result is not None:
+                delete_one_admin_course(self.result)
+        except Exception as e:
+            print(f"Cleanup skipped: {e}")
+
+
 def test_get_team_ratings(flask_app_mock):
+    """
+    A real team submission is ONE CompletedAssessment per team (user_id=None,
+    team_id set), with team membership via TeamUser and per-member feedback
+    view status via each member's own Feedback row. Only one of the two
+    members has viewed theirs here.
+    """
     with flask_app_mock.app_context():
         cleanup_test_users(db.session)
+        made = TeamRatingsData()
 
         try:
-            result = create_one_admin_course(False)
-            users = create_users(result['course_id'], result['user_id'], number_of_users=3)
-            rubric = sample_rubric(result['user_id'])
-            payload = build_sample_task_payload(result['course_id'], rubric.rubric_id)
-            task = create_assessment_task(payload)
-            team = sample_team("Alpha", result['user_id'], result['course_id'], task.assessment_task_id)
+            made.set_up_team_task()
+            users = made.users
+            team = made.add_team("Alpha")
 
             for i in range(2):
                 sample_team_user(team.team_id, users[i].user_id)
-            
-            data1 = sample_completed_assessment(users[0].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["3"], c_by=result['user_id'])
-            comp1 = create_completed_assessment(data1)
-            data2 = sample_completed_assessment(users[1].user_id, task.assessment_task_id, team_id=team.team_id, rating=accurately["1"], c_by=result['user_id'])
-            comp2 = create_completed_assessment(data2)
-            fb1 = sample_feedback(comp1.completed_assessment_id, users[0].user_id)
-            fb2 = sample_feedback(comp2.completed_assessment_id, users[1].user_id)
 
-            results = get_team_ratings(task.assessment_task_id)
+            comp = made.add_submission(team)
+            fb1 = sample_feedback(comp.completed_assessment_id, users[0].user_id, team_id=team.team_id)
+
+            results = get_team_ratings(made.task.assessment_task_id)
             assert len(results) == 2
             assert all(r.team_id == team.team_id for r in results)
-            assert any(r.rating_observable_characteristics_suggestions_data == "With some errors" for r in results)
-            assert any(r.feedback_id == fb1.feedback_id for r in results)
-        
+            assert {r[9] for r in results} == {users[0].user_id, users[1].user_id}
+            assert any(r.feedback_id == fb1.feedback_id and r[9] == users[0].user_id for r in results)
+            assert any(r.feedback_id is None and r[9] == users[1].user_id for r in results)
+
         finally:
-            # Clean up
-            try:
-                delete_feedback_by_user_id_completed_assessment_id(users[0].user_id, comp1.completed_assessment_id)
-                delete_feedback_by_user_id_completed_assessment_id(users[1].user_id, comp2.completed_assessment_id)
-                delete_completed_assessment_tasks(comp1.completed_assessment_id)
-                delete_completed_assessment_tasks(comp2.completed_assessment_id)
-                TeamUser.query.delete()
-                delete_team(team.team_id)
-                delete_assessment_task(task.assessment_task_id)
-                delete_rubric_by_id(rubric.rubric_id)
-                delete_users(users)
-                delete_one_admin_course(result)
-            except Exception as e:
-                print(f"Cleanup skipped: {e}")
-                
+            made.clean_up()
+
+
+def test_get_team_ratings_adhoc_team(flask_app_mock):
+    """
+    Ad hoc teams (use_fixed_teams=False) track membership via Checkin, not
+    TeamUser - a course never creates TeamUser rows for them. get_team_ratings
+    has to source members from both, or ad hoc team assessments silently show
+    no members at all even though fixed-team ones look fine.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        made = TeamRatingsData()
+
+        try:
+            made.set_up_team_task()
+            users = made.users
+            team = made.add_team("AdhocAlpha")
+
+            for user in users[:2]:
+                create_checkin(sample_checkin(made.task.assessment_task_id, user.user_id, team_number=team.team_id))
+
+            made.add_submission(team)
+
+            results = get_team_ratings(made.task.assessment_task_id)
+            assert len(results) == 2
+            assert {r[9] for r in results} == {users[0].user_id, users[1].user_id}
+            assert all(r.feedback_id is None for r in results)
+
+        finally:
+            made.clean_up()
+
+
+def test_get_team_ratings_lists_a_switched_student_only_on_their_checkin_team(flask_app_mock):
+    """
+    A fixed-team student can check in to a different team for one task (the
+    team password flow). For that task they belong to the team they checked
+    in to, and must not also be listed on their fixed team.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        made = TeamRatingsData()
+
+        try:
+            made.set_up_team_task()
+            switcher, stayer = made.users[0], made.users[1]
+            alpha = made.add_team("Alpha")
+            beta = made.add_team("Beta")
+
+            sample_team_user(alpha.team_id, switcher.user_id)
+            sample_team_user(alpha.team_id, stayer.user_id)
+            create_checkin(sample_checkin(made.task.assessment_task_id, switcher.user_id, team_number=beta.team_id))
+
+            made.add_submission(alpha)
+            made.add_submission(beta)
+
+            results = get_team_ratings(made.task.assessment_task_id)
+            members = sorted((r.team_id, r[9]) for r in results)
+            assert members == sorted([(alpha.team_id, stayer.user_id), (beta.team_id, switcher.user_id)])
+
+        finally:
+            made.clean_up()
+
+
+def test_get_team_ratings_lists_each_member_once_when_a_team_has_two_submissions(flask_app_mock):
+    """
+    Joining members to every submission would list each member once per
+    submission. Only the team's most recently updated submission is reported,
+    which isn't necessarily the newest row: submissions are edited in place,
+    so here the older row holds the latest edit.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        made = TeamRatingsData()
+
+        try:
+            made.set_up_team_task()
+            users = made.users
+            team = made.add_team("Alpha")
+
+            for user in users[:2]:
+                sample_team_user(team.team_id, user.user_id)
+
+            latest = made.add_submission(team, last_update="2026-01-02T12:00:00")
+            made.add_submission(team, last_update="2026-01-01T12:00:00")
+            fb = sample_feedback(latest.completed_assessment_id, users[0].user_id, team_id=team.team_id)
+
+            results = get_team_ratings(made.task.assessment_task_id)
+            assert sorted(r[9] for r in results) == sorted([users[0].user_id, users[1].user_id])
+            assert all(r.last_update == latest.last_update for r in results)
+            assert any(r.feedback_id == fb.feedback_id and r[9] == users[0].user_id for r in results)
+
+        finally:
+            made.clean_up()
+
+
+def test_get_team_ratings_does_not_apply_a_team_level_feedback_row_to_members(flask_app_mock):
+    """
+    A Feedback row with no user_id (written by older versions of
+    student_view_feedback) can't say which member viewed the feedback, so it
+    must not mark every member as viewed or add a second row for any member.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        made = TeamRatingsData()
+
+        try:
+            made.set_up_team_task()
+            users = made.users
+            team = made.add_team("Alpha")
+
+            for user in users[:2]:
+                sample_team_user(team.team_id, user.user_id)
+
+            comp = made.add_submission(team)
+            sample_feedback(comp.completed_assessment_id, None, team_id=team.team_id)
+            own = sample_feedback(comp.completed_assessment_id, users[0].user_id, team_id=team.team_id)
+
+            results = get_team_ratings(made.task.assessment_task_id)
+            assert sorted(r[9] for r in results) == sorted([users[0].user_id, users[1].user_id])
+            assert any(r.feedback_id == own.feedback_id and r[9] == users[0].user_id for r in results)
+            assert any(r.feedback_id is None and r[9] == users[1].user_id for r in results)
+
+        finally:
+            made.clean_up()
+
+
+def test_get_team_ratings_returns_one_row_for_a_team_without_members(flask_app_mock):
+    """
+    A team with a submission but no TeamUser or Checkin rows still appears,
+    as one row with no member, so its ratings aren't lost.
+    """
+    with flask_app_mock.app_context():
+        cleanup_test_users(db.session)
+        made = TeamRatingsData()
+
+        try:
+            made.set_up_team_task()
+            team = made.add_team("Empty")
+            made.add_submission(team)
+
+            results = get_team_ratings(made.task.assessment_task_id)
+            assert len(results) == 1
+            assert results[0].team_id == team.team_id
+            assert results[0][9] is None
+
+        finally:
+            made.clean_up()

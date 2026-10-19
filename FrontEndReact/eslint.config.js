@@ -18,6 +18,10 @@ import confusingBrowserGlobals from "confusing-browser-globals";
 export default tseslint.config(
     { ignores: ["dist/", "coverage/", "build/"] },
 
+    // ESLint 8 didn't report unused eslint-disable comments; ESLint 9 warns by default,
+    // which --max-warnings=0 turns into a failure (e.g. the no-console one in logger.ts).
+    { linterOptions: { reportUnusedDisableDirectives: "off" } },
+
     {
         files: ["**/*.{js,jsx,cjs,mjs,ts,tsx}"],
         plugins: {

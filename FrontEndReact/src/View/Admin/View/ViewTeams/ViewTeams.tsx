@@ -132,7 +132,7 @@ class ViewTeams extends Component<ViewTeamsProps> {
               onClick={() => {
                 setAddTeamTabWithTeam(teams, teamId, users, "AddTeam");
               }}
-              aria-label="editTeamIconButton"
+              aria-label="Edit team" data-testid="edit-team-icon-button"
             >
               <EditIcon sx={{ color: "black" }} />
             </IconButton>
@@ -159,7 +159,8 @@ class ViewTeams extends Component<ViewTeamsProps> {
                   this.deleteTeam(teamId);
                 }
               }}
-              aria-label="deleteTeamIconButton"
+              aria-label="Delete team"
+              data-testid="delete-team-icon-button"
             >
               <DeleteIcon sx={{ color: "black" }} />
             </IconButton>
@@ -182,7 +183,7 @@ class ViewTeams extends Component<ViewTeamsProps> {
               onClick={() => {
                 setAddTeamTabWithTeam(teams, teamId, users, "TeamMembers");
               }}
-              aria-label="viewTeamsIconButton"
+              aria-label="View team members" data-testid="view-teams-icon-button"
             >
               <VisibilityIcon sx={{ color: "black" }} />
             </IconButton>

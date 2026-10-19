@@ -4,87 +4,87 @@ import "@testing-library/jest-dom";
 import Login from "../Login";
 
 import {
-    clickElementWithAriaLabel,
-    expectElementWithAriaLabelToBeInDocument,
-    expectElementWithAriaLabelToHaveErrorMessage,
-    changeElementWithAriaLabelWithInput,
-    // changeElementWithAriaLabelWithCode
+    clickElementWithTestId,
+    expectElementWithTestIdToBeInDocument,
+    expectElementWithTestIdToHaveErrorMessage,
+    changeElementWithTestIdWithInput,
+    // changeElementWithTestIdWithCode
 } from "../../../testUtilities";
 
 
 
-var lf = "loginForm";
-var rpb = "resetPasswordButton";
-var vrt = "validateResetTitle";
-var vrbb = "validateResetBackButton";
-var vrcb = "validateResetConfirmButton";
-var vrf = "validateResetForm";
-var vrei = "validateResetEmailInput";
-// var ecf = "enterCodeForm";
-// var vcb = "verifyCodeButton";
-// var scbb = "sendCodeBackButton";
-var ema = "errorMessageAlert";
-// var sci = "sendCodeInput";
+var lf = "login-form";
+var rpb = "reset-password-button";
+var vrt = "validate-reset-title";
+var vrbb = "validate-reset-back-button";
+var vrcb = "validate-reset-confirm-button";
+var vrf = "validate-reset-form";
+var vrei = "validate-reset-email-input";
+// var ecf = "enter-code-form";
+// var vcb = "verify-code-button";
+// var scbb = "send-code-back-button";
+var ema = "error-message-alert";
+// var sci = "send-code-input";
 test("ValidateReset.test.tsx Test 1: should render Login Form component", () => {
     render(<Login />);
 
-    expectElementWithAriaLabelToBeInDocument(lf);
+    expectElementWithTestIdToBeInDocument(lf);
 });
 test("ValidateReset.test.tsx Test 2: Should show Set New Password page when clicking Forgot Password Link.", async () => {
     render(<Login/>);
 
-    clickElementWithAriaLabel(rpb);
+    clickElementWithTestId(rpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vrt);
+        expectElementWithTestIdToBeInDocument(vrt);
     });
 });
 test("ValidateReset.test.tsx Test 3: Should show Login page when clicking Back button.", async () => {
     render(<Login/>);
 
-    clickElementWithAriaLabel(rpb);
+    clickElementWithTestId(rpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vrt);
+        expectElementWithTestIdToBeInDocument(vrt);
     });
 
-    clickElementWithAriaLabel(vrbb);
+    clickElementWithTestId(vrbb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(lf);
+        expectElementWithTestIdToBeInDocument(lf);
     });
 });
 test("ValidateReset.test.tsx Test 4: Should show email cannot be empty when email is not passed in.", async () => {
     render(<Login/>);
 
-    clickElementWithAriaLabel(rpb);
+    clickElementWithTestId(rpb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vrt);
+        expectElementWithTestIdToBeInDocument(vrt);
     });
 
-    clickElementWithAriaLabel(vrcb);
+    clickElementWithTestId(vrcb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vrf);
+        expectElementWithTestIdToBeInDocument(vrf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(vrei, "Email cannot be empty.");
-        //expectElementWithAriaLabelToHaveErrorMessage(ema, "Email cannot be empty.");
+        expectElementWithTestIdToHaveErrorMessage(vrei, "Email cannot be empty.");
+        //expectElementWithTestIdToHaveErrorMessage(ema, "Email cannot be empty.");
     });
 });
 test("ValidateReset.test.tsx Test 5: Should show SetNewPassword page when email is invalid.", async () => {
     render(<Login/>);
 
-    clickElementWithAriaLabel(rpb);
+    clickElementWithTestId(rpb);
 
-    changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
+    changeElementWithTestIdWithInput(vrei, "sdfhdshajkfla");
 
-    clickElementWithAriaLabel(vrcb);
+    clickElementWithTestId(vrcb);
 
     await waitFor(() => {
-        expectElementWithAriaLabelToBeInDocument(vrf);
+        expectElementWithTestIdToBeInDocument(vrf);
 
-        expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
+        expectElementWithTestIdToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
     });
 });
 
@@ -92,18 +92,18 @@ test("ValidateReset.test.tsx Test 5: Should show SetNewPassword page when email 
 // test("ValidateReset.test.tsx Test 6: Should show SetNewPassword page when email is valid.", async () => {
 //     render(<Login/>);
 
-//     clickElementWithAriaLabel(rpb);
+//     clickElementWithTestId(rpb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(vrt);
+//         expectElementWithTestIdToBeInDocument(vrt);
 //     });
 
-//     changeElementWithAriaLabelWithInput(vrei, "demoadmin02@skillbuilder.edu");
+//     changeElementWithTestIdWithInput(vrei, "demoadmin02@skillbuilder.edu");
 
-//     clickElementWithAriaLabel(vrcb);
+//     clickElementWithTestId(vrcb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
+//         expectElementWithTestIdToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
 //     });
 // });
 
@@ -112,16 +112,16 @@ test("ValidateReset.test.tsx Test 5: Should show SetNewPassword page when email 
 // test("ValidateReset.test.tsx Test 7: Should show Validate Reset page when clicking Back button on Code Required page.", async () => {
 //     render(<Login/>);
 
-//     clickElementWithAriaLabel(rpb);
+//     clickElementWithTestId(rpb);
 
-//     changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
+//     changeElementWithTestIdWithInput(vrei, "sdfhdshajkfla");
 
-//     clickElementWithAriaLabel(vrcb);
+//     clickElementWithTestId(vrcb);
 
-//     clickElementWithAriaLabel(scbb);
+//     clickElementWithTestId(scbb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(vrt);
+//         expectElementWithTestIdToBeInDocument(vrt);
 //     });
 // });
 
@@ -129,18 +129,18 @@ test("ValidateReset.test.tsx Test 5: Should show SetNewPassword page when email 
 // test("ValidateReset.test.tsx Test 8: Should show make sure your code is correct when no code is entered.", async () => {
 //     render(<Login/>);
 
-//     clickElementWithAriaLabel(rpb);
+//     clickElementWithTestId(rpb);
 
-//     changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
+//     changeElementWithTestIdWithInput(vrei, "sdfhdshajkfla");
 
-//     clickElementWithAriaLabel(vrcb);
+//     clickElementWithTestId(vrcb);
 
-//     clickElementWithAriaLabel(vcb);
+//     clickElementWithTestId(vcb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ecf);
+//         expectElementWithTestIdToBeInDocument(ecf);
 
-//         expectElementWithAriaLabelToHaveErrorMessage(ema, "Make sure your code is correct.");
+//         expectElementWithTestIdToHaveErrorMessage(ema, "Make sure your code is correct.");
 //     });
 // });
 
@@ -148,19 +148,19 @@ test("ValidateReset.test.tsx Test 5: Should show SetNewPassword page when email 
 // test("ValidateReset.test.tsx Test 9: Should show an error occurred please verify your code when an incorrect code is entered.", async () => {
 //     render(<Login/>);
 
-//     clickElementWithAriaLabel(rpb);
+//     clickElementWithTestId(rpb);
 
-//     changeElementWithAriaLabelWithInput(vrei, "sdfhdshajkfla");
+//     changeElementWithTestIdWithInput(vrei, "sdfhdshajkfla");
 
-//     clickElementWithAriaLabel(vrcb);
+//     clickElementWithTestId(vrcb);
 
-//     changeElementWithAriaLabelWithCode(sci, "abcdef");
+//     changeElementWithTestIdWithCode(sci, "abcdef");
 
-//     clickElementWithAriaLabel(vcb);
+//     clickElementWithTestId(vcb);
 
 //     await waitFor(() => {
-//         expectElementWithAriaLabelToBeInDocument(ecf);
+//         expectElementWithTestIdToBeInDocument(ecf);
 
-//         expectElementWithAriaLabelToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
+//         expectElementWithTestIdToHaveErrorMessage(ema, "An error occurred: Invalid Credentials");
 //     });
 // });

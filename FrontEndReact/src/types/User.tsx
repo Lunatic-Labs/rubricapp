@@ -10,6 +10,8 @@ export interface User {
     email: string
     /** Name of the team to which the user belongs. */
     team_name?: string | null
+    /** When the user last logged in (UTC, ISO 8601); only returned to the super admin. */
+    last_login_at?: string | null
 };
 
 /*

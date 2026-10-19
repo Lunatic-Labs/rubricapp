@@ -649,12 +649,82 @@ def get_team_ratings(assessment_task_id):
         6: User.first_name
         7: User.last_name
         8: CompletedAssessment.completed_by (user_id of the assessor)
-        9: TeamUser.user_id (user_id of this team member)
+        9: this team member's user_id
     Rating_routes.py groups these rows by team_id and builds the per-team
     "students" array, coloring names red/green based on whether lag_time
-    is present. completed_by vs TeamUser.user_id lets the route mark
-    which team member submitted the assessment (is_assessor).
+    is present. completed_by vs column 9 lets the route mark which team
+    member submitted the assessment (is_assessor).
+
+    Team membership for this task comes from two places. A student who
+    checked in for this task (Checkin) is on the team they checked in to;
+    that covers ad hoc teams, and fixed-team students who switched teams
+    with the team password. Everyone else is on their fixed team
+    (TeamUser). Using Checkin first keeps a student who switched from
+    being listed under both teams. is_member_of_team_for_task applies the
+    same rule to one student; keep the two in step.
+
+    Only each team's most recently updated submission is used. A team
+    normally has one, but older data can have several, and joining members
+    to each would list every member once per submission.
+
+    The member join is a LEFT OUTER JOIN so a team with a submission but
+    no members still produces one row, with NULL member fields, rather
+    than disappearing from the results.
+
+    Feedback is matched per member. student_view_feedback records the
+    viewer's user_id even for team assessments, so a member who hasn't
+    viewed their feedback has no row of their own.
     """
+    submitting_teams = select(CompletedAssessment.team_id).where(
+        CompletedAssessment.assessment_task_id == assessment_task_id,
+        CompletedAssessment.team_id != None,
+    )
+
+    # Latest by last_update, not by id: a submission is edited in place, so
+    # an older row can hold the most recent edit. The id breaks ties, and a
+    # NULL last_update sorts last under DESC.
+    ranked_submissions = (
+        select(
+            CompletedAssessment.completed_assessment_id,
+            func.row_number().over(
+                partition_by=CompletedAssessment.team_id,
+                order_by=(
+                    CompletedAssessment.last_update.desc(),
+                    CompletedAssessment.completed_assessment_id.desc(),
+                ),
+            ).label('submission_rank'),
+        )
+        .where(
+            CompletedAssessment.assessment_task_id == assessment_task_id,
+            CompletedAssessment.team_id != None,
+        )
+        .subquery()
+    )
+
+    latest_submissions = select(ranked_submissions.c.completed_assessment_id).where(
+        ranked_submissions.c.submission_rank == 1,
+    )
+
+    checked_in_users = select(Checkin.user_id).where(
+        Checkin.assessment_task_id == assessment_task_id,
+    )
+
+    team_members = union(
+        select(
+            Checkin.team_number.label('team_id'),
+            Checkin.user_id.label('user_id'),
+        ).where(
+            Checkin.assessment_task_id == assessment_task_id,
+        ),
+        select(
+            TeamUser.team_id.label('team_id'),
+            TeamUser.user_id.label('user_id'),
+        ).where(
+            TeamUser.team_id.in_(submitting_teams),
+            TeamUser.user_id.not_in(checked_in_users),
+        ),
+    ).subquery()
+
     return (
         db.session.query(
             Team.team_id,
@@ -666,7 +736,7 @@ def get_team_ratings(assessment_task_id):
             User.first_name,
             User.last_name,
             CompletedAssessment.completed_by,
-            CompletedAssessment.user_id,
+            team_members.c.user_id,
         )
         .select_from(CompletedAssessment)
         .join(
@@ -674,24 +744,47 @@ def get_team_ratings(assessment_task_id):
             CompletedAssessment.team_id == Team.team_id,
         )
         .outerjoin(
+            team_members,
+            team_members.c.team_id == Team.team_id,
+        )
+        .outerjoin(
             User,
-            User.user_id == CompletedAssessment.user_id,
+            User.user_id == team_members.c.user_id,
         )
         .outerjoin(
             Feedback,
             and_(
                 Feedback.completed_assessment_id
                 == CompletedAssessment.completed_assessment_id,
-                Feedback.user_id == CompletedAssessment.user_id,
+                Feedback.user_id == team_members.c.user_id,
             ),
         )
         .filter(
-            CompletedAssessment.team_id != None,
-            CompletedAssessment.assessment_task_id == assessment_task_id,
+            CompletedAssessment.completed_assessment_id.in_(latest_submissions),
         )
         .all()
     )
     
+@error_log
+def is_member_of_team_for_task(user_id, team_id, assessment_task_id):
+    """
+    Description:
+    Whether the user is on the given team for this assessment task, by the
+    rule get_team_ratings uses: the team they checked in to for the task,
+    or their fixed team (TeamUser) if they haven't checked in. Keep the two
+    in step.
+    """
+    checkin = Checkin.query.filter_by(
+        user_id=user_id,
+        assessment_task_id=assessment_task_id,
+    ).first()
+
+    if checkin is not None:
+        return checkin.team_number == team_id
+
+    return TeamUser.query.filter_by(user_id=user_id, team_id=team_id).first() is not None
+
+
 @error_log
 def get_all_checkins_for_student_for_course(user_id, course_id):
     """

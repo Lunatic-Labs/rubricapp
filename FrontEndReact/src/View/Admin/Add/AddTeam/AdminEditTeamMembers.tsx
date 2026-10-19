@@ -9,7 +9,8 @@ import { GridColDef } from '@mui/x-data-grid';
 
 interface AdminEditTeamMembersProps {
     navbar: any;
-    addTeamAction: string;
+    // null between edits (AppState resets it after saving), so don't assume a string.
+    addTeamAction: string | null;
 }
 
 interface AdminEditTeamMembersState {
@@ -131,7 +132,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
             },
             {
                 field: "user_id",
-                headerName: this.props.addTeamAction,
+                headerName: this.props.addTeamAction ?? "",
                 minWidth: 130,
                 flex: 1,
                 sortable: false,
@@ -158,7 +159,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
                     <Typography
                         sx={{ fontWeight: "700" }}
                         variant="h5"
-                        aria-label={this.props.addTeamAction + "TeamMembersTitle"}
+                        data-testid={`${this.props.addTeamAction?.toLowerCase()}-team-members-title`}
                     >
                         {this.props.addTeamAction} Members {this.props.addTeamAction === "Add" ? "to" : "from"} Team {this.props.navbar.state.team.team_name}
                     </Typography>
@@ -176,7 +177,7 @@ class AdminEditTeamMembers extends Component<AdminEditTeamMembersProps, AdminEdi
                             this.sendUsers();
                         }}
 
-                        aria-label="adminEditTeamMembersSaveTeamButton"
+                        data-testid="admin-edit-team-members-save-team-button"
                     >
                         Save Team
                     </Button>

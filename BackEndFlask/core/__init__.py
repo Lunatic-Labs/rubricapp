@@ -1,12 +1,14 @@
 import sys
 import os
 import re
+import time
+import uuid
 import redis
 import subprocess
 
 from dotenv import load_dotenv
 
-from flask import Flask
+from flask import Flask, g, request
 from flask_cors import CORS
 from flask_limiter import Limiter
 from flask_migrate import Migrate
@@ -17,6 +19,10 @@ from flask_limiter.util import get_remote_address
 
 #from models.tests import testing
 from models.logger import Logger
+from models.log_context import (
+    set_request_id, reset_request_id, get_request_id,
+    set_user_id, reset_user_id,
+)
 
 from sendgrid import SendGridAPIClient
 
@@ -141,11 +147,21 @@ red = redis.Redis(host=redis_host, port=6379, db=0, decode_responses=True)
 redis.Redis(host=redis_limiter, port=6380, db=0, decode_responses=True)
 
 # Settting up the request rater limiter.
+# in_memory_fallback_enabled keeps limited routes serving when the
+# limiter's Redis is unreachable, still enforcing the limit with
+# per-worker in-process counters instead of refusing every request.
+# Without it the limiter is fail-closed: a limiter outage takes the
+# routes down with it, which matters most for /client-error, whose whole
+# job is to keep working while other things are broken. The cost: those
+# counters aren't shared, so during an outage each gunicorn worker allows
+# the full limit on its own (3 workers -> 3x RATE_LIMIT in aggregate).
+# That's still bounded, and MAX_BODY_BYTES still caps each request.
 limiter = Limiter(
     get_remote_address,
     app=app,
     default_limits=None,
     storage_uri= "redis://"+ str(redis_limiter) + ":6380/0",
+    in_memory_fallback_enabled=True,
 )
 
 # This gets set in wsgi.py/run.py depending on if we
@@ -156,6 +172,66 @@ class Config:
     testing_mode = False
 
 config = Config()
+
+# Shape an inbound X-Request-ID must have to be reused. UUIDs (what this
+# app generates) fit; anything longer, empty, or with other characters is
+# replaced, so a caller can't bloat every log line or inject odd content.
+REQUEST_ID_PATTERN = re.compile(r'[A-Za-z0-9._-]{1,64}')
+
+def _inbound_request_id() -> str:
+    inbound = request.headers.get('X-Request-ID', '')
+    return inbound if REQUEST_ID_PATTERN.fullmatch(inbound) else str(uuid.uuid4())
+
+@app.before_request
+def _assign_request_context() -> None:
+    """
+    Tags every request with a request_id so every log line emitted while
+    handling it carries the same id. A well-formed inbound X-Request-ID is
+    reused (it's caller-supplied, so it identifies a request for
+    correlation, not for trust); otherwise a fresh UUID is generated. The
+    id is echoed back in the response for the frontend to report with
+    client errors (see FrontEndReact/src/logger.ts).
+
+    user_id starts unset: the ?user_id= query param is only a claim until
+    AuthCheck verifies it against the token, which then sets it (see
+    verify_token in controller/security/CustomDecorators.py). Unverified
+    requests are logged without one, so audit queries by user_id can't be
+    pointed at someone else by editing the query string.
+    """
+    g.request_id_token = set_request_id(_inbound_request_id())
+    g.user_id_token = set_user_id(None)
+    g.request_start_time = time.monotonic()
+
+@app.after_request
+def _log_request_summary(response):
+    # Flask still runs this when _assign_request_context didn't (an
+    # earlier before_request short-circuited or raised), so nothing here
+    # may assume the context was assigned.
+    start_time = g.get('request_start_time')
+    duration = f"{round((time.monotonic() - start_time) * 1000, 2)} ms" if start_time else "unknown duration"
+    request_id = get_request_id()
+
+    if request_id:
+        response.headers['X-Request-ID'] = request_id
+        # Cross-origin JS can only read non-safelisted headers it's told
+        # about, and the frontend needs this one to report it.
+        response.headers['Access-Control-Expose-Headers'] = 'X-Request-ID'
+
+    config.logger.info(f"{request.method} {request.path} -> {response.status_code} ({duration})")
+    return response
+
+@app.teardown_request
+def _clear_request_context(exception=None) -> None:
+    # Same caveat as _log_request_summary: a token only exists if
+    # _assign_request_context got far enough to set it.
+    request_id_token = g.get('request_id_token')
+    user_id_token = g.get('user_id_token')
+
+    if request_id_token:
+        reset_request_id(request_id_token)
+
+    if user_id_token:
+        reset_user_id(user_id_token)
 
 # Setting up SendGrid email service.
 sendgrid_client = None
