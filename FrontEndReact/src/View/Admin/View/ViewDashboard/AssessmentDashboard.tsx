@@ -43,9 +43,9 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                 />
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="assessment-dashboard-title">Assessment Tasks</Typography>
+                    <Typography className="sb-page-title" variant="h5" data-testid="assessment-dashboard-title">Assessment Tasks</Typography>
 
-                    <Box sx={{display:"flex", gap:"20px"}}>
+                    <Box sx={{display:"flex", flexWrap:"wrap", gap:"20px"}}>
                         {/**
                          * @button My Custom Rubrics - Button to navigate to the user's custom rubrics.
                          * Allows users to view and manage their custom rubrics.
@@ -55,7 +55,6 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                             onClick={ () => {
                                 this.props.navbar.setNewTab('MyCustomRubrics');
                             }}
-
                             data-testid="view-my-custom-rubrics-button"
                         >
                             My Custom Rubrics
@@ -67,7 +66,7 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                          */}
 
                         <Button className='primary-color mr-1'
-                                variant='contained' 
+                                variant='contained'
                                 onClick={() => {
                                     setNewTab("ImportAssessmentTasks");
                                 }}
@@ -81,12 +80,12 @@ class AssessmentDashboard extends Component<AssessmentDashboardProps> {
                              * 
                              */}
                         <Button className='primary-color'
-                                variant='contained' 
+                                variant='contained'
                                 onClick={() => {
                                     setNewTab("AddTask");
                                 }}
                                 data-testid="add-task-button"
-                        >   
+                        >
                             Add Task
                         </Button>
                     </Box>

@@ -1,4 +1,4 @@
-import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse, IconButton } from "@mui/material";
+import { Table, TableBody, TableCell, TableContainer, TableHead, TableRow, Checkbox, Card, Collapse, IconButton, Box, Paper, Stack, Typography } from "@mui/material";
 import { KeyboardArrowDown, KeyboardArrowUp } from "@mui/icons-material";
 import { createTheme, ThemeProvider } from '@mui/material';
 import React, { useState } from "react";
@@ -105,6 +105,118 @@ const CollapsableRubricCategoryTable = ({
     event.stopPropagation(); // Prevent the TableRow click event
     handleRubricClick(rubricId);
   };
+
+  // The read-only "My Custom Rubrics" list (showEditButton) is shown as
+  // cards — matching the paused native MobileApp's screen — rather than the
+  // compact checkbox-selection table used when this component is embedded
+  // in the Edit Rubric form's category picker.
+  if (showEditButton) {
+    return (
+      <Stack spacing={1.5} data-testid="my-custom-rubrics-card-list">
+        {rubrics.length === 0 ? (
+          <Typography sx={{ color: 'var(--table-text)' }}>No Custom Rubrics Found</Typography>
+        ) : (
+          rubrics.map((rubric: Rubric) => {
+            const rubricId = rubric["rubric_id"];
+            const categoryCount = categories.filter(
+              (category: Category) => category["rubric_id"] === rubricId,
+            ).length;
+            const isOpen = openRubric === rubricId;
+
+            return (
+              <Paper
+                key={rubricId}
+                sx={{
+                  p: 2,
+                  borderRadius: '12px',
+                  backgroundColor: 'var(--light_grey_ADA)',
+                  boxShadow: '0 0 0.3em var(--box-shadow)',
+                }}
+              >
+                <Box
+                  onClick={() => handleRubricClick(rubricId)}
+                  sx={{
+                    display: 'flex',
+                    flexWrap: 'wrap',
+                    justifyContent: 'space-between',
+                    alignItems: 'center',
+                    gap: 1,
+                    cursor: 'pointer',
+                  }}
+                >
+                  <Box>
+                    <Typography sx={{ color: '#2E8BEF', fontWeight: 700, fontSize: '1.1rem' }}>
+                      {rubric["rubric_name"]}
+                    </Typography>
+                    <Typography variant="body2" sx={{ color: 'var(--text-color-secondary)' }}>
+                      {categoryCount} {categoryCount === 1 ? 'category' : 'categories'}
+                    </Typography>
+                  </Box>
+
+                  <Box sx={{ display: 'flex', alignItems: 'center', gap: 0.5 }}>
+                    {showEditButton && (
+                      <Button
+                        variant="contained"
+                        onClick={(event: React.MouseEvent<HTMLButtonElement>) => {
+                          event.stopPropagation(); // Prevent the card's own click (expand/collapse)
+                          navbar.setAddCustomRubric(false);
+                          navbar.setSelectedRubricId(rubricId);
+                        }}
+                        className="primary-color white-text-button"
+                        sx={{ borderRadius: '10px', minWidth: '70px', fontSize: '14px' }}
+                        data-testid="my-custom-rubrics-edit-custom-rubric-button"
+                      >
+                        Edit
+                      </Button>
+                    )}
+                    <IconButton
+                      onClick={(event: React.MouseEvent<HTMLButtonElement>) => handleChevronClick(event, rubricId)}
+                      onKeyDown={(event: React.KeyboardEvent<HTMLButtonElement>) => handleChevronKeyDown(event, rubricId)}
+                      aria-label={`${isOpen ? 'Collapse' : 'Expand'} ${rubric["rubric_name"]} categories`}
+                      aria-expanded={isOpen}
+                      tabIndex={0}
+                      size="small"
+                    >
+                      {isOpen ? <KeyboardArrowUp /> : <KeyboardArrowDown />}
+                    </IconButton>
+                  </Box>
+                </Box>
+
+                <Collapse in={isOpen} timeout="auto" unmountOnExit data-testid="rubric-category-icon">
+                  <Stack spacing={0.5} sx={{ mt: 1.5 }}>
+                    {categories
+                      .filter((category: Category) => category["rubric_id"] === rubricId)
+                      .map((category: Category) => (
+                        <Box
+                          key={category["category_id"]}
+                          data-testid="rubric-category-names"
+                          sx={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            gap: 1,
+                            backgroundColor: 'var(--table-odd-row)',
+                            borderRadius: '8px',
+                            px: 1.5,
+                            py: 1,
+                          }}
+                        >
+                          <Typography variant="body2" sx={{ color: 'var(--table-text)' }}>
+                            {category["category_name"]}
+                          </Typography>
+                          <Typography variant="body2" sx={{ color: 'var(--text-color-secondary)' }}>
+                            {category["default_rubric"] ? category["default_rubric"] : "N/A"}
+                          </Typography>
+                        </Box>
+                      ))}
+                  </Stack>
+                </Collapse>
+              </Paper>
+            );
+          })
+        )}
+      </Stack>
+    );
+  }
 
   return (
     <ThemeProvider theme={customTheme}>

@@ -42,10 +42,23 @@ body.mode .MuiDateTimePickerTabs-root {
   color: var(--dropdown-text) !important;
 }
 
-.app-body { 
+.app-body {
   background-color: #F8F8F8;
   min-height: 100vh;
   max-height: auto;
+}
+
+/* Bold, oversized, brand-blue page heading — matches the paused native
+   MobileApp's screen titles (e.g. "Users", "Assessment Tasks"). */
+.sb-page-title {
+  color: #2E8BEF !important;
+  font-weight: 700 !important;
+  font-size: 2rem !important;
+  line-height: 1.2 !important;
+}
+
+body.mode .sb-page-title {
+  color: #4193eb !important;
 }
 
 /* Primary Color */
@@ -132,6 +145,19 @@ h4, h5 {
   align-items: center;
   align-self: stretch;
   padding: var(--none, 0px) var(--none, 16px);
+}
+
+/* Neither class wraps by default, so a title sitting beside a row of action
+   buttons (e.g. AssessmentDashboard's "Assessment Tasks" + My Custom
+   Rubrics/Import Tasks/Add Task) overlaps once they no longer fit on one
+   line. Letting the row wrap keeps the title and buttons each fully
+   readable, stacked instead of crushed together. */
+@media (max-width: 600px) {
+  .content-spacing,
+  .subcontent-spacing {
+    flex-wrap: wrap;
+    row-gap: 8px;
+  }
 }
 
 .table-spacing {
