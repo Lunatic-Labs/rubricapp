@@ -1,9 +1,24 @@
 import React from 'react';
-import { Box, createTheme, ThemeProvider } from '@mui/material';
+import {
+  Box,
+  createTheme,
+  ThemeProvider,
+  useMediaQuery,
+  TextField,
+  InputAdornment,
+  IconButton,
+  Typography,
+  Stack,
+  Paper,
+} from '@mui/material';
+import SearchIcon from '@mui/icons-material/Search';
+import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
+import ChevronRightIcon from '@mui/icons-material/ChevronRight';
 import {
   DataGrid,
   DataGridProps,
   GridColDef,
+  GridRenderCellParams,
   GridToolbarContainer,
   GridToolbarFilterButton,
   GridToolbarQuickFilter,
@@ -23,6 +38,10 @@ interface CustomDataTableProps {
 // each page is still the "odd" color.
 const ODD_ROW_CLASS = 'CustomDataTable-oddRow';
 const EVEN_ROW_CLASS = 'CustomDataTable-evenRow';
+
+// Same breakpoint the rest of the app's mobile-specific CSS uses (SBStyles.css)
+// and the old mui-datatables wrapper used for its "vertical" mode.
+const MOBILE_BREAKPOINT = '(max-width:600px)';
 
 const customTheme = createTheme({
   spacing: 4,
@@ -299,6 +318,31 @@ const defaultOptions = {
   },
 };
 
+// The mobile card view renders each column as its own labeled row, outside
+// the grid's own cell-rendering machinery, so a column's renderCell/
+// valueFormatter is invoked with a minimal stand-in object carrying only the
+// fields any renderCell in this codebase actually reads (id, value, row) —
+// the same kind of narrow adapter as LibAdapters/MUIDataTable.tsx used for
+// the old table library.
+const renderCardValue = (column: GridColDef, row: object, rowId: string | number): React.ReactNode => {
+  const rawValue = (row as Record<string, unknown>)[column.field];
+  if (column.renderCell) {
+    const params = {
+      id: rowId,
+      field: column.field,
+      value: rawValue,
+      formattedValue: rawValue,
+      row,
+    } as unknown as GridRenderCellParams;
+    return column.renderCell(params);
+  }
+  if (column.valueFormatter) {
+    const formatter = column.valueFormatter as (value: unknown, row: unknown, col: unknown, apiRef: unknown) => unknown;
+    return String(formatter(rawValue, row, column, undefined));
+  }
+  return rawValue == null ? '' : String(rawValue);
+};
+
 const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisible, options }: CustomDataTableProps) => {
   const gridOptions: Partial<DataGridProps> = {
     ...defaultOptions,
@@ -329,6 +373,12 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   // measured available width (so it matches what the native algorithm would
   // have used, scrollbar and all), and handed to the DataGrid as a plain
   // `width` — `flex` itself is stripped so the native algorithm never runs.
+  // The mobile card view below never mounts the DataGrid at all, so the
+  // apiRef-driven effects in this section have nothing to attach to — each
+  // one bails out early when isMobile, rather than assuming apiRef.current
+  // is safe to call against an ungrounded grid.
+  const isMobile = useMediaQuery(MOBILE_BREAKPOINT);
+
   const apiRef = useGridApiRef();
   const [availableWidth, setAvailableWidth] = React.useState(0);
   const updateAvailableWidth = React.useCallback(() => {
@@ -338,8 +388,9 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   // render (until the grid's first debounced resize event fires), so also
   // grab the dimensions as soon as they're available after mount.
   React.useEffect(() => {
+    if (isMobile) return;
     updateAvailableWidth();
-  }, [updateAvailableWidth]);
+  }, [updateAvailableWidth, isMobile]);
 
   // `getRowHeight: 'auto'` measures each row from its actual content, so the
   // real total row height can land above or below ROW_HEIGHT_ESTIMATE below
@@ -349,10 +400,11 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   // the container can correct itself once real rows have been laid out.
   const [measuredRowsHeight, setMeasuredRowsHeight] = React.useState<number | null>(null);
   React.useEffect(() => {
+    if (isMobile) return undefined;
     return apiRef.current.subscribeEvent('virtualScrollerContentSizeChange', (params) => {
       setMeasuredRowsHeight(params.contentHeight);
     });
-  }, [apiRef]);
+  }, [apiRef, isMobile]);
 
   // Column-level menus (sort/filter/hide) are dropped in favor of the single
   // search box + Filters button in the toolbar above, so sorting stays on
@@ -383,6 +435,150 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   const estimatedToolbarHeight = gridOptions.showToolbar !== false ? TOOLBAR_HEIGHT : 0;
   const estimatedContentHeight =
     rowsHeight + estimatedToolbarHeight + COLUMN_HEADER_HEIGHT + FOOTER_HEIGHT;
+
+  // Mobile card view: the grid's own search/pagination live inside the
+  // DataGrid instance, which doesn't exist here, so both are reimplemented
+  // minimally — same page size as the desktop default, same all-columns
+  // substring search as GridToolbarQuickFilter's basic behavior.
+  const [searchText, setSearchText] = React.useState('');
+  const [page, setPage] = React.useState(0);
+  React.useEffect(() => {
+    setPage(0);
+  }, [searchText, data]);
+
+  const showSearch = gridOptions.showToolbar !== false;
+  const filteredData = React.useMemo(() => {
+    const needle = searchText.trim().toLowerCase();
+    if (!needle) return data;
+    return data.filter((row) =>
+      columns.some((column) => {
+        const value = (row as Record<string, unknown>)[column.field];
+        return value != null && String(value).toLowerCase().includes(needle);
+      })
+    );
+  }, [data, columns, searchText]);
+
+  const totalRows = filteredData.length;
+  const pageCount = Math.max(1, Math.ceil(totalRows / pageSize));
+  const currentPage = Math.min(page, pageCount - 1);
+  const pagedData = filteredData.slice(currentPage * pageSize, currentPage * pageSize + pageSize);
+  const rangeStart = totalRows === 0 ? 0 : currentPage * pageSize + 1;
+  const rangeEnd = Math.min(totalRows, currentPage * pageSize + pageSize);
+
+  if (isMobile) {
+    return (
+      <ThemeProvider theme={customTheme}>
+        <Box sx={{ width: '100%' }}>
+          {showSearch && (
+            <TextField
+              fullWidth
+              size="small"
+              placeholder="Search…"
+              value={searchText}
+              onChange={(event) => setSearchText(event.target.value)}
+              InputProps={{
+                startAdornment: (
+                  <InputAdornment position="start">
+                    <SearchIcon fontSize="small" sx={{ color: 'var(--table-text)' }} />
+                  </InputAdornment>
+                ),
+              }}
+              sx={{
+                mb: 1,
+                backgroundColor: 'var(--table-toolbar)',
+                '& .MuiInputBase-input': { color: 'var(--table-text)' },
+              }}
+            />
+          )}
+          {pagedData.length === 0 ? (
+            <Box
+              sx={{
+                height: EMPTY_STATE_HEIGHT,
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                color: 'var(--table-text)',
+              }}
+            >
+              <Typography>No rows</Typography>
+            </Box>
+          ) : (
+            <Stack spacing={1.25}>
+              {pagedData.map((row, index) => {
+                const rowId = getRowId(row);
+                return (
+                  <Paper
+                    key={rowId}
+                    sx={{
+                      p: 2,
+                      borderRadius: '12px',
+                      backgroundColor: index % 2 === 0 ? 'var(--table-odd-row)' : 'var(--light_grey_ADA)',
+                      boxShadow: '0 0 0.3em var(--box-shadow)',
+                    }}
+                  >
+                    <Stack spacing={0.75}>
+                      {columns.map((column) => {
+                        const content = renderCardValue(column, row, rowId);
+                        // A renderCell can hand back an element with hidden
+                        // set (e.g. the View/Edit/Delete buttons on a user's
+                        // own row) — on the desktop grid that's just blank
+                        // space in one of many cells, but as a standalone
+                        // "Edit:" row with nothing beside it, it reads as
+                        // broken rather than intentional. Drop the row
+                        // entirely instead.
+                        const isHidden =
+                          React.isValidElement(content) &&
+                          (content.props as { hidden?: boolean } | null)?.hidden === true;
+                        if (isHidden) return null;
+                        return (
+                          <Box
+                            key={column.field}
+                            sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', gap: 1 }}
+                          >
+                            <Typography variant="body2" sx={{ fontWeight: 600, color: 'var(--table-text)' }}>
+                              {column.headerName ?? column.field}
+                            </Typography>
+                            <Box sx={{ color: 'var(--table-text)', textAlign: 'right' }}>{content}</Box>
+                          </Box>
+                        );
+                      })}
+                    </Stack>
+                  </Paper>
+                );
+              })}
+            </Stack>
+          )}
+          {totalRows > 0 && (
+            <Stack
+              direction="row"
+              alignItems="center"
+              justifyContent="center"
+              spacing={1}
+              sx={{ mt: 1, color: 'var(--table-text)' }}
+            >
+              <Typography variant="body2">{`${rangeStart}–${rangeEnd} of ${totalRows}`}</Typography>
+              <IconButton
+                size="small"
+                disabled={currentPage === 0}
+                onClick={() => setPage((previousPage) => Math.max(0, previousPage - 1))}
+                aria-label="Previous page"
+              >
+                <ChevronLeftIcon />
+              </IconButton>
+              <IconButton
+                size="small"
+                disabled={currentPage >= pageCount - 1}
+                onClick={() => setPage((previousPage) => Math.min(pageCount - 1, previousPage + 1))}
+                aria-label="Next page"
+              >
+                <ChevronRightIcon />
+              </IconButton>
+            </Stack>
+          )}
+        </Box>
+      </ThemeProvider>
+    );
+  }
 
   return (
     <ThemeProvider theme={customTheme}>

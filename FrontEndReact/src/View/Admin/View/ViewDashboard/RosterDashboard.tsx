@@ -62,7 +62,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                 />
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="roster-title">Roster</Typography>
+                    <Typography className="sb-page-title" variant="h5" data-testid="roster-title">Roster</Typography>
 
                     <Box sx={{display:"flex", gap:"20px"}}>
                         <Button
