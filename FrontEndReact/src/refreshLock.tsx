@@ -27,7 +27,10 @@ export function refreshAccessTokens(): Promise<any> | null | undefined{
       {
         method: 'POST',
         headers: {
-          'Authorization': 'Bearer ' + refreshToken
+          'Authorization': 'Bearer ' + refreshToken,
+          // No-op outside ngrok's free tier; skips its anti-abuse
+          // interstitial during real-device testing over a tunnel.
+          'ngrok-skip-browser-warning': 'true',
         }
       }
     ).then(async res => {

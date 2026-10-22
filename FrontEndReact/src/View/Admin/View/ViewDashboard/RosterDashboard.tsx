@@ -103,7 +103,10 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                         method: 'GET',
                                         headers: {
                                             'Authorization': `Bearer ${cookies.get('access_token')}`,
-                                            'Content-Type': 'application/json'
+                                            'Content-Type': 'application/json',
+                                            // No-op outside ngrok's free tier; skips its anti-abuse
+                                            // interstitial during real-device testing over a tunnel.
+                                            'ngrok-skip-browser-warning': 'true',
                                         }
                                     });
                                                                        

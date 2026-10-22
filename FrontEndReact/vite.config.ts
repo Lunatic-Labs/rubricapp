@@ -57,9 +57,24 @@ export default defineConfig({
   preview: {
     port: 4173,
     host: '0.0.0.0',
-    // Lets `vite preview` be reached through a Cloudflare quick tunnel for
-    // real-device PWA testing. The leading dot matches any subdomain, since
-    // trycloudflare.com assigns a new random one on every run.
-    allowedHosts: ['.trycloudflare.com'],
+    // Lets `vite preview` be reached through a tunnel for real-device PWA
+    // testing. Wildcarded so anyone on the team can use whichever free
+    // tunnel they prefer — their own Cloudflare quick tunnel (a new random
+    // *.trycloudflare.com subdomain every run) or their own free ngrok
+    // static domain (*.ngrok-free.app / *.ngrok-free.dev) — without editing
+    // this file for each person's specific domain.
+    allowedHosts: ['.trycloudflare.com', '.ngrok-free.app', '.ngrok-free.dev'],
+    // Proxies /api straight to the local backend, so the app and its API
+    // calls share one origin — matching what the service worker's own
+    // config already assumes (navigateFallbackDenylist is a path pattern,
+    // not a full URL). Means only ONE tunnel is ever needed for real-device
+    // testing, and the build no longer needs VITE_API_URL pointed at a
+    // separate backend tunnel URL at all.
+    proxy: {
+      '/api': {
+        target: 'http://localhost:5050',
+        changeOrigin: true,
+      },
+    },
   },
 });

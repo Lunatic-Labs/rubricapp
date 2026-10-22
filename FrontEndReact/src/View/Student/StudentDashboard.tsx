@@ -397,7 +397,10 @@ class StudentDashboard extends Component<StudentDashboardProps, StudentDashboard
                     method: 'POST',
                     headers: {
                         'Authorization': `Bearer ${cookies.get('access_token')}`,
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        // No-op outside ngrok's free tier; skips its anti-abuse
+                        // interstitial during real-device testing over a tunnel.
+                        'ngrok-skip-browser-warning': 'true',
                     },
                     body: JSON.stringify({ 
                         access_token: cookies.get('access_token'),
