@@ -2,7 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone
 from models.schemas import User, UserCourse, CompletedAssessment, Course
-from sqlalchemy import and_, or_
+from sqlalchemy import and_, or_, update
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
@@ -23,13 +23,19 @@ class InvalidUserID(Exception):
     def __str__(self):
         return self.message
 
+class InvalidUserEmail(Exception):
+    def __init__(self, email):
+        self.message = f"No user was found with email: {email}."
+
+    def __str__(self):
+        return self.message
+
 class EmailAlreadyExists(Exception):
     def __init__(self, email):
         self.message = f"Invalid email: {email}."
 
     def __str__(self):
         return self.message
-
 
 
 @error_log
@@ -265,8 +271,35 @@ def create_user(user_data, validate_emails=True):
 
     return user_data
 
+
+@error_log
+def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
+    """
+    Sets the User.is_admin flag for the user with the given email.
+
+    NOTE: Not course-scoped and for super admin use only.
+
+    Args:
+        target_email (str): Email of the user whose admin status will change.
+        is_admin (bool) : True promotes to admin, False demotes.
+
+    Raises:
+        SQLAlchemyError: If the update or commit fails.
+        InvalidUserEmail: The email does not exist in the system.
+    """
+    stmt = (
+        update(User).where(User.email == target_email).values({User.is_admin: is_admin})
+    )
+    result = db.session.execute(stmt)
+    if result.rowcount == 0:
+        db.session.rollback()
+        raise InvalidUserEmail(target_email)
+    db.session.commit()
+
+
 @error_log
 def make_admin(user_id):
+    """Note that this should only be used on the course level not by the super admin."""
     user = User.query.filter_by(user_id=user_id).first()
 
     user.is_admin = True
@@ -280,6 +313,8 @@ def make_admin(user_id):
 
 @error_log
 def unmake_admin(user_id):
+    """Note that this should only be used on the course level not by the super admin."""
+
     user = User.query.filter_by(user_id=user_id).first()
 
     roles_of_user_id = db.session.query(
