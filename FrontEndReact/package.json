@@ -60,6 +60,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
+    "preview:tunnel": "VITE_API_URL=/api vite build && vite preview --port 4173 --host 0.0.0.0",
     "test": "jest",
     "prepare": "git rev-parse --is-inside-work-tree && git config core.hooksPath FrontEndReact/.husky/ || true"
   },
