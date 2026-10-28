@@ -6,7 +6,6 @@
 
 import Loading from "../Loading/Loading";
 import { Component, ChangeEvent } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import ErrorIcon from "@mui/icons-material/Error";
 import { genericResourcePUT } from "../../utility";
 import { EMAIL_REGEX } from "../../Constants/email";
@@ -18,8 +17,6 @@ import {
     Dialog,
     Button,
     TextField,
-    IconButton,
-    DialogTitle,
     DialogContent,
     DialogActions,
     DialogContentText,
@@ -59,6 +56,20 @@ interface ManageAdminsAccessDialogState {
 	autoCloseTimer: ReturnType<typeof setTimeout> | null;
 }
 
+/**
+ * Dialog for a super admin to promote or demote a user's global admin flag by email.
+ *
+ * Submits a PUT to `/super_admin_user/promote` or `/super_admin_user/demote`
+ * depending on the toggle. The email is validated on blur, and submit is ignored
+ * while a request is in flight. Closing (X, backdrop or Esc) is blocked during a
+ * request, and otherwise resets the form before calling `onClose`.
+ *
+ * Props:
+ * - `open`: whether the dialog is shown. The parent owns this state.
+ * - `onClose`: called after the dialog has reset its form and wants to close.
+ * - `onSuccess`: called when the request succeeds, so the parent can refetch users.
+ * - `onError`: called with the backend's error message when the request fails.
+*/
 class ManageAdminsAccessDialog extends Component<
 	ManageAdminsAccessDialogProps,
 	ManageAdminsAccessDialogState
