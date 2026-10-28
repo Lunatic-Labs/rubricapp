@@ -24,6 +24,7 @@ import {
     DialogActions,
     DialogContentText,
 } from "@mui/material";
+import DialogTitleWithClose from "./DialogTitleWithCloseButton";
 
 const StatusChanges = {
 	Demote: "Demote",
@@ -326,6 +327,7 @@ class ManageAdminsAccessDialog extends Component<
 	}
 
 	render() {
+		const dialogTitle = "Manage Admins";
 		return (
 			<Dialog
 				open={this.props.open}
@@ -333,24 +335,12 @@ class ManageAdminsAccessDialog extends Component<
 				fullWidth
 				maxWidth="xs"
 			>
-				<DialogTitle
-					sx={{ position: "relative", textAlign: "center", px: 6 }}
+				<DialogTitleWithClose
+					onClose={this.handleClose}
+					testId="manage-admin-access-close"
 				>
-					Manage Admins
-					<IconButton
-						aria-label="Close"
-						onClick={this.handleClose}
-						data-testid="manage-admin-access-close"
-						sx={{
-							position: "absolute",
-							right: (t) => t.spacing(1),
-							top: "50%",
-							transform: "translateY(-50%)",
-						}}
-					>
-						<CloseIcon />
-					</IconButton>
-				</DialogTitle>
+					{dialogTitle}
+				</DialogTitleWithClose>
 				{this.renderBody()}
 			</Dialog>
 		);

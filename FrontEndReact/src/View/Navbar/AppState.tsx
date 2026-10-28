@@ -43,6 +43,7 @@ import Settings from './Settings';
 import ScreenHistory from './screenHistory';
 import { genericResourceGET, parseRoleNames } from '../../utility';
 import ManageAdminsAccessDialog from '../Components/ManageAdminAccessDialog';
+import ResetDemoAdminsDialog from '../Components/ResetDemoUsersDialog';
 
 /**
  * Creates an instance of the AppState component.
@@ -106,7 +107,8 @@ interface AppStateState {
     activeTab: string;
     user: UserType | null;
     addUser: boolean | null;
-    manageAdminAccessOpen: boolean;
+    isManageAdminAccessOpen: boolean;
+    isResetDemoAdminDialogOpen:boolean;
     course: CourseType | null;
     addCourse: boolean | null;
     assessmentTask: AssessmentTaskType | null;
@@ -191,7 +193,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
         this.state = {
             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
 
-            manageAdminAccessOpen:false,
+            isManageAdminAccessOpen:false,
+            isResetDemoAdminDialogOpen:false,
 
             user: null,
             addUser: null,
@@ -897,11 +900,22 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                         variant='contained'
                                         onClick={() => {
                                             this.setState({
-                                                manageAdminAccessOpen: true,
+                                                isManageAdminAccessOpen: true,
                                             });
                                         }}
                                     >
                                         Manage Admins
+                                    </Button>
+                                    <Button 
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
+                                                isResetDemoAdminDialogOpen:true,
+                                            });
+                                        }}
+                                    >
+                                        Reset Demo Users
                                     </Button>
                                     <Button 
                                         className="primary-color"
@@ -924,9 +938,14 @@ class AppState extends Component<AppStateProps, AppStateState> {
                             navbar={this}
                         />
                         <ManageAdminsAccessDialog
-                            open={this.state.manageAdminAccessOpen}
-                            onClose={() => this.setState({manageAdminAccessOpen:false})}
+                            open={this.state.isManageAdminAccessOpen}
+                            onClose={() => this.setState({isManageAdminAccessOpen:false})}
                             onSuccess={() => this.adminViewUsersRef.current?.fetchData()}
+                            onError={(message) => this.adminViewUsersRef.current?.setErrorMessage(message)}
+                        />
+                        <ResetDemoAdminsDialog
+                            open={this.state.isResetDemoAdminDialogOpen}
+                            onClose={() => this.setState({isResetDemoAdminDialogOpen:false})}
                             onError={(message) => this.adminViewUsersRef.current?.setErrorMessage(message)}
                         />
                     </Box>
