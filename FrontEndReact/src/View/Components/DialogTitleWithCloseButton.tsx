@@ -15,6 +15,15 @@ interface DialogTitleWithCloseProps {
 	testId?: string | undefined;
 }
 
+/**
+   * Dialog header with a centered title and a close (X) button pinned to the right.
+   *
+   * @param children - Title content; usually a string, but any node works.
+   * @param onClose  - Called when the close button is clicked. The parent owns the
+   *                  open state, so it should flip it here.
+   * @param disabled - Disables the close button, e.g. while a request is in flight.
+   * @param testId   - `data-testid` for the close button. Defaults to "dialog-close".
+*/
 function DialogTitleWithClose({
 	children,
 	onClose,
