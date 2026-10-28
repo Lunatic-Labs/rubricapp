@@ -235,6 +235,13 @@ def get_all_team_members():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
+@bp.route('/super_admin_user/demo_users', methods = ['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def fetch_all_demo_users():
+    return
 
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
