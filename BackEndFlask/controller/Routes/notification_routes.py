@@ -20,6 +20,8 @@ from marshmallow import fields
 from models.queries import get_students_for_emailing, get_admin_notifications, delete_admin_notifications, send_notification_update
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.utility import email_students_feedback_is_ready_to_view, email_admins_notification
+from models.user import get_admins_with_active_courses
+from models.push_notification import send_push_notification
 from models.schemas import AdminNotification
 import datetime
 
@@ -75,6 +77,11 @@ def mass_notify_new_ca_users():
 
 
         email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
+        send_push_notification(
+            [student.user_id for student in left_to_notifiy],
+            "Feedback is ready to view",
+            msg_to_students
+        )
 
         # Updating AT notification time
         toggle_notification_sent_to_true(at_id, date)
@@ -140,6 +147,11 @@ def send_single_email():
         left_to_notifiy = [singular_student for singular_student in collection]
 
         email_students_feedback_is_ready_to_view(left_to_notifiy, msg)
+        send_push_notification(
+            [student.user_id for student in left_to_notifiy],
+            "Feedback is ready to view",
+            msg
+        )
 
         # If we know the owning AT and have a date, update its notification time
         if at_id_str is not None and date is not None:
@@ -197,6 +209,11 @@ def send_admin_notification():
             )
 
         email_admins_notification(subject, message)
+        send_push_notification(
+            [admin.user_id for admin in get_admins_with_active_courses()],
+            subject,
+            message
+        )
 
         # Log the sent notification to the database
         notification_record = AdminNotification(
