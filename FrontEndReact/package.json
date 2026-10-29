@@ -27,7 +27,7 @@
     "@mui/material": "^5.15.6",
     "@mui/system": "^5.15.14",
     "@mui/x-data-grid": "^7.29.13",
-    "@mui/x-date-pickers": "^6.19.2",
+    "@mui/x-date-pickers": "^7.29.4",
     "@testing-library/jest-dom": "^6.6.3",
     "@testing-library/user-event": "^14.5.2",
     "bootstrap": "^5.3.3",
@@ -42,13 +42,11 @@
     "jspdf": "^4.2.1",
     "mui-one-time-password-input": "^3.0.1",
     "react": "^18.3.1",
-    "react-beautiful-dnd": "^13.1.1",
     "react-cookie": "^7.2.2",
     "react-datepicker": "^7.5.0",
     "react-dom": "^18.3.1",
     "react-router-dom": "^7.18.3",
     "react-select": "^5.8.3",
-    "react-validation": "^3.0.7",
     "recharts": "^3.8.1",
     "ts-node": "^10.9.2",
     "typescript": "^5.6.3",
@@ -73,6 +71,7 @@
     "@babel/preset-typescript": "^8.0.1",
     "@jest/globals": "^30.3.0",
     "@juggle/resize-observer": "^3.4.0",
+    "@stylistic/eslint-plugin": "^5.10.0",
     "@testing-library/dom": "^10.4.1",
     "@testing-library/react": "^16.0.1",
     "@types/react": "^18.3.12",
@@ -84,28 +83,36 @@
     "@vitejs/plugin-react": "^6.0.0",
     "babel-jest": "^30.4.1",
     "babel-plugin-transform-vite-meta-env": "^1.0.3",
-    "eslint": "^8.57.1",
-    "eslint-config-react-app": "^7.0.1",
+    "confusing-browser-globals": "^1.0.11",
+    "eslint": "^9.39.5",
+    "eslint-plugin-import-x": "^4.17.1",
+    "eslint-plugin-jest": "^29.17.0",
+    "eslint-plugin-jsx-a11y": "^6.10.2",
+    "eslint-plugin-react": "^7.37.5",
+    "eslint-plugin-react-hooks": "^7.1.1",
+    "eslint-plugin-testing-library": "^7.16.2",
+    "globals": "^17.13.0",
     "identity-obj-proxy": "^3.0.0",
     "jest": "^30.3.0",
     "jest-environment-jsdom": "^30.4.1",
     "jest-location-mock": "^4.0.1",
     "react-test-renderer": "^18.3.1",
     "resize-observer-polyfill": "1.5.1",
+    "typescript-eslint": "^8.71.2",
     "vite": "^8.2.0",
     "vite-plugin-pwa": "^2.0.0",
     "whatwg-fetch": "^3.6.20",
     "workbox-build": "^7.4.1",
     "workbox-window": "^7.4.1"
   },
-  "eslintConfig": {
-    "extends": [
-      "react-app",
-      "react-app/jest"
-    ]
-  },
   "overrides": {
     "nth-check": "^2.0.1",
-    "postcss": "^8.4.31"
+    "postcss": "^8.4.31",
+    "@istanbuljs/load-nyc-config": {
+      "js-yaml": "^4.1.1"
+    },
+    "babel-plugin-istanbul": {
+      "test-exclude": "^8.0.0"
+    }
   }
 }
