@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import { Component, createRef} from 'react';
 import Cookies from 'universal-cookie';
 import { logger } from '../../logger';
 import 'bootstrap/dist/css/bootstrap.css';
@@ -42,6 +42,7 @@ import { Team as TeamType } from '../../types/Team';
 import Settings from './Settings';
 import ScreenHistory from './screenHistory';
 import { genericResourceGET, parseRoleNames } from '../../utility';
+import ManageAdminsAccessDialog from '../Components/ManageAdminAccessDialog';
 
 /**
  * Creates an instance of the AppState component.
@@ -105,6 +106,7 @@ interface AppStateState {
     activeTab: string;
     user: UserType | null;
     addUser: boolean | null;
+    manageAdminAccessOpen: boolean;
     course: CourseType | null;
     addCourse: boolean | null;
     assessmentTask: AssessmentTaskType | null;
@@ -173,6 +175,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
         (screen) => this.setState(screen),
     );
 
+    private adminViewUsersRef = createRef<AdminViewUsers>();
+
     constructor(props: AppStateProps) {
         super(props);
         
@@ -186,6 +190,8 @@ class AppState extends Component<AppStateProps, AppStateState> {
         
         this.state = {
             activeTab: this.props.isSuperAdmin ? "SuperAdminUsers" : "Courses",
+
+            manageAdminAccessOpen:false,
 
             user: null,
             addUser: null,
@@ -891,6 +897,17 @@ class AppState extends Component<AppStateProps, AppStateState> {
                                         variant='contained'
                                         onClick={() => {
                                             this.setState({
+                                                manageAdminAccessOpen: true,
+                                            });
+                                        }}
+                                    >
+                                        Manage Admins
+                                    </Button>
+                                    <Button 
+                                        className="primary-color"
+                                        variant='contained'
+                                        onClick={() => {
+                                            this.setState({
                                                 activeTab: "ViewNotification",
                                                 user: null,
                                                 addUser: true
@@ -903,7 +920,14 @@ class AppState extends Component<AppStateProps, AppStateState> {
                             </Box>
                         </div>
                         <AdminViewUsers
+                            ref={this.adminViewUsersRef}
                             navbar={this}
+                        />
+                        <ManageAdminsAccessDialog
+                            open={this.state.manageAdminAccessOpen}
+                            onClose={() => this.setState({manageAdminAccessOpen:false})}
+                            onSuccess={() => this.adminViewUsersRef.current?.fetchData()}
+                            onError={(message) => this.adminViewUsersRef.current?.setErrorMessage(message)}
                         />
                     </Box>
                 }

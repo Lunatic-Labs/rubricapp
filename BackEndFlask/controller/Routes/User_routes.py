@@ -4,6 +4,7 @@ from controller  import bp
 from controller.Route_response import *
 from models.logger import logger
 from flask_jwt_extended import jwt_required
+from enums.http_status_codes import HttpStatus
 from Functions.threads import (
     spawn_thread,
     validate_pending_emails,
@@ -31,7 +32,7 @@ from models.user_course import(
     create_user_course,
     get_user_course_by_user_id_and_course_id,
     set_active_status_of_user_to_inactive,
-    replace_role_id_given_user_id_and_course_id
+    replace_role_id_given_user_id_and_course_id,
 )
 
 from models.course import (
@@ -55,7 +56,8 @@ from models.user import(
     unmake_admin,
     delete_user,
     set_user_dark_mode,
-    get_user_by_email,
+    InvalidUserEmail,
+    super_admin_alter_user_auth,
 )
 
 from models.queries import (
@@ -66,7 +68,7 @@ from models.queries import (
     get_students_by_team_id,
     get_active_students_not_in_a_team,
     add_user_to_team,
-    remove_user_from_team
+    remove_user_from_team,
 )
 from models.completed_assessment import completed_assessment_team_or_user_exists
 
@@ -406,11 +408,11 @@ def delete_selected_user():
             user = get_user(user_id)
             if not user:
                 return create_bad_response("User does not exist", "users", 400)
-            
+
             associated_task = completed_assessment_team_or_user_exists(team_id=None, user_id=user_id)
             if associated_task and len(associated_task) > 0:
                 return create_bad_response("Cannot delete user with associated tasks", "users", 400)
-            
+
             try:
                 delete_user(user_id)
                 return create_good_response([], 200, "users")
@@ -419,6 +421,54 @@ def delete_selected_user():
 
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
+
+
+@bp.route("/super_admin_user/promote", methods=["PUT"])
+@bp.route("/super_admin_user/demote", methods=["PUT"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def super_change_admin_status():
+    """
+    Promotes a regular user to an admin and vice versa through the global User.is_admin flag.
+
+    Args:
+        target_email (str): The user's email who will have their auth status altered.
+
+    Returns:
+        200: auth_change: [{email: str, is_admin: bool}] with the user's new admin status.
+        400: target_email is missing or not a string.
+        404: no user has that email.
+        500: unexpected failure. The cause is in the server log only; the client gets a generic message.
+    """
+    promoting = request.path.endswith("/promote")
+    verb = "Promotion" if promoting else "Demotion"
+    try:
+        user_to_modify = request.args.get("target_email")
+
+        if not isinstance(user_to_modify, str):
+            raise ValueError("A target email is required.")
+
+        super_admin_alter_user_auth(user_to_modify, promoting)
+
+        return create_good_response(
+            {"email": user_to_modify, "is_admin": promoting},
+            HttpStatus.OK.value,
+            "auth_change",
+        )
+    except ValueError as e:
+        return create_bad_response(str(e), "auth_change", HttpStatus.BAD_REQUEST.value)
+    except InvalidUserEmail as e:
+        return create_bad_response(str(e), "auth_change", HttpStatus.NOT_FOUND.value)
+    except Exception:
+        logger.exception(f"{verb} failed for target_email={user_to_modify!r}")
+        return create_bad_response(
+            f"{verb} Failed. Please try again.",
+            "auth_change",
+            HttpStatus.INTERNAL_SERVER_ERROR.value,
+        )
+
 
 # new route for user to 'put' things into the back-end.
 # currently used only for user settings, additional use might
