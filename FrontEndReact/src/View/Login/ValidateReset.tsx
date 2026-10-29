@@ -56,7 +56,12 @@ class ValidateReset extends Component<{}, ValidateResetState> {
                 return;  // Add return to prevent API call
 
             } else {
-                fetch(apiUrl + `/reset_code?email=${email}`)
+                // The header is a no-op outside ngrok's free tier; it skips
+                // its anti-abuse interstitial during real-device testing
+                // over a tunnel.
+                fetch(apiUrl + `/reset_code?email=${email}`, {
+                    headers: { 'ngrok-skip-browser-warning': 'true' },
+                })
 
                 .then(res => res.json())
 
@@ -95,7 +100,12 @@ class ValidateReset extends Component<{}, ValidateResetState> {
             } else {
                 fetch(
                     apiUrl + `/reset_code?email=${email}&code=${code}`,
-                    { method: 'POST' }
+                    {
+                        method: 'POST',
+                        // No-op outside ngrok's free tier; skips its anti-abuse
+                        // interstitial during real-device testing over a tunnel.
+                        headers: { 'ngrok-skip-browser-warning': 'true' },
+                    }
                 )
 
                 .then(res => res.json())

@@ -62,7 +62,7 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                 />
 
                 <Box className="subcontent-spacing">
-                    <Typography sx={{fontWeight:'700'}} variant="h5" data-testid="roster-title">Roster</Typography>
+                    <Typography className="sb-page-title" variant="h5" data-testid="roster-title">Roster</Typography>
 
                     <Box sx={{display:"flex", gap:"20px"}}>
                         <Button
@@ -103,7 +103,10 @@ class RosterDashboard extends Component<RosterDashboardProps, RosterDashboardSta
                                         method: 'GET',
                                         headers: {
                                             'Authorization': `Bearer ${cookies.get('access_token')}`,
-                                            'Content-Type': 'application/json'
+                                            'Content-Type': 'application/json',
+                                            // No-op outside ngrok's free tier; skips its anti-abuse
+                                            // interstitial during real-device testing over a tunnel.
+                                            'ngrok-skip-browser-warning': 'true',
                                         }
                                     });
                                                                        

@@ -28,6 +28,9 @@ class Logout extends Component<LogoutProps> {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
+                    // No-op outside ngrok's free tier; skips its anti-abuse
+                    // interstitial during real-device testing over a tunnel.
+                    "ngrok-skip-browser-warning": "true",
                 },
                 body: JSON.stringify({
                     access_token: accessToken,

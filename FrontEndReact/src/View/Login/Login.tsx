@@ -150,6 +150,9 @@ class Login extends Component<{}, LoginState> {
                         method: "POST",
                         headers: {
                             "Content-Type": "application/json",
+                            // No-op outside ngrok's free tier; skips its anti-abuse
+                            // interstitial during real-device testing over a tunnel.
+                            "ngrok-skip-browser-warning": "true",
                         },
                         body: JSON.stringify({
                             email: email,

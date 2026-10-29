@@ -158,7 +158,14 @@ async function genericResourceFetch(
   }
 
   const url: string = createApiRequestUrl(fetchURL, cookies);
-  const headers: Record<string, string> = {"Authorization": "Bearer " + accessToken};
+  const headers: Record<string, string> = {
+    "Authorization": "Bearer " + accessToken,
+    // No-op outside ngrok's free tier; skips its anti-abuse interstitial
+    // (an HTML page served with status 200) during real-device testing
+    // over an ngrok tunnel, which a plain fetch() would otherwise have to
+    // report as an "unexpected" non-JSON response.
+    "ngrok-skip-browser-warning": "true",
+  };
 
   if (url.indexOf('bulk_upload') === -1) {
     headers["Content-Type"] = "application/json";

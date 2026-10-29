@@ -224,6 +224,9 @@ export async function submitPasswordChange(apiUrl: string, email: string, passwo
             method: "PUT",
             headers: {
                 "Content-Type": "application/json",
+                // No-op outside ngrok's free tier; skips its anti-abuse
+                // interstitial during real-device testing over a tunnel.
+                "ngrok-skip-browser-warning": "true",
             },
             body: JSON.stringify({
                 email: email,
