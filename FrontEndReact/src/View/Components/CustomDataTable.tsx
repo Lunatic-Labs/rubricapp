@@ -375,9 +375,15 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   // `width` — `flex` itself is stripped so the native algorithm never runs.
   // The mobile card view below never mounts the DataGrid at all, so the
   // apiRef-driven effects in this section have nothing to attach to — each
-  // one bails out early when isMobile, rather than assuming apiRef.current
-  // is safe to call against an ungrounded grid.
+  // one bails out early when showCardView, rather than assuming
+  // apiRef.current is safe to call against an ungrounded grid.
   const isMobile = useMediaQuery(MOBILE_BREAKPOINT);
+  // Checkbox selection and a custom toolbar (e.g. Notifications' bulk
+  // delete) are DataGrid-native features the card view doesn't replicate —
+  // keep those callers on the desktop grid even at mobile widths, rather
+  // than silently dropping that functionality.
+  const requiresDesktopGrid = Boolean(options?.checkboxSelection) || Boolean(options?.slots?.toolbar);
+  const showCardView = isMobile && !requiresDesktopGrid;
 
   const apiRef = useGridApiRef();
   const [availableWidth, setAvailableWidth] = React.useState(0);
@@ -388,9 +394,9 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   // render (until the grid's first debounced resize event fires), so also
   // grab the dimensions as soon as they're available after mount.
   React.useEffect(() => {
-    if (isMobile) return;
+    if (showCardView) return;
     updateAvailableWidth();
-  }, [updateAvailableWidth, isMobile]);
+  }, [updateAvailableWidth, showCardView]);
 
   // `getRowHeight: 'auto'` measures each row from its actual content, so the
   // real total row height can land above or below ROW_HEIGHT_ESTIMATE below
@@ -400,11 +406,11 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   // the container can correct itself once real rows have been laid out.
   const [measuredRowsHeight, setMeasuredRowsHeight] = React.useState<number | null>(null);
   React.useEffect(() => {
-    if (isMobile) return undefined;
+    if (showCardView) return undefined;
     return apiRef.current.subscribeEvent('virtualScrollerContentSizeChange', (params) => {
       setMeasuredRowsHeight(params.contentHeight);
     });
-  }, [apiRef, isMobile]);
+  }, [apiRef, showCardView]);
 
   // Column-level menus (sort/filter/hide) are dropped in favor of the single
   // search box + Filters button in the toolbar above, so sorting stays on
@@ -448,13 +454,19 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
 
   const showSearch = gridOptions.showToolbar !== false;
   const filteredData = React.useMemo(() => {
-    const needle = searchText.trim().toLowerCase();
-    if (!needle) return data;
+    // Split into space-separated terms and require each term to match
+    // *some* column — not necessarily the same one — so a full-name search
+    // like "Jane Doe" still matches a row with separate first_name/last_name
+    // fields, mirroring GridToolbarQuickFilter's desktop behavior.
+    const terms = searchText.trim().toLowerCase().split(/\s+/).filter(Boolean);
+    if (terms.length === 0) return data;
     return data.filter((row) =>
-      columns.some((column) => {
-        const value = (row as Record<string, unknown>)[column.field];
-        return value != null && String(value).toLowerCase().includes(needle);
-      })
+      terms.every((term) =>
+        columns.some((column) => {
+          const value = (row as Record<string, unknown>)[column.field];
+          return value != null && String(value).toLowerCase().includes(term);
+        })
+      )
     );
   }, [data, columns, searchText]);
 
@@ -465,7 +477,7 @@ const CustomDataTable = ({ data, columns, getRowId, height = "70vh", toolbarVisi
   const rangeStart = totalRows === 0 ? 0 : currentPage * pageSize + 1;
   const rangeEnd = Math.min(totalRows, currentPage * pageSize + pageSize);
 
-  if (isMobile) {
+  if (showCardView) {
     return (
       <ThemeProvider theme={customTheme}>
         <Box sx={{ width: '100%' }}>
