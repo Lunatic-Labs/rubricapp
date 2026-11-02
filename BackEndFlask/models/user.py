@@ -2,7 +2,7 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone
 from models.schemas import User, UserCourse, CompletedAssessment, Course
-from sqlalchemy import and_, or_, update
+from sqlalchemy import and_, or_, update, select
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
@@ -270,6 +270,18 @@ def create_user(user_data, validate_emails=True):
         spawn_thread(validate_pending_emails)
 
     return user_data
+
+
+@error_log
+def get_all_demo_admins(*columns):
+    cols = columns or tuple(User.__table__.columns)
+    stmt = select(*cols).where(
+        or_(
+            User.email.like("demoadmin%@skillbuilder.edu"),
+            User.email.like("testadmin%@skillbuilder.edu"),
+        )
+    )
+    return db.session.execute(stmt).all()
 
 
 @error_log

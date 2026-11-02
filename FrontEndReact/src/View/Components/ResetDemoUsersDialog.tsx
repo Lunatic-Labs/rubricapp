@@ -3,7 +3,9 @@ import { Component } from "react";
 import DialogTitleWithClose from "./DialogTitleWithCloseButton";
 import { REQUEST_STATE, RequestState } from "../../Enums/RequestState";
 import Loading from "../Loading/Loading";
-import { DemoUser, User } from "../../types/User";
+import { DemoUser } from "../../types/User";
+import { genericResourceGET } from "../../utility";
+import CustomCheckboxList from "./CustomCheckboxList";
 
 interface ResetDemoAdminsDialogProps {
     open: boolean;
@@ -13,34 +15,38 @@ interface ResetDemoAdminsDialogProps {
 
 interface ResetDemoAdminsDialogState {
     requestState: RequestState;
-    users: DemoUser[] | null;
+    demoUsers: DemoUser[] | null;
+    selectedEmails: string[];
 }
 
-class ResetDemoAdminsDialog extends Component<ResetDemoAdminsDialogProps, ResetDemoAdminsDialogState> {
-    constructor(props:ResetDemoAdminsDialogProps){
-        super(props);
-        this.state = {
-            requestState: REQUEST_STATE.IDLE,
-            users: null,
-        }
-    }
+class ResetDemoAdminsDialog extends Component<
+	ResetDemoAdminsDialogProps,
+	ResetDemoAdminsDialogState
+> {
+	constructor(props: ResetDemoAdminsDialogProps) {
+		super(props);
+		this.state = {
+			requestState: REQUEST_STATE.IDLE,
+			demoUsers: null,
+            selectedEmails: [],
+		};
+	}
 
 	private handleClose = () => {
-        this.setState({
-            requestState: REQUEST_STATE.IDLE,
-            users: null,
-        });
+		this.setState({
+			requestState: REQUEST_STATE.IDLE,
+			demoUsers: null,
+            selectedEmails: [],
+		});
 
 		this.props.onClose();
 	};
 
-    private handleSubmit = () => {
+	private handleSubmit = () => {};
 
-    }
-
-    private renderActions() {
-        const leftActionName = "Cancel";
-        const rightActionName = "Submit";
+	private renderActions() {
+		const leftActionName = "Cancel";
+		const rightActionName = "Submit";
 		return (
 			<DialogActions
 				sx={{ justifyContent: "space-between", px: 3, pb: 2 }}
@@ -61,50 +67,82 @@ class ResetDemoAdminsDialog extends Component<ResetDemoAdminsDialogProps, ResetD
 				</Button>
 			</DialogActions>
 		);
-    }
+	}
 
-    private renderLoadingSituation() {
-        const {users} = this.state;
+	private renderLoadingSituation() {
+		const { demoUsers } = this.state;
 
-        if (users === null) {
-            return (
-                <DialogContent sx={{ "& > div": { marginTop: 0 } }}>
-                    <Loading />
-                    {this.renderActions()}
-                </DialogContent>
-            )
-        }
+		if (demoUsers === null) {
+			return (
+				<DialogContent sx={{ "& > div": { marginTop: 0 } }}>
+					<Loading />
+					{this.renderActions()}
+				</DialogContent>
+			);
+		}
+		return (
+			<DialogContent sx={{ "& > div": { marginTop: 0 } }}>
+				<Loading />
+			</DialogContent>
+		);
+	}
+
+    private renderList() {
+        const {
+            demoUsers,
+            selectedEmails
+        } = this.state;
+
         return (
-            <DialogContent sx={{ "& > div": { marginTop: 0 } }}>
-                <Loading />
+            <DialogContent>
+                <CustomCheckboxList
+                    items={demoUsers ?? []}
+                    getId={(user) => user.email}
+                    getPrimary={(user) => `${user.first_name}${user.last_name} (${user.email})`}
+                    selectedIds={selectedEmails}
+                    onChange={(ids) => this.setState({ selectedEmails: ids.map(String)})}
+                />
+				{this.renderActions()}
             </DialogContent>
-        )
+        );
     }
 
 	private renderBody() {
 		const { requestState } = this.state;
-        
-        switch (requestState) {
-            case REQUEST_STATE.LOADING:
-                return this.renderLoadingSituation();
-            default:
-                return <DialogContentText>Hello</DialogContentText>
-        }
 
+		switch (requestState) {
+			case REQUEST_STATE.LOADING:
+				return this.renderLoadingSituation();
+			default:
+				return this.renderList();
+		}
 	}
 
-    private fetchDemoUsers() {
-        this.setState({
-            requestState: REQUEST_STATE.LOADING,
-        });
+	private async fetchDemoUsers() {
+		this.setState({
+			requestState: REQUEST_STATE.LOADING,
+		});
 
-    }
+		let result = await genericResourceGET(
+			"/super_admin_user/demo_users",
+			"demo_admins",
+			this,
+			{ dest: "demoUsers" },
+		);
+		const failed = Boolean(result.errorMessage);
+		this.setState({
+			requestState: failed ? REQUEST_STATE.ERROR : REQUEST_STATE.SUCCESS,
+		});
+		if (failed) {
+			this.props.onError(result.errorMessage);
+		}
+	}
 
-    componentDidUpdate(prevProps: ResetDemoAdminsDialogProps) {
-        if (this.props.open && !prevProps.open){
-            this.fetchDemoUsers();
-        }
-    }
+	componentDidUpdate(prevProps: ResetDemoAdminsDialogProps) {
+		if (this.props.open && !prevProps.open) {
+			this.fetchDemoUsers();
+		}
+	}
 
 	render() {
 		const dialogTitle = "Reset Demo Admins";
@@ -121,7 +159,7 @@ class ResetDemoAdminsDialog extends Component<ResetDemoAdminsDialogProps, ResetD
 				>
 					{dialogTitle}
 				</DialogTitleWithClose>
-                {this.renderBody()}
+				{this.renderBody()}
 			</Dialog>
 		);
 	}

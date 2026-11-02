@@ -47,6 +47,7 @@ from models.user import(
     get_users,
     get_user,
     get_user_admins,
+    get_all_demo_admins,
     get_user_admins_with_last_login,
     user_already_exists,
     create_user,
@@ -59,6 +60,8 @@ from models.user import(
     InvalidUserEmail,
     super_admin_alter_user_auth,
 )
+
+from models.schemas import User
 
 from models.queries import (
     get_team_members,
@@ -235,13 +238,26 @@ def get_all_team_members():
     except Exception as e:
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
-@bp.route('/super_admin_user/demo_users', methods = ['GET'])
+
+@bp.route("/super_admin_user/demo_users", methods=["GET"])
 @jwt_required()
 @bad_token_check()
 @AuthCheck()
 @super_admin_check()
-def fetch_all_demo_users():
-    return
+def fetch_all_admin_demo_users():
+    try:
+        demo_admins = get_all_demo_admins(User.first_name, User.last_name, User.email)
+        return create_good_response(
+            users_schema.dump(demo_admins), HttpStatus.OK.value, "demo_admins"
+        )
+    except Exception as e:
+        logger.exception(f"Failed to fetch demo_users: {e}")
+        return create_bad_response(
+            f"Failed to fetch demo users. Please try again.",
+            "demo_admins",
+            HttpStatus.INTERNAL_SERVER_ERROR.value,
+        )
+
 
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
@@ -344,7 +360,7 @@ def update_user():
                 raise Exception("Non-admin users cannot be enrolled as admins")
             elif user.is_admin and role_id in [4, 5]:
                 raise Exception("Admin users cannot be enrolled as students or instructors")
-            
+
             replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
             user_data = user_schema.dump(user)
             user_data["role_id"] = role_id
@@ -468,8 +484,8 @@ def super_change_admin_status():
         return create_bad_response(str(e), "auth_change", HttpStatus.BAD_REQUEST.value)
     except InvalidUserEmail as e:
         return create_bad_response(str(e), "auth_change", HttpStatus.NOT_FOUND.value)
-    except Exception:
-        logger.exception(f"{verb} failed for target_email={user_to_modify!r}")
+    except Exception as e:
+        logger.exception(f"{verb} failed for target_email={user_to_modify!r}: {e}")
         return create_bad_response(
             f"{verb} Failed. Please try again.",
             "auth_change",
