@@ -75,10 +75,13 @@ def get_subscriptions_for_users(user_ids: list[int]) -> list[PushSubscription]:
 def delete_subscription_by_endpoint(endpoint: str) -> bool:
     """
     Description:
-    Removes a subscription by its endpoint -- used both for an explicit
-    unsubscribe from the frontend, and to clean up a subscription the push
-    service has reported as gone (expired/unsubscribed on the browser's
-    side, surfaced as a 404/410 from webpush()).
+    Removes a subscription by its endpoint alone, with no owner check --
+    only for internal cleanup of a subscription the push service has
+    reported as gone (expired/unsubscribed on the browser's side, surfaced
+    as a 404/410 from webpush()). That report already proves the endpoint
+    is dead regardless of who it belonged to, unlike a user-supplied
+    endpoint from a request, which delete_subscription_by_endpoint_for_user
+    is for instead.
 
     Parameters:
     endpoint: <class 'str'>
@@ -87,5 +90,27 @@ def delete_subscription_by_endpoint(endpoint: str) -> bool:
     bool (True if a row was deleted, False if no matching subscription existed)
     """
     deleted = PushSubscription.query.filter_by(endpoint=endpoint).delete()
+    db.session.commit()
+    return deleted > 0
+
+
+def delete_subscription_by_endpoint_for_user(user_id: int, endpoint: str) -> bool:
+    """
+    Description:
+    Removes a subscription by its endpoint, scoped to the given user --
+    for the explicit unsubscribe route, where the endpoint comes from the
+    request body. AuthCheck only verifies the caller's own user_id matches
+    their token; it doesn't know this endpoint belongs to them, so that
+    must be enforced here instead of trusting the client-supplied endpoint
+    alone (which could otherwise delete any other user's subscription).
+
+    Parameters:
+    user_id: <class 'int'>
+    endpoint: <class 'str'>
+
+    Returns:
+    bool (True if a row was deleted, False if no matching subscription existed)
+    """
+    deleted = PushSubscription.query.filter_by(user_id=user_id, endpoint=endpoint).delete()
     db.session.commit()
     return deleted > 0

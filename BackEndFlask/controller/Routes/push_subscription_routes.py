@@ -9,7 +9,8 @@ import os
 from flask import request
 from controller import bp
 from controller.Route_response import *
-from models.push_subscription import upsert_subscription, delete_subscription_by_endpoint
+from models.push_subscription import upsert_subscription, delete_subscription_by_endpoint_for_user
+from models.logger import logger
 from flask_jwt_extended import jwt_required
 
 from controller.security.CustomDecorators import (
@@ -49,10 +50,11 @@ def get_vapid_public_key():
             "vapid_public_key"
         )
     except Exception as e:
+        logger.exception(f"Failed to fetch the VAPID public key: {e}")
         return create_bad_response(
-            f"An error occurred fetching the VAPID public key: {e}",
+            "An error occurred fetching the VAPID public key.",
             "vapid_public_key",
-            400
+            500
         )
 
 
@@ -91,11 +93,18 @@ def subscribe_to_push():
             201,
             "push_subscription"
         )
-    except Exception as e:
+    except (TypeError, KeyError) as e:
         return create_bad_response(
-            f"An error occurred saving the push subscription: {e}",
+            "Missing or invalid subscription data.",
             "push_subscription",
             400
+        )
+    except Exception as e:
+        logger.exception(f"Failed to save push subscription: {e}")
+        return create_bad_response(
+            "An error occurred saving the push subscription.",
+            "push_subscription",
+            500
         )
 
 
@@ -110,27 +119,36 @@ def unsubscribe_from_push():
     notifications off from this browser/device.
 
     Parameters (from query args / json):
-        user_id: <class 'int'>  [query arg] (unused beyond AuthCheck's own
-            verification that the caller is who they claim to be; the
-            subscription itself is looked up and removed by endpoint, since
-            that's the identifier the browser's own unsubscribe gives back)
+        user_id: <class 'int'>  [query arg] (AuthCheck already verified this
+            matches the caller's own token; also used here to scope the
+            delete to the caller's own subscription, since the endpoint
+            alone -- the browser's own unsubscribe identifier -- isn't
+            proof of ownership)
         endpoint: <class 'str'> [json]
 
     Returns:
         Good or bad response.
     """
     try:
+        user_id = int(request.args.get('user_id'))
         endpoint = request.json['endpoint']
-        delete_subscription_by_endpoint(endpoint)
+        delete_subscription_by_endpoint_for_user(user_id, endpoint)
 
         return create_good_response(
             "Unsubscribed",
             200,
             "push_subscription"
         )
-    except Exception as e:
+    except (TypeError, KeyError) as e:
         return create_bad_response(
-            f"An error occurred removing the push subscription: {e}",
+            "Missing or invalid subscription data.",
             "push_subscription",
             400
+        )
+    except Exception as e:
+        logger.exception(f"Failed to remove push subscription: {e}")
+        return create_bad_response(
+            "An error occurred removing the push subscription.",
+            "push_subscription",
+            500
         )
