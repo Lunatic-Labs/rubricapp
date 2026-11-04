@@ -6,7 +6,6 @@ from sqlalchemy import and_, or_, update, select
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
-from models.completed_assessment import completed_assessment_team_or_user_exists
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails
 
@@ -276,10 +275,7 @@ def create_user(user_data, validate_emails=True):
 def get_all_demo_admins(*columns):
     cols = columns or tuple(User.__table__.columns)
     stmt = select(*cols).where(
-        or_(
-            User.email.like("demoadmin%@skillbuilder.edu"),
-            User.email.like("testadmin%@skillbuilder.edu"),
-        )
+        User.email.like("testadmin%@skillbuilder.edu"),
     )
     return db.session.execute(stmt).all()
 
@@ -307,7 +303,6 @@ def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
         db.session.rollback()
         raise InvalidUserEmail(target_email)
     db.session.commit()
-
 
 @error_log
 def make_admin(user_id):

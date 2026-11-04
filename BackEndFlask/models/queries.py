@@ -3,6 +3,7 @@ from models.utility import error_log
 from models.schemas import *
 from sqlalchemy.sql import text
 from sqlalchemy import func
+from sqlalchemy import and_, or_, update, select, delete, insert
 
 from models.team_user import (
     create_team_user,
@@ -11,7 +12,9 @@ from models.team_user import (
 from enums.roles import Roles
 
 from models.user import (
-    get_user
+    get_user,
+    get_user_by_email,
+    InvalidUserEmail
 )
 
 from models.utility import (
@@ -764,7 +767,7 @@ def get_team_ratings(assessment_task_id):
         )
         .all()
     )
-    
+
 @error_log
 def is_member_of_team_for_task(user_id, team_id, assessment_task_id):
     """
@@ -1700,3 +1703,47 @@ def get_adhoc_team_users(team_id):
     ).all()
 
     return users
+
+
+@error_log
+def reset_test_admins(emails: list[str]):
+    is_test_admin = lambda email: email.startswith("testadmin") and email.endswith(
+        "@skillbuilder.edu"
+    )
+
+    DELETE_STEPS = [
+        
+    ]
+
+    create_user = lambda user: insert(User).values(
+        first_name=user.first_name,
+        last_name=user.last_name,
+        email=user.email,
+        password=user.password,
+        lms_id=user.lms_id,
+        consent=None,
+        owner_id=1,
+        is_admin=True,
+        has_set_password=True,
+    )
+
+    try:
+        users = []
+        for email in emails:
+            if not is_test_admin(email):
+                raise InvalidUserEmail(f"Invalid Email: {email}")
+            user = get_user_by_email(email)
+            if user is None:
+                raise InvalidUserEmail(f"Invalid Email: {email}")
+            users.append(user)
+
+        for user in users:
+            for step in DELETE_STEPS:
+                db.session.execute(step(user.user_id))
+            db.session.execute(create_user(user))
+
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise e
+    return

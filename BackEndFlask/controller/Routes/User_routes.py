@@ -72,6 +72,7 @@ from models.queries import (
     get_active_students_not_in_a_team,
     add_user_to_team,
     remove_user_from_team,
+    reset_test_admins,
 )
 from models.completed_assessment import completed_assessment_team_or_user_exists
 
@@ -445,6 +446,25 @@ def delete_selected_user():
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
+@bp.route("/super_admin_user/reset_demo_users", methods=["PUT"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def super_admin_reset_demo_users():
+    try:
+        data = request.get_json(silent=True)
+        #add check here to isinstance dict
+        emails = data.get("emails")
+        #added check here isinstance list and not none
+        reset_test_admins(emails)
+    except Exception as e:
+        logger.exception(f"Failed to reset selected demo users: {e}")
+        return create_bad_response(
+            f"Resetting demo user/s Failed. Please try again.",
+            "auth_change",
+            HttpStatus.INTERNAL_SERVER_ERROR.value,
+        )
 
 @bp.route("/super_admin_user/promote", methods=["PUT"])
 @bp.route("/super_admin_user/demote", methods=["PUT"])

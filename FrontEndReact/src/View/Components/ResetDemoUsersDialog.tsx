@@ -110,6 +110,8 @@ class ResetDemoAdminsDialog extends Component<
 	private renderBody() {
 		const { requestState } = this.state;
 
+		console.log(requestState);
+
 		switch (requestState) {
 			case REQUEST_STATE.LOADING:
 				return this.renderLoadingSituation();
