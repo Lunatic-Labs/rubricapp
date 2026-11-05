@@ -9,6 +9,7 @@ import Cookies from 'universal-cookie';
 import { Visibility, VisibilityOff } from '@mui/icons-material';
 import { Email, AccountCircle } from '@mui/icons-material';
 import { MAX_PASSWORD_LENGTH } from '../../Constants/password';
+import PushNotificationToggle from '../Components/PushNotificationToggle';
 import {
     validatePasswordField,
     testPasswordStrength,
@@ -367,7 +368,7 @@ class UserAccount extends Component<UserAccountProps, UserAccountState> {
                                     Reset Password
                                 </Button>
                             </Box>
-                            
+                            <PushNotificationToggle />
                         </Box>
                     )}
                     <Box>

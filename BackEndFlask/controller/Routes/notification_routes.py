@@ -20,7 +20,10 @@ from marshmallow import fields
 from models.queries import get_students_for_emailing, get_admin_notifications, delete_admin_notifications, send_notification_update
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from models.utility import email_students_feedback_is_ready_to_view, email_admins_notification
+from models.user import get_admins_with_active_courses
+from models.push_notification import send_push_notification
 from models.schemas import AdminNotification
+from models.logger import logger
 import datetime
 
 from controller.security.CustomDecorators import (
@@ -74,7 +77,20 @@ def mass_notify_new_ca_users():
         ]
 
 
-        email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
+        # Email and push are independent delivery channels -- one failing
+        # (e.g. SMTP misconfigured) shouldn't prevent the other from going out.
+        try:
+            email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
+        except Exception as e:
+            logger.exception(f"Failed to email students feedback-ready notification: {e}")
+        try:
+            send_push_notification(
+                [student.user_id for student in left_to_notifiy],
+                "Feedback is ready to view",
+                msg_to_students
+            )
+        except Exception as e:
+            logger.exception(f"Failed to push students feedback-ready notification: {e}")
 
         # Updating AT notification time
         toggle_notification_sent_to_true(at_id, date)
@@ -139,7 +155,18 @@ def send_single_email():
         # Putting into a list as that's what email_students_feedback_is_ready_to_view expects.
         left_to_notifiy = [singular_student for singular_student in collection]
 
-        email_students_feedback_is_ready_to_view(left_to_notifiy, msg)
+        try:
+            email_students_feedback_is_ready_to_view(left_to_notifiy, msg)
+        except Exception as e:
+            logger.exception(f"Failed to email student feedback-ready notification: {e}")
+        try:
+            send_push_notification(
+                [student.user_id for student in left_to_notifiy],
+                "Feedback is ready to view",
+                msg
+            )
+        except Exception as e:
+            logger.exception(f"Failed to push student feedback-ready notification: {e}")
 
         # If we know the owning AT and have a date, update its notification time
         if at_id_str is not None and date is not None:
@@ -196,7 +223,18 @@ def send_admin_notification():
                 400
             )
 
-        email_admins_notification(subject, message)
+        try:
+            email_admins_notification(subject, message)
+        except Exception as e:
+            logger.exception(f"Failed to email admin notification: {e}")
+        try:
+            send_push_notification(
+                [admin.user_id for admin in get_admins_with_active_courses()],
+                subject,
+                message
+            )
+        except Exception as e:
+            logger.exception(f"Failed to push admin notification: {e}")
 
         # Log the sent notification to the database
         notification_record = AdminNotification(
@@ -265,6 +303,27 @@ def delete_admin_notifications_route():
             400
         )
 
+def _fetch_admin_notifications_response():
+    """
+    Shared body for get_admin_notification_history() and
+    get_my_admin_notifications() -- same data, same response shape, only
+    their access decorators differ.
+    """
+    try:
+        notifications = get_admin_notifications()
+        return create_good_response(
+            admin_notifications_schema.dump(notifications),
+            200,
+            "admin_notifications"
+        )
+    except Exception as e:
+        logger.exception(f"Failed to fetch admin notifications: {e}")
+        return create_bad_response(
+            "An error occurred fetching admin notifications.",
+            "notifications_not_fetched",
+            500
+        )
+
 @bp.route('/admin_notifications', methods=['GET'])
 @jwt_required()
 @bad_token_check()
@@ -280,19 +339,29 @@ def get_admin_notification_history():
     Response:
         { success: true, content: { admin_notifications: [...] } }
     """
-    try:
-        notifications = get_admin_notifications()
-        return create_good_response(
-            admin_notifications_schema.dump(notifications),
-            200,
-            "admin_notifications"
-        )
-    except Exception as e:
-        return create_bad_response(
-            f"An error occurred fetching admin notifications: {e}",
-            "notifications_not_fetched",
-            400
-        )
+    return _fetch_admin_notifications_response()
+
+@bp.route('/my_admin_notifications', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@admin_check()
+def get_my_admin_notifications():
+    """
+    GET /api/my_admin_notifications
+
+    Read-only list of admin notifications, for any admin (not just the
+    SuperAdmin) to view what the push/email they received actually said.
+    AdminNotification has no per-recipient tracking -- send_admin_notification
+    broadcasts to every admin with an active course at send time rather than
+    recording who it went to -- so this returns the same full history
+    get_admin_notification_history does, just without the SuperAdmin-only
+    management actions (update/delete) that route's page also exposes.
+
+    Response:
+        { success: true, content: { admin_notifications: [...] } }
+    """
+    return _fetch_admin_notifications_response()
 
 @bp.route('/admin_notifications/<int:notification_id>', methods=['PUT'])
 @jwt_required()

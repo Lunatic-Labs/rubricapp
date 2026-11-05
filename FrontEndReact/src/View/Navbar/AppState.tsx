@@ -34,6 +34,7 @@ import AdminViewCustomRubrics from '../Admin/View/ViewCustomRubrics/AdminViewCus
 import UserAccount from './UserAccount';
 import PrivacyPolicy from './PrivacyPolicy';
 import ViewNotification from '../Admin/View/ViewDashboard/Notifications';
+import MyNotifications from '../Admin/View/ViewDashboard/MyNotifications';
 import { AssessmentTask as AssessmentTaskType } from '../../types/AssessmentTask';
 import { CompleteAssessmentTask as CompleteAssessmentTaskType } from '../../types/CompleteAssessmentTask';
 import { Course as CourseType } from '../../types/Course';
@@ -764,9 +765,25 @@ class AppState extends Component<AppStateProps, AppStateState> {
     // componentDidMount can be modified to accomodate more functions as the
     // app is updated.
     componentDidMount() {
+        // A push notification's notificationclick handler (public/push-sw.js)
+        // navigates here with this marker rather than postMessage-ing an
+        // already-open tab, since that would miss any tab that hasn't reached
+        // this component yet (e.g. still on the login screen). Works the same
+        // way whether the click opened a fresh tab or navigated an existing
+        // one, on both desktop and mobile.
+        if (this.state) {
+            const params = new URLSearchParams(window.location.search);
+            if (params.get('view') === 'notifications') {
+                params.delete('view');
+                const newSearch = params.toString();
+                window.history.replaceState({}, '', `${window.location.pathname}${newSearch ? `?${newSearch}` : ''}`);
+                this.setState({ activeTab: 'MyNotifications' });
+            }
+        }
+
         const cookies = new Cookies();
         const user = cookies.get('user');
-        
+
         // if users darkmode preferance is saved in cookies it will be loaded.
         if (user && user.user_dark_mode) {
             document.body.classList.add('mode');
@@ -862,6 +879,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                     userName={this.props.userName}
                     logout={this.props.logout}
                     setNewTab={this.setNewTab}
+                    isAdmin={Boolean(this.props.isAdmin || this.props.isSuperAdmin)}
                 />
 
                 {/*
@@ -1304,6 +1322,17 @@ class AppState extends Component<AppStateProps, AppStateState> {
                             tabSelected={"User"}
                         />
                         <ViewNotification
+                            navbar={this}
+                        />
+                    </Box>
+                }
+                {this.state.activeTab==="MyNotifications" &&
+                    <Box className="page-spacing">
+                        <BackButtonResource
+                            navbar={this}
+                            tabSelected={"Course"}
+                        />
+                        <MyNotifications
                             navbar={this}
                         />
                     </Box>

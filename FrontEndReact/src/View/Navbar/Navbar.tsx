@@ -17,6 +17,7 @@ import Divider from '@mui/material/Divider';
 import Logout from '../Logout/Logout';
 import Logo from "./sbTextFixed.png";
 import Settings from '@mui/icons-material/Settings';
+import NotificationsIcon from '@mui/icons-material/Notifications';
 
 // For further documentation look inside the README
 
@@ -42,6 +43,7 @@ interface ButtonAppBarProps {
     userName?: string | undefined;
     setNewTab: (tab: string) => void;
     logout: () => void;
+    isAdmin?: boolean;
 }
 
 export default function ButtonAppBar(props: ButtonAppBarProps) {
@@ -174,6 +176,19 @@ export default function ButtonAppBar(props: ButtonAppBarProps) {
               </MenuItem>
 
               <Divider />
+
+              {props.isAdmin &&
+                <>
+                  <MenuItem onClick={() => {
+                    props.setNewTab("MyNotifications");
+                  }}>
+                    <NotificationsIcon sx={{ mr: 1 }} />
+                    My Notifications
+                  </MenuItem>
+
+                  <Divider />
+                </>
+              }
 
               {/* <MenuItem onClick={handleClose}>
                 <ListItemIcon>
