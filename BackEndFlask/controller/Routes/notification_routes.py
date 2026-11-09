@@ -79,18 +79,31 @@ def mass_notify_new_ca_users():
 
         # Email and push are independent delivery channels -- one failing
         # (e.g. SMTP misconfigured) shouldn't prevent the other from going out.
+        email_ok = False
         try:
             email_students_feedback_is_ready_to_view(left_to_notifiy, msg_to_students)
+            email_ok = True
         except Exception as e:
             logger.exception(f"Failed to email students feedback-ready notification: {e}")
+        push_ok = False
         try:
-            send_push_notification(
+            push_ok = send_push_notification(
                 [student.user_id for student in left_to_notifiy],
                 "Feedback is ready to view",
                 msg_to_students
             )
         except Exception as e:
             logger.exception(f"Failed to push students feedback-ready notification: {e}")
+
+        # If neither channel could even be attempted, nothing actually went
+        # out -- don't advance notification_sent, so these students stay
+        # eligible for a retry instead of being silently skipped forever.
+        if not email_ok and not push_ok:
+            return create_bad_response(
+                "Could not notify students via email or push; please try again.",
+                "mass_not_notified",
+                502
+            )
 
         # Updating AT notification time
         toggle_notification_sent_to_true(at_id, date)
@@ -155,18 +168,28 @@ def send_single_email():
         # Putting into a list as that's what email_students_feedback_is_ready_to_view expects.
         left_to_notifiy = [singular_student for singular_student in collection]
 
+        email_ok = False
         try:
             email_students_feedback_is_ready_to_view(left_to_notifiy, msg)
+            email_ok = True
         except Exception as e:
             logger.exception(f"Failed to email student feedback-ready notification: {e}")
+        push_ok = False
         try:
-            send_push_notification(
+            push_ok = send_push_notification(
                 [student.user_id for student in left_to_notifiy],
                 "Feedback is ready to view",
                 msg
             )
         except Exception as e:
             logger.exception(f"Failed to push student feedback-ready notification: {e}")
+
+        if not email_ok and not push_ok:
+            return create_bad_response(
+                "Could not notify the student/team via email or push; please try again.",
+                "Individual/Team not notified",
+                502
+            )
 
         # If we know the owning AT and have a date, update its notification time
         if at_id_str is not None and date is not None:
@@ -223,18 +246,28 @@ def send_admin_notification():
                 400
             )
 
+        email_ok = False
         try:
             email_admins_notification(subject, message)
+            email_ok = True
         except Exception as e:
             logger.exception(f"Failed to email admin notification: {e}")
+        push_ok = False
         try:
-            send_push_notification(
+            push_ok = send_push_notification(
                 [admin.user_id for admin in get_admins_with_active_courses()],
                 subject,
                 message
             )
         except Exception as e:
             logger.exception(f"Failed to push admin notification: {e}")
+
+        if not email_ok and not push_ok:
+            return create_bad_response(
+                "Could not notify admins via email or push; please try again.",
+                "admins_not_notified",
+                502
+            )
 
         # Log the sent notification to the database
         notification_record = AdminNotification(

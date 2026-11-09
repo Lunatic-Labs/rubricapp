@@ -1,5 +1,6 @@
 import Cookies from 'universal-cookie';
 import { apiUrl } from '../App';
+import { refreshAccessTokens } from '../refreshLock';
 
 // Not routed through utility.ts's genericResourceGET/POST/DELETE -- those
 // call component.setState() internally and are built for class components,
@@ -7,7 +8,13 @@ import { apiUrl } from '../App';
 // reasoning as Login.tsx/Logout.tsx/refreshLock.tsx using a direct fetch();
 // this one still needs the Authorization header those raw-fetch call sites
 // don't, since (unlike login) it's an authenticated resource.
-function authedFetch(path: string, options: RequestInit = {}): Promise<Response> {
+//
+// Still shares utility.ts's refresh-and-retry behavior for an expired access
+// token (mirroring handleTokenErrorsAndRetry there), via the same refreshLock
+// so a refresh already in flight from elsewhere is reused rather than firing
+// a second one. isRetry guards against looping if the retried request fails
+// the same way again.
+async function authedFetch(path: string, options: RequestInit = {}, isRetry = false): Promise<Response> {
   const cookies = new Cookies();
   const accessToken: string = cookies.get('access_token');
   const user = cookies.get('user');
@@ -15,7 +22,7 @@ function authedFetch(path: string, options: RequestInit = {}): Promise<Response>
   const hasQuery = path.indexOf('?') > -1;
   const url = `${apiUrl}${path}${userId != null ? `${hasQuery ? '&' : '?'}user_id=${userId}` : ''}`;
 
-  return fetch(url, {
+  const response = await fetch(url, {
     ...options,
     headers: {
       'Authorization': `Bearer ${accessToken}`,
@@ -26,6 +33,24 @@ function authedFetch(path: string, options: RequestInit = {}): Promise<Response>
       ...options.headers,
     },
   });
+
+  if (response.status === 401 && !isRetry) {
+    let expired = false;
+    try {
+      const body = await response.clone().json();
+      expired = body?.msg === 'Token has expired';
+    } catch {
+      // Not JSON; fall through and hand the caller the original response.
+    }
+    if (expired) {
+      const refreshResult = await refreshAccessTokens();
+      if (refreshResult !== undefined) {
+        return authedFetch(path, options, true);
+      }
+    }
+  }
+
+  return response;
 }
 
 // applicationServerKey must be a Uint8Array, but the VAPID public key comes
@@ -74,19 +99,27 @@ export async function subscribeToPushNotifications(): Promise<void> {
   });
 
   const subscriptionJson = subscription.toJSON();
-  const response = await authedFetch('/push_subscription', {
-    method: 'POST',
-    body: JSON.stringify({
-      endpoint: subscriptionJson.endpoint,
-      keys: subscriptionJson.keys,
-    }),
-  });
-  const result = await response.json();
-  if (!result.success) {
+  // The whole save-and-parse step is inside this try, not just the
+  // `!result.success` check below -- a network failure or a non-JSON
+  // response (e.g. a 500 HTML error page) would otherwise skip rollback
+  // entirely, leaving the browser subscribed with nothing saved server-side.
+  try {
+    const response = await authedFetch('/push_subscription', {
+      method: 'POST',
+      body: JSON.stringify({
+        endpoint: subscriptionJson.endpoint,
+        keys: subscriptionJson.keys,
+      }),
+    });
+    const result = await response.json();
+    if (!result.success) {
+      throw new Error(result.message ?? 'Could not save the push subscription.');
+    }
+  } catch (err) {
     // Roll back the browser-side subscription so it doesn't end up
     // subscribed locally with nothing recorded server-side to receive it.
     await subscription.unsubscribe();
-    throw new Error(result.message ?? 'Could not save the push subscription.');
+    throw err instanceof Error ? err : new Error('Could not save the push subscription.');
   }
 }
 

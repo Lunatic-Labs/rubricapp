@@ -777,7 +777,15 @@ class AppState extends Component<AppStateProps, AppStateState> {
                 params.delete('view');
                 const newSearch = params.toString();
                 window.history.replaceState({}, '', `${window.location.pathname}${newSearch ? `?${newSearch}` : ''}`);
-                this.setState({ activeTab: 'MyNotifications' });
+                // Students get this same marker from their own "feedback is ready"
+                // push, but /my_admin_notifications (what this page fetches) is
+                // admin-only -- routing them here would fail that request and
+                // trip the generic client's logout-on-auth-failure handling.
+                // There's no student-facing equivalent of this page yet, so just
+                // leave them on their normal default tab instead of guessing one.
+                if (this.props.isAdmin || this.props.isSuperAdmin) {
+                    this.setState({ activeTab: 'MyNotifications' });
+                }
             }
         }
 

@@ -71,7 +71,7 @@ class MyNotifications extends Component<MyNotificationsProps, MyNotificationsSta
                 renderCell: (params) => {
                   if (!params.value) return '';
                   return (
-                    <div style={{ display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden", textOverflow: "ellipsis", wordBreak: "break-word" }} title={params.value}>
+                    <div style={{ wordBreak: "break-word", whiteSpace: "pre-wrap", padding: "8px 0" }}>
                       {params.value}
                     </div>
                   );

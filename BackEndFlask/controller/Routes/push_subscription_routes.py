@@ -6,6 +6,7 @@
 #------------------------------------------------------------
 
 import os
+from urllib.parse import urlparse
 from flask import request
 from controller import bp
 from controller.Route_response import *
@@ -16,6 +17,34 @@ from flask_jwt_extended import jwt_required
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check
 )
+
+# Browser push subscriptions are only ever issued by these vendors' push
+# services (the Push API spec has no provision for a browser returning any
+# other endpoint). Restricting to this allowlist closes an SSRF hole: without
+# it, a client could submit an arbitrary "endpoint" URL (e.g. pointing at an
+# internal service), which send_push_notification() would later have the
+# server itself make an outbound request to.
+_ALLOWED_PUSH_ENDPOINT_HOSTS = (
+    'fcm.googleapis.com',               # Chrome, Edge, Opera, Android
+    'updates.push.services.mozilla.com', # Firefox
+)
+_ALLOWED_PUSH_ENDPOINT_HOST_SUFFIXES = (
+    '.push.apple.com',  # Safari, iOS/macOS
+)
+
+
+def _is_allowed_push_endpoint(endpoint: str) -> bool:
+    try:
+        parsed = urlparse(endpoint)
+    except ValueError:
+        return False
+    if parsed.scheme != 'https' or not parsed.hostname:
+        return False
+    host = parsed.hostname.lower()
+    return (
+        host in _ALLOWED_PUSH_ENDPOINT_HOSTS
+        or any(host.endswith(suffix) for suffix in _ALLOWED_PUSH_ENDPOINT_HOST_SUFFIXES)
+    )
 
 
 @bp.route('/vapid_public_key', methods=['GET'])
@@ -80,6 +109,13 @@ def subscribe_to_push():
         user_id = int(request.args.get('user_id'))
         endpoint = request.json['endpoint']
         keys = request.json['keys']
+
+        if not _is_allowed_push_endpoint(endpoint):
+            return create_bad_response(
+                "Unsupported push subscription endpoint.",
+                "push_subscription",
+                400
+            )
 
         subscription = upsert_subscription(
             user_id=user_id,

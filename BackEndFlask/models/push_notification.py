@@ -5,7 +5,7 @@ from models.push_subscription import get_subscriptions_for_users, delete_subscri
 from models.logger import logger
 
 
-def send_push_notification(user_ids: list[int], title: str, body: str) -> None:
+def send_push_notification(user_ids: list[int], title: str, body: str) -> bool:
     """
     Description:
     Sends a Web Push notification to every subscribed browser/device
@@ -24,7 +24,12 @@ def send_push_notification(user_ids: list[int], title: str, body: str) -> None:
     body: <class 'str'>
 
     Returns:
-    None
+    bool: False only if push is unavailable because VAPID keys aren't
+    configured on this server -- callers combine this with their email
+    result to decide whether at least one delivery channel could be
+    attempted before recording a notification as sent. True otherwise
+    (per-subscription failures above are still just logged, not surfaced
+    here, since one stale subscription shouldn't read as "push failed").
 
     Exceptions:
     None -- per-subscription failures are logged and skipped so one bad
@@ -34,7 +39,7 @@ def send_push_notification(user_ids: list[int], title: str, body: str) -> None:
     subject = os.getenv('VAPID_SUBJECT')
     if not private_key or not subject:
         logger.error("Push notification not sent: VAPID keys are not configured.")
-        return
+        return False
 
     subscriptions = get_subscriptions_for_users(user_ids)
     payload = json.dumps({"title": title, "body": body})
@@ -59,3 +64,5 @@ def send_push_notification(user_ids: list[int], title: str, body: str) -> None:
                 delete_subscription_by_endpoint(subscription.endpoint)
             else:
                 logger.error(f"Push notification failed for subscription {subscription.push_subscription_id}: {e}")
+
+    return True
