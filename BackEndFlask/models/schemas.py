@@ -217,3 +217,26 @@ class AdminNotification(db.Model):
 
     def __repr__(self):
         return f"<AdminNotification {self.subject} - {self.sent_at}>"
+
+class PushSubscription(db.Model):
+    __tablename__ = "PushSubscription"
+
+    # One row per browser/device a user has opted in from -- a user can have
+    # several (phone, laptop, ...), so this is many-to-one against User, not
+    # a column on User itself.
+    push_subscription_id = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    user_id = db.Column(db.Integer, ForeignKey(User.user_id, ondelete="CASCADE"), nullable=False)
+    # The browser-issued push service URL. Unique per device/browser
+    # registration -- re-subscribing the same one should update the row
+    # (its keys can rotate) rather than create a duplicate.
+    endpoint = db.Column(db.String(500), nullable=False, unique=True)
+    # The two keys the browser generates alongside the endpoint; both are
+    # required to encrypt a push payload for pywebpush's webpush() call.
+    p256dh = db.Column(db.String(255), nullable=False)
+    auth = db.Column(db.String(255), nullable=False)
+    created_at = db.Column(db.DateTime(timezone=True), nullable=False, default=lambda: datetime.now(timezone.utc))
+
+    user = db.relationship('User', backref=db.backref('push_subscriptions', lazy=True, passive_deletes=True))
+
+    def __repr__(self):
+        return f"<PushSubscription user={self.user_id} endpoint={self.endpoint[:40]}...>"
