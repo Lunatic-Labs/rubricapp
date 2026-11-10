@@ -30,6 +30,7 @@ _ALLOWED_PUSH_ENDPOINT_HOSTS = (
 )
 _ALLOWED_PUSH_ENDPOINT_HOST_SUFFIXES = (
     '.push.apple.com',  # Safari, iOS/macOS
+    '.notify.windows.com',  # Edge on Windows (WNS)
 )
 
 
