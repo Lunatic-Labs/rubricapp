@@ -13,7 +13,7 @@ from enums.roles import Roles
 
 from models.user import (
     get_user,
-    get_user_by_email,
+    get_user_user_id_by_email,
     InvalidUserEmail
 )
 
@@ -1711,36 +1711,89 @@ def reset_test_admins(emails: list[str]):
         "@skillbuilder.edu"
     )
 
-    DELETE_STEPS = [
-        
-    ]
-
-    create_user = lambda user: insert(User).values(
-        first_name=user.first_name,
-        last_name=user.last_name,
-        email=user.email,
-        password=user.password,
-        lms_id=user.lms_id,
-        consent=None,
-        owner_id=1,
-        is_admin=True,
-        has_set_password=True,
+    fetch_course_ids = lambda user_id: select(Course.course_id).where(
+        Course.admin_id == user_id
     )
+    fetch_team_ids = lambda user_id: select(Team.team_id).where(
+        Team.course_id.in_(fetch_course_ids(user_id))
+    )
+    fetch_at_ids = lambda user_id: select(AssessmentTask.assessment_task_id).where(
+        AssessmentTask.course_id.in_(fetch_course_ids(user_id))
+    )
+    fetch_cat_ids = lambda user_id: select(
+        CompletedAssessment.completed_assessment_id
+    ).where(CompletedAssessment.assessment_task_id.in_(fetch_at_ids(user_id)))
 
+    RESET_STEPS = [
+        (  # Reset values to default.
+            lambda user_id: update(User)
+            .where(User.user_id == user_id)
+            .values(
+                consent=None,
+                owner_id=1,
+                is_admin=True,
+                has_set_password=True,
+                user_dark_mode=False,
+            )
+        ),
+        # Unhook other relationships.
+        (
+            lambda user_id: delete(Feedback).where(
+                Feedback.completed_assessment_id.in_(fetch_cat_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(Checkin).where(
+                Checkin.assessment_task_id.in_(fetch_at_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(CompletedAssessment).where(
+                CompletedAssessment.assessment_task_id.in_(fetch_at_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(TeamUser).where(
+                TeamUser.team_id.in_(fetch_team_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(Team).where(
+                Team.course_id.in_(fetch_course_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(AssessmentTask).where(
+                AssessmentTask.course_id.in_(fetch_course_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(UserCourse).where(
+                UserCourse.course_id.in_(fetch_course_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(Course).where(
+                Course.admin_id==user_id
+            )
+        ),
+        (
+            lambda user_id: delete(UserCourse).where(UserCourse.user_id == user_id)
+        ),
+    ]
     try:
-        users = []
+        user_ids = []
         for email in emails:
             if not is_test_admin(email):
-                raise InvalidUserEmail(f"Invalid Email: {email}")
-            user = get_user_by_email(email)
+                raise ValueError(f"Invalid Email: {email}")
+            user = get_user_user_id_by_email(email)
             if user is None:
-                raise InvalidUserEmail(f"Invalid Email: {email}")
-            users.append(user)
+                raise ValueError(f"Invalid Email: {email}")
+            user_ids.append(user)
 
-        for user in users:
-            for step in DELETE_STEPS:
-                db.session.execute(step(user.user_id))
-            db.session.execute(create_user(user))
+        for id in user_ids:
+            for step in RESET_STEPS:
+                db.session.execute(step(id))
 
         db.session.commit()
     except Exception as e:

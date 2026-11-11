@@ -458,11 +458,12 @@ def super_admin_reset_demo_users():
         emails = data.get("emails")
         #added check here isinstance list and not none
         reset_test_admins(emails)
+        return create_good_response([], HttpStatus.OK.value, "reset_test_admins")
     except Exception as e:
         logger.exception(f"Failed to reset selected demo users: {e}")
         return create_bad_response(
             f"Resetting demo user/s Failed. Please try again.",
-            "auth_change",
+            "reset_test_admins",
             HttpStatus.INTERNAL_SERVER_ERROR.value,
         )
 
