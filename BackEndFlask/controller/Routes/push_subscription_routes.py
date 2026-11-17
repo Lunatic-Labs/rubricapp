@@ -18,7 +18,6 @@ from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check
 )
 
-
 @bp.route('/vapid_public_key', methods=['GET'])
 @jwt_required()
 @bad_token_check()
