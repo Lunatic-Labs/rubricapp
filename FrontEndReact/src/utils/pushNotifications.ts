@@ -53,6 +53,15 @@ async function authedFetch(path: string, options: RequestInit = {}, isRetry = fa
   return response;
 }
 
+async function fetchAndCheckSuccess(path: string, options?: RequestInit): Promise<any> {
+  const response = await authedFetch(path, options);
+  const result = await response.json();
+  if (!result.success) {
+    throw new Error(result.message ?? 'Request failed.');
+  }
+  return result;
+}
+    
 // applicationServerKey must be a Uint8Array, but the VAPID public key comes
 // from the backend as a base64url string -- this is the standard
 // (MDN-documented) conversion between the two.
@@ -145,17 +154,13 @@ export async function subscribeToPushNotifications(): Promise<void> {
   // response (e.g. a 500 HTML error page) would otherwise skip rollback
   // entirely, leaving the browser subscribed with nothing saved server-side.
   try {
-    const response = await authedFetch('/push_subscription', {
+    await fetchAndCheckSuccess('/push_subscription', {
       method: 'POST',
       body: JSON.stringify({
         endpoint: subscriptionJson.endpoint,
         keys: subscriptionJson.keys,
       }),
     });
-    const result = await response.json();
-    if (!result.success) {
-      throw new Error(result.message ?? 'Could not save the push subscription.');
-    }
   } catch (err) {
     // Roll back the browser-side subscription so it doesn't end up
     // subscribed locally with nothing recorded server-side to receive it.
@@ -169,10 +174,16 @@ export async function unsubscribeFromPushNotifications(): Promise<void> {
   if (!subscription) return;
 
   const endpoint = subscription.endpoint;
-  await subscription.unsubscribe();
 
-  await authedFetch('/push_subscription', {
+  // Server first, browser second -- the mirror image of subscribe()'s own
+  // rollback above. If the DELETE fails, leave the browser subscription
+  // alone rather than unsubscribing locally while the server still thinks
+  // it's active; a failed call here throws (via fetchAndCheckSuccess) and
+  // the browser-side unsubscribe below is never reached.
+  await fetchAndCheckSuccess('/push_subscription', {
     method: 'DELETE',
     body: JSON.stringify({ endpoint }),
   });
+
+  await subscription.unsubscribe();
 }
