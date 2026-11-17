@@ -623,6 +623,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                         disabled
                                         aria-label="Start assessment task"
                                         data-testid="start-assessment-tasks-button"
+                                        sx={{ fontSize: '0.875rem', padding: '6px 16px', margin: 0 }}
                                     >
                                         START
                                     </Button>
@@ -648,6 +649,7 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                                 }}
                                 aria-label="Start assessment task"
                                 data-testid="start-assessment-tasks-button"
+                                sx={{ fontSize: '0.875rem', padding: '6px 16px', margin: 0 }}
                             >
                                 START
                             </Button>
@@ -677,6 +679,9 @@ class ViewAssessmentTasks extends Component<ViewAssessmentTasksProps, ViewAssess
                         content: "Notify",
                         testId: "notify-completed-assessment-button",
                         sx: {
+                            fontSize: '0.875rem',
+                            padding: '6px 16px',
+                            margin: 0,
                             "&.Mui-disabled": {
                             color: "var(--export_disabled_text) !important",
                             backgroundColor: "var(--primary-disabled-bg)",

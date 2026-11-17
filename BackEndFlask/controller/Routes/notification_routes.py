@@ -246,6 +246,22 @@ def send_admin_notification():
                 400
             )
 
+        # Persisted before any delivery is attempted below -- a push can
+        # reach a device, and that device's My Notifications page fetch,
+        # before the rest of this function (and the other subscribers'
+        # pushes) finishes. My Notifications only fetches once on mount, so
+        # a record created afterward would still be missing from what that
+        # recipient sees the moment they tap the notification.
+        notification_record = AdminNotification(
+            sender_id=int(get_jwt_identity()),
+            subject=subject,
+            message=message,
+            sent_at=datetime.datetime.utcnow()
+        )
+        from core import db
+        db.session.add(notification_record)
+        db.session.commit()
+
         email_ok = False
         try:
             email_admins_notification(subject, message)
@@ -268,17 +284,6 @@ def send_admin_notification():
                 "admins_not_notified",
                 502
             )
-
-        # Log the sent notification to the database
-        notification_record = AdminNotification(
-            sender_id=int(get_jwt_identity()),
-            subject=subject,
-            message=message,
-            sent_at=datetime.datetime.utcnow()
-        )
-        from core import db
-        db.session.add(notification_record)
-        db.session.commit()
 
         return create_good_response(
             "Notification sent to admins",

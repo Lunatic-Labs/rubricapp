@@ -68,6 +68,12 @@ function urlBase64ToUint8Array(base64String: string): Uint8Array {
 }
 
 export function isPushSupported(): boolean {
+  // vite.config.ts's VitePWA devOptions.enabled is false, so `npm run dev`
+  // never registers a service worker at all. Without this check, a fresh
+  // browser profile in dev reports push as supported, then hangs forever
+  // in getExistingPushSubscription()'s `navigator.serviceWorker.ready`
+  // await, since no worker will ever become ready to resolve it.
+  if (import.meta.env.DEV) return false;
   return 'serviceWorker' in navigator && 'PushManager' in window;
 }
 
@@ -77,9 +83,44 @@ export async function getExistingPushSubscription(): Promise<PushSubscription | 
   return registration.pushManager.getSubscription();
 }
 
+// A browser-level subscription (PushManager.getSubscription()) only proves
+// *some* account subscribed this device -- not that it was the currently
+// logged-in one. Without reconciling against the server, a previous
+// account's subscription on a shared device would show the toggle as
+// already "on" for whoever logs in next, while the server keeps sending
+// that previous account's notifications to this browser and none addressed
+// to the new one. If the endpoint isn't recorded as this user's, it's
+// detached here so it stops looking like this account's subscription.
+export async function getOwnPushSubscription(): Promise<PushSubscription | null> {
+  const subscription = await getExistingPushSubscription();
+  if (!subscription) return null;
+
+  const response = await authedFetch(`/push_subscription?endpoint=${encodeURIComponent(subscription.endpoint)}`);
+  const result = await response.json();
+  const owned = Boolean(result?.success && result?.content?.push_subscription?.[0]?.subscribed);
+
+  if (!owned) {
+    await subscription.unsubscribe();
+    return null;
+  }
+
+  return subscription;
+}
+
 export async function subscribeToPushNotifications(): Promise<void> {
   if (!isPushSupported()) {
     throw new Error('Push notifications are not supported in this browser.');
+  }
+
+  // Safari/iOS requires Notification.requestPermission() to be triggered
+  // synchronously within the user's click, with no awaited work in
+  // between. Requesting it first, before any network call, keeps that
+  // chain intact. Browsers that already prompt from subscribe() itself
+  // just resolve this immediately (already granted/denied) without a
+  // second prompt.
+  const permission = await Notification.requestPermission();
+  if (permission !== 'granted') {
+    throw new Error('Notification permission was not granted.');
   }
 
   const keyResponse = await authedFetch('/vapid_public_key');

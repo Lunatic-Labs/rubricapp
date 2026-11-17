@@ -6,45 +6,17 @@
 #------------------------------------------------------------
 
 import os
-from urllib.parse import urlparse
 from flask import request
 from controller import bp
 from controller.Route_response import *
-from models.push_subscription import upsert_subscription, delete_subscription_by_endpoint_for_user
+from models.push_subscription import upsert_subscription, delete_subscription_by_endpoint_for_user, is_subscription_owned_by_user
+from Functions.helper import is_allowed_push_endpoint
 from models.logger import logger
 from flask_jwt_extended import jwt_required
 
 from controller.security.CustomDecorators import (
     AuthCheck, bad_token_check
 )
-
-# Browser push subscriptions are only ever issued by these vendors' push
-# services (the Push API spec has no provision for a browser returning any
-# other endpoint). Restricting to this allowlist closes an SSRF hole: without
-# it, a client could submit an arbitrary "endpoint" URL (e.g. pointing at an
-# internal service), which send_push_notification() would later have the
-# server itself make an outbound request to.
-_ALLOWED_PUSH_ENDPOINT_HOSTS = (
-    'fcm.googleapis.com',               # Chrome, Edge, Opera, Android
-    'updates.push.services.mozilla.com', # Firefox
-)
-_ALLOWED_PUSH_ENDPOINT_HOST_SUFFIXES = (
-    '.push.apple.com',  # Safari, iOS/macOS
-)
-
-
-def _is_allowed_push_endpoint(endpoint: str) -> bool:
-    try:
-        parsed = urlparse(endpoint)
-    except ValueError:
-        return False
-    if parsed.scheme != 'https' or not parsed.hostname:
-        return False
-    host = parsed.hostname.lower()
-    return (
-        host in _ALLOWED_PUSH_ENDPOINT_HOSTS
-        or any(host.endswith(suffix) for suffix in _ALLOWED_PUSH_ENDPOINT_HOST_SUFFIXES)
-    )
 
 
 @bp.route('/vapid_public_key', methods=['GET'])
@@ -87,6 +59,57 @@ def get_vapid_public_key():
         )
 
 
+@bp.route('/push_subscription', methods=['GET'])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+def get_push_subscription_status():
+    """
+    Description:
+    Reports whether the given endpoint is currently associated with the
+    caller's own account. The frontend's toggle only knows the browser has
+    *some* subscription (PushManager.getSubscription()), not who it's
+    recorded as belonging to server-side -- this closes that gap, so a
+    subscription left behind by a previous account on a shared device
+    doesn't read as the current user's opt-in.
+
+    Parameters (from query args):
+        user_id: <class 'int'>  [query arg]
+        endpoint: <class 'str'> [query arg]
+
+    Returns:
+        Good response with {"subscribed": bool}, or bad response.
+    """
+    try:
+        user_id = int(request.args.get('user_id'))
+        endpoint = request.args.get('endpoint')
+        if not endpoint:
+            return create_bad_response(
+                "Missing endpoint.",
+                "push_subscription",
+                400
+            )
+
+        return create_good_response(
+            {"subscribed": is_subscription_owned_by_user(user_id, endpoint)},
+            200,
+            "push_subscription"
+        )
+    except (TypeError, ValueError) as e:
+        return create_bad_response(
+            "Missing or invalid subscription data.",
+            "push_subscription",
+            400
+        )
+    except Exception as e:
+        logger.exception(f"Failed to check push subscription status: {e}")
+        return create_bad_response(
+            "An error occurred checking the push subscription status.",
+            "push_subscription",
+            500
+        )
+
+
 @bp.route('/push_subscription', methods=['POST'])
 @jwt_required()
 @bad_token_check()
@@ -110,7 +133,7 @@ def subscribe_to_push():
         endpoint = request.json['endpoint']
         keys = request.json['keys']
 
-        if not _is_allowed_push_endpoint(endpoint):
+        if not is_allowed_push_endpoint(endpoint):
             return create_bad_response(
                 "Unsupported push subscription endpoint.",
                 "push_subscription",

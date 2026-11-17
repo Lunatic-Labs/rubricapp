@@ -3,7 +3,7 @@ import { Box, Switch, Typography, CircularProgress } from '@mui/material';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import {
   isPushSupported,
-  getExistingPushSubscription,
+  getOwnPushSubscription,
   subscribeToPushNotifications,
   unsubscribeFromPushNotifications,
 } from '../../utils/pushNotifications';
@@ -24,7 +24,7 @@ const PushNotificationToggle = () => {
       setLoading(false);
       return;
     }
-    getExistingPushSubscription()
+    getOwnPushSubscription()
       .then((subscription) => setSubscribed(subscription != null))
       .catch(() => setError('Could not check your current notification settings.'))
       .finally(() => setLoading(false));

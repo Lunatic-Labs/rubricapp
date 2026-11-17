@@ -40,6 +40,27 @@ def upsert_subscription(user_id: int, endpoint: str, p256dh: str, auth: str) -> 
     return subscription
 
 
+def is_subscription_owned_by_user(user_id: int, endpoint: str) -> bool:
+    """
+    Description:
+    Reports whether a given endpoint is currently recorded as this user's
+    subscription. A browser's push subscription (PushManager.getSubscription())
+    is per-device, not per-account -- it persists across whoever is logged
+    in on that browser. Without this check, the frontend can only ask "does
+    this browser have *some* subscription," not "is it *this* account's,"
+    so a previous user's subscription on a shared device would read as the
+    current user's opt-in.
+
+    Parameters:
+    user_id: <class 'int'>
+    endpoint: <class 'str'>
+
+    Returns:
+    bool
+    """
+    return PushSubscription.query.filter_by(user_id=user_id, endpoint=endpoint).first() is not None
+
+
 def get_subscriptions_for_user(user_id: int) -> list[PushSubscription]:
     """
     Description:
