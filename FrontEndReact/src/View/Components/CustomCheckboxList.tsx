@@ -9,6 +9,7 @@ import { ReactNode } from "react";
 import {
 	Box,
 	List,
+	Divider,
 	Checkbox,
 	ListItem,
 	ListItemText,
@@ -72,7 +73,14 @@ function CustomCheckboxList<T>({
 	};
 
 	return (
-		<Box>
+		<Box
+			sx={{
+				border: 1,
+				borderColor: "text.disabled",
+				borderRadius: 1,
+				overflow: "hidden",
+			}}
+		>
 			<ListItemButton dense onClick={toggleAll}>
 				<ListItemIcon>
 					<Checkbox
@@ -88,11 +96,26 @@ function CustomCheckboxList<T>({
 					secondary={`${selectedCount} of ${allIds.length} selected`}
 				/>
 			</ListItemButton>
+			<Divider aria-hidden="true" sx={{ borderColor: "text.disabled" }} />
 			<List dense disablePadding sx={{ maxHeight, overflowY: "auto" }}>
-				{items.map((item) => {
+				{items.map((item, index) => {
 					const id = getId(item);
+					const isOdd = index % 2 === 0;
 					return (
-						<ListItem key={id} disablePadding>
+						<ListItem
+							key={id}
+							disablePadding
+							sx={{
+								backgroundColor: isOdd
+									? "var(--table-odd-row)"
+									: "var(--light_grey_ADA)",
+								"&:hover": {
+									backgroundColor: isOdd
+										? "var(--table-odd-row-hover)"
+										: "var(--light_grey_hover)",
+								},
+							}}
+						>
 							<ListItemButton onClick={() => toggleItem(id)}>
 								<ListItemIcon>
 									<Checkbox
