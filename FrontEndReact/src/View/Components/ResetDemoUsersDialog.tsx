@@ -2,30 +2,37 @@
  * Super-admin dialog for resetting demo users back to their seeded state.
  * Opening it loads the demo users and lists them as checkboxes, so one or
  * several can be picked and reset together.
-**/
+ **/
 
-import { Button, Dialog, DialogActions, DialogContent, DialogContentText } from "@mui/material"
 import { Component } from "react";
-import DialogTitleWithClose from "./DialogTitleWithCloseButton";
-import { REQUEST_STATE, RequestState } from "../../Enums/RequestState";
+import ErrorIcon from "@mui/icons-material/Error";
+import CheckCircleIcon from "@mui/icons-material/CheckCircle";
+import {
+	Button,
+	Dialog,
+	DialogActions,
+	DialogContent,
+	DialogContentText,
+} from "@mui/material";
+
 import Loading from "../Loading/Loading";
 import { DemoUser } from "../../types/User";
-import { AUTO_CLOSE_TIMER_MS } from "../../Constants/timings";
-import { genericResourceGET, genericResourcePUT } from "../../utility";
 import CustomCheckboxList from "./CustomCheckboxList";
-import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import ErrorIcon from "@mui/icons-material/Error";
+import { AUTO_CLOSE_TIMER_MS } from "../../Constants/timings";
+import DialogTitleWithClose from "./DialogTitleWithCloseButton";
+import { genericResourceGET, genericResourcePUT } from "../../utility";
+import { REQUEST_STATE, RequestState } from "../../Enums/RequestState";
 
 interface ResetDemoAdminsDialogProps {
-    open: boolean;
-    onClose: () => void;
-    onError: (message: string) => void;
+	open: boolean;
+	onClose: () => void;
+	onError: (message: string) => void;
 }
 
 interface ResetDemoAdminsDialogState {
-    requestState: RequestState;
-    demoUsers: DemoUser[] | null;
-    selectedEmails: string[];
+	requestState: RequestState;
+	demoUsers: DemoUser[] | null;
+	selectedEmails: string[];
 	autoCloseTimer: ReturnType<typeof setTimeout> | null;
 }
 
@@ -38,7 +45,7 @@ class ResetDemoAdminsDialog extends Component<
 		this.state = {
 			requestState: REQUEST_STATE.IDLE,
 			demoUsers: null,
-            selectedEmails: [],
+			selectedEmails: [],
 			autoCloseTimer: null,
 		};
 	}
@@ -51,14 +58,14 @@ class ResetDemoAdminsDialog extends Component<
 		this.setState({
 			requestState: REQUEST_STATE.IDLE,
 			demoUsers: null,
-            selectedEmails: [],
-			autoCloseTimer: null
+			selectedEmails: [],
+			autoCloseTimer: null,
 		});
 
 		this.props.onClose();
 	};
 
-	private handleSubmit = async() => {
+	private handleSubmit = async () => {
 		const { selectedEmails } = this.state;
 		if (selectedEmails.length === 0) return;
 
@@ -74,17 +81,18 @@ class ResetDemoAdminsDialog extends Component<
 
 		const didRequestFail = Boolean(result.errorMessage);
 		this.setState({
-			requestState: didRequestFail ? REQUEST_STATE.ERROR : REQUEST_STATE.SUCCESS,
+			requestState: didRequestFail
+				? REQUEST_STATE.ERROR
+				: REQUEST_STATE.SUCCESS,
 		});
 
 		if (didRequestFail) {
 			this.props.onError(result.errorMessage);
 		}
-
-	}
+	};
 
 	private renderActions() {
-		const {selectedEmails} = this.state;
+		const { selectedEmails } = this.state;
 		const leftActionName = "Cancel";
 		const rightActionName = "Submit";
 		return (
@@ -128,7 +136,7 @@ class ResetDemoAdminsDialog extends Component<
 					data-testid="reset-demo-users-success"
 				/>
 				<DialogContentText>
-					User{singleUserSelected ? " has": "s have"} been reset.
+					User{singleUserSelected ? " has" : "s have"} been reset.
 				</DialogContentText>
 			</DialogContent>
 		);
@@ -136,7 +144,10 @@ class ResetDemoAdminsDialog extends Component<
 
 	private errorView() {
 		const { demoUsers } = this.state;
-		const textToDisplay = demoUsers === null ? "Problem obtaining demo users." : "Problem encountered when resetting."
+		const textToDisplay =
+			demoUsers === null
+				? "Problem obtaining demo users."
+				: "Problem encountered when resetting.";
 
 		return (
 			<DialogContent
@@ -147,10 +158,7 @@ class ResetDemoAdminsDialog extends Component<
 					py: 4,
 				}}
 			>
-				<ErrorIcon
-					color="error"
-					data-testid="reset-demo-users-error"
-				/>
+				<ErrorIcon color="error" data-testid="reset-demo-users-error" />
 				<DialogContentText>
 					{textToDisplay} Please try again.
 				</DialogContentText>
@@ -176,25 +184,26 @@ class ResetDemoAdminsDialog extends Component<
 		);
 	}
 
-    private renderList() {
-        const {
-            demoUsers,
-            selectedEmails
-        } = this.state;
+	private renderList() {
+		const { demoUsers, selectedEmails } = this.state;
 
-        return (
-            <DialogContent>
-                <CustomCheckboxList
-                    items={demoUsers ?? []}
-                    getId={(user) => user.email}
-                    getPrimary={(user) => `${user.first_name}${user.last_name} (${user.email})`}
-                    selectedIds={selectedEmails}
-                    onChange={(ids) => this.setState({ selectedEmails: ids.map(String)})}
-                />
+		return (
+			<DialogContent>
+				<CustomCheckboxList
+					items={demoUsers ?? []}
+					getId={(user) => user.email}
+					getPrimary={(user) =>
+						`${user.first_name}${user.last_name} (${user.email})`
+					}
+					selectedIds={selectedEmails}
+					onChange={(ids) =>
+						this.setState({ selectedEmails: ids.map(String) })
+					}
+				/>
 				{this.renderActions()}
-            </DialogContent>
-        );
-    }
+			</DialogContent>
+		);
+	}
 
 	private renderBody() {
 		const { requestState } = this.state;
@@ -231,15 +240,19 @@ class ResetDemoAdminsDialog extends Component<
 		}
 	}
 
-	componentDidUpdate(prevProps: ResetDemoAdminsDialogProps, prevState: ResetDemoAdminsDialogState,) {
+	componentDidUpdate(
+		prevProps: ResetDemoAdminsDialogProps,
+		prevState: ResetDemoAdminsDialogState,
+	) {
 		const { requestState } = this.state;
 
 		if (this.props.open && !prevProps.open) {
 			this.fetchDemoUsers();
 		}
 
-		const isDialogEOL = requestState === REQUEST_STATE.ERROR ||
-            				requestState === REQUEST_STATE.SUCCESS;
+		const isDialogEOL =
+			requestState === REQUEST_STATE.ERROR ||
+			requestState === REQUEST_STATE.SUCCESS;
 		const isNewState = prevState.requestState !== requestState;
 		const needToEnableTimer = isDialogEOL && isNewState;
 
