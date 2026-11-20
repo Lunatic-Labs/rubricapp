@@ -14,7 +14,6 @@ from enums.roles import Roles
 from models.user import (
     get_user,
     get_user_user_id_by_email,
-    InvalidUserEmail
 )
 
 from models.utility import (
@@ -40,6 +39,11 @@ from sqlalchemy import (
     select,
     case,
     literal_column
+)
+
+from errors.Email import (
+    UnacceptableEmail,
+    NoUserForEmail,
 )
 
 import sqlalchemy
@@ -1707,6 +1711,20 @@ def get_adhoc_team_users(team_id):
 
 @error_log
 def reset_test_admins(emails: list[str]):
+    """
+    Sends a query to the database to reset the demo admin accounts in one transaction.
+
+    Args:
+        emails (list[str]): Emails of corresponding demo admins to reset.
+
+    Returns:
+        None
+
+    Raises:
+        NoUserForEmail: Given email did not match any user.
+        UnacceptableEmail: This operation can only be performed on demo admins.
+        sqlalchemy.exc.SQLAlchemyError: Transaction failed; transaction rolled back.
+    """
     is_test_admin = lambda email: email.startswith("testadmin") and email.endswith(
         "@skillbuilder.edu"
     )
@@ -1785,10 +1803,10 @@ def reset_test_admins(emails: list[str]):
         user_ids = []
         for email in emails:
             if not is_test_admin(email):
-                raise ValueError(f"Invalid Email: {email}")
+                raise UnacceptableEmail(email)
             user = get_user_user_id_by_email(email)
             if user is None:
-                raise ValueError(f"Invalid Email: {email}")
+                raise NoUserForEmail(email)
             user_ids.append(user)
 
         for id in user_ids:

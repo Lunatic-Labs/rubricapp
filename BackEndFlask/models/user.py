@@ -8,6 +8,7 @@ from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails
+from errors.Email import NoUserForEmail
 
 load_dotenv()
 
@@ -18,13 +19,6 @@ import os
 class InvalidUserID(Exception):
     def __init__(self, id):
         self.message = f"Invalid user_id: {id}."
-
-    def __str__(self):
-        return self.message
-
-class InvalidUserEmail(Exception):
-    def __init__(self, email):
-        self.message = f"No user was found with email: {email}."
 
     def __str__(self):
         return self.message
@@ -289,9 +283,9 @@ def get_all_demo_admins(*columns):
         >>> get_all_demo_admins(User.id, User.email)    # Returns only the id and email per user
 
     Raises:
-        sqlalchemy.exc.ArgumentError: Item in columns cannot be a column expression.
+        sqlalchemy.exc.ArgumentError: Item is not a valid column expression.
         RuntimeError: Func called outside of context.
-        sqlalchemy.exc.SQLAlchemy: Query or session failed.
+        sqlalchemy.exc.SQLAlchemyError: Query or session failed.
     """
     cols = columns or tuple(User.__table__.columns)
     stmt = select(*cols).where(
@@ -313,7 +307,7 @@ def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
 
     Raises:
         SQLAlchemyError: If the update or commit fails.
-        InvalidUserEmail: The email does not exist in the system.
+        NoUserForEmail: The email does not exist in the system.
     """
     stmt = (
         update(User).where(User.email == target_email).values({User.is_admin: is_admin})
@@ -321,7 +315,7 @@ def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
     result = db.session.execute(stmt)
     if result.rowcount == 0:
         db.session.rollback()
-        raise InvalidUserEmail(target_email)
+        raise NoUserForEmail(target_email)
     db.session.commit()
 
 @error_log
