@@ -30,9 +30,13 @@ interface ResetDemoAdminsDialogProps {
 }
 
 interface ResetDemoAdminsDialogState {
+	/** State of the current API request. */
 	requestState: RequestState;
+	/** Admin demo users fetched from the backend; null until fetch completes. */
 	demoUsers: DemoUser[] | null;
+	/** Emails selected by the SuperAdmin. */
 	selectedEmails: string[];
+	/** Timer that auto-closes the dialog when dialog has reached EOL. */
 	autoCloseTimer: ReturnType<typeof setTimeout> | null;
 }
 
@@ -67,6 +71,7 @@ class ResetDemoAdminsDialog extends Component<
 
 	private handleSubmit = async () => {
 		const { selectedEmails } = this.state;
+
 		if (selectedEmails.length === 0) return;
 
 		this.setState({
@@ -95,6 +100,8 @@ class ResetDemoAdminsDialog extends Component<
 		const { selectedEmails } = this.state;
 		const leftActionName = "Cancel";
 		const rightActionName = "Submit";
+		const haveSelectedNoEmails = selectedEmails.length === 0;
+
 		return (
 			<DialogActions
 				sx={{ justifyContent: "space-between", px: 3, pb: 2 }}
@@ -110,7 +117,7 @@ class ResetDemoAdminsDialog extends Component<
 					className="primary-color"
 					variant="contained"
 					onClick={this.handleSubmit}
-					disabled={selectedEmails.length === 0}
+					disabled={haveSelectedNoEmails}
 				>
 					{rightActionName}
 				</Button>
@@ -232,6 +239,7 @@ class ResetDemoAdminsDialog extends Component<
 			{ dest: "demoUsers" },
 		);
 		const failed = Boolean(result.errorMessage);
+
 		this.setState({
 			requestState: failed ? REQUEST_STATE.ERROR : REQUEST_STATE.IDLE,
 		});
@@ -263,6 +271,7 @@ class ResetDemoAdminsDialog extends Component<
 	}
 
 	componentWillUnmount() {
+		// NOTE: This is needed to handle special cases and make sure the timer is removed.
 		const { autoCloseTimer } = this.state;
 		if (autoCloseTimer) {
 			clearTimeout(autoCloseTimer);
