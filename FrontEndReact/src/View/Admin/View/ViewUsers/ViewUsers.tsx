@@ -156,7 +156,7 @@ class ViewUsers extends Component<ViewUsersProps, ViewUsersState> {
       columns.push({
         field: "view_action",
         headerName: "View",
-        minWidth: 90,
+        minWidth: 64,
         flex: 1,
         filterable: false,
         align: "center",
@@ -195,7 +195,7 @@ class ViewUsers extends Component<ViewUsersProps, ViewUsersState> {
     columns.push({
       field: "edit_action",
       headerName: "Edit",
-      minWidth: 90,
+      minWidth: 64,
       flex: 1,
       filterable: false,
       align: "center",
@@ -220,7 +220,7 @@ class ViewUsers extends Component<ViewUsersProps, ViewUsersState> {
     columns.push({
       field: "delete_action",
       headerName: "Delete",
-      minWidth: 90,
+      minWidth: 64,
       flex: 1,
       filterable: false,
       align: "center",
@@ -242,7 +242,7 @@ class ViewUsers extends Component<ViewUsersProps, ViewUsersState> {
             aria-label="Delete user"
             data-testid="delete-user-button"
           >
-            <DeleteIcon sx={{ color: "black" }} />
+            <DeleteIcon sx={{ color: "var(--error-color)" }} />
           </IconButton>
         )
       },

@@ -279,7 +279,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                     <ErrorMessage errorMessage={this.state.errorMessage} />
                 )}
                 <div>
-                    <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: "16px"}}>
+                    <div style={{ display: 'flex', flexWrap: 'wrap', justifyContent: 'space-between', alignItems: 'center', gap: '12px', paddingTop: "16px"}}>
                         <h2
                             style={{
                                 textAlign: "left",
@@ -288,32 +288,27 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             data-testid="add-customize-your-rubric-title"
                         > {this.state.addCustomRubric ? "Customize Your Rubric" : "Edit Your Rubric" }
                         </h2>
-                        <Grid item xs={6} container justifyContent="flex-end" alignItems="center">
+                        <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px' }}>
                             {!this.state.addCustomRubric && (
-                                <Grid item>
-                                    <CustomButton
-                                        label="Delete Rubric"
-                                        isOutlined={false}
-                                        data-testid="customize-your-rubric-delete-rubric-button"
-                                        onClick={() => {
-                                            this.handleDeleteRubric(rubrics!.rubric_id);
-                                        }}
-                                        style={{ marginRight: "16px" }}
-                                    />
-                                </Grid>
-                            )}
-
-                            <Grid item>
                                 <CustomButton
-                                    label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
+                                    label="Delete Rubric"
                                     isOutlined={false}
-                                    data-testid="customize-your-rubric-create-rubric-button"
+                                    data-testid="customize-your-rubric-delete-rubric-button"
                                     onClick={() => {
-                                        this.handleCreateRubric(pickedCategories);
+                                        this.handleDeleteRubric(rubrics!.rubric_id);
                                     }}
                                 />
-                            </Grid>
-                        </Grid>
+                            )}
+
+                            <CustomButton
+                                label={this.state.addCustomRubric ? "Create Rubric" : "Update Rubric"}
+                                isOutlined={false}
+                                data-testid="customize-your-rubric-create-rubric-button"
+                                onClick={() => {
+                                    this.handleCreateRubric(pickedCategories);
+                                }}
+                            />
+                        </div>
                     </div>
                     <hr style={{ border: 0, borderTop: "1px solid #787878", margin: 0 }} />
 
@@ -322,13 +317,15 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             justifyContent: "space-between",
                             marginBottom: "1.25rem",
                             flexDirection: "row",
-                            alignItems: "center",
-                            marginTop: "0.5rem",
+                            flexWrap: "wrap",
+                            alignItems: "flex-start",
+                            marginTop: "1.5rem",
                             display: "flex",
                             width: "100%",
+                            gap: "1rem",
                         }}
                     >
-                        <Grid style={{ width: "48.25%" }}>
+                        <Grid style={{ flex: "1 1 280px" }}>
                             <TextField
                                 required
                                 defaultValue={this.state.addCustomRubric ? "" : rubrics?.rubric_name}
@@ -371,7 +368,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             />
                         </Grid>
 
-                        <Grid style={{ width: "48.5%" }}>
+                        <Grid style={{ flex: "1 1 280px" }}>
                             <TextField
                                 required
                                 defaultValue={this.state.addCustomRubric ? "" : rubrics?.rubric_description}
@@ -417,7 +414,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                     </Grid>
 
                     <Grid container spacing={6.5}>
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <div className="d-flex align-items-center justify-content-between mb-3">
                                 <h3 className="d-flex mb-3">Rubrics</h3>
                                 <Tooltip title="Help">
@@ -440,7 +437,7 @@ class AddCustomRubric extends React.Component<AddCustomRubricProps, AddCustomRub
                             </FormControl>
                         </Grid>
 
-                        <Grid item xs={6}>
+                        <Grid item xs={12} sm={6}>
                             <h3 className="d-flex mb-3" data-testid="your-selected-categories">Your Selected Categories</h3>
 
                             <CustomDataTable

@@ -30,6 +30,7 @@ const CustomButton = ({
     margin: '5px 2.5px 2.5px 0',
     position,
     border: isOutlined ? '1px solid #2E8BEF' : 'none',
+    borderRadius: '10px',
   };
 
   if (disabled) {

@@ -55,24 +55,14 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
 
         return(
             <div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', paddingTop: "16px"}}>
+                <div style={{ paddingTop: "16px"}}>
                     <h2
-                        style={{
-                            textAlign: "left",
-                            fontWeight: "bold",
-                        }}
+                        className="sb-page-title"
+                        style={{ textAlign: "left" }}
                         data-testid="add-custom-rubric-title"
                     >
                         My Custom Rubrics
                     </h2>
-                    <CustomButton
-                        label="Add Custom Rubric"
-                        isOutlined={false}
-                        onClick={() => {
-                            this.props.navbar.setAddCustomRubric(true);
-                        }}
-                        data-testid="my-custom-rubrics-add-custom-rubric-button"
-                    />
                 </div>
                 <hr style={{ border: 0, borderTop: "1px solid #787878", margin: 0 }} />
 
@@ -81,13 +71,25 @@ class AdminViewCustomRubrics extends Component<AdminViewCustomRubricsProps, Admi
                         errorMessage={errorMessage}
                     />
                 }
-                
-                <CollapsableRubricCategoryTable
-                    categories={categories}
-                    rubrics={rubrics}
-                    readOnly={true}
-                    showEditButton={true}
-                    navbar={this.state.navbar}
+
+                <div style={{ marginTop: "1rem" }}>
+                    <CollapsableRubricCategoryTable
+                        categories={categories}
+                        rubrics={rubrics}
+                        readOnly={true}
+                        showEditButton={true}
+                        navbar={this.state.navbar}
+                    />
+                </div>
+
+                <CustomButton
+                    label="Add Custom Rubric"
+                    isOutlined={false}
+                    onClick={() => {
+                        this.props.navbar.setAddCustomRubric(true);
+                    }}
+                    style={{ width: "100%", marginTop: "1.25rem" }}
+                    data-testid="my-custom-rubrics-add-custom-rubric-button"
                 />
             </div>
         );

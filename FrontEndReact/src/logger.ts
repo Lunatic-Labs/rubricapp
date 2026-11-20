@@ -60,7 +60,9 @@ function reportToServer(level: LogLevel, message: string, extra: unknown): void 
 
     fetch(`${apiUrl}/client-error`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      // No-op outside ngrok's free tier; skips its anti-abuse interstitial
+      // during real-device testing over a tunnel.
+      headers: { 'Content-Type': 'application/json', 'ngrok-skip-browser-warning': 'true' },
       body: JSON.stringify({
         level,
         message,
