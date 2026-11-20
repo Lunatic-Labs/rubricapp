@@ -273,6 +273,26 @@ def create_user(user_data, validate_emails=True):
 
 @error_log
 def get_all_demo_admins(*columns):
+    """
+    Returns the desired admin demo users and their selected info.
+
+    Args:
+        *columns: Optional ``User`` columns. If none, every column
+            is returned per user.
+
+    Returns:
+        list[Row]: One row per user that contains the requested columns.
+            The resulting columns can be accessed as an attribute to a row.
+
+    Example:
+        >>> get_all_demo_admins()                       # Returns all columns per user
+        >>> get_all_demo_admins(User.id, User.email)    # Returns only the id and email per user
+
+    Raises:
+        sqlalchemy.exc.ArgumentError: Item in columns cannot be a column expression.
+        RuntimeError: Func called outside of context.
+        sqlalchemy.exc.SQLAlchemy: Query or session failed.
+    """
     cols = columns or tuple(User.__table__.columns)
     stmt = select(*cols).where(
         User.email.like("testadmin%@skillbuilder.edu"),

@@ -246,6 +246,17 @@ def get_all_team_members():
 @AuthCheck()
 @super_admin_check()
 def fetch_all_admin_demo_users():
+    """
+    Returns all modifiable admin demo users.
+
+    Args:
+        None
+
+    Returns:
+        200: ``content["demo_admins"]`` lists each demo admin's
+            ``first_name``, ``last_name`` and ``email`` (empty if none).
+        500: The lookup failed. Client gets a generic "try again" message.
+    """
     try:
         demo_admins = get_all_demo_admins(User.first_name, User.last_name, User.email)
         return create_good_response(
