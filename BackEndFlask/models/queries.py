@@ -13,7 +13,7 @@ from enums.roles import Roles
 
 from models.user import (
     get_user,
-    get_user_user_id_by_email,
+    get_user_by_email,
 )
 
 from models.utility import (
@@ -1804,10 +1804,10 @@ def reset_test_admins(emails: list[str]):
         for email in emails:
             if not is_test_admin(email):
                 raise UnacceptableEmail(email)
-            user = get_user_user_id_by_email(email)
+            user = get_user_by_email(email)
             if user is None:
                 raise NoUserForEmail(email)
-            user_ids.append(user)
+            user_ids.append(user.user_id)
 
         for id in user_ids:
             for step in RESET_STEPS:
