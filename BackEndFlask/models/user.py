@@ -2,13 +2,13 @@ from core import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime, timezone
 from models.schemas import User, UserCourse, CompletedAssessment, Course
-from sqlalchemy import and_, or_, update
+from sqlalchemy import and_, or_, update, select
 from sqlalchemy.exc import IntegrityError
 from models.utility import generate_random_password, send_new_user_email
 from models.email_validation import create_validation
-from models.completed_assessment import completed_assessment_team_or_user_exists
 from dotenv import load_dotenv
 from Functions.threads import spawn_thread, validate_pending_emails
+from errors.Email import NoUserForEmail
 
 load_dotenv()
 
@@ -19,13 +19,6 @@ import os
 class InvalidUserID(Exception):
     def __init__(self, id):
         self.message = f"Invalid user_id: {id}."
-
-    def __str__(self):
-        return self.message
-
-class InvalidUserEmail(Exception):
-    def __init__(self, email):
-        self.message = f"No user was found with email: {email}."
 
     def __str__(self):
         return self.message
@@ -273,6 +266,35 @@ def create_user(user_data, validate_emails=True):
 
 
 @error_log
+def get_all_demo_admins(*columns):
+    """
+    Returns the desired admin demo users and their selected info.
+
+    Args:
+        *columns: Optional ``User`` columns. If none, every column
+            is returned per user.
+
+    Returns:
+        list[Row]: One row per user that contains the requested columns.
+            The resulting columns can be accessed as an attribute to a row.
+
+    Example:
+        >>> get_all_demo_admins()                       # Returns all columns per user
+        >>> get_all_demo_admins(User.id, User.email)    # Returns only the id and email per user
+
+    Raises:
+        sqlalchemy.exc.ArgumentError: Item is not a valid column expression.
+        RuntimeError: Func called outside of context.
+        sqlalchemy.exc.SQLAlchemyError: Query or session failed.
+    """
+    cols = columns or tuple(User.__table__.columns)
+    stmt = select(*cols).where(
+        User.email.like("testadmin%@skillbuilder.edu"),
+    )
+    return db.session.execute(stmt).all()
+
+
+@error_log
 def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
     """
     Sets the User.is_admin flag for the user with the given email.
@@ -285,7 +307,7 @@ def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
 
     Raises:
         SQLAlchemyError: If the update or commit fails.
-        InvalidUserEmail: The email does not exist in the system.
+        NoUserForEmail: The email does not exist in the system.
     """
     stmt = (
         update(User).where(User.email == target_email).values({User.is_admin: is_admin})
@@ -293,9 +315,8 @@ def super_admin_alter_user_auth(target_email: str, is_admin: bool) -> None:
     result = db.session.execute(stmt)
     if result.rowcount == 0:
         db.session.rollback()
-        raise InvalidUserEmail(target_email)
+        raise NoUserForEmail(target_email)
     db.session.commit()
-
 
 @error_log
 def make_admin(user_id):

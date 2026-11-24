@@ -6,7 +6,6 @@
 
 import Loading from "../Loading/Loading";
 import { Component, ChangeEvent } from "react";
-import CloseIcon from "@mui/icons-material/Close";
 import ErrorIcon from "@mui/icons-material/Error";
 import { genericResourcePUT } from "../../utility";
 import { EMAIL_REGEX } from "../../Constants/email";
@@ -18,12 +17,11 @@ import {
     Dialog,
     Button,
     TextField,
-    IconButton,
-    DialogTitle,
     DialogContent,
     DialogActions,
     DialogContentText,
 } from "@mui/material";
+import DialogTitleWithClose from "./DialogTitleWithCloseButton";
 
 const StatusChanges = {
 	Demote: "Demote",
@@ -58,6 +56,20 @@ interface ManageAdminsAccessDialogState {
 	autoCloseTimer: ReturnType<typeof setTimeout> | null;
 }
 
+/**
+ * Dialog for a super admin to promote or demote a user's global admin flag by email.
+ *
+ * Submits a PUT to `/super_admin_user/promote` or `/super_admin_user/demote`
+ * depending on the toggle. The email is validated on blur, and submit is ignored
+ * while a request is in flight. Closing (X, backdrop or Esc) is blocked during a
+ * request, and otherwise resets the form before calling `onClose`.
+ *
+ * Props:
+ * - `open`: whether the dialog is shown. The parent owns this state.
+ * - `onClose`: called after the dialog has reset its form and wants to close.
+ * - `onSuccess`: called when the request succeeds, so the parent can refetch users.
+ * - `onError`: called with the backend's error message when the request fails.
+*/
 class ManageAdminsAccessDialog extends Component<
 	ManageAdminsAccessDialogProps,
 	ManageAdminsAccessDialogState
@@ -326,6 +338,7 @@ class ManageAdminsAccessDialog extends Component<
 	}
 
 	render() {
+		const dialogTitle = "Manage Admins";
 		return (
 			<Dialog
 				open={this.props.open}
@@ -333,24 +346,12 @@ class ManageAdminsAccessDialog extends Component<
 				fullWidth
 				maxWidth="xs"
 			>
-				<DialogTitle
-					sx={{ position: "relative", textAlign: "center", px: 6 }}
+				<DialogTitleWithClose
+					onClose={this.handleClose}
+					testId="manage-admin-access-close"
 				>
-					Manage Admins
-					<IconButton
-						aria-label="Close"
-						onClick={this.handleClose}
-						data-testid="manage-admin-access-close"
-						sx={{
-							position: "absolute",
-							right: (t) => t.spacing(1),
-							top: "50%",
-							transform: "translateY(-50%)",
-						}}
-					>
-						<CloseIcon />
-					</IconButton>
-				</DialogTitle>
+					{dialogTitle}
+				</DialogTitleWithClose>
 				{this.renderBody()}
 			</Dialog>
 		);

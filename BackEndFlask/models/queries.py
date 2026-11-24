@@ -3,6 +3,7 @@ from models.utility import error_log
 from models.schemas import *
 from sqlalchemy.sql import text
 from sqlalchemy import func
+from sqlalchemy import and_, or_, update, select, delete, insert
 
 from models.team_user import (
     create_team_user,
@@ -11,7 +12,8 @@ from models.team_user import (
 from enums.roles import Roles
 
 from models.user import (
-    get_user
+    get_user,
+    get_user_by_email,
 )
 
 from models.utility import (
@@ -37,6 +39,11 @@ from sqlalchemy import (
     select,
     case,
     literal_column
+)
+
+from errors.Email import (
+    UnacceptableEmail,
+    NoUserForEmail,
 )
 
 import sqlalchemy
@@ -764,7 +771,7 @@ def get_team_ratings(assessment_task_id):
         )
         .all()
     )
-    
+
 @error_log
 def is_member_of_team_for_task(user_id, team_id, assessment_task_id):
     """
@@ -1700,3 +1707,127 @@ def get_adhoc_team_users(team_id):
     ).all()
 
     return users
+
+
+@error_log
+def reset_test_admins(emails: list[str]):
+    """
+    Sends a query to the database to reset the demo admin accounts in one transaction.
+
+    Args:
+        emails (list[str]): Emails of corresponding demo admins to reset.
+
+    Returns:
+        None
+
+    Raises:
+        NoUserForEmail: Given email did not match any user.
+        UnacceptableEmail: This operation can only be performed on demo admins.
+        sqlalchemy.exc.SQLAlchemyError: Transaction failed; transaction rolled back.
+    """
+    is_test_admin = lambda email: email.startswith("testadmin") and email.endswith(
+        "@skillbuilder.edu"
+    )
+
+    fetch_course_ids = lambda user_id: select(Course.course_id).where(
+        Course.admin_id == user_id
+    )
+    fetch_team_ids = lambda user_id: select(Team.team_id).where(
+        Team.course_id.in_(fetch_course_ids(user_id))
+    )
+    fetch_at_ids = lambda user_id: select(AssessmentTask.assessment_task_id).where(
+        AssessmentTask.course_id.in_(fetch_course_ids(user_id))
+    )
+    fetch_cat_ids = lambda user_id: select(
+        CompletedAssessment.completed_assessment_id
+    ).where(CompletedAssessment.assessment_task_id.in_(fetch_at_ids(user_id)))
+
+    RESET_STEPS = [
+        (  # Reset values to default.
+            lambda user_id: update(User)
+            .where(User.user_id == user_id)
+            .values(
+                consent=None,
+                owner_id=1,
+                is_admin=True,
+                has_set_password=True,
+                user_dark_mode=False,
+            )
+        ),
+        # Unhook other relationships.
+        (
+            lambda user_id: delete(Feedback).where(
+                Feedback.completed_assessment_id.in_(fetch_cat_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(Checkin).where(
+                Checkin.assessment_task_id.in_(fetch_at_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(CompletedAssessment).where(
+                CompletedAssessment.assessment_task_id.in_(fetch_at_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: update(CompletedAssessment)
+            .where(CompletedAssessment.team_id.in_(fetch_team_ids(user_id)))
+            .values(team_id=None)
+        ),
+        (
+            lambda user_id: update(Feedback)
+            .where(Feedback.team_id.in_(fetch_team_ids(user_id)))
+            .values(team_id=None)
+        ),
+        (
+            lambda user_id: delete(TeamUser).where(
+                TeamUser.team_id.in_(fetch_team_ids(user_id))
+            )
+        ),
+        (lambda user_id: delete(TeamUser).where(TeamUser.user_id == user_id)),
+        (
+            lambda user_id: update(Team)
+            .where(
+                Team.assessment_task_id.in_(fetch_at_ids(user_id)),
+                Team.course_id.not_in(fetch_course_ids(user_id)),
+            )
+            .values(assessment_task_id=None)
+        ),
+        (
+            lambda user_id: delete(Team).where(
+                Team.course_id.in_(fetch_course_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(AssessmentTask).where(
+                AssessmentTask.course_id.in_(fetch_course_ids(user_id))
+            )
+        ),
+        (
+            lambda user_id: delete(UserCourse).where(
+                UserCourse.course_id.in_(fetch_course_ids(user_id))
+            )
+        ),
+        (lambda user_id: delete(Course).where(Course.admin_id == user_id)),
+        (lambda user_id: delete(UserCourse).where(UserCourse.user_id == user_id)),
+    ]
+    try:
+        user_ids = []
+        for email in emails:
+            if not is_test_admin(email):
+                raise UnacceptableEmail(email)
+            user = get_user_by_email(email)
+            if user is None:
+                raise NoUserForEmail(email)
+            user_ids.append(user.user_id)
+
+        for id in user_ids:
+            for step in RESET_STEPS:
+                db.session.execute(step(id))
+
+        db.session.commit()
+    except Exception as e:
+        db.session.rollback()
+        raise e
+    return

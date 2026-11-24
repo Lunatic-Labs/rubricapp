@@ -14,6 +14,11 @@ export interface User {
     last_login_at?: string | null
 };
 
+/**
+ *  Describes a admin demo user for the superadmin.
+*/
+export type DemoUser = Pick<User, "first_name" | "last_name" | "email">;
+
 /*
  * A version of CompletedAssessment where all fields are optional.
  */

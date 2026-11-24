@@ -47,6 +47,7 @@ from models.user import(
     get_users,
     get_user,
     get_user_admins,
+    get_all_demo_admins,
     get_user_admins_with_last_login,
     user_already_exists,
     create_user,
@@ -56,9 +57,10 @@ from models.user import(
     unmake_admin,
     delete_user,
     set_user_dark_mode,
-    InvalidUserEmail,
     super_admin_alter_user_auth,
 )
+
+from models.schemas import User
 
 from models.queries import (
     get_team_members,
@@ -69,8 +71,16 @@ from models.queries import (
     get_active_students_not_in_a_team,
     add_user_to_team,
     remove_user_from_team,
+    reset_test_admins,
 )
 from models.completed_assessment import completed_assessment_team_or_user_exists
+
+from errors.Email import (
+    NoUserForEmail,
+    UnacceptableEmail,
+)
+
+from errors.Requests import InvalidRequestBody
 
 
 @bp.route('/admin_users', methods=['GET'])
@@ -236,6 +246,37 @@ def get_all_team_members():
         return create_bad_response(f"An error occurred retrieving team members: {e}", "team_members", 400)
 
 
+@bp.route("/super_admin_user/demo_users", methods=["GET"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def fetch_all_admin_demo_users():
+    """
+    Returns all modifiable admin demo users.
+
+    Args:
+        None
+
+    Returns:
+        200: ``content["demo_admins"]`` lists each demo admin's
+            ``first_name``, ``last_name`` and ``email`` (empty if none).
+        500: The lookup failed. Client gets a generic "try again" message.
+    """
+    try:
+        demo_admins = get_all_demo_admins(User.first_name, User.last_name, User.email)
+        return create_good_response(
+            users_schema.dump(demo_admins), HttpStatus.OK.value, "demo_admins"
+        )
+    except Exception as e:
+        logger.exception(f"Failed to fetch demo_users: {e}")
+        return create_bad_response(
+            f"Failed to fetch demo users. Please try again.",
+            "demo_admins",
+            HttpStatus.INTERNAL_SERVER_ERROR.value,
+        )
+
+
 @bp.route('/user', methods = ['POST'])
 @jwt_required()
 @bad_token_check()
@@ -337,7 +378,7 @@ def update_user():
                 raise Exception("Non-admin users cannot be enrolled as admins")
             elif user.is_admin and role_id in [4, 5]:
                 raise Exception("Admin users cannot be enrolled as students or instructors")
-            
+
             replace_role_id_given_user_id_and_course_id(uid, course_id, role_id)
             user_data = user_schema.dump(user)
             user_data["role_id"] = role_id
@@ -422,6 +463,47 @@ def delete_selected_user():
     except Exception as e:
         return create_bad_response(f"An error occurred deleting a user: {e}", "users", 400)
 
+@bp.route("/super_admin_user/reset_demo_users", methods=["PUT"])
+@jwt_required()
+@bad_token_check()
+@AuthCheck()
+@super_admin_check()
+def super_admin_reset_demo_users():
+    """
+    Resets the selected admin demo users to their seeded initial state.
+    All users are reset in one transaction; everything is rolled back on error.
+
+    Args:
+        emails (list[str]): JSON body field. Demo admin emails to reset.
+
+    Returns:
+        200: []
+        400: Emails provided not valid or incorrect format.
+        500: Unexpected failure.
+    """
+    try:
+        data = request.get_json(silent=True)
+        if not isinstance(data, dict):
+            raise InvalidRequestBody("Request body must be a JSON object.")
+
+        emails = data.get("emails")
+        if not isinstance(emails, list) or not all(isinstance(email, str) for email in emails):
+            raise InvalidRequestBody("Emails must be a list of strings.")
+
+        reset_test_admins(emails)
+        return create_good_response([], HttpStatus.OK.value, "reset_test_admins")
+    except InvalidRequestBody as e:
+        return create_bad_response(str(e), "reset_test_admins", HttpStatus.BAD_REQUEST.value)
+    except (NoUserForEmail, UnacceptableEmail) as e:
+        logger.exception(f"Either Client send the wrong information or data problem: {e}")
+        return create_bad_response("Resetting demo user/s Failed. Please try again.", "reset_test_admins", HttpStatus.BAD_REQUEST.value)
+    except Exception as e:
+        logger.exception(f"Failed to reset selected demo users: {e}")
+        return create_bad_response(
+            "Resetting demo user/s Failed. Please try again.",
+            "reset_test_admins",
+            HttpStatus.INTERNAL_SERVER_ERROR.value
+        )
 
 @bp.route("/super_admin_user/promote", methods=["PUT"])
 @bp.route("/super_admin_user/demote", methods=["PUT"])
@@ -448,7 +530,7 @@ def super_change_admin_status():
         user_to_modify = request.args.get("target_email")
 
         if not isinstance(user_to_modify, str):
-            raise ValueError("A target email is required.")
+            raise InvalidRequestBody("A target email is required.")
 
         super_admin_alter_user_auth(user_to_modify, promoting)
 
@@ -457,12 +539,12 @@ def super_change_admin_status():
             HttpStatus.OK.value,
             "auth_change",
         )
-    except ValueError as e:
+    except InvalidRequestBody as e:
         return create_bad_response(str(e), "auth_change", HttpStatus.BAD_REQUEST.value)
-    except InvalidUserEmail as e:
+    except NoUserForEmail as e:
         return create_bad_response(str(e), "auth_change", HttpStatus.NOT_FOUND.value)
-    except Exception:
-        logger.exception(f"{verb} failed for target_email={user_to_modify!r}")
+    except Exception as e:
+        logger.exception(f"{verb} failed for target_email={user_to_modify!r}: {e}")
         return create_bad_response(
             f"{verb} Failed. Please try again.",
             "auth_change",
