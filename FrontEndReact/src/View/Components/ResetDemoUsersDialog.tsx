@@ -84,6 +84,10 @@ class ResetDemoAdminsDialog extends Component<
 			JSON.stringify({ emails: selectedEmails }),
 		);
 
+		if (this.state.requestState !== REQUEST_STATE.LOADING) {
+			return;
+		}
+
 		const didRequestFail = Boolean(result.errorMessage);
 		this.setState({
 			requestState: didRequestFail
