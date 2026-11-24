@@ -81,8 +81,13 @@ function CustomCheckboxList<T>({
 				overflow: "hidden",
 			}}
 		>
-			<ListItemButton dense onClick={toggleAll}>
-				<ListItemIcon>
+			<ListItemButton
+				dense
+				onClick={toggleAll}
+				role="checkbox"
+				aria-checked={someSelected ? "mixed" : allSelected}
+			>
+				<ListItemIcon aria-hidden="true">
 					<Checkbox
 						edge="start"
 						checked={allSelected}
@@ -116,8 +121,12 @@ function CustomCheckboxList<T>({
 								},
 							}}
 						>
-							<ListItemButton onClick={() => toggleItem(id)}>
-								<ListItemIcon>
+							<ListItemButton
+								onClick={() => toggleItem(id)}
+								role="checkbox"
+								aria-checked={selectedIds.includes(id)}
+							>
+								<ListItemIcon aria-hidden="true">
 									<Checkbox
 										edge="start"
 										checked={selectedIds.includes(id)}
