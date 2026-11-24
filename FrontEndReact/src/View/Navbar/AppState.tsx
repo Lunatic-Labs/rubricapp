@@ -946,6 +946,7 @@ class AppState extends Component<AppStateProps, AppStateState> {
                         <ResetDemoAdminsDialog
                             open={this.state.isResetDemoAdminDialogOpen}
                             onClose={() => this.setState({isResetDemoAdminDialogOpen:false})}
+                            onSuccess={() => this.adminViewUsersRef.current?.fetchData()}
                             onError={(message) => this.adminViewUsersRef.current?.setErrorMessage(message)}
                         />
                     </Box>

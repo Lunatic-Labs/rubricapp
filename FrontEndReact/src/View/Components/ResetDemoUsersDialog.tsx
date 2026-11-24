@@ -27,6 +27,7 @@ interface ResetDemoAdminsDialogProps {
 	open: boolean;
 	onClose: () => void;
 	onError: (message: string) => void;
+	onSuccess: () => void;
 }
 
 interface ResetDemoAdminsDialogState {
@@ -84,20 +85,23 @@ class ResetDemoAdminsDialog extends Component<
 			JSON.stringify({ emails: selectedEmails }),
 		);
 
+		const didRequestFail = Boolean(result.errorMessage);
+
+		if (didRequestFail) {
+			this.props.onError(result.errorMessage);
+		} else {
+			this.props.onSuccess();
+		}
+
 		if (this.state.requestState !== REQUEST_STATE.LOADING) {
 			return;
 		}
 
-		const didRequestFail = Boolean(result.errorMessage);
 		this.setState({
 			requestState: didRequestFail
 				? REQUEST_STATE.ERROR
 				: REQUEST_STATE.SUCCESS,
 		});
-
-		if (didRequestFail) {
-			this.props.onError(result.errorMessage);
-		}
 	};
 
 	private renderActions() {
