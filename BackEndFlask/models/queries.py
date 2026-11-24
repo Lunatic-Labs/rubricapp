@@ -1771,9 +1771,28 @@ def reset_test_admins(emails: list[str]):
             )
         ),
         (
+            lambda user_id: update(CompletedAssessment)
+            .where(CompletedAssessment.team_id.in_(fetch_team_ids(user_id)))
+            .values(team_id=None)
+        ),
+        (
+            lambda user_id: update(Feedback)
+            .where(Feedback.team_id.in_(fetch_team_ids(user_id)))
+            .values(team_id=None)
+        ),
+        (
             lambda user_id: delete(TeamUser).where(
                 TeamUser.team_id.in_(fetch_team_ids(user_id))
             )
+        ),
+        (lambda user_id: delete(TeamUser).where(TeamUser.user_id == user_id)),
+        (
+            lambda user_id: update(Team)
+            .where(
+                Team.assessment_task_id.in_(fetch_at_ids(user_id)),
+                Team.course_id.not_in(fetch_course_ids(user_id)),
+            )
+            .values(assessment_task_id=None)
         ),
         (
             lambda user_id: delete(Team).where(
@@ -1790,14 +1809,8 @@ def reset_test_admins(emails: list[str]):
                 UserCourse.course_id.in_(fetch_course_ids(user_id))
             )
         ),
-        (
-            lambda user_id: delete(Course).where(
-                Course.admin_id==user_id
-            )
-        ),
-        (
-            lambda user_id: delete(UserCourse).where(UserCourse.user_id == user_id)
-        ),
+        (lambda user_id: delete(Course).where(Course.admin_id == user_id)),
+        (lambda user_id: delete(UserCourse).where(UserCourse.user_id == user_id)),
     ]
     try:
         user_ids = []
