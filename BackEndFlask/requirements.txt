@@ -17,6 +17,9 @@ marshmallow-sqlalchemy == 1.4.2
 # SendGrid API for emails
 sendgrid == 6.12.5
 
+# Web Push notifications (VAPID signing + delivery to browser push services)
+pywebpush == 2.1.0
+
 # Database and ORM tools
 sqlalchemy == 2.0.43
 pymysql == 1.1.2

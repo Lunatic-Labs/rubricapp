@@ -32,6 +32,11 @@ export default defineConfig({
         navigateFallbackDenylist: [/^\/api/],
         // Main bundle is ~2.7 MB; Workbox's 2 MiB default would skip precaching it.
         maximumFileSizeToCacheInBytes: 5 * 1024 * 1024,
+        // Loads push-sw.js (push/notificationclick handlers) into the
+        // generated service worker without replacing any of the above --
+        // the precache/routing logic Workbox generates is untouched, this
+        // just adds two more event listeners alongside it.
+        importScripts: ['push-sw.js'],
       },
       devOptions: {
         enabled: false,

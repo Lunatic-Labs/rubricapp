@@ -1585,6 +1585,7 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
     if is_teams:
         student_info = db.session.query(
             func.max(CompletedAssessment.last_update).label('last_update'),
+            User.user_id,
             User.first_name,
             User.last_name,
             User.email
@@ -1598,6 +1599,7 @@ def get_students_for_emailing(is_teams: bool, completed_at_id: int = None, at_id
     else:
         student_info = db.session.query(
             CompletedAssessment.last_update,
+            User.user_id,
             User.first_name,
             User.last_name,
             User.email

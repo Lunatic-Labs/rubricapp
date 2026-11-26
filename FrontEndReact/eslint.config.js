@@ -180,6 +180,20 @@ export default tseslint.config(
     },
 
     {
+        // Service worker scripts loaded via workbox's importScripts (vite.config.ts) --
+        // `self` here is the ServiceWorkerGlobalScope, not the confusing
+        // window.self/globalThis.self the base config's no-restricted-globals guards
+        // against, so that rule doesn't apply in this scope.
+        files: ["public/*.js"],
+        languageOptions: {
+            globals: globals.serviceworker,
+        },
+        rules: {
+            "no-restricted-globals": "off",
+        },
+    },
+
+    {
         files: ["**/*.{ts,tsx}"],
         languageOptions: {
             parser: tseslint.parser,
