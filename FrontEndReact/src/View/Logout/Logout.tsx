@@ -3,7 +3,7 @@ import Cookies from 'universal-cookie';
 import { apiUrl } from '../../App';
 import { MenuItem, ListItemIcon} from '@mui/material';
 import LogoutIcon from '@mui/icons-material/Logout';
-import { unsubscribeFromPushNotifications } from '../../utils/pushNotifications';
+import { unsubscribeFromPushNotifications, getExistingPushSubscription } from '../../utils/pushNotifications';
 
 interface LogoutProps {
     logout: () => void;
@@ -41,30 +41,40 @@ class Logout extends Component<LogoutProps> {
             setTimeout(resolve, PUSH_CLEANUP_TIMEOUT_MS);
         });
 
-        Promise.race([cleanup, cleanupTimeout]).then(() => {
-            fetch(
-                apiUrl + `/logout?user_id=${userId}`,
-                {
-                    method: "POST",
-                    headers: {
-                        "Content-Type": "application/json",
-                        // No-op outside ngrok's free tier; skips its anti-abuse
-                        // interstitial during real-device testing over a tunnel.
-                        "ngrok-skip-browser-warning": "true",
-                    },
-                    body: JSON.stringify({
-                        access_token: accessToken,
-                        refresh_token: refreshToken,
-                    }),
-                }
-            ).finally(() => {
-                cookies.remove('access_token');
-                cookies.remove('refresh_token');
-                cookies.remove('user');
+        Promise.race([cleanup, cleanupTimeout])
+            // unsubscribeFromPushNotifications() only unsubscribes locally after
+            // a confirmed server-side delete, so a failed or timed-out cleanup
+            // above can leave the browser still subscribed. Logout needs that
+            // guaranteed regardless of how the server call went -- otherwise the
+            // next person on a shared device keeps receiving the previous
+            // account's notifications -- so force it here independently of the
+            // cleanup above (a no-op if it already succeeded).
+            .then(() => getExistingPushSubscription())
+            .then((subscription) => subscription?.unsubscribe().catch(() => {}))
+            .finally(() => {
+                fetch(
+                    apiUrl + `/logout?user_id=${userId}`,
+                    {
+                        method: "POST",
+                        headers: {
+                            "Content-Type": "application/json",
+                            // No-op outside ngrok's free tier; skips its anti-abuse
+                            // interstitial during real-device testing over a tunnel.
+                            "ngrok-skip-browser-warning": "true",
+                        },
+                        body: JSON.stringify({
+                            access_token: accessToken,
+                            refresh_token: refreshToken,
+                        }),
+                    }
+                ).finally(() => {
+                    cookies.remove('access_token');
+                    cookies.remove('refresh_token');
+                    cookies.remove('user');
 
-                this.props.logout();
+                    this.props.logout();
+                });
             });
-        });
     }
 
     render() {
